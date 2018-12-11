@@ -115,13 +115,15 @@ export class Login extends Component {
             }}
             onChangeText={password => this.setState({ password })}
           />
-          {this.state.error && (
+          {this.state.error ? (
             <Text
               id="error-message"
               style={{ ...globalStyles.tag, ...styles.error }}
             >
               {this.state.error}
             </Text>
+          ) : (
+            <View />
           )}
           {this.state.loading ? (
             <ActivityIndicator />

@@ -140,7 +140,7 @@ export class SocioEconomicQuestion extends Component {
           }}
         >
           {/* questions for entire family */}
-          {!!socioEconomics &&
+          {socioEconomics ? (
             questionsForThisScreen.forFamily.map(
               question =>
                 question.answerType === 'select' ? (
@@ -166,58 +166,67 @@ export class SocioEconomicQuestion extends Component {
                     detectError={this.detectError}
                   />
                 )
-            )}
+            )
+          ) : (
+            <View />
+          )}
 
           {/* questions for family members */}
-          {!!socioEconomics &&
-            questionsForThisScreen.forFamilyMember.length &&
-            draft.familyData.familyMembersList.map((member, i) => (
-              <View key={member.firstName}>
-                <Text style={styles.memberName}>{member.firstName}</Text>
-                {questionsForThisScreen.forFamilyMember.map(
-                  question =>
-                    question.answerType === 'select' ? (
-                      <Select
-                        key={question.codeName}
-                        required={question.required}
-                        onChange={(text, field) =>
-                          this.addSurveyFamilyMemberData(text, field, i)
-                        }
-                        placeholder={question.questionText}
-                        label={question.questionText}
-                        field={question.codeName}
-                        value={
-                          this.getFamilyMemberFieldValue(
-                            draft,
-                            question.codeName,
-                            i
-                          ) || ''
-                        }
-                        detectError={this.detectError}
-                        data={question.options}
-                      />
-                    ) : (
-                      <TextInput
-                        key={question.codeName}
-                        required={question.required}
-                        onChangeText={(text, field) =>
-                          this.addSurveyFamilyMemberData(text, field, i)
-                        }
-                        placeholder={question.questionText}
-                        field={question.codeName}
-                        value={
-                          this.getFamilyMemberFieldValue(
-                            draft,
-                            question.codeName,
-                            i
-                          ) || ''
-                        }
-                        detectError={this.detectError}
-                      />
-                    )
-                )}
-              </View>
-            ))}
+          {socioEconomics ? (
+            questionsForThisScreen.forFamilyMember.length ? (
+              draft.familyData.familyMembersList.map((member, i) => (
+                <View key={member.firstName}>
+                  <Text style={styles.memberName}>{member.firstName}</Text>
+                  {questionsForThisScreen.forFamilyMember.map(
+                    question =>
+                      question.answerType === 'select' ? (
+                        <Select
+                          key={question.codeName}
+                          required={question.required}
+                          onChange={(text, field) =>
+                            this.addSurveyFamilyMemberData(text, field, i)
+                          }
+                          placeholder={question.questionText}
+                          label={question.questionText}
+                          field={question.codeName}
+                          value={
+                            this.getFamilyMemberFieldValue(
+                              draft,
+                              question.codeName,
+                              i
+                            ) || ''
+                          }
+                          detectError={this.detectError}
+                          data={question.options}
+                        />
+                      ) : (
+                        <TextInput
+                          key={question.codeName}
+                          required={question.required}
+                          onChangeText={(text, field) =>
+                            this.addSurveyFamilyMemberData(text, field, i)
+                          }
+                          placeholder={question.questionText}
+                          field={question.codeName}
+                          value={
+                            this.getFamilyMemberFieldValue(
+                              draft,
+                              question.codeName,
+                              i
+                            ) || ''
+                          }
+                          detectError={this.detectError}
+                        />
+                      )
+                  )}
+                </View>
+              ))
+            ) : (
+              <View />
+            )
+          ) : (
+            <View />
+          )}
         </View>
         <View style={{ marginTop: 15, height: 50 }}>
           <Button

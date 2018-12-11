@@ -156,10 +156,12 @@ export class DateInput extends React.Component {
             />
           </View>
         </View>
-        {this.state.error && (
+        {this.state.error ? (
           <Text style={{ ...styles.text, color: colors.red }}>
             {t('views.family.selectValidDate')}
           </Text>
+        ) : (
+          <View />
         )}
       </View>
     )

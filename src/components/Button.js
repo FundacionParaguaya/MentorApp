@@ -1,7 +1,13 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import Icon from 'react-native-vector-icons/MaterialIcons'
-import { Text, TouchableOpacity, StyleSheet, Platform } from 'react-native'
+import {
+  Text,
+  TouchableOpacity,
+  StyleSheet,
+  Platform,
+  View
+} from 'react-native'
 import colors from '../theme.json'
 
 class Button extends Component {
@@ -38,13 +44,15 @@ class Button extends Component {
         onPress={this.props.handleClick}
         disabled={this.props.disabled}
       >
-        {this.props.icon && (
+        {this.props.icon ? (
           <Icon
             name={this.props.icon}
             size={21}
             color={colors.palegreen}
             style={styles.icon}
           />
+        ) : (
+          <View />
         )}
         <Text
           style={[
@@ -54,8 +62,8 @@ class Button extends Component {
                   color: borderColor
                 }
               : this.props.colored
-              ? styles.whiteText
-              : styles.greenText,
+                ? styles.whiteText
+                : styles.greenText,
 
             this.props.underlined ? styles.underlined : {}
           ]}

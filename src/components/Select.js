@@ -89,10 +89,12 @@ class Select extends Component {
                 ))}
           </Picker>
         </View>
-        {!!errorMsg && (
+        {errorMsg ? (
           <FormValidationMessage style={{ color: colors.red }}>
             {errorMsg}
           </FormValidationMessage>
+        ) : (
+          <View />
         )}
       </View>
     )

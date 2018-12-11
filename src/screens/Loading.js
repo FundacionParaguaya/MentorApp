@@ -104,7 +104,7 @@ export class Loading extends Component {
               ? 'We will be ready soon.'
             : 'This might take a while...'} */}
           </Text>
-          {this.state.loadingData && (
+          {this.state.loadingData ? (
             <View style={styles.sync}>
               <Text>
                 Syncing surveys: {surveys.length} / {surveys.length}
@@ -114,6 +114,8 @@ export class Loading extends Component {
                 {sync.images.total}
               </Text>
             </View>
+          ) : (
+            <View />
           )}
         </View>
       </View>
