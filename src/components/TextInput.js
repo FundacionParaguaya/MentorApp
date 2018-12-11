@@ -140,6 +140,7 @@ class TextInput extends Component {
             onBlur={() => this.onBlur(text)}
             onChangeText={text => this.onChangeText(text)}
             onEndEditing={this.onEndEditing}
+            placeholder={`${placeholder} ${required ? '*' : ''}`}
             inputStyle={[
               styles.inputStyle,
               !showPlaceholder ? styles.activeInput : {}
@@ -147,9 +148,7 @@ class TextInput extends Component {
             editable={!readonly}
             multiline={multiline}
           >
-            <Text style={{ fontSize: 14, margin: 10 }}>
-              {showPlaceholder ? `${placeholder} ${required ? '*' : ''}` : text}
-            </Text>
+            <Text style={styles.inputText}>{text}</Text>
           </FormInput>
         </View>
         {status === 'error' && errorMsg && (
@@ -179,8 +178,9 @@ const styles = StyleSheet.create({
   inputStyle: {
     ...globalStyles.subline,
     fontFamily: 'Roboto',
-    marginVertical: 0,
-    marginLeft: -4,
+    fontSize: 14
+  },
+  inputText: {
     fontSize: 14
   },
   activeInput: {

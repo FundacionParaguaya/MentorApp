@@ -6,9 +6,9 @@ import {
   View,
   Text,
   Modal,
-  Image
+  Image,
+  ScrollView
 } from 'react-native'
-import { FormValidationMessage } from 'react-native-elements'
 import countries from 'localized-countries'
 import arrow from '../../assets/images/selectArrow.png'
 import colors from '../theme.json'
@@ -65,8 +65,25 @@ class Select extends Component {
 
     return (
       <TouchableOpacity onPress={this.toggleDropdown}>
-        <View style={[styles.container, !value && styles.withValue]}>
-          <Text style={styles.placeholder}>
+        <View
+          style={[
+            styles.container,
+            !value && styles.withoutValue,
+            isOpen && styles.active
+          ]}
+        >
+          {!!value && (
+            <Text
+              style={[
+                styles.title,
+                isOpen &&
+                  !errorMsg && {
+                    color: colors.green
+                  }
+              ]}
+            >{`${placeholder} ${required ? '*' : ''}`}</Text>
+          )}
+          <Text style={[styles.placeholder]}>
             {value || `${placeholder} ${required ? '*' : ''}`}
           </Text>
           <Image source={arrow} style={styles.arrow} />
@@ -100,27 +117,41 @@ class Select extends Component {
             />
             <View style={styles.dropdown}>
               {countrySelect ? (
-                <View>
+                <ScrollView>
                   {countryList.map(item => (
                     <TouchableOpacity
                       key={item.code}
                       onPress={() => this.validateInput(item.label)}
                     >
-                      <Text style={[styles.option]}>{item.label}</Text>
+                      <Text
+                        style={[
+                          styles.option,
+                          value === item.label && styles.selected
+                        ]}
+                      >
+                        {item.label}
+                      </Text>
                     </TouchableOpacity>
                   ))}
-                </View>
+                </ScrollView>
               ) : (
-                <View>
+                <ScrollView>
                   {options.map(item => (
                     <TouchableOpacity
                       key={item.value}
                       onPress={() => this.validateInput(item.text)}
                     >
-                      <Text style={[styles.option]}>{item.text}</Text>
+                      <Text
+                        style={[
+                          styles.option,
+                          value === item.text && styles.selected
+                        ]}
+                      >
+                        {item.text}
+                      </Text>
                     </TouchableOpacity>
                   ))}
-                </View>
+                </ScrollView>
               )}
             </View>
           </Modal>
@@ -155,12 +186,12 @@ const styles = StyleSheet.create({
     paddingHorizontal: 15,
     ...globalStyles.subline
   },
-  withValue: {
+  withoutValue: {
     backgroundColor: colors.beige,
     borderBottomColor: colors.grey
   },
   dropdown: {
-    padding: 25,
+    paddingVertical: 25,
     maxHeight: 360,
     position: 'absolute',
     bottom: 0,
@@ -169,6 +200,7 @@ const styles = StyleSheet.create({
     backgroundColor: colors.palebeige
   },
   option: {
+    paddingHorizontal: 25,
     fontFamily: 'Roboto',
     fontSize: 16,
     lineHeight: 50,
@@ -181,6 +213,10 @@ const styles = StyleSheet.create({
     right: 13,
     top: '50%'
   },
+  active: {
+    backgroundColor: colors.white,
+    borderBottomColor: colors.green
+  },
   overlay: {
     position: 'absolute',
     top: 0,
@@ -192,6 +228,11 @@ const styles = StyleSheet.create({
     alignItems: 'center'
   },
   selected: {
-    color: colors.lightgrey
+    backgroundColor: colors.lightgrey
+  },
+  title: {
+    marginLeft: 15,
+    zIndex: 100,
+    fontSize: 12
   }
 })
