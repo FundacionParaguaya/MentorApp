@@ -6,7 +6,8 @@ import {
   Text,
   View,
   TouchableOpacity,
-  Dimensions
+  Dimensions,
+  InteractionManager
 } from 'react-native'
 import Image from './CachedImage'
 import colors from '../theme.json'
@@ -40,12 +41,37 @@ class Slider extends Component {
   }
 
   componentDidMount() {
+    const width = Dimensions.get('screen').width
+    const height = Dimensions.get('screen').height
     this.setState({
       isPortrait: isPortrait(),
-      isTablet: isTablet()
+      isTablet: isTablet(),
+      width,
+      height
     })
     Dimensions.addEventListener('change', this.dimensionChange)
+
+    const value = value => {
+      switch (value) {
+        case 1:
+          return 2
+        case 2:
+          return 1
+        case 3:
+          return 0
+        default:
+          return 0
+      }
+    }
+    // Slider scrolls to the appropriate slide
+    InteractionManager.runAfterInteractions(() => {
+      this.scrollView.scrollTo({
+        x: (width - (1 / 10) * width) * value(this.props.value),
+        animated: true
+      })
+    })
   }
+
   componentWillUnmount() {
     // Important to stop updating state after unmount
     Dimensions.removeEventListener('change', this.dimensionChange)
@@ -53,27 +79,30 @@ class Slider extends Component {
 
   dimensionChange = () => {
     this.setState({
-      isPortrait: isPortrait()
+      isPortrait: isPortrait(),
+      width: Dimensions.get('screen').width,
+      height: Dimensions.get('screen').height
     })
   }
   render() {
-    const { isPortrait, isTablet } = this.state
-    const height = Dimensions.get('screen').height
+    const { isPortrait, isTablet, width, height } = this.state
     return (
       <View>
         <ScrollView
           horizontal
           showsHorizontalScrollIndicator={false}
           contentContainerStyle={{
-            width: isPortrait ? '300%' : '100%',
+            width: isPortrait ? '280%' : '90%',
             flexGrow: 1,
             flexDirection: 'row',
             justifyContent: 'space-between',
             padding: '0.66%'
           }}
-          ref={comp => {
-            this._scrollView = comp
+          ref={ref => {
+            this.scrollView = ref
           }}
+          snapToAlignment="center"
+          snapToInterval={width - (1 / 10) * width}
         >
           {this.props.slides.map((slide, i) => (
             <View key={i} style={{ width: '33%' }}>
@@ -81,7 +110,7 @@ class Slider extends Component {
                 style={{
                   ...styles.slide,
                   backgroundColor: colors[slideColors[slide.value]],
-                  height: isPortrait ? height / 1.8 : height / 1.5
+                  height: isPortrait ? height / 1.8 : height / 1.35
                 }}
                 onPress={() => {
                   this.props.selectAnswer(slide.value)

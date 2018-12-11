@@ -61,11 +61,11 @@ describe('Slider Component', () => {
 
   describe('functionality', () => {
     it('has correct initial state', () => {
-      expect(wrapper.instance().state).toEqual({
-        selectedColor: colors.green,
-        isPortrait: true,
-        isTablet: false
-      })
+      expect(wrapper.instance().state.selectedColor).toEqual(colors.green)
+      expect(wrapper.instance().state.isPortrait).toEqual(true)
+      expect(wrapper.instance().state.isTablet).toEqual(false)
+      expect(typeof wrapper.instance().state.width).toBe('number')
+      expect(typeof wrapper.instance().state.height).toBe('number')
     })
     it('does not change state when user clicks on green slide', () => {
       wrapper
