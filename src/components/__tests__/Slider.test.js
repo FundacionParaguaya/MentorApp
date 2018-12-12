@@ -28,7 +28,7 @@ const createTestProps = props => ({
       value: 1
     }
   ],
-  dimensions: { width: 10, height: 10 },
+  dimensions: { height: 731, width: 411, scale: 2.6 },
   value: 1,
   selectAnswer: jest.fn(),
   text: 'Some button text',
@@ -63,8 +63,6 @@ describe('Slider Component', () => {
   describe('functionality', () => {
     it('has correct initial state', () => {
       expect(wrapper.instance().state.selectedColor).toEqual(colors.green)
-      expect(wrapper.instance().state.isPortrait).toEqual(true)
-      expect(wrapper.instance().state.isTablet).toEqual(false)
     })
     it('does not change state when user clicks on green slide', () => {
       wrapper

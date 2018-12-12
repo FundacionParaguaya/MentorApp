@@ -14,31 +14,16 @@ import colors from '../theme.json'
 import globalStyles from '../globalStyles'
 import Icon from 'react-native-vector-icons/MaterialIcons'
 import { connect } from 'react-redux'
-
+import { isTablet, isPortrait } from '../responsivenessHelpers'
 const slideColors = {
   1: 'red',
   2: 'gold',
   3: 'green'
 }
 
-const isPortrait = () => {
-  const dim = Dimensions.get('screen')
-  return dim.height >= dim.width
-}
-
-const isTablet = () => {
-  const msp = (dim, limit) => {
-    return dim.scale * dim.width >= limit || dim.scale * dim.height >= limit
-  }
-  const dim = Dimensions.get('screen')
-  return (dim.scale < 2 && msp(dim, 1000)) || (dim.scale >= 2 && msp(dim, 1900))
-}
-
 export class Slider extends Component {
   state = {
-    selectedColor: colors.green,
-    isPortrait: true,
-    isTablet: false
+    selectedColor: colors.green
   }
 
   componentDidMount() {
@@ -66,7 +51,7 @@ export class Slider extends Component {
   }
 
   render() {
-    const { isPortrait, isTablet } = this.state
+    const { dimensions } = this.props
     const { width, height } = this.props.dimensions
     return (
       <View>
@@ -74,7 +59,7 @@ export class Slider extends Component {
           horizontal
           showsHorizontalScrollIndicator={false}
           contentContainerStyle={{
-            width: isPortrait ? '280%' : '90%',
+            width: isPortrait(dimensions) ? '280%' : '90%',
             flexGrow: 1,
             flexDirection: 'row',
             flexWrap: 'wrap',
@@ -110,8 +95,8 @@ export class Slider extends Component {
                   source={slide.url}
                   style={{
                     ...styles.image,
-                    height: isPortrait
-                      ? isTablet
+                    height: isPortrait(dimensions)
+                      ? isTablet(dimensions)
                         ? height / 2
                         : height / 3
                       : height / 4

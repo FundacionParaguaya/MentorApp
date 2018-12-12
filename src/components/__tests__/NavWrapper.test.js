@@ -40,6 +40,10 @@ describe('Navigation Wrapper', () => {
       expect(wrapper.find(LoadingStack)).toHaveLength(1)
     })
 
+    it('call setDimensions on mount', () => {
+      expect(wrapper.instance().props.setDimensions).toHaveBeenCalledTimes(1)
+    })
+
     it('display the login screen if not logged in', () => {
       props = createTestProps({
         sync: {
