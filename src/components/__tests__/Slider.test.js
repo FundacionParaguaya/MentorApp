@@ -4,7 +4,7 @@ import { shallow } from 'enzyme'
 import { ScrollView, Text, TouchableOpacity } from 'react-native'
 import Image from '../CachedImage'
 import Icon from 'react-native-vector-icons/MaterialIcons'
-import Slider from '../Slider'
+import { Slider } from '../Slider'
 import colors from '../../theme.json'
 
 const createTestProps = props => ({

@@ -38,6 +38,15 @@ export const logout = () => ({
   type: USER_LOGOUT
 })
 
+// Dimensions
+
+export const SET_DIMENSIONS = 'SET_DIMENSIONS'
+
+export const setDimensions = dimensions => ({
+  type: SET_DIMENSIONS,
+  dimensions
+})
+
 // Environment
 
 export const SET_ENV = 'SET_ENV'

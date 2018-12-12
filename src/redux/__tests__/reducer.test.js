@@ -12,6 +12,20 @@ describe('environment reducer', () => {
   })
 })
 
+describe('dimensions reducer', () => {
+  it('should handle SET_DIMENSIONS', () => {
+    expect(
+      reducer.dimensions(
+        { width: null, height: null },
+        {
+          type: action.SET_DIMENSIONS,
+          dimensions: { width: 10, height: 10 }
+        }
+      )
+    ).toEqual({ width: 10, height: 10 })
+  })
+})
+
 describe('login reducer', () => {
   it('should handle SET_LOGIN_STATE success', () => {
     expect(
@@ -72,7 +86,8 @@ describe('login reducer', () => {
       snapshots: [],
       surveys: [],
       sync: { images: { synced: 0, total: 0 }, synced: 'no' },
-      user: { status: null, token: null, username: null }
+      user: { status: null, token: null, username: null },
+      dimensions: { width: null, height: null }
     })
   })
 })

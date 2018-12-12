@@ -12,6 +12,7 @@ import Image from './CachedImage'
 import colors from '../theme.json'
 import globalStyles from '../globalStyles'
 import Icon from 'react-native-vector-icons/MaterialIcons'
+import { connect } from 'react-redux'
 
 const slideColors = {
   1: 'red',
@@ -32,7 +33,7 @@ const isTablet = () => {
   return (dim.scale < 2 && msp(dim, 1000)) || (dim.scale >= 2 && msp(dim, 1900))
 }
 
-class Slider extends Component {
+export class Slider extends Component {
   state = {
     selectedColor: colors.green,
     isPortrait: true,
@@ -57,6 +58,7 @@ class Slider extends Component {
     })
   }
   render() {
+    console.log(this.props.dimensions)
     const { isPortrait, isTablet } = this.state
     const height = Dimensions.get('screen').height
     return (
@@ -171,4 +173,8 @@ const styles = StyleSheet.create({
   }
 })
 
-export default Slider
+const mapStateToProps = ({ dimensions }) => ({
+  dimensions
+})
+
+export default connect()(Slider)

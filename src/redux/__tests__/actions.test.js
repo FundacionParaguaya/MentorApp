@@ -18,6 +18,17 @@ describe('environment actions', () => {
   })
 })
 
+describe('dimensions actions', () => {
+  it('should create an action to set dimensions', () => {
+    const dimensions = { width: 10, height: 10 }
+    const expectedAction = {
+      type: action.SET_DIMENSIONS,
+      dimensions
+    }
+    expect(action.setDimensions(dimensions)).toEqual(expectedAction)
+  })
+})
+
 describe('login/logout actions', () => {
   afterEach(() => {
     fetchMock.reset()

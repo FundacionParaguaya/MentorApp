@@ -1,7 +1,7 @@
 import { AppRegistry, YellowBox } from 'react-native'
 import { Sentry } from 'react-native-sentry'
 import './src/i18n'
-import App from './App'
+import ResponsiveApp from './ResponsiveApp'
 import { name as appName } from './app.json'
 
 // setup Sentry crash reports
@@ -12,4 +12,4 @@ Sentry.config(
 // remove useless 'debugger in background tab' warning
 YellowBox.ignoreWarnings(['Remote debugger', 'unknown call: "relay:check"'])
 
-AppRegistry.registerComponent(appName, () => App)
+AppRegistry.registerComponent(appName, () => ResponsiveApp)
