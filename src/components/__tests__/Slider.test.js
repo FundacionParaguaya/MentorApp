@@ -107,7 +107,6 @@ describe('Slider Component', () => {
   it('renders icon in correct color when value is 3', () => {
     props = createTestProps({ value: 3 })
     wrapper = shallow(<Slider {...props} />)
-    console.log(props)
     expect(wrapper.find('#icon-view').props().style.backgroundColor).toBe(
       colors.green
     )

@@ -73,8 +73,6 @@ export class DateInput extends React.Component {
       'YYYY MMMM D',
       true
     ).isValid(dayInput)
-    console.log(`${yearInput} ${monthInput} ${dayInput}`)
-    console.log(error)
 
     if (error) {
       this.props.detectError(true, this.props.field)
