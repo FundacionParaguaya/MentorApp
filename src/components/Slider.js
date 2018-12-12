@@ -128,7 +128,11 @@ class Slider extends Component {
                   source={slide.url}
                   style={{
                     ...styles.image,
-                    height: isPortrait ? height / 3 : height / 4
+                    height: isPortrait
+                      ? isTablet
+                        ? height / 2
+                        : height / 3
+                      : height / 4
                   }}
                 />
                 <Text
@@ -144,7 +148,7 @@ class Slider extends Component {
             </View>
           ))}
           {this.props.slides.map((slide, i) => (
-            <View style={{ width: '33%', marginTop: -40 }}>
+            <View style={{ width: '33%', marginTop: -40 }} key={i}>
               {this.props.value === slide.value ? (
                 <View
                   id="icon-view"
