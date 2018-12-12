@@ -26,6 +26,12 @@ class Tip extends Component {
         visible={this.state.tipVisible}
         onRequestClose={this.hideTip}
         animationType="slide"
+        style={{
+          backgroundColor: 'white',
+          margin: 15,
+          alignItems: undefined,
+          justifyContent: undefined
+        }}
       >
         <View style={styles.container}>
           <View style={styles.tipview}>
@@ -71,8 +77,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     flexDirection: 'column',
-    justifyContent: 'flex-end',
-    alignItems: 'center'
+    justifyContent: 'flex-end'
   },
   tipview: {
     width: '100%',

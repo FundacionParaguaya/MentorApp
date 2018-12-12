@@ -16,15 +16,8 @@ export class DateInput extends React.Component {
   }
 
   setDay = day => {
-    this.validateDate({ day })
-    if (Number(day) < 1 || Number(day) > 31) {
-      this.setState({ error: true })
-      this.props.detectError(true, this.props.field)
-    } else {
-      this.setState({ error: false })
-      this.props.detectError(false, this.props.field)
-    }
     this.setState({ day })
+    this.validateDate({ day })
   }
 
   setMonth = month => {
@@ -33,16 +26,8 @@ export class DateInput extends React.Component {
   }
 
   setYear = year => {
-    this.validateDate({ year })
-    let d = new Date()
-    if (Number(year) < 1900 || Number(year) > d.getFullYear()) {
-      this.setState({ error: true })
-      this.props.detectError(true, this.props.field)
-    } else {
-      this.setState({ error: false })
-      this.props.detectError(false, this.props.field)
-    }
     this.setState({ year })
+    this.validateDate({ year })
   }
 
   validateDate({ day, month, year }) {
@@ -68,11 +53,16 @@ export class DateInput extends React.Component {
           this.state.day ||
           (validDate ? moment.unix(this.props.value).format('D') : '')
 
-    const error = !moment(
-      `${yearInput} ${monthInput} ${dayInput}`,
-      'YYYY MMMM D',
-      true
-    ).isValid(dayInput)
+    let d = new Date()
+
+    const error =
+      !moment(
+        `${yearInput} ${monthInput} ${dayInput}`,
+        'YYYY MMMM D',
+        true
+      ).isValid(dayInput) ||
+      Number(year) < 1900 ||
+      Number(year) > d.getFullYear()
 
     if (error) {
       this.props.detectError(true, this.props.field)

@@ -9,6 +9,7 @@ import colors from '../../theme.json'
 const createTestProps = props => ({
   user: { token: '' },
   setSyncedState: jest.fn(),
+  setDimensions: jest.fn(),
   sync: {
     synced: 'no'
   },
