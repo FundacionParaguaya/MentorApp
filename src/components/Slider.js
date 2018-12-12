@@ -95,6 +95,7 @@ class Slider extends Component {
             width: isPortrait ? '280%' : '90%',
             flexGrow: 1,
             flexDirection: 'row',
+            flexWrap: 'wrap',
             justifyContent: 'space-between',
             padding: '0.66%'
           }}
@@ -105,12 +106,16 @@ class Slider extends Component {
           snapToInterval={width - (1 / 10) * width}
         >
           {this.props.slides.map((slide, i) => (
-            <View key={i} style={{ width: '33%' }}>
+            <View
+              key={i}
+              style={{
+                width: '33%',
+                backgroundColor: colors[slideColors[slide.value]]
+              }}
+            >
               <TouchableOpacity
                 style={{
-                  ...styles.slide,
-                  backgroundColor: colors[slideColors[slide.value]],
-                  height: isPortrait ? height / 1.8 : height / 1.35
+                  ...styles.slide
                 }}
                 onPress={() => {
                   this.props.selectAnswer(slide.value)
@@ -136,6 +141,10 @@ class Slider extends Component {
                   {slide.description}
                 </Text>
               </TouchableOpacity>
+            </View>
+          ))}
+          {this.props.slides.map((slide, i) => (
+            <View style={{ width: '33%', marginTop: -40 }}>
               {this.props.value === slide.value ? (
                 <View
                   id="icon-view"
@@ -165,14 +174,13 @@ Slider.propTypes = {
 
 const styles = StyleSheet.create({
   slide: {
-    width: '100%',
-    marginBottom: -40
+    width: '100%'
   },
   text: {
     color: colors.white,
     textAlign: 'center',
     padding: 15,
-    paddingBottom: 25
+    paddingBottom: 45
   },
   image: {
     width: '100%',
