@@ -41,7 +41,6 @@ export default {
   SocioEconomicQuestion: {
     screen: SocioEconomicQuestionView,
     navigationOptions: ({ navigation }) => ({
-      title: i18n.t('views.socioEconomic'),
       ...generateNavOptions({ navigation, burgerMenu: false })
     })
   },
