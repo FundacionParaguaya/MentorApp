@@ -164,6 +164,11 @@ export class Location extends Component {
       this.detectError(false, 'country')
     }
   }
+
+  shouldComponentUpdate() {
+    return this.props.navigation.isFocused()
+  }
+
   handleClick = () => {
     this.addSurveyData(this.state.latitude, 'latitude')
     this.addSurveyData(this.state.longitude, 'longitude')

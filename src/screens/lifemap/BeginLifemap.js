@@ -11,7 +11,6 @@ import Button from '../../components/Button'
 export class BeginLifemap extends Component {
   survey = this.props.navigation.getParam('survey')
   numberOfQuestions = this.survey.surveyStoplightQuestions.length
-  survey = this.props.navigation.getParam('survey')
   render() {
     const { t } = this.props
     return (

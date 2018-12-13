@@ -9,6 +9,7 @@ import colors from '../../theme.json'
 const createTestProps = props => ({
   user: { token: '' },
   setSyncedState: jest.fn(),
+  setDimensions: jest.fn(),
   sync: {
     synced: 'no'
   },
@@ -37,6 +38,10 @@ describe('Navigation Wrapper', () => {
 
     it('display a lodaing screen if not synced', () => {
       expect(wrapper.find(LoadingStack)).toHaveLength(1)
+    })
+
+    it('call setDimensions on mount', () => {
+      expect(wrapper.instance().props.setDimensions).toHaveBeenCalledTimes(1)
     })
 
     it('display the login screen if not logged in', () => {

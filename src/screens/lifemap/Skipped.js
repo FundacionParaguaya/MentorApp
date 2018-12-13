@@ -16,7 +16,9 @@ export class Skipped extends Component {
   indicatorsArray = this.survey.surveyStoplightQuestions.map(
     item => item.codeName
   )
-
+  shouldComponentUpdate() {
+    return this.props.navigation.isFocused()
+  }
   handleClick = () =>
     this.props.navigation.navigate('Overview', {
       draftId: this.draftId,

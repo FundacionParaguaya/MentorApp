@@ -27,7 +27,8 @@ const createTestProps = props => ({
   t: value => value,
   navigation: {
     navigate: jest.fn(),
-    getParam: param => (param === 'draftId' ? 2 : { surveyId: 100 })
+    getParam: param => (param === 'draftId' ? 2 : { surveyId: 100 }),
+    isFocused: jest.fn(() => true)
   },
   addSurveyData: jest.fn(),
   drafts: [
@@ -77,6 +78,7 @@ describe('Family Location component', () => {
       longitude: 45
     })
   })
+
   it('updates Marker state after draging has finished', () => {
     // initial map load
     wrapper
@@ -219,5 +221,38 @@ describe('Family Location component', () => {
         longitude: 45
       })
     })
+  })
+})
+
+describe('Render optimization', () => {
+  let wrapper
+  let props
+  beforeEach(() => {
+    props = createTestProps()
+    wrapper = shallow(<Location {...props} />)
+  })
+  it('checks if screen is focused before updating', () => {
+    wrapper.setProps({
+      drafts: [...wrapper.instance().props.drafts, { draftId: 5 }]
+    })
+    expect(wrapper.instance().props.navigation.isFocused).toHaveBeenCalledTimes(
+      4
+    )
+  })
+  it('updates screen if focused', () => {
+    wrapper.setProps({
+      drafts: [...wrapper.instance().props.drafts, { draftId: 5 }]
+    })
+    expect(wrapper.instance().props.drafts[2]).toEqual({ draftId: 5 })
+  })
+  it('does not update screen if not focused', () => {
+    wrapper.setProps({
+      drafts: [...wrapper.instance().props.drafts, { draftId: 5 }]
+    })
+    props = createTestProps({
+      navigation: { ...props.navigation, isFocused: jest.fn(() => false) }
+    })
+    wrapper = shallow(<Location {...props} />)
+    expect(wrapper.instance().props.drafts[2]).toBeFalsy()
   })
 })

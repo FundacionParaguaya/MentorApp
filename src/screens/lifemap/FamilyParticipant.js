@@ -100,11 +100,16 @@ export class FamilyParticipant extends Component {
 
   documentType = this.survey.surveyConfig.documentType
 
+  shouldComponentUpdate() {
+    return this.props.navigation.isFocused()
+  }
+
   render() {
     const { t } = this.props
     const draft = this.props.drafts.filter(
       draft => draft.draftId === this.draftId
     )[0]
+
     return (
       <ScrollView
         style={globalStyles.background}

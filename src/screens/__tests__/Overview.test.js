@@ -11,6 +11,7 @@ const createTestProps = props => ({
   t: value => value,
   navigation: {
     navigate: jest.fn(),
+    isFocused: jest.fn(),
     getParam: jest.fn(param => {
       if (param === 'draftId') {
         return 1
@@ -30,7 +31,18 @@ const createTestProps = props => ({
     })
   },
   submitDraft: jest.fn(),
-  drafts: [],
+  drafts: [
+    {
+      draftId: 1,
+      priorities: [{ action: 'Some action' }],
+      indicatorSurveyDataList: [
+        { key: 'phoneNumber', value: 3 },
+        { key: 'education', value: 1 },
+        { key: 'ind', value: 1 },
+        { key: 'Other ind', value: 2 }
+      ]
+    }
+  ],
   user: { token: 'token' },
   env: 'env',
   ...props
@@ -39,20 +51,7 @@ const createTestProps = props => ({
 describe('Overview Lifemap View when no questions are skipped', () => {
   let wrapper
   beforeEach(() => {
-    const props = createTestProps({
-      drafts: [
-        {
-          draftId: 1,
-          priorities: [{ action: 'Some action' }],
-          indicatorSurveyDataList: [
-            { key: 'phoneNumber', value: 3 },
-            { key: 'education', value: 1 },
-            { key: 'ind', value: 1 },
-            { key: 'Other ind', value: 2 }
-          ]
-        }
-      ]
-    })
+    const props = createTestProps()
     wrapper = shallow(<Overview {...props} />)
   })
   describe('rendering', () => {
@@ -96,6 +95,7 @@ describe('Overview Lifemap View when no questions are skipped', () => {
         wrapper.instance().props.navigation.navigate
       ).toHaveBeenCalledTimes(1)
     })
+
     it('button is enabled when enough priorities', () => {
       const props = createTestProps({
         drafts: [
@@ -134,5 +134,38 @@ describe('Overview Lifemap View when no questions are skipped', () => {
         ]
       })
     })
+  })
+})
+
+describe('Render optimization', () => {
+  let wrapper
+  let props
+  beforeEach(() => {
+    props = createTestProps()
+    wrapper = shallow(<Overview {...props} />)
+  })
+  it('checks if screen is focused before updating', () => {
+    wrapper.setProps({
+      drafts: [...wrapper.instance().props.drafts, { draftId: 5 }]
+    })
+    expect(wrapper.instance().props.navigation.isFocused).toHaveBeenCalledTimes(
+      1
+    )
+  })
+  it('updates screen if focused', () => {
+    wrapper.setProps({
+      drafts: [...wrapper.instance().props.drafts, { draftId: 5 }]
+    })
+    expect(wrapper.instance().props.drafts[1]).toEqual({ draftId: 5 })
+  })
+  it('does not update screen if not focused', () => {
+    wrapper.setProps({
+      drafts: [...wrapper.instance().props.drafts, { draftId: 5 }]
+    })
+    props = createTestProps({
+      navigation: { ...props.navigation, isFocused: jest.fn(() => false) }
+    })
+    wrapper = shallow(<Overview {...props} />)
+    expect(wrapper.instance().props.drafts[1]).toBeFalsy()
   })
 })

@@ -79,6 +79,10 @@ export class SocioEconomicQuestion extends Component {
       })
     }
   }
+
+  shouldComponentUpdate() {
+    return this.props.navigation.isFocused()
+  }
   addSurveyData = (text, field) => {
     this.props.addSurveyData(
       this.props.navigation.getParam('draftId'),

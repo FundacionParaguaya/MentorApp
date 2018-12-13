@@ -6,50 +6,27 @@ import {
   Text,
   View,
   TouchableOpacity,
-  Dimensions,
   InteractionManager
 } from 'react-native'
 import Image from './CachedImage'
 import colors from '../theme.json'
 import globalStyles from '../globalStyles'
 import Icon from 'react-native-vector-icons/MaterialIcons'
-
+import { connect } from 'react-redux'
+import { isTablet, isPortrait } from '../responsivenessHelpers'
 const slideColors = {
   1: 'red',
   2: 'gold',
   3: 'green'
 }
 
-const isPortrait = () => {
-  const dim = Dimensions.get('screen')
-  return dim.height >= dim.width
-}
-
-const isTablet = () => {
-  const msp = (dim, limit) => {
-    return dim.scale * dim.width >= limit || dim.scale * dim.height >= limit
-  }
-  const dim = Dimensions.get('screen')
-  return (dim.scale < 2 && msp(dim, 1000)) || (dim.scale >= 2 && msp(dim, 1900))
-}
-
-class Slider extends Component {
+export class Slider extends Component {
   state = {
-    selectedColor: colors.green,
-    isPortrait: true,
-    isTablet: false
+    selectedColor: colors.green
   }
 
   componentDidMount() {
-    const width = Dimensions.get('screen').width
-    const height = Dimensions.get('screen').height
-    this.setState({
-      isPortrait: isPortrait(),
-      isTablet: isTablet(),
-      width,
-      height
-    })
-    Dimensions.addEventListener('change', this.dimensionChange)
+    const { width, height } = this.props.dimensions
 
     const value = value => {
       switch (value) {
@@ -64,35 +41,26 @@ class Slider extends Component {
       }
     }
     // Slider scrolls to the appropriate slide
-    InteractionManager.runAfterInteractions(() => {
-      this.scrollView.scrollTo({
-        x: (width - (1 / 10) * width) * value(this.props.value),
-        animated: true
+    if (value !== 0) {
+      InteractionManager.runAfterInteractions(() => {
+        this.scrollView.scrollTo({
+          x: (width - (1 / 10) * width) * value(this.props.value),
+          animated: true
+        })
       })
-    })
+    }
   }
 
-  componentWillUnmount() {
-    // Important to stop updating state after unmount
-    Dimensions.removeEventListener('change', this.dimensionChange)
-  }
-
-  dimensionChange = () => {
-    this.setState({
-      isPortrait: isPortrait(),
-      width: Dimensions.get('screen').width,
-      height: Dimensions.get('screen').height
-    })
-  }
   render() {
-    const { isPortrait, isTablet, width, height } = this.state
+    const { dimensions } = this.props
+    const { width, height } = this.props.dimensions
     return (
       <View>
         <ScrollView
           horizontal
           showsHorizontalScrollIndicator={false}
           contentContainerStyle={{
-            width: isPortrait ? '280%' : '90%',
+            width: isPortrait(dimensions) ? '280%' : '90%',
             flexGrow: 1,
             flexDirection: 'row',
             flexWrap: 'wrap',
@@ -128,8 +96,8 @@ class Slider extends Component {
                   source={slide.url}
                   style={{
                     ...styles.image,
-                    height: isPortrait
-                      ? isTablet
+                    height: isPortrait(dimensions)
+                      ? isTablet(dimensions)
                         ? height / 2
                         : height / 3
                       : height / 4
@@ -202,4 +170,8 @@ const styles = StyleSheet.create({
   }
 })
 
-export default Slider
+const mapStateToProps = ({ dimensions }) => ({
+  dimensions
+})
+
+export default connect(mapStateToProps)(Slider)
