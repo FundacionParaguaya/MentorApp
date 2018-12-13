@@ -181,7 +181,18 @@ describe('SocioEconomicQuestion screens', () => {
                           options: []
                         }
                       ],
-                      forFamily: []
+                      forFamily: [
+                        {
+                          questionText:
+                            'Please estimate your gross monthly household income (i.e, before taxes National Insurance contributions or other deductions)',
+                          answerType: 'text',
+                          dimension: 'Income',
+                          required: true,
+                          codeName: '3',
+                          forFamilyMember: false,
+                          options: []
+                        }
+                      ]
                     }
                   ]
                 }
@@ -193,7 +204,7 @@ describe('SocioEconomicQuestion screens', () => {
     })
 
     it('renders a TextInput for each text question for each family member', () => {
-      expect(wrapper.find(TextInput)).toHaveLength(2)
+      expect(wrapper.find(TextInput)).toHaveLength(3)
     })
 
     it('sets the correct TextInput props', () => {

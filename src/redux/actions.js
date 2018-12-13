@@ -63,7 +63,7 @@ export const loadSurveys = (env, token) => ({
         headers: { Authorization: `Bearer ${token}` },
         body: JSON.stringify({
           query:
-            'query { surveysByUser { title id minimumPriorities surveyConfig { documentType {text value} gender { text value}}  surveyEconomicQuestions { questionText codeName answerType  required forFamilyMember options {text value} } surveyStoplightQuestions { questionText codeName dimension id stoplightColors { url value description } required } } }'
+            'query { surveysByUser { title id minimumPriorities surveyConfig { documentType {text value} gender { text value}}  surveyEconomicQuestions { questionText codeName answerType topic required forFamilyMember options {text value} } surveyStoplightQuestions { questionText codeName dimension id stoplightColors { url value description } required } } }'
         })
       },
       commit: { type: LOAD_SURVEYS }
