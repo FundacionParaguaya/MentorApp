@@ -43,6 +43,9 @@ class Select extends Component {
     })
     if (this.props.required && !value) {
       this.handleError(i18n.t('validation.fieldIsRequired'))
+      this.setState({
+        errorMsg: 'This field is required'
+      })
     } else {
       this.props.onChange(value, this.props.field)
       this.setState({
@@ -69,6 +72,7 @@ class Select extends Component {
           style={[
             styles.container,
             !value && styles.withoutValue,
+            errorMsg && styles.error,
             isOpen && styles.active
           ]}
         >
@@ -77,9 +81,9 @@ class Select extends Component {
               style={[
                 styles.title,
                 isOpen &&
-                  !errorMsg && {
+                !errorMsg && {
                     color: colors.green
-                  }
+                }
               ]}
             >{`${placeholder} ${required ? '*' : ''}`}</Text>
           )}
@@ -216,6 +220,10 @@ const styles = StyleSheet.create({
   active: {
     backgroundColor: colors.white,
     borderBottomColor: colors.green
+  },
+  error: {
+    backgroundColor: colors.white,
+    borderBottomColor: colors.red
   },
   overlay: {
     position: 'absolute',
