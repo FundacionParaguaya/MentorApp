@@ -173,6 +173,16 @@ describe('drafts actions', () => {
     }
     expect(action.createDraft(payload)).toEqual(expectedAction)
   })
+  it('should create an action to add draft progress', () => {
+    const id = 1
+    const progress = { screen: 'FamilyMembersNames', step: null }
+    const expectedAction = {
+      type: action.ADD_DRAFT_PROGRESS,
+      id,
+      progress
+    }
+    expect(action.addDraftProgress(id, progress)).toEqual(expectedAction)
+  })
   it('should create an action to delete a draft', () => {
     const id = 1
     const expectedAction = {

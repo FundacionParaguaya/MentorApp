@@ -11,6 +11,7 @@ import {
   ADD_SURVEY_FAMILY_MEMBER_DATA,
   REMOVE_FAMILY_MEMBERS,
   DELETE_DRAFT,
+  ADD_DRAFT_PROGRESS,
   LOAD_SNAPSHOTS,
   SUBMIT_DRAFT,
   SUBMIT_DRAFT_COMMIT,
@@ -344,6 +345,16 @@ export const drafts = (state = [], action) => {
             ? {
                 ...draft,
                 status: 'Pending sync'
+              }
+            : draft
+      )
+    case ADD_DRAFT_PROGRESS:
+      return state.map(
+        draft =>
+          draft.draftId === action.id
+            ? {
+                ...draft,
+                progress: action.progress
               }
             : draft
       )

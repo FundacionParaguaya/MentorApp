@@ -6,7 +6,6 @@ import {
   Text,
   View,
   TouchableOpacity,
-  Dimensions,
   InteractionManager
 } from 'react-native'
 import Image from './CachedImage'

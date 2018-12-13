@@ -186,6 +186,37 @@ describe('drafts reducer', () => {
       })
     ).toEqual([...initialStore, { ...payload, status: 'In progress' }])
   })
+
+  it('should handle ADD_DRAFT_PROGRESS', () => {
+    const expectedStore = [
+      {
+        draftId: 1,
+        status: 'Synced',
+        progress: { screen: 'FamilyMembersNames', step: null }
+      },
+      {
+        draftId: 2,
+        status: 'In progress',
+        priorities: [
+          { indicator: 'phoneNumber', action: 'Action', reason: 'reason' }
+        ],
+        familyData: {
+          familyMembersList: [
+            ({ name: 'Joan', socioEconomicAnswers: [] }, { name: 'Jane' })
+          ]
+        }
+      }
+    ]
+    const id = 1
+    const progress = { screen: 'FamilyMembersNames', step: null }
+    expect(
+      reducer.drafts(initialStore, {
+        type: action.ADD_DRAFT_PROGRESS,
+        id,
+        progress
+      })
+    ).toEqual(expectedStore)
+  })
   it('should handle SUBMIT_DRAFT', () => {
     const expectedStore = [
       {

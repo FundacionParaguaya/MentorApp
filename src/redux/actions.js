@@ -112,6 +112,7 @@ export const SUBMIT_DRAFT = 'SUBMIT_DRAFT'
 export const SUBMIT_DRAFT_COMMIT = 'SUBMIT_DRAFT_COMMIT'
 export const SUBMIT_DRAFT_ROLLBACK = 'SUBMIT_DRAFT_ROLLBACK'
 export const REMOVE_FAMILY_MEMBERS = 'REMOVE_FAMILY_MEMBERS'
+export const ADD_DRAFT_PROGRESS = 'ADD_DRAFT_PROGRESS'
 
 export const createDraft = payload => ({
   type: CREATE_DRAFT,
@@ -121,6 +122,12 @@ export const createDraft = payload => ({
 export const deleteDraft = id => ({
   type: DELETE_DRAFT,
   id
+})
+
+export const addDraftProgress = (id, progress) => ({
+  type: ADD_DRAFT_PROGRESS,
+  id,
+  progress
 })
 
 export const addSurveyPriorityAcheivementData = ({
