@@ -41,12 +41,14 @@ export class Slider extends Component {
       }
     }
     // Slider scrolls to the appropriate slide
-    InteractionManager.runAfterInteractions(() => {
-      this.scrollView.scrollTo({
-        x: (width - (1 / 10) * width) * value(this.props.value),
-        animated: true
+    if (value !== 0) {
+      InteractionManager.runAfterInteractions(() => {
+        this.scrollView.scrollTo({
+          x: (width - (1 / 10) * width) * value(this.props.value),
+          animated: true
+        })
       })
-    })
+    }
   }
 
   render() {
