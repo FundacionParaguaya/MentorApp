@@ -13,6 +13,7 @@ const createTestProps = props => ({
   t: value => value,
   navigation: {
     navigate: jest.fn(),
+    isFocused: jest.fn(),
     getParam: jest.fn(param => {
       if (param === 'survey') {
         return survey
@@ -97,3 +98,36 @@ const survey = {
     { stoplightColors: [{ codeName: 'phoneNumber' }], required: false }
   ]
 }
+
+describe('Render optimization', () => {
+  let wrapper
+  let props
+  beforeEach(() => {
+    props = createTestProps()
+    wrapper = shallow(<Question {...props} />)
+  })
+  it('checks if screen is focused before updating', () => {
+    wrapper.setProps({
+      drafts: [...wrapper.instance().props.drafts, { draftId: 5 }]
+    })
+    expect(wrapper.instance().props.navigation.isFocused).toHaveBeenCalledTimes(
+      1
+    )
+  })
+  it('updates screen if focused', () => {
+    wrapper.setProps({
+      drafts: [...wrapper.instance().props.drafts, { draftId: 5 }]
+    })
+    expect(wrapper.instance().props.drafts[1]).toEqual({ draftId: 5 })
+  })
+  it('does not update screen if not focused', () => {
+    wrapper.setProps({
+      drafts: [...wrapper.instance().props.drafts, { draftId: 5 }]
+    })
+    props = createTestProps({
+      navigation: { ...props.navigation, isFocused: jest.fn(() => false) }
+    })
+    wrapper = shallow(<Question {...props} />)
+    expect(wrapper.instance().props.drafts[1]).toBeFalsy()
+  })
+})

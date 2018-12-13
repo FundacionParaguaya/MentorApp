@@ -12,7 +12,9 @@ import globalStyles from '../../globalStyles'
 
 export class Final extends Component {
   draftId = this.props.navigation.getParam('draftId')
-
+  shouldComponentUpdate() {
+    return this.props.navigation.isFocused()
+  }
   render() {
     const { t } = this.props
     const draft = this.props.drafts.filter(

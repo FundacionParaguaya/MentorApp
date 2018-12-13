@@ -18,6 +18,10 @@ export class FamilyMembersBirthdates extends Component {
 
   state = { errorsDetected: [] }
 
+  shouldComponentUpdate() {
+    return this.props.navigation.isFocused()
+  }
+
   detectError = (error, field) => {
     if (error && !this.errorsDetected.includes(field)) {
       this.errorsDetected.push(field)

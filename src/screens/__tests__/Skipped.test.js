@@ -9,6 +9,7 @@ const createTestProps = props => ({
   t: value => value,
   navigation: {
     navigate: jest.fn(),
+    isFocused: jest.fn(),
     getParam: jest.fn(param => {
       if (param === 'draftId') {
         return 1
@@ -26,23 +27,23 @@ const createTestProps = props => ({
       }
     })
   },
+  drafts: [
+    {
+      draftId: 1,
+      indicatorSurveyDataList: [
+        { key: 'phoneNumber', value: 0 },
+        { key: 'education', value: 3 }
+      ]
+    }
+  ],
   ...props
 })
 
 describe('Skipped Questions View when questions are skipped', () => {
   let wrapper
+  let props
   beforeEach(() => {
-    const props = createTestProps({
-      drafts: [
-        {
-          draftId: 1,
-          indicatorSurveyDataList: [
-            { key: 'phoneNumber', value: 0 },
-            { key: 'education', value: 3 }
-          ]
-        }
-      ]
-    })
+    props = createTestProps()
     wrapper = shallow(<Skipped {...props} />)
   })
   describe('rendering', () => {
@@ -78,6 +79,32 @@ describe('Skipped Questions View when questions are skipped', () => {
       expect(
         wrapper.instance().props.navigation.navigate
       ).toHaveBeenCalledTimes(1)
+    })
+  })
+  describe('Render optimization', () => {
+    it('checks if screen is focused before updating', () => {
+      wrapper.setProps({
+        drafts: [...wrapper.instance().props.drafts, { draftId: 5 }]
+      })
+      expect(
+        wrapper.instance().props.navigation.isFocused
+      ).toHaveBeenCalledTimes(1)
+    })
+    it('updates screen if focused', () => {
+      wrapper.setProps({
+        drafts: [...wrapper.instance().props.drafts, { draftId: 5 }]
+      })
+      expect(wrapper.instance().props.drafts[1]).toEqual({ draftId: 5 })
+    })
+    it('does not update screen if not focused', () => {
+      wrapper.setProps({
+        drafts: [...wrapper.instance().props.drafts, { draftId: 5 }]
+      })
+      props = createTestProps({
+        navigation: { ...props.navigation, isFocused: jest.fn(() => false) }
+      })
+      wrapper = shallow(<Skipped {...props} />)
+      expect(wrapper.instance().props.drafts[1]).toBeFalsy()
     })
   })
 })

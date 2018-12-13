@@ -19,11 +19,15 @@ export class AddAchievement extends Component {
     roadmap: '',
     indicator: this.props.navigation.getParam('indicator')
   }
+
   componentDidMount() {
     const draft = this.getDraft()
     const achievement = this.getAchievementValue(draft)
-
     this.setState(achievement)
+  }
+
+  shouldComponentUpdate() {
+    return this.props.navigation.isFocused()
   }
 
   getDraft = () =>
