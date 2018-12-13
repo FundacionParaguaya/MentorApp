@@ -81,9 +81,9 @@ class Select extends Component {
               style={[
                 styles.title,
                 isOpen &&
-                !errorMsg && {
+                  !errorMsg && {
                     color: colors.green
-                }
+                  }
               ]}
             >{`${placeholder} ${required ? '*' : ''}`}</Text>
           )}
@@ -120,6 +120,11 @@ class Select extends Component {
               onPress={this.toggleDropdown}
             />
             <View style={styles.dropdown}>
+              <TouchableOpacity onPress={() => this.validateInput('')}>
+                <Text style={[styles.option, value === '' && styles.selected]}>
+                  --
+                </Text>
+              </TouchableOpacity>
               {countrySelect ? (
                 <ScrollView>
                   {countryList.map(item => (

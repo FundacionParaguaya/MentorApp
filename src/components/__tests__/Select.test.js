@@ -1,14 +1,6 @@
 import React from 'react'
 import { shallow } from 'enzyme'
-import {
-  TouchableOpacity,
-  StyleSheet,
-  View,
-  Text,
-  Modal,
-  Image,
-  ScrollView
-} from 'react-native'
+import { TouchableOpacity, View, Text, Modal } from 'react-native'
 import colors from '../../theme.json'
 import Select from '../Select'
 
@@ -38,7 +30,7 @@ describe('Select dropdown', () => {
     })
   })
   it('renders all necessary text fields', () => {
-    expect(wrapper.find(Text)).toHaveLength(3)
+    expect(wrapper.find(Text)).toHaveLength(4)
   })
   it('has proper styles when empty', () => {
     const styles = Object.assign(
@@ -64,7 +56,7 @@ describe('Select dropdown', () => {
         .find(Modal)
         .last()
         .find(TouchableOpacity)
-    ).toHaveLength(3)
+    ).toHaveLength(4)
   })
   it('has proper styles when is active', () => {
     wrapper
@@ -136,7 +128,7 @@ describe('Select dropdown', () => {
         .find(Modal)
         .last()
         .find(TouchableOpacity)
-    ).toHaveLength(3)
+    ).toHaveLength(4)
 
     wrapper
       .find(Modal)
