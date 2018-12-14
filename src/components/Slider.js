@@ -41,7 +41,7 @@ export class Slider extends Component {
       }
     }
     // Slider scrolls to the appropriate slide
-    if (value !== 0) {
+    if (value(this.props.value)) {
       InteractionManager.runAfterInteractions(() => {
         this.scrollView.scrollTo({
           x: (width - (1 / 10) * width) * value(this.props.value),
