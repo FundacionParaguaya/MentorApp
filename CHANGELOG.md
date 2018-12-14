@@ -1,12 +1,71 @@
 # Change Log
 
-## [v1.0](https://github.com/FundacionParaguaya/MentorApp/tree/v1.0) (2018-12-10)
+## [v1.2.1](https://github.com/FundacionParaguaya/MentorApp/tree/v1.2.1) (2018-12-14)
+[Full Changelog](https://github.com/FundacionParaguaya/MentorApp/compare/v1.2.0...v1.2.1)
 
-[Full Changelog](https://github.com/FundacionParaguaya/MentorApp/compare/v0.9.2...v1.0)
+## [v1.2.0](https://github.com/FundacionParaguaya/MentorApp/tree/v1.2.0) (2018-12-14)
+[Full Changelog](https://github.com/FundacionParaguaya/MentorApp/compare/v1.1.0...v1.2.0)
+
+**Implemented enhancements:**
+
+- Replacing picker with a custom select [\#184](https://github.com/FundacionParaguaya/MentorApp/pull/184) ([Danman7](https://github.com/Danman7))
+
+**Fixed bugs:**
+
+- Sync error [\#187](https://github.com/FundacionParaguaya/MentorApp/issues/187)
+- Special Characters in the First Name/Last Name not implementing accent [\#168](https://github.com/FundacionParaguaya/MentorApp/issues/168)
+- Form dropdowns have phantom element [\#119](https://github.com/FundacionParaguaya/MentorApp/issues/119)
+- Set proper topics to socio economic questions [\#186](https://github.com/FundacionParaguaya/MentorApp/pull/186) ([Danman7](https://github.com/Danman7))
+
+**Closed issues:**
+
+- Country of residence should not default to country of birth [\#188](https://github.com/FundacionParaguaya/MentorApp/issues/188)
+- Remove the summary of skipped questions that comes before the dashboard and life map [\#181](https://github.com/FundacionParaguaya/MentorApp/issues/181)
+- Resizing and Responsiveness of Indicator imagery [\#175](https://github.com/FundacionParaguaya/MentorApp/issues/175)
+- Form Fields Question content cut - causing issue with mandatory elements. [\#174](https://github.com/FundacionParaguaya/MentorApp/issues/174)
+- Performance: App gets progressively slower as you go through the survey [\#169](https://github.com/FundacionParaguaya/MentorApp/issues/169)
+- Split Socio Economic Screens [\#166](https://github.com/FundacionParaguaya/MentorApp/issues/166)
+- Improve Drafts Functionality in Indicator Screens [\#160](https://github.com/FundacionParaguaya/MentorApp/issues/160)
+- Connecting the app to real data for testing \(suggested WARC Sierra Leone\) [\#158](https://github.com/FundacionParaguaya/MentorApp/issues/158)
+- Select hard to click [\#141](https://github.com/FundacionParaguaya/MentorApp/issues/141)
+- Validation error when typing in letters like "ö" [\#103](https://github.com/FundacionParaguaya/MentorApp/issues/103)
+- Indicator Page Design Responsiveness and functionality [\#90](https://github.com/FundacionParaguaya/MentorApp/issues/90)
+
+**Merged pull requests:**
+
+- Update en.json [\#191](https://github.com/FundacionParaguaya/MentorApp/pull/191) ([stacylorraineprendeville](https://github.com/stacylorraineprendeville))
+- Update es.json [\#190](https://github.com/FundacionParaguaya/MentorApp/pull/190) ([stacylorraineprendeville](https://github.com/stacylorraineprendeville))
+- Text input validation [\#189](https://github.com/FundacionParaguaya/MentorApp/pull/189) ([IvaKop](https://github.com/IvaKop))
+- Performance [\#185](https://github.com/FundacionParaguaya/MentorApp/pull/185) ([IvaKop](https://github.com/IvaKop))
+- Update es.json [\#176](https://github.com/FundacionParaguaya/MentorApp/pull/176) ([stacylorraineprendeville](https://github.com/stacylorraineprendeville))
+- Update en.json [\#173](https://github.com/FundacionParaguaya/MentorApp/pull/173) ([stacylorraineprendeville](https://github.com/stacylorraineprendeville))
+- Minor issues [\#172](https://github.com/FundacionParaguaya/MentorApp/pull/172) ([IvaKop](https://github.com/IvaKop))
+- Update en.json [\#171](https://github.com/FundacionParaguaya/MentorApp/pull/171) ([stacylorraineprendeville](https://github.com/stacylorraineprendeville))
+- Update en.json [\#170](https://github.com/FundacionParaguaya/MentorApp/pull/170) ([stacylorraineprendeville](https://github.com/stacylorraineprendeville))
+
+## [v1.1.0](https://github.com/FundacionParaguaya/MentorApp/tree/v1.1.0) (2018-12-11)
+[Full Changelog](https://github.com/FundacionParaguaya/MentorApp/compare/v1.0...v1.1.0)
 
 **Implemented enhancements:**
 
 - Logo on First/Splash screen [\#122](https://github.com/FundacionParaguaya/MentorApp/issues/122)
+- Invalid access token should logout the user [\#20](https://github.com/FundacionParaguaya/MentorApp/issues/20)
+
+**Fixed bugs:**
+
+- Family member birth dates validation [\#148](https://github.com/FundacionParaguaya/MentorApp/issues/148)
+
+**Closed issues:**
+
+- Map at the end of the survey [\#157](https://github.com/FundacionParaguaya/MentorApp/issues/157)
+- Numeric value for Day and Year input [\#140](https://github.com/FundacionParaguaya/MentorApp/issues/140)
+- Green check button on indicator page does not work [\#129](https://github.com/FundacionParaguaya/MentorApp/issues/129)
+
+## [v1.0](https://github.com/FundacionParaguaya/MentorApp/tree/v1.0) (2018-12-10)
+[Full Changelog](https://github.com/FundacionParaguaya/MentorApp/compare/v0.9.2...v1.0)
+
+**Implemented enhancements:**
+
 - Navigation design updates [\#50](https://github.com/FundacionParaguaya/MentorApp/issues/50)
 - Preparing app [\#153](https://github.com/FundacionParaguaya/MentorApp/pull/153) ([Danman7](https://github.com/Danman7))
 
@@ -18,7 +77,6 @@
 - Going a step back resets data [\#146](https://github.com/FundacionParaguaya/MentorApp/issues/146)
 - Indicator Images not loading [\#86](https://github.com/FundacionParaguaya/MentorApp/issues/86)
 - Navigation issues [\#155](https://github.com/FundacionParaguaya/MentorApp/pull/155) ([Danman7](https://github.com/Danman7))
-- Family member birth dates validation [\#148](https://github.com/FundacionParaguaya/MentorApp/issues/148)
 
 **Closed issues:**
 
@@ -28,9 +86,6 @@
 - Not clear when pictures are downloading [\#142](https://github.com/FundacionParaguaya/MentorApp/issues/142)
 - App naming on the Google store [\#106](https://github.com/FundacionParaguaya/MentorApp/issues/106)
 - Translations [\#89](https://github.com/FundacionParaguaya/MentorApp/issues/89)
-- Numeric value for Day and Year input [\#140](https://github.com/FundacionParaguaya/MentorApp/issues/140)
-- Green check button on indicator page does not work [\#129](https://github.com/FundacionParaguaya/MentorApp/issues/129)
-- Indicator Page Design Responsiveness and functionality [\#90](https://github.com/FundacionParaguaya/MentorApp/issues/90)
 
 **Merged pull requests:**
 
@@ -38,7 +93,6 @@
 - Feature/issue 1/internationalize app strings [\#151](https://github.com/FundacionParaguaya/MentorApp/pull/151) ([pA1nD](https://github.com/pA1nD))
 
 ## [v0.9.2](https://github.com/FundacionParaguaya/MentorApp/tree/v0.9.2) (2018-12-08)
-
 [Full Changelog](https://github.com/FundacionParaguaya/MentorApp/compare/v0.9.1...v0.9.2)
 
 **Implemented enhancements:**
@@ -70,7 +124,6 @@
 - Mandatory priorities [\#128](https://github.com/FundacionParaguaya/MentorApp/pull/128) ([IvaKop](https://github.com/IvaKop))
 
 ## [v0.9.1](https://github.com/FundacionParaguaya/MentorApp/tree/v0.9.1) (2018-12-05)
-
 [Full Changelog](https://github.com/FundacionParaguaya/MentorApp/compare/v0.9.0...v0.9.1)
 
 **Implemented enhancements:**
@@ -101,7 +154,6 @@
 - Fonts, navigation icon, dashboard changes and skipped screen [\#113](https://github.com/FundacionParaguaya/MentorApp/pull/113) ([IvaKop](https://github.com/IvaKop))
 
 ## [v0.9.0](https://github.com/FundacionParaguaya/MentorApp/tree/v0.9.0) (2018-11-30)
-
 **Implemented enhancements:**
 
 - Switch survey endpoint to graphql [\#64](https://github.com/FundacionParaguaya/MentorApp/issues/64)
@@ -151,7 +203,6 @@
 **Closed issues:**
 
 - Priority in excel download: Client already waiting for 1 week [\#104](https://github.com/FundacionParaguaya/MentorApp/issues/104)
-- Validation error when typing in letters like "ö" [\#103](https://github.com/FundacionParaguaya/MentorApp/issues/103)
 - Dropdown population within mandatory Poverty Stoplight form elements [\#85](https://github.com/FundacionParaguaya/MentorApp/issues/85)
 - Bug: User can't login. [\#72](https://github.com/FundacionParaguaya/MentorApp/issues/72)
 - TitleText [\#68](https://github.com/FundacionParaguaya/MentorApp/issues/68)
@@ -167,9 +218,9 @@
 
 **Merged pull requests:**
 
-- Update bug_report.md [\#102](https://github.com/FundacionParaguaya/MentorApp/pull/102) ([gigerbytes](https://github.com/gigerbytes))
-- Update bug_report.md [\#101](https://github.com/FundacionParaguaya/MentorApp/pull/101) ([gigerbytes](https://github.com/gigerbytes))
-- Create CODE_OF_CONDUCT.md [\#100](https://github.com/FundacionParaguaya/MentorApp/pull/100) ([gigerbytes](https://github.com/gigerbytes))
+- Update bug\_report.md [\#102](https://github.com/FundacionParaguaya/MentorApp/pull/102) ([gigerbytes](https://github.com/gigerbytes))
+- Update bug\_report.md [\#101](https://github.com/FundacionParaguaya/MentorApp/pull/101) ([gigerbytes](https://github.com/gigerbytes))
+- Create CODE\_OF\_CONDUCT.md [\#100](https://github.com/FundacionParaguaya/MentorApp/pull/100) ([gigerbytes](https://github.com/gigerbytes))
 - Update issue templates [\#99](https://github.com/FundacionParaguaya/MentorApp/pull/99) ([gigerbytes](https://github.com/gigerbytes))
 - Add demo env [\#60](https://github.com/FundacionParaguaya/MentorApp/pull/60) ([IvaKop](https://github.com/IvaKop))
 - Splashscreen [\#51](https://github.com/FundacionParaguaya/MentorApp/pull/51) ([IvaKop](https://github.com/IvaKop))
@@ -184,4 +235,6 @@
 - Implement login screen [\#17](https://github.com/FundacionParaguaya/MentorApp/pull/17) ([IvaKop](https://github.com/IvaKop))
 - Increase android AsyncStorage limit to 50mb [\#12](https://github.com/FundacionParaguaya/MentorApp/pull/12) ([IvaKop](https://github.com/IvaKop))
 
-\* _This Change Log was automatically generated by [github_changelog_generator](https://github.com/skywinder/Github-Changelog-Generator)_
+
+
+\* *This Change Log was automatically generated by [github_changelog_generator](https://github.com/skywinder/Github-Changelog-Generator)*
