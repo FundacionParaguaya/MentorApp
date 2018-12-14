@@ -149,7 +149,7 @@ export class FamilyParticipant extends Component {
             field="gender"
             value={this.getFieldValue(draft, 'gender') || ''}
             detectError={this.detectError}
-            data={this.gender}
+            options={this.gender}
           />
 
           <DateInput
@@ -169,7 +169,7 @@ export class FamilyParticipant extends Component {
             field="documentType"
             value={this.getFieldValue(draft, 'documentType') || ''}
             detectError={this.detectError}
-            data={this.documentType}
+            options={this.documentType}
           />
           <TextInput
             onChangeText={this.addSurveyData}

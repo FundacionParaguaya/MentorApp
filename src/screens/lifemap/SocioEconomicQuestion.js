@@ -174,7 +174,7 @@ export class SocioEconomicQuestion extends Component {
                   field={question.codeName}
                   value={this.getFieldValue(draft, question.codeName) || ''}
                   detectError={this.detectError}
-                  data={question.options}
+                  options={question.options}
                 />
               ) : (
                 <TextInput

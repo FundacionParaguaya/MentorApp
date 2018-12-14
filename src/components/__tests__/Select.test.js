@@ -1,12 +1,11 @@
 import React from 'react'
 import { shallow } from 'enzyme'
-import { Picker } from 'react-native'
+import { TouchableOpacity, Text, Modal } from 'react-native'
 import Select from '../Select'
 
 const createTestProps = props => ({
   onChange: jest.fn(),
-  data: [],
-  label: '',
+  options: [],
   value: '',
   placeholder: 'This is a select',
   field: 'test',
@@ -23,54 +22,82 @@ describe('Select dropdown', () => {
     props = createTestProps()
     wrapper = shallow(<Select {...props} />)
   })
-  it('renders a Picker from an array of countries', () => {
-    expect(wrapper.find(Picker)).toHaveLength(1)
-    expect(wrapper.find(Picker.Item)).toHaveLength(3)
+  it('has proper initial state', () => {
+    expect(wrapper).toHaveState({
+      isOpen: false,
+      errorMsg: ''
+    })
   })
-  it('calls onChange input when selecting an item', () => {
+  it('renders all necessary text fields', () => {
+    expect(wrapper.find(Text)).toHaveLength(3)
+  })
+
+  it('opens a modal when pressed', () => {
+    wrapper
+      .find(TouchableOpacity)
+      .first()
+      .props()
+      .onPress()
+
+    expect(wrapper).toHaveState({ isOpen: true })
+    expect(
+      wrapper
+        .find(Modal)
+        .last()
+        .find(TouchableOpacity)
+    ).toHaveLength(3)
+  })
+
+  it('selects an option when one is pressed', () => {
+    const spy = jest.spyOn(wrapper.instance(), 'validateInput')
+    wrapper
+      .find(TouchableOpacity)
+      .first()
+      .props()
+      .onPress()
+
+    wrapper
+      .find(Modal)
+      .last()
+      .find(TouchableOpacity)
+      .last()
+      .props()
+      .onPress()
+
+    expect(spy).toHaveBeenCalledTimes(1)
+    expect(spy).toHaveBeenCalledWith('us')
+  })
+  it('render a list of items when passed options', () => {
+    props = createTestProps({
+      value: '2',
+      options: [{ value: 1, text: '1' }, { value: 2, text: '2' }],
+      countrySelect: false
+    })
+    wrapper = shallow(<Select {...props} />)
     const spy = jest.spyOn(wrapper.instance(), 'validateInput')
 
     wrapper
-      .find(Picker)
+      .find(TouchableOpacity)
+      .first()
       .props()
-      .onValueChange('bg')
+      .onPress()
 
-    expect(spy).toHaveBeenCalledTimes(1)
-    expect(spy).toHaveBeenCalledWith('bg')
-    expect(wrapper.instance().props.onChange).toHaveBeenCalledTimes(1)
-    expect(wrapper.instance().props.onChange).toHaveBeenCalledWith('bg', 'test')
-    expect(wrapper.instance().props.detectError).toHaveBeenCalledTimes(1)
-    expect(wrapper.instance().props.detectError).toHaveBeenCalledWith(
-      false,
-      'test'
-    )
-  })
-  it('shows an error when empty', () => {
-    props = createTestProps({ required: true })
-    wrapper = shallow(<Select {...props} />)
-    const spy = jest.spyOn(wrapper.instance(), 'handleError')
+    expect(
+      wrapper
+        .find(Modal)
+        .last()
+        .find(TouchableOpacity)
+    ).toHaveLength(3)
 
     wrapper
-      .find(Picker)
+      .find(Modal)
+      .last()
+      .find(TouchableOpacity)
+      .last()
       .props()
-      .onValueChange('')
+      .onPress()
 
     expect(spy).toHaveBeenCalledTimes(1)
-  })
-  it('shows a list of items from data prop if not a country select', () => {
-    props = createTestProps({
-      countrySelect: false,
-      data: [
-        { text: 'Item 1', value: 'item1' },
-        { text: 'Item 2', value: 'item2' }
-      ]
-    })
-    wrapper = shallow(<Select {...props} />)
-
-    expect(wrapper.find(Picker.Item)).toHaveLength(3)
-    expect(wrapper.find(Picker.Item).last()).toHaveProp({
-      value: 'item2',
-      label: 'Item 2'
-    })
+    expect(spy).toHaveBeenCalledWith(2)
   })
 })

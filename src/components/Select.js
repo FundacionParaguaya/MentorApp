@@ -1,20 +1,34 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
-import { Picker, StyleSheet, View, Text } from 'react-native'
-import { FormValidationMessage } from 'react-native-elements'
+import {
+  TouchableOpacity,
+  StyleSheet,
+  View,
+  Text,
+  Modal,
+  Image,
+  ScrollView
+} from 'react-native'
 import countries from 'localized-countries'
-
+import arrow from '../../assets/images/selectArrow.png'
 import colors from '../theme.json'
 import globalStyles from '../globalStyles'
 import i18n from '../i18n'
 
-const countryList = countries(require('localized-countries/data/en'))
+const countryList = countries(require('localized-countries/data/en')).array()
 
 class Select extends Component {
   state = {
-    status: 'edited',
-    errorMsg: null
+    isOpen: false,
+    errorMsg: ''
   }
+
+  toggleDropdown = () => {
+    this.setState({
+      isOpen: !this.state.isOpen
+    })
+  }
+
   handleError(errorMsg) {
     this.props.detectError(true, this.props.field)
     this.props.onChange('', this.props.field)
@@ -24,12 +38,17 @@ class Select extends Component {
   }
 
   validateInput = value => {
+    this.setState({
+      isOpen: false
+    })
     if (this.props.required && !value) {
       this.handleError(i18n.t('validation.fieldIsRequired'))
+      this.setState({
+        errorMsg: 'This field is required'
+      })
     } else {
       this.props.onChange(value, this.props.field)
       this.setState({
-        status: 'edited',
         errorMsg: null
       })
       this.props.field ? this.props.detectError(false, this.props.field) : ''
@@ -44,67 +63,132 @@ class Select extends Component {
   }
 
   render() {
-    const { errorMsg } = this.state
-    return (
-      <View>
-        <Text
-          numberOfLines={2}
-          style={this.props.value ? styles.label : styles.labelNoValue}
-        >
-          {`${this.props.label} ${this.props.required ? '*' : ''}`}
-        </Text>
-        <View
-          style={[
-            styles.container,
-            errorMsg ? styles.error : '',
-            this.props.value ? styles.active : ''
-          ]}
-        >
-          <Picker
-            prompt={this.props.placeholder}
-            style={styles.dropdown}
-            onValueChange={value => this.validateInput(value)}
-            selectedValue={this.props.value}
-          >
-            <Picker.Item style={styles.item} label={''} value={''} />
+    const { errorMsg, isOpen } = this.state
+    const { value, placeholder, required, options, countrySelect } = this.props
 
-            {this.props.countrySelect
-              ? countryList
-                  .array()
-                  .map(country => (
-                    <Picker.Item
-                      key={country.code}
-                      label={country.label}
-                      value={country.code}
-                      color={colors.grey}
-                    />
-                  ))
-              : this.props.data.map(item => (
-                  <Picker.Item
-                    key={item}
-                    label={item.text}
-                    value={item.value}
-                    color={colors.grey}
-                  />
-                ))}
-          </Picker>
+    let text
+    if (countrySelect && countryList.filter(item => item.code === value)[0]) {
+      text = countryList.filter(item => item.code === value)[0].label
+    } else if (
+      !countrySelect &&
+      options.filter(item => item.value === value)[0]
+    ) {
+      text = options.filter(item => item.value === value)[0].text
+    } else {
+      text = ''
+    }
+
+    return (
+      <TouchableOpacity onPress={this.toggleDropdown}>
+        <View style={styles.wrapper}>
+          <View
+            style={[
+              styles.container,
+              !value && styles.withoutValue,
+              errorMsg && styles.error,
+              isOpen && styles.active
+            ]}
+          >
+            {!!value && (
+              <Text
+                style={[
+                  styles.title,
+                  isOpen &&
+                    !errorMsg && {
+                      color: colors.green
+                    }
+                ]}
+              >{`${placeholder} ${required ? '*' : ''}`}</Text>
+            )}
+            <Text style={[styles.placeholder]}>
+              {value ? text : `${placeholder} ${required ? '*' : ''}`}
+            </Text>
+            <Image source={arrow} style={styles.arrow} />
+
+            <Modal
+              transparent={true}
+              visible={isOpen}
+              onRequestClose={this.toggleDropdown}
+            >
+              <TouchableOpacity
+                style={[
+                  styles.overlay,
+                  {
+                    backgroundColor: 'rgba(47,38,28, 0.2)'
+                  }
+                ]}
+                onPress={this.toggleDropdown}
+              />
+            </Modal>
+            <Modal
+              animationType="slide"
+              transparent={true}
+              visible={isOpen}
+              onRequestClose={this.toggleDropdown}
+            >
+              <TouchableOpacity
+                style={styles.overlay}
+                onPress={() => {
+                  this.validateInput('')
+                  this.toggleDropdown()
+                }}
+              />
+              <View style={styles.dropdown}>
+                {countrySelect ? (
+                  <ScrollView>
+                    {countryList.map(item => (
+                      <TouchableOpacity
+                        key={item.code}
+                        onPress={() => this.validateInput(item.code)}
+                      >
+                        <Text
+                          style={[
+                            styles.option,
+                            value === item.code && styles.selected
+                          ]}
+                        >
+                          {item.label}
+                        </Text>
+                      </TouchableOpacity>
+                    ))}
+                  </ScrollView>
+                ) : (
+                  <ScrollView>
+                    {options.map(item => (
+                      <TouchableOpacity
+                        key={item.value}
+                        onPress={() => this.validateInput(item.value)}
+                      >
+                        <Text
+                          style={[
+                            styles.option,
+                            value === item.value && styles.selected
+                          ]}
+                        >
+                          {item.text}
+                        </Text>
+                      </TouchableOpacity>
+                    ))}
+                  </ScrollView>
+                )}
+              </View>
+            </Modal>
+          </View>
+          {/* Error message */}
+          {!!errorMsg && (
+            <Text style={{ paddingHorizontal: 15, color: colors.red }}>
+              {errorMsg}
+            </Text>
+          )}
         </View>
-        {errorMsg ? (
-          <FormValidationMessage style={{ color: colors.red }}>
-            {errorMsg}
-          </FormValidationMessage>
-        ) : (
-          <View />
-        )}
-      </View>
+      </TouchableOpacity>
     )
   }
 }
 
 Select.propTypes = {
   onChange: PropTypes.func.isRequired,
-  data: PropTypes.array,
-  label: PropTypes.string,
+  options: PropTypes.array,
   value: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
   placeholder: PropTypes.string.isRequired,
   field: PropTypes.string,
@@ -116,42 +200,73 @@ Select.propTypes = {
 export default Select
 
 const styles = StyleSheet.create({
-  container: {
-    marginHorizontal: 15,
-    borderBottomWidth: 1,
-    borderBottomColor: colors.grey,
-    backgroundColor: colors.beige
+  wrapper: {
+    marginBottom: 15
   },
-  active: {
-    backgroundColor: colors.palebeige,
+  container: {
+    borderBottomWidth: 1,
+    marginHorizontal: 15,
+    justifyContent: 'center',
+    minHeight: 60,
+    paddingBottom: 6,
     borderBottomColor: colors.grey
   },
+  placeholder: {
+    paddingHorizontal: 15,
+    ...globalStyles.subline
+  },
+  withoutValue: {
+    backgroundColor: colors.beige
+  },
   dropdown: {
-    height: 60,
-    paddingTop: 10
+    paddingVertical: 25,
+    maxHeight: 360,
+    position: 'absolute',
+    bottom: 0,
+    left: 0,
+    right: 0,
+    backgroundColor: colors.palebeige
   },
-  label: {
-    ...globalStyles.subline,
-    paddingHorizontal: 30,
-    marginTop: 25,
-    marginBottom: -25,
-    color: colors.palegrey,
-    zIndex: 100
+  option: {
+    paddingHorizontal: 25,
+    fontFamily: 'Roboto',
+    fontSize: 16,
+    lineHeight: 50,
+    color: '#4a4a4a'
   },
-  labelNoValue: {
-    ...globalStyles.subline,
-    zIndex: 100,
-    paddingHorizontal: 30,
-    fontSize: 14,
-    marginTop: 40,
-    marginBottom: -40,
-    color: colors.grey
+  arrow: {
+    width: 10,
+    height: 5,
+    position: 'absolute',
+    right: 13,
+    top: '50%'
   },
-  item: {
-    backgroundColor: colors.red
+  active: {
+    backgroundColor: colors.white,
+    borderBottomColor: colors.green
   },
   error: {
     backgroundColor: colors.white,
     borderBottomColor: colors.red
+  },
+  overlay: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: -200,
+    flexDirection: 'column',
+    justifyContent: 'center',
+    alignItems: 'center'
+  },
+  selected: {
+    backgroundColor: colors.lightgrey
+  },
+  title: {
+    fontSize: 14,
+    color: colors.palegrey,
+    marginLeft: 15,
+    marginBottom: 10,
+    zIndex: 100
   }
 })

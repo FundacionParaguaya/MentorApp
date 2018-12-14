@@ -121,8 +121,8 @@ class TextInput extends Component {
     let showPlaceholder = status === 'blur' && !text
 
     return (
-      <View>
-        <Text style={styles.label}>{label}</Text>
+      <View style={{ marginBottom: 15 }}>
+        {label && <Text style={styles.label}>{label}</Text>}
         <View style={[styles.container, styles[status]]}>
           {!showPlaceholder && (
             <Text
@@ -140,11 +140,11 @@ class TextInput extends Component {
             autoCapitalize="none"
             onFocus={() => this.onFocus()}
             onBlur={() => this.onBlur(text)}
+            onChangeText={text => this.onChangeText(text)}
+            onEndEditing={this.onEndEditing}
             placeholder={
               showPlaceholder ? `${placeholder} ${required ? '*' : ''}` : ''
             }
-            onChangeText={text => this.onChangeText(text)}
-            onEndEditing={this.onEndEditing}
             inputStyle={[
               styles.inputStyle,
               !showPlaceholder ? styles.activeInput : {}
@@ -152,7 +152,7 @@ class TextInput extends Component {
             editable={!readonly}
             multiline={multiline}
           >
-            <Text style={{ fontSize: 14, margin: 10 }}>{text}</Text>
+            <Text style={styles.inputText}>{text}</Text>
           </FormInput>
         </View>
         {status === 'error' && errorMsg ? (
@@ -179,17 +179,19 @@ const styles = StyleSheet.create({
   label: {
     paddingHorizontal: 15,
     paddingVertical: 10,
-
     ...globalStyles.subline
   },
   inputStyle: {
-    marginVertical: 0,
-    marginLeft: -4,
-    width: '100%',
+    ...globalStyles.subline,
+    fontFamily: 'Roboto',
+    fontSize: 14
+  },
+  inputText: {
     fontSize: 14
   },
   activeInput: {
-    marginTop: -25
+    marginTop: -25,
+    paddingBottom: 0
   },
   blur: {
     backgroundColor: colors.beige,
@@ -208,7 +210,7 @@ const styles = StyleSheet.create({
     borderBottomColor: colors.red
   },
   text: {
-    marginLeft: 15,
+    marginLeft: 20,
     zIndex: 100
   }
 })

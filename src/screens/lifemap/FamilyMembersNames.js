@@ -124,7 +124,7 @@ export class FamilyMembersNames extends Component {
             field="countFamilyMembers"
             value={this.getFieldValue('countFamilyMembers') || ''}
             detectError={this.detectError}
-            data={Array(10)
+            options={Array(10)
               .fill()
               .map((item, index) => ({
                 text: `${index + 1}`,

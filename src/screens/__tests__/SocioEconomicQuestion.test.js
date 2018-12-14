@@ -119,7 +119,7 @@ describe('SocioEconomicQuestion screens', () => {
         required: true,
         label:
           'Is there any member with disabilities in your household? Please indicate the disability type',
-        data: [
+        options: [
           { value: 'PHYSICAL', text: 'Phisical' },
           { value: 'MENTAL', text: 'Mental' },
           { value: 'LEARNING', text: 'Learning' },

@@ -77,8 +77,7 @@ export class FamilyMembersGender extends Component {
                 style={{
                   ...globalStyles.h3,
                   paddingHorizontal: 20,
-                  marginTop: 15,
-                  marginBottom: -10
+                  marginTop: 15
                 }}
               >
                 {item.firstName}
@@ -93,7 +92,7 @@ export class FamilyMembersGender extends Component {
                     .gender || ''
                 }
                 detectError={this.detectError}
-                data={this.gender}
+                options={this.gender}
               />
             </View>
           ))}
