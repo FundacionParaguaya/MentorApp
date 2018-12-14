@@ -33,34 +33,37 @@ class LifemapOverviewListItem extends Component {
         disabled={!this.props.color}
       >
         <View>
-          {this.props.achievement &&
-            this.props.color === 3 && (
-              <Icon
-                name="stars"
-                color={colors.blue}
-                size={20}
-                style={{
-                  ...styles.blueIcon,
-                  width: 20,
-                  height: 20
-                }}
-              />
-            )}
+          {this.props.achievement && this.props.color === 3 ? (
+            <Icon
+              name="stars"
+              color={colors.blue}
+              size={20}
+              style={{
+                ...styles.blueIcon,
+                width: 20,
+                height: 20
+              }}
+            />
+          ) : (
+            <View />
+          )}
           {this.props.priority &&
-            (this.props.color === 1 || this.props.color === 2) && (
-              <View
-                style={{
-                  ...styles.blueIcon,
-                  backgroundColor: colors.blue,
-                  width: 21,
-                  height: 21,
-                  justifyContent: 'center',
-                  alignItems: 'center'
-                }}
-              >
-                <Icon2 name="pin" color={colors.white} size={15} />
-              </View>
-            )}
+          (this.props.color === 1 || this.props.color === 2) ? (
+            <View
+              style={{
+                ...styles.blueIcon,
+                backgroundColor: colors.blue,
+                width: 21,
+                height: 21,
+                justifyContent: 'center',
+                alignItems: 'center'
+              }}
+            >
+              <Icon2 name="pin" color={colors.white} size={15} />
+            </View>
+          ) : (
+            <View />
+          )}
           <Icon
             name="brightness-1"
             color={this.defineColor(this.props.color)}

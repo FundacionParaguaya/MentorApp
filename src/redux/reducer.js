@@ -11,6 +11,7 @@ import {
   ADD_SURVEY_FAMILY_MEMBER_DATA,
   REMOVE_FAMILY_MEMBERS,
   DELETE_DRAFT,
+  ADD_DRAFT_PROGRESS,
   LOAD_SNAPSHOTS,
   SUBMIT_DRAFT,
   SUBMIT_DRAFT_COMMIT,
@@ -18,7 +19,8 @@ import {
   SWITCH_LANGUAGE,
   SET_SYNCED_ITEM_TOTAL,
   SET_SYNCED_ITEM_AMOUNT,
-  SET_SYNCED_STATE
+  SET_SYNCED_STATE,
+  SET_DIMENSIONS
 } from './actions'
 
 //Login
@@ -51,6 +53,17 @@ export const env = (state = 'production', action) => {
   switch (action.type) {
     case SET_ENV:
       return action.env
+    default:
+      return state
+  }
+}
+
+//Dimensions
+
+export const dimensions = (state = { width: null, height: null }, action) => {
+  switch (action.type) {
+    case SET_DIMENSIONS:
+      return action.dimensions
     default:
       return state
   }
@@ -310,46 +323,60 @@ export const drafts = (state = [], action) => {
       })
 
     case REMOVE_FAMILY_MEMBERS:
-      return state.map(draft =>
-        draft.draftId === action.id
-          ? {
-              ...draft,
-              familyData: {
-                ...draft.familyData,
-                familyMembersList: draft.familyData.familyMembersList.filter(
-                  (item, index) => index < action.afterIndex
-                )
+      return state.map(
+        draft =>
+          draft.draftId === action.id
+            ? {
+                ...draft,
+                familyData: {
+                  ...draft.familyData,
+                  familyMembersList: draft.familyData.familyMembersList.filter(
+                    (item, index) => index < action.afterIndex
+                  )
+                }
               }
-            }
-          : draft
+            : draft
       )
 
     case SUBMIT_DRAFT:
-      return state.map(draft =>
-        draft.draftId === action.id
-          ? {
-              ...draft,
-              status: 'Pending sync'
-            }
-          : draft
+      return state.map(
+        draft =>
+          draft.draftId === action.id
+            ? {
+                ...draft,
+                status: 'Pending sync'
+              }
+            : draft
+      )
+    case ADD_DRAFT_PROGRESS:
+      return state.map(
+        draft =>
+          draft.draftId === action.id
+            ? {
+                ...draft,
+                progress: action.progress
+              }
+            : draft
       )
     case SUBMIT_DRAFT_COMMIT:
-      return state.map(draft =>
-        draft.draftId === action.meta.id
-          ? {
-              ...draft,
-              status: 'Synced'
-            }
-          : draft
+      return state.map(
+        draft =>
+          draft.draftId === action.meta.id
+            ? {
+                ...draft,
+                status: 'Synced'
+              }
+            : draft
       )
     case SUBMIT_DRAFT_ROLLBACK:
-      return state.map(draft =>
-        draft.draftId === action.meta.id
-          ? {
-              ...draft,
-              status: 'Sync error'
-            }
-          : draft
+      return state.map(
+        draft =>
+          draft.draftId === action.meta.id
+            ? {
+                ...draft,
+                status: 'Sync error'
+              }
+            : draft
       )
     case DELETE_DRAFT:
       return state.filter(draft => draft.draftId !== action.id)
@@ -425,7 +452,8 @@ const appReducer = combineReducers({
   drafts,
   snapshots,
   language,
-  sync
+  sync,
+  dimensions
 })
 
 export const rootReducer = (state, action) => {

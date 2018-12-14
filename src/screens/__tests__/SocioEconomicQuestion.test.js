@@ -12,7 +12,8 @@ const createTestProps = props => ({
     navigate: jest.fn(),
     push: jest.fn(),
     getParam: param => (param === 'survey' ? data : null),
-    setParams: jest.fn()
+    setParams: jest.fn(),
+    isFocused: jest.fn(() => true)
   },
   addSurveyData: jest.fn(),
   addSurveyFamilyMemberData: jest.fn(),
@@ -181,7 +182,18 @@ describe('SocioEconomicQuestion screens', () => {
                           options: []
                         }
                       ],
-                      forFamily: []
+                      forFamily: [
+                        {
+                          questionText:
+                            'Please estimate your gross monthly household income (i.e, before taxes National Insurance contributions or other deductions)',
+                          answerType: 'text',
+                          dimension: 'Income',
+                          required: true,
+                          codeName: '3',
+                          forFamilyMember: false,
+                          options: []
+                        }
+                      ]
                     }
                   ]
                 }
@@ -193,7 +205,7 @@ describe('SocioEconomicQuestion screens', () => {
     })
 
     it('renders a TextInput for each text question for each family member', () => {
-      expect(wrapper.find(TextInput)).toHaveLength(2)
+      expect(wrapper.find(TextInput)).toHaveLength(3)
     })
 
     it('sets the correct TextInput props', () => {
@@ -220,5 +232,38 @@ describe('SocioEconomicQuestion screens', () => {
         expect.any(Object)
       )
     })
+  })
+})
+
+describe('Render optimization', () => {
+  let wrapper
+  let props
+  beforeEach(() => {
+    props = createTestProps()
+    wrapper = shallow(<SocioEconomicQuestion {...props} />)
+  })
+  it('checks if screen is focused before updating', () => {
+    wrapper.setProps({
+      drafts: [...wrapper.instance().props.drafts, { draftId: 5 }]
+    })
+    expect(wrapper.instance().props.navigation.isFocused).toHaveBeenCalledTimes(
+      1
+    )
+  })
+  it('updates screen if focused', () => {
+    wrapper.setProps({
+      drafts: [...wrapper.instance().props.drafts, { draftId: 5 }]
+    })
+    expect(wrapper.instance().props.drafts[2]).toEqual({ draftId: 5 })
+  })
+  it('does not update screen if not focused', () => {
+    wrapper.setProps({
+      drafts: [...wrapper.instance().props.drafts, { draftId: 5 }]
+    })
+    props = createTestProps({
+      navigation: { ...props.navigation, isFocused: jest.fn(() => false) }
+    })
+    wrapper = shallow(<SocioEconomicQuestion {...props} />)
+    expect(wrapper.instance().props.drafts[2]).toBeFalsy()
   })
 })

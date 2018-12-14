@@ -13,6 +13,7 @@ const createTestProps = props => ({
   navigation: {
     navigate: jest.fn(),
     goBack: jest.fn(),
+    isFocused: jest.fn(),
     getParam: jest.fn(param => (param === 'indicator' ? 'income' : 2))
   },
   addSurveyPriorityAcheivementData: jest.fn(),
@@ -64,6 +65,7 @@ describe('AddAchievement View', () => {
         .onChangeText('Some action')
       expect(wrapper.instance().state.action).toEqual('Some action')
     })
+
     it('records roadmap to state', () => {
       wrapper
         .find(TextInput)
@@ -83,5 +85,39 @@ describe('AddAchievement View', () => {
         wrapper.instance().props.addSurveyPriorityAcheivementData
       ).toHaveBeenCalledTimes(1)
     })
+  })
+})
+
+describe('Render optimization', () => {
+  let wrapper
+  let props
+  beforeEach(() => {
+    props = createTestProps()
+    wrapper = shallow(<AddAchievement {...props} />)
+  })
+  it('checks if screen is focused before updating', () => {
+    wrapper.setProps({
+      drafts: [...wrapper.instance().props.drafts, { draftId: 5 }]
+    })
+    //It is called two times because we set state in componentDidMount, therefore it runs the componentShouldUpdate method twice
+    expect(wrapper.instance().props.navigation.isFocused).toHaveBeenCalledTimes(
+      2
+    )
+  })
+  it('updates screen if focused', () => {
+    wrapper.setProps({
+      drafts: [...wrapper.instance().props.drafts, { draftId: 5 }]
+    })
+    expect(wrapper.instance().props.drafts[1]).toEqual({ draftId: 5 })
+  })
+  it('does not update screen if not focused', () => {
+    wrapper.setProps({
+      drafts: [...wrapper.instance().props.drafts, { draftId: 5 }]
+    })
+    props = createTestProps({
+      navigation: { ...props.navigation, isFocused: jest.fn(() => false) }
+    })
+    wrapper = shallow(<AddAchievement {...props} />)
+    expect(wrapper.instance().props.drafts[1]).toBeFalsy()
   })
 })

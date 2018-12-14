@@ -21,6 +21,10 @@ export class AddPriority extends Component {
     indicator: this.props.navigation.getParam('indicator')
   }
 
+  shouldComponentUpdate() {
+    return this.props.navigation.isFocused()
+  }
+
   editCounter = action => {
     if (action === 'minus' && this.state.estimatedDate > 0) {
       return this.setState({ estimatedDate: this.state.estimatedDate - 1 })

@@ -6,127 +6,133 @@ import {
   Text,
   View,
   TouchableOpacity,
-  Dimensions
+  InteractionManager
 } from 'react-native'
 import Image from './CachedImage'
 import colors from '../theme.json'
 import globalStyles from '../globalStyles'
 import Icon from 'react-native-vector-icons/MaterialIcons'
-
+import { connect } from 'react-redux'
+import { isTablet, isPortrait } from '../responsivenessHelpers'
 const slideColors = {
   1: 'red',
   2: 'gold',
   3: 'green'
 }
 
-const isPortrait = () => {
-  const dim = Dimensions.get('screen')
-  return dim.height >= dim.width
-}
-
-const isTablet = () => {
-  const msp = (dim, limit) => {
-    return dim.scale * dim.width >= limit || dim.scale * dim.height >= limit
-  }
-  const dim = Dimensions.get('screen')
-  return (dim.scale < 2 && msp(dim, 1000)) || (dim.scale >= 2 && msp(dim, 1900))
-}
-
-class Slider extends Component {
+export class Slider extends Component {
   state = {
-    selectedColor: colors.green,
-    isPortrait: true,
-    isTablet: false
+    selectedColor: colors.green
   }
 
   componentDidMount() {
-    this.setState({
-      isPortrait: isPortrait(),
-      isTablet: isTablet()
-    })
-    Dimensions.addEventListener('change', this.dimensionChange)
-  }
-  componentWillUnmount() {
-    // Important to stop updating state after unmount
-    Dimensions.removeEventListener('change', this.dimensionChange)
+    const { width, height } = this.props.dimensions
+
+    const value = value => {
+      switch (value) {
+        case 1:
+          return 2
+        case 2:
+          return 1
+        case 3:
+          return 0
+        default:
+          return 0
+      }
+    }
+    // Slider scrolls to the appropriate slide
+    if (value !== 0) {
+      InteractionManager.runAfterInteractions(() => {
+        this.scrollView.scrollTo({
+          x: (width - (1 / 10) * width) * value(this.props.value),
+          animated: true
+        })
+      })
+    }
   }
 
-  dimensionChange = () => {
-    this.setState({
-      isPortrait: isPortrait()
-    })
-  }
   render() {
-    const { isPortrait, isTablet } = this.state
-    const height = Dimensions.get('screen').height
+    const { dimensions } = this.props
+    const { width, height } = this.props.dimensions
     return (
       <View>
         <ScrollView
           horizontal
           showsHorizontalScrollIndicator={false}
           contentContainerStyle={{
-            width: isPortrait ? '200%' : '130%',
+            width: isPortrait(dimensions) ? '280%' : '90%',
             flexGrow: 1,
             flexDirection: 'row',
-            justifyContent: 'space-between'
+            flexWrap: 'wrap',
+            justifyContent: 'space-between',
+            padding: '0.66%'
           }}
-          ref={comp => {
-            this._scrollView = comp
+          ref={ref => {
+            this.scrollView = ref
           }}
+          snapToAlignment="center"
+          snapToInterval={width - (1 / 10) * width}
         >
           {this.props.slides.map((slide, i) => (
-            <TouchableOpacity
-              onPress={() => {
-                this.props.selectAnswer(slide.value)
-                this.setState({
-                  selectedColor: colors[slideColors[slide.value]]
-                })
-              }}
+            <View
               key={i}
               style={{
-                ...styles.slide,
+                width: '33%',
                 backgroundColor: colors[slideColors[slide.value]]
               }}
             >
-              <Image
-                source={slide.url}
+              <TouchableOpacity
                 style={{
-                  ...styles.image,
-                  height: isPortrait
-                    ? isPortrait && isTablet
-                      ? height / 3
-                      : height / 4
-                    : height / 2
+                  ...styles.slide
                 }}
-              />
-              <Text
-                style={{
-                  ...globalStyles.p,
-                  ...styles.text,
-                  color: slide.value === 'YELLOW' ? '#000' : colors.white
+                onPress={() => {
+                  this.props.selectAnswer(slide.value)
+                  this.setState({
+                    selectedColor: colors[slideColors[slide.value]]
+                  })
                 }}
               >
-                {slide.description}
-              </Text>
-            </TouchableOpacity>
+                <Image
+                  source={slide.url}
+                  style={{
+                    ...styles.image,
+                    height: isPortrait(dimensions)
+                      ? isTablet(dimensions)
+                        ? height / 2
+                        : height / 3
+                      : height / 4
+                  }}
+                />
+                <Text
+                  style={{
+                    ...globalStyles.p,
+                    ...styles.text,
+                    color: slide.value === 'YELLOW' ? '#000' : colors.white
+                  }}
+                >
+                  {slide.description}
+                </Text>
+              </TouchableOpacity>
+            </View>
+          ))}
+          {this.props.slides.map((slide, i) => (
+            <View style={{ width: '33%', marginTop: -40 }} key={i}>
+              {this.props.value === slide.value ? (
+                <View
+                  id="icon-view"
+                  style={{
+                    ...styles.iconBig,
+                    backgroundColor: colors[slideColors[this.props.value]]
+                  }}
+                >
+                  <Icon name="done" size={56} color={colors.white} />
+                </View>
+              ) : (
+                <View />
+              )}
+            </View>
           ))}
         </ScrollView>
-
-        {this.props.value ? (
-          <View style={styles.nav}>
-            <View
-              id="icon-view"
-              style={{
-                ...styles.iconBig,
-                backgroundColor: colors[slideColors[this.props.value]]
-              }}
-            >
-              <Icon name="done" size={56} color={colors.white} />
-            </View>
-          </View>
-        ) : (
-          <View />
-        )}
       </View>
     )
   }
@@ -140,13 +146,13 @@ Slider.propTypes = {
 
 const styles = StyleSheet.create({
   slide: {
-    width: '32%'
+    width: '100%'
   },
   text: {
     color: colors.white,
     textAlign: 'center',
     padding: 15,
-    paddingBottom: 25
+    paddingBottom: 45
   },
   image: {
     width: '100%',
@@ -158,17 +164,14 @@ const styles = StyleSheet.create({
     height: 80,
     justifyContent: 'center',
     alignItems: 'center',
-    marginLeft: 32,
-    marginRight: 32,
+    alignSelf: 'center',
     borderColor: colors.white,
     borderWidth: 3
-  },
-  nav: {
-    flexDirection: 'row',
-    justifyContent: 'center',
-    alignItems: 'center',
-    marginTop: -18
   }
 })
 
-export default Slider
+const mapStateToProps = ({ dimensions }) => ({
+  dimensions
+})
+
+export default connect(mapStateToProps)(Slider)

@@ -30,6 +30,10 @@ export class Overview extends Component {
       indicatorText
     })
 
+  shouldComponentUpdate() {
+    return this.props.navigation.isFocused()
+  }
+
   getMandatoryPrioritiesCount(draft) {
     const potentialPrioritiesCount = draft.indicatorSurveyDataList.filter(
       question => question.value === 1 || question.value === 2

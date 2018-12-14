@@ -26,6 +26,10 @@ export class Question extends Component {
   indicator = this.indicators[this.step]
   slides = this.indicator.stoplightColors
 
+  shouldComponentUpdate() {
+    return this.props.navigation.isFocused()
+  }
+
   getFieldValue(draft, field) {
     const indicatorObject = draft.indicatorSurveyDataList.filter(
       item => item.key === field

@@ -151,10 +151,12 @@ class TextInput extends Component {
             <Text style={styles.inputText}>{text}</Text>
           </FormInput>
         </View>
-        {status === 'error' && errorMsg && (
+        {status === 'error' && errorMsg ? (
           <FormValidationMessage style={{ color: colors.red }}>
             {errorMsg}
           </FormValidationMessage>
+        ) : (
+          <View />
         )}
       </View>
     )

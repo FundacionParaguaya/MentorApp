@@ -10,7 +10,8 @@ const createTestProps = props => ({
   t: value => value,
   navigation: {
     getParam: jest.fn(param => (param === 'draftId' ? 4 : null)),
-    navigate: jest.fn()
+    navigate: jest.fn(),
+    isFocused: jest.fn(() => true)
   },
   drafts: [
     {
@@ -72,6 +73,7 @@ describe('FamilyMembersBirthDates View', () => {
       ).toHaveBeenCalledTimes(1)
     })
   })
+
   it('gives DateInput the proper value', () => {
     expect(wrapper.find(DateInput).props().value).toBe(1515708000)
   })
@@ -105,5 +107,39 @@ describe('FamilyMembersBirthDates View', () => {
         .last()
         .props().disabled
     ).toBe(true)
+  })
+})
+
+describe('Render optimization', () => {
+  let wrapper
+  let props
+  beforeEach(() => {
+    props = createTestProps()
+    wrapper = shallow(<FamilyMembersBirthdates {...props} />)
+  })
+  it('checks if screen is focused before updating', () => {
+    wrapper.setProps({
+      drafts: [...wrapper.instance().props.drafts, { draftId: 5 }]
+    })
+    expect(wrapper.instance().props.navigation.isFocused).toHaveBeenCalledTimes(
+      1
+    )
+  })
+  it('updates screen if focused', () => {
+    wrapper.setProps({
+      drafts: [...wrapper.instance().props.drafts, { draftId: 5 }]
+    })
+    expect(wrapper.instance().props.drafts[1]).toEqual({ draftId: 5 })
+  })
+  it('does not update screen if not focused', () => {
+    wrapper.setProps({
+      drafts: [...wrapper.instance().props.drafts, { draftId: 5 }]
+    })
+    props = createTestProps({
+      navigation: { ...props.navigation, isFocused: jest.fn(() => false) }
+    })
+
+    wrapper = shallow(<FamilyMembersBirthdates {...props} />)
+    expect(wrapper.instance().props.drafts[1]).toBeFalsy()
   })
 })

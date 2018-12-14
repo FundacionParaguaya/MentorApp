@@ -4,7 +4,7 @@ import { shallow } from 'enzyme'
 import { ScrollView, Text, TouchableOpacity } from 'react-native'
 import Image from '../CachedImage'
 import Icon from 'react-native-vector-icons/MaterialIcons'
-import Slider from '../Slider'
+import { Slider } from '../Slider'
 import colors from '../../theme.json'
 
 const createTestProps = props => ({
@@ -28,6 +28,7 @@ const createTestProps = props => ({
       value: 1
     }
   ],
+  dimensions: { height: 731, width: 411, scale: 2.6 },
   value: 1,
   selectAnswer: jest.fn(),
   text: 'Some button text',
@@ -61,11 +62,7 @@ describe('Slider Component', () => {
 
   describe('functionality', () => {
     it('has correct initial state', () => {
-      expect(wrapper.instance().state).toEqual({
-        selectedColor: colors.green,
-        isPortrait: true,
-        isTablet: false
-      })
+      expect(wrapper.instance().state.selectedColor).toEqual(colors.green)
     })
     it('does not change state when user clicks on green slide', () => {
       wrapper
@@ -107,7 +104,6 @@ describe('Slider Component', () => {
   it('renders icon in correct color when value is 3', () => {
     props = createTestProps({ value: 3 })
     wrapper = shallow(<Slider {...props} />)
-    console.log(props)
     expect(wrapper.find('#icon-view').props().style.backgroundColor).toBe(
       colors.green
     )

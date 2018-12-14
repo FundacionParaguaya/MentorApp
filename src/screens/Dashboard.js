@@ -84,7 +84,7 @@ export class Dashboard extends Component {
                 />
               )}
             />
-            {!drafts.length && (
+            {!drafts.length ? (
               <Text
                 id="no-drafts-message"
                 style={{
@@ -95,6 +95,8 @@ export class Dashboard extends Component {
               >
                 {t('views.noDrafts')}
               </Text>
+            ) : (
+              <View />
             )}
           </View>
         )}

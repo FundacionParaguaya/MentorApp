@@ -38,6 +38,15 @@ export const logout = () => ({
   type: USER_LOGOUT
 })
 
+// Dimensions
+
+export const SET_DIMENSIONS = 'SET_DIMENSIONS'
+
+export const setDimensions = dimensions => ({
+  type: SET_DIMENSIONS,
+  dimensions
+})
+
 // Environment
 
 export const SET_ENV = 'SET_ENV'
@@ -63,7 +72,7 @@ export const loadSurveys = (env, token) => ({
         headers: { Authorization: `Bearer ${token}` },
         body: JSON.stringify({
           query:
-            'query { surveysByUser { title id minimumPriorities surveyConfig { documentType {text value} gender { text value}}  surveyEconomicQuestions { questionText codeName answerType  required forFamilyMember options {text value} } surveyStoplightQuestions { questionText codeName dimension id stoplightColors { url value description } required } } }'
+            'query { surveysByUser { title id minimumPriorities surveyConfig { documentType {text value} gender { text value}}  surveyEconomicQuestions { questionText codeName answerType topic required forFamilyMember options {text value} } surveyStoplightQuestions { questionText codeName dimension id stoplightColors { url value description } required } } }'
         })
       },
       commit: { type: LOAD_SURVEYS }
@@ -103,6 +112,7 @@ export const SUBMIT_DRAFT = 'SUBMIT_DRAFT'
 export const SUBMIT_DRAFT_COMMIT = 'SUBMIT_DRAFT_COMMIT'
 export const SUBMIT_DRAFT_ROLLBACK = 'SUBMIT_DRAFT_ROLLBACK'
 export const REMOVE_FAMILY_MEMBERS = 'REMOVE_FAMILY_MEMBERS'
+export const ADD_DRAFT_PROGRESS = 'ADD_DRAFT_PROGRESS'
 
 export const createDraft = payload => ({
   type: CREATE_DRAFT,
@@ -112,6 +122,12 @@ export const createDraft = payload => ({
 export const deleteDraft = id => ({
   type: DELETE_DRAFT,
   id
+})
+
+export const addDraftProgress = (id, progress) => ({
+  type: ADD_DRAFT_PROGRESS,
+  id,
+  progress
 })
 
 export const addSurveyPriorityAcheivementData = ({

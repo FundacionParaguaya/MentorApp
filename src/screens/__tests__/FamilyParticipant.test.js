@@ -17,7 +17,8 @@ const createTestProps = props => ({
     navigate: jest.fn(),
     getParam: param => (param === 'draft' ? null : 1),
     setParams: jest.fn(),
-    reset: jest.fn()
+    reset: jest.fn(),
+    isFocused: jest.fn()
   },
   drafts: [draft],
   surveys: [
@@ -216,5 +217,38 @@ describe('Family Participant View', () => {
       wrapper.instance().detectError(false, 'phoneNumber')
       expect(wrapper.instance().errorsDetected).toEqual([])
     })
+  })
+})
+
+describe('Render optimization', () => {
+  let wrapper
+  let props
+  beforeEach(() => {
+    props = createTestProps()
+    wrapper = shallow(<FamilyParticipant {...props} />)
+  })
+  it('checks if screen is focused before updating', () => {
+    wrapper.setProps({
+      drafts: [...wrapper.instance().props.drafts, { draftId: 5 }]
+    })
+    expect(wrapper.instance().props.navigation.isFocused).toHaveBeenCalledTimes(
+      1
+    )
+  })
+  it('updates screen if focused', () => {
+    wrapper.setProps({
+      drafts: [...wrapper.instance().props.drafts, { draftId: 5 }]
+    })
+    expect(wrapper.instance().props.drafts[1]).toEqual({ draftId: 5 })
+  })
+  it('does not update screen if not focused', () => {
+    wrapper.setProps({
+      drafts: [...wrapper.instance().props.drafts, { draftId: 5 }]
+    })
+    props = createTestProps({
+      navigation: { ...props.navigation, isFocused: jest.fn(() => false) }
+    })
+    wrapper = shallow(<FamilyParticipant {...props} />)
+    expect(wrapper.instance().props.drafts[1]).toBeFalsy()
   })
 })

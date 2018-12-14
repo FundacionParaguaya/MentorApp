@@ -49,8 +49,10 @@ class DraftListItem extends Component {
             {this.props.item.status}
           </Text>
         </View>
-        {!this.linkDisabled && (
+        {!this.linkDisabled ? (
           <Icon name="navigate-next" size={23} color={colors.lightdark} />
+        ) : (
+          <View />
         )}
       </TouchableOpacity>
     )

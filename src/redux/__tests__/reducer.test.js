@@ -12,6 +12,20 @@ describe('environment reducer', () => {
   })
 })
 
+describe('dimensions reducer', () => {
+  it('should handle SET_DIMENSIONS', () => {
+    expect(
+      reducer.dimensions(
+        { width: null, height: null },
+        {
+          type: action.SET_DIMENSIONS,
+          dimensions: { width: 10, height: 10 }
+        }
+      )
+    ).toEqual({ width: 10, height: 10 })
+  })
+})
+
 describe('login reducer', () => {
   it('should handle SET_LOGIN_STATE success', () => {
     expect(
@@ -72,7 +86,8 @@ describe('login reducer', () => {
       snapshots: [],
       surveys: [],
       sync: { images: { synced: 0, total: 0 }, synced: 'no' },
-      user: { status: null, token: null, username: null }
+      user: { status: null, token: null, username: null },
+      dimensions: { width: null, height: null }
     })
   })
 })
@@ -170,6 +185,37 @@ describe('drafts reducer', () => {
         payload
       })
     ).toEqual([...initialStore, { ...payload, status: 'In progress' }])
+  })
+
+  it('should handle ADD_DRAFT_PROGRESS', () => {
+    const expectedStore = [
+      {
+        draftId: 1,
+        status: 'Synced',
+        progress: { screen: 'FamilyMembersNames', step: null }
+      },
+      {
+        draftId: 2,
+        status: 'In progress',
+        priorities: [
+          { indicator: 'phoneNumber', action: 'Action', reason: 'reason' }
+        ],
+        familyData: {
+          familyMembersList: [
+            ({ name: 'Joan', socioEconomicAnswers: [] }, { name: 'Jane' })
+          ]
+        }
+      }
+    ]
+    const id = 1
+    const progress = { screen: 'FamilyMembersNames', step: null }
+    expect(
+      reducer.drafts(initialStore, {
+        type: action.ADD_DRAFT_PROGRESS,
+        id,
+        progress
+      })
+    ).toEqual(expectedStore)
   })
   it('should handle SUBMIT_DRAFT', () => {
     const expectedStore = [
