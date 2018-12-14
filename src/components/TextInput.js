@@ -140,7 +140,9 @@ class TextInput extends Component {
             onBlur={() => this.onBlur(text)}
             onChangeText={text => this.onChangeText(text)}
             onEndEditing={this.onEndEditing}
-            placeholder={`${placeholder} ${required ? '*' : ''}`}
+            placeholder={
+              showPlaceholder ? `${placeholder} ${required ? '*' : ''}` : ''
+            }
             inputStyle={[
               styles.inputStyle,
               !showPlaceholder ? styles.activeInput : {}
