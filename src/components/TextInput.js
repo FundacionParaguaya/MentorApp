@@ -68,7 +68,9 @@ class TextInput extends Component {
 
     if (
       this.props.validation === 'string' &&
-      !/^[a-zA-Z\u0080-\uFFFF]([\w -]*[a-zA-Z\u0080-\uFFFF])?$/.test(text) &&
+      !/^[a-zA-Z\u0000-\u007F\u0080-\u00FF\u0100-\u017F\u0180-\u024F\u1E00-\u1EFF\u2C60-\u2C7F\uA720-\uA7FF]([\w -]*[a-zA-Z\u0000-\u007F\u0080-\u00FF\u0100-\u017F\u0180-\u024F\u1E00-\u1EFF\u2C60-\u2C7F\uA720-\uA7FF])?$/.test(
+        text
+      ) &&
       !validator.isEmpty(text)
     ) {
       return this.handleError(i18n.t('validation.alphabeticCharacters'))
