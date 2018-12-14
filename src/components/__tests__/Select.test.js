@@ -30,19 +30,9 @@ describe('Select dropdown', () => {
     })
   })
   it('renders all necessary text fields', () => {
-    expect(wrapper.find(Text)).toHaveLength(4)
+    expect(wrapper.find(Text)).toHaveLength(3)
   })
-  it('has proper styles when empty', () => {
-    const styles = Object.assign(
-      ...wrapper
-        .find(View)
-        .first()
-        .props().style
-    )
 
-    expect(styles.backgroundColor).toBe(colors.beige)
-    expect(styles.borderBottomColor).toBe(colors.grey)
-  })
   it('opens a modal when pressed', () => {
     wrapper
       .find(TouchableOpacity)
@@ -56,39 +46,9 @@ describe('Select dropdown', () => {
         .find(Modal)
         .last()
         .find(TouchableOpacity)
-    ).toHaveLength(4)
+    ).toHaveLength(3)
   })
-  it('has proper styles when is active', () => {
-    wrapper
-      .find(TouchableOpacity)
-      .first()
-      .props()
-      .onPress()
 
-    const styles = Object.assign(
-      ...wrapper
-        .find(View)
-        .first()
-        .props().style
-    )
-
-    expect(styles.backgroundColor).toBe(colors.white)
-    expect(styles.borderBottomColor).toBe(colors.green)
-  })
-  it('show error when not valid', () => {
-    props = createTestProps({ value: '', required: true })
-    wrapper = shallow(<Select {...props} />)
-    wrapper.instance().validateInput('')
-    const styles = Object.assign(
-      ...wrapper
-        .find(View)
-        .first()
-        .props().style
-    )
-    expect(wrapper).toHaveState({ errorMsg: 'This field is required' })
-    expect(styles.backgroundColor).toBe(colors.white)
-    expect(styles.borderBottomColor).toBe(colors.red)
-  })
   it('selects an option when one is pressed', () => {
     const spy = jest.spyOn(wrapper.instance(), 'validateInput')
     wrapper
@@ -128,7 +88,7 @@ describe('Select dropdown', () => {
         .find(Modal)
         .last()
         .find(TouchableOpacity)
-    ).toHaveLength(4)
+    ).toHaveLength(3)
 
     wrapper
       .find(Modal)

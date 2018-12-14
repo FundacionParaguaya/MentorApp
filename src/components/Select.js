@@ -68,102 +68,107 @@ class Select extends Component {
 
     return (
       <TouchableOpacity onPress={this.toggleDropdown}>
-        <View
-          style={[
-            styles.container,
-            !value && styles.withoutValue,
-            errorMsg && styles.error,
-            isOpen && styles.active
-          ]}
-        >
-          {!!value && (
-            <Text
-              style={[
-                styles.title,
-                isOpen &&
+        <View style={styles.wrapper}>
+          <View
+            style={[
+              styles.container,
+              !value && styles.withoutValue,
+              errorMsg && styles.error,
+              isOpen && styles.active
+            ]}
+          >
+            {!!value && (
+              <Text
+                style={[
+                  styles.title,
+                  isOpen &&
                   !errorMsg && {
-                    color: colors.green
+                      color: colors.green
                   }
-              ]}
-            >{`${placeholder} ${required ? '*' : ''}`}</Text>
-          )}
-          <Text style={[styles.placeholder]}>
-            {value || `${placeholder} ${required ? '*' : ''}`}
-          </Text>
-          <Image source={arrow} style={styles.arrow} />
-          {/* Error message */}
-          {!!errorMsg && <Text style={{ color: colors.red }}>{errorMsg}</Text>}
+                ]}
+              >{`${placeholder} ${required ? '*' : ''}`}</Text>
+            )}
+            <Text style={[styles.placeholder]}>
+              {value || `${placeholder} ${required ? '*' : ''}`}
+            </Text>
+            <Image source={arrow} style={styles.arrow} />
 
-          <Modal
-            transparent={true}
-            visible={isOpen}
-            onRequestClose={this.toggleDropdown}
-          >
-            <TouchableOpacity
-              style={[
-                styles.overlay,
-                {
-                  backgroundColor: 'rgba(47,38,28, 0.2)'
-                }
-              ]}
-              onPress={this.toggleDropdown}
-            />
-          </Modal>
-          <Modal
-            animationType="slide"
-            transparent={true}
-            visible={isOpen}
-            onRequestClose={this.toggleDropdown}
-          >
-            <TouchableOpacity
-              style={styles.overlay}
-              onPress={this.toggleDropdown}
-            />
-            <View style={styles.dropdown}>
-              <TouchableOpacity onPress={() => this.validateInput('')}>
-                <Text style={[styles.option, value === '' && styles.selected]}>
-                  --
-                </Text>
-              </TouchableOpacity>
-              {countrySelect ? (
-                <ScrollView>
-                  {countryList.map(item => (
-                    <TouchableOpacity
-                      key={item.code}
-                      onPress={() => this.validateInput(item.label)}
-                    >
-                      <Text
-                        style={[
-                          styles.option,
-                          value === item.label && styles.selected
-                        ]}
+            <Modal
+              transparent={true}
+              visible={isOpen}
+              onRequestClose={this.toggleDropdown}
+            >
+              <TouchableOpacity
+                style={[
+                  styles.overlay,
+                  {
+                    backgroundColor: 'rgba(47,38,28, 0.2)'
+                  }
+                ]}
+                onPress={this.toggleDropdown}
+              />
+            </Modal>
+            <Modal
+              animationType="slide"
+              transparent={true}
+              visible={isOpen}
+              onRequestClose={this.toggleDropdown}
+            >
+              <TouchableOpacity
+                style={styles.overlay}
+                onPress={() => {
+                  console.log('toggle')
+                  this.validateInput('')
+                  this.toggleDropdown()
+                }}
+              />
+              <View style={styles.dropdown}>
+                {countrySelect ? (
+                  <ScrollView>
+                    {countryList.map(item => (
+                      <TouchableOpacity
+                        key={item.code}
+                        onPress={() => this.validateInput(item.label)}
                       >
-                        {item.label}
-                      </Text>
-                    </TouchableOpacity>
-                  ))}
-                </ScrollView>
-              ) : (
-                <ScrollView>
-                  {options.map(item => (
-                    <TouchableOpacity
-                      key={item.value}
-                      onPress={() => this.validateInput(item.text)}
-                    >
-                      <Text
-                        style={[
-                          styles.option,
-                          value === item.text && styles.selected
-                        ]}
+                        <Text
+                          style={[
+                            styles.option,
+                            value === item.label && styles.selected
+                          ]}
+                        >
+                          {item.label}
+                        </Text>
+                      </TouchableOpacity>
+                    ))}
+                  </ScrollView>
+                ) : (
+                  <ScrollView>
+                    {options.map(item => (
+                      <TouchableOpacity
+                        key={item.value}
+                        onPress={() => this.validateInput(item.text)}
                       >
-                        {item.text}
-                      </Text>
-                    </TouchableOpacity>
-                  ))}
-                </ScrollView>
-              )}
-            </View>
-          </Modal>
+                        <Text
+                          style={[
+                            styles.option,
+                            value === item.text && styles.selected
+                          ]}
+                        >
+                          {item.text}
+                        </Text>
+                      </TouchableOpacity>
+                    ))}
+                  </ScrollView>
+                )}
+              </View>
+            </Modal>
+          </View>
+          {/* Error message */}
+          {!!errorMsg && (
+            <Text style={{ paddingHorizontal: 15, color: colors.red }}>
+              {errorMsg}
+            </Text>
+          )}
         </View>
       </TouchableOpacity>
     )
@@ -184,10 +189,12 @@ Select.propTypes = {
 export default Select
 
 const styles = StyleSheet.create({
+  wrapper: {
+    marginBottom: 15
+  },
   container: {
     borderBottomWidth: 1,
     marginHorizontal: 15,
-    marginBottom: 15,
     justifyContent: 'center',
     minHeight: 60
   },
