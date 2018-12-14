@@ -1,7 +1,6 @@
 import React from 'react'
 import { shallow } from 'enzyme'
-import { TouchableOpacity, View, Text, Modal } from 'react-native'
-import colors from '../../theme.json'
+import { TouchableOpacity, Text, Modal } from 'react-native'
 import Select from '../Select'
 
 const createTestProps = props => ({

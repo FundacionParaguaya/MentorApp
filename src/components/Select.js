@@ -82,9 +82,9 @@ class Select extends Component {
                 style={[
                   styles.title,
                   isOpen &&
-                  !errorMsg && {
+                    !errorMsg && {
                       color: colors.green
-                  }
+                    }
                 ]}
               >{`${placeholder} ${required ? '*' : ''}`}</Text>
             )}
@@ -196,15 +196,16 @@ const styles = StyleSheet.create({
     borderBottomWidth: 1,
     marginHorizontal: 15,
     justifyContent: 'center',
-    minHeight: 60
+    minHeight: 60,
+    paddingBottom: 6,
+    borderBottomColor: colors.grey
   },
   placeholder: {
     paddingHorizontal: 15,
     ...globalStyles.subline
   },
   withoutValue: {
-    backgroundColor: colors.beige,
-    borderBottomColor: colors.grey
+    backgroundColor: colors.beige
   },
   dropdown: {
     paddingVertical: 25,
@@ -251,8 +252,10 @@ const styles = StyleSheet.create({
     backgroundColor: colors.lightgrey
   },
   title: {
+    fontSize: 14,
+    color: colors.palegrey,
     marginLeft: 15,
-    zIndex: 100,
-    fontSize: 12
+    marginBottom: 10,
+    zIndex: 100
   }
 })

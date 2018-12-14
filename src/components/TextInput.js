@@ -186,7 +186,8 @@ const styles = StyleSheet.create({
     fontSize: 14
   },
   activeInput: {
-    marginTop: -25
+    marginTop: -25,
+    paddingBottom: 0
   },
   blur: {
     backgroundColor: colors.beige,
@@ -205,7 +206,7 @@ const styles = StyleSheet.create({
     borderBottomColor: colors.red
   },
   text: {
-    marginLeft: 15,
+    marginLeft: 20,
     zIndex: 100
   }
 })
