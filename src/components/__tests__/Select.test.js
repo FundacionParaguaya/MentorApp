@@ -65,7 +65,7 @@ describe('Select dropdown', () => {
       .onPress()
 
     expect(spy).toHaveBeenCalledTimes(1)
-    expect(spy).toHaveBeenCalledWith('USA')
+    expect(spy).toHaveBeenCalledWith('us')
   })
   it('render a list of items when passed options', () => {
     props = createTestProps({
@@ -98,6 +98,6 @@ describe('Select dropdown', () => {
       .onPress()
 
     expect(spy).toHaveBeenCalledTimes(1)
-    expect(spy).toHaveBeenCalledWith('2')
+    expect(spy).toHaveBeenCalledWith(2)
   })
 })

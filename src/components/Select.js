@@ -66,6 +66,18 @@ class Select extends Component {
     const { errorMsg, isOpen } = this.state
     const { value, placeholder, required, options, countrySelect } = this.props
 
+    let text
+    if (countrySelect && countryList.filter(item => item.code === value)[0]) {
+      text = countryList.filter(item => item.code === value)[0].label
+    } else if (
+      !countrySelect &&
+      options.filter(item => item.value === value)[0]
+    ) {
+      text = options.filter(item => item.value === value)[0].text
+    } else {
+      text = ''
+    }
+
     return (
       <TouchableOpacity onPress={this.toggleDropdown}>
         <View style={styles.wrapper}>
@@ -89,7 +101,7 @@ class Select extends Component {
               >{`${placeholder} ${required ? '*' : ''}`}</Text>
             )}
             <Text style={[styles.placeholder]}>
-              {value || `${placeholder} ${required ? '*' : ''}`}
+              {value ? text : `${placeholder} ${required ? '*' : ''}`}
             </Text>
             <Image source={arrow} style={styles.arrow} />
 
@@ -117,7 +129,6 @@ class Select extends Component {
               <TouchableOpacity
                 style={styles.overlay}
                 onPress={() => {
-                  console.log('toggle')
                   this.validateInput('')
                   this.toggleDropdown()
                 }}
@@ -128,12 +139,12 @@ class Select extends Component {
                     {countryList.map(item => (
                       <TouchableOpacity
                         key={item.code}
-                        onPress={() => this.validateInput(item.label)}
+                        onPress={() => this.validateInput(item.code)}
                       >
                         <Text
                           style={[
                             styles.option,
-                            value === item.label && styles.selected
+                            value === item.code && styles.selected
                           ]}
                         >
                           {item.label}
@@ -146,12 +157,12 @@ class Select extends Component {
                     {options.map(item => (
                       <TouchableOpacity
                         key={item.value}
-                        onPress={() => this.validateInput(item.text)}
+                        onPress={() => this.validateInput(item.value)}
                       >
                         <Text
                           style={[
                             styles.option,
-                            value === item.text && styles.selected
+                            value === item.value && styles.selected
                           ]}
                         >
                           {item.text}
