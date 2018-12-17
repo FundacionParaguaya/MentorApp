@@ -28,13 +28,16 @@ export class Location extends Component {
   state = {
     latitude: null,
     longitude: null,
+    latitudeDelta: 0.005,
+    longitudeDelta: 0.005,
     accuracy: null,
     searchAddress: '',
     errorsDetected: [],
-    mapsError: false,
-    mapReady: false,
-    centeringMap: false,
-    showMap: false
+    mapsError: false, // error code (2 for location off, 3 for timeout)
+    mapIsDraggable: false, // first time map sets region we shouldn't update
+    centeringMap: false, // while map is centering we show a different spinner
+    isOnline: true,
+    showMap: false // show map even when no location is returned
   }
   errorsDetected = []
 
@@ -42,7 +45,7 @@ export class Location extends Component {
     super(props)
     NetInfo.isConnected.fetch().then(isConnected =>
       this.setState({
-        showMap: isConnected
+        isOnline: isConnected
       })
     )
   }
@@ -81,8 +84,9 @@ export class Location extends Component {
     navigator.geolocation.getCurrentPosition(
       position => {
         this.setState({
+          showMap: true,
           centeringMap: false,
-          mapReady: false,
+          mapIsDraggable: false,
           latitude: position.coords.latitude,
           longitude: position.coords.longitude,
           accuracy: position.coords.accuracy
@@ -94,10 +98,12 @@ export class Location extends Component {
           setTimeout(() => {
             this.getDeviceLocation()
           }, 5000)
-        } else if (error.code === 3) {
-          setTimeout(() => {
-            this.getDeviceLocation()
-          }, 30000)
+        } else {
+          this.setState({
+            showMap: true,
+            latitudeDelta: 100,
+            longitudeDelta: 100
+          })
         }
 
         this.setState({ centeringMap: false, mapsError: error.code })
@@ -131,19 +137,26 @@ export class Location extends Component {
       .catch()
   }
   onDragMap = region => {
-    if (!this.state.mapReady) {
+    console.log('onDragMap', this.state.mapIsDraggable)
+    if (!this.state.mapIsDraggable) {
       return this.setState({
-        mapReady: true
+        mapIsDraggable: true
       })
+    } else {
+      const { latitude, longitude } = region
+
+      // prevent jumping of the marker
+      if (
+        this.state.latitude !== latitude ||
+        this.state.longitude !== longitude
+      ) {
+        this.setState({
+          latitude,
+          longitude,
+          accuracy: 0
+        })
+      }
     }
-
-    const { latitude, longitude } = region
-
-    this.setState({
-      latitude,
-      longitude,
-      accuracy: 0
-    })
   }
   getDraft = () =>
     this.props.drafts.filter(
@@ -194,12 +207,17 @@ export class Location extends Component {
     const {
       mapsError,
       latitude,
+      longitudeDelta,
+      latitudeDelta,
       longitude,
       accuracy,
       searchAddress,
       centeringMap,
+      isOnline,
       showMap
     } = this.state
+
+    console.log(latitude, longitude)
 
     const draft = this.getDraft()
 
@@ -210,9 +228,9 @@ export class Location extends Component {
       >
         <View>
           <View>
-            {showMap ? (
+            {isOnline ? (
               <View>
-                {latitude ? (
+                {showMap ? (
                   <View>
                     <View pointerEvents="none" style={styles.fakeMarker}>
                       <Image source={marker} />
@@ -229,11 +247,11 @@ export class Location extends Component {
                     />
                     <MapView
                       style={styles.map}
-                      region={{
-                        latitude,
-                        longitude,
-                        latitudeDelta: 0.005,
-                        longitudeDelta: 0.005
+                      initialRegion={{
+                        latitude: latitude || 0,
+                        longitude: longitude || 0,
+                        latitudeDelta,
+                        longitudeDelta
                       }}
                       onRegionChangeComplete={this.onDragMap}
                     />
@@ -296,7 +314,7 @@ export class Location extends Component {
 
           <View>
             <Text id="accuracy" style={styles.container}>
-              {accuracy
+              {isOnline && accuracy
                 ? `${t('views.family.gpsAccurate').replace(
                     '%n',
                     Math.round(accuracy)
