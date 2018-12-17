@@ -6,7 +6,8 @@ import {
   ActivityIndicator,
   Text,
   Image,
-  TouchableOpacity
+  TouchableOpacity,
+  NetInfo
 } from 'react-native'
 import { connect } from 'react-redux'
 import PropTypes from 'prop-types'
@@ -32,9 +33,19 @@ export class Location extends Component {
     errorsDetected: [],
     mapsError: false,
     mapReady: false,
-    centeringMap: false
+    centeringMap: false,
+    showMap: false
   }
   errorsDetected = []
+
+  constructor(props) {
+    super(props)
+    NetInfo.isConnected.fetch().then(isConnected =>
+      this.setState({
+        showMap: isConnected
+      })
+    )
+  }
 
   detectError = (error, field) => {
     if (error && !this.errorsDetected.includes(field)) {
@@ -92,10 +103,9 @@ export class Location extends Component {
         this.setState({ centeringMap: false, mapsError: error.code })
       },
       {
-        enableHighAccuracy: true,
-        timeout: 30000,
-        maximumAge: 1000,
-        distanceFilter: 1000
+        enableHighAccuracy: false,
+        timeout: 10000,
+        maximumAge: 0
       }
     )
   }
@@ -187,7 +197,8 @@ export class Location extends Component {
       longitude,
       accuracy,
       searchAddress,
-      centeringMap
+      centeringMap,
+      showMap
     } = this.state
 
     const draft = this.getDraft()
@@ -197,112 +208,131 @@ export class Location extends Component {
         style={globalStyles.background}
         contentContainerStyle={styles.contentContainer}
       >
-        {latitude ? (
+        <View>
           <View>
-            <View pointerEvents="none" style={styles.fakeMarker}>
-              <Image source={marker} />
-            </View>
-            <SearchBar
-              id="searchAddress"
-              style={styles.search}
-              placeholder={t('views.family.searchByStreetOrPostalCode')}
-              onChangeText={searchAddress => this.setState({ searchAddress })}
-              onSubmit={this.searcForAddress}
-              value={searchAddress}
-            />
-            <MapView
-              style={styles.map}
-              region={{
-                latitude,
-                longitude,
-                latitudeDelta: 0.005,
-                longitudeDelta: 0.005
-              }}
-              onRegionChangeComplete={this.onDragMap}
-            />
-            {centeringMap ? (
-              <ActivityIndicator
-                style={styles.center}
-                size={54}
-                color={colors.palegreen}
-              />
-            ) : (
-              <TouchableOpacity
-                id="centerMap"
-                style={styles.center}
-                onPress={this.getDeviceLocation}
-              >
-                <Image source={center} style={{ width: 21, height: 21 }} />
-              </TouchableOpacity>
-            )}
-          </View>
-        ) : (
-          <View style={[styles.placeholder, styles.map]}>
-            <ActivityIndicator
-              style={styles.spinner}
-              size={80}
-              color={colors.palered}
-            />
-            {!mapsError ? (
-              <Text style={globalStyles.h2}>
-                {t('views.family.gettingYourLocation')}
-              </Text>
-            ) : (
+            {showMap ? (
               <View>
-                <Text style={[globalStyles.h2, styles.centerText]}>Hmmm!</Text>
-                <Text style={[styles.errorMsg, styles.centerText]}>
-                  {mapsError === 2
-                    ? t('views.family.somethingIsNotWorking')
-                    : t('views.family.cannotFindLocation')}
-                </Text>
-                <Text style={[styles.errorSubMsg, styles.centerText]}>
-                  {mapsError === 2
-                    ? t('views.family.checkLocationServicesTurnedOn')
-                    : t('views.family.giveDetailInTheFormBelow')}
-                </Text>
+                {latitude ? (
+                  <View>
+                    <View pointerEvents="none" style={styles.fakeMarker}>
+                      <Image source={marker} />
+                    </View>
+                    <SearchBar
+                      id="searchAddress"
+                      style={styles.search}
+                      placeholder={t('views.family.searchByStreetOrPostalCode')}
+                      onChangeText={searchAddress =>
+                        this.setState({ searchAddress })
+                      }
+                      onSubmit={this.searcForAddress}
+                      value={searchAddress}
+                    />
+                    <MapView
+                      style={styles.map}
+                      region={{
+                        latitude,
+                        longitude,
+                        latitudeDelta: 0.005,
+                        longitudeDelta: 0.005
+                      }}
+                      onRegionChangeComplete={this.onDragMap}
+                    />
+                    {centeringMap ? (
+                      <ActivityIndicator
+                        style={styles.center}
+                        size={54}
+                        color={colors.palegreen}
+                      />
+                    ) : (
+                      <TouchableOpacity
+                        id="centerMap"
+                        style={styles.center}
+                        onPress={this.getDeviceLocation}
+                      >
+                        <Image
+                          source={center}
+                          style={{ width: 21, height: 21 }}
+                        />
+                      </TouchableOpacity>
+                    )}
+                  </View>
+                ) : (
+                  <View style={[styles.placeholder, styles.map]}>
+                    <ActivityIndicator
+                      style={styles.spinner}
+                      size={80}
+                      color={colors.palered}
+                    />
+                    {!mapsError ? (
+                      <Text style={globalStyles.h2}>
+                        {t('views.family.gettingYourLocation')}
+                      </Text>
+                    ) : (
+                      <View>
+                        <Text style={[globalStyles.h2, styles.centerText]}>
+                          Hmmm!
+                        </Text>
+                        <Text style={[styles.errorMsg, styles.centerText]}>
+                          {mapsError === 2
+                            ? t('views.family.somethingIsNotWorking')
+                            : t('views.family.cannotFindLocation')}
+                        </Text>
+                        <Text style={[styles.errorSubMsg, styles.centerText]}>
+                          {mapsError === 2
+                            ? t('views.family.checkLocationServicesTurnedOn')
+                            : t('views.family.giveDetailInTheFormBelow')}
+                        </Text>
+                      </View>
+                    )}
+                  </View>
+                )}
+              </View>
+            ) : (
+              <View style={styles.offlineMsg}>
+                <Text>Map is not available while offline</Text>
               </View>
             )}
           </View>
-        )}
 
-        <View>
-          <Text id="accuracy" style={styles.container}>
-            {accuracy
-              ? `${t('views.family.gpsAccurate').replace(
-                  '%n',
-                  Math.round(accuracy)
-                )}`
-              : ' '}
-          </Text>
-          <Select
-            id="countrySelect"
-            required
-            onChange={this.addSurveyData}
-            label={t('views.family.country')}
-            countrySelect
-            placeholder={t('views.family.selectACountry')}
-            field="country"
-            value={this.getFieldValue(draft, 'country') || ''}
-            detectError={this.detectError}
-          />
-          <TextInput
-            id="postCode"
-            onChangeText={this.addSurveyData}
-            field="postCode"
-            value={this.getFieldValue(draft, 'postCode') || ''}
-            placeholder={t('views.family.postcode')}
-            detectError={this.detectError}
-          />
-          <TextInput
-            id="address"
-            onChangeText={this.addSurveyData}
-            field="address"
-            value={this.getFieldValue(draft, 'address') || ''}
-            placeholder={t('views.family.streetOrHouseDescription')}
-            validation="long-string"
-            detectError={this.detectError}
-            multiline
-          />
+          <View>
+            <Text id="accuracy" style={styles.container}>
+              {accuracy
+                ? `${t('views.family.gpsAccurate').replace(
+                    '%n',
+                    Math.round(accuracy)
+                  )}`
+                : ' '}
+            </Text>
+            <Select
+              id="countrySelect"
+              required
+              onChange={this.addSurveyData}
+              label={t('views.family.country')}
+              countrySelect
+              placeholder={t('views.family.selectACountry')}
+              field="country"
+              value={this.getFieldValue(draft, 'country') || ''}
+              detectError={this.detectError}
+            />
+            <TextInput
+              id="postCode"
+              onChangeText={this.addSurveyData}
+              field="postCode"
+              value={this.getFieldValue(draft, 'postCode') || ''}
+              placeholder={t('views.family.postcode')}
+              detectError={this.detectError}
+            />
+            <TextInput
+              id="address"
+              onChangeText={this.addSurveyData}
+              field="address"
+              value={this.getFieldValue(draft, 'address') || ''}
+              placeholder={t('views.family.streetOrHouseDescription')}
+              validation="long-string"
+              detectError={this.detectError}
+              multiline
+            />
+          </View>
         </View>
         <View style={{ marginTop: 15 }}>
           <Button
@@ -404,5 +434,9 @@ const styles = StyleSheet.create({
     fontSize: 14,
     lineHeight: 20,
     color: colors.palered
+  },
+  offlineMsg: {
+    paddingTop: 20,
+    alignItems: 'center'
   }
 })
