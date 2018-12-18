@@ -82,7 +82,7 @@ describe('Family Location component', () => {
         .props()
         .onChangeText('Foo', 'address')
 
-      expect(wrapper.instance().props.addSurveyData).toHaveBeenCalledTimes(3)
+      expect(wrapper.instance().props.addSurveyData).toHaveBeenCalledTimes(5)
     })
   })
 
@@ -251,7 +251,7 @@ describe('Render optimization', () => {
       drafts: [...wrapper.instance().props.drafts, { draftId: 5 }]
     })
     expect(wrapper.instance().props.navigation.isFocused).toHaveBeenCalledTimes(
-      4
+      8
     )
   })
   it('updates screen if focused', () => {

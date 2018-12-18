@@ -34,13 +34,14 @@ export class Location extends Component {
     searchAddress: '',
     errorsDetected: [],
     mapsError: false, // error code (2 for location off, 3 for timeout)
-    mapIsDraggable: false, // first time map sets region we shouldn't update
     centeringMap: false, // while map is centering we show a different spinner
     isOnline: true,
     showMap: false // show map even when no location is returned
   }
-  errorsDetected = []
 
+  mapIsDraggable = false
+  errorsDetected = []
+  locationCheckTimer
   constructor(props) {
     super(props)
     NetInfo.isConnected.fetch().then(isConnected =>
@@ -77,6 +78,7 @@ export class Location extends Component {
     }
     return draft.familyData[field]
   }
+
   getDeviceLocation = () => {
     this.setState({
       centeringMap: true
@@ -86,26 +88,31 @@ export class Location extends Component {
         this.setState({
           showMap: true,
           centeringMap: false,
-          mapIsDraggable: false,
           latitude: position.coords.latitude,
           longitude: position.coords.longitude,
           accuracy: position.coords.accuracy
         })
+        this.addSurveyData(position.coords.latitude, 'latitude')
+        this.addSurveyData(position.coords.longitude, 'longitude')
       },
       error => {
         // if error, try getting position after timeout
         if (error.code === 2) {
-          setTimeout(() => {
+          this.locationCheckTimer = setTimeout(() => {
             this.getDeviceLocation()
           }, 5000)
         } else {
-          this.setState({
-            showMap: true,
-            latitude: 0,
-            longitude: 0,
-            latitudeDelta: 100,
-            longitudeDelta: 100
-          })
+          const draft = this.getDraft()
+
+          if (!this.getFieldValue(draft, 'latitude')) {
+            this.setState({
+              showMap: true,
+              latitude: 0,
+              longitude: 0,
+              latitudeDelta: 100,
+              longitudeDelta: 100
+            })
+          }
         }
 
         this.setState({ centeringMap: false, mapsError: error.code })
@@ -139,10 +146,8 @@ export class Location extends Component {
       .catch()
   }
   onDragMap = region => {
-    if (!this.state.mapIsDraggable) {
-      return this.setState({
-        mapIsDraggable: true
-      })
+    if (!this.mapIsDraggable) {
+      this.mapIsDraggable = true
     } else {
       const { latitude, longitude } = region
 
@@ -151,6 +156,7 @@ export class Location extends Component {
         this.state.latitude !== latitude ||
         this.state.longitude !== longitude
       ) {
+        this.mapIsDraggable = false
         this.setState({
           latitude,
           longitude,
@@ -193,11 +199,17 @@ export class Location extends Component {
   }
 
   shouldComponentUpdate() {
+    if (!this.props.navigation.isFocused()) {
+      clearTimeout(this.locationCheckTimer)
+      this.locationCheckTimer = null
+    }
     return this.props.navigation.isFocused()
   }
 
   handleClick = () => {
     this.addSurveyData(this.state.accuracy, 'accuracy')
+    this.addSurveyData(this.state.latitude, 'latitude')
+    this.addSurveyData(this.state.longitude, 'longitude')
     this.props.navigation.navigate('SocioEconomicQuestion', {
       draftId: this.props.navigation.getParam('draftId'),
       survey: this.props.navigation.getParam('survey')
@@ -245,8 +257,17 @@ export class Location extends Component {
                       value={searchAddress}
                     />
                     <MapView
+                      ref={ref => {
+                        this.map = ref
+                      }}
                       style={styles.map}
                       initialRegion={{
+                        latitude,
+                        longitude,
+                        latitudeDelta,
+                        longitudeDelta
+                      }}
+                      region={{
                         latitude,
                         longitude,
                         latitudeDelta,
