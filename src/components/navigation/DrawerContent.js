@@ -121,7 +121,8 @@ export class DrawerContent extends Component {
               />
               <Text style={styles.title}>{i18n.t('views.logout.logout')}</Text>
             </View>
-            {this.props.drafts.length ? (
+            {this.props.drafts.filter(draft => draft.status !== 'Synced')
+              .length ? (
               <View style={{ alignItems: 'center' }}>
                 <Text style={globalStyles.h3}>
                   {i18n.t('views.logout.youHaveUnsynchedData')}
