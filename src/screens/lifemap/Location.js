@@ -101,6 +101,8 @@ export class Location extends Component {
         } else {
           this.setState({
             showMap: true,
+            latitude: 0,
+            longitude: 0,
             latitudeDelta: 100,
             longitudeDelta: 100
           })
@@ -137,7 +139,6 @@ export class Location extends Component {
       .catch()
   }
   onDragMap = region => {
-    console.log('onDragMap', this.state.mapIsDraggable)
     if (!this.state.mapIsDraggable) {
       return this.setState({
         mapIsDraggable: true
@@ -155,6 +156,8 @@ export class Location extends Component {
           longitude,
           accuracy: 0
         })
+        this.addSurveyData(latitude, 'latitude')
+        this.addSurveyData(longitude, 'longitude')
       }
     }
   }
@@ -170,7 +173,8 @@ export class Location extends Component {
     } else {
       this.setState({
         latitude: this.getFieldValue(draft, 'latitude'),
-        longitude: this.getFieldValue(draft, 'longitude')
+        longitude: this.getFieldValue(draft, 'longitude'),
+        showMap: true
       })
     }
 
@@ -193,10 +197,7 @@ export class Location extends Component {
   }
 
   handleClick = () => {
-    this.addSurveyData(this.state.latitude, 'latitude')
-    this.addSurveyData(this.state.longitude, 'longitude')
     this.addSurveyData(this.state.accuracy, 'accuracy')
-
     this.props.navigation.navigate('SocioEconomicQuestion', {
       draftId: this.props.navigation.getParam('draftId'),
       survey: this.props.navigation.getParam('survey')
@@ -216,8 +217,6 @@ export class Location extends Component {
       isOnline,
       showMap
     } = this.state
-
-    console.log(latitude, longitude)
 
     const draft = this.getDraft()
 
@@ -248,8 +247,8 @@ export class Location extends Component {
                     <MapView
                       style={styles.map}
                       initialRegion={{
-                        latitude: latitude || 0,
-                        longitude: longitude || 0,
+                        latitude,
+                        longitude,
                         latitudeDelta,
                         longitudeDelta
                       }}
