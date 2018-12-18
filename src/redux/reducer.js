@@ -1,4 +1,5 @@
 import { combineReducers } from 'redux'
+import { Sentry } from 'react-native-sentry'
 import {
   SET_LOGIN_STATE,
   USER_LOGOUT,
@@ -368,7 +369,17 @@ export const drafts = (state = [], action) => {
               }
             : draft
       )
-    case SUBMIT_DRAFT_ROLLBACK:
+    case SUBMIT_DRAFT_ROLLBACK: {
+      Sentry.captureBreadcrumb({
+        message: 'Sync error',
+        category: 'action',
+        data: {
+          meta: JSON.stringify(action.meta),
+          payload: JSON.stringify(action.payload),
+          type: action.type
+        }
+      })
+      Sentry.captureException('Sync error')
       return state.map(
         draft =>
           draft.draftId === action.meta.id
@@ -378,6 +389,7 @@ export const drafts = (state = [], action) => {
               }
             : draft
       )
+    }
     case DELETE_DRAFT:
       return state.filter(draft => draft.draftId !== action.id)
     default:
