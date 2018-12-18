@@ -98,6 +98,9 @@ export class Location extends Component {
       error => {
         // if error, try getting position after timeout
         if (error.code === 2) {
+          this.setState({
+            showMap: false
+          })
           this.locationCheckTimer = setTimeout(() => {
             this.getDeviceLocation()
           }, 5000)
