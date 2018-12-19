@@ -71,6 +71,12 @@ export class Question extends Component {
         draftId: this.draftId,
         survey: this.survey
       })
+    } else if (this.step + 1 >= this.indicators.length && answer === 0) {
+      console.log(answer)
+      return this.props.navigation.navigate('Skipped', {
+        draftId: this.draftId,
+        survey: this.survey
+      })
     } else {
       return this.props.navigation.navigate('Skipped', {
         draftId: this.draftId,
