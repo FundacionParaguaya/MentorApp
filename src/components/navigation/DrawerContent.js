@@ -39,6 +39,9 @@ export class DrawerContent extends Component {
 
   render() {
     const { lng, user, navigation } = this.props
+    const unsyncedDataExists = this.props.drafts.filter(
+      draft => draft.status !== 'Synced'
+    ).length
     return (
       <ScrollView contentContainerStyle={styles.container}>
         <View>
@@ -121,7 +124,7 @@ export class DrawerContent extends Component {
               />
               <Text style={styles.title}>{i18n.t('views.logout.logout')}</Text>
             </View>
-            {this.props.drafts.length ? (
+            {unsyncedDataExists ? (
               <View style={{ alignItems: 'center' }}>
                 <Text style={globalStyles.h3}>
                   {i18n.t('views.logout.youHaveUnsynchedData')}
@@ -148,7 +151,7 @@ export class DrawerContent extends Component {
                 outlined
                 text={i18n.t('general.yes')}
                 borderColor={
-                  this.props.drafts.length ? colors.palered : colors.palegreen
+                  unsyncedDataExists ? colors.palered : colors.palegreen
                 }
                 style={{ width: 107, alignSelf: 'flex-start' }}
                 handleClick={this.logUserOut}
