@@ -32,7 +32,7 @@ export const login = (username, password, env) => dispatch =>
         username: data.user.username
       })
     )
-    .catch(e => console.log(e))
+    .catch(e => e)
 
 export const logout = () => ({
   type: USER_LOGOUT
