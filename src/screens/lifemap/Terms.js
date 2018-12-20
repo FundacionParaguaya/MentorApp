@@ -26,7 +26,6 @@ export class Terms extends Component {
   render() {
     const { t, navigation } = this.props
     const page = navigation.getParam('page')
-    console.log(this.survey.termsConditions.text.split('\n'))
 
     return (
       <ScrollView

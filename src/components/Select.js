@@ -65,10 +65,21 @@ class Select extends Component {
   render() {
     const { errorMsg, isOpen } = this.state
     const { value, placeholder, required, options, countrySelect } = this.props
+    const defaultCountry = this.props.country
+      ? countryList.filter(item => item.code === this.props.country)[0]
+      : ''
+
+    let countries = countryList.filter(
+      country => country.code !== defaultCountry.code
+    )
+    // Add default country to the beginning of the list
+    countries.unshift(defaultCountry)
+    // Add prefer not to say answer at the end of the list
+    countries.push({ code: 'NONE', label: 'I prefer not to say' })
 
     let text
-    if (countrySelect && countryList.filter(item => item.code === value)[0]) {
-      text = countryList.filter(item => item.code === value)[0].label
+    if (countrySelect && countries.filter(item => item.code === value)[0]) {
+      text = countries.filter(item => item.code === value)[0].label
     } else if (
       !countrySelect &&
       options.filter(item => item.value === value)[0]
@@ -136,7 +147,7 @@ class Select extends Component {
               <View style={styles.dropdown}>
                 {countrySelect ? (
                   <ScrollView>
-                    {countryList.map(item => (
+                    {countries.map(item => (
                       <TouchableOpacity
                         key={item.code}
                         onPress={() => this.validateInput(item.code)}
@@ -192,6 +203,7 @@ Select.propTypes = {
   value: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
   placeholder: PropTypes.string.isRequired,
   field: PropTypes.string,
+  country: PropTypes.string,
   countrySelect: PropTypes.bool,
   required: PropTypes.bool,
   detectError: PropTypes.func

@@ -34,6 +34,9 @@ export class Location extends Component {
     mapReady: false,
     centeringMap: false
   }
+
+  survey = this.props.navigation.getParam('survey')
+
   errorsDetected = []
 
   detectError = (error, field) => {
@@ -150,19 +153,6 @@ export class Location extends Component {
         longitude: this.getFieldValue(draft, 'longitude')
       })
     }
-
-    // if the draft value of country is empty set the primary member's
-    // country of birth
-    if (!this.getFieldValue(draft, 'country')) {
-      this.addSurveyData(
-        draft.familyData.familyMembersList[0].birthCountry,
-        'country'
-      )
-
-      // also make sure to remove the empty field error set in
-      // the Select's componentDidMount
-      this.detectError(false, 'country')
-    }
   }
 
   shouldComponentUpdate() {
@@ -176,7 +166,7 @@ export class Location extends Component {
 
     this.props.navigation.navigate('SocioEconomicQuestion', {
       draftId: this.props.navigation.getParam('draftId'),
-      survey: this.props.navigation.getParam('survey')
+      survey: this.survey
     })
   }
   render() {
@@ -284,6 +274,7 @@ export class Location extends Component {
             field="country"
             value={this.getFieldValue(draft, 'country') || ''}
             detectError={this.detectError}
+            country={this.survey.surveyConfig.surveyLocation.country}
           />
           <TextInput
             id="postCode"
