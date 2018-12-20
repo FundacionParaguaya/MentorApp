@@ -184,6 +184,7 @@ export class FamilyParticipant extends Component {
             onChange={this.addSurveyData}
             label={t('views.family.countryOfBirth')}
             countrySelect
+            country={this.survey.surveyConfig.surveyLocation.country}
             placeholder={t('views.family.selectACountry')}
             field="birthCountry"
             value={this.getFieldValue(draft, 'birthCountry') || ''}
