@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import { ScrollView, View, Text, StyleSheet } from 'react-native'
 import PropTypes from 'prop-types'
 import { withNamespaces } from 'react-i18next'
-
+import { connect } from 'react-redux'
 import globalStyles from '../../globalStyles'
 import colors from '../../theme.json'
 import RoundImage from '../../components/RoundImage'
@@ -19,8 +19,15 @@ const navigationRules = {
 }
 
 export class Terms extends Component {
+  survey = this.props.surveys.filter(
+    survey => survey.id === this.props.navigation.getParam('survey')
+  )[0]
+
   render() {
     const { t, navigation } = this.props
+    const page = navigation.getParam('page')
+    console.log(this.survey.termsConditions.text.split('\n'))
+
     return (
       <ScrollView
         style={globalStyles.background}
@@ -29,10 +36,14 @@ export class Terms extends Component {
         <View style={globalStyles.container}>
           <RoundImage source="check" />
           <Text style={[globalStyles.h2Bold, styles.heading]}>
-            {t('views.readCarefully')}
+            {page === 'terms'
+              ? this.survey.termsConditions.title
+              : this.survey.privacyPolicy.title}
           </Text>
           <Text id="content" style={[globalStyles.subline, styles.content]}>
-            {t(`views.${navigation.getParam('page')}`)}
+            {page === 'terms'
+              ? this.survey.termsConditions.text.replace(/\\n/g, '\n')
+              : this.survey.privacyPolicy.text.replace(/\\n/g, '\n')}
           </Text>
         </View>
         <View style={styles.buttonsBar}>
@@ -50,7 +61,7 @@ export class Terms extends Component {
               navigation.navigate(
                 navigationRules[navigation.getParam('page')].nextPage,
                 {
-                  survey: this.props.navigation.getParam('survey'),
+                  survey: this.survey.id,
                   page: navigationRules[navigation.getParam('page')].param
                 }
               )
@@ -67,7 +78,11 @@ Terms.propTypes = {
   navigation: PropTypes.object.isRequired
 }
 
-export default withNamespaces()(Terms)
+const mapStateToProps = ({ surveys }) => ({
+  surveys
+})
+
+export default withNamespaces()(connect(mapStateToProps)(Terms))
 
 const styles = StyleSheet.create({
   contentContainer: {
