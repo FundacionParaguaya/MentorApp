@@ -202,29 +202,25 @@ export class SocioEconomicQuestion extends Component {
                   {questionsForThisScreen.forFamilyMember.map(
                     question =>
                       question.answerType === 'select' ? (
-                        <View>
-                          {console.log(question)}
-                          {console.log(question.options)}
-                          <Select
-                            key={question.codeName}
-                            required={question.required}
-                            onChange={(text, field) =>
-                              this.addSurveyFamilyMemberData(text, field, i)
-                            }
-                            placeholder={question.questionText}
-                            label={question.questionText}
-                            field={question.codeName}
-                            value={
-                              this.getFamilyMemberFieldValue(
-                                draft,
-                                question.codeName,
-                                i
-                              ) || ''
-                            }
-                            detectError={this.detectError}
-                            options={question.options}
-                          />
-                        </View>
+                        <Select
+                          key={question.codeName}
+                          required={question.required}
+                          onChange={(text, field) =>
+                            this.addSurveyFamilyMemberData(text, field, i)
+                          }
+                          placeholder={question.questionText}
+                          label={question.questionText}
+                          field={question.codeName}
+                          value={
+                            this.getFamilyMemberFieldValue(
+                              draft,
+                              question.codeName,
+                              i
+                            ) || ''
+                          }
+                          detectError={this.detectError}
+                          options={question.options}
+                        />
                       ) : (
                         <TextInput
                           key={question.codeName}
@@ -300,8 +296,8 @@ const styles = StyleSheet.create({
   memberName: {
     marginHorizontal: 20,
     fontWeight: 'normal',
-    marginTop: 23,
-    marginBottom: -20,
+    marginTop: 10,
+    marginBottom: 10,
     fontSize: 16,
     lineHeight: 20
   }
