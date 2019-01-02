@@ -22,15 +22,16 @@ class DraftListItem extends Component {
         return colors.palegrey
     }
   }
-  linkDisabled =
-    this.props.item.status === 'Synced' ||
-    this.props.item.status === 'Pending sync'
+
   render() {
+    const linkDisabled =
+      this.props.item.status === 'Synced' ||
+      this.props.item.status === 'Pending sync'
     return (
       <TouchableOpacity
         style={{ ...styles.listItem, ...styles.borderBottom }}
         onPress={this.props.handleClick}
-        disabled={this.linkDisabled}
+        disabled={linkDisabled}
       >
         <View>
           <Text style={globalStyles.tag}>
@@ -49,7 +50,7 @@ class DraftListItem extends Component {
             {this.props.item.status}
           </Text>
         </View>
-        {!this.linkDisabled ? (
+        {!linkDisabled ? (
           <Icon name="navigate-next" size={23} color={colors.lightdark} />
         ) : (
           <View />

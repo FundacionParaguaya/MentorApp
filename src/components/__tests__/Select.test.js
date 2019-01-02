@@ -29,7 +29,7 @@ describe('Select dropdown', () => {
     })
   })
   it('renders all necessary text fields', () => {
-    expect(wrapper.find(Text)).toHaveLength(3)
+    expect(wrapper.find(Text)).toHaveLength(5)
   })
 
   it('opens a modal when pressed', () => {
@@ -45,10 +45,29 @@ describe('Select dropdown', () => {
         .find(Modal)
         .last()
         .find(TouchableOpacity)
-    ).toHaveLength(3)
+    ).toHaveLength(5)
   })
 
   it('selects an option when one is pressed', () => {
+    const spy = jest.spyOn(wrapper.instance(), 'validateInput')
+    wrapper
+      .find(TouchableOpacity)
+      .first()
+      .props()
+      .onPress()
+
+    wrapper
+      .find(Modal)
+      .last()
+      .find(TouchableOpacity)
+      .at(3)
+      .props()
+      .onPress()
+
+    expect(spy).toHaveBeenCalledTimes(1)
+    expect(spy).toHaveBeenCalledWith('us')
+  })
+  it('selects NONE if the last option is pressed', () => {
     const spy = jest.spyOn(wrapper.instance(), 'validateInput')
     wrapper
       .find(TouchableOpacity)
@@ -65,7 +84,7 @@ describe('Select dropdown', () => {
       .onPress()
 
     expect(spy).toHaveBeenCalledTimes(1)
-    expect(spy).toHaveBeenCalledWith('us')
+    expect(spy).toHaveBeenCalledWith('NONE')
   })
   it('render a list of items when passed options', () => {
     props = createTestProps({

@@ -27,7 +27,13 @@ const createTestProps = props => ({
   t: value => value,
   navigation: {
     navigate: jest.fn(),
-    getParam: param => (param === 'draftId' ? 2 : { surveyId: 100 }),
+    getParam: param =>
+      param === 'draftId'
+        ? 2
+        : {
+            surveyId: 100,
+            surveyConfig: { surveyLocation: { country: 'BG' } }
+          },
     isFocused: jest.fn(() => true)
   },
   addSurveyData: jest.fn(),
@@ -82,7 +88,7 @@ describe('Family Location component', () => {
         .props()
         .onChangeText('Foo', 'address')
 
-      expect(wrapper.instance().props.addSurveyData).toHaveBeenCalledTimes(5)
+      expect(wrapper.instance().props.addSurveyData).toHaveBeenCalledTimes(4)
     })
   })
 
@@ -177,7 +183,13 @@ describe('Family Location component', () => {
 
     expect(wrapper.instance().props.navigation.navigate).toHaveBeenCalledWith(
       'SocioEconomicQuestion',
-      { draftId: 2, survey: { surveyId: 100 } }
+      {
+        draftId: 2,
+        survey: {
+          surveyId: 100,
+          surveyConfig: { surveyLocation: { country: 'BG' } }
+        }
+      }
     )
   })
   it('detects errors', () => {
@@ -251,7 +263,7 @@ describe('Render optimization', () => {
       drafts: [...wrapper.instance().props.drafts, { draftId: 5 }]
     })
     expect(wrapper.instance().props.navigation.isFocused).toHaveBeenCalledTimes(
-      8
+      6
     )
   })
   it('updates screen if focused', () => {

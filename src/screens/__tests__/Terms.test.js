@@ -7,11 +7,18 @@ import Button from '../../components/Button'
 
 const createTestProps = props => ({
   navigation: {
-    getParam: () => 'privacy',
+    getParam: param => (param === 'survey' ? 1 : 'privacy'),
     navigate: jest.fn(),
     setParams: jest.fn()
   },
-  t: page => page,
+  t: jest.fn(page => page),
+  surveys: [
+    {
+      id: 1,
+      termsConditions: { text: 'text', title: 'title' },
+      privacyPolicy: { text: 'text', title: 'title' }
+    }
+  ],
   ...props
 })
 
@@ -28,8 +35,10 @@ describe('Terms/Privacy view', () => {
     expect(wrapper.find(RoundImage)).toHaveLength(1)
     expect(wrapper.find(RoundImage)).toHaveProp('source', 'check')
   })
-  it('get proper string from page param in navigation', () => {
-    expect(wrapper.find('#content').props().children).toBe('views.privacy')
+  it('get proper string from survey privacy policy', () => {
+    expect(wrapper.find('#content').props().children).toBe(
+      wrapper.instance().props.surveys[0].privacyPolicy.text
+    )
   })
   it('renders an agree and disagree button', () => {
     expect(wrapper.find(Button)).toHaveLength(2)

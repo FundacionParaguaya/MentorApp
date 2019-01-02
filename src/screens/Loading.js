@@ -110,7 +110,7 @@ export class Loading extends Component {
                 Syncing surveys: {surveys.length} / {surveys.length}
               </Text>
               <Text>
-                Syncinc survey images: {sync.images.synced} /{' '}
+                Syncing survey images: {sync.images.synced} /{' '}
                 {sync.images.total}
               </Text>
             </View>
