@@ -13,7 +13,7 @@ import colors from '../theme.json'
 import globalStyles from '../globalStyles'
 import Icon from 'react-native-vector-icons/MaterialIcons'
 import { connect } from 'react-redux'
-import { isTablet, isPortrait } from '../responsivenessHelpers'
+import { isPortrait } from '../responsivenessHelpers'
 const slideColors = {
   1: 'red',
   2: 'gold',
@@ -95,12 +95,7 @@ export class Slider extends Component {
                 <Image
                   source={slide.url}
                   style={{
-                    ...styles.image,
-                    height: isPortrait(dimensions)
-                      ? isTablet(dimensions)
-                        ? height / 2
-                        : height / 3
-                      : height / 4
+                    ...styles.image
                   }}
                 />
                 <Text
