@@ -1,12 +1,5 @@
 This is the moblie app for the Poverty Stoplight platform. It is a native, not a web, app which requires you to setup your machine for native development.
 
-## Table of Contents
-
-- [Prerequisites](#prerequisites)
-- [Instalation](#to-install)
-- [Running](#to-run)
-- [Documentation](#Docs)
-
 ## Prerequisites
 
 ### For OSX
@@ -36,3 +29,4 @@ This is the moblie app for the Poverty Stoplight platform. It is a native, not a
 - [Running the app in Dev mode on a real device](docs/run-on-device.md)
 - [Using debugging tools](docs/debugging.md)
 - [Deploying on Play Store](docs/deploying.md)
+- [Versioning](docs/versioning.md)
