@@ -2,11 +2,11 @@
 
 To deploy the app on the Play Store, you need access to it on the Google Play Console. If you don't have access ask the product owner. If you have access follow these steps:
 
-1. Open `/android/app/build.gradle`, find the lines with `versionCode` ane `versionName` and bump up both versions with one. For example:
+1. Open `/android/app/build.gradle` and find the lines with `versionCode` ane `versionName`. `versionCode` goes up by one number. `versionName` is set to the same number decided for this release - **please follow the [versioning](versioning.md) guide**. For example:
 
 ```
-versionCode 3 // becomes versionCode 4
-versionName "3.0" // becomes versionName "4.0"
+versionCode 6 // becomes versionCode 7
+versionName "1.2.1" // becomes versionName "1.2.2" or "1.3.0"
 ```
 
 2. Open Android Studio on your dev machine.
