@@ -77,5 +77,3 @@ emulator -avd test
 ```
 npm run start-android
 ```
-
-[Back to README](README.md)

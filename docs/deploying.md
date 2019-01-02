@@ -24,5 +24,3 @@ versionName "3.0" // becomes versionName "4.0"
 14. In the next screen click Browse Files and navigate to the `app-release.apk` file in the release folder you saw at step 8.
 15. After the file is selected on the same screen make sure that in the section at the bottom labeled `What's new in this release?` you change up the text a bit. You can do any small change. Aslo check if the `Release name` is the version you put in step 1.
 16. Finaly, hit Review.
-
-[Back to README](README.md)

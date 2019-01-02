@@ -27,5 +27,3 @@ Please note that a connected device in Dev mode is not representative of the act
 ## Debugger
 
 When you enable `Debug JS Remotely` a Chrome tab will open, showing any console logs, helping you with the debugging process. [React Native Debugger](https://github.com/jhen0409/react-native-debugger) is a standalone alternative, which also allows you to monitor store changes and use the Inspector to examine specific React components as if in a normal DOM tree.
-
-[Back to README](README.md)

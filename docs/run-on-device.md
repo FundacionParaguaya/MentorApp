@@ -10,7 +10,7 @@ This guide describes how to run and develop the app on a physical device.
 
 3. Run `npm run start-android`. Since there is no emulator running, the command will try to run the app on the connected device. Like with emulator mode, wait a bit for the app to appear on the device screen.
 
-Now you should be able to build and see the current version on the connected device. Refer to [debugging](docs/debugging.md) to enhance your development experience.
+Now you should be able to build and see the current version on the connected device. Refer to [debugging](debugging.md) to enhance your development experience.
 
 ### Troubleshooting
 
@@ -19,5 +19,3 @@ In case you see a red screen with `unable to load script from assets index.andro
 1. (in project directory) run `mkdir android/app/src/main/assets`
 2. run `react-native bundle --platform android --dev false --entry-file index.js --bundle-output android/app/src/main/assets/index.android.bundle --assets-dest android/app/src/main/res`
 3. Try starting the app again `npm run android-start`
-
-[Back to README](README.md)
