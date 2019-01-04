@@ -91,10 +91,11 @@ export class Question extends Component {
     const { t } = this.props
     return (
       <ScrollView style={globalStyles.background}>
-        <View style={{ ...globalStyles.container, paddingTop: 20 }}>
-          <Text style={{ ...globalStyles.h5, textAlign: 'right' }}>{`${this
-            .step + 1} / ${this.indicators.length}`}</Text>
-          <Text style={{ ...globalStyles.h3 }}>{`${this.step + 1}. ${
+        <View style={{ ...globalStyles.container, paddingTop: 15 }}>
+          <Text style={{ ...globalStyles.h5 }}>
+            {this.indicator.dimension.toUpperCase()}
+          </Text>
+          <Text style={{ ...globalStyles.h3, marginTop: 5 }}>{`${
             this.indicator.questionText
           }`}</Text>
           <ProgressBarAndroid
@@ -102,7 +103,7 @@ export class Question extends Component {
             color={colors.green}
             indeterminate={false}
             progress={(this.step + 1) / this.indicators.length}
-            style={{ marginTop: 35 }}
+            style={{ marginTop: 5, marginBottom: -15 }}
           />
         </View>
         <Slider

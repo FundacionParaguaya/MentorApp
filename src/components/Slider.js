@@ -98,6 +98,19 @@ export class Slider extends Component {
                     ...styles.image
                   }}
                 />
+                {this.props.value === slide.value ? (
+                  <View
+                    id="icon-view"
+                    style={{
+                      ...styles.iconBig,
+                      backgroundColor: colors[slideColors[this.props.value]]
+                    }}
+                  >
+                    <Icon name="done" size={56} color={colors.white} />
+                  </View>
+                ) : (
+                  <View />
+                )}
                 <Text
                   style={{
                     ...globalStyles.p,
@@ -108,23 +121,6 @@ export class Slider extends Component {
                   {slide.description}
                 </Text>
               </TouchableOpacity>
-            </View>
-          ))}
-          {this.props.slides.map((slide, i) => (
-            <View style={{ width: '33%', marginTop: -40 }} key={i}>
-              {this.props.value === slide.value ? (
-                <View
-                  id="icon-view"
-                  style={{
-                    ...styles.iconBig,
-                    backgroundColor: colors[slideColors[this.props.value]]
-                  }}
-                >
-                  <Icon name="done" size={56} color={colors.white} />
-                </View>
-              ) : (
-                <View />
-              )}
             </View>
           ))}
         </ScrollView>
@@ -146,12 +142,11 @@ const styles = StyleSheet.create({
   text: {
     color: colors.white,
     textAlign: 'center',
-    padding: 15,
-    paddingBottom: 45
+    padding: 15
   },
   image: {
     width: '100%',
-    marginTop: 15
+    marginTop: 10
   },
   iconBig: {
     borderRadius: 40,
@@ -160,8 +155,8 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     alignSelf: 'center',
-    borderColor: colors.white,
-    borderWidth: 3
+    marginTop: -50,
+    marginBottom: -20
   }
 })
 
