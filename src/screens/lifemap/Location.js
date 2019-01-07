@@ -109,13 +109,23 @@ export class Location extends Component {
           const draft = this.getDraft()
 
           if (!this.getFieldValue(draft, 'latitude')) {
-            this.setState({
-              showMap: true,
-              latitude: 0,
-              longitude: 0,
-              latitudeDelta: 100,
-              longitudeDelta: 100
-            })
+            if (this.survey.surveyConfig.surveyLocation.latitude) {
+              this.setState({
+                showMap: true,
+                latitude: this.survey.surveyConfig.surveyLocation.latitude,
+                longitude: this.survey.surveyConfig.surveyLocation.longitude,
+                latitudeDelta: 1,
+                longitudeDelta: 1
+              })
+            } else {
+              this.setState({
+                showMap: true,
+                latitude: 0,
+                longitude: 0,
+                latitudeDelta: 100,
+                longitudeDelta: 100
+              })
+            }
           }
         }
 
