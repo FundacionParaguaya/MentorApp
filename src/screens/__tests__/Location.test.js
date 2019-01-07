@@ -72,82 +72,109 @@ describe('Family Location component', () => {
     const props = createTestProps()
     wrapper = shallow(<Location {...props} />)
   })
-  it('renders base ScrollView', () => {
-    expect(wrapper.find(ScrollView)).toHaveLength(1)
-  })
-  it('renders MapView', () => {
-    expect(wrapper.find(MapView)).toHaveLength(1)
-  })
-  it('gets device location', () => {
-    expect(wrapper).toHaveState({
-      latitude: 44,
-      longitude: 45
+  describe('offline', () => {
+    it('renders base ScrollView', () => {
+      expect(wrapper.find(ScrollView)).toHaveLength(1)
+    })
+
+    it('edits draft in field change', () => {
+      wrapper
+        .find('#postCode')
+        .props()
+        .onChangeText('123', 'postCode')
+
+      wrapper
+        .find('#address')
+        .props()
+        .onChangeText('Foo', 'address')
+
+      expect(wrapper.instance().props.addSurveyData).toHaveBeenCalledTimes(4)
     })
   })
 
-  it('updates Marker state after draging has finished', () => {
-    // initial map load
-    wrapper
-      .find(MapView)
-      .first()
-      .props()
-      .onRegionChangeComplete()
+  describe('online', () => {
+    beforeEach(() => {
+      const props = createTestProps()
+      wrapper = shallow(<Location {...props} />)
+      wrapper.setState({ showMap: true })
+    })
+    it('gets device location', () => {
+      expect(wrapper).toHaveState({
+        latitude: 44,
+        longitude: 45
+      })
+    })
 
-    // actual drag
-    wrapper
-      .find(MapView)
-      .first()
-      .props()
-      .onRegionChangeComplete({
+    it('renders MapView', () => {
+      expect(wrapper.find(MapView)).toHaveLength(1)
+    })
+
+    it('updates Marker state after draging has finished', () => {
+      // initial map load
+      wrapper
+        .find(MapView)
+        .first()
+        .props()
+        .onRegionChangeComplete()
+
+      // actual drag
+      wrapper
+        .find(MapView)
+        .first()
+        .props()
+        .onRegionChangeComplete({
+          latitude: 50,
+          longitude: 50
+        })
+
+      expect(wrapper).toHaveState({
         latitude: 50,
         longitude: 50
       })
-
-    expect(wrapper).toHaveState({
-      latitude: 50,
-      longitude: 50
-    })
-  })
-  it('shows GPS accuracy range', () => {
-    expect(wrapper.find('#accuracy')).toHaveHTML(
-      '<react-native-mock>views.family.gpsAccurate</react-native-mock>'
-    )
-    expect(wrapper).toHaveState({
-      accuracy: 15
-    })
-  })
-  it('edits draft in field change', () => {
-    wrapper
-      .find('#postCode')
-      .props()
-      .onChangeText('123', 'postCode')
-
-    wrapper
-      .find('#address')
-      .props()
-      .onChangeText('Foo', 'address')
-
-    expect(wrapper.instance().props.addSurveyData).toHaveBeenCalledTimes(2)
-  })
-  it('can search for address', () => {
-    const spy = jest.spyOn(wrapper.instance(), 'searcForAddress')
-
-    wrapper
-      .find(SearchBar)
-      .props()
-      .onChangeText('Sofia')
-
-    expect(wrapper).toHaveState({
-      searchAddress: 'Sofia'
     })
 
-    wrapper
-      .find(SearchBar)
-      .props()
-      .onSubmit()
+    it('shows GPS accuracy range', () => {
+      expect(wrapper.find('#accuracy')).toHaveHTML(
+        '<react-native-mock>views.family.gpsAccurate</react-native-mock>'
+      )
+      expect(wrapper).toHaveState({
+        accuracy: 15
+      })
+    })
 
-    expect(spy).toHaveBeenCalledTimes(1)
+    it('can search for address', () => {
+      const spy = jest.spyOn(wrapper.instance(), 'searcForAddress')
+
+      wrapper
+        .find(SearchBar)
+        .props()
+        .onChangeText('Sofia')
+
+      expect(wrapper).toHaveState({
+        searchAddress: 'Sofia'
+      })
+
+      wrapper
+        .find(SearchBar)
+        .props()
+        .onSubmit()
+
+      expect(spy).toHaveBeenCalledTimes(1)
+    })
+
+    it('centers the map on device location', () => {
+      wrapper
+        .find('#centerMap')
+        .props()
+        .onPress()
+
+      expect(wrapper).toHaveState({
+        latitude: 44,
+        longitude: 45
+      })
+    })
   })
+
   it('navigates to SocioEconomicQuestion with proper params', () => {
     wrapper
       .find('#continue')
@@ -216,22 +243,10 @@ describe('Family Location component', () => {
       })
     })
 
-    it("doesn't look for device location if there is one from draft", () => {
+    it('doesn\'t look for device location if there is one from draft', () => {
       const spy = jest.spyOn(wrapper.instance(), 'getDeviceLocation')
 
       expect(spy).toHaveBeenCalledTimes(0)
-    })
-
-    it('centers the map on device location', () => {
-      wrapper
-        .find('#centerMap')
-        .props()
-        .onPress()
-
-      expect(wrapper).toHaveState({
-        latitude: 44,
-        longitude: 45
-      })
     })
   })
 })
@@ -248,7 +263,7 @@ describe('Render optimization', () => {
       drafts: [...wrapper.instance().props.drafts, { draftId: 5 }]
     })
     expect(wrapper.instance().props.navigation.isFocused).toHaveBeenCalledTimes(
-      3
+      6
     )
   })
   it('updates screen if focused', () => {
