@@ -95,7 +95,11 @@ const survey = {
   id: 1,
   title: 'Test survey 1',
   surveyStoplightQuestions: [
-    { stoplightColors: [{ codeName: 'phoneNumber' }], required: false }
+    {
+      stoplightColors: [{ codeName: 'phoneNumber' }],
+      required: false,
+      dimension: 'Dimension'
+    }
   ]
 }
 
