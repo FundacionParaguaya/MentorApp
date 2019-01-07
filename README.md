@@ -1,6 +1,6 @@
-This is the moblie app for the Poverty Stoplight platform. It is a native, not a web, app which requires you to setup your machine for native development.
+This is the source repository for the Poverty Stoplight native mobile app. If you want to use the app get it for Android from the [Play Store](https://play.google.com/store/apps/details?id=com.povertystoplightapp). If you would like to participate as a dev read on.
 
-## Prerequisites
+## Prerequisites for development
 
 ### For OSX
 
