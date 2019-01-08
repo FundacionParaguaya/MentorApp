@@ -24,7 +24,6 @@ export class Loading extends Component {
   checkHydrationTimer
   state = {
     loadingData: false, // know when to show that data is synced
-    querriesAreMade: false, // know when actual querries are made, not the same as above
     cachingImages: false
   }
   clearTimers = () => {
@@ -36,9 +35,6 @@ export class Loading extends Component {
       loadingData: true
     })
     this.props.loadSurveys(url[this.props.env], this.props.user.token)
-    this.setState({
-      querriesAreMade: true
-    })
   }
   checkHydration = () => {
     if (getHydrationState() === false) {
@@ -63,7 +59,7 @@ export class Loading extends Component {
     const { total, synced } = this.props.sync.images
 
     if (
-      this.state.querriesAreMade &&
+      this.props.surveys.length &&
       !this.props.offline.outbox.lenght &&
       !this.state.cachingImages
     ) {
