@@ -42,72 +42,73 @@ export const generateNavOptions = ({ navigation, burgerMenu = true }) => ({
   headerRightContainerStyle: {
     marginRight: -16
   },
-  headerRight: !burgerMenu ? (
-    <View>
-      <TouchableOpacity
-        style={styles.touchable}
-        onPress={() => navigation.setParams({ modalOpen: true })}
-      >
-        <Icon name="close" size={25} color={colors.lightdark} />
-      </TouchableOpacity>
-      <Popup
-        isOpen={navigation.getParam('modalOpen')}
-        onClose={() => navigation.setParams({ modalOpen: false })}
-      >
-        {navigation.state.routeName === 'Terms' ||
-        navigation.state.routeName === 'Privacy' ||
-        (navigation.state.routeName === 'FamilyParticipant' &&
-          !navigation.getParam('draft')) ? (
-          <View>
-            <Text style={[globalStyles.centerText, globalStyles.h3]}>
-              {navigation.state.routeName === 'FamilyParticipant'
-                ? i18n.t('views.modals.lifeMapWillNotBeSaved')
-                : i18n.t('views.modals.weCannotContinueToCreateTheLifeMap')}
-            </Text>
-            <Text style={[globalStyles.centerText, styles.subline]}>
-              {i18n.t('views.modals.areYouSureYouWantToExit')}
-            </Text>
-          </View>
-        ) : (
-          <View>
-            <Text style={[globalStyles.centerText, globalStyles.h3]}>
-              {i18n.t('views.modals.yourLifemapIsNotComplete')}
-            </Text>
-            <Text style={[globalStyles.centerText, styles.subline]}>
-              {i18n.t('views.modals.thisWillBeSavedAsADraft')}
-            </Text>
-          </View>
-        )}
+  headerRight:
+    navigation.state.routeName !== 'Final' && !burgerMenu ? (
+      <View>
+        <TouchableOpacity
+          style={styles.touchable}
+          onPress={() => navigation.setParams({ modalOpen: true })}
+        >
+          <Icon name="close" size={25} color={colors.lightdark} />
+        </TouchableOpacity>
+        <Popup
+          isOpen={navigation.getParam('modalOpen')}
+          onClose={() => navigation.setParams({ modalOpen: false })}
+        >
+          {navigation.state.routeName === 'Terms' ||
+          navigation.state.routeName === 'Privacy' ||
+          (navigation.state.routeName === 'FamilyParticipant' &&
+            !navigation.getParam('draft')) ? (
+            <View>
+              <Text style={[globalStyles.centerText, globalStyles.h3]}>
+                {navigation.state.routeName === 'FamilyParticipant'
+                  ? i18n.t('views.modals.lifeMapWillNotBeSaved')
+                  : i18n.t('views.modals.weCannotContinueToCreateTheLifeMap')}
+              </Text>
+              <Text style={[globalStyles.centerText, styles.subline]}>
+                {i18n.t('views.modals.areYouSureYouWantToExit')}
+              </Text>
+            </View>
+          ) : (
+            <View>
+              <Text style={[globalStyles.centerText, globalStyles.h3]}>
+                {i18n.t('views.modals.yourLifemapIsNotComplete')}
+              </Text>
+              <Text style={[globalStyles.centerText, styles.subline]}>
+                {i18n.t('views.modals.thisWillBeSavedAsADraft')}
+              </Text>
+            </View>
+          )}
 
-        <View style={styles.buttonBar}>
-          <Button
-            outlined
-            text={i18n.t('general.yes')}
-            style={{ width: 107 }}
-            handleClick={() => {
-              if (
-                navigation.state.routeName === 'FamilyParticipant' &&
-                !navigation.getParam('draft')
-              ) {
-                store.dispatch(deleteDraft(navigation.getParam('draftId')))
-              }
+          <View style={styles.buttonBar}>
+            <Button
+              outlined
+              text={i18n.t('general.yes')}
+              style={{ width: 107 }}
+              handleClick={() => {
+                if (
+                  navigation.state.routeName === 'FamilyParticipant' &&
+                  !navigation.getParam('draft')
+                ) {
+                  store.dispatch(deleteDraft(navigation.getParam('draftId')))
+                }
 
-              navigation.popToTop()
-              navigation.navigate('Dashboard')
-            }}
-          />
-          <Button
-            outlined
-            text={i18n.t('general.no')}
-            style={{ width: 107 }}
-            handleClick={() => navigation.setParams({ modalOpen: false })}
-          />
-        </View>
-      </Popup>
-    </View>
-  ) : (
-    ''
-  ),
+                navigation.popToTop()
+                navigation.navigate('Dashboard')
+              }}
+            />
+            <Button
+              outlined
+              text={i18n.t('general.no')}
+              style={{ width: 107 }}
+              handleClick={() => navigation.setParams({ modalOpen: false })}
+            />
+          </View>
+        </Popup>
+      </View>
+    ) : (
+      <View />
+    ),
   headerLeft: burgerMenu ? (
     <TouchableOpacity
       style={styles.touchable}
