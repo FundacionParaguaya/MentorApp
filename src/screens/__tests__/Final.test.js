@@ -8,10 +8,14 @@ import LifemapVisual from '../../components/LifemapVisual'
 
 const createTestProps = props => ({
   t: value => value,
+  user: { token: 'token' },
+  env: 'env',
+  submitDraft: jest.fn(),
   navigation: {
     navigate: jest.fn(),
     popToTop: jest.fn(),
     reset: jest.fn(),
+
     getParam: jest.fn(param => {
       if (param === 'draftId') {
         return 1
@@ -65,5 +69,13 @@ describe('Final Lifemap View when no questions are skipped', () => {
         wrapper.instance().props.navigation.popToTop
       ).toHaveBeenCalledTimes(1)
     })
+  })
+  it('submits draft  when Button is clicked', () => {
+    wrapper
+      .find(Button)
+      .props()
+      .handleClick()
+
+    expect(wrapper.instance().props.submitDraft).toHaveBeenCalledTimes(1)
   })
 })

@@ -30,7 +30,6 @@ const createTestProps = props => ({
       }
     })
   },
-  submitDraft: jest.fn(),
   drafts: [
     {
       draftId: 1,
@@ -43,8 +42,7 @@ const createTestProps = props => ({
       ]
     }
   ],
-  user: { token: 'token' },
-  env: 'env',
+
   ...props
 })
 
