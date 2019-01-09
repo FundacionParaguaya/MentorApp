@@ -8,6 +8,8 @@ import LifemapVisual from '../../components/LifemapVisual'
 import Button from '../../components/Button'
 
 import globalStyles from '../../globalStyles'
+import { submitDraft } from '../../redux/actions'
+import { url } from '../../config'
 
 export class Final extends Component {
   draftId = this.props.navigation.getParam('draftId')
@@ -55,6 +57,12 @@ export class Final extends Component {
             colored
             text={t('general.close')}
             handleClick={() => {
+              this.props.submitDraft(
+                url[this.props.env],
+                this.props.user.token,
+                this.draftId,
+                draft
+              )
               this.props.navigation.popToTop()
               this.props.navigation.navigate('Dashboard')
             }}
@@ -78,11 +86,22 @@ const styles = StyleSheet.create({
 Final.propTypes = {
   t: PropTypes.func.isRequired,
   drafts: PropTypes.array.isRequired,
-  navigation: PropTypes.object.isRequired
+  navigation: PropTypes.object.isRequired,
+  submitDraft: PropTypes.func.isRequired
 }
 
-const mapStateToProps = ({ drafts }) => ({
-  drafts
+const mapStateToProps = ({ drafts, env, user }) => ({
+  env,
+  drafts,
+  user
 })
+const mapDispatchToProps = {
+  submitDraft
+}
 
-export default withNamespaces()(connect(mapStateToProps)(Final))
+export default withNamespaces()(
+  connect(
+    mapStateToProps,
+    mapDispatchToProps
+  )(Final)
+)

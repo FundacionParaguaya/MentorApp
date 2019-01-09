@@ -15,9 +15,9 @@ export class NavWrapper extends Component {
 
   dimensionChange = () => {
     this.props.setDimensions({
-      height: Dimensions.get('screen').height,
-      width: Dimensions.get('screen').width,
-      scale: Dimensions.get('screen').scale
+      height: Dimensions.get('window').height,
+      width: Dimensions.get('window').width,
+      scale: Dimensions.get('window').scale
     })
   }
   render() {
