@@ -1,7 +1,7 @@
 # Change Log
 
 ## [v1.2.3](https://github.com/FundacionParaguaya/MentorApp/tree/v1.2.3) (2019-01-09)
-[Full Changelog](https://github.com/FundacionParaguaya/MentorApp/compare/v1.2.1...v1.2.3)
+[Full Changelog](https://github.com/FundacionParaguaya/MentorApp/compare/v1.2.2...v1.2.3)
 
 **Implemented enhancements:**
 
@@ -20,13 +20,8 @@
 - Images do not synchronize [\#204](https://github.com/FundacionParaguaya/MentorApp/issues/204)
 - Issues downloading app and logging in test environment [\#202](https://github.com/FundacionParaguaya/MentorApp/issues/202)
 - Remove option to exit process on the final thankyou screen. [\#199](https://github.com/FundacionParaguaya/MentorApp/issues/199)
-- Incorrect Image resizing [\#195](https://github.com/FundacionParaguaya/MentorApp/issues/195)
-- Sync error [\#187](https://github.com/FundacionParaguaya/MentorApp/issues/187)
-- Issue in last indicator - Skipped Questions screen not showing - Checkbox for chosen indicator not s [\#182](https://github.com/FundacionParaguaya/MentorApp/issues/182)
 - Special Characters in the First Name/Last Name not implementing accent [\#168](https://github.com/FundacionParaguaya/MentorApp/issues/168)
 - Location doesn't always return position data [\#163](https://github.com/FundacionParaguaya/MentorApp/issues/163)
-- Incorrect log out message regarding synched data. [\#161](https://github.com/FundacionParaguaya/MentorApp/issues/161)
-- Unfillable Day field in Date of Birth Field in Family Participant screen [\#139](https://github.com/FundacionParaguaya/MentorApp/issues/139)
 - Proper performance fixes related to out of memory crashes [\#105](https://github.com/FundacionParaguaya/MentorApp/issues/105)
 - Fix image syncing after log out [\#257](https://github.com/FundacionParaguaya/MentorApp/pull/257) ([Danman7](https://github.com/Danman7))
 
@@ -37,24 +32,41 @@
 - Families list Screen [\#223](https://github.com/FundacionParaguaya/MentorApp/issues/223)
 - Order of Dimensions in Life Map results screen [\#220](https://github.com/FundacionParaguaya/MentorApp/issues/220)
 - Amend order of Indicators in UK Survey [\#200](https://github.com/FundacionParaguaya/MentorApp/issues/200)
-- Catch Sync Errors with Sentry [\#194](https://github.com/FundacionParaguaya/MentorApp/issues/194)
 - Validation requirements for Socio Economic \(in the UK Survey + set general future procedure\) [\#192](https://github.com/FundacionParaguaya/MentorApp/issues/192)
 - Default Dropdown Content for Poverty Stoplight Question [\#183](https://github.com/FundacionParaguaya/MentorApp/issues/183)
 - Choosing 5 priorities should not be mandatory [\#180](https://github.com/FundacionParaguaya/MentorApp/issues/180)
 - UK privacy notice [\#178](https://github.com/FundacionParaguaya/MentorApp/issues/178)
-- Create specification for unique per survey socio economic validation [\#177](https://github.com/FundacionParaguaya/MentorApp/issues/177)
 - Resizing and Responsiveness of Indicator imagery [\#175](https://github.com/FundacionParaguaya/MentorApp/issues/175)
+
+**Merged pull requests:**
+
+- Responsive images [\#251](https://github.com/FundacionParaguaya/MentorApp/pull/251) ([IvaKop](https://github.com/IvaKop))
+- Map ui update [\#196](https://github.com/FundacionParaguaya/MentorApp/pull/196) ([Danman7](https://github.com/Danman7))
+
+## [v1.2.2](https://github.com/FundacionParaguaya/MentorApp/tree/v1.2.2) (2018-12-21)
+[Full Changelog](https://github.com/FundacionParaguaya/MentorApp/compare/v1.2.1...v1.2.2)
+
+**Fixed bugs:**
+
+- Incorrect Image resizing [\#195](https://github.com/FundacionParaguaya/MentorApp/issues/195)
+- Sync error [\#187](https://github.com/FundacionParaguaya/MentorApp/issues/187)
+- Issue in last indicator - Skipped Questions screen not showing - Checkbox for chosen indicator not s [\#182](https://github.com/FundacionParaguaya/MentorApp/issues/182)
+- Incorrect log out message regarding synched data. [\#161](https://github.com/FundacionParaguaya/MentorApp/issues/161)
+- Unfillable Day field in Date of Birth Field in Family Participant screen [\#139](https://github.com/FundacionParaguaya/MentorApp/issues/139)
+
+**Closed issues:**
+
+- Catch Sync Errors with Sentry [\#194](https://github.com/FundacionParaguaya/MentorApp/issues/194)
+- Create specification for unique per survey socio economic validation [\#177](https://github.com/FundacionParaguaya/MentorApp/issues/177)
 - Spelling and Edition Issues [\#164](https://github.com/FundacionParaguaya/MentorApp/issues/164)
 - Responsive: Questions cut [\#152](https://github.com/FundacionParaguaya/MentorApp/issues/152)
 - Country Auto-select on Country of Birth and Location [\#82](https://github.com/FundacionParaguaya/MentorApp/issues/82)
 
 **Merged pull requests:**
 
-- Responsive images [\#251](https://github.com/FundacionParaguaya/MentorApp/pull/251) ([IvaKop](https://github.com/IvaKop))
 - Improve regex for name validation [\#217](https://github.com/FundacionParaguaya/MentorApp/pull/217) ([IvaKop](https://github.com/IvaKop))
 - Uk fixes [\#216](https://github.com/FundacionParaguaya/MentorApp/pull/216) ([IvaKop](https://github.com/IvaKop))
 - Pre release miscelleneous fixes [\#206](https://github.com/FundacionParaguaya/MentorApp/pull/206) ([IvaKop](https://github.com/IvaKop))
-- Map ui update [\#196](https://github.com/FundacionParaguaya/MentorApp/pull/196) ([Danman7](https://github.com/Danman7))
 
 ## [v1.2.1](https://github.com/FundacionParaguaya/MentorApp/tree/v1.2.1) (2018-12-14)
 [Full Changelog](https://github.com/FundacionParaguaya/MentorApp/compare/v1.2.0...v1.2.1)
