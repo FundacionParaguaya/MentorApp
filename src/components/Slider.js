@@ -5,8 +5,7 @@ import {
   ScrollView,
   Text,
   View,
-  TouchableOpacity,
-  InteractionManager
+  TouchableOpacity
 } from 'react-native'
 import Image from './CachedImage'
 import colors from '../theme.json'
@@ -24,7 +23,7 @@ export class Slider extends Component {
   state = {
     selectedColor: colors.green
   }
-
+  timer
   componentDidMount() {
     const { width, height } = this.props.dimensions
 
@@ -42,13 +41,16 @@ export class Slider extends Component {
     }
     // Slider scrolls to the appropriate slide
     if (value(this.props.value)) {
-      InteractionManager.runAfterInteractions(() => {
+      this.timer = setTimeout(() => {
         this.scrollView.scrollTo({
           x: (width - (1 / 10) * width) * value(this.props.value),
           animated: true
         })
-      })
+      }, 1)
     }
+  }
+  componentWillUnmount() {
+    clearTimeout(this.timer)
   }
 
   render() {
