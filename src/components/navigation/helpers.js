@@ -128,7 +128,9 @@ export const generateNavOptions = ({ navigation, burgerMenu = true }) => ({
             navigation.setParams({ backModalOpen: true })
           } else {
             navigation.setParams({ backModalOpen: false })
-            navigation.goBack()
+            navigation.getParam('onPressBack')
+              ? navigation.getParam('onPressBack')()
+              : navigation.goBack()
           }
         }}
       >
@@ -153,7 +155,9 @@ export const generateNavOptions = ({ navigation, burgerMenu = true }) => ({
             style={{ width: 107 }}
             handleClick={() => {
               store.dispatch(deleteDraft(navigation.getParam('draftId')))
-              navigation.goBack()
+              navigation.getParam('onPressBack')
+                ? navigation.getParam('onPressBack')()
+                : navigation.goBack()
             }}
           />
           <Button
