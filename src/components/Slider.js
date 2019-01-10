@@ -25,7 +25,7 @@ export class Slider extends Component {
   }
   timer
   componentDidMount() {
-    const { width, height } = this.props.dimensions
+    const { width } = this.props.dimensions
 
     const value = value => {
       switch (value) {
@@ -42,10 +42,12 @@ export class Slider extends Component {
     // Slider scrolls to the appropriate slide
     if (value(this.props.value)) {
       this.timer = setTimeout(() => {
-        this.scrollView.scrollTo({
-          x: (width - (1 / 10) * width) * value(this.props.value),
-          animated: true
-        })
+        if (this.scrollView) {
+          this.scrollView.scrollTo({
+            x: (width - (1 / 10) * width) * value(this.props.value),
+            animated: true
+          })
+        }
       }, 1)
     }
   }
@@ -55,7 +57,7 @@ export class Slider extends Component {
 
   render() {
     const { dimensions } = this.props
-    const { width, height } = this.props.dimensions
+    const { width } = this.props.dimensions
     return (
       <View>
         <ScrollView
@@ -134,7 +136,8 @@ export class Slider extends Component {
 Slider.propTypes = {
   slides: PropTypes.array.isRequired,
   value: PropTypes.number,
-  selectAnswer: PropTypes.func.isRequired
+  selectAnswer: PropTypes.func.isRequired,
+  dimensions: PropTypes.object
 }
 
 const styles = StyleSheet.create({
