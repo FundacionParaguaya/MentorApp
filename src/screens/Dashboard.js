@@ -76,11 +76,15 @@ export class Dashboard extends Component {
               renderItem={({ item }) => (
                 <DraftListItem
                   item={item}
-                  handleClick={() =>
-                    navigation.navigate('FamilyParticipant', {
-                      draft: item.draftId
+                  handleClick={() => {
+                    navigation.navigate('Overview', {
+                      draftId: item.draftId,
+                      survey: this.props.surveys.find(
+                        survey => survey.id === item.surveyId
+                      ),
+                      resumeDraft: true
                     })
-                  }
+                  }}
                 />
               )}
             />
@@ -129,12 +133,13 @@ Dashboard.propTypes = {
   lng: PropTypes.string
 }
 
-const mapStateToProps = ({ env, user, drafts, offline, string }) => ({
+const mapStateToProps = ({ env, user, drafts, offline, string, surveys }) => ({
   env,
   user,
   drafts,
   offline,
-  string
+  string,
+  surveys
 })
 
 const mapDispatchToProps = {}

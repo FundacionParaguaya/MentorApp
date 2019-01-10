@@ -12,7 +12,8 @@
     "save": "Save",
     "close": "Save & close",
     "yes": "Yes",
-    "no": "No"
+    "no": "No",
+    "resumeDraft": "Resume draft"
   },
   "validation": {
     "fieldIsRequired": "This field is required",

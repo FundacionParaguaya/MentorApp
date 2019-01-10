@@ -15,6 +15,7 @@ import colors from '../../theme.json'
 export class Overview extends Component {
   draftId = this.props.navigation.getParam('draftId')
   survey = this.props.navigation.getParam('survey')
+  resumeDraft = this.props.navigation.getParam('resumeDraft')
   indicatorsArray = this.survey.surveyStoplightQuestions.map(
     item => item.codeName
   )
@@ -35,6 +36,7 @@ export class Overview extends Component {
     const potentialPrioritiesCount = draft.indicatorSurveyDataList.filter(
       question => question.value === 1 || question.value === 2
     ).length
+
     return potentialPrioritiesCount > this.survey.minimumPriorities
       ? this.survey.minimumPriorities
       : potentialPrioritiesCount
@@ -63,6 +65,16 @@ export class Overview extends Component {
               priorities={draft.priorities}
               achievements={draft.achievements}
             />
+            {this.resumeDraft ? (
+              <Button
+                style={{
+                  marginTop: 20
+                }}
+                colored
+                text={t('general.resumeDraft')}
+                handleClick={() => {}}
+              />
+            ) : null}
           </View>
           <View>
             <Text style={{ ...globalStyles.subline, ...styles.listTitle }}>
@@ -75,16 +87,19 @@ export class Overview extends Component {
             />
           </View>
         </View>
-        <View style={{ height: 50 }}>
-          <Button
-            colored
-            text={t('general.continue')}
-            handleClick={() => {
-              this.navigateToScreen('Final')
-            }}
-            disabled={mandatoryPrioritiesCount > draft.priorities.length}
-          />
-        </View>
+        {!this.resumeDraft ? (
+          <View style={{ height: 50 }}>
+            <Button
+              colored
+              text={t('general.continue')}
+              handleClick={() => {
+                this.navigateToScreen('Final')
+              }}
+              disabled={mandatoryPrioritiesCount > draft.priorities.length}
+            />
+          </View>
+        ) : null}
+
         {mandatoryPrioritiesCount ? (
           <Tip
             title={t('views.lifemap.beforeTheLifeMapIsCompleted')}

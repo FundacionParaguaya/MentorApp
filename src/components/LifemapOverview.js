@@ -8,11 +8,16 @@ import globalStyles from '../globalStyles'
 class LifemapOverview extends Component {
   dimensions = this.props.surveyData.map(item => item.dimension)
 
-  getColor = color =>
-    this.props.draftData.indicatorSurveyDataList.filter(
+  getColor = color => {
+    const indicator = this.props.draftData.indicatorSurveyDataList.find(
       item => item.key === color
-    )[0].value
-
+    )
+    if (indicator) {
+      return indicator.value
+    } else {
+      return
+    }
+  }
   handleClick(color, indicator, indicatorText) {
     if (color === 3) {
       return this.props.navigateToScreen(
@@ -28,7 +33,12 @@ class LifemapOverview extends Component {
       )
     }
   }
-
+  filterByDimension = item =>
+    this.props.surveyData.filter(
+      indicator =>
+        indicator.dimension === item &&
+        typeof this.getColor(indicator.codeName) === 'number'
+    )
   render() {
     const priorities = this.props.draftData.priorities.map(
       priority => priority.indicator
@@ -40,25 +50,25 @@ class LifemapOverview extends Component {
       <View style={styles.container}>
         {[...new Set(this.dimensions)].map(item => (
           <View key={item}>
-            <Text style={styles.dimension}>{item.toUpperCase()}</Text>
-            {this.props.surveyData
-              .filter(indicator => indicator.dimension === item)
-              .map(indicator => (
-                <LifemapOverviewListItem
-                  key={indicator.questionText}
-                  name={indicator.questionText}
-                  color={this.getColor(indicator.codeName)}
-                  priority={priorities.includes(indicator.codeName)}
-                  achievement={achievements.includes(indicator.codeName)}
-                  handleClick={() =>
-                    this.handleClick(
-                      this.getColor(indicator.codeName),
-                      indicator.codeName,
-                      indicator.questionText
-                    )
-                  }
-                />
-              ))}
+            {this.filterByDimension(item).length ? (
+              <Text style={styles.dimension}>{item.toUpperCase()}</Text>
+            ) : null}
+            {this.filterByDimension(item).map(indicator => (
+              <LifemapOverviewListItem
+                key={indicator.questionText}
+                name={indicator.questionText}
+                color={this.getColor(indicator.codeName)}
+                priority={priorities.includes(indicator.codeName)}
+                achievement={achievements.includes(indicator.codeName)}
+                handleClick={() =>
+                  this.handleClick(
+                    this.getColor(indicator.codeName),
+                    indicator.codeName,
+                    indicator.questionText
+                  )
+                }
+              />
+            ))}
           </View>
         ))}
       </View>
