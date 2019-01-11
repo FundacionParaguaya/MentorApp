@@ -64,6 +64,7 @@ export class Overview extends Component {
               questions={draft.indicatorSurveyDataList}
               priorities={draft.priorities}
               achievements={draft.achievements}
+              questionsLength={this.survey.surveyStoplightQuestions.length}
             />
             {this.resumeDraft ? (
               <Button

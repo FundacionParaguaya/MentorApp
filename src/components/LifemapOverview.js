@@ -18,6 +18,7 @@ class LifemapOverview extends Component {
       return
     }
   }
+
   handleClick(color, indicator, indicatorText) {
     if (color === 3) {
       return this.props.navigateToScreen(
