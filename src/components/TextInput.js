@@ -185,6 +185,7 @@ const styles = StyleSheet.create({
   inputStyle: {
     ...globalStyles.subline,
     fontFamily: 'Roboto',
+    paddingRight: 30,
     fontSize: 14
   },
   inputText: {
