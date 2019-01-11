@@ -124,6 +124,7 @@ export class AddAchievement extends Component {
         </View>
         <View style={{ height: 50 }}>
           <Button
+            id="save"
             colored
             disabled={!!this.errorsDetected.length}
             text={t('general.save')}
