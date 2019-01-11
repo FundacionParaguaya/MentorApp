@@ -14,10 +14,24 @@ import Button from '../../components/Button'
 import TextInput from '../../components/TextInput'
 
 export class AddAchievement extends Component {
+  errorsDetected = []
   state = {
     action: '',
     roadmap: '',
+    errorsDetected: [],
     indicator: this.props.navigation.getParam('indicator')
+  }
+
+  detectError = (error, field) => {
+    if (error && !this.errorsDetected.includes(field)) {
+      this.errorsDetected.push(field)
+    } else if (!error) {
+      this.errorsDetected = this.errorsDetected.filter(item => item !== field)
+    }
+
+    this.setState({
+      errorsDetected: this.errorsDetected
+    })
   }
 
   componentDidMount() {
@@ -87,7 +101,9 @@ export class AddAchievement extends Component {
             </View>
           </View>
           <TextInput
-            field=""
+            field="action"
+            required
+            detectError={this.detectError}
             onChangeText={text => this.setState({ action: text })}
             placeholder={
               this.state.action ? '' : t('views.lifemap.writeYourAnswerHere')
@@ -109,6 +125,7 @@ export class AddAchievement extends Component {
         <View style={{ height: 50 }}>
           <Button
             colored
+            disabled={!!this.errorsDetected.length}
             text={t('general.save')}
             handleClick={() => this.addAchievement()}
           />

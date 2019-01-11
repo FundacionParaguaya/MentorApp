@@ -51,6 +51,7 @@ describe('AddAchievement View', () => {
   describe('functionality', () => {
     it('has correct initial state', () => {
       expect(wrapper.instance().state).toEqual({
+        errorsDetected: [],
         action: '',
         roadmap: '',
         indicator: 'income'

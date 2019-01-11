@@ -55,10 +55,11 @@ describe('AddPriority View', () => {
   describe('functionality', () => {
     it('has correct initial state', () => {
       expect(wrapper.instance().state).toEqual({
-        reason: '',
         action: '',
+        estimatedDate: 0,
         indicator: 'income',
-        estimatedDate: 0
+        reason: '',
+        validationError: false
       })
     })
     it('increases count correctly', () => {
@@ -99,7 +100,19 @@ describe('AddPriority View', () => {
         .onChangeText('Some action')
       expect(wrapper.instance().state.action).toEqual('Some action')
     })
-    it('saves the priority', () => {
+    it('doesn\'t save the priority if no months entered', () => {
+      wrapper
+        .find(Button)
+        .props()
+        .handleClick()
+
+      expect(
+        wrapper.instance().props.addSurveyPriorityAcheivementData
+      ).toHaveBeenCalledTimes(0)
+    })
+    it('saves the priority if valid', () => {
+      wrapper.instance().setState({ estimatedDate: 2 })
+
       wrapper
         .find(Button)
         .props()
