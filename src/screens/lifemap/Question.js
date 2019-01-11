@@ -56,7 +56,7 @@ export class Question extends Component {
       this.step + 1 < this.indicators.length &&
       !this.props.navigation.getParam('skipped')
     ) {
-      return this.props.navigation.push('Question', {
+      return this.props.navigation.replace('Question', {
         draftId: this.draftId,
         survey: this.survey,
         step: this.step + 1
@@ -82,6 +82,22 @@ export class Question extends Component {
         survey: this.survey
       })
     }
+  }
+
+  componentDidMount() {
+    if (this.step > 0) {
+      this.props.navigation.setParams({
+        onPressBack: this.onPressBack
+      })
+    }
+  }
+
+  onPressBack = () => {
+    this.props.navigation.replace('Question', {
+      draftId: this.draftId,
+      survey: this.survey,
+      step: this.step - 1
+    })
   }
 
   render() {

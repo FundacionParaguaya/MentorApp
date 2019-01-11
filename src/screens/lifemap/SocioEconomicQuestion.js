@@ -184,6 +184,18 @@ export class SocioEconomicQuestion extends Component {
                   detectError={this.detectError}
                   options={question.options}
                 />
+              ) : question.answerType === 'number' ? (
+                <TextInput
+                  key={question.codeName}
+                  required={question.required}
+                  onChangeText={this.addSurveyData}
+                  placeholder={question.questionText}
+                  field={question.codeName}
+                  value={this.getFieldValue(draft, question.codeName) || ''}
+                  detectError={this.detectError}
+                  validation="number"
+                  keyboardType="numeric"
+                />
               ) : (
                 <TextInput
                   key={question.codeName}

@@ -142,7 +142,9 @@ export class FamilyMembersNames extends Component {
             validation="string"
             field=""
             onChangeText={() => {}}
-            placeholder={t('views.family.primaryParticipant')}
+            placeholder={`${t('views.family.familyMember')} 1 - ${t(
+              'views.family.participant'
+            )}`}
             value={draft.familyData.familyMembersList[0].firstName}
             required
             readonly
@@ -154,7 +156,7 @@ export class FamilyMembersNames extends Component {
               validation="string"
               field={i.toString()}
               onChangeText={text => this.addFamilyMemberName(text, i + 1)}
-              placeholder={t('views.family.name')}
+              placeholder={`${t('views.family.familyMember')} ${i + 2}`}
               value={
                 (this.getFieldValue('familyMembersList')[i + 1] || {})
                   .firstName || ''

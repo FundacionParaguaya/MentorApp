@@ -5,8 +5,7 @@ import {
   ScrollView,
   Text,
   View,
-  TouchableOpacity,
-  InteractionManager
+  TouchableOpacity
 } from 'react-native'
 import Image from './CachedImage'
 import colors from '../theme.json'
@@ -24,9 +23,9 @@ export class Slider extends Component {
   state = {
     selectedColor: colors.green
   }
-
+  timer
   componentDidMount() {
-    const { width, height } = this.props.dimensions
+    const { width } = this.props.dimensions
 
     const value = value => {
       switch (value) {
@@ -42,18 +41,23 @@ export class Slider extends Component {
     }
     // Slider scrolls to the appropriate slide
     if (value(this.props.value)) {
-      InteractionManager.runAfterInteractions(() => {
-        this.scrollView.scrollTo({
-          x: (width - (1 / 10) * width) * value(this.props.value),
-          animated: true
-        })
-      })
+      this.timer = setTimeout(() => {
+        if (this.scrollView) {
+          this.scrollView.scrollTo({
+            x: (width - (1 / 10) * width) * value(this.props.value),
+            animated: true
+          })
+        }
+      }, 1)
     }
+  }
+  componentWillUnmount() {
+    clearTimeout(this.timer)
   }
 
   render() {
     const { dimensions } = this.props
-    const { width, height } = this.props.dimensions
+    const { width } = this.props.dimensions
     return (
       <View>
         <ScrollView
@@ -132,7 +136,8 @@ export class Slider extends Component {
 Slider.propTypes = {
   slides: PropTypes.array.isRequired,
   value: PropTypes.number,
-  selectAnswer: PropTypes.func.isRequired
+  selectAnswer: PropTypes.func.isRequired,
+  dimensions: PropTypes.object
 }
 
 const styles = StyleSheet.create({

@@ -123,18 +123,22 @@ class TextInput extends Component {
 
     return (
       <View style={{ marginBottom: 15 }}>
-        {label && <Text style={styles.label}>{label}</Text>}
+        {label && (
+          <Text style={styles.label}>{`${label}${required ? ' *' : ''}`}</Text>
+        )}
         <View style={[styles.container, styles[status]]}>
-          {!showPlaceholder && (
+          {!showPlaceholder && !label ? (
             <Text
               style={{
                 ...styles.text,
                 color: this.defineTextColor(status)
               }}
             >
-              {`${placeholder} ${required ? '*' : ''}`}
+              {`${placeholder} ${required && !label ? '*' : ''}`}
               {'\n'}
             </Text>
+          ) : (
+            <View />
           )}
           <FormInput
             keyboardType={this.props.keyboardType}
@@ -144,7 +148,9 @@ class TextInput extends Component {
             onChangeText={text => this.onChangeText(text)}
             onEndEditing={this.onEndEditing}
             placeholder={
-              showPlaceholder ? `${placeholder} ${required ? '*' : ''}` : ''
+              showPlaceholder
+                ? `${placeholder} ${required && !label ? '*' : ''}`
+                : ''
             }
             inputStyle={[
               styles.inputStyle,
