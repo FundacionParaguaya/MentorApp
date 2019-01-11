@@ -77,7 +77,8 @@ export class Overview extends Component {
                   this.props.navigation.navigate(draft.progress.screen, {
                     draftId: this.draftId,
                     survey: this.survey,
-                    step: draft.progress.step
+                    step: draft.progress.step,
+                    socioEconomics: draft.progress.socioEconomics
                   })
                 }}
               />

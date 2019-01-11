@@ -199,8 +199,7 @@ export class Location extends Component {
     }
 
     this.props.addDraftProgress(draft.draftId, {
-      screen: 'Location',
-      step: null
+      screen: 'Location'
     })
   }
 

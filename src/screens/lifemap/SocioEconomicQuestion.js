@@ -8,7 +8,11 @@ import TextInput from '../../components/TextInput'
 import Select from '../../components/Select'
 import Button from '../../components/Button'
 import globalStyles from '../../globalStyles'
-import { addSurveyData, addSurveyFamilyMemberData } from '../../redux/actions'
+import {
+  addSurveyData,
+  addSurveyFamilyMemberData,
+  addDraftProgress
+} from '../../redux/actions'
 
 export class SocioEconomicQuestion extends Component {
   static navigationOptions = ({ navigation }) => {
@@ -20,6 +24,7 @@ export class SocioEconomicQuestion extends Component {
   errorsDetected = []
 
   state = { errorsDetected: [] }
+  draftId = this.props.navigation.getParam('draftId')
 
   constructor(props) {
     super(props)
@@ -80,21 +85,24 @@ export class SocioEconomicQuestion extends Component {
     }
   }
 
+  componentDidMount() {
+    this.props.addDraftProgress(this.draftId, {
+      screen: 'SocioEconomicQuestion',
+      socioEconomics: this.props.navigation.getParam('socioEconomics')
+    })
+  }
+
   shouldComponentUpdate() {
     return this.props.navigation.isFocused()
   }
   addSurveyData = (text, field) => {
-    this.props.addSurveyData(
-      this.props.navigation.getParam('draftId'),
-      'economicSurveyDataList',
-      {
-        [field]: text
-      }
-    )
+    this.props.addSurveyData(this.draftId, 'economicSurveyDataList', {
+      [field]: text
+    })
   }
   addSurveyFamilyMemberData = (text, field, index) => {
     this.props.addSurveyFamilyMemberData({
-      id: this.props.navigation.getParam('draftId'),
+      id: this.draftId,
       index,
       isSocioEconomicAnswer: true,
       payload: {
@@ -141,9 +149,9 @@ export class SocioEconomicQuestion extends Component {
   }
   render() {
     const { t } = this.props
-    const draft = this.props.drafts.filter(
-      draft => draft.draftId === this.props.navigation.getParam('draftId')
-    )[0]
+    const draft = this.props.drafts.find(
+      draft => draft.draftId === this.draftId
+    )
 
     const socioEconomics = this.props.navigation.getParam('socioEconomics')
     const questionsForThisScreen = socioEconomics
@@ -163,31 +171,30 @@ export class SocioEconomicQuestion extends Component {
         >
           {/* questions for entire family */}
           {socioEconomics ? (
-            questionsForThisScreen.forFamily.map(
-              question =>
-                question.answerType === 'select' ? (
-                  <Select
-                    key={question.codeName}
-                    required={question.required}
-                    onChange={this.addSurveyData}
-                    placeholder={question.questionText}
-                    label={question.questionText}
-                    field={question.codeName}
-                    value={this.getFieldValue(draft, question.codeName) || ''}
-                    detectError={this.detectError}
-                    options={question.options}
-                  />
-                ) : (
-                  <TextInput
-                    key={question.codeName}
-                    required={question.required}
-                    onChangeText={this.addSurveyData}
-                    placeholder={question.questionText}
-                    field={question.codeName}
-                    value={this.getFieldValue(draft, question.codeName) || ''}
-                    detectError={this.detectError}
-                  />
-                )
+            questionsForThisScreen.forFamily.map(question =>
+              question.answerType === 'select' ? (
+                <Select
+                  key={question.codeName}
+                  required={question.required}
+                  onChange={this.addSurveyData}
+                  placeholder={question.questionText}
+                  label={question.questionText}
+                  field={question.codeName}
+                  value={this.getFieldValue(draft, question.codeName) || ''}
+                  detectError={this.detectError}
+                  options={question.options}
+                />
+              ) : (
+                <TextInput
+                  key={question.codeName}
+                  required={question.required}
+                  onChangeText={this.addSurveyData}
+                  placeholder={question.questionText}
+                  field={question.codeName}
+                  value={this.getFieldValue(draft, question.codeName) || ''}
+                  detectError={this.detectError}
+                />
+              )
             )
           ) : (
             <View />
@@ -199,47 +206,46 @@ export class SocioEconomicQuestion extends Component {
               draft.familyData.familyMembersList.map((member, i) => (
                 <View key={member.firstName}>
                   <Text style={styles.memberName}>{member.firstName}</Text>
-                  {questionsForThisScreen.forFamilyMember.map(
-                    question =>
-                      question.answerType === 'select' ? (
-                        <Select
-                          key={question.codeName}
-                          required={question.required}
-                          onChange={(text, field) =>
-                            this.addSurveyFamilyMemberData(text, field, i)
-                          }
-                          placeholder={question.questionText}
-                          label={question.questionText}
-                          field={question.codeName}
-                          value={
-                            this.getFamilyMemberFieldValue(
-                              draft,
-                              question.codeName,
-                              i
-                            ) || ''
-                          }
-                          detectError={this.detectError}
-                          options={question.options}
-                        />
-                      ) : (
-                        <TextInput
-                          key={question.codeName}
-                          required={question.required}
-                          onChangeText={(text, field) =>
-                            this.addSurveyFamilyMemberData(text, field, i)
-                          }
-                          placeholder={question.questionText}
-                          field={question.codeName}
-                          value={
-                            this.getFamilyMemberFieldValue(
-                              draft,
-                              question.codeName,
-                              i
-                            ) || ''
-                          }
-                          detectError={this.detectError}
-                        />
-                      )
+                  {questionsForThisScreen.forFamilyMember.map(question =>
+                    question.answerType === 'select' ? (
+                      <Select
+                        key={question.codeName}
+                        required={question.required}
+                        onChange={(text, field) =>
+                          this.addSurveyFamilyMemberData(text, field, i)
+                        }
+                        placeholder={question.questionText}
+                        label={question.questionText}
+                        field={question.codeName}
+                        value={
+                          this.getFamilyMemberFieldValue(
+                            draft,
+                            question.codeName,
+                            i
+                          ) || ''
+                        }
+                        detectError={this.detectError}
+                        options={question.options}
+                      />
+                    ) : (
+                      <TextInput
+                        key={question.codeName}
+                        required={question.required}
+                        onChangeText={(text, field) =>
+                          this.addSurveyFamilyMemberData(text, field, i)
+                        }
+                        placeholder={question.questionText}
+                        field={question.codeName}
+                        value={
+                          this.getFamilyMemberFieldValue(
+                            draft,
+                            question.codeName,
+                            i
+                          ) || ''
+                        }
+                        detectError={this.detectError}
+                      />
+                    )
                   )}
                 </View>
               ))
@@ -259,11 +265,11 @@ export class SocioEconomicQuestion extends Component {
             handleClick={() =>
               socioEconomics.currentScreen === socioEconomics.totalScreens
                 ? this.props.navigation.navigate('BeginLifemap', {
-                    draftId: this.props.navigation.getParam('draftId'),
+                    draftId: this.draftId,
                     survey: this.props.navigation.getParam('survey')
                   })
                 : this.props.navigation.push('SocioEconomicQuestion', {
-                    draftId: this.props.navigation.getParam('draftId'),
+                    draftId: this.draftId,
                     survey: this.props.navigation.getParam('survey'),
                     socioEconomics: {
                       currentScreen: socioEconomics.currentScreen + 1,
@@ -303,7 +309,11 @@ const styles = StyleSheet.create({
   }
 })
 
-const mapDispatchToProps = { addSurveyData, addSurveyFamilyMemberData }
+const mapDispatchToProps = {
+  addSurveyData,
+  addSurveyFamilyMemberData,
+  addDraftProgress
+}
 
 const mapStateToProps = ({ drafts, surveys }) => ({
   drafts,

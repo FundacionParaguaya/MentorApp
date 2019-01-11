@@ -23,8 +23,7 @@ export class FamilyMembersBirthdates extends Component {
 
   componentDidMount() {
     this.props.addDraftProgress(this.draftId, {
-      screen: 'FamilyMembersBirthdates',
-      step: null
+      screen: 'FamilyMembersBirthdates'
     })
   }
   shouldComponentUpdate() {

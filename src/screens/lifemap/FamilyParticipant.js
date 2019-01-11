@@ -75,8 +75,7 @@ export class FamilyParticipant extends Component {
     this.getDraft()
 
     this.props.addDraftProgress(this.draftId, {
-      screen: 'FamilyParticipant',
-      step: null
+      screen: 'FamilyParticipant'
     })
 
     this.props.navigation.setParams({ draftId: this.draftId })
@@ -119,7 +118,6 @@ export class FamilyParticipant extends Component {
     const draft = this.props.drafts.filter(
       draft => draft.draftId === this.draftId
     )[0]
-    console.log(draft)
     return (
       <ScrollView
         style={globalStyles.background}

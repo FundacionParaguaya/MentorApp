@@ -26,8 +26,7 @@ export class FamilyMembersNames extends Component {
 
   componentDidMount() {
     this.props.addDraftProgress(this.draftId, {
-      screen: 'FamilyMembersNames',
-      step: null
+      screen: 'FamilyMembersNames'
     })
   }
 
