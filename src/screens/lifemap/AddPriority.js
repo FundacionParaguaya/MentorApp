@@ -18,6 +18,7 @@ export class AddPriority extends Component {
     reason: '',
     action: '',
     estimatedDate: 0,
+    validationError: false,
     indicator: this.props.navigation.getParam('indicator')
   }
 
@@ -26,6 +27,9 @@ export class AddPriority extends Component {
   }
 
   editCounter = action => {
+    this.setState({
+      validationError: false
+    })
     if (action === 'minus' && this.state.estimatedDate > 0) {
       return this.setState({ estimatedDate: this.state.estimatedDate - 1 })
     } else if (action === 'plus') {
@@ -46,12 +50,18 @@ export class AddPriority extends Component {
     )[0]
 
   addPriority = () => {
-    this.props.addSurveyPriorityAcheivementData({
-      id: this.props.navigation.getParam('draftId'),
-      category: 'priorities',
-      payload: this.state
-    })
-    this.props.navigation.goBack()
+    if (!this.state.estimatedDate) {
+      this.setState({
+        validationError: true
+      })
+    } else {
+      this.props.addSurveyPriorityAcheivementData({
+        id: this.props.navigation.getParam('draftId'),
+        category: 'priorities',
+        payload: this.state
+      })
+      this.props.navigation.goBack()
+    }
   }
 
   getPriorityValue = draft => {
@@ -64,6 +74,7 @@ export class AddPriority extends Component {
 
   render() {
     const { t } = this.props
+    const { validationError, reason, action, estimatedDate } = this.state
     const draft = this.getDraft()
     const priority = this.getPriorityValue(draft)
 
@@ -96,9 +107,7 @@ export class AddPriority extends Component {
           </View>
           <TextInput
             onChangeText={text => this.setState({ reason: text })}
-            placeholder={
-              this.state.reason ? '' : t('views.lifemap.writeYourAnswerHere')
-            }
+            placeholder={reason ? '' : t('views.lifemap.writeYourAnswerHere')}
             label={t('views.lifemap.whyDontYouHaveIt')}
             value={priority ? priority.reason : ''}
             multiline
@@ -106,19 +115,25 @@ export class AddPriority extends Component {
           <TextInput
             label={t('views.lifemap.whatWillYouDoToGetIt')}
             onChangeText={text => this.setState({ action: text })}
-            placeholder={
-              this.state.action ? '' : t('views.lifemap.writeYourAnswerHere')
-            }
+            placeholder={action ? '' : t('views.lifemap.writeYourAnswerHere')}
             value={priority ? priority.action : ''}
             multiline
           />
           <View style={{ padding: 15 }}>
             <Counter
               editCounter={this.editCounter}
-              count={this.state.estimatedDate}
+              count={estimatedDate}
               text={t('views.lifemap.howManyMonthsWillItTake')}
             />
           </View>
+          {/* Error message */}
+          {validationError ? (
+            <Text style={{ paddingHorizontal: 15, color: colors.red }}>
+              {t('validation.fieldIsRequired')}
+            </Text>
+          ) : (
+            <View />
+          )}
         </View>
         <View style={{ height: 50 }}>
           <Button

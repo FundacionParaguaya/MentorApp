@@ -46,11 +46,16 @@ describe('AddAchievement View', () => {
     it('renders Button', () => {
       expect(wrapper.find(Button)).toHaveLength(1)
     })
+    it('Save button is disabled if errors detected', () => {
+      wrapper.instance().errorsDetected = ['test']
+      expect(wrapper.find('#save')).toHaveProp('disabled')
+    })
   })
 
   describe('functionality', () => {
     it('has correct initial state', () => {
       expect(wrapper.instance().state).toEqual({
+        errorsDetected: [],
         action: '',
         roadmap: '',
         indicator: 'income'
