@@ -13,6 +13,7 @@ import { url } from '../../config'
 
 export class Final extends Component {
   draftId = this.props.navigation.getParam('draftId')
+
   shouldComponentUpdate() {
     return this.props.navigation.isFocused()
   }

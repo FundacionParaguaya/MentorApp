@@ -15,7 +15,6 @@ import colors from '../../theme.json'
 export class Overview extends Component {
   draftId = this.props.navigation.getParam('draftId')
   survey = this.props.navigation.getParam('survey')
-  resumeDraft = this.props.navigation.getParam('resumeDraft')
   indicatorsArray = this.survey.surveyStoplightQuestions.map(
     item => item.codeName
   )
@@ -48,6 +47,8 @@ export class Overview extends Component {
       item => item.draftId === this.draftId
     )[0]
     const mandatoryPrioritiesCount = this.getMandatoryPrioritiesCount(draft)
+    const resumeDraft = this.props.navigation.getParam('resumeDraft')
+
     return (
       <ScrollView
         style={globalStyles.background}
@@ -66,7 +67,7 @@ export class Overview extends Component {
               achievements={draft.achievements}
               questionsLength={this.survey.surveyStoplightQuestions.length}
             />
-            {this.resumeDraft ? (
+            {resumeDraft ? (
               <Button
                 style={{
                   marginTop: 20
@@ -95,7 +96,7 @@ export class Overview extends Component {
             />
           </View>
         </View>
-        {!this.resumeDraft ? (
+        {!resumeDraft ? (
           <View style={{ height: 50 }}>
             <Button
               colored

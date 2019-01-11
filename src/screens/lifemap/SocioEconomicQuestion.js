@@ -302,7 +302,8 @@ SocioEconomicQuestion.propTypes = {
   navigation: PropTypes.object.isRequired,
   drafts: PropTypes.array.isRequired,
   addSurveyData: PropTypes.func.isRequired,
-  addSurveyFamilyMemberData: PropTypes.func.isRequired
+  addSurveyFamilyMemberData: PropTypes.func.isRequired,
+  addDraftProgress: PropTypes.func.isRequired
 }
 
 const styles = StyleSheet.create({

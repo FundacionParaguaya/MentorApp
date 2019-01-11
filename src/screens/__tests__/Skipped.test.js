@@ -7,6 +7,7 @@ import Tip from '../../components/Tip'
 
 const createTestProps = props => ({
   t: value => value,
+  addDraftProgress: jest.fn(),
   navigation: {
     navigate: jest.fn(),
     isFocused: jest.fn(),

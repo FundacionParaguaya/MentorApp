@@ -7,10 +7,19 @@ import { withNamespaces } from 'react-i18next'
 import globalStyles from '../../globalStyles'
 import RoundImage from '../../components/RoundImage'
 import Button from '../../components/Button'
+import { addDraftProgress } from '../../redux/actions'
 
 export class BeginLifemap extends Component {
   survey = this.props.navigation.getParam('survey')
+  draftId = this.props.navigation.getParam('draftId')
   numberOfQuestions = this.survey.surveyStoplightQuestions.length
+
+  componentDidMount() {
+    this.props.addDraftProgress(this.draftId, {
+      screen: 'BeginLifemap'
+    })
+  }
+
   render() {
     const { t } = this.props
     return (
@@ -67,11 +76,21 @@ const styles = StyleSheet.create({
 BeginLifemap.propTypes = {
   t: PropTypes.func.isRequired,
   surveys: PropTypes.array,
-  navigation: PropTypes.object.isRequired
+  navigation: PropTypes.object.isRequired,
+  addDraftProgress: PropTypes.func.isRequired
+}
+
+const mapDispatchToProps = {
+  addDraftProgress
 }
 
 const mapStateToProps = ({ surveys }) => ({
   surveys
 })
 
-export default withNamespaces()(connect(mapStateToProps)(BeginLifemap))
+export default withNamespaces()(
+  connect(
+    mapStateToProps,
+    mapDispatchToProps
+  )(BeginLifemap)
+)

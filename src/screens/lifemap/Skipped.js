@@ -3,6 +3,7 @@ import { StyleSheet, ScrollView, Image, View, FlatList } from 'react-native'
 import { connect } from 'react-redux'
 import PropTypes from 'prop-types'
 import { withNamespaces } from 'react-i18next'
+import { addDraftProgress } from '../../redux/actions'
 
 import Tip from '../../components/Tip'
 import SkippedListItem from '../../components/SkippedListItem'
@@ -16,13 +17,21 @@ export class Skipped extends Component {
   indicatorsArray = this.survey.surveyStoplightQuestions.map(
     item => item.codeName
   )
+
+  componentDidMount() {
+    this.props.addDraftProgress(this.draftId, {
+      screen: 'Skipped'
+    })
+  }
+
   shouldComponentUpdate() {
     return this.props.navigation.isFocused()
   }
   handleClick = () =>
     this.props.navigation.navigate('Overview', {
       draftId: this.draftId,
-      survey: this.survey
+      survey: this.survey,
+      resumeDraft: false
     })
 
   render() {
@@ -93,10 +102,21 @@ const styles = StyleSheet.create({
 Skipped.propTypes = {
   t: PropTypes.func.isRequired,
   drafts: PropTypes.array.isRequired,
-  navigation: PropTypes.object.isRequired
+  navigation: PropTypes.object.isRequired,
+  addDraftProgress: PropTypes.func.isRequired
 }
 
 const mapStateToProps = ({ drafts }) => ({
   drafts
 })
-export default withNamespaces()(connect(mapStateToProps)(Skipped))
+
+const mapDispatchToProps = {
+  addDraftProgress
+}
+
+export default withNamespaces()(
+  connect(
+    mapStateToProps,
+    mapDispatchToProps
+  )(Skipped)
+)

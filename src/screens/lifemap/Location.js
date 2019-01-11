@@ -396,7 +396,8 @@ Location.propTypes = {
   t: PropTypes.func.isRequired,
   navigation: PropTypes.object.isRequired,
   addSurveyData: PropTypes.func.isRequired,
-  drafts: PropTypes.array
+  drafts: PropTypes.array,
+  addDraftProgress: PropTypes.func.isRequired
 }
 
 const mapDispatchToProps = {

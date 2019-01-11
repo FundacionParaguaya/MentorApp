@@ -12,7 +12,7 @@ import { connect } from 'react-redux'
 import PropTypes from 'prop-types'
 import { withNamespaces } from 'react-i18next'
 
-import { addSurveyData } from '../../redux/actions'
+import { addSurveyData, addDraftProgress } from '../../redux/actions'
 import globalStyles from '../../globalStyles'
 import colors from '../../theme.json'
 import Slider from '../../components/Slider'
@@ -25,6 +25,13 @@ export class Question extends Component {
   indicators = this.survey.surveyStoplightQuestions
   indicator = this.indicators[this.step]
   slides = this.indicator.stoplightColors
+
+  componentDidMount() {
+    this.props.addDraftProgress(this.draftId, {
+      screen: 'Question',
+      step: this.step
+    })
+  }
 
   shouldComponentUpdate() {
     return this.props.navigation.isFocused()
@@ -159,7 +166,8 @@ Question.propTypes = {
   t: PropTypes.func.isRequired,
   addSurveyData: PropTypes.func.isRequired,
   navigation: PropTypes.object.isRequired,
-  drafts: PropTypes.array.isRequired
+  drafts: PropTypes.array.isRequired,
+  addDraftProgress: PropTypes.func.isRequired
 }
 
 const mapStateToProps = ({ drafts }) => ({
@@ -167,7 +175,8 @@ const mapStateToProps = ({ drafts }) => ({
 })
 
 const mapDispatchToProps = {
-  addSurveyData
+  addSurveyData,
+  addDraftProgress
 }
 
 export default withNamespaces()(

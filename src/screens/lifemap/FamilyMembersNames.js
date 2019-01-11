@@ -193,7 +193,8 @@ FamilyMembersNames.propTypes = {
   navigation: PropTypes.object.isRequired,
   addSurveyData: PropTypes.func.isRequired,
   addSurveyFamilyMemberData: PropTypes.func.isRequired,
-  removeFamilyMembers: PropTypes.func.isRequired
+  removeFamilyMembers: PropTypes.func.isRequired,
+  addDraftProgress: PropTypes.func.isRequired
 }
 
 const mapDispatchToProps = {

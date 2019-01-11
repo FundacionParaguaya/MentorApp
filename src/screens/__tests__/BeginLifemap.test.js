@@ -15,6 +15,7 @@ const createTestProps = props => ({
       surveyStoplightQuestions: [{ a: 'a' }, { b: 'b' }, { c: 'c' }]
     }))
   },
+  addDraftProgress: jest.fn(),
   ...props
 })
 
