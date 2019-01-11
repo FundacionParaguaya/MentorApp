@@ -25,6 +25,16 @@ export class FamilyMembersGender extends Component {
     this.props.addDraftProgress(this.draftId, {
       screen: 'FamilyMembersGender'
     })
+    this.props.navigation.setParams({
+      onPressBack: this.onPressBack
+    })
+  }
+
+  onPressBack = () => {
+    this.props.navigation.navigate('FamilyMembersNames', {
+      draftId: this.draftId,
+      survey: this.survey
+    })
   }
 
   shouldComponentUpdate() {

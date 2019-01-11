@@ -27,6 +27,7 @@ const createTestProps = props => ({
   t: value => value,
   navigation: {
     navigate: jest.fn(),
+    setParams: jest.fn(),
     getParam: param =>
       param === 'draftId'
         ? 2
@@ -47,6 +48,7 @@ const createTestProps = props => ({
       surveyId: 1,
       economicSurveyDataList: [],
       indicatorSurveyDataList: [],
+      progress: { screen: 'Location' },
       familyData: {
         countFamilyMembers: 2,
         familyMembersList: [

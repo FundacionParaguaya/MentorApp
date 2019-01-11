@@ -41,6 +41,8 @@ export class Location extends Component {
 
   mapIsDraggable = false
   survey = this.props.navigation.getParam('survey')
+  draftId = this.props.navigation.getParam('draftId')
+
   errorsDetected = []
   locationCheckTimer
   constructor(props) {
@@ -65,13 +67,9 @@ export class Location extends Component {
   }
 
   addSurveyData = (text, field) => {
-    this.props.addSurveyData(
-      this.props.navigation.getParam('draftId'),
-      'familyData',
-      {
-        [field]: text
-      }
-    )
+    this.props.addSurveyData(this.draftId, 'familyData', {
+      [field]: text
+    })
   }
   getFieldValue = (draft, field) => {
     if (!draft) {
@@ -182,9 +180,8 @@ export class Location extends Component {
     }
   }
   getDraft = () =>
-    this.props.drafts.filter(
-      draft => draft.draftId === this.props.navigation.getParam('draftId')
-    )[0]
+    this.props.drafts.find(draft => draft.draftId === this.draftId)
+
   componentDidMount() {
     const draft = this.getDraft()
 
@@ -201,6 +198,25 @@ export class Location extends Component {
     this.props.addDraftProgress(draft.draftId, {
       screen: 'Location'
     })
+
+    this.props.navigation.setParams({
+      onPressBack: this.onPressBack
+    })
+  }
+
+  onPressBack = () => {
+    const draft = this.getDraft()
+    console.log(draft.familyData.familyMembersList.length)
+    if (draft.familyData.familyMembersList.length > 1) {
+      this.props.navigation.navigate('FamilyMembersBirthdates', {
+        draftId: this.draftId,
+        survey: this.survey
+      })
+    } else
+      this.props.navigation.navigate('FamilyMembersNames', {
+        draftId: this.draftId,
+        survey: this.survey
+      })
   }
 
   shouldComponentUpdate() {
@@ -216,7 +232,7 @@ export class Location extends Component {
     this.addSurveyData(this.state.latitude, 'latitude')
     this.addSurveyData(this.state.longitude, 'longitude')
     this.props.navigation.navigate('SocioEconomicQuestion', {
-      draftId: this.props.navigation.getParam('draftId'),
+      draftId: this.draftId,
       survey: this.survey
     })
   }

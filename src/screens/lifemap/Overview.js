@@ -3,6 +3,7 @@ import { StyleSheet, ScrollView, View, Text } from 'react-native'
 import { connect } from 'react-redux'
 import PropTypes from 'prop-types'
 import { withNamespaces } from 'react-i18next'
+import { addDraftProgress } from '../../redux/actions'
 
 import Tip from '../../components/Tip'
 import LifemapVisual from '../../components/LifemapVisual'
@@ -18,6 +19,14 @@ export class Overview extends Component {
   indicatorsArray = this.survey.surveyStoplightQuestions.map(
     item => item.codeName
   )
+
+  componentDidMount() {
+    if (!this.props.navigation.getParam('resumeDraft')) {
+      this.props.addDraftProgress(this.draftId, {
+        screen: 'Overview'
+      })
+    }
+  }
 
   navigateToScreen = (screen, indicator, indicatorText) =>
     this.props.navigation.navigate(screen, {
@@ -43,12 +52,11 @@ export class Overview extends Component {
 
   render() {
     const { t } = this.props
-    const draft = this.props.drafts.filter(
-      item => item.draftId === this.draftId
-    )[0]
+    const draft = this.props.drafts.find(item => item.draftId === this.draftId)
     const mandatoryPrioritiesCount = this.getMandatoryPrioritiesCount(draft)
     const resumeDraft = this.props.navigation.getParam('resumeDraft')
-
+    console.log(!resumeDraft)
+    console.log(draft.progress.screen)
     return (
       <ScrollView
         style={globalStyles.background}
@@ -67,7 +75,7 @@ export class Overview extends Component {
               achievements={draft.achievements}
               questionsLength={this.survey.surveyStoplightQuestions.length}
             />
-            {resumeDraft ? (
+            {resumeDraft && draft.progress.screen !== 'Overview' ? (
               <Button
                 style={{
                   marginTop: 20
@@ -96,7 +104,7 @@ export class Overview extends Component {
             />
           </View>
         </View>
-        {!resumeDraft ? (
+        {!resumeDraft || draft.progress.screen === 'Overview' ? (
           <View style={{ height: 50 }}>
             <Button
               colored
@@ -143,14 +151,24 @@ const styles = StyleSheet.create({
   }
 })
 
+const mapDispatchToProps = {
+  addDraftProgress
+}
+
 Overview.propTypes = {
   t: PropTypes.func.isRequired,
   drafts: PropTypes.array.isRequired,
-  navigation: PropTypes.object.isRequired
+  navigation: PropTypes.object.isRequired,
+  addDraftProgress: PropTypes.func.isRequired
 }
 
 const mapStateToProps = ({ drafts }) => ({
   drafts
 })
 
-export default withNamespaces()(connect(mapStateToProps)(Overview))
+export default withNamespaces()(
+  connect(
+    mapStateToProps,
+    mapDispatchToProps
+  )(Overview)
+)

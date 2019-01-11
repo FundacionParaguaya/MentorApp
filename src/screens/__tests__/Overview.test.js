@@ -9,6 +9,7 @@ import LifemapOverview from '../../components/LifemapOverview'
 
 const createTestProps = props => ({
   t: value => value,
+  addDraftProgress: jest.fn(),
   navigation: {
     navigate: jest.fn(),
     isFocused: jest.fn(),
@@ -34,6 +35,7 @@ const createTestProps = props => ({
     {
       draftId: 1,
       priorities: [{ action: 'Some action' }],
+      progress: { screen: 'Location' },
       indicatorSurveyDataList: [
         { key: 'phoneNumber', value: 3 },
         { key: 'education', value: 1 },
@@ -74,7 +76,8 @@ describe('Overview Lifemap View when no questions are skipped', () => {
           {
             draftId: 1,
             priorities: [{ action: 'Some action' }],
-            indicatorSurveyDataList: [{ key: 'phoneNumber', value: 3 }]
+            indicatorSurveyDataList: [{ key: 'phoneNumber', value: 3 }],
+            progress: { screen: 'Location' }
           }
         ]
       })
@@ -100,6 +103,7 @@ describe('Overview Lifemap View when no questions are skipped', () => {
           {
             draftId: 1,
             priorities: [{ action: 'Some action' }],
+            progress: { screen: 'Location' },
             indicatorSurveyDataList: [
               { key: 'phoneNumber', value: 3 },
               { key: 'education', value: 1 }
@@ -124,6 +128,7 @@ describe('Overview Lifemap View when no questions are skipped', () => {
       expect(wrapper.find(LifemapOverview).props().draftData).toEqual({
         draftId: 1,
         priorities: [{ action: 'Some action' }],
+        progress: { screen: 'Location' },
         indicatorSurveyDataList: [
           { key: 'phoneNumber', value: 3 },
           { key: 'education', value: 1 },

@@ -10,6 +10,7 @@ const createTestProps = props => ({
   t: value => value,
   navigation: {
     getParam: jest.fn(param => (param === 'draftId' ? 4 : null)),
+    setParams: jest.fn(),
     navigate: jest.fn(),
     isFocused: jest.fn(() => true)
   },

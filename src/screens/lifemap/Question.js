@@ -92,19 +92,23 @@ export class Question extends Component {
   }
 
   componentDidMount() {
-    if (this.step > 0) {
-      this.props.navigation.setParams({
-        onPressBack: this.onPressBack
-      })
-    }
+    this.props.navigation.setParams({
+      onPressBack: this.onPressBack
+    })
   }
 
   onPressBack = () => {
-    this.props.navigation.replace('Question', {
-      draftId: this.draftId,
-      survey: this.survey,
-      step: this.step - 1
-    })
+    if (this.step > 0) {
+      this.props.navigation.replace('Question', {
+        draftId: this.draftId,
+        survey: this.survey,
+        step: this.step - 1
+      })
+    } else
+      this.props.navigation.navigate('BeginLifemap', {
+        draftId: this.draftId,
+        survey: this.survey
+      })
   }
 
   render() {

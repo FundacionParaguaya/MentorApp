@@ -10,6 +10,7 @@ import Select from '../../components/Select'
 const createTestProps = props => ({
   t: value => value,
   navigation: {
+    setParams: jest.fn(),
     getParam: jest.fn(param => (param === 'draftId' ? 4 : null)),
     navigate: jest.fn(),
     isFocused: jest.fn(() => true)

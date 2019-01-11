@@ -13,6 +13,7 @@ import { url } from '../../config'
 
 export class Final extends Component {
   draftId = this.props.navigation.getParam('draftId')
+  survey = this.props.navigation.getParam('survey')
 
   shouldComponentUpdate() {
     return this.props.navigation.isFocused()
@@ -49,6 +50,7 @@ export class Final extends Component {
           <LifemapVisual
             bigMargin
             questions={draft.indicatorSurveyDataList}
+            questionsLength={this.survey.surveyStoplightQuestions.length}
             priorities={draft.priorities}
             achievements={draft.achievements}
           />

@@ -13,6 +13,7 @@ const createTestProps = props => ({
   t: value => value,
   navigation: {
     navigate: jest.fn(),
+    setParams: jest.fn(),
     isFocused: jest.fn(),
     getParam: jest.fn(param => {
       if (param === 'survey') {

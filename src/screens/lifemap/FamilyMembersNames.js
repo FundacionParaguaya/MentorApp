@@ -28,8 +28,17 @@ export class FamilyMembersNames extends Component {
     this.props.addDraftProgress(this.draftId, {
       screen: 'FamilyMembersNames'
     })
+    this.props.navigation.setParams({
+      onPressBack: this.onPressBack
+    })
   }
 
+  onPressBack = () => {
+    this.props.navigation.navigate('FamilyParticipant', {
+      draftId: this.draftId,
+      survey: this.survey
+    })
+  }
   shouldComponentUpdate() {
     return this.props.navigation.isFocused()
   }

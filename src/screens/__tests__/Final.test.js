@@ -13,12 +13,15 @@ const createTestProps = props => ({
   submitDraft: jest.fn(),
   navigation: {
     navigate: jest.fn(),
+    setParams: jest.fn(),
     popToTop: jest.fn(),
     reset: jest.fn(),
 
     getParam: jest.fn(param => {
       if (param === 'draftId') {
         return 1
+      } else if (param === 'survey') {
+        return { surveyStoplightQuestions: [] }
       }
     })
   },
