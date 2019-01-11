@@ -73,7 +73,13 @@ export class Overview extends Component {
                 }}
                 colored
                 text={t('general.resumeDraft')}
-                handleClick={() => {}}
+                handleClick={() => {
+                  this.props.navigation.navigate(draft.progress.screen, {
+                    draftId: this.draftId,
+                    survey: this.survey,
+                    step: draft.progress.step
+                  })
+                }}
               />
             ) : null}
           </View>

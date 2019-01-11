@@ -9,28 +9,27 @@ import Select from '../../components/Select'
 const createTestProps = props => ({
   t: value => value,
   navigation: {
-    getParam: jest.fn(
-      param =>
-        param === 'draftId'
-          ? 4
-          : {
-              surveyConfig: {
-                gender: [
-                  {
-                    text: 'Female',
-                    value: 'F'
-                  },
-                  {
-                    text: 'Male',
-                    value: 'M'
-                  },
-                  {
-                    text: 'Prefer not to disclose',
-                    value: 'O'
-                  }
-                ]
-              }
+    getParam: jest.fn(param =>
+      param === 'draftId'
+        ? 4
+        : {
+            surveyConfig: {
+              gender: [
+                {
+                  text: 'Female',
+                  value: 'F'
+                },
+                {
+                  text: 'Male',
+                  value: 'M'
+                },
+                {
+                  text: 'Prefer not to disclose',
+                  value: 'O'
+                }
+              ]
             }
+          }
     ),
     navigate: jest.fn(),
     isFocused: jest.fn(() => true)
@@ -57,6 +56,7 @@ const createTestProps = props => ({
     }
   ],
   addSurveyFamilyMemberData: jest.fn(),
+  addDraftProgress: jest.fn(),
   ...props
 })
 

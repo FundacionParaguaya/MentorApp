@@ -58,7 +58,7 @@ export const generateNavOptions = ({ navigation, burgerMenu = true }) => ({
           {navigation.state.routeName === 'Terms' ||
           navigation.state.routeName === 'Privacy' ||
           (navigation.state.routeName === 'FamilyParticipant' &&
-            !navigation.getParam('draft')) ? (
+            !navigation.getParam('draftId')) ? (
             <View>
               <Text style={[globalStyles.centerText, globalStyles.h3]}>
                 {navigation.state.routeName === 'FamilyParticipant'
@@ -88,7 +88,7 @@ export const generateNavOptions = ({ navigation, burgerMenu = true }) => ({
               handleClick={() => {
                 if (
                   navigation.state.routeName === 'FamilyParticipant' &&
-                  !navigation.getParam('draft')
+                  !navigation.getParam('draftId')
                 ) {
                   store.dispatch(deleteDraft(navigation.getParam('draftId')))
                 }
@@ -123,7 +123,7 @@ export const generateNavOptions = ({ navigation, burgerMenu = true }) => ({
         onPress={() => {
           if (
             navigation.state.routeName === 'FamilyParticipant' &&
-            !navigation.getParam('draft')
+            !navigation.getParam('draftId')
           ) {
             navigation.setParams({ backModalOpen: true })
           } else {

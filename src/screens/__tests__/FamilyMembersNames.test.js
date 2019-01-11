@@ -47,6 +47,7 @@ const createTestProps = props => ({
   addSurveyData: jest.fn(),
   removeFamilyMembers: jest.fn(),
   addSurveyFamilyMemberData: jest.fn(),
+  addDraftProgress: jest.fn(),
   ...props
 })
 

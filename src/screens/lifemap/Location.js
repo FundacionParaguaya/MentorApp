@@ -14,7 +14,7 @@ import PropTypes from 'prop-types'
 import MapView from 'react-native-maps'
 import { withNamespaces } from 'react-i18next'
 
-import { addSurveyData } from '../../redux/actions'
+import { addSurveyData, addDraftProgress } from '../../redux/actions'
 import Button from '../../components/Button'
 import TextInput from '../../components/TextInput'
 import globalStyles from '../../globalStyles'
@@ -197,6 +197,11 @@ export class Location extends Component {
         showMap: true
       })
     }
+
+    this.props.addDraftProgress(draft.draftId, {
+      screen: 'Location',
+      step: null
+    })
   }
 
   shouldComponentUpdate() {
@@ -396,7 +401,8 @@ Location.propTypes = {
 }
 
 const mapDispatchToProps = {
-  addSurveyData
+  addSurveyData,
+  addDraftProgress
 }
 
 const mapStateToProps = ({ drafts }) => ({

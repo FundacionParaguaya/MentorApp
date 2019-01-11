@@ -4,7 +4,11 @@ import { connect } from 'react-redux'
 import PropTypes from 'prop-types'
 
 import uuid from 'uuid/v1'
-import { createDraft, addSurveyFamilyMemberData } from '../../redux/actions'
+import {
+  createDraft,
+  addSurveyFamilyMemberData,
+  addDraftProgress
+} from '../../redux/actions'
 import { withNamespaces } from 'react-i18next'
 import Icon from 'react-native-vector-icons/MaterialIcons'
 
@@ -17,7 +21,7 @@ import colors from '../../theme.json'
 
 export class FamilyParticipant extends Component {
   //Get draft id from Redux store if it exists else create new draft id
-  draftId = this.props.navigation.getParam('draft') || uuid()
+  draftId = this.props.navigation.getParam('draftId') || uuid()
 
   //Get survey if from draft if it exists else from navigation route
   surveyId =
@@ -43,9 +47,9 @@ export class FamilyParticipant extends Component {
     })
   }
 
-  getDraftFromRedux() {
+  getDraft() {
     //Get draft  from Redux store if it exists else create new draft
-    if (!this.props.navigation.getParam('draft')) {
+    if (!this.props.navigation.getParam('draftId')) {
       this.props.createDraft({
         surveyId: this.survey.id,
         surveyVersionId: this.survey['surveyVersionId'],
@@ -68,8 +72,14 @@ export class FamilyParticipant extends Component {
   }
 
   componentDidMount() {
+    this.getDraft()
+
+    this.props.addDraftProgress(this.draftId, {
+      screen: 'FamilyParticipant',
+      step: null
+    })
+
     this.props.navigation.setParams({ draftId: this.draftId })
-    this.getDraftFromRedux()
   }
 
   handleClick() {
@@ -109,7 +119,7 @@ export class FamilyParticipant extends Component {
     const draft = this.props.drafts.filter(
       draft => draft.draftId === this.draftId
     )[0]
-
+    console.log(draft)
     return (
       <ScrollView
         style={globalStyles.background}
@@ -241,7 +251,8 @@ FamilyParticipant.propTypes = {
 
 const mapDispatchToProps = {
   createDraft,
-  addSurveyFamilyMemberData
+  addSurveyFamilyMemberData,
+  addDraftProgress
 }
 
 const mapStateToProps = ({ surveys, drafts }) => ({
