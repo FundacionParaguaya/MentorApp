@@ -143,9 +143,6 @@ class TextInput extends Component {
             onBlur={() => this.onBlur(text)}
             onChangeText={text => this.onChangeText(text)}
             onEndEditing={this.onEndEditing}
-            placeholder={
-              showPlaceholder ? `${placeholder} ${required ? '*' : ''}` : ''
-            }
             inputStyle={[
               styles.inputStyle,
               !showPlaceholder ? styles.activeInput : {}
@@ -153,7 +150,13 @@ class TextInput extends Component {
             editable={!readonly}
             multiline={multiline}
           >
-            <Text style={styles.inputText}>{text}</Text>
+            {showPlaceholder ? (
+              <Text style={styles.inputText}>{`${placeholder}${
+                required ? ' *' : ''
+              }`}</Text>
+            ) : (
+              <Text style={styles.inputText}>{text}</Text>
+            )}
           </FormInput>
         </View>
         {status === 'error' && errorMsg ? (
