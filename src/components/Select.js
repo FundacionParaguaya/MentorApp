@@ -89,6 +89,8 @@ class Select extends Component {
       text = ''
     }
 
+    console.log(placeholder)
+
     return (
       <TouchableOpacity onPress={this.toggleDropdown}>
         <View style={styles.wrapper}>
@@ -109,10 +111,10 @@ class Select extends Component {
                       color: colors.green
                     }
                 ]}
-              >{`${placeholder} ${required ? '*' : ''}`}</Text>
+              >{`${placeholder}${required ? ' *' : ''}`}</Text>
             )}
             <Text style={[styles.placeholder]}>
-              {value ? text : `${placeholder} ${required ? '*' : ''}`}
+              {value ? text : `${placeholder}${required ? ' *' : ''}`}
             </Text>
             <Image source={arrow} style={styles.arrow} />
 
@@ -275,9 +277,9 @@ const styles = StyleSheet.create({
     backgroundColor: colors.lightgrey
   },
   title: {
+    paddingHorizontal: 15,
     fontSize: 14,
     color: colors.palegrey,
-    marginLeft: 15,
     marginBottom: 10,
     zIndex: 100
   }
