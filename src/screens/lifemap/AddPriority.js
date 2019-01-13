@@ -55,10 +55,11 @@ export class AddPriority extends Component {
         validationError: true
       })
     } else {
+      const { reason, action, estimatedDate, indicator } = this.state
       this.props.addSurveyPriorityAcheivementData({
         id: this.props.navigation.getParam('draftId'),
         category: 'priorities',
-        payload: this.state
+        payload: { reason, action, estimatedDate, indicator }
       })
       this.props.navigation.goBack()
     }
