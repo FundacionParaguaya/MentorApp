@@ -21,7 +21,6 @@ export class Overview extends Component {
   )
 
   componentDidMount() {
-    console.log(this.props.navigation.getParam('resumeDraft'))
     if (!this.props.navigation.getParam('resumeDraft')) {
       this.props.addDraftProgress(this.draftId, {
         screen: 'Overview'

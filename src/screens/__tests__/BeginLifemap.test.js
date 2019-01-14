@@ -9,6 +9,7 @@ const createTestProps = props => ({
   t: value => value,
   navigation: {
     navigate: jest.fn(),
+    replace: jest.fn(),
     setParams: jest.fn(),
     getParam: jest.fn(() => ({
       id: 2,
@@ -49,6 +50,15 @@ describe('BeginLifemap View', () => {
       expect(
         wrapper.instance().props.navigation.setParams
       ).toHaveBeenCalledTimes(1)
+    })
+    it('calls addDraftProgress on mount', () => {
+      expect(wrapper.instance().props.addDraftProgress).toHaveBeenCalledTimes(1)
+    })
+    it('calls onPressBack', () => {
+      const spy = jest.spyOn(wrapper.instance(), 'onPressBack')
+
+      wrapper.instance().onPressBack()
+      expect(spy).toHaveBeenCalledTimes(1)
     })
   })
 })

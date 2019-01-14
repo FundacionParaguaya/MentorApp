@@ -156,6 +156,16 @@ describe('SocioEconomicQuestion screens', () => {
         expect.any(Object)
       )
     })
+
+    it('calls addDraftProgress on mount', () => {
+      expect(wrapper.instance().props.addDraftProgress).toHaveBeenCalledTimes(1)
+    })
+    it('calls onPressBack', () => {
+      const spy = jest.spyOn(wrapper.instance(), 'onPressBack')
+
+      wrapper.instance().onPressBack()
+      expect(spy).toHaveBeenCalledTimes(1)
+    })
   })
 
   describe('non-initial screen', () => {
