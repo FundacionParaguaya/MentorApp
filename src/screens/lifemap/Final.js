@@ -6,9 +6,8 @@ import { withNamespaces } from 'react-i18next'
 import RoundImage from '../../components/RoundImage'
 import LifemapVisual from '../../components/LifemapVisual'
 import Button from '../../components/Button'
-
 import globalStyles from '../../globalStyles'
-import { submitDraft } from '../../redux/actions'
+import { submitDraft, addDraftProgress } from '../../redux/actions'
 import { url } from '../../config'
 
 export class Final extends Component {
@@ -18,6 +17,23 @@ export class Final extends Component {
   shouldComponentUpdate() {
     return this.props.navigation.isFocused()
   }
+  componentDidMount() {
+    this.props.addDraftProgress(this.draftId, {
+      screen: 'Final'
+    })
+
+    this.props.navigation.setParams({
+      onPressBack: this.onPressBack
+    })
+  }
+
+  onPressBack = () => {
+    this.props.navigation.navigate('Overview', {
+      draftId: this.draftId,
+      survey: this.survey
+    })
+  }
+
   render() {
     const { t } = this.props
     const draft = this.props.drafts.filter(
@@ -90,7 +106,8 @@ Final.propTypes = {
   t: PropTypes.func.isRequired,
   drafts: PropTypes.array.isRequired,
   navigation: PropTypes.object.isRequired,
-  submitDraft: PropTypes.func.isRequired
+  submitDraft: PropTypes.func.isRequired,
+  addDraftProgress: PropTypes.func.isRequired
 }
 
 const mapStateToProps = ({ drafts, env, user }) => ({
@@ -99,7 +116,8 @@ const mapStateToProps = ({ drafts, env, user }) => ({
   user
 })
 const mapDispatchToProps = {
-  submitDraft
+  submitDraft,
+  addDraftProgress
 }
 
 export default withNamespaces()(
