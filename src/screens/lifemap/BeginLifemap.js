@@ -18,8 +18,17 @@ export class BeginLifemap extends Component {
     this.props.addDraftProgress(this.draftId, {
       screen: 'BeginLifemap'
     })
+    this.props.navigation.setParams({
+      onPressBack: this.onPressBack
+    })
   }
-
+  onPressBack = () => {
+    this.props.navigation.replace('SocioEconomicQuestion', {
+      draftId: this.draftId,
+      survey: this.survey,
+      fromBeginLifemap: true
+    })
+  }
   render() {
     const { t } = this.props
     return (

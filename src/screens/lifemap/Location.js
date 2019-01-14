@@ -230,7 +230,7 @@ export class Location extends Component {
     this.addSurveyData(this.state.accuracy, 'accuracy')
     this.addSurveyData(this.state.latitude, 'latitude')
     this.addSurveyData(this.state.longitude, 'longitude')
-    this.props.navigation.navigate('SocioEconomicQuestion', {
+    this.props.navigation.replace('SocioEconomicQuestion', {
       draftId: this.draftId,
       survey: this.survey
     })

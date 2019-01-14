@@ -27,6 +27,7 @@ const createTestProps = props => ({
   t: value => value,
   navigation: {
     navigate: jest.fn(),
+    replace: jest.fn(),
     setParams: jest.fn(),
     getParam: param =>
       param === 'draftId'
@@ -184,7 +185,7 @@ describe('Family Location component', () => {
       .props()
       .handleClick()
 
-    expect(wrapper.instance().props.navigation.navigate).toHaveBeenCalledWith(
+    expect(wrapper.instance().props.navigation.replace).toHaveBeenCalledWith(
       'SocioEconomicQuestion',
       {
         draftId: 2,

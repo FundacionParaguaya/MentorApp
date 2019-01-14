@@ -9,6 +9,7 @@ const createTestProps = props => ({
   t: value => value,
   navigation: {
     navigate: jest.fn(),
+    setParams: jest.fn(),
     getParam: jest.fn(() => ({
       id: 2,
       title: 'Other survey',
@@ -43,6 +44,11 @@ describe('BeginLifemap View', () => {
   describe('functionality', () => {
     it('calculates correctly the number of questions', () => {
       expect(wrapper.instance().numberOfQuestions).toEqual(3)
+    })
+    it('calls setParam on mount', () => {
+      expect(
+        wrapper.instance().props.navigation.setParams
+      ).toHaveBeenCalledTimes(1)
     })
   })
 })

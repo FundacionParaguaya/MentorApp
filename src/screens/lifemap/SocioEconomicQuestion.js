@@ -62,16 +62,28 @@ export class SocioEconomicQuestion extends Component {
             questionsPerScreen[totalScreens - 1].forFamily.push(question)
           }
         })
-      props.navigation.setParams({
-        socioEconomics: {
-          currentScreen: 1,
-          questionsPerScreen,
-          totalScreens
-        },
-        title: questionsPerScreen[0].forFamily[0]
-          ? questionsPerScreen[0].forFamily[0].topic
-          : questionsPerScreen[0].forFamilyMember[0].topic
-      })
+      if (props.navigation.getParam('fromBeginLifemap')) {
+        props.navigation.setParams({
+          socioEconomics: {
+            currentScreen: totalScreens,
+            questionsPerScreen,
+            totalScreens
+          },
+          title: questionsPerScreen[totalScreens - 1].forFamily[0]
+            ? questionsPerScreen[totalScreens - 1].forFamily[0].topic
+            : questionsPerScreen[totalScreens - 1].forFamilyMember[0].topic
+        })
+      } else
+        props.navigation.setParams({
+          socioEconomics: {
+            currentScreen: 1,
+            questionsPerScreen,
+            totalScreens
+          },
+          title: questionsPerScreen[0].forFamily[0]
+            ? questionsPerScreen[0].forFamily[0].topic
+            : questionsPerScreen[0].forFamilyMember[0].topic
+        })
     } else {
       const socioEconomics = this.props.navigation.getParam('socioEconomics')
       const questionsForThisScreen = socioEconomics
