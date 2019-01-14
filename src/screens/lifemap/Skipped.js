@@ -22,6 +22,17 @@ export class Skipped extends Component {
     this.props.addDraftProgress(this.draftId, {
       screen: 'Skipped'
     })
+    this.props.navigation.setParams({
+      onPressBack: this.onPressBack
+    })
+  }
+
+  onPressBack = () => {
+    this.props.navigation.navigate('Question', {
+      draftId: this.draftId,
+      survey: this.survey,
+      step: this.survey.surveyStoplightQuestions.length - 1
+    })
   }
 
   shouldComponentUpdate() {
@@ -36,9 +47,7 @@ export class Skipped extends Component {
 
   render() {
     const { t } = this.props
-    const draft = this.props.drafts.filter(
-      item => item.draftId === this.draftId
-    )[0]
+    const draft = this.props.drafts.find(item => item.draftId === this.draftId)
 
     const skippedQuestions = draft.indicatorSurveyDataList.filter(
       question => question.value === 0

@@ -31,6 +31,9 @@ export class Question extends Component {
       screen: 'Question',
       step: this.step
     })
+    this.props.navigation.setParams({
+      onPressBack: this.onPressBack
+    })
   }
 
   shouldComponentUpdate() {
@@ -38,9 +41,9 @@ export class Question extends Component {
   }
 
   getFieldValue(draft, field) {
-    const indicatorObject = draft.indicatorSurveyDataList.filter(
+    const indicatorObject = draft.indicatorSurveyDataList.find(
       item => item.key === field
-    )[0]
+    )
     if (indicatorObject) {
       return indicatorObject.value
     }
@@ -51,9 +54,7 @@ export class Question extends Component {
       [this.indicator.codeName]: answer
     })
 
-    const draft = this.props.drafts.filter(
-      item => item.draftId === this.draftId
-    )[0]
+    const draft = this.props.drafts.find(item => item.draftId === this.draftId)
 
     const skippedQuestions = draft.indicatorSurveyDataList.filter(
       question => question.value === 0
@@ -81,7 +82,8 @@ export class Question extends Component {
     ) {
       return this.props.navigation.navigate('Overview', {
         draftId: this.draftId,
-        survey: this.survey
+        survey: this.survey,
+        resumeDraft: false
       })
     } else {
       return this.props.navigation.navigate('Skipped', {
@@ -89,12 +91,6 @@ export class Question extends Component {
         survey: this.survey
       })
     }
-  }
-
-  componentDidMount() {
-    this.props.navigation.setParams({
-      onPressBack: this.onPressBack
-    })
   }
 
   onPressBack = () => {
@@ -112,9 +108,7 @@ export class Question extends Component {
   }
 
   render() {
-    const draft = this.props.drafts.filter(
-      item => item.draftId === this.draftId
-    )[0]
+    const draft = this.props.drafts.find(item => item.draftId === this.draftId)
     const { t } = this.props
     return (
       <ScrollView style={globalStyles.background}>
