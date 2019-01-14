@@ -25,6 +25,7 @@ export class SocioEconomicQuestion extends Component {
 
   state = { errorsDetected: [] }
   draftId = this.props.navigation.getParam('draftId')
+  survey = this.props.navigation.getParam('survey')
 
   constructor(props) {
     super(props)
@@ -90,6 +91,35 @@ export class SocioEconomicQuestion extends Component {
       screen: 'SocioEconomicQuestion',
       socioEconomics: this.props.navigation.getParam('socioEconomics')
     })
+    this.props.navigation.setParams({
+      onPressBack: this.onPressBack
+    })
+  }
+
+  onPressBack = () => {
+    const draft = this.props.drafts.find(
+      draft => draft.draftId === this.draftId
+    )
+
+    const socioEconomics = this.props.navigation.getParam('socioEconomics')
+    const questionsForThisScreen = socioEconomics
+      ? socioEconomics.questionsPerScreen[socioEconomics.currentScreen - 1]
+      : []
+
+    socioEconomics.currentScreen === 1
+      ? this.props.navigation.navigate('Location', {
+          draftId: this.draftId,
+          survey: this.survey
+        })
+      : this.props.navigation.push('SocioEconomicQuestion', {
+          draftId: this.draftId,
+          survey: this.survey,
+          socioEconomics: {
+            currentScreen: socioEconomics.currentScreen - 1,
+            questionsPerScreen: socioEconomics.questionsPerScreen,
+            totalScreens: socioEconomics.totalScreens
+          }
+        })
   }
 
   shouldComponentUpdate() {
@@ -278,11 +308,11 @@ export class SocioEconomicQuestion extends Component {
               socioEconomics.currentScreen === socioEconomics.totalScreens
                 ? this.props.navigation.navigate('BeginLifemap', {
                     draftId: this.draftId,
-                    survey: this.props.navigation.getParam('survey')
+                    survey: this.survey
                   })
                 : this.props.navigation.push('SocioEconomicQuestion', {
                     draftId: this.draftId,
-                    survey: this.props.navigation.getParam('survey'),
+                    survey: this.survey,
                     socioEconomics: {
                       currentScreen: socioEconomics.currentScreen + 1,
                       questionsPerScreen: socioEconomics.questionsPerScreen,

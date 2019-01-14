@@ -16,6 +16,7 @@ const createTestProps = props => ({
     isFocused: jest.fn(() => true)
   },
   addSurveyData: jest.fn(),
+  addDraftProgress: jest.fn(),
   addSurveyFamilyMemberData: jest.fn(),
   addDraftProgress: jest.fn(),
   drafts: [
@@ -58,7 +59,7 @@ describe('SocioEconomicQuestion screens', () => {
     it('sets navigation socioEconomics param', () => {
       expect(
         wrapper.instance().props.navigation.setParams
-      ).toHaveBeenCalledTimes(1)
+      ).toHaveBeenCalledTimes(2)
 
       expect(
         wrapper.instance().props.navigation.setParams
