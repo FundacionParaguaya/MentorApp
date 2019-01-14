@@ -28,9 +28,10 @@ export class Final extends Component {
   }
 
   onPressBack = () => {
-    this.props.navigation.navigate('Overview', {
+    this.props.navigation.replace('Overview', {
       draftId: this.draftId,
-      survey: this.survey
+      survey: this.survey,
+      resumeDraft: false
     })
   }
 

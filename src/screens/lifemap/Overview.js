@@ -21,11 +21,33 @@ export class Overview extends Component {
   )
 
   componentDidMount() {
+    console.log(this.props.navigation.getParam('resumeDraft'))
     if (!this.props.navigation.getParam('resumeDraft')) {
       this.props.addDraftProgress(this.draftId, {
         screen: 'Overview'
       })
+      this.props.navigation.setParams({
+        onPressBack: this.onPressBack
+      })
     }
+  }
+
+  onPressBack = () => {
+    const draft = this.props.drafts.find(item => item.draftId === this.draftId)
+    const skippedQuestions = draft.indicatorSurveyDataList.filter(
+      question => question.value === 0
+    )
+    if (skippedQuestions.length > 0) {
+      this.props.navigation.navigate('Skipped', {
+        draftId: this.draftId,
+        survey: this.survey
+      })
+    } else
+      this.props.navigation.navigate('Question', {
+        draftId: this.draftId,
+        survey: this.survey,
+        step: this.survey.surveyStoplightQuestions.length - 1
+      })
   }
 
   navigateToScreen = (screen, indicator, indicatorText) =>
@@ -55,8 +77,7 @@ export class Overview extends Component {
     const draft = this.props.drafts.find(item => item.draftId === this.draftId)
     const mandatoryPrioritiesCount = this.getMandatoryPrioritiesCount(draft)
     const resumeDraft = this.props.navigation.getParam('resumeDraft')
-    console.log(!resumeDraft)
-    console.log(draft.progress.screen)
+
     return (
       <ScrollView
         style={globalStyles.background}
@@ -75,7 +96,7 @@ export class Overview extends Component {
               achievements={draft.achievements}
               questionsLength={this.survey.surveyStoplightQuestions.length}
             />
-            {resumeDraft && draft.progress.screen !== 'Overview' ? (
+            {resumeDraft ? (
               <Button
                 style={{
                   marginTop: 20
@@ -83,7 +104,7 @@ export class Overview extends Component {
                 colored
                 text={t('general.resumeDraft')}
                 handleClick={() => {
-                  this.props.navigation.navigate(draft.progress.screen, {
+                  this.props.navigation.replace(draft.progress.screen, {
                     draftId: this.draftId,
                     survey: this.survey,
                     step: draft.progress.step,
@@ -104,7 +125,7 @@ export class Overview extends Component {
             />
           </View>
         </View>
-        {!resumeDraft || draft.progress.screen === 'Overview' ? (
+        {!resumeDraft ? (
           <View style={{ height: 50 }}>
             <Button
               colored
