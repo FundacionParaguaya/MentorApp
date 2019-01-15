@@ -9,9 +9,11 @@ import LifemapOverview from '../../components/LifemapOverview'
 
 const createTestProps = props => ({
   t: value => value,
+  addDraftProgress: jest.fn(),
   navigation: {
     navigate: jest.fn(),
     isFocused: jest.fn(),
+    setParams: jest.fn(),
     getParam: jest.fn(param => {
       if (param === 'draftId') {
         return 1
@@ -34,6 +36,7 @@ const createTestProps = props => ({
     {
       draftId: 1,
       priorities: [{ action: 'Some action' }],
+      progress: { screen: 'Location' },
       indicatorSurveyDataList: [
         { key: 'phoneNumber', value: 3 },
         { key: 'education', value: 1 },
@@ -74,7 +77,8 @@ describe('Overview Lifemap View when no questions are skipped', () => {
           {
             draftId: 1,
             priorities: [{ action: 'Some action' }],
-            indicatorSurveyDataList: [{ key: 'phoneNumber', value: 3 }]
+            indicatorSurveyDataList: [{ key: 'phoneNumber', value: 3 }],
+            progress: { screen: 'Location' }
           }
         ]
       })
@@ -100,6 +104,7 @@ describe('Overview Lifemap View when no questions are skipped', () => {
           {
             draftId: 1,
             priorities: [{ action: 'Some action' }],
+            progress: { screen: 'Location' },
             indicatorSurveyDataList: [
               { key: 'phoneNumber', value: 3 },
               { key: 'education', value: 1 }
@@ -124,6 +129,7 @@ describe('Overview Lifemap View when no questions are skipped', () => {
       expect(wrapper.find(LifemapOverview).props().draftData).toEqual({
         draftId: 1,
         priorities: [{ action: 'Some action' }],
+        progress: { screen: 'Location' },
         indicatorSurveyDataList: [
           { key: 'phoneNumber', value: 3 },
           { key: 'education', value: 1 },
@@ -165,5 +171,19 @@ describe('Render optimization', () => {
     })
     wrapper = shallow(<Overview {...props} />)
     expect(wrapper.instance().props.drafts[1]).toBeFalsy()
+  })
+  it('calls setParam on mount', () => {
+    expect(wrapper.instance().props.navigation.setParams).toHaveBeenCalledTimes(
+      1
+    )
+  })
+  it('calls addDraftProgress on mount', () => {
+    expect(wrapper.instance().props.addDraftProgress).toHaveBeenCalledTimes(1)
+  })
+  it('calls onPressBack', () => {
+    const spy = jest.spyOn(wrapper.instance(), 'onPressBack')
+
+    wrapper.instance().onPressBack()
+    expect(spy).toHaveBeenCalledTimes(1)
   })
 })

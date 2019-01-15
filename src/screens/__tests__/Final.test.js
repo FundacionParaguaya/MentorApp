@@ -11,14 +11,19 @@ const createTestProps = props => ({
   user: { token: 'token' },
   env: 'env',
   submitDraft: jest.fn(),
+  addDraftProgress: jest.fn(),
   navigation: {
     navigate: jest.fn(),
+    replace: jest.fn(),
+    setParams: jest.fn(),
     popToTop: jest.fn(),
     reset: jest.fn(),
 
     getParam: jest.fn(param => {
       if (param === 'draftId') {
         return 1
+      } else if (param === 'survey') {
+        return { surveyStoplightQuestions: [] }
       }
     })
   },
@@ -69,6 +74,20 @@ describe('Final Lifemap View when no questions are skipped', () => {
         wrapper.instance().props.navigation.popToTop
       ).toHaveBeenCalledTimes(1)
     })
+  })
+  it('calls setParam on mount', () => {
+    expect(wrapper.instance().props.navigation.setParams).toHaveBeenCalledTimes(
+      1
+    )
+  })
+  it('calls addDraftProgress on mount', () => {
+    expect(wrapper.instance().props.addDraftProgress).toHaveBeenCalledTimes(1)
+  })
+  it('calls onPressBack', () => {
+    const spy = jest.spyOn(wrapper.instance(), 'onPressBack')
+
+    wrapper.instance().onPressBack()
+    expect(spy).toHaveBeenCalledTimes(1)
   })
   it('submits draft  when Button is clicked', () => {
     wrapper

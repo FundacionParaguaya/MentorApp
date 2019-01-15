@@ -8,7 +8,11 @@ import TextInput from '../../components/TextInput'
 import Select from '../../components/Select'
 import Button from '../../components/Button'
 import globalStyles from '../../globalStyles'
-import { addSurveyData, addSurveyFamilyMemberData } from '../../redux/actions'
+import {
+  addSurveyData,
+  addSurveyFamilyMemberData,
+  addDraftProgress
+} from '../../redux/actions'
 
 export class SocioEconomicQuestion extends Component {
   static navigationOptions = ({ navigation }) => {
@@ -20,6 +24,8 @@ export class SocioEconomicQuestion extends Component {
   errorsDetected = []
 
   state = { errorsDetected: [] }
+  draftId = this.props.navigation.getParam('draftId')
+  survey = this.props.navigation.getParam('survey')
 
   constructor(props) {
     super(props)
@@ -56,16 +62,28 @@ export class SocioEconomicQuestion extends Component {
             questionsPerScreen[totalScreens - 1].forFamily.push(question)
           }
         })
-      props.navigation.setParams({
-        socioEconomics: {
-          currentScreen: 1,
-          questionsPerScreen,
-          totalScreens
-        },
-        title: questionsPerScreen[0].forFamily[0]
-          ? questionsPerScreen[0].forFamily[0].topic
-          : questionsPerScreen[0].forFamilyMember[0].topic
-      })
+      if (props.navigation.getParam('fromBeginLifemap')) {
+        props.navigation.setParams({
+          socioEconomics: {
+            currentScreen: totalScreens,
+            questionsPerScreen,
+            totalScreens
+          },
+          title: questionsPerScreen[totalScreens - 1].forFamily[0]
+            ? questionsPerScreen[totalScreens - 1].forFamily[0].topic
+            : questionsPerScreen[totalScreens - 1].forFamilyMember[0].topic
+        })
+      } else
+        props.navigation.setParams({
+          socioEconomics: {
+            currentScreen: 1,
+            questionsPerScreen,
+            totalScreens
+          },
+          title: questionsPerScreen[0].forFamily[0]
+            ? questionsPerScreen[0].forFamily[0].topic
+            : questionsPerScreen[0].forFamilyMember[0].topic
+        })
     } else {
       const socioEconomics = this.props.navigation.getParam('socioEconomics')
       const questionsForThisScreen = socioEconomics
@@ -80,21 +98,46 @@ export class SocioEconomicQuestion extends Component {
     }
   }
 
+  componentDidMount() {
+    this.props.addDraftProgress(this.draftId, {
+      screen: 'SocioEconomicQuestion',
+      socioEconomics: this.props.navigation.getParam('socioEconomics')
+    })
+    this.props.navigation.setParams({
+      onPressBack: this.onPressBack
+    })
+  }
+
+  onPressBack = () => {
+    const socioEconomics = this.props.navigation.getParam('socioEconomics')
+
+    socioEconomics.currentScreen === 1
+      ? this.props.navigation.navigate('Location', {
+          draftId: this.draftId,
+          survey: this.survey
+        })
+      : this.props.navigation.push('SocioEconomicQuestion', {
+          draftId: this.draftId,
+          survey: this.survey,
+          socioEconomics: {
+            currentScreen: socioEconomics.currentScreen - 1,
+            questionsPerScreen: socioEconomics.questionsPerScreen,
+            totalScreens: socioEconomics.totalScreens
+          }
+        })
+  }
+
   shouldComponentUpdate() {
     return this.props.navigation.isFocused()
   }
   addSurveyData = (text, field) => {
-    this.props.addSurveyData(
-      this.props.navigation.getParam('draftId'),
-      'economicSurveyDataList',
-      {
-        [field]: text
-      }
-    )
+    this.props.addSurveyData(this.draftId, 'economicSurveyDataList', {
+      [field]: text
+    })
   }
   addSurveyFamilyMemberData = (text, field, index) => {
     this.props.addSurveyFamilyMemberData({
-      id: this.props.navigation.getParam('draftId'),
+      id: this.draftId,
       index,
       isSocioEconomicAnswer: true,
       payload: {
@@ -141,9 +184,9 @@ export class SocioEconomicQuestion extends Component {
   }
   render() {
     const { t } = this.props
-    const draft = this.props.drafts.filter(
-      draft => draft.draftId === this.props.navigation.getParam('draftId')
-    )[0]
+    const draft = this.props.drafts.find(
+      draft => draft.draftId === this.draftId
+    )
 
     const socioEconomics = this.props.navigation.getParam('socioEconomics')
     const questionsForThisScreen = socioEconomics
@@ -269,12 +312,12 @@ export class SocioEconomicQuestion extends Component {
             handleClick={() =>
               socioEconomics.currentScreen === socioEconomics.totalScreens
                 ? this.props.navigation.navigate('BeginLifemap', {
-                    draftId: this.props.navigation.getParam('draftId'),
-                    survey: this.props.navigation.getParam('survey')
+                    draftId: this.draftId,
+                    survey: this.survey
                   })
                 : this.props.navigation.push('SocioEconomicQuestion', {
-                    draftId: this.props.navigation.getParam('draftId'),
-                    survey: this.props.navigation.getParam('survey'),
+                    draftId: this.draftId,
+                    survey: this.survey,
                     socioEconomics: {
                       currentScreen: socioEconomics.currentScreen + 1,
                       questionsPerScreen: socioEconomics.questionsPerScreen,
@@ -294,7 +337,8 @@ SocioEconomicQuestion.propTypes = {
   navigation: PropTypes.object.isRequired,
   drafts: PropTypes.array.isRequired,
   addSurveyData: PropTypes.func.isRequired,
-  addSurveyFamilyMemberData: PropTypes.func.isRequired
+  addSurveyFamilyMemberData: PropTypes.func.isRequired,
+  addDraftProgress: PropTypes.func.isRequired
 }
 
 const styles = StyleSheet.create({
@@ -313,7 +357,11 @@ const styles = StyleSheet.create({
   }
 })
 
-const mapDispatchToProps = { addSurveyData, addSurveyFamilyMemberData }
+const mapDispatchToProps = {
+  addSurveyData,
+  addSurveyFamilyMemberData,
+  addDraftProgress
+}
 
 const mapStateToProps = ({ drafts, surveys }) => ({
   drafts,

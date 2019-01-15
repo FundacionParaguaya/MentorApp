@@ -4,11 +4,14 @@ import { connect } from 'react-redux'
 import PropTypes from 'prop-types'
 import { withNamespaces } from 'react-i18next'
 
-import { addSurveyFamilyMemberData } from '../../redux/actions'
+import {
+  addSurveyFamilyMemberData,
+  addDraftProgress
+} from '../../redux/actions'
 
 import globalStyles from '../../globalStyles'
 import Button from '../../components/Button'
-import DateInput from '../../components/DateInput'
+import DateInputComponent from '../../components/DateInput'
 
 export class FamilyMembersBirthdates extends Component {
   draftId = this.props.navigation.getParam('draftId')
@@ -17,6 +20,22 @@ export class FamilyMembersBirthdates extends Component {
   errorsDetected = []
 
   state = { errorsDetected: [] }
+
+  componentDidMount() {
+    this.props.addDraftProgress(this.draftId, {
+      screen: 'FamilyMembersBirthdates'
+    })
+    this.props.navigation.setParams({
+      onPressBack: this.onPressBack
+    })
+  }
+
+  onPressBack = () => {
+    this.props.navigation.navigate('FamilyMembersGender', {
+      draftId: this.draftId,
+      survey: this.survey
+    })
+  }
 
   shouldComponentUpdate() {
     return this.props.navigation.isFocused()
@@ -82,7 +101,7 @@ export class FamilyMembersBirthdates extends Component {
               >
                 {item.firstName}
               </Text>
-              <DateInput
+              <DateInputComponent
                 field={i.toString()}
                 detectError={this.detectError}
                 onValidDate={date => this.addFamilyMemberBirthdate(date, i + 1)}
@@ -119,11 +138,13 @@ FamilyMembersBirthdates.propTypes = {
   t: PropTypes.func.isRequired,
   drafts: PropTypes.array,
   navigation: PropTypes.object.isRequired,
-  addSurveyFamilyMemberData: PropTypes.func.isRequired
+  addSurveyFamilyMemberData: PropTypes.func.isRequired,
+  addDraftProgress: PropTypes.func.isRequired
 }
 
 const mapDispatchToProps = {
-  addSurveyFamilyMemberData
+  addSurveyFamilyMemberData,
+  addDraftProgress
 }
 
 const mapStateToProps = ({ drafts }) => ({

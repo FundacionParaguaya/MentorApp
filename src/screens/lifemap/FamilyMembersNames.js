@@ -7,7 +7,8 @@ import { withNamespaces } from 'react-i18next'
 import {
   addSurveyData,
   addSurveyFamilyMemberData,
-  removeFamilyMembers
+  removeFamilyMembers,
+  addDraftProgress
 } from '../../redux/actions'
 
 import globalStyles from '../../globalStyles'
@@ -23,6 +24,21 @@ export class FamilyMembersNames extends Component {
 
   state = { errorsDetected: [] }
 
+  componentDidMount() {
+    this.props.addDraftProgress(this.draftId, {
+      screen: 'FamilyMembersNames'
+    })
+    this.props.navigation.setParams({
+      onPressBack: this.onPressBack
+    })
+  }
+
+  onPressBack = () => {
+    this.props.navigation.navigate('FamilyParticipant', {
+      draftId: this.draftId,
+      survey: this.survey
+    })
+  }
   shouldComponentUpdate() {
     return this.props.navigation.isFocused()
   }
@@ -186,13 +202,15 @@ FamilyMembersNames.propTypes = {
   navigation: PropTypes.object.isRequired,
   addSurveyData: PropTypes.func.isRequired,
   addSurveyFamilyMemberData: PropTypes.func.isRequired,
-  removeFamilyMembers: PropTypes.func.isRequired
+  removeFamilyMembers: PropTypes.func.isRequired,
+  addDraftProgress: PropTypes.func.isRequired
 }
 
 const mapDispatchToProps = {
   addSurveyData,
   addSurveyFamilyMemberData,
-  removeFamilyMembers
+  removeFamilyMembers,
+  addDraftProgress
 }
 
 const mapStateToProps = ({ drafts }) => ({

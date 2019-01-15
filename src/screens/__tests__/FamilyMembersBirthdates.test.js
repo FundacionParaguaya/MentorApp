@@ -4,12 +4,13 @@ import { ScrollView, Text } from 'react-native'
 import { FamilyMembersBirthdates } from '../lifemap/FamilyMembersBirthdates'
 
 import Button from '../../components/Button'
-import DateInput from '../../components/DateInput'
+import DateInputComponent from '../../components/DateInput'
 
 const createTestProps = props => ({
   t: value => value,
   navigation: {
     getParam: jest.fn(param => (param === 'draftId' ? 4 : null)),
+    setParams: jest.fn(),
     navigate: jest.fn(),
     isFocused: jest.fn(() => true)
   },
@@ -36,6 +37,7 @@ const createTestProps = props => ({
     }
   ],
   addSurveyFamilyMemberData: jest.fn(),
+  addDraftProgress: jest.fn(),
   ...props
 })
 
@@ -54,7 +56,7 @@ describe('FamilyMembersBirthDates View', () => {
       expect(wrapper.find(Button)).toHaveLength(1)
     })
     it('renders DateInput', () => {
-      expect(wrapper.find(DateInput)).toHaveLength(1)
+      expect(wrapper.find(DateInputComponent)).toHaveLength(1)
     })
     it('renders Text', () => {
       expect(wrapper.find(Text)).toHaveLength(1)
@@ -75,14 +77,14 @@ describe('FamilyMembersBirthDates View', () => {
   })
 
   it('gives DateInput the proper value', () => {
-    expect(wrapper.find(DateInput).props().value).toBe(1515708000)
+    expect(wrapper.find(DateInputComponent).props().value).toBe(1515708000)
   })
 
   it('calls addFamilyMemberBirthdate on valid date', () => {
     const spy = jest.spyOn(wrapper.instance(), 'addFamilyMemberBirthdate')
 
     wrapper
-      .find(DateInput)
+      .find(DateInputComponent)
       .last()
       .props()
       .onValidDate()
@@ -107,6 +109,20 @@ describe('FamilyMembersBirthDates View', () => {
         .last()
         .props().disabled
     ).toBe(true)
+  })
+  it('calls setParam on mount', () => {
+    expect(wrapper.instance().props.navigation.setParams).toHaveBeenCalledTimes(
+      1
+    )
+  })
+  it('calls addDraftProgress on mount', () => {
+    expect(wrapper.instance().props.addDraftProgress).toHaveBeenCalledTimes(1)
+  })
+  it('calls onPressBack', () => {
+    const spy = jest.spyOn(wrapper.instance(), 'onPressBack')
+
+    wrapper.instance().onPressBack()
+    expect(spy).toHaveBeenCalledTimes(1)
   })
 })
 

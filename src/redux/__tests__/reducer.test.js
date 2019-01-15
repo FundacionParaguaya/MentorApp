@@ -192,7 +192,7 @@ describe('drafts reducer', () => {
       {
         draftId: 1,
         status: 'Synced',
-        progress: { screen: 'FamilyMembersNames', step: null }
+        progress: { screen: 'FamilyMembersNames' }
       },
       {
         draftId: 2,
@@ -208,7 +208,7 @@ describe('drafts reducer', () => {
       }
     ]
     const id = 1
-    const progress = { screen: 'FamilyMembersNames', step: null }
+    const progress = { screen: 'FamilyMembersNames' }
     expect(
       reducer.drafts(initialStore, {
         type: action.ADD_DRAFT_PROGRESS,

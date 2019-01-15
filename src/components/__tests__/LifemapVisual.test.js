@@ -6,6 +6,7 @@ import LifemapVisual from '../LifemapVisual'
 
 const createTestProps = props => ({
   ...props,
+  questionsLength: 10,
   questions: [
     { key: 'phoneNumber', value: 0 },
     { key: 'income', value: 3 },
@@ -25,7 +26,7 @@ describe('LifemapVisual Component', () => {
   })
   describe('rendering', () => {
     it('renders the appropriate number of icons', () => {
-      expect(wrapper.find(Icon)).toHaveLength(6)
+      expect(wrapper.find(Icon)).toHaveLength(12)
     })
     it('renders red color', () => {
       expect(

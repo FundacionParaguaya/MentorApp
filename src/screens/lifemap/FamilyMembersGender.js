@@ -4,7 +4,10 @@ import { connect } from 'react-redux'
 import PropTypes from 'prop-types'
 import { withNamespaces } from 'react-i18next'
 
-import { addSurveyFamilyMemberData } from '../../redux/actions'
+import {
+  addSurveyFamilyMemberData,
+  addDraftProgress
+} from '../../redux/actions'
 
 import globalStyles from '../../globalStyles'
 import Button from '../../components/Button'
@@ -17,6 +20,22 @@ export class FamilyMembersGender extends Component {
   errorsDetected = []
 
   state = { errorsDetected: [] }
+
+  componentDidMount() {
+    this.props.addDraftProgress(this.draftId, {
+      screen: 'FamilyMembersGender'
+    })
+    this.props.navigation.setParams({
+      onPressBack: this.onPressBack
+    })
+  }
+
+  onPressBack = () => {
+    this.props.navigation.navigate('FamilyMembersNames', {
+      draftId: this.draftId,
+      survey: this.survey
+    })
+  }
 
   shouldComponentUpdate() {
     return this.props.navigation.isFocused()
@@ -122,11 +141,13 @@ FamilyMembersGender.propTypes = {
   t: PropTypes.func.isRequired,
   drafts: PropTypes.array,
   navigation: PropTypes.object.isRequired,
-  addSurveyFamilyMemberData: PropTypes.func.isRequired
+  addSurveyFamilyMemberData: PropTypes.func.isRequired,
+  addDraftProgress: PropTypes.func.isRequired
 }
 
 const mapDispatchToProps = {
-  addSurveyFamilyMemberData
+  addSurveyFamilyMemberData,
+  addDraftProgress
 }
 
 const mapStateToProps = ({ drafts }) => ({
