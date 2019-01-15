@@ -14,7 +14,8 @@ const navigationRules = {
     param: 'privacy'
   },
   privacy: {
-    nextPage: 'FamilyParticipant'
+    nextPage: 'FamilyParticipant',
+    deleteOnExit: true // this is used for the exit modal - don't save the draft
   }
 }
 
@@ -61,7 +62,9 @@ export class Terms extends Component {
                 navigationRules[navigation.getParam('page')].nextPage,
                 {
                   survey: this.survey.id,
-                  page: navigationRules[navigation.getParam('page')].param
+                  page: navigationRules[navigation.getParam('page')].param,
+                  deleteOnExit:
+                  navigationRules[navigation.getParam('page')].deleteOnExit
                 }
               )
             }

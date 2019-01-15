@@ -55,30 +55,29 @@ export const generateNavOptions = ({ navigation, burgerMenu = true }) => ({
           isOpen={navigation.getParam('modalOpen')}
           onClose={() => navigation.setParams({ modalOpen: false })}
         >
-          {navigation.state.routeName === 'Terms' ||
-          navigation.state.routeName === 'Privacy' ||
-          (navigation.state.routeName === 'FamilyParticipant' &&
-            !navigation.getParam('draftId')) ? (
-            <View>
-              <Text style={[globalStyles.centerText, globalStyles.h3]}>
-                {navigation.state.routeName === 'FamilyParticipant'
-                  ? i18n.t('views.modals.lifeMapWillNotBeSaved')
-                  : i18n.t('views.modals.weCannotContinueToCreateTheLifeMap')}
-              </Text>
-              <Text style={[globalStyles.centerText, styles.subline]}>
-                {i18n.t('views.modals.areYouSureYouWantToExit')}
-              </Text>
-            </View>
-          ) : (
-            <View>
-              <Text style={[globalStyles.centerText, globalStyles.h3]}>
-                {i18n.t('views.modals.yourLifemapIsNotComplete')}
-              </Text>
-              <Text style={[globalStyles.centerText, styles.subline]}>
-                {i18n.t('views.modals.thisWillBeSavedAsADraft')}
-              </Text>
-            </View>
-          )}
+          {navigation.getParam('deleteOnExit') ||
+            navigation.state.routeName === 'Terms' ||
+            navigation.state.routeName === 'Privacy' ? (
+              <View>
+                <Text style={[globalStyles.centerText, globalStyles.h3]}>
+                  {navigation.state.routeName === 'FamilyParticipant'
+                    ? i18n.t('views.modals.lifeMapWillNotBeSaved')
+                    : i18n.t('views.modals.weCannotContinueToCreateTheLifeMap')}
+                </Text>
+                <Text style={[globalStyles.centerText, styles.subline]}>
+                  {i18n.t('views.modals.areYouSureYouWantToExit')}
+                </Text>
+              </View>
+            ) : (
+              <View>
+                <Text style={[globalStyles.centerText, globalStyles.h3]}>
+                  {i18n.t('views.modals.yourLifemapIsNotComplete')}
+                </Text>
+                <Text style={[globalStyles.centerText, styles.subline]}>
+                  {i18n.t('views.modals.thisWillBeSavedAsADraft')}
+                </Text>
+              </View>
+            )}
 
           <View style={styles.buttonBar}>
             <Button
@@ -86,10 +85,7 @@ export const generateNavOptions = ({ navigation, burgerMenu = true }) => ({
               text={i18n.t('general.yes')}
               style={{ width: 107 }}
               handleClick={() => {
-                if (
-                  navigation.state.routeName === 'FamilyParticipant' &&
-                  !navigation.getParam('draftId')
-                ) {
+                if (navigation.getParam('deleteOnExit')) {
                   store.dispatch(deleteDraft(navigation.getParam('draftId')))
                 }
 
@@ -121,10 +117,7 @@ export const generateNavOptions = ({ navigation, burgerMenu = true }) => ({
       <TouchableOpacity
         style={styles.touchable}
         onPress={() => {
-          if (
-            navigation.state.routeName === 'FamilyParticipant' &&
-            !navigation.getParam('draftId')
-          ) {
+          if (navigation.getParam('deleteOnExit')) {
             navigation.setParams({ backModalOpen: true })
           } else {
             navigation.setParams({ backModalOpen: false })
