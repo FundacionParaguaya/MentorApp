@@ -109,14 +109,7 @@ export class SocioEconomicQuestion extends Component {
   }
 
   onPressBack = () => {
-    const draft = this.props.drafts.find(
-      draft => draft.draftId === this.draftId
-    )
-
     const socioEconomics = this.props.navigation.getParam('socioEconomics')
-    const questionsForThisScreen = socioEconomics
-      ? socioEconomics.questionsPerScreen[socioEconomics.currentScreen - 1]
-      : []
 
     socioEconomics.currentScreen === 1
       ? this.props.navigation.navigate('Location', {

@@ -15,7 +15,7 @@ import { withNamespaces } from 'react-i18next'
 import { addSurveyData, addDraftProgress } from '../../redux/actions'
 import globalStyles from '../../globalStyles'
 import colors from '../../theme.json'
-import Slider from '../../components/Slider'
+import SliderComponent from '../../components/Slider'
 
 export class Question extends Component {
   step = this.props.navigation.getParam('step')
@@ -127,7 +127,7 @@ export class Question extends Component {
             style={{ marginTop: 5, marginBottom: -15 }}
           />
         </View>
-        <Slider
+        <SliderComponent
           slides={this.slides}
           value={this.getFieldValue(draft, this.indicator.codeName)}
           selectAnswer={answer => this.selectAnswer(answer)}

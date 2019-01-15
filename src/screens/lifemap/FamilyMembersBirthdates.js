@@ -11,7 +11,7 @@ import {
 
 import globalStyles from '../../globalStyles'
 import Button from '../../components/Button'
-import DateInput from '../../components/DateInput'
+import DateInputComponent from '../../components/DateInput'
 
 export class FamilyMembersBirthdates extends Component {
   draftId = this.props.navigation.getParam('draftId')
@@ -101,7 +101,7 @@ export class FamilyMembersBirthdates extends Component {
               >
                 {item.firstName}
               </Text>
-              <DateInput
+              <DateInputComponent
                 field={i.toString()}
                 detectError={this.detectError}
                 onValidDate={date => this.addFamilyMemberBirthdate(date, i + 1)}

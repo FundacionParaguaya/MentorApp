@@ -130,7 +130,8 @@ Dashboard.propTypes = {
   env: PropTypes.oneOf(['production', 'demo', 'testing', 'development']),
   user: PropTypes.object.isRequired,
   offline: PropTypes.object,
-  lng: PropTypes.string
+  lng: PropTypes.string,
+  surveys: PropTypes.array
 }
 
 const mapStateToProps = ({ env, user, drafts, offline, string, surveys }) => ({

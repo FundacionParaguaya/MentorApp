@@ -7,7 +7,7 @@ import {
   TouchableOpacity
 } from 'react-native'
 import { Question } from '../lifemap/Question'
-import Slider from '../../components/Slider'
+import SliderComponent from '../../components/Slider'
 
 const createTestProps = props => ({
   t: value => value,
@@ -57,7 +57,7 @@ describe('Question View', () => {
       expect(wrapper.find(ProgressBarAndroid)).toHaveLength(1)
     })
     it('renders Slider', () => {
-      expect(wrapper.find(Slider)).toHaveLength(1)
+      expect(wrapper.find(SliderComponent)).toHaveLength(1)
     })
   })
 
@@ -65,7 +65,7 @@ describe('Question View', () => {
     it('calls selectAnswer when slide is clicked', () => {
       const spy = jest.spyOn(wrapper.instance(), 'selectAnswer')
       wrapper
-        .find(Slider)
+        .find(SliderComponent)
         .props()
         .selectAnswer()
 

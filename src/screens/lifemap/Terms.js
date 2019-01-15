@@ -74,7 +74,8 @@ export class Terms extends Component {
 
 Terms.propTypes = {
   t: PropTypes.func.isRequired,
-  navigation: PropTypes.object.isRequired
+  navigation: PropTypes.object.isRequired,
+  surveys: PropTypes.array
 }
 
 const mapStateToProps = ({ surveys }) => ({

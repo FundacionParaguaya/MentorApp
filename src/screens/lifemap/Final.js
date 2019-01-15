@@ -108,7 +108,9 @@ Final.propTypes = {
   drafts: PropTypes.array.isRequired,
   navigation: PropTypes.object.isRequired,
   submitDraft: PropTypes.func.isRequired,
-  addDraftProgress: PropTypes.func.isRequired
+  addDraftProgress: PropTypes.func.isRequired,
+  env: PropTypes.string.isRequired,
+  user: PropTypes.object.isRequired
 }
 
 const mapStateToProps = ({ drafts, env, user }) => ({
