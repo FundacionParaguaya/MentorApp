@@ -221,6 +221,7 @@ export class SocioEconomicQuestion extends Component {
                 />
               ) : question.answerType === 'number' ? (
                 <TextInput
+                  multiline
                   key={question.codeName}
                   required={question.required}
                   onChangeText={this.addSurveyData}

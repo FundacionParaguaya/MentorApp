@@ -141,7 +141,7 @@ class TextInput extends Component {
             <View />
           )}
           <FormInput
-            keyboardType={this.props.keyboardType}
+            keyboardType={showPlaceholder ? null : this.props.keyboardType}
             autoCapitalize="none"
             onFocus={() => this.onFocus()}
             onBlur={() => this.onBlur(text)}
@@ -154,13 +154,9 @@ class TextInput extends Component {
             editable={!readonly}
             multiline={multiline}
           >
-            {showPlaceholder ? (
-              <Text style={styles.inputText}>{`${placeholder}${
-                required ? ' *' : ''
-              }`}</Text>
-            ) : (
-              <Text style={styles.inputText}>{text}</Text>
-            )}
+            <Text style={styles.inputText}>
+              {showPlaceholder ? placeholder : text}
+            </Text>
           </FormInput>
         </View>
         {status === 'error' && errorMsg ? (
