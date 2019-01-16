@@ -109,6 +109,20 @@ describe('TextInput Component', () => {
     })
   })
 
+  it('shows required error message when parent form is submitted', () => {
+    props = createTestProps({ required: true, validation: 'string' })
+    wrapper = shallow(<TextInput {...props} />)
+
+    wrapper.setProps({ showErrors: true })
+
+    expect(
+      wrapper
+        .find(FormValidationMessage)
+        .render()
+        .text()
+    ).toBe('This field is required')
+  })
+
   it('shows correct error message when validation is email', () => {
     props = createTestProps({ required: true, validation: 'email' })
     wrapper = shallow(<TextInput {...props} />)

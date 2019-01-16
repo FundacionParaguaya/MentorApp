@@ -119,4 +119,13 @@ describe('Select dropdown', () => {
     expect(spy).toHaveBeenCalledTimes(1)
     expect(spy).toHaveBeenCalledWith(2)
   })
+
+  it('shows required error message when parent form is submitted', () => {
+    props = createTestProps({ required: true, validation: 'string' })
+    wrapper = shallow(<Select {...props} />)
+
+    wrapper.setProps({ showErrors: true })
+
+    expect(wrapper).toHaveState({ errorMsg: 'This field is required' })
+  })
 })
