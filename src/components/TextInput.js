@@ -114,6 +114,12 @@ class TextInput extends Component {
     }
   }
 
+  componentDidUpdate(prevProps) {
+    if (prevProps.showErrors !== this.props.showErrors) {
+      this.validateInput(this.props.value)
+    }
+  }
+
   render() {
     const { text, errorMsg } = this.state
     const { label, placeholder, required, readonly, multiline } = this.props
@@ -229,6 +235,7 @@ TextInput.propTypes = {
   readonly: PropTypes.bool,
   onChangeText: PropTypes.func.isRequired,
   multiline: PropTypes.bool,
+  showErrors: PropTypes.bool,
   keyboardType: PropTypes.string,
   validation: PropTypes.oneOf([
     'email',

@@ -62,6 +62,12 @@ class Select extends Component {
     }
   }
 
+  componentDidUpdate(prevProps) {
+    if (prevProps.showErrors !== this.props.showErrors) {
+      this.validateInput(this.props.value)
+    }
+  }
+
   render() {
     const { errorMsg, isOpen } = this.state
     const { value, placeholder, required, options, countrySelect } = this.props
@@ -88,8 +94,6 @@ class Select extends Component {
     } else {
       text = ''
     }
-
-    console.log(placeholder)
 
     return (
       <TouchableOpacity onPress={this.toggleDropdown}>
@@ -207,6 +211,7 @@ Select.propTypes = {
   field: PropTypes.string,
   country: PropTypes.string,
   countrySelect: PropTypes.bool,
+  showErrors: PropTypes.bool,
   required: PropTypes.bool,
   detectError: PropTypes.func
 }

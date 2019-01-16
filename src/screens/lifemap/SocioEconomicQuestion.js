@@ -23,7 +23,7 @@ export class SocioEconomicQuestion extends Component {
 
   errorsDetected = []
 
-  state = { errorsDetected: [] }
+  state = { errorsDetected: [], showErrors: false }
   draftId = this.props.navigation.getParam('draftId')
   survey = this.props.navigation.getParam('survey')
 
@@ -182,8 +182,34 @@ export class SocioEconomicQuestion extends Component {
       errorsDetected: this.errorsDetected
     })
   }
+  submitForm = () => {
+    console.log(this.errorsDetected.length)
+    if (this.errorsDetected.length) {
+      this.setState({
+        showErrors: true
+      })
+    } else {
+      const socioEconomics = this.props.navigation.getParam('socioEconomics')
+
+      socioEconomics.currentScreen === socioEconomics.totalScreens
+        ? this.props.navigation.navigate('BeginLifemap', {
+            draftId: this.draftId,
+            survey: this.survey
+          })
+        : this.props.navigation.push('SocioEconomicQuestion', {
+            draftId: this.draftId,
+            survey: this.survey,
+            socioEconomics: {
+              currentScreen: socioEconomics.currentScreen + 1,
+              questionsPerScreen: socioEconomics.questionsPerScreen,
+              totalScreens: socioEconomics.totalScreens
+            }
+          })
+    }
+  }
   render() {
     const { t } = this.props
+    const { showErrors } = this.state
     const draft = this.props.drafts.find(
       draft => draft.draftId === this.draftId
     )
@@ -213,6 +239,7 @@ export class SocioEconomicQuestion extends Component {
                   required={question.required}
                   onChange={this.addSurveyData}
                   placeholder={question.questionText}
+                  showErrors={showErrors}
                   label={question.questionText}
                   field={question.codeName}
                   value={this.getFieldValue(draft, question.codeName) || ''}
@@ -226,6 +253,7 @@ export class SocioEconomicQuestion extends Component {
                   required={question.required}
                   onChangeText={this.addSurveyData}
                   placeholder={question.questionText}
+                  showErrors={showErrors}
                   field={question.codeName}
                   value={this.getFieldValue(draft, question.codeName) || ''}
                   detectError={this.detectError}
@@ -239,6 +267,7 @@ export class SocioEconomicQuestion extends Component {
                   required={question.required}
                   onChangeText={this.addSurveyData}
                   placeholder={question.questionText}
+                  showErrors={showErrors}
                   field={question.codeName}
                   value={this.getFieldValue(draft, question.codeName) || ''}
                   detectError={this.detectError}
@@ -264,6 +293,7 @@ export class SocioEconomicQuestion extends Component {
                           this.addSurveyFamilyMemberData(text, field, i)
                         }
                         placeholder={question.questionText}
+                        showErrors={showErrors}
                         label={question.questionText}
                         field={question.codeName}
                         value={
@@ -285,6 +315,7 @@ export class SocioEconomicQuestion extends Component {
                           this.addSurveyFamilyMemberData(text, field, i)
                         }
                         placeholder={question.questionText}
+                        showErrors={showErrors}
                         field={question.codeName}
                         value={
                           this.getFamilyMemberFieldValue(
@@ -309,25 +340,9 @@ export class SocioEconomicQuestion extends Component {
         <View style={{ marginTop: 15, height: 50 }}>
           <Button
             id="continue"
-            disabled={!!this.errorsDetected.length}
             colored
             text={t('general.continue')}
-            handleClick={() =>
-              socioEconomics.currentScreen === socioEconomics.totalScreens
-                ? this.props.navigation.navigate('BeginLifemap', {
-                    draftId: this.draftId,
-                    survey: this.survey
-                  })
-                : this.props.navigation.push('SocioEconomicQuestion', {
-                    draftId: this.draftId,
-                    survey: this.survey,
-                    socioEconomics: {
-                      currentScreen: socioEconomics.currentScreen + 1,
-                      questionsPerScreen: socioEconomics.questionsPerScreen,
-                      totalScreens: socioEconomics.totalScreens
-                    }
-                  })
-            }
+            handleClick={this.submitForm}
           />
         </View>
       </ScrollView>
