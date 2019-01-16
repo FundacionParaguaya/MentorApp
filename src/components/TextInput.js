@@ -141,17 +141,12 @@ class TextInput extends Component {
             <View />
           )}
           <FormInput
-            keyboardType={this.props.keyboardType}
+            keyboardType={showPlaceholder ? null : this.props.keyboardType}
             autoCapitalize="none"
             onFocus={() => this.onFocus()}
             onBlur={() => this.onBlur(text)}
             onChangeText={text => this.onChangeText(text)}
             onEndEditing={this.onEndEditing}
-            placeholder={
-              showPlaceholder
-                ? `${placeholder} ${required && !label ? '*' : ''}`
-                : ''
-            }
             inputStyle={[
               styles.inputStyle,
               !showPlaceholder ? styles.activeInput : {}
@@ -159,7 +154,9 @@ class TextInput extends Component {
             editable={!readonly}
             multiline={multiline}
           >
-            <Text style={styles.inputText}>{text}</Text>
+            <Text style={styles.inputText}>
+              {showPlaceholder ? placeholder : text}
+            </Text>
           </FormInput>
         </View>
         {status === 'error' && errorMsg ? (
@@ -191,6 +188,7 @@ const styles = StyleSheet.create({
   inputStyle: {
     ...globalStyles.subline,
     fontFamily: 'Roboto',
+    paddingRight: 30,
     fontSize: 14
   },
   inputText: {
