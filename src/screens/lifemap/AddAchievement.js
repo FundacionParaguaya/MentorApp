@@ -19,6 +19,7 @@ export class AddAchievement extends Component {
     action: '',
     roadmap: '',
     errorsDetected: [],
+    showErrors: false,
     indicator: this.props.navigation.getParam('indicator')
   }
 
@@ -69,6 +70,7 @@ export class AddAchievement extends Component {
 
   render() {
     const { t } = this.props
+    const { showErrors } = this.state
     const draft = this.getDraft()
     const achievement = this.getAchievementValue(draft)
 
@@ -104,6 +106,7 @@ export class AddAchievement extends Component {
           <TextInput
             field="action"
             required
+            showErrors={showErrors}
             detectError={this.detectError}
             onChangeText={text => this.setState({ action: text })}
             placeholder={
@@ -127,7 +130,6 @@ export class AddAchievement extends Component {
           <Button
             id="save"
             colored
-            disabled={!!this.errorsDetected.length}
             text={t('general.save')}
             handleClick={() => this.addAchievement()}
           />

@@ -64,7 +64,7 @@ class Select extends Component {
 
   componentDidUpdate(prevProps) {
     if (prevProps.showErrors !== this.props.showErrors) {
-      this.validateInput(this.props.value)
+      this.validateInput(this.props.value || '')
     }
   }
 

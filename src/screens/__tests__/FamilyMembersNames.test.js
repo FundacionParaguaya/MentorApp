@@ -139,14 +139,6 @@ describe('FamilyMembersNames View', () => {
     expect(spy).toHaveBeenCalledTimes(1)
   })
 
-  it('enables Button when all fields are filled', () => {
-    expect(
-      wrapper
-        .find(Button)
-        .last()
-        .props().disabled
-    ).toBe(false)
-  })
   it('changes family members count', () => {
     wrapper
       .find('#familyMembersCount')
@@ -188,71 +180,6 @@ describe('FamilyMembersNames View', () => {
     wrapper.instance().detectError(false, 'test')
 
     expect(wrapper).toHaveState({ errorsDetected: ['anotherError'] })
-  })
-  it('disables Button when no count is selected', () => {
-    const props = createTestProps({
-      drafts: [
-        {
-          draftId: 4,
-          familyData: {
-            familyMembersList: [
-              {
-                firstName: 'Juan',
-                lastName: 'Perez',
-                socioEconomicAnswers: [
-                  {
-                    key: 'educationPersonMostStudied',
-                    value: 'SCHOOL-COMPLETE'
-                  },
-                  { key: 'receiveStateIncome', value: 'NO' }
-                ]
-              }
-            ]
-          }
-        }
-      ]
-    })
-    wrapper = shallow(<FamilyMembersNames {...props} />)
-    wrapper.instance().errorsDetected = ['error']
-    wrapper.setState({ errorsDetected: ['error'] })
-    expect(
-      wrapper
-        .find(Button)
-        .last()
-        .props().disabled
-    ).toBe(true)
-  })
-  it('disables Button when no name is inputed', () => {
-    const props = createTestProps({
-      drafts: [
-        {
-          draftId: 4,
-          personal_survey_data: {
-            firstName: 'Jane'
-          },
-          familyData: {
-            countFamilyMembers: 2,
-            familyMembersList: [
-              {
-                firstName: 'Juan'
-              },
-              {
-                firstName: ''
-              }
-            ]
-          }
-        }
-      ]
-    })
-    wrapper = shallow(<FamilyMembersNames {...props} />)
-    wrapper.instance().errorsDetected = ['error']
-    wrapper.setState({ errorsDetected: ['error'] })
-    expect(
-      wrapper
-        .find(Button)
-        .last()
-        .props().disabled
-    ).toBe(true)
   })
 })
 

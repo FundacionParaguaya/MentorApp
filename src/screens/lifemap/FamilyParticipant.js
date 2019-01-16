@@ -33,7 +33,7 @@ export class FamilyParticipant extends Component {
 
   errorsDetected = []
 
-  state = { errorsDetected: [] }
+  state = { errorsDetected: [], showErrors: false }
 
   detectError = (error, field) => {
     if (error && !this.errorsDetected.includes(field)) {
@@ -82,10 +82,16 @@ export class FamilyParticipant extends Component {
   }
 
   handleClick() {
-    this.props.navigation.navigate('FamilyMembersNames', {
-      draftId: this.draftId,
-      survey: this.survey
-    })
+    if (this.errorsDetected.length) {
+      this.setState({
+        showErrors: true
+      })
+    } else {
+      this.props.navigation.navigate('FamilyMembersNames', {
+        draftId: this.draftId,
+        survey: this.survey
+      })
+    }
   }
 
   getFieldValue = (draft, field) => {
@@ -115,6 +121,7 @@ export class FamilyParticipant extends Component {
 
   render() {
     const { t } = this.props
+    const { showErrors } = this.state
     const draft = this.props.drafts.filter(
       draft => draft.draftId === this.draftId
     )[0]
@@ -138,6 +145,7 @@ export class FamilyParticipant extends Component {
             value={this.getFieldValue(draft, 'firstName') || ''}
             required
             detectError={this.detectError}
+            showErrors={showErrors}
           />
           <TextInput
             field="lastName"
@@ -147,6 +155,7 @@ export class FamilyParticipant extends Component {
             value={this.getFieldValue(draft, 'lastName') || ''}
             required
             detectError={this.detectError}
+            showErrors={showErrors}
           />
           <Select
             id="gender"
@@ -157,6 +166,7 @@ export class FamilyParticipant extends Component {
             field="gender"
             value={this.getFieldValue(draft, 'gender') || ''}
             detectError={this.detectError}
+            showErrors={showErrors}
             options={this.gender}
           />
 
@@ -165,6 +175,7 @@ export class FamilyParticipant extends Component {
             label={t('views.family.dateOfBirth')}
             field="birthDate"
             detectError={this.detectError}
+            showErrors={showErrors}
             onValidDate={this.addSurveyData}
             value={this.getFieldValue(draft, 'birthDate')}
           />
@@ -177,6 +188,7 @@ export class FamilyParticipant extends Component {
             field="documentType"
             value={this.getFieldValue(draft, 'documentType') || ''}
             detectError={this.detectError}
+            showErrors={showErrors}
             options={this.documentType}
           />
           <TextInput
@@ -186,6 +198,7 @@ export class FamilyParticipant extends Component {
             value={this.getFieldValue(draft, 'documentNumber')}
             placeholder={t('views.family.documentNumber')}
             detectError={this.detectError}
+            showErrors={showErrors}
           />
           <Select
             required
@@ -197,6 +210,7 @@ export class FamilyParticipant extends Component {
             field="birthCountry"
             value={this.getFieldValue(draft, 'birthCountry') || ''}
             detectError={this.detectError}
+            showErrors={showErrors}
           />
           <TextInput
             onChangeText={this.addSurveyData}
@@ -205,6 +219,7 @@ export class FamilyParticipant extends Component {
             placeholder={t('views.family.email')}
             validation="email"
             detectError={this.detectError}
+            showErrors={showErrors}
           />
           <TextInput
             onChangeText={this.addSurveyData}
@@ -213,11 +228,11 @@ export class FamilyParticipant extends Component {
             placeholder={t('views.family.phone')}
             validation="phoneNumber"
             detectError={this.detectError}
+            showErrors={showErrors}
           />
         </View>
         <View style={{ height: 50, marginTop: 50 }}>
           <Button
-            disabled={!!this.errorsDetected.length}
             colored
             text={t('general.continue')}
             handleClick={() => this.handleClick()}

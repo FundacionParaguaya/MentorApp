@@ -183,7 +183,6 @@ export class SocioEconomicQuestion extends Component {
     })
   }
   submitForm = () => {
-    console.log(this.errorsDetected.length)
     if (this.errorsDetected.length) {
       this.setState({
         showErrors: true

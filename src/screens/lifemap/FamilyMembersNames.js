@@ -22,7 +22,7 @@ export class FamilyMembersNames extends Component {
 
   errorsDetected = []
 
-  state = { errorsDetected: [] }
+  state = { errorsDetected: [], showErrors: false }
 
   componentDidMount() {
     this.props.addDraftProgress(this.draftId, {
@@ -56,15 +56,21 @@ export class FamilyMembersNames extends Component {
   }
 
   handleClick() {
-    this.getFieldValue('countFamilyMembers') > 1
-      ? this.props.navigation.navigate('FamilyMembersGender', {
-          draftId: this.draftId,
-          survey: this.survey
-        })
-      : this.props.navigation.navigate('Location', {
-          draftId: this.draftId,
-          survey: this.survey
-        })
+    if (this.errorsDetected.length) {
+      this.setState({
+        showErrors: true
+      })
+    } else {
+      this.getFieldValue('countFamilyMembers') > 1
+        ? this.props.navigation.navigate('FamilyMembersGender', {
+            draftId: this.draftId,
+            survey: this.survey
+          })
+        : this.props.navigation.navigate('Location', {
+            draftId: this.draftId,
+            survey: this.survey
+          })
+    }
   }
   getDraft = () =>
     this.props.drafts.filter(draft => draft.draftId === this.draftId)[0]
@@ -117,6 +123,7 @@ export class FamilyMembersNames extends Component {
 
   render() {
     const { t } = this.props
+    const { showErrors } = this.state
     const draft = this.getDraft()
 
     const familyMembersCount = draft.familyData.countFamilyMembers
@@ -140,6 +147,7 @@ export class FamilyMembersNames extends Component {
             field="countFamilyMembers"
             value={this.getFieldValue('countFamilyMembers') || ''}
             detectError={this.detectError}
+            showErrors={showErrors}
             options={Array(10)
               .fill()
               .map((item, index) => ({
@@ -158,6 +166,7 @@ export class FamilyMembersNames extends Component {
             required
             readonly
             detectError={this.detectError}
+            showErrors={showErrors}
           />
           {familyMembersCount.map((item, i) => (
             <TextInput
@@ -172,6 +181,7 @@ export class FamilyMembersNames extends Component {
               }
               required
               detectError={this.detectError}
+              showErrors={showErrors}
             />
           ))}
         </View>
@@ -180,7 +190,6 @@ export class FamilyMembersNames extends Component {
           <Button
             colored
             text={t('general.continue')}
-            disabled={!!this.errorsDetected.length}
             handleClick={() => this.handleClick(draft)}
           />
         </View>
