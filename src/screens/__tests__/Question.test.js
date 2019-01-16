@@ -7,12 +7,13 @@ import {
   TouchableOpacity
 } from 'react-native'
 import { Question } from '../lifemap/Question'
-import Slider from '../../components/Slider'
+import SliderComponent from '../../components/Slider'
 
 const createTestProps = props => ({
   t: value => value,
   navigation: {
     navigate: jest.fn(),
+    setParams: jest.fn(),
     isFocused: jest.fn(),
     getParam: jest.fn(param => {
       if (param === 'survey') {
@@ -25,6 +26,7 @@ const createTestProps = props => ({
     })
   },
   addSurveyData: jest.fn(),
+  addDraftProgress: jest.fn(),
   drafts: [
     {
       draftId: 1,
@@ -55,7 +57,7 @@ describe('Question View', () => {
       expect(wrapper.find(ProgressBarAndroid)).toHaveLength(1)
     })
     it('renders Slider', () => {
-      expect(wrapper.find(Slider)).toHaveLength(1)
+      expect(wrapper.find(SliderComponent)).toHaveLength(1)
     })
   })
 
@@ -63,7 +65,7 @@ describe('Question View', () => {
     it('calls selectAnswer when slide is clicked', () => {
       const spy = jest.spyOn(wrapper.instance(), 'selectAnswer')
       wrapper
-        .find(Slider)
+        .find(SliderComponent)
         .props()
         .selectAnswer()
 
@@ -133,5 +135,19 @@ describe('Render optimization', () => {
     })
     wrapper = shallow(<Question {...props} />)
     expect(wrapper.instance().props.drafts[1]).toBeFalsy()
+  })
+  it('calls setParam on mount', () => {
+    expect(wrapper.instance().props.navigation.setParams).toHaveBeenCalledTimes(
+      1
+    )
+  })
+  it('calls addDraftProgress on mount', () => {
+    expect(wrapper.instance().props.addDraftProgress).toHaveBeenCalledTimes(1)
+  })
+  it('calls onPressBack', () => {
+    const spy = jest.spyOn(wrapper.instance(), 'onPressBack')
+
+    wrapper.instance().onPressBack()
+    expect(spy).toHaveBeenCalledTimes(1)
   })
 })

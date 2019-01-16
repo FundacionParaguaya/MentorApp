@@ -12,7 +12,8 @@
     "save": "Guardar",
     "close": "Guardar & cerrar",
     "yes": "Sí",
-    "no": "No"
+    "no": "No",
+    "resumeDraft": "Continuar borrador"
   },
   "validation": {
     "fieldIsRequired": "Este campo es requerido",

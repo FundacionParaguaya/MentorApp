@@ -12,10 +12,10 @@ import { connect } from 'react-redux'
 import PropTypes from 'prop-types'
 import { withNamespaces } from 'react-i18next'
 
-import { addSurveyData } from '../../redux/actions'
+import { addSurveyData, addDraftProgress } from '../../redux/actions'
 import globalStyles from '../../globalStyles'
 import colors from '../../theme.json'
-import Slider from '../../components/Slider'
+import SliderComponent from '../../components/Slider'
 
 export class Question extends Component {
   step = this.props.navigation.getParam('step')
@@ -26,14 +26,24 @@ export class Question extends Component {
   indicator = this.indicators[this.step]
   slides = this.indicator.stoplightColors
 
+  componentDidMount() {
+    this.props.addDraftProgress(this.draftId, {
+      screen: 'Question',
+      step: this.step
+    })
+    this.props.navigation.setParams({
+      onPressBack: this.onPressBack
+    })
+  }
+
   shouldComponentUpdate() {
     return this.props.navigation.isFocused()
   }
 
   getFieldValue(draft, field) {
-    const indicatorObject = draft.indicatorSurveyDataList.filter(
+    const indicatorObject = draft.indicatorSurveyDataList.find(
       item => item.key === field
-    )[0]
+    )
     if (indicatorObject) {
       return indicatorObject.value
     }
@@ -44,9 +54,7 @@ export class Question extends Component {
       [this.indicator.codeName]: answer
     })
 
-    const draft = this.props.drafts.filter(
-      item => item.draftId === this.draftId
-    )[0]
+    const draft = this.props.drafts.find(item => item.draftId === this.draftId)
 
     const skippedQuestions = draft.indicatorSurveyDataList.filter(
       question => question.value === 0
@@ -74,7 +82,8 @@ export class Question extends Component {
     ) {
       return this.props.navigation.navigate('Overview', {
         draftId: this.draftId,
-        survey: this.survey
+        survey: this.survey,
+        resumeDraft: false
       })
     } else {
       return this.props.navigation.navigate('Skipped', {
@@ -84,26 +93,22 @@ export class Question extends Component {
     }
   }
 
-  componentDidMount() {
-    if (this.step > 0) {
-      this.props.navigation.setParams({
-        onPressBack: this.onPressBack
-      })
-    }
-  }
-
   onPressBack = () => {
-    this.props.navigation.replace('Question', {
-      draftId: this.draftId,
-      survey: this.survey,
-      step: this.step - 1
-    })
+    if (this.step > 0) {
+      this.props.navigation.replace('Question', {
+        draftId: this.draftId,
+        survey: this.survey,
+        step: this.step - 1
+      })
+    } else
+      this.props.navigation.navigate('BeginLifemap', {
+        draftId: this.draftId,
+        survey: this.survey
+      })
   }
 
   render() {
-    const draft = this.props.drafts.filter(
-      item => item.draftId === this.draftId
-    )[0]
+    const draft = this.props.drafts.find(item => item.draftId === this.draftId)
     const { t } = this.props
     return (
       <ScrollView style={globalStyles.background}>
@@ -122,7 +127,7 @@ export class Question extends Component {
             style={{ marginTop: 5, marginBottom: -15 }}
           />
         </View>
-        <Slider
+        <SliderComponent
           slides={this.slides}
           value={this.getFieldValue(draft, this.indicator.codeName)}
           selectAnswer={answer => this.selectAnswer(answer)}
@@ -159,7 +164,8 @@ Question.propTypes = {
   t: PropTypes.func.isRequired,
   addSurveyData: PropTypes.func.isRequired,
   navigation: PropTypes.object.isRequired,
-  drafts: PropTypes.array.isRequired
+  drafts: PropTypes.array.isRequired,
+  addDraftProgress: PropTypes.func.isRequired
 }
 
 const mapStateToProps = ({ drafts }) => ({
@@ -167,7 +173,8 @@ const mapStateToProps = ({ drafts }) => ({
 })
 
 const mapDispatchToProps = {
-  addSurveyData
+  addSurveyData,
+  addDraftProgress
 }
 
 export default withNamespaces()(

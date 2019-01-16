@@ -3,6 +3,7 @@ import { StyleSheet, ScrollView, View, Text } from 'react-native'
 import { connect } from 'react-redux'
 import PropTypes from 'prop-types'
 import { withNamespaces } from 'react-i18next'
+import { addDraftProgress } from '../../redux/actions'
 
 import Tip from '../../components/Tip'
 import LifemapVisual from '../../components/LifemapVisual'
@@ -18,6 +19,35 @@ export class Overview extends Component {
   indicatorsArray = this.survey.surveyStoplightQuestions.map(
     item => item.codeName
   )
+
+  componentDidMount() {
+    if (!this.props.navigation.getParam('resumeDraft')) {
+      this.props.addDraftProgress(this.draftId, {
+        screen: 'Overview'
+      })
+      this.props.navigation.setParams({
+        onPressBack: this.onPressBack
+      })
+    }
+  }
+
+  onPressBack = () => {
+    const draft = this.props.drafts.find(item => item.draftId === this.draftId)
+    const skippedQuestions = draft.indicatorSurveyDataList.filter(
+      question => question.value === 0
+    )
+    if (skippedQuestions.length > 0) {
+      this.props.navigation.navigate('Skipped', {
+        draftId: this.draftId,
+        survey: this.survey
+      })
+    } else
+      this.props.navigation.navigate('Question', {
+        draftId: this.draftId,
+        survey: this.survey,
+        step: this.survey.surveyStoplightQuestions.length - 1
+      })
+  }
 
   navigateToScreen = (screen, indicator, indicatorText) =>
     this.props.navigation.navigate(screen, {
@@ -35,6 +65,7 @@ export class Overview extends Component {
     const potentialPrioritiesCount = draft.indicatorSurveyDataList.filter(
       question => question.value === 1 || question.value === 2
     ).length
+
     return potentialPrioritiesCount > this.survey.minimumPriorities
       ? this.survey.minimumPriorities
       : potentialPrioritiesCount
@@ -42,10 +73,10 @@ export class Overview extends Component {
 
   render() {
     const { t } = this.props
-    const draft = this.props.drafts.filter(
-      item => item.draftId === this.draftId
-    )[0]
+    const draft = this.props.drafts.find(item => item.draftId === this.draftId)
     const mandatoryPrioritiesCount = this.getMandatoryPrioritiesCount(draft)
+    const resumeDraft = this.props.navigation.getParam('resumeDraft')
+
     return (
       <ScrollView
         style={globalStyles.background}
@@ -62,7 +93,25 @@ export class Overview extends Component {
               questions={draft.indicatorSurveyDataList}
               priorities={draft.priorities}
               achievements={draft.achievements}
+              questionsLength={this.survey.surveyStoplightQuestions.length}
             />
+            {resumeDraft ? (
+              <Button
+                style={{
+                  marginTop: 20
+                }}
+                colored
+                text={t('general.resumeDraft')}
+                handleClick={() => {
+                  this.props.navigation.replace(draft.progress.screen, {
+                    draftId: this.draftId,
+                    survey: this.survey,
+                    step: draft.progress.step,
+                    socioEconomics: draft.progress.socioEconomics
+                  })
+                }}
+              />
+            ) : null}
           </View>
           <View>
             <Text style={{ ...globalStyles.subline, ...styles.listTitle }}>
@@ -75,16 +124,19 @@ export class Overview extends Component {
             />
           </View>
         </View>
-        <View style={{ height: 50 }}>
-          <Button
-            colored
-            text={t('general.continue')}
-            handleClick={() => {
-              this.navigateToScreen('Final')
-            }}
-            disabled={mandatoryPrioritiesCount > draft.priorities.length}
-          />
-        </View>
+        {!resumeDraft ? (
+          <View style={{ height: 50 }}>
+            <Button
+              colored
+              text={t('general.continue')}
+              handleClick={() => {
+                this.navigateToScreen('Final')
+              }}
+              disabled={mandatoryPrioritiesCount > draft.priorities.length}
+            />
+          </View>
+        ) : null}
+
         {mandatoryPrioritiesCount ? (
           <Tip
             title={t('views.lifemap.beforeTheLifeMapIsCompleted')}
@@ -119,14 +171,24 @@ const styles = StyleSheet.create({
   }
 })
 
+const mapDispatchToProps = {
+  addDraftProgress
+}
+
 Overview.propTypes = {
   t: PropTypes.func.isRequired,
   drafts: PropTypes.array.isRequired,
-  navigation: PropTypes.object.isRequired
+  navigation: PropTypes.object.isRequired,
+  addDraftProgress: PropTypes.func.isRequired
 }
 
 const mapStateToProps = ({ drafts }) => ({
   drafts
 })
 
-export default withNamespaces()(connect(mapStateToProps)(Overview))
+export default withNamespaces()(
+  connect(
+    mapStateToProps,
+    mapDispatchToProps
+  )(Overview)
+)

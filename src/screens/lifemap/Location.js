@@ -14,7 +14,7 @@ import PropTypes from 'prop-types'
 import MapView from 'react-native-maps'
 import { withNamespaces } from 'react-i18next'
 
-import { addSurveyData } from '../../redux/actions'
+import { addSurveyData, addDraftProgress } from '../../redux/actions'
 import Button from '../../components/Button'
 import TextInput from '../../components/TextInput'
 import globalStyles from '../../globalStyles'
@@ -41,6 +41,8 @@ export class Location extends Component {
 
   mapIsDraggable = false
   survey = this.props.navigation.getParam('survey')
+  draftId = this.props.navigation.getParam('draftId')
+
   errorsDetected = []
   locationCheckTimer
   constructor(props) {
@@ -65,13 +67,9 @@ export class Location extends Component {
   }
 
   addSurveyData = (text, field) => {
-    this.props.addSurveyData(
-      this.props.navigation.getParam('draftId'),
-      'familyData',
-      {
-        [field]: text
-      }
-    )
+    this.props.addSurveyData(this.draftId, 'familyData', {
+      [field]: text
+    })
   }
   getFieldValue = (draft, field) => {
     if (!draft) {
@@ -182,9 +180,8 @@ export class Location extends Component {
     }
   }
   getDraft = () =>
-    this.props.drafts.filter(
-      draft => draft.draftId === this.props.navigation.getParam('draftId')
-    )[0]
+    this.props.drafts.find(draft => draft.draftId === this.draftId)
+
   componentDidMount() {
     const draft = this.getDraft()
 
@@ -197,6 +194,28 @@ export class Location extends Component {
         showMap: true
       })
     }
+
+    this.props.addDraftProgress(draft.draftId, {
+      screen: 'Location'
+    })
+
+    this.props.navigation.setParams({
+      onPressBack: this.onPressBack
+    })
+  }
+
+  onPressBack = () => {
+    const draft = this.getDraft()
+    if (draft.familyData.familyMembersList.length > 1) {
+      this.props.navigation.navigate('FamilyMembersBirthdates', {
+        draftId: this.draftId,
+        survey: this.survey
+      })
+    } else
+      this.props.navigation.navigate('FamilyMembersNames', {
+        draftId: this.draftId,
+        survey: this.survey
+      })
   }
 
   shouldComponentUpdate() {
@@ -211,8 +230,8 @@ export class Location extends Component {
     this.addSurveyData(this.state.accuracy, 'accuracy')
     this.addSurveyData(this.state.latitude, 'latitude')
     this.addSurveyData(this.state.longitude, 'longitude')
-    this.props.navigation.navigate('SocioEconomicQuestion', {
-      draftId: this.props.navigation.getParam('draftId'),
+    this.props.navigation.replace('SocioEconomicQuestion', {
+      draftId: this.draftId,
       survey: this.survey
     })
   }
@@ -392,11 +411,13 @@ Location.propTypes = {
   t: PropTypes.func.isRequired,
   navigation: PropTypes.object.isRequired,
   addSurveyData: PropTypes.func.isRequired,
-  drafts: PropTypes.array
+  drafts: PropTypes.array,
+  addDraftProgress: PropTypes.func.isRequired
 }
 
 const mapDispatchToProps = {
-  addSurveyData
+  addSurveyData,
+  addDraftProgress
 }
 
 const mapStateToProps = ({ drafts }) => ({

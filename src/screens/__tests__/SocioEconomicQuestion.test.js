@@ -16,6 +16,7 @@ const createTestProps = props => ({
     isFocused: jest.fn(() => true)
   },
   addSurveyData: jest.fn(),
+  addDraftProgress: jest.fn(),
   addSurveyFamilyMemberData: jest.fn(),
   drafts: [
     {
@@ -57,7 +58,7 @@ describe('SocioEconomicQuestion screens', () => {
     it('sets navigation socioEconomics param', () => {
       expect(
         wrapper.instance().props.navigation.setParams
-      ).toHaveBeenCalledTimes(1)
+      ).toHaveBeenCalledTimes(2)
 
       expect(
         wrapper.instance().props.navigation.setParams
@@ -153,6 +154,16 @@ describe('SocioEconomicQuestion screens', () => {
         'SocioEconomicQuestion',
         expect.any(Object)
       )
+    })
+
+    it('calls addDraftProgress on mount', () => {
+      expect(wrapper.instance().props.addDraftProgress).toHaveBeenCalledTimes(1)
+    })
+    it('calls onPressBack', () => {
+      const spy = jest.spyOn(wrapper.instance(), 'onPressBack')
+
+      wrapper.instance().onPressBack()
+      expect(spy).toHaveBeenCalledTimes(1)
     })
   })
 

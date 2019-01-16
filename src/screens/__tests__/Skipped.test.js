@@ -7,9 +7,11 @@ import Tip from '../../components/Tip'
 
 const createTestProps = props => ({
   t: value => value,
+  addDraftProgress: jest.fn(),
   navigation: {
     navigate: jest.fn(),
     isFocused: jest.fn(),
+    setParams: jest.fn(),
     getParam: jest.fn(param => {
       if (param === 'draftId') {
         return 1
@@ -105,6 +107,20 @@ describe('Skipped Questions View when questions are skipped', () => {
       })
       wrapper = shallow(<Skipped {...props} />)
       expect(wrapper.instance().props.drafts[1]).toBeFalsy()
+    })
+    it('calls setParam on mount', () => {
+      expect(
+        wrapper.instance().props.navigation.setParams
+      ).toHaveBeenCalledTimes(1)
+    })
+    it('calls addDraftProgress on mount', () => {
+      expect(wrapper.instance().props.addDraftProgress).toHaveBeenCalledTimes(1)
+    })
+    it('calls onPressBack', () => {
+      const spy = jest.spyOn(wrapper.instance(), 'onPressBack')
+
+      wrapper.instance().onPressBack()
+      expect(spy).toHaveBeenCalledTimes(1)
     })
   })
 })

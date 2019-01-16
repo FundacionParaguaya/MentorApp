@@ -27,6 +27,8 @@ const createTestProps = props => ({
   t: value => value,
   navigation: {
     navigate: jest.fn(),
+    replace: jest.fn(),
+    setParams: jest.fn(),
     getParam: param =>
       param === 'draftId'
         ? 2
@@ -37,6 +39,7 @@ const createTestProps = props => ({
     isFocused: jest.fn(() => true)
   },
   addSurveyData: jest.fn(),
+  addDraftProgress: jest.fn(),
   drafts: [
     {
       draftId: 1
@@ -46,6 +49,7 @@ const createTestProps = props => ({
       surveyId: 1,
       economicSurveyDataList: [],
       indicatorSurveyDataList: [],
+      progress: { screen: 'Location' },
       familyData: {
         countFamilyMembers: 2,
         familyMembersList: [
@@ -181,7 +185,7 @@ describe('Family Location component', () => {
       .props()
       .handleClick()
 
-    expect(wrapper.instance().props.navigation.navigate).toHaveBeenCalledWith(
+    expect(wrapper.instance().props.navigation.replace).toHaveBeenCalledWith(
       'SocioEconomicQuestion',
       {
         draftId: 2,
@@ -248,6 +252,20 @@ describe('Family Location component', () => {
 
       expect(spy).toHaveBeenCalledTimes(0)
     })
+  })
+  it('calls setParam on mount', () => {
+    expect(wrapper.instance().props.navigation.setParams).toHaveBeenCalledTimes(
+      1
+    )
+  })
+  it('calls addDraftProgress on mount', () => {
+    expect(wrapper.instance().props.addDraftProgress).toHaveBeenCalledTimes(1)
+  })
+  it('calls onPressBack', () => {
+    const spy = jest.spyOn(wrapper.instance(), 'onPressBack')
+
+    wrapper.instance().onPressBack()
+    expect(spy).toHaveBeenCalledTimes(1)
   })
 })
 

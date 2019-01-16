@@ -50,10 +50,11 @@ export class AddAchievement extends Component {
     )[0]
 
   addAchievement = () => {
+    const { action, roadmap, indicator } = this.state
     this.props.addSurveyPriorityAcheivementData({
       id: this.props.navigation.getParam('draftId'),
       category: 'achievements',
-      payload: this.state
+      payload: { action, roadmap, indicator }
     })
     this.props.navigation.goBack()
   }

@@ -3,6 +3,7 @@ import { StyleSheet, ScrollView, Image, View, FlatList } from 'react-native'
 import { connect } from 'react-redux'
 import PropTypes from 'prop-types'
 import { withNamespaces } from 'react-i18next'
+import { addDraftProgress } from '../../redux/actions'
 
 import Tip from '../../components/Tip'
 import SkippedListItem from '../../components/SkippedListItem'
@@ -16,20 +17,37 @@ export class Skipped extends Component {
   indicatorsArray = this.survey.surveyStoplightQuestions.map(
     item => item.codeName
   )
+
+  componentDidMount() {
+    this.props.addDraftProgress(this.draftId, {
+      screen: 'Skipped'
+    })
+    this.props.navigation.setParams({
+      onPressBack: this.onPressBack
+    })
+  }
+
+  onPressBack = () => {
+    this.props.navigation.navigate('Question', {
+      draftId: this.draftId,
+      survey: this.survey,
+      step: this.survey.surveyStoplightQuestions.length - 1
+    })
+  }
+
   shouldComponentUpdate() {
     return this.props.navigation.isFocused()
   }
   handleClick = () =>
     this.props.navigation.navigate('Overview', {
       draftId: this.draftId,
-      survey: this.survey
+      survey: this.survey,
+      resumeDraft: false
     })
 
   render() {
     const { t } = this.props
-    const draft = this.props.drafts.filter(
-      item => item.draftId === this.draftId
-    )[0]
+    const draft = this.props.drafts.find(item => item.draftId === this.draftId)
 
     const skippedQuestions = draft.indicatorSurveyDataList.filter(
       question => question.value === 0
@@ -93,10 +111,21 @@ const styles = StyleSheet.create({
 Skipped.propTypes = {
   t: PropTypes.func.isRequired,
   drafts: PropTypes.array.isRequired,
-  navigation: PropTypes.object.isRequired
+  navigation: PropTypes.object.isRequired,
+  addDraftProgress: PropTypes.func.isRequired
 }
 
 const mapStateToProps = ({ drafts }) => ({
   drafts
 })
-export default withNamespaces()(connect(mapStateToProps)(Skipped))
+
+const mapDispatchToProps = {
+  addDraftProgress
+}
+
+export default withNamespaces()(
+  connect(
+    mapStateToProps,
+    mapDispatchToProps
+  )(Skipped)
+)

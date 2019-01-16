@@ -4,22 +4,25 @@ import { StyleSheet, View } from 'react-native'
 import Icon from 'react-native-vector-icons/MaterialIcons'
 import colors from '../theme.json'
 class LifemapVisual extends Component {
-  getColors = () =>
-    this.props.questions.map(item => {
-      switch (item.value) {
-        case 1:
-          return colors.red
-        case 2:
-          return colors.gold
-        case 3:
-          return colors.green
-        case 0:
-          return colors.palegrey
+  getColors = this.props.questions.map(item => {
+    switch (item.value) {
+      case 1:
+        return colors.red
+      case 2:
+        return colors.gold
+      case 3:
+        return colors.green
+      case 0:
+        return colors.palegrey
 
-        default:
-          return colors.palegrey
-      }
-    })
+      default:
+        return colors.palegrey
+    }
+  })
+
+  getUnansweredQuestions = Array(
+    this.props.questionsLength - this.props.questions.length
+  ).fill()
 
   render() {
     const prioritiesAndAchievements = [
@@ -28,7 +31,7 @@ class LifemapVisual extends Component {
     ]
     return (
       <View style={styles.container}>
-        {this.getColors().map((item, i) => (
+        {this.getColors.map((item, i) => (
           <View key={i}>
             {prioritiesAndAchievements.includes(this.props.questions[i].key) &&
             this.props.questions[i].value ? (
@@ -42,12 +45,23 @@ class LifemapVisual extends Component {
                   right: this.props.bigMargin ? 6 : 3
                 }}
               />
-            ) : (
-              <View />
-            )}
+            ) : null}
             <Icon
               name="brightness-1"
               color={item}
+              size={17}
+              style={{
+                marginHorizontal: this.props.bigMargin ? 8 : 4,
+                marginVertical: this.props.bigMargin ? 4 : 2
+              }}
+            />
+          </View>
+        ))}
+        {this.getUnansweredQuestions.map((item, i) => (
+          <View key={i}>
+            <Icon
+              name="brightness-1"
+              color={colors.palegrey}
               size={17}
               style={{
                 marginHorizontal: this.props.bigMargin ? 8 : 4,
@@ -63,6 +77,7 @@ class LifemapVisual extends Component {
 
 LifemapVisual.propTypes = {
   questions: PropTypes.array.isRequired,
+  questionsLength: PropTypes.number.isRequired,
   achievements: PropTypes.array.isRequired,
   priorities: PropTypes.array.isRequired,
   bigMargin: PropTypes.bool

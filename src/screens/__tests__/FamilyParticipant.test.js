@@ -13,9 +13,10 @@ const createTestProps = props => ({
   createDraft: jest.fn(),
   deleteDraft: jest.fn(),
   addSurveyFamilyMemberData: jest.fn(),
+  addDraftProgress: jest.fn(),
   navigation: {
     navigate: jest.fn(),
-    getParam: param => (param === 'draft' ? null : 1),
+    getParam: param => (param === 'draftId' ? null : 1),
     setParams: jest.fn(),
     reset: jest.fn(),
     isFocused: jest.fn()
@@ -96,6 +97,17 @@ describe('Family Participant View', () => {
       it('creates a new draft on componentDidMount if such does not exist', () => {
         expect(wrapper.instance().props.createDraft).toHaveBeenCalledTimes(1)
       })
+      it('calls setParam on mount', () => {
+        expect(
+          wrapper.instance().props.navigation.setParams
+        ).toHaveBeenCalledTimes(1)
+      })
+
+      it('calls addDraftProgress on mount', () => {
+        expect(wrapper.instance().props.addDraftProgress).toHaveBeenCalledTimes(
+          1
+        )
+      })
     })
 
     describe('created from a draft', () => {
@@ -103,7 +115,7 @@ describe('Family Participant View', () => {
         const props = createTestProps({
           navigation: {
             navigate: jest.fn(),
-            getParam: param => (param === 'draft' ? 4 : 1),
+            getParam: param => (param === 'draftId' ? 4 : 1),
             setParams: jest.fn(),
             reset: jest.fn()
           },
@@ -147,7 +159,7 @@ describe('Family Participant View', () => {
       const props = createTestProps({
         navigation: {
           navigate: jest.fn(),
-          getParam: param => (param === 'draft' ? 4 : 1),
+          getParam: param => (param === 'draftId' ? 4 : 1),
           setParams: jest.fn(),
           reset: jest.fn()
         },

@@ -175,7 +175,7 @@ describe('drafts actions', () => {
   })
   it('should create an action to add draft progress', () => {
     const id = 1
-    const progress = { screen: 'FamilyMembersNames', step: null }
+    const progress = { screen: 'FamilyMembersNames' }
     const expectedAction = {
       type: action.ADD_DRAFT_PROGRESS,
       id,
