@@ -91,9 +91,13 @@ export const loadFamilies = (env, token) => ({
   meta: {
     offline: {
       effect: {
-        url: `${env}/api/v1/families`,
-        method: 'GET',
-        headers: { Authorization: `Bearer ${token}` }
+        url: `${env}/graphql`,
+        method: 'POST',
+        headers: { Authorization: `Bearer ${token}` },
+        body: JSON.stringify({
+          query:
+            'query { familiesNewStructure { code familyId name address user { username } country { country } organization { code name } snapshotList { surveyId createdAt economicSurveyDataList { key value } indicatorSurveyDataList { key value } snapshotStoplightAchievements { action indicator roadmap } snapshotStoplightPriorities { action estimatedDate indicator reason } } countFamilyMembers familyMemberDTOList{ birthCountry birthDate documentNumber documentType email familyId firstName firstParticipant gender id lastName memberIdentifier phoneNumber personalSurveyDataList {key, value} socioEconomicAnswers {key, value} }  } }'
+        })
       },
       commit: { type: LOAD_FAMILIES }
     }
@@ -200,25 +204,6 @@ export const submitDraft = (env, token, id, payload) => ({
           payload
         }
       }
-    }
-  }
-})
-
-// Snapshots
-export const LOAD_SNAPSHOTS = 'LOAD_SNAPSHOTS'
-
-export const loadSnapshots = (env, token) => ({
-  type: LOAD_SNAPSHOTS,
-  env,
-  token,
-  meta: {
-    offline: {
-      effect: {
-        url: `${env}/api/v1/snapshots`,
-        method: 'GET',
-        headers: { Authorization: `Bearer ${token}` }
-      },
-      commit: { type: LOAD_SNAPSHOTS, meta: { env, token } }
     }
   }
 })

@@ -40,6 +40,7 @@ export class Dashboard extends Component {
 
   render() {
     const { t, navigation, drafts } = this.props
+    console.log(this.props.families)
     return (
       <ScrollView style={globalStyles.background}>
         {this.props.offline.outbox.length &&
@@ -134,13 +135,22 @@ Dashboard.propTypes = {
   surveys: PropTypes.array
 }
 
-const mapStateToProps = ({ env, user, drafts, offline, string, surveys }) => ({
+const mapStateToProps = ({
   env,
   user,
   drafts,
   offline,
   string,
-  surveys
+  surveys,
+  families
+}) => ({
+  env,
+  user,
+  drafts,
+  offline,
+  string,
+  surveys,
+  families
 })
 
 const mapDispatchToProps = {}
