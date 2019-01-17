@@ -21,9 +21,9 @@ export class Families extends Component {
     }
   }
   render() {
-    const familiesToSync = this.props.offline.outbox.find(
-      item => item.type === 'LOAD_FAMILIES'
-    )
+    const familiesToSync =
+      this.props.offline.online &&
+      this.props.offline.outbox.find(item => item.type === 'LOAD_FAMILIES')
 
     return (
       <ScrollView style={styles.container}>
