@@ -105,6 +105,10 @@ export class FamilyMembersNames extends Component {
       })
     }
 
+    this.setState({
+      showErrors: false
+    })
+
     this.props.addSurveyData(this.draftId, 'familyData', {
       [field]: text
     })
