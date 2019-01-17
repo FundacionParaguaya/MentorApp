@@ -85,7 +85,11 @@
       "checkLocationServicesTurnedOn": "¡Comprueba que los servicios de localización están activados en la configuración de tu dispositivo!",
       "giveDetailInTheFormBelow": "¡Alternativamente, dé tantos detalles como pueda con respecto a la ubicación en el siguiente formulario!",
       "searchByStreetOrPostalCode": "Búsqueda por calle o código postal",
-      "gettingYourLocation": "Obteniendo tu ubicación..."
+      "gettingYourLocation": "Obteniendo tu ubicación...",
+      "mapUnavailavleOffline": "Desafortunadamente, no podemos cargar el mapa porque estás sin conexión.",
+      "weHaveLocation": "Sin embargo, pudimos obtener la ubicación de su dispositivo.",
+      "neitherMapNorLocation": "Desafortunadamente, no podemos cargar el mapa ni obtener la ubicación de su dispositivo.",
+      "describeLocation": "¿Podría describir su ubicación de la forma más precisa posible a continuación?"
     },
     "lifemap": {
       "thisLifeMapHas": "Este Mapa de Vida tiene %n preguntas. ¡Tardará aproximadamente 35 minutos en completarse!",

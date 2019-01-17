@@ -85,7 +85,11 @@
       "checkLocationServicesTurnedOn": "Check that location services are turned on in your device settings!",
       "giveDetailInTheFormBelow": "Alternatively give as much detail as you can regarding the location in the form below!",
       "searchByStreetOrPostalCode": "Search by street or postal code",
-      "gettingYourLocation": "Getting your location..."
+      "gettingYourLocation": "Getting your location...",
+      "mapUnavailavleOffline": "Unfortunately we cannot load the map because you are offline.",
+      "weHaveLocation": "However we were able to get your device location.",
+      "neitherMapNorLocation": "Unfortunately we cannot load the map nor can we get your device location.",
+      "describeLocation": "Could you describe your location as accurate as possible below?"
     },
     "lifemap": {
       "thisLifeMapHas": "This life map has %n questions. It will take approximately 35 minutes to complete!",
