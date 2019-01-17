@@ -13,7 +13,6 @@ import {
   REMOVE_FAMILY_MEMBERS,
   DELETE_DRAFT,
   ADD_DRAFT_PROGRESS,
-  LOAD_SNAPSHOTS,
   SUBMIT_DRAFT,
   SUBMIT_DRAFT_COMMIT,
   SUBMIT_DRAFT_ROLLBACK,
@@ -86,7 +85,7 @@ export const surveys = (state = [], action) => {
 export const families = (state = [], action) => {
   switch (action.type) {
     case LOAD_FAMILIES:
-      return action.payload ? action.payload : state
+      return action.payload ? action.payload.data.familiesNewStructure : state
     default:
       return state
   }
@@ -324,50 +323,46 @@ export const drafts = (state = [], action) => {
       })
 
     case REMOVE_FAMILY_MEMBERS:
-      return state.map(
-        draft =>
-          draft.draftId === action.id
-            ? {
-                ...draft,
-                familyData: {
-                  ...draft.familyData,
-                  familyMembersList: draft.familyData.familyMembersList.filter(
-                    (item, index) => index < action.afterIndex
-                  )
-                }
+      return state.map(draft =>
+        draft.draftId === action.id
+          ? {
+              ...draft,
+              familyData: {
+                ...draft.familyData,
+                familyMembersList: draft.familyData.familyMembersList.filter(
+                  (item, index) => index < action.afterIndex
+                )
               }
-            : draft
+            }
+          : draft
       )
 
     case SUBMIT_DRAFT:
-      return state.map(
-        draft =>
-          draft.draftId === action.id
-            ? {
-                ...draft,
-                status: 'Pending sync'
-              }
-            : draft
+      return state.map(draft =>
+        draft.draftId === action.id
+          ? {
+              ...draft,
+              status: 'Pending sync'
+            }
+          : draft
       )
     case ADD_DRAFT_PROGRESS:
-      return state.map(
-        draft =>
-          draft.draftId === action.id
-            ? {
-                ...draft,
-                progress: action.progress
-              }
-            : draft
+      return state.map(draft =>
+        draft.draftId === action.id
+          ? {
+              ...draft,
+              progress: action.progress
+            }
+          : draft
       )
     case SUBMIT_DRAFT_COMMIT:
-      return state.map(
-        draft =>
-          draft.draftId === action.meta.id
-            ? {
-                ...draft,
-                status: 'Synced'
-              }
-            : draft
+      return state.map(draft =>
+        draft.draftId === action.meta.id
+          ? {
+              ...draft,
+              status: 'Synced'
+            }
+          : draft
       )
     case SUBMIT_DRAFT_ROLLBACK: {
       Sentry.captureBreadcrumb({
@@ -380,29 +375,17 @@ export const drafts = (state = [], action) => {
         }
       })
       Sentry.captureException('Sync error')
-      return state.map(
-        draft =>
-          draft.draftId === action.meta.id
-            ? {
-                ...draft,
-                status: 'Sync error'
-              }
-            : draft
+      return state.map(draft =>
+        draft.draftId === action.meta.id
+          ? {
+              ...draft,
+              status: 'Sync error'
+            }
+          : draft
       )
     }
     case DELETE_DRAFT:
       return state.filter(draft => draft.draftId !== action.id)
-    default:
-      return state
-  }
-}
-
-// Snapshots
-
-export const snapshots = (state = [], action) => {
-  switch (action.type) {
-    case LOAD_SNAPSHOTS:
-      return action.payload ? action.payload : state
     default:
       return state
   }
@@ -462,7 +445,6 @@ const appReducer = combineReducers({
   surveys,
   families,
   drafts,
-  snapshots,
   language,
   sync,
   dimensions
