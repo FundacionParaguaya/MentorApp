@@ -86,6 +86,12 @@ export class DateInput extends React.Component {
     }
   }
 
+  componentDidUpdate(prevProps) {
+    if (prevProps.showErrors !== this.props.showErrors) {
+      this.validateDate(this.props.value || '')
+    }
+  }
+
   render() {
     const { t } = this.props
     const validDate =
@@ -179,6 +185,7 @@ DateInput.propTypes = {
   t: PropTypes.func.isRequired,
   field: PropTypes.string,
   required: PropTypes.bool,
+  showErrors: PropTypes.bool,
   detectError: PropTypes.func,
   onValidDate: PropTypes.func
 }
