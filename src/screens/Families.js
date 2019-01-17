@@ -5,6 +5,7 @@ import PropTypes from 'prop-types'
 
 export class Families extends Component {
   render() {
+    console.log(this.props.families)
     return (
       <ScrollView style={styles.container}>
         {this.props.families.map(family => (
