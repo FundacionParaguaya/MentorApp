@@ -8,6 +8,7 @@ const createTestProps = props => ({
   style: { width: 50, height: 50 },
   onChangeText: jest.fn(),
   onSubmit: jest.fn(),
+  placeholder: 'placeholder',
   value: ''
 })
 

@@ -4,7 +4,6 @@ import Icon from 'react-native-vector-icons/MaterialIcons'
 import { TextInput, StyleSheet, View } from 'react-native'
 
 import colors from '../theme.json'
-import i18n from '../i18n'
 
 class SearchBar extends Component {
   render() {
@@ -15,7 +14,7 @@ class SearchBar extends Component {
         <TextInput
           id="search-bar"
           style={styles.input}
-          placeholder={i18n.t('views.family.searchByStreetOrPostalCode')}
+          placeholder={this.props.placeholder}
           onChangeText={text => onChangeText(text)}
           onEndEditing={onSubmit}
           value={value}
@@ -29,7 +28,8 @@ SearchBar.propTypes = {
   style: PropTypes.object,
   onChangeText: PropTypes.func,
   onSubmit: PropTypes.func,
-  value: PropTypes.string
+  value: PropTypes.string,
+  placeholder: PropTypes.string
 }
 
 export default SearchBar
