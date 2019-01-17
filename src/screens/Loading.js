@@ -8,12 +8,7 @@ import {
   Platform
 } from 'react-native'
 import { connect } from 'react-redux'
-import {
-  loadFamilies,
-  loadSnapshots,
-  loadSurveys,
-  setSyncedState
-} from '../redux/actions'
+import { loadFamilies, loadSurveys, setSyncedState } from '../redux/actions'
 import { getHydrationState } from '../redux/store'
 import colors from '../theme.json'
 import globalStyles from '../globalStyles'
@@ -35,6 +30,7 @@ export class Loading extends Component {
       loadingData: true
     })
     this.props.loadSurveys(url[this.props.env], this.props.user.token)
+    this.props.loadFamilies(url[this.props.env], this.props.user.token)
   }
   checkHydration = () => {
     if (getHydrationState() === false) {
@@ -122,7 +118,6 @@ export class Loading extends Component {
 Loading.propTypes = {
   loadFamilies: PropTypes.func.isRequired,
   loadSurveys: PropTypes.func.isRequired,
-  loadSnapshots: PropTypes.func.isRequired,
   setSyncedState: PropTypes.func.isRequired,
   env: PropTypes.oneOf(['production', 'demo', 'testing', 'development']),
   user: PropTypes.object.isRequired,
@@ -164,7 +159,6 @@ const mapStateToProps = ({ sync, surveys, env, user, offline }) => ({
 
 const mapDispatchToProps = {
   loadFamilies,
-  loadSnapshots,
   loadSurveys,
   setSyncedState
 }

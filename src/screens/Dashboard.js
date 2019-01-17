@@ -143,11 +143,4 @@ const mapStateToProps = ({ env, user, drafts, offline, string, surveys }) => ({
   surveys
 })
 
-const mapDispatchToProps = {}
-
-export default withNamespaces()(
-  connect(
-    mapStateToProps,
-    mapDispatchToProps
-  )(Dashboard)
-)
+export default withNamespaces()(connect(mapStateToProps)(Dashboard))

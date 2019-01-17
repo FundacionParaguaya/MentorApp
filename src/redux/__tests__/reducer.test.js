@@ -83,7 +83,6 @@ describe('login reducer', () => {
       env: 'production',
       families: [],
       language: false,
-      snapshots: [],
       surveys: [],
       sync: { images: { synced: 0, total: 0 }, synced: 'no' },
       user: { status: null, token: null, username: null },
@@ -117,40 +116,24 @@ describe('surveys reducer', () => {
 })
 
 describe('families reducer', () => {
-  const payload = [
-    { familyId: 1, familyContent: 'content' },
-    { familyId: 2, familyContent: 'content-2' }
-  ]
+  const payload = {
+    data: {
+      familiesNewStructure: [
+        { familyId: 1, familyContent: 'content' },
+        { familyId: 2, familyContent: 'content-2' }
+      ]
+    }
+  }
   it('should handle LOAD_FAMILIES', () => {
     expect(
       reducer.families([], {
         type: action.LOAD_FAMILIES,
         payload
       })
-    ).toEqual(payload)
+    ).toEqual(payload.data.familiesNewStructure)
     expect(
-      reducer.surveys([], {
+      reducer.families([], {
         type: action.LOAD_FAMILIES
-      })
-    ).toEqual([])
-  })
-})
-
-describe('snapshots reducer', () => {
-  const payload = [
-    { snapshotId: 1, snapshotContent: 'content' },
-    { snapshotId: 2, snapshotContent: 'content-2' }
-  ]
-  it('should handle LOAD_SNAPSHOTS', () => {
-    expect(
-      reducer.snapshots([], {
-        type: action.LOAD_SNAPSHOTS,
-        payload
-      })
-    ).toEqual(payload)
-    expect(
-      reducer.surveys([], {
-        type: action.LOAD_SNAPSHOTS
       })
     ).toEqual([])
   })
