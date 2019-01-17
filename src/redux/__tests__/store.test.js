@@ -10,7 +10,6 @@ describe('store', () => {
         env: 'production',
         drafts: expect.any(Array),
         families: expect.any(Array),
-        snapshots: expect.any(Array),
         surveys: expect.any(Array),
         offline: expect.any(Object),
         user: expect.any(Object)
