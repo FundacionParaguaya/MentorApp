@@ -8,12 +8,7 @@ import {
   Platform
 } from 'react-native'
 import { connect } from 'react-redux'
-import {
-  loadFamilies,
-  loadSnapshots,
-  loadSurveys,
-  setSyncedState
-} from '../redux/actions'
+import { loadFamilies, loadSurveys, setSyncedState } from '../redux/actions'
 import { getHydrationState } from '../redux/store'
 import colors from '../theme.json'
 import globalStyles from '../globalStyles'
@@ -164,7 +159,6 @@ const mapStateToProps = ({ sync, surveys, env, user, offline }) => ({
 
 const mapDispatchToProps = {
   loadFamilies,
-  loadSnapshots,
   loadSurveys,
   setSyncedState
 }
