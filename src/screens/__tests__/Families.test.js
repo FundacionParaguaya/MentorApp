@@ -10,9 +10,8 @@ const createTestProps = props => ({
     navigate: jest.fn()
   },
   families: [],
-  token: {
-    token: ''
-  },
+  user: { token: '' },
+  offline: { online: true, outbox: [{ type: 'LOAD_FAMILIES' }] },
   ...props
 })
 
