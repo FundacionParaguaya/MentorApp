@@ -1,7 +1,7 @@
 import React from 'react'
 import { shallow } from 'enzyme'
 import { Text } from 'react-native'
-import { FormInput, FormValidationMessage } from 'react-native-elements'
+import { FormInput } from 'react-native-elements'
 
 import TextInput from '../TextInput'
 
@@ -28,9 +28,10 @@ describe('TextInput Component', () => {
     it('renders Text', () => {
       expect(wrapper.find(Text)).toHaveLength(2)
     })
-    it('renders FormValidationMessage when there is an error', () => {
+    it('renders error message when there is an error', () => {
+      expect(wrapper.find(Text)).toHaveLength(2)
       wrapper.setState({ status: 'error', errorMsg: 'error' })
-      expect(wrapper.find(FormValidationMessage)).toHaveLength(1)
+      expect(wrapper.find(Text)).toHaveLength(3)
     })
   })
   describe('functionality', () => {
@@ -102,7 +103,8 @@ describe('TextInput Component', () => {
 
       expect(
         wrapper
-          .find(FormValidationMessage)
+          .find(Text)
+          .last()
           .render()
           .text()
       ).toBe('This field is required')
@@ -117,7 +119,8 @@ describe('TextInput Component', () => {
 
     expect(
       wrapper
-        .find(FormValidationMessage)
+        .find(Text)
+        .last()
         .render()
         .text()
     ).toBe('This field is required')
@@ -135,7 +138,8 @@ describe('TextInput Component', () => {
 
     expect(
       wrapper
-        .find(FormValidationMessage)
+        .find(Text)
+        .last()
         .render()
         .text()
     ).toBe('Please enter a valid email address')
@@ -153,7 +157,8 @@ describe('TextInput Component', () => {
 
     expect(
       wrapper
-        .find(FormValidationMessage)
+        .find(Text)
+        .last()
         .render()
         .text()
     ).toBe('Please enter a valid phone number')
@@ -171,7 +176,8 @@ describe('TextInput Component', () => {
 
     expect(
       wrapper
-        .find(FormValidationMessage)
+        .find(Text)
+        .last()
         .render()
         .text()
     ).toBe('Please enter a valid number')

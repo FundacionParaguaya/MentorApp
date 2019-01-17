@@ -44,7 +44,7 @@ class Select extends Component {
     if (this.props.required && !value) {
       this.handleError(i18n.t('validation.fieldIsRequired'))
       this.setState({
-        errorMsg: 'This field is required'
+        errorMsg: i18n.t('validation.fieldIsRequired')
       })
     } else {
       this.props.onChange(value, this.props.field)
@@ -111,13 +111,18 @@ class Select extends Component {
                 style={[
                   styles.title,
                   isOpen &&
-                    !errorMsg && {
+                  !errorMsg && {
                       color: colors.green
-                    }
+                  }
                 ]}
               >{`${placeholder}${required ? ' *' : ''}`}</Text>
             )}
-            <Text style={[styles.placeholder]}>
+            <Text
+              style={[
+                styles.placeholder,
+                errorMsg ? { color: colors.red } : {}
+              ]}
+            >
               {value ? text : `${placeholder}${required ? ' *' : ''}`}
             </Text>
             <Image source={arrow} style={styles.arrow} />

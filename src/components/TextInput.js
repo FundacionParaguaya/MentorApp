@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import { View, Text, StyleSheet } from 'react-native'
-import { FormInput, FormValidationMessage } from 'react-native-elements'
+import { FormInput } from 'react-native-elements'
 import colors from '../theme.json'
 import validator from 'validator'
 import globalStyles from '../globalStyles'
@@ -166,9 +166,9 @@ class TextInput extends Component {
           </FormInput>
         </View>
         {status === 'error' && errorMsg ? (
-          <FormValidationMessage style={{ color: colors.red }}>
+          <Text style={{ paddingHorizontal: 15, color: colors.red }}>
             {errorMsg}
-          </FormValidationMessage>
+          </Text>
         ) : (
           <View />
         )}
