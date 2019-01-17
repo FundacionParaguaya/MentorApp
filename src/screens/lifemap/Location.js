@@ -259,8 +259,6 @@ export class Location extends Component {
       showErrors
     } = this.state
 
-    console.log(latitude, accuracy)
-
     const draft = this.getDraft()
 
     return (
