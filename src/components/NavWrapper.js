@@ -1,9 +1,8 @@
 import React, { Component } from 'react'
-import { View, StyleSheet, StatusBar } from 'react-native'
+import { View, StyleSheet, StatusBar, Dimensions } from 'react-native'
 import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 import { setSyncedState, setDimensions } from '../redux/actions'
-import { Dimensions } from 'react-native'
 import { LoginStack, AppStack, LoadingStack } from './navigation'
 import colors from '../theme.json'
 
@@ -41,7 +40,8 @@ const styles = StyleSheet.create({
 NavWrapper.propTypes = {
   user: PropTypes.object.isRequired,
   sync: PropTypes.object.isRequired,
-  setSyncedState: PropTypes.func.isRequired
+  setSyncedState: PropTypes.func.isRequired,
+  setDimensions: PropTypes.func.isRequired
 }
 
 const mapStateToProps = ({ user, sync, dimensions }) => ({

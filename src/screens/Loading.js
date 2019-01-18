@@ -29,8 +29,8 @@ export class Loading extends Component {
     this.setState({
       loadingData: true
     })
-    this.props.loadSurveys(url[this.props.env], this.props.user.token)
     this.props.loadFamilies(url[this.props.env], this.props.user.token)
+    this.props.loadSurveys(url[this.props.env], this.props.user.token)
   }
   checkHydration = () => {
     if (getHydrationState() === false) {
@@ -77,7 +77,7 @@ export class Loading extends Component {
   }
 
   render() {
-    const { sync, surveys } = this.props
+    const { sync, surveys, families } = this.props
 
     return (
       <View style={[globalStyles.container, styles.view]}>
@@ -90,14 +90,12 @@ export class Loading extends Component {
           />
 
           <Text style={globalStyles.h3}>Yes!</Text>
-          <Text style={globalStyles.subline}>
-            We will be ready soon.
-            {/* {this.props.time === 'ok'
-              ? 'We will be ready soon.'
-            : 'This might take a while...'} */}
-          </Text>
+          <Text style={globalStyles.subline}>We will be ready soon.</Text>
           {this.state.loadingData ? (
             <View style={styles.sync}>
+              <Text>
+                Syncing families: {families.length} / {families.length}
+              </Text>
               <Text>
                 Syncing surveys: {surveys.length} / {surveys.length}
               </Text>
@@ -123,6 +121,7 @@ Loading.propTypes = {
   user: PropTypes.object.isRequired,
   sync: PropTypes.object.isRequired,
   surveys: PropTypes.array.isRequired,
+  families: PropTypes.array.isRequired,
   offline: PropTypes.object
 }
 
@@ -149,12 +148,13 @@ const styles = StyleSheet.create({
   }
 })
 
-const mapStateToProps = ({ sync, surveys, env, user, offline }) => ({
+const mapStateToProps = ({ sync, surveys, env, user, offline, families }) => ({
   sync,
   surveys,
   env,
   user,
-  offline
+  offline,
+  families
 })
 
 const mapDispatchToProps = {
