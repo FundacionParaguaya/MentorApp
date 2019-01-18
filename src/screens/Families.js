@@ -4,7 +4,8 @@ import {
   StyleSheet,
   Button,
   ScrollView,
-  ActivityIndicator
+  ActivityIndicator,
+  FlatList
 } from 'react-native'
 import { connect } from 'react-redux'
 import PropTypes from 'prop-types'
@@ -15,6 +16,7 @@ import colors from '../theme.json'
 import globalStyles from '../globalStyles'
 
 import SearchBar from '../components/SearchBar'
+import FamiliesListItem from '../components/FamiliesListItem'
 
 export class Families extends Component {
   componentDidMount() {
@@ -47,18 +49,20 @@ export class Families extends Component {
           onSubmit={() => {}}
           value={''}
         />
-        {this.props.families.map(family => (
-          <View key={family.familyId}>
-            <Button
-              title={family.name}
-              onPress={() =>
+        <FlatList
+          data={this.props.families}
+          keyExtractor={(item, index) => index.toString()}
+          renderItem={({ item }) => (
+            <FamiliesListItem
+              handleClick={() =>
                 this.props.navigation.navigate('Family', {
-                  family: family.familyId
+                  family: item.familyId
                 })
               }
+              family={item}
             />
-          </View>
-        ))}
+          )}
+        />
       </ScrollView>
     )
   }

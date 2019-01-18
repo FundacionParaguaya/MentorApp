@@ -1,6 +1,12 @@
 import React from 'react'
 import { shallow } from 'enzyme'
-import { ScrollView, View, Button, ActivityIndicator } from 'react-native'
+import {
+  ScrollView,
+  View,
+  Button,
+  ActivityIndicator,
+  FlatList
+} from 'react-native'
 import { Families } from '../Families'
 import SearchBar from '../../components/SearchBar'
 
@@ -64,28 +70,11 @@ describe('Families View', () => {
       expect(wrapper.find(SearchBar)).toHaveLength(1)
     })
 
-    it('renders a list of Views for each family', () => {
-      expect(wrapper.find(View)).toHaveLength(3)
+    it('renders a list of families', () => {
+      expect(wrapper.find(FlatList)).toHaveLength(1)
     })
   })
   describe('functionality', () => {
-    it('can navigate to a family page', () => {
-      wrapper
-        .find(Button)
-        .first()
-        .props()
-        .onPress()
-
-      expect(
-        wrapper.instance().props.navigation.navigate
-      ).toHaveBeenCalledTimes(1)
-
-      expect(wrapper.instance().props.navigation.navigate).toHaveBeenCalledWith(
-        'Family',
-        { family: 12 }
-      )
-    })
-
     it('makes a call to fetch families when user is online', () => {
       expect(wrapper.instance().props.loadFamilies).toHaveBeenCalledTimes(1)
     })
