@@ -19,6 +19,7 @@ export class AddAchievement extends Component {
     action: '',
     roadmap: '',
     errorsDetected: [],
+    showErrors: false,
     indicator: this.props.navigation.getParam('indicator')
   }
 
@@ -50,13 +51,19 @@ export class AddAchievement extends Component {
     )[0]
 
   addAchievement = () => {
-    const { action, roadmap, indicator } = this.state
-    this.props.addSurveyPriorityAcheivementData({
-      id: this.props.navigation.getParam('draftId'),
-      category: 'achievements',
-      payload: { action, roadmap, indicator }
-    })
-    this.props.navigation.goBack()
+    if (this.errorsDetected.length) {
+      this.setState({
+        showErrors: true
+      })
+    } else {
+      const { action, roadmap, indicator } = this.state
+      this.props.addSurveyPriorityAcheivementData({
+        id: this.props.navigation.getParam('draftId'),
+        category: 'achievements',
+        payload: { action, roadmap, indicator }
+      })
+      this.props.navigation.goBack()
+    }
   }
 
   getAchievementValue = draft => {
@@ -69,6 +76,7 @@ export class AddAchievement extends Component {
 
   render() {
     const { t } = this.props
+    const { showErrors } = this.state
     const draft = this.getDraft()
     const achievement = this.getAchievementValue(draft)
 
@@ -104,6 +112,7 @@ export class AddAchievement extends Component {
           <TextInput
             field="action"
             required
+            showErrors={showErrors}
             detectError={this.detectError}
             onChangeText={text => this.setState({ action: text })}
             placeholder={
@@ -127,7 +136,6 @@ export class AddAchievement extends Component {
           <Button
             id="save"
             colored
-            disabled={!!this.errorsDetected.length}
             text={t('general.save')}
             handleClick={() => this.addAchievement()}
           />

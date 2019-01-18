@@ -44,7 +44,7 @@ class Select extends Component {
     if (this.props.required && !value) {
       this.handleError(i18n.t('validation.fieldIsRequired'))
       this.setState({
-        errorMsg: 'This field is required'
+        errorMsg: i18n.t('validation.fieldIsRequired')
       })
     } else {
       this.props.onChange(value, this.props.field)
@@ -59,6 +59,12 @@ class Select extends Component {
     // on mount validate empty required fields without showing an errors message
     if (this.props.required && !this.props.value) {
       this.props.detectError(true, this.props.field)
+    }
+  }
+
+  componentDidUpdate(prevProps) {
+    if (prevProps.showErrors !== this.props.showErrors) {
+      this.validateInput(this.props.value || '')
     }
   }
 
@@ -89,8 +95,6 @@ class Select extends Component {
       text = ''
     }
 
-    console.log(placeholder)
-
     return (
       <TouchableOpacity onPress={this.toggleDropdown}>
         <View style={styles.wrapper}>
@@ -107,13 +111,18 @@ class Select extends Component {
                 style={[
                   styles.title,
                   isOpen &&
-                    !errorMsg && {
+                  !errorMsg && {
                       color: colors.green
-                    }
+                  }
                 ]}
               >{`${placeholder}${required ? ' *' : ''}`}</Text>
             )}
-            <Text style={[styles.placeholder]}>
+            <Text
+              style={[
+                styles.placeholder,
+                errorMsg ? { color: colors.red } : {}
+              ]}
+            >
               {value ? text : `${placeholder}${required ? ' *' : ''}`}
             </Text>
             <Image source={arrow} style={styles.arrow} />
@@ -207,6 +216,7 @@ Select.propTypes = {
   field: PropTypes.string,
   country: PropTypes.string,
   countrySelect: PropTypes.bool,
+  showErrors: PropTypes.bool,
   required: PropTypes.bool,
   detectError: PropTypes.func
 }

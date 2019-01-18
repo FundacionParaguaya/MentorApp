@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import { View, Text, StyleSheet } from 'react-native'
-import { FormInput, FormValidationMessage } from 'react-native-elements'
+import { FormInput } from 'react-native-elements'
 import colors from '../theme.json'
 import validator from 'validator'
 import globalStyles from '../globalStyles'
@@ -114,6 +114,12 @@ class TextInput extends Component {
     }
   }
 
+  componentDidUpdate(prevProps) {
+    if (prevProps.showErrors !== this.props.showErrors) {
+      this.validateInput(this.props.value || '')
+    }
+  }
+
   render() {
     const { text, errorMsg } = this.state
     const { label, placeholder, required, readonly, multiline } = this.props
@@ -155,14 +161,16 @@ class TextInput extends Component {
             multiline={multiline}
           >
             <Text style={styles.inputText}>
-              {showPlaceholder ? placeholder : text}
+              {showPlaceholder
+                ? `${placeholder} ${required && !label ? '*' : ''}`
+                : text}
             </Text>
           </FormInput>
         </View>
         {status === 'error' && errorMsg ? (
-          <FormValidationMessage style={{ color: colors.red }}>
+          <Text style={{ paddingHorizontal: 15, color: colors.red }}>
             {errorMsg}
-          </FormValidationMessage>
+          </Text>
         ) : (
           <View />
         )}
@@ -229,6 +237,7 @@ TextInput.propTypes = {
   readonly: PropTypes.bool,
   onChangeText: PropTypes.func.isRequired,
   multiline: PropTypes.bool,
+  showErrors: PropTypes.bool,
   keyboardType: PropTypes.string,
   validation: PropTypes.oneOf([
     'email',

@@ -26,6 +26,7 @@ import center from '../../../assets/images/centerMap.png'
 
 export class Location extends Component {
   state = {
+    showErrors: false,
     latitude: null,
     longitude: null,
     latitudeDelta: 0.005,
@@ -227,13 +228,19 @@ export class Location extends Component {
   }
 
   handleClick = () => {
-    this.addSurveyData(this.state.accuracy, 'accuracy')
-    this.addSurveyData(this.state.latitude, 'latitude')
-    this.addSurveyData(this.state.longitude, 'longitude')
-    this.props.navigation.replace('SocioEconomicQuestion', {
-      draftId: this.draftId,
-      survey: this.survey
-    })
+    if (this.errorsDetected.length) {
+      this.setState({
+        showErrors: true
+      })
+    } else {
+      this.addSurveyData(this.state.accuracy, 'accuracy')
+      this.addSurveyData(this.state.latitude, 'latitude')
+      this.addSurveyData(this.state.longitude, 'longitude')
+      this.props.navigation.replace('SocioEconomicQuestion', {
+        draftId: this.draftId,
+        survey: this.survey
+      })
+    }
   }
   render() {
     const { t } = this.props
@@ -247,7 +254,8 @@ export class Location extends Component {
       searchAddress,
       centeringMap,
       isOnline,
-      showMap
+      showMap,
+      showErrors
     } = this.state
 
     const draft = this.getDraft()
@@ -364,6 +372,7 @@ export class Location extends Component {
             <Select
               id="countrySelect"
               required
+              showErrors={showErrors}
               onChange={this.addSurveyData}
               label={t('views.family.country')}
               countrySelect
@@ -396,7 +405,6 @@ export class Location extends Component {
         <View style={{ marginTop: 15 }}>
           <Button
             id="continue"
-            disabled={!!this.errorsDetected.length}
             colored
             text={t('general.continue')}
             handleClick={this.handleClick}
