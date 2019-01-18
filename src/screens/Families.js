@@ -53,14 +53,7 @@ export class Families extends Component {
           data={this.props.families}
           keyExtractor={(item, index) => index.toString()}
           renderItem={({ item }) => (
-            <FamiliesListItem
-              handleClick={() =>
-                this.props.navigation.navigate('Family', {
-                  family: item.familyId
-                })
-              }
-              family={item}
-            />
+            <FamiliesListItem handleClick={() => {}} family={item} />
           )}
         />
       </ScrollView>

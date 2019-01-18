@@ -2,6 +2,7 @@ import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import { Text, TouchableOpacity, StyleSheet, View, Image } from 'react-native'
 import Icon from 'react-native-vector-icons/MaterialIcons'
+import moment from 'moment'
 
 import colors from '../theme.json'
 import globalStyles from '../globalStyles'
@@ -25,7 +26,9 @@ class FamiliesListItem extends Component {
           <Text style={{ ...globalStyles.p, ...styles.p }}>
             {this.props.family.name}
           </Text>
-          <Text style={{ ...globalStyles.p, ...styles.p }}>{birthDate}</Text>
+          <Text style={{ ...globalStyles.subline, ...styles.p }}>
+            {`DOB: ${moment(birthDate).format('MMM, DD YYYY')}`}
+          </Text>
         </View>
       </TouchableOpacity>
     )
@@ -50,17 +53,16 @@ const styles = StyleSheet.create({
     borderBottomColor: colors.lightgrey,
     borderBottomWidth: 1,
     marginLeft: 25,
-    flexDirection: 'row',
     flexWrap: 'wrap',
-    flex: 1
+    flex: 1,
+    justifyContent: 'center'
   },
   image: {
     height: 65,
     width: 65
   },
   p: {
-    paddingRight: 20,
-    alignSelf: 'center'
+    paddingRight: 20
   }
 })
 
