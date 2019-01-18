@@ -67,10 +67,10 @@ export class DateInput extends React.Component {
     if (error) {
       this.props.detectError(true, this.props.field)
     } else {
-      const unix = moment(
-        `${yearInput} ${monthInput} ${dayInput}`,
-        'YYYY MMMM D'
-      ).unix()
+      const unix = moment
+        .utc(`${yearInput} ${monthInput} ${dayInput}`, 'YYYY MMMM D')
+        .unix()
+
       this.props.detectError(false, this.props.field)
       this.props.onValidDate(unix, this.props.field)
     }
