@@ -161,7 +161,9 @@ class TextInput extends Component {
             multiline={multiline}
           >
             <Text style={styles.inputText}>
-              {showPlaceholder ? placeholder : text}
+              {showPlaceholder
+                ? `${placeholder} ${required && !label ? '*' : ''}`
+                : text}
             </Text>
           </FormInput>
         </View>
