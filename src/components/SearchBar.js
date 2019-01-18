@@ -18,6 +18,7 @@ class SearchBar extends Component {
           onChangeText={text => onChangeText(text)}
           onEndEditing={onSubmit}
           value={value}
+          autoCapitalize="none"
         />
       </View>
     )

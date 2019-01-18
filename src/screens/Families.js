@@ -19,6 +19,7 @@ import SearchBar from '../components/SearchBar'
 import FamiliesListItem from '../components/FamiliesListItem'
 
 export class Families extends Component {
+  state = { search: '' }
   componentDidMount() {
     if (this.props.offline.online) {
       this.props.loadFamilies(url[this.props.env], this.props.user.token)
@@ -28,6 +29,12 @@ export class Families extends Component {
     const familiesToSync =
       this.props.offline.online &&
       this.props.offline.outbox.find(item => item.type === 'LOAD_FAMILIES')
+
+    const families = this.props.families.filter(
+      family =>
+        family.name.includes(this.state.search) ||
+        family.code.includes(this.state.search)
+    )
 
     return (
       <ScrollView
@@ -45,12 +52,11 @@ export class Families extends Component {
           id="searchAddress"
           style={styles.search}
           placeholder={'Search by name or ID number'}
-          onChangeText={() => {}}
-          onSubmit={() => {}}
-          value={''}
+          onChangeText={search => this.setState({ search })}
+          value={this.state.search}
         />
         <FlatList
-          data={this.props.families}
+          data={families}
           keyExtractor={(item, index) => index.toString()}
           renderItem={({ item }) => (
             <FamiliesListItem handleClick={() => {}} family={item} />
