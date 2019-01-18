@@ -19,15 +19,18 @@ const createTestProps = props => ({
   families: [
     {
       familyId: 12,
-      name: 'Adams Family'
+      name: 'Adams Family',
+      code: '123'
     },
     {
       familyId: 21,
-      name: 'The Flintstones'
+      name: 'The Flintstones',
+      code: '234'
     },
     {
       familyId: 33,
-      name: 'The Jetsons'
+      name: 'The Jetsons',
+      code: '456'
     }
   ],
   user: { token: '' },
@@ -74,6 +77,11 @@ describe('Families View', () => {
       expect(wrapper.find(FlatList)).toHaveLength(1)
     })
   })
+
+  it('passes the correct number of families to FlatList', () => {
+    expect(wrapper.find(FlatList).props().data).toHaveLength(3)
+  })
+
   describe('functionality', () => {
     it('makes a call to fetch families when user is online', () => {
       expect(wrapper.instance().props.loadFamilies).toHaveBeenCalledTimes(1)
@@ -86,5 +94,19 @@ describe('Families View', () => {
       wrapper = shallow(<Families {...props} />)
       expect(wrapper.instance().props.loadFamilies).toHaveBeenCalledTimes(0)
     })
+    it('changing search bar value changes search state', () => {
+      wrapper
+        .find(SearchBar)
+        .props()
+        .onChangeText('Adams')
+      expect(wrapper.instance().state.search).toEqual('Adams')
+    })
+  })
+  it('filters family when search bar value changes', () => {
+    wrapper
+      .find(SearchBar)
+      .props()
+      .onChangeText('Adams')
+    expect(wrapper.find(FlatList).props().data).toHaveLength(1)
   })
 })
