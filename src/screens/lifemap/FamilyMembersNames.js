@@ -88,7 +88,6 @@ export class FamilyMembersNames extends Component {
   }
 
   handleClick() {
-    console.log(this.state.errorsDetected)
     if (this.state.errorsDetected.length) {
       this.setState({
         showErrors: true
@@ -141,7 +140,6 @@ export class FamilyMembersNames extends Component {
         errorsDetected: this.errorsDetected
       })
     } else if (text === -1) {
-      console.log(text)
       this.props.removeFamilyMembers(this.draftId, 1)
       this.errorsDetected = []
       this.setState({
