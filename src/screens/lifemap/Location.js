@@ -95,6 +95,7 @@ export class Location extends Component {
         })
         this.addSurveyData(position.coords.latitude, 'latitude')
         this.addSurveyData(position.coords.longitude, 'longitude')
+        this.addSurveyData(position.coords.accuracy, 'accuracy')
       },
       error => {
         // if error, try getting position after timeout
@@ -178,6 +179,7 @@ export class Location extends Component {
         })
         this.addSurveyData(latitude, 'latitude')
         this.addSurveyData(longitude, 'longitude')
+        this.addSurveyData(0, 'accuracy')
       }
     }
   }
@@ -193,6 +195,7 @@ export class Location extends Component {
       this.setState({
         latitude: this.getFieldValue(draft, 'latitude'),
         longitude: this.getFieldValue(draft, 'longitude'),
+        accuracy: this.getFieldValue(draft, 'accuracy'),
         showMap: true
       })
     }
