@@ -24,6 +24,38 @@ export class FamilyMembersNames extends Component {
 
   state = { errorsDetected: [], showErrors: false }
 
+  familyMembersCountArray = [
+    { text: this.props.t('views.family.onlyPerson'), value: 1 },
+    { text: '2', value: 2 },
+    { text: '3', value: 3 },
+    { text: '4', value: 4 },
+    { text: '5', value: 5 },
+    { text: '6', value: 6 },
+    { text: '7', value: 7 },
+    { text: '8', value: 8 },
+    { text: '9', value: 9 },
+    { text: '10', value: 10 },
+    { text: '11', value: 11 },
+    { text: '12', value: 12 },
+    { text: '13', value: 13 },
+    { text: '14', value: 14 },
+    { text: '15', value: 15 },
+    { text: '16', value: 16 },
+    { text: '17', value: 17 },
+    { text: '18', value: 18 },
+    { text: '19', value: 19 },
+    { text: '20', value: 20 },
+    { text: '21', value: 21 },
+    { text: '22', value: 22 },
+    { text: '23', value: 23 },
+    { text: '24', value: 24 },
+    { text: '25', value: 25 },
+    {
+      text: this.props.t('views.family.preferNotToSay'),
+      value: -1
+    }
+  ]
+
   componentDidMount() {
     this.props.addDraftProgress(this.draftId, {
       screen: 'FamilyMembersNames'
@@ -56,7 +88,8 @@ export class FamilyMembersNames extends Component {
   }
 
   handleClick() {
-    if (this.errorsDetected.length) {
+    console.log(this.state.errorsDetected)
+    if (this.state.errorsDetected.length) {
       this.setState({
         showErrors: true
       })
@@ -86,7 +119,11 @@ export class FamilyMembersNames extends Component {
 
   addFamilyCount = (text, field) => {
     // if reducing the number of family members remove the rest
-    if (text !== '' && this.getFieldValue('countFamilyMembers') > text) {
+    if (
+      text !== '' &&
+      text !== -1 &&
+      this.getFieldValue('countFamilyMembers') > text
+    ) {
       this.props.removeFamilyMembers(this.draftId, text)
 
       // also remove these from the errors array
@@ -102,6 +139,13 @@ export class FamilyMembersNames extends Component {
 
       this.setState({
         errorsDetected: this.errorsDetected
+      })
+    } else if (text === -1) {
+      console.log(text)
+      this.props.removeFamilyMembers(this.draftId, 1)
+      this.errorsDetected = []
+      this.setState({
+        errorsDetected: []
       })
     }
 
@@ -130,11 +174,13 @@ export class FamilyMembersNames extends Component {
     const { showErrors } = this.state
     const draft = this.getDraft()
 
-    const familyMembersCount = draft.familyData.countFamilyMembers
-      ? Array(draft.familyData.countFamilyMembers - 1)
-          .fill()
-          .map((item, index) => index)
-      : []
+    const familyMembersCount =
+      draft.familyData.countFamilyMembers &&
+      draft.familyData.countFamilyMembers !== -1
+        ? Array(draft.familyData.countFamilyMembers - 1)
+            .fill()
+            .map((item, index) => index)
+        : []
 
     return (
       <ScrollView
@@ -152,12 +198,7 @@ export class FamilyMembersNames extends Component {
             value={this.getFieldValue('countFamilyMembers') || ''}
             detectError={this.detectError}
             showErrors={showErrors}
-            options={Array(10)
-              .fill()
-              .map((item, index) => ({
-                text: `${index + 1}`,
-                value: index + 1
-              }))}
+            options={this.familyMembersCountArray}
           />
           <TextInput
             validation="string"
