@@ -2,6 +2,7 @@ import React, { Component } from 'react'
 import { StyleSheet, View, Text } from 'react-native'
 import PropTypes from 'prop-types'
 import Icon from 'react-native-vector-icons/MaterialIcons'
+import moment from 'moment'
 
 import colors from '../theme.json'
 import globalStyles from '../globalStyles'
@@ -13,7 +14,9 @@ class SyncUpToDate extends Component {
       <View style={styles.view}>
         <Text style={globalStyles.h3}>You are up to date!</Text>
         <Icon style={styles.icon} name="done" size={60} color={colors.green} />
-        <Text>{`Last sync: ${this.props.date}`}</Text>
+        <Text>{`Last sync: ${moment(this.props.date).format(
+          'MMM, DD YYYY'
+        )}`}</Text>
       </View>
     )
   }
