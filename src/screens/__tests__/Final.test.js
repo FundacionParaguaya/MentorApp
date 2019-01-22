@@ -37,6 +37,8 @@ describe('Final Lifemap View when no questions are skipped', () => {
       drafts: [
         {
           draftId: 1,
+          achievements: [],
+          priorities: [],
           indicatorSurveyDataList: [
             { key: 'phoneNumber', value: 3 },
             { key: 'education', value: 1 }

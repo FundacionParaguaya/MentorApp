@@ -36,6 +36,7 @@ const createTestProps = props => ({
     {
       draftId: 1,
       priorities: [{ action: 'Some action' }],
+      achievements: [],
       progress: { screen: 'Location' },
       indicatorSurveyDataList: [
         { key: 'phoneNumber', value: 3 },
@@ -77,6 +78,7 @@ describe('Overview Lifemap View when no questions are skipped', () => {
           {
             draftId: 1,
             priorities: [{ action: 'Some action' }],
+            achievements: [],
             indicatorSurveyDataList: [{ key: 'phoneNumber', value: 3 }],
             progress: { screen: 'Location' }
           }
@@ -104,6 +106,7 @@ describe('Overview Lifemap View when no questions are skipped', () => {
           {
             draftId: 1,
             priorities: [{ action: 'Some action' }],
+            achievements: [],
             progress: { screen: 'Location' },
             indicatorSurveyDataList: [
               { key: 'phoneNumber', value: 3 },
@@ -129,6 +132,7 @@ describe('Overview Lifemap View when no questions are skipped', () => {
       expect(wrapper.find(LifemapOverview).props().draftData).toEqual({
         draftId: 1,
         priorities: [{ action: 'Some action' }],
+        achievements: [],
         progress: { screen: 'Location' },
         indicatorSurveyDataList: [
           { key: 'phoneNumber', value: 3 },
