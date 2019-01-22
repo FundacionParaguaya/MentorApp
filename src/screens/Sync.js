@@ -14,6 +14,10 @@ export class Sync extends Component {
         item.syncedAt > lastSynced ? item.syncedAt : lastSynced,
       0
     )
+    const pendingDrafts = offline.outbox.filter(
+      item => item.type === 'SUBMIT_DRAFT'
+    )
+
     return (
       <ScrollView
         contentContainerStyle={[globalStyles.background, styles.view]}
@@ -21,7 +25,9 @@ export class Sync extends Component {
         {offline.online && !offline.outbox.lenght ? (
           <SyncUpToDate date={lastSync} />
         ) : null}
-        {!offline.online ? <SyncOffline /> : null}
+        {!offline.online ? (
+          <SyncOffline pendingDraftsLength={pendingDrafts.length} />
+        ) : null}
         {offline.online && offline.outbox.lenght ? (
           <Text>Sync in progress</Text>
         ) : null}
@@ -32,8 +38,8 @@ export class Sync extends Component {
 const styles = StyleSheet.create({
   view: {
     flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center'
+    paddingHorizontal: 10,
+    justifyContent: 'center'
   }
 })
 

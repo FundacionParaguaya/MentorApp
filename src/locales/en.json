@@ -130,7 +130,10 @@
     "sync": {
       "upToDate": "You are up to date!",
       "lastSync": "Last sync: ",
-      "syncStatus": "Sync Status"
+      "syncStatus": "Sync Status",
+      "offline": "You are offline",
+      "updatesPending": "%n updates pending",
+      "updatePending": "1 update pending"
     }
   }
 }

@@ -11,20 +11,32 @@ import i18n from '../i18n'
 export class SyncUpToDate extends Component {
   render() {
     return (
-      <View style={styles.view}>
-        <Text style={globalStyles.h3}>{i18n.t('views.sync.offline')}</Text>
-        <Icon
-          style={styles.icon}
-          name="wifi-off"
-          size={60}
-          color={colors.grey}
-        />
+      <View>
+        <View style={styles.view}>
+          <Text style={globalStyles.h3}>{i18n.t('views.sync.offline')}</Text>
+          <Icon
+            style={styles.icon}
+            name="wifi-off"
+            size={60}
+            color={colors.grey}
+          />
+        </View>
+
+        <Text style={{ ...globalStyles.p, textAlign: 'left' }}>
+          {this.props.pendingDraftsLength === 1
+            ? i18n.t('views.sync.updatePending')
+            : i18n
+                .t('views.sync.updatesPending')
+                .replace('%n', this.props.pendingDraftsLength)}
+        </Text>
       </View>
     )
   }
 }
 
-SyncUpToDate.propTypes = {}
+SyncUpToDate.propTypes = {
+  pendingDraftsLength: PropTypes.number.isRequired
+}
 const styles = StyleSheet.create({
   view: {
     justifyContent: 'center',

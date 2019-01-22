@@ -130,7 +130,10 @@
     "sync": {
       "upToDate": "¡Estás al día!",
       "lastSync": "Última sincronización: ",
-      "syncStatus": "Sincronización"
+      "syncStatus": "Sincronización",
+      "offline": "Sin conexión",
+      "updatesPending": "%n actualizaciones pendientes",
+      "updatePending": "1 actualización pendiente"
     }
   }
 }
