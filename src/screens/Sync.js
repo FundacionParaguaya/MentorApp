@@ -1,21 +1,37 @@
 import React, { Component } from 'react'
-import { ScrollView, Text } from 'react-native'
+import { StyleSheet, ScrollView, Text } from 'react-native'
 import { connect } from 'react-redux'
 import { withNamespaces } from 'react-i18next'
 import globalStyles from '../globalStyles'
 
+import SyncUpToDate from '../components/SyncUpToDate'
+
 export class Sync extends Component {
   render() {
     const { drafts, offline } = this.props
-    console.log(this.props.drafts)
-    console.log(this.props.offline)
+
     return (
-      <ScrollView style={globalStyles.background}>
-        <Text>Sync view</Text>
+      <ScrollView
+        contentContainerStyle={[globalStyles.background, styles.view]}
+      >
+        {offline.online && !offline.outbox.lenght ? (
+          <SyncUpToDate date={1} />
+        ) : null}
+        {!offline.online ? <Text>You are offline</Text> : null}
+        {offline.online && offline.outbox.lenght ? (
+          <Text>Sync in progress</Text>
+        ) : null}
       </ScrollView>
     )
   }
 }
+const styles = StyleSheet.create({
+  view: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center'
+  }
+})
 
 const mapStateToProps = ({ drafts, offline }) => ({
   drafts,
