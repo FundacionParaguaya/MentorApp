@@ -86,16 +86,13 @@ export class FamilyMembersNames extends Component {
 
   addFamilyCount = (text, field) => {
     // if reducing the number of family members remove the rest
-    if (
-      text &&
-      text !== -1 &&
-      this.getFieldValue('countFamilyMembers') > text
-    ) {
-      this.props.removeFamilyMembers(this.draftId, text)
+    if (text && this.getFieldValue('countFamilyMembers') > text) {
+      const index = text === -1 ? 1 : text
+      this.props.removeFamilyMembers(this.draftId, index)
 
       // also remove these from the errors array
       for (
-        var i = text - 1;
+        var i = index - 1;
         i < this.getFieldValue('countFamilyMembers') - 1;
         i++
       ) {
@@ -106,12 +103,6 @@ export class FamilyMembersNames extends Component {
 
       this.setState({
         errorsDetected: this.errorsDetected
-      })
-    } else if (text === -1) {
-      this.props.removeFamilyMembers(this.draftId, 1)
-      this.errorsDetected = []
-      this.setState({
-        errorsDetected: []
       })
     }
 
