@@ -225,6 +225,7 @@ describe('drafts reducer', () => {
     ).toEqual(expectedStore)
   })
   it('should handle SUBMIT_DRAFT_COMMIT', () => {
+    const syncedAt = Date.now()
     const expectedStore = [
       {
         draftId: 1,
@@ -233,6 +234,7 @@ describe('drafts reducer', () => {
       {
         draftId: 2,
         status: 'Synced',
+        syncedAt,
         priorities: [
           { indicator: 'phoneNumber', action: 'Action', reason: 'reason' }
         ],
