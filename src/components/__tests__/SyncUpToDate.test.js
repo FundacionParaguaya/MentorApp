@@ -3,7 +3,7 @@ import React from 'react'
 import { shallow } from 'enzyme'
 import { Text, Modal } from 'react-native'
 import Icon from 'react-native-vector-icons/MaterialIcons'
-import SyncUpToDate from '../SyncUpToDate'
+import { SyncUpToDate } from '../SyncUpToDate'
 
 const createTestProps = props => ({
   date: 12345,

@@ -54,7 +54,7 @@ export class Dashboard extends Component {
                     alignSelf: 'center'
                   }}
                 >
-                  {t('general.welcome')}!
+                  {t('general.welcome')}
                 </Text>
               </View>
               <RoundImage source="family" />

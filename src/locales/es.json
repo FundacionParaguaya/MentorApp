@@ -126,6 +126,11 @@
       "weWillMissYou": "Te extrañaremos",
       "comeBackSoon": "¡Vuelve pronto!",
       "areYouSureYouWantToLogOut": "¿Estás seguro de que quieres cerrar sesión?"
+    },
+    "sync": {
+      "upToDate": "¡Estás al día!",
+      "lastSync": "Última sincronización: ",
+      "syncStatus": "Sincronización"
     }
   }
 }

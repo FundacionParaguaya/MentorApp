@@ -1,7 +1,6 @@
 import React, { Component } from 'react'
 import { StyleSheet, ScrollView, Text } from 'react-native'
 import { connect } from 'react-redux'
-import { withNamespaces } from 'react-i18next'
 import globalStyles from '../globalStyles'
 
 import SyncUpToDate from '../components/SyncUpToDate'
@@ -42,4 +41,4 @@ const mapStateToProps = ({ drafts, offline }) => ({
   offline
 })
 
-export default withNamespaces()(connect(mapStateToProps)(Sync))
+export default connect(mapStateToProps)(Sync)
