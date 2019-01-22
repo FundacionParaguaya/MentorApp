@@ -4,6 +4,7 @@ import { connect } from 'react-redux'
 import globalStyles from '../globalStyles'
 
 import SyncUpToDate from '../components/SyncUpToDate'
+import SyncOffline from '../components/SyncOffline'
 
 export class Sync extends Component {
   render() {
@@ -20,7 +21,7 @@ export class Sync extends Component {
         {offline.online && !offline.outbox.lenght ? (
           <SyncUpToDate date={lastSync} />
         ) : null}
-        {!offline.online ? <Text>You are offline</Text> : null}
+        {!offline.online ? <SyncOffline /> : null}
         {offline.online && offline.outbox.lenght ? (
           <Text>Sync in progress</Text>
         ) : null}
