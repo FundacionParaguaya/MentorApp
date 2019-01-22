@@ -1,14 +1,25 @@
 import React, { Component } from 'react'
-import { View, Text } from 'react-native'
+import { ScrollView, Text } from 'react-native'
+import { connect } from 'react-redux'
+import { withNamespaces } from 'react-i18next'
+import globalStyles from '../globalStyles'
 
 export class Sync extends Component {
   render() {
+    const { drafts, offline } = this.props
+    console.log(this.props.drafts)
+    console.log(this.props.offline)
     return (
-      <View>
+      <ScrollView style={globalStyles.background}>
         <Text>Sync view</Text>
-      </View>
+      </ScrollView>
     )
   }
 }
 
-export default Sync
+const mapStateToProps = ({ drafts, offline }) => ({
+  drafts,
+  offline
+})
+
+export default withNamespaces()(connect(mapStateToProps)(Sync))
