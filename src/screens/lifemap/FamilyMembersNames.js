@@ -56,7 +56,7 @@ export class FamilyMembersNames extends Component {
   }
 
   handleClick() {
-    if (this.errorsDetected.length) {
+    if (this.state.errorsDetected.length) {
       this.setState({
         showErrors: true
       })
@@ -86,12 +86,13 @@ export class FamilyMembersNames extends Component {
 
   addFamilyCount = (text, field) => {
     // if reducing the number of family members remove the rest
-    if (text !== '' && this.getFieldValue('countFamilyMembers') > text) {
-      this.props.removeFamilyMembers(this.draftId, text)
+    if (text && this.getFieldValue('countFamilyMembers') > text) {
+      const index = text === -1 ? 1 : text
+      this.props.removeFamilyMembers(this.draftId, index)
 
       // also remove these from the errors array
       for (
-        var i = text - 1;
+        var i = index - 1;
         i < this.getFieldValue('countFamilyMembers') - 1;
         i++
       ) {
@@ -125,16 +126,31 @@ export class FamilyMembersNames extends Component {
     })
   }
 
+  getFamilyMembersCountArray = t => [
+    { text: t('views.family.onlyPerson'), value: 1 },
+    ...Array.from(new Array(24), (val, index) => ({
+      value: index + 2,
+      text: `${index + 2}`
+    })),
+
+    {
+      text: t('views.family.preferNotToSay'),
+      value: -1
+    }
+  ]
+
   render() {
     const { t } = this.props
     const { showErrors } = this.state
     const draft = this.getDraft()
 
-    const familyMembersCount = draft.familyData.countFamilyMembers
-      ? Array(draft.familyData.countFamilyMembers - 1)
-          .fill()
-          .map((item, index) => index)
-      : []
+    const familyMembersCount =
+      draft.familyData.countFamilyMembers &&
+      draft.familyData.countFamilyMembers !== -1
+        ? Array(draft.familyData.countFamilyMembers - 1)
+            .fill()
+            .map((item, index) => index)
+        : []
 
     return (
       <ScrollView
@@ -152,12 +168,7 @@ export class FamilyMembersNames extends Component {
             value={this.getFieldValue('countFamilyMembers') || ''}
             detectError={this.detectError}
             showErrors={showErrors}
-            options={Array(10)
-              .fill()
-              .map((item, index) => ({
-                text: `${index + 1}`,
-                value: index + 1
-              }))}
+            options={this.getFamilyMembersCountArray(t)}
           />
           <TextInput
             validation="string"
