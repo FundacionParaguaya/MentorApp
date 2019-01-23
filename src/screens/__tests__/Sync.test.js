@@ -1,8 +1,9 @@
 import React from 'react'
 import { shallow } from 'enzyme'
-import { ScrollView, Text } from 'react-native'
+import { ScrollView, Text, FlatList } from 'react-native'
 import { Sync } from '../Sync'
 import SyncUpToDate from '../../components/SyncUpToDate'
+import SyncOffline from '../../components/SyncOffline'
 
 const createTestProps = props => ({
   t: value => value,
@@ -13,8 +14,9 @@ const createTestProps = props => ({
 
 describe('Sync Lifemap View when no questions are skipped', () => {
   let wrapper
+  let props
   beforeEach(() => {
-    const props = createTestProps()
+    props = createTestProps()
     wrapper = shallow(<Sync {...props} />)
   })
   describe('rendering', () => {
@@ -26,6 +28,21 @@ describe('Sync Lifemap View when no questions are skipped', () => {
     })
     it('passess the correct date to SyncUpToDate', () => {
       expect(wrapper.find(SyncUpToDate).props().date).toBe(2)
+    })
+    it('renders syncOffline component when offline', () => {
+      props = createTestProps({ offline: { outbox: [], online: false } })
+      wrapper = shallow(<Sync {...props} />)
+      expect(wrapper.find(SyncOffline)).toHaveLength(1)
+    })
+    it('renders does not render FlatList when outbox is empty', () => {
+      expect(wrapper.find(FlatList)).toHaveLength(0)
+    })
+    it('renders FlatList when outbox is not empty', () => {
+      props = createTestProps({
+        offline: { outbox: [{ type: 'SUBMIT_DRAFT' }], online: false }
+      })
+      wrapper = shallow(<Sync {...props} />)
+      expect(wrapper.find(FlatList)).toHaveLength(1)
     })
   })
 })
