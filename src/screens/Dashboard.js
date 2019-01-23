@@ -40,6 +40,10 @@ export class Dashboard extends Component {
 
   render() {
     const { t, navigation, drafts } = this.props
+    const firstFiveDrafts = drafts
+      .slice(drafts.length - 5, drafts.length)
+      .reverse()
+
     return (
       <ScrollView style={globalStyles.background}>
         {this.props.offline.outbox.length &&
@@ -73,7 +77,7 @@ export class Dashboard extends Component {
             ) : null}
             <FlatList
               style={{ ...styles.background, paddingLeft: 25 }}
-              data={drafts.reverse().slice(0, 5)}
+              data={firstFiveDrafts}
               keyExtractor={(item, index) => index.toString()}
               renderItem={({ item }) => (
                 <DraftListItem
