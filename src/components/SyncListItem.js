@@ -8,18 +8,23 @@ import globalStyles from '../globalStyles'
 
 class SyncListItem extends Component {
   render() {
+    const { item } = this.props
     return (
       <View style={[styles.view, styles.borderBottom]}>
-        <View>
+        <View style={styles.container}>
           <Icon
             name="swap-calls"
-            rotate={true}
-            size={23}
+            style={styles.icon}
+            size={30}
             color={colors.lightdark}
           />
-          <Text style={globalStyles.p}>Name</Text>
+          <Text style={globalStyles.p}>{`${
+            item.familyMembersList[0].firstName
+          } ${item.familyMembersList[0].lastName} ${
+            item.familyMemberCount > 1 ? `+ ${item.familyMemberCount - 1}` : ''
+          }`}</Text>
         </View>
-        <Text style={styles.label}>Status</Text>
+        <Text style={styles.label}>Pending</Text>
       </View>
     )
   }
@@ -33,22 +38,15 @@ const styles = StyleSheet.create({
   view: {
     justifyContent: 'space-between',
     alignItems: 'center',
-    flexDirection: 'row'
-  },
-  listItem: {
-    height: 95,
-    paddingTop: 25,
-    paddingBottom: 25,
-    paddingRight: 25,
-    alignItems: 'center',
     flexDirection: 'row',
-    flex: 1,
-    justifyContent: 'space-between'
+    paddingVertical: 20
   },
+  container: { flexDirection: 'row', alignItems: 'center' },
   borderBottom: {
     borderBottomColor: colors.lightgrey,
     borderBottomWidth: 1
   },
+  icon: { transform: [{ rotate: '90deg' }], marginRight: 10 },
   label: {
     color: colors.lightdark,
     borderRadius: 5,

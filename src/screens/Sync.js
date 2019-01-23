@@ -32,10 +32,12 @@ export class Sync extends Component {
         ) : null}
         {pendingDrafts.length ? (
           <FlatList
-            style={{}}
+            style={{ marginTop: 15 }}
             data={pendingDrafts}
             keyExtractor={(item, index) => index.toString()}
-            renderItem={({ item }) => <SyncListItem item={item} />}
+            renderItem={({ item }) => (
+              <SyncListItem item={item.payload.familyData} />
+            )}
           />
         ) : null}
       </ScrollView>
