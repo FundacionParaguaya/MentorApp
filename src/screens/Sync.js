@@ -1,10 +1,11 @@
 import React, { Component } from 'react'
-import { StyleSheet, ScrollView, Text } from 'react-native'
+import { StyleSheet, ScrollView, Text, FlatList } from 'react-native'
 import { connect } from 'react-redux'
 import globalStyles from '../globalStyles'
 
 import SyncUpToDate from '../components/SyncUpToDate'
 import SyncOffline from '../components/SyncOffline'
+import SyncListItem from '../components/SyncListItem'
 
 export class Sync extends Component {
   render() {
@@ -19,17 +20,23 @@ export class Sync extends Component {
     )
 
     return (
-      <ScrollView
-        contentContainerStyle={[globalStyles.background, styles.view]}
-      >
+      <ScrollView contentContainerStyle={[globalStyles.container, styles.view]}>
         {offline.online && !offline.outbox.lenght ? (
           <SyncUpToDate date={lastSync} />
+        ) : null}
+        {offline.online && pendingDrafts.lenght ? (
+          <Text>Sync in progress</Text>
         ) : null}
         {!offline.online ? (
           <SyncOffline pendingDraftsLength={pendingDrafts.length} />
         ) : null}
-        {offline.online && offline.outbox.lenght ? (
-          <Text>Sync in progress</Text>
+        {pendingDrafts.length ? (
+          <FlatList
+            style={{}}
+            data={pendingDrafts}
+            keyExtractor={(item, index) => index.toString()}
+            renderItem={({ item }) => <SyncListItem item={item} />}
+          />
         ) : null}
       </ScrollView>
     )
@@ -38,7 +45,6 @@ export class Sync extends Component {
 const styles = StyleSheet.create({
   view: {
     flex: 1,
-    paddingHorizontal: 10,
     justifyContent: 'center'
   }
 })
