@@ -73,7 +73,7 @@ export class Dashboard extends Component {
             ) : null}
             <FlatList
               style={{ ...styles.background, paddingLeft: 25 }}
-              data={drafts.slice(0, 5)}
+              data={drafts.reverse().slice(0, 5)}
               keyExtractor={(item, index) => index.toString()}
               renderItem={({ item }) => (
                 <DraftListItem
