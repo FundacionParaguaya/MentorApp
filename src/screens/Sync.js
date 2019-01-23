@@ -5,6 +5,7 @@ import globalStyles from '../globalStyles'
 
 import SyncUpToDate from '../components/SyncUpToDate'
 import SyncOffline from '../components/SyncOffline'
+import SyncInProgress from '../components/SyncInProgress'
 import SyncListItem from '../components/SyncListItem'
 
 export class Sync extends Component {
@@ -21,11 +22,11 @@ export class Sync extends Component {
 
     return (
       <ScrollView contentContainerStyle={[globalStyles.container, styles.view]}>
-        {offline.online && !offline.outbox.lenght ? (
+        {offline.online && !pendingDrafts.length ? (
           <SyncUpToDate date={lastSync} />
         ) : null}
-        {offline.online && pendingDrafts.lenght ? (
-          <Text>Sync in progress</Text>
+        {offline.online && pendingDrafts.length ? (
+          <SyncInProgress pendingDraftsLength={pendingDrafts.length} />
         ) : null}
         {!offline.online ? (
           <SyncOffline pendingDraftsLength={pendingDrafts.length} />

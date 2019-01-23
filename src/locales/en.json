@@ -133,7 +133,10 @@
       "syncStatus": "Sync Status",
       "offline": "You are offline",
       "updatesPending": "%n updates pending",
-      "updatePending": "1 update pending"
+      "updatePending": "1 update pending",
+      "inProgress": "Sync in progress",
+      "of": "of",
+      "updates": "updates"
     }
   }
 }

@@ -133,7 +133,10 @@
       "syncStatus": "Sincronización",
       "offline": "Sin conexión",
       "updatesPending": "%n actualizaciones pendientes",
-      "updatePending": "1 actualización pendiente"
+      "updatePending": "1 actualización pendiente",
+      "inProgress": "Sincronización en marcha",
+      "of": "de",
+      "updates": "actualizaciones"
     }
   }
 }

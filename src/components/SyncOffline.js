@@ -19,7 +19,7 @@ export class SyncOffline extends Component {
           size={60}
           color={colors.grey}
         />
-        <Text style={{ ...globalStyles.p, textAlign: 'left' }}>
+        <Text style={globalStyles.p}>
           {this.props.pendingDraftsLength === 1
             ? i18n.t('views.sync.updatePending')
             : i18n
