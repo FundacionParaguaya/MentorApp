@@ -2,20 +2,17 @@ import React from 'react'
 
 import { shallow } from 'enzyme'
 import { Text } from 'react-native'
-import Icon from 'react-native-vector-icons/MaterialIcons'
-import { SyncUpToDate } from '../SyncUpToDate'
+import Icon from 'react-native-vector-icons/MaterialCommunityIcons'
+import { SyncOffline } from '../SyncOffline'
 
-const createTestProps = props => ({
-  date: 12345,
-  ...props
-})
+const createTestProps = props => ({ pendingDraftsLength: 3, ...props })
 
-describe('SyncUpToDate Component', () => {
+describe('SyncOffline Component', () => {
   let wrapper
   let props
   beforeEach(() => {
     props = createTestProps()
-    wrapper = shallow(<SyncUpToDate {...props} />)
+    wrapper = shallow(<SyncOffline {...props} />)
   })
   describe('rendering', () => {
     it('renders text', () => {
@@ -24,13 +21,13 @@ describe('SyncUpToDate Component', () => {
     it('renders Icon', () => {
       expect(wrapper.find(Icon)).toHaveLength(1)
     })
-    it('renders correct date', () => {
+    it('renders correct text for number of updates', () => {
       expect(
         wrapper
           .find(Text)
           .last()
           .props().children
-      ).toBe('Last sync: Jan, 01 1970')
+      ).toBe('3 updates pending')
     })
   })
 })

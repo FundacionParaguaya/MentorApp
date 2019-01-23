@@ -8,7 +8,7 @@ import colors from '../theme.json'
 import globalStyles from '../globalStyles'
 import i18n from '../i18n'
 
-export class SyncUpToDate extends Component {
+export class SyncOffline extends Component {
   render() {
     return (
       <View>
@@ -34,7 +34,7 @@ export class SyncUpToDate extends Component {
   }
 }
 
-SyncUpToDate.propTypes = {
+SyncOffline.propTypes = {
   pendingDraftsLength: PropTypes.number.isRequired
 }
 const styles = StyleSheet.create({
@@ -47,4 +47,4 @@ const styles = StyleSheet.create({
   }
 })
 
-export default withNamespaces()(SyncUpToDate)
+export default withNamespaces()(SyncOffline)
