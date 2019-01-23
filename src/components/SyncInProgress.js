@@ -12,7 +12,8 @@ export class SyncInProgress extends Component {
   initalNumOfDraftsPending = this.props.pendingDraftsLength
 
   render() {
-    const currentNumOfDraftsPending = this.props.pendingDraftsLength
+    const currentNumOfDraftsPending =
+      this.initalNumOfDraftsPending - this.props.pendingDraftsLength
     return (
       <View style={styles.view}>
         <Text style={globalStyles.h3}>{i18n.t('views.sync.inProgress')}</Text>
