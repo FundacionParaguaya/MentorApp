@@ -9,6 +9,7 @@ import globalStyles from '../globalStyles'
 class SyncListItem extends Component {
   render() {
     const { item } = this.props
+
     return (
       <View style={[styles.view, styles.borderBottom]}>
         <View style={styles.container}>
@@ -21,7 +22,9 @@ class SyncListItem extends Component {
           <Text style={globalStyles.p}>{`${
             item.familyMembersList[0].firstName
           } ${item.familyMembersList[0].lastName} ${
-            item.familyMemberCount > 1 ? `+ ${item.familyMemberCount - 1}` : ''
+            item.countFamilyMembers > 1
+              ? `+ ${item.countFamilyMembers - 1}`
+              : ''
           }`}</Text>
         </View>
         <Text style={styles.label}>Pending</Text>

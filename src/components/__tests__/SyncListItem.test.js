@@ -8,7 +8,7 @@ import SyncListItem from '../SyncListItem'
 const createTestProps = props => ({
   handleClick: jest.fn(),
   item: {
-    familyMemberCount: 2,
+    countFamilyMembers: 2,
     familyMembersList: [
       {
         firstName: 'Juan',

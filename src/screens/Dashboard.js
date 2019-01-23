@@ -40,9 +40,11 @@ export class Dashboard extends Component {
 
   render() {
     const { t, navigation, drafts } = this.props
-    const firstFiveDrafts = drafts
-      .slice(drafts.length - 5, drafts.length)
-      .reverse()
+
+    const firstFiveDrafts =
+      drafts.length > 5
+        ? drafts.slice(drafts.length - 5).reverse()
+        : drafts.slice().reverse()
 
     return (
       <ScrollView style={globalStyles.background}>
