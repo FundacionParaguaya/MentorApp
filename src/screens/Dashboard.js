@@ -64,14 +64,16 @@ export class Dashboard extends Component {
                 handleClick={() => this.props.navigation.navigate('Surveys')}
               />
             </View>
-            <View style={styles.borderBottom}>
-              <Text style={{ ...globalStyles.subline, ...styles.listTitle }}>
-                {t('views.latestDrafts')}
-              </Text>
-            </View>
+            {drafts.length ? (
+              <View style={styles.borderBottom}>
+                <Text style={{ ...globalStyles.subline, ...styles.listTitle }}>
+                  {t('views.latestDrafts')}
+                </Text>
+              </View>
+            ) : null}
             <FlatList
               style={{ ...styles.background, paddingLeft: 25 }}
-              data={drafts}
+              data={drafts.slice(0, 5)}
               keyExtractor={(item, index) => index.toString()}
               renderItem={({ item }) => (
                 <DraftListItem
@@ -88,20 +90,6 @@ export class Dashboard extends Component {
                 />
               )}
             />
-            {!drafts.length ? (
-              <Text
-                id="no-drafts-message"
-                style={{
-                  ...globalStyles.subline,
-                  textAlign: 'center',
-                  marginTop: 10
-                }}
-              >
-                {t('views.noDrafts')}
-              </Text>
-            ) : (
-              <View />
-            )}
           </View>
         )}
       </ScrollView>

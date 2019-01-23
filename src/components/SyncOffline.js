@@ -11,17 +11,14 @@ import i18n from '../i18n'
 export class SyncOffline extends Component {
   render() {
     return (
-      <View>
-        <View style={styles.view}>
-          <Text style={globalStyles.h3}>{i18n.t('views.sync.offline')}</Text>
-          <Icon
-            style={styles.icon}
-            name="wifi-off"
-            size={60}
-            color={colors.grey}
-          />
-        </View>
-
+      <View style={styles.view}>
+        <Text style={globalStyles.h3}>{i18n.t('views.sync.offline')}</Text>
+        <Icon
+          style={styles.icon}
+          name="wifi-off"
+          size={60}
+          color={colors.grey}
+        />
         <Text style={{ ...globalStyles.p, textAlign: 'left' }}>
           {this.props.pendingDraftsLength === 1
             ? i18n.t('views.sync.updatePending')
