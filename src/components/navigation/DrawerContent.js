@@ -15,6 +15,7 @@ import PropTypes from 'prop-types'
 import { DrawerItems } from 'react-navigation'
 import Icon from 'react-native-vector-icons/MaterialIcons'
 import CommunityIcon from 'react-native-vector-icons/MaterialCommunityIcons'
+import Checkbox from '../Checkbox'
 import { url } from '../../config'
 import globalStyles from '../../globalStyles'
 import i18n from '../../i18n'
@@ -26,22 +27,47 @@ import Button from '../Button'
 // Component that renders the drawer menu content. DrawerItems are the links to
 // the given views.
 export class DrawerContent extends Component {
+  state = {
+    checkboxesVisible: false,
+    ckeckedBoxes: 0,
+    showErrors: false
+  }
   changeLanguage = lng => {
     i18n.changeLanguage(lng) // change the currently uses i18n language
     this.props.switchLanguage(lng) // set the redux language for next app use
     this.props.navigation.toggleDrawer() // close drawer
   }
-
   logUserOut = () => {
-    AsyncStorage.clear()
-    this.props.logout(url[this.props.env], this.props.user.token)
+    if (this.state.ckeckedBoxes === 4) {
+      this.setState({
+        showErrors: false
+      })
+      AsyncStorage.clear()
+      this.props.logout(url[this.props.env], this.props.user.token)
+    } else {
+      this.setState({
+        showErrors: true
+      })
+    }
   }
-
+  showCheckboxes = () => {
+    this.setState({
+      checkboxesVisible: true
+    })
+  }
+  onPressCheckbox = state => {
+    const { ckeckedBoxes } = this.state
+    this.setState({
+      ckeckedBoxes: state ? ckeckedBoxes + 1 : ckeckedBoxes - 1
+    })
+  }
   render() {
     const { lng, user, navigation } = this.props
-    const unsyncedDataExists = this.props.drafts.filter(
+    const { checkboxesVisible } = this.state
+    const unsyncedDrafts = this.props.drafts.filter(
       draft => draft.status !== 'Synced'
     ).length
+
     return (
       <ScrollView contentContainerStyle={styles.container}>
         <View>
@@ -109,7 +135,12 @@ export class DrawerContent extends Component {
         {/* Logout popup */}
         <Popup
           isOpen={navigation.getParam('logoutModalOpen')}
-          onClose={() => navigation.setParams({ logoutModalOpen: false })}
+          onClose={() => {
+            this.setState({
+              checkboxesVisible: false
+            })
+            navigation.setParams({ logoutModalOpen: false })
+          }}
         >
           <View style={{ alignItems: 'flex-end' }}>
             <Icon name="close" size={20} />
@@ -117,53 +148,119 @@ export class DrawerContent extends Component {
 
           <View style={styles.modalContainer}>
             <View style={{ alignItems: 'center' }}>
-              <Icon
-                name="sentiment-dissatisfied"
-                color={colors.lightdark}
-                size={44}
-              />
-              <Text style={styles.title}>{i18n.t('views.logout.logout')}</Text>
+              {!checkboxesVisible ? (
+                <Icon
+                  name="sentiment-dissatisfied"
+                  color={colors.lightdark}
+                  size={44}
+                />
+              ) : (
+                <CommunityIcon
+                  name="exclamation"
+                  color={colors.palered}
+                  size={60}
+                />
+              )}
+              <Text
+                style={[
+                  styles.title,
+                  checkboxesVisible ? { color: colors.palered } : {}
+                ]}
+              >
+                {!checkboxesVisible
+                  ? i18n.t('views.logout.logout')
+                  : `${i18n.t('general.warning')}!`}
+              </Text>
             </View>
-            {unsyncedDataExists ? (
-              <View style={{ alignItems: 'center' }}>
-                <Text style={globalStyles.h3}>
-                  {i18n.t('views.logout.youHaveUnsynchedData')}
-                </Text>
-                <Text style={[globalStyles.h3, { color: colors.palered }]}>
-                  {i18n.t('views.logout.thisDataWillBeLost')}
+
+            {/* Popup text */}
+            {!checkboxesVisible ? (
+              <View>
+                {unsyncedDrafts ? (
+                  <View style={{ alignItems: 'center' }}>
+                    <Text style={globalStyles.h3}>
+                      {i18n.t('views.logout.youHaveUnsynchedData')}
+                    </Text>
+                    <Text style={[globalStyles.h3, { color: colors.palered }]}>
+                      {i18n.t('views.logout.thisDataWillBeLost')}
+                    </Text>
+                  </View>
+                ) : (
+                  <View style={{ alignItems: 'center' }}>
+                    <Text style={globalStyles.h3}>
+                      {i18n.t('views.logout.weWillMissYou')}
+                    </Text>
+                    <Text
+                      style={[globalStyles.h3, { color: colors.palegreen }]}
+                    >
+                      {i18n.t('views.logout.comeBackSoon')}
+                    </Text>
+                  </View>
+                )}
+                <Text style={[styles.confirm, globalStyles.h3]}>
+                  {i18n.t('views.logout.areYouSureYouWantToLogOut')}
                 </Text>
               </View>
             ) : (
+              // Checkboxes section
               <View style={{ alignItems: 'center' }}>
-                <Text style={globalStyles.h3}>
-                  {i18n.t('views.logout.weWillMissYou')}
-                </Text>
-                <Text style={[globalStyles.h3, { color: colors.palegreen }]}>
-                  {i18n.t('views.logout.comeBackSoon')}
-                </Text>
+                <View style={{ marginBottom: 25 }}>
+                  <Text style={globalStyles.h3}>
+                    {i18n.t('views.logout.looseYourData')}
+                  </Text>
+                  <Text style={[globalStyles.h3, { color: colors.palered }]}>
+                    {i18n.t('views.logout.cannotUndo')}
+                  </Text>
+                </View>
+                <View style={{ marginBottom: 35 }}>
+                  <Checkbox
+                    onIconPress={this.onPressCheckbox}
+                    title={`${i18n.t('general.delete')} ${i18n.t(
+                      'general.drafts'
+                    )}`}
+                  />
+                  <Checkbox
+                    onIconPress={this.onPressCheckbox}
+                    title={`${i18n.t('general.delete')} ${i18n.t(
+                      'logout.lifeMaps'
+                    )}`}
+                  />
+                </View>
               </View>
             )}
-            <Text style={[styles.confirm, globalStyles.h3]}>
-              {i18n.t('views.logout.areYouSureYouWantToLogOut')}
-            </Text>
+
+            {/* Buttons bar */}
             <View style={styles.buttonBar}>
               <Button
                 outlined
-                text={i18n.t('general.yes')}
-                borderColor={
-                  unsyncedDataExists ? colors.palered : colors.palegreen
+                text={
+                  checkboxesVisible
+                    ? i18n.t('general.delete')
+                    : i18n.t('general.yes')
                 }
+                borderColor={unsyncedDrafts ? colors.palered : colors.palegreen}
                 style={{ width: 107, alignSelf: 'flex-start' }}
-                handleClick={this.logUserOut}
+                handleClick={
+                  unsyncedDrafts && !checkboxesVisible
+                    ? this.showCheckboxes
+                    : this.logUserOut
+                }
               />
               <Button
                 outlined
                 borderColor={colors.grey}
-                text={i18n.t('general.no')}
-                style={{ width: 107, alignSelf: 'flex-end' }}
-                handleClick={() =>
-                  navigation.setParams({ logoutModalOpen: false })
+                text={
+                  !checkboxesVisible
+                    ? i18n.t('general.no')
+                    : i18n.t('general.cancel')
                 }
+                style={{ width: 107, alignSelf: 'flex-end' }}
+                handleClick={() => {
+                  this.setState({
+                    checkboxesVisible: false
+                  })
+                  navigation.setParams({ logoutModalOpen: false })
+                }}
               />
             </View>
           </View>

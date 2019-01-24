@@ -13,6 +13,10 @@
     "close": "Save & close",
     "yes": "Yes",
     "no": "No",
+    "delete": "Delete",
+    "warning": "Warning",
+    "cancel": "Cancel",
+    "drafts": "drafts",
     "resumeDraft": "Resume draft"
   },
   "validation": {
@@ -127,6 +131,11 @@
       "thisDataWillBeLost": "This data will be lost.",
       "weWillMissYou": "We will miss you.",
       "comeBackSoon": "Come back soon!",
+      "looseYourData": "You will loose unsynced data.",
+      "cannotUndo": "This cannot be undone.",
+      "lifeMaps": "Life Maps",
+      "familyInfo": "family info",
+      "cachedData": "cached data",
       "areYouSureYouWantToLogOut": "Are you sure you want to log out?"
     },
     "sync": {
