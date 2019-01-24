@@ -1,12 +1,13 @@
 import React, { Component } from 'react'
 import { StyleSheet, ScrollView, Text, FlatList } from 'react-native'
 import { connect } from 'react-redux'
+import PropTypes from 'prop-types'
 import globalStyles from '../globalStyles'
 
-import SyncUpToDate from '../components/SyncUpToDate'
-import SyncOffline from '../components/SyncOffline'
-import SyncInProgress from '../components/SyncInProgress'
-import SyncListItem from '../components/SyncListItem'
+import SyncUpToDate from '../components/sync/SyncUpToDate'
+import SyncOffline from '../components/sync/SyncOffline'
+import SyncInProgress from '../components/sync/SyncInProgress'
+import SyncListItem from '../components/sync/SyncListItem'
 
 export class Sync extends Component {
   render() {
@@ -45,6 +46,12 @@ export class Sync extends Component {
     )
   }
 }
+
+Sync.propTypes = {
+  drafts: PropTypes.array.isRequired,
+  offline: PropTypes.object.isRequired
+}
+
 const styles = StyleSheet.create({
   view: {
     flex: 1,
