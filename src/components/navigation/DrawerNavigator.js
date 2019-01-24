@@ -3,7 +3,7 @@ import { createDrawerNavigator } from 'react-navigation'
 import { Image, StyleSheet, Platform } from 'react-native'
 import PropTypes from 'prop-types'
 import DrawerContentComponent from './DrawerContent'
-// import SyncStack from './SyncStack'
+import SyncStack from './SyncStack'
 // import FamiliesStack from './FamiliesStack'
 import LifemapStack from './LifemapStack'
 import DashboardStack from './DashboardStack'
@@ -45,19 +45,19 @@ export default createDrawerNavigator(
         drawerLabel: i18n.t('views.createLifemap'),
         drawerIcon: <DrawerIcon name="swap-calls" rotate={true} />
       }
-    }
+    },
     // Families: {
     //   screen: FamiliesStack,
     //   navigationOptions: {
     //     drawerIcon: <Image source={familyNavIcon} />
     //   }
     // },
-    // Sync: {
-    //   screen: SyncStack,
-    //   navigationOptions: {
-    //     drawerIcon: <DrawerIcon name="sync" />
-    //   }
-    // }
+    Sync: {
+      screen: SyncStack,
+      navigationOptions: {
+        drawerIcon: <DrawerIcon name="sync" />
+      }
+    }
   },
   {
     contentComponent: DrawerContentComponent,

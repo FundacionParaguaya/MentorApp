@@ -48,16 +48,11 @@ describe('Dashboard View', () => {
     it('renders <FlatList />', () => {
       expect(wrapper.find(FlatList)).toHaveLength(1)
     })
-    it('renders no drafts message if there are no drafts', () => {
-      props = createTestProps({ drafts: [] })
-      wrapper = shallow(<Dashboard {...props} />)
-      expect(wrapper.find('#no-drafts-message')).toHaveLength(1)
-    })
   })
   describe('functionality', () => {
-    it('passes the correct data to <FlatList />', () => {
+    it('passes the correct data to <FlatList /> and reverses the order of drafts', () => {
       expect(wrapper.find(FlatList).props().data).toEqual(
-        wrapper.instance().props.drafts
+        wrapper.instance().props.drafts.reverse()
       )
     })
   })

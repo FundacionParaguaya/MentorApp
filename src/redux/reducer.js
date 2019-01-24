@@ -360,7 +360,8 @@ export const drafts = (state = [], action) => {
         draft.draftId === action.meta.id
           ? {
               ...draft,
-              status: 'Synced'
+              status: 'Synced',
+              syncedAt: Date.now()
             }
           : draft
       )

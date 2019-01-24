@@ -111,9 +111,9 @@ class Select extends Component {
                 style={[
                   styles.title,
                   isOpen &&
-                  !errorMsg && {
+                    !errorMsg && {
                       color: colors.green
-                  }
+                    }
                 ]}
               >{`${placeholder}${required ? ' *' : ''}`}</Text>
             )}
@@ -158,7 +158,7 @@ class Select extends Component {
               <View style={styles.dropdown}>
                 {countrySelect ? (
                   <ScrollView>
-                    {countries.map(item => (
+                    {countries.map((item, i) => (
                       <TouchableOpacity
                         key={item.code}
                         onPress={() => this.validateInput(item.code)}

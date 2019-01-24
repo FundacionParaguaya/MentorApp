@@ -40,6 +40,12 @@ export class Dashboard extends Component {
 
   render() {
     const { t, navigation, drafts } = this.props
+
+    const firstFiveDrafts =
+      drafts.length > 5
+        ? drafts.slice(drafts.length - 5).reverse()
+        : drafts.slice().reverse()
+
     return (
       <ScrollView style={globalStyles.background}>
         {this.props.offline.outbox.length &&
@@ -54,7 +60,7 @@ export class Dashboard extends Component {
                     alignSelf: 'center'
                   }}
                 >
-                  {t('general.welcome')}!
+                  {t('general.welcome')}
                 </Text>
               </View>
               <RoundImage source="family" />
@@ -64,14 +70,16 @@ export class Dashboard extends Component {
                 handleClick={() => this.props.navigation.navigate('Surveys')}
               />
             </View>
-            <View style={styles.borderBottom}>
-              <Text style={{ ...globalStyles.subline, ...styles.listTitle }}>
-                {t('views.latestDrafts')}
-              </Text>
-            </View>
+            {drafts.length ? (
+              <View style={styles.borderBottom}>
+                <Text style={{ ...globalStyles.subline, ...styles.listTitle }}>
+                  {t('views.latestDrafts')}
+                </Text>
+              </View>
+            ) : null}
             <FlatList
               style={{ ...styles.background, paddingLeft: 25 }}
-              data={drafts}
+              data={firstFiveDrafts}
               keyExtractor={(item, index) => index.toString()}
               renderItem={({ item }) => (
                 <DraftListItem
@@ -88,20 +96,6 @@ export class Dashboard extends Component {
                 />
               )}
             />
-            {!drafts.length ? (
-              <Text
-                id="no-drafts-message"
-                style={{
-                  ...globalStyles.subline,
-                  textAlign: 'center',
-                  marginTop: 10
-                }}
-              >
-                {t('views.noDrafts')}
-              </Text>
-            ) : (
-              <View />
-            )}
           </View>
         )}
       </ScrollView>
