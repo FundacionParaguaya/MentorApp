@@ -6,6 +6,7 @@ import {
   Text,
   Platform
 } from 'react-native'
+import { AndroidBackHandler } from 'react-navigation-backhandler'
 import { deleteDraft } from '../../redux/actions'
 import Icon from 'react-native-vector-icons/MaterialIcons'
 import store from '../../redux/store'
@@ -56,28 +57,28 @@ export const generateNavOptions = ({ navigation, burgerMenu = true }) => ({
           onClose={() => navigation.setParams({ modalOpen: false })}
         >
           {navigation.getParam('deleteOnExit') ||
-            navigation.state.routeName === 'Terms' ||
-            navigation.state.routeName === 'Privacy' ? (
-              <View>
-                <Text style={[globalStyles.centerText, globalStyles.h3]}>
-                  {navigation.state.routeName === 'FamilyParticipant'
-                    ? i18n.t('views.modals.lifeMapWillNotBeSaved')
-                    : i18n.t('views.modals.weCannotContinueToCreateTheLifeMap')}
-                </Text>
-                <Text style={[globalStyles.centerText, styles.subline]}>
-                  {i18n.t('views.modals.areYouSureYouWantToExit')}
-                </Text>
-              </View>
-            ) : (
-              <View>
-                <Text style={[globalStyles.centerText, globalStyles.h3]}>
-                  {i18n.t('views.modals.yourLifemapIsNotComplete')}
-                </Text>
-                <Text style={[globalStyles.centerText, styles.subline]}>
-                  {i18n.t('views.modals.thisWillBeSavedAsADraft')}
-                </Text>
-              </View>
-            )}
+          navigation.state.routeName === 'Terms' ||
+          navigation.state.routeName === 'Privacy' ? (
+            <View>
+              <Text style={[globalStyles.centerText, globalStyles.h3]}>
+                {navigation.state.routeName === 'FamilyParticipant'
+                  ? i18n.t('views.modals.lifeMapWillNotBeSaved')
+                  : i18n.t('views.modals.weCannotContinueToCreateTheLifeMap')}
+              </Text>
+              <Text style={[globalStyles.centerText, styles.subline]}>
+                {i18n.t('views.modals.areYouSureYouWantToExit')}
+              </Text>
+            </View>
+          ) : (
+            <View>
+              <Text style={[globalStyles.centerText, globalStyles.h3]}>
+                {i18n.t('views.modals.yourLifemapIsNotComplete')}
+              </Text>
+              <Text style={[globalStyles.centerText, styles.subline]}>
+                {i18n.t('views.modals.thisWillBeSavedAsADraft')}
+              </Text>
+            </View>
+          )}
 
           <View style={styles.buttonBar}>
             <Button
@@ -113,55 +114,64 @@ export const generateNavOptions = ({ navigation, burgerMenu = true }) => ({
       <Icon name="menu" size={30} color={colors.lightdark} />
     </TouchableOpacity>
   ) : (
-    <View>
-      <TouchableOpacity
-        style={styles.touchable}
-        onPress={() => {
-          if (navigation.getParam('deleteOnExit')) {
-            navigation.setParams({ backModalOpen: true })
-          } else {
-            navigation.setParams({ backModalOpen: false })
-            navigation.getParam('onPressBack')
-              ? navigation.getParam('onPressBack')()
-              : navigation.goBack()
-          }
-        }}
-      >
-        <Icon name="arrow-back" size={25} color={colors.lightdark} />
-      </TouchableOpacity>
-      <Popup
-        isOpen={navigation.getParam('backModalOpen')}
-        onClose={() => navigation.setParams({ backModalOpen: false })}
-      >
-        <Text style={[globalStyles.centerText, globalStyles.h3]}>
-          {navigation.state.routeName === 'FamilyParticipant'
-            ? i18n.t('views.modals.lifeMapWillNotBeSaved')
-            : i18n.t('views.modals.weCannotContinueToCreateTheLifeMap')}
-        </Text>
-        <Text style={[globalStyles.centerText, styles.subline]}>
-          Are you sure you want to go back?
-        </Text>
-        <View style={styles.buttonBar}>
-          <Button
-            outlined
-            text={i18n.t('general.yes')}
-            style={{ width: 107 }}
-            handleClick={() => {
-              store.dispatch(deleteDraft(navigation.getParam('draftId')))
+    <AndroidBackHandler
+      onBackPress={() => {
+        if (navigation.getParam('onPressBack')) {
+          navigation.getParam('onPressBack')()
+        }
+        return true
+      }}
+    >
+      <View>
+        <TouchableOpacity
+          style={styles.touchable}
+          onPress={() => {
+            if (navigation.getParam('deleteOnExit')) {
+              navigation.setParams({ backModalOpen: true })
+            } else {
+              navigation.setParams({ backModalOpen: false })
               navigation.getParam('onPressBack')
                 ? navigation.getParam('onPressBack')()
                 : navigation.goBack()
-            }}
-          />
-          <Button
-            outlined
-            text={i18n.t('general.no')}
-            style={{ width: 107 }}
-            handleClick={() => navigation.setParams({ backModalOpen: false })}
-          />
-        </View>
-      </Popup>
-    </View>
+            }
+          }}
+        >
+          <Icon name="arrow-back" size={25} color={colors.lightdark} />
+        </TouchableOpacity>
+        <Popup
+          isOpen={navigation.getParam('backModalOpen')}
+          onClose={() => navigation.setParams({ backModalOpen: false })}
+        >
+          <Text style={[globalStyles.centerText, globalStyles.h3]}>
+            {navigation.state.routeName === 'FamilyParticipant'
+              ? i18n.t('views.modals.lifeMapWillNotBeSaved')
+              : i18n.t('views.modals.weCannotContinueToCreateTheLifeMap')}
+          </Text>
+          <Text style={[globalStyles.centerText, styles.subline]}>
+            Are you sure you want to go back?
+          </Text>
+          <View style={styles.buttonBar}>
+            <Button
+              outlined
+              text={i18n.t('general.yes')}
+              style={{ width: 107 }}
+              handleClick={() => {
+                store.dispatch(deleteDraft(navigation.getParam('draftId')))
+                navigation.getParam('onPressBack')
+                  ? navigation.getParam('onPressBack')()
+                  : navigation.goBack()
+              }}
+            />
+            <Button
+              outlined
+              text={i18n.t('general.no')}
+              style={{ width: 107 }}
+              handleClick={() => navigation.setParams({ backModalOpen: false })}
+            />
+          </View>
+        </Popup>
+      </View>
+    </AndroidBackHandler>
   )
 })
 
