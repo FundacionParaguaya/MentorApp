@@ -351,6 +351,30 @@ describe('drafts reducer', () => {
       })
     ).toEqual(expectedStore)
   })
+  it('should handle DELETE_SURVEY_PRIORITY_ACHEIVEMENT_DATA', () => {
+    const expectedStore = [
+      {
+        draftId: 1,
+        status: 'Synced'
+      },
+      {
+        draftId: 2,
+        status: 'In progress',
+        priorities: [],
+        familyData: {
+          familyMembersList: [({ name: 'Joan' }, { name: 'Jane' })]
+        }
+      }
+    ]
+    expect(
+      reducer.drafts(initialStore, {
+        type: action.DELETE_SURVEY_PRIORITY_ACHEIVEMENT_DATA,
+        id: 2,
+        category: 'priorities',
+        indicator: 'phoneNumber'
+      })
+    ).toEqual(expectedStore)
+  })
   it('should update existing priority via ADD_SURVEY_PRIORITY_ACHEIVEMENT_DATA', () => {
     const expectedStore = [
       {
