@@ -6,6 +6,7 @@ import { Login } from '../Login'
 
 const createTestProps = props => ({
   setEnv: jest.fn(),
+  setSyncedState: jest.fn(),
   login: jest.fn(() => new Promise(resolve => resolve(true))),
   env: 'production',
   user: { status: null },

@@ -1,14 +1,60 @@
 import React, { Component } from 'react'
-import { View, Text } from 'react-native'
+import { StyleSheet, ScrollView, Text, FlatList } from 'react-native'
+import { connect } from 'react-redux'
+import globalStyles from '../globalStyles'
+
+import SyncUpToDate from '../components/SyncUpToDate'
+import SyncOffline from '../components/SyncOffline'
+import SyncInProgress from '../components/SyncInProgress'
+import SyncListItem from '../components/SyncListItem'
 
 export class Sync extends Component {
   render() {
+    const { drafts, offline } = this.props
+    const lastSync = drafts.reduce(
+      (lastSynced, item) =>
+        item.syncedAt > lastSynced ? item.syncedAt : lastSynced,
+      0
+    )
+    const pendingDrafts = offline.outbox.filter(
+      item => item.type === 'SUBMIT_DRAFT'
+    )
+
     return (
-      <View>
-        <Text>Sync view</Text>
-      </View>
+      <ScrollView contentContainerStyle={[globalStyles.container, styles.view]}>
+        {offline.online && !pendingDrafts.length ? (
+          <SyncUpToDate date={lastSync} />
+        ) : null}
+        {offline.online && pendingDrafts.length ? (
+          <SyncInProgress pendingDraftsLength={pendingDrafts.length} />
+        ) : null}
+        {!offline.online ? (
+          <SyncOffline pendingDraftsLength={pendingDrafts.length} />
+        ) : null}
+        {pendingDrafts.length ? (
+          <FlatList
+            style={{ marginTop: 15 }}
+            data={pendingDrafts}
+            keyExtractor={(item, index) => index.toString()}
+            renderItem={({ item }) => (
+              <SyncListItem item={item.payload.familyData} />
+            )}
+          />
+        ) : null}
+      </ScrollView>
     )
   }
 }
+const styles = StyleSheet.create({
+  view: {
+    flex: 1,
+    justifyContent: 'center'
+  }
+})
 
-export default Sync
+const mapStateToProps = ({ drafts, offline }) => ({
+  drafts,
+  offline
+})
+
+export default connect(mapStateToProps)(Sync)

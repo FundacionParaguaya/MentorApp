@@ -128,6 +128,17 @@
       "weWillMissYou": "We will miss you.",
       "comeBackSoon": "Come back soon!",
       "areYouSureYouWantToLogOut": "Are you sure you want to log out?"
+    },
+    "sync": {
+      "upToDate": "You are up to date!",
+      "lastSync": "Last sync: ",
+      "syncStatus": "Sync Status",
+      "offline": "You are offline",
+      "updatesPending": "%n updates pending",
+      "updatePending": "1 update pending",
+      "inProgress": "Sync in progress",
+      "of": "of",
+      "updates": "updates"
     }
   }
 }
