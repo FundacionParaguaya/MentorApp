@@ -27,6 +27,7 @@ const createTestProps = props => ({
   },
   addSurveyData: jest.fn(),
   addDraftProgress: jest.fn(),
+  deleteSurveyPriorityAcheivementData: jest.fn(),
   drafts: [
     {
       draftId: 1,
