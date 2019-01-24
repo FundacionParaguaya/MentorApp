@@ -1,12 +1,24 @@
 # Change Log
 
+## [v1.3.1](https://github.com/FundacionParaguaya/MentorApp/tree/HEAD)
+
+[Full Changelog](https://github.com/FundacionParaguaya/MentorApp/compare/v1.3.1...HEAD)
+
+**Fixed bugs:**
+
+- Create priorities for red indicators [\#310](https://github.com/FundacionParaguaya/MentorApp/issues/310)
+- App allows invalid data input. Family count [\#309](https://github.com/FundacionParaguaya/MentorApp/issues/309)
+
+**Closed issues:**
+
+- Resume Draft leads to LifeMap review before arriving to this page [\#300](https://github.com/FundacionParaguaya/MentorApp/issues/300)
+
 ## [v1.3.0](https://github.com/FundacionParaguaya/MentorApp/tree/v1.3.0) (2019-01-21)
 
 [Full Changelog](https://github.com/FundacionParaguaya/MentorApp/compare/v1.2.3...v1.3.0)
 
 **Implemented enhancements:**
 
-- Map - try to get GPS coordinates even if user is offline [\#250](https://github.com/FundacionParaguaya/MentorApp/issues/250)
 - Sync - add families to sync [\#276](https://github.com/FundacionParaguaya/MentorApp/issues/276)
 - Families - fetch API call and redux structure [\#275](https://github.com/FundacionParaguaya/MentorApp/issues/275)
 - Remove numbers on indicators [\#233](https://github.com/FundacionParaguaya/MentorApp/issues/233)
@@ -85,7 +97,6 @@
 - Families list Screen [\#223](https://github.com/FundacionParaguaya/MentorApp/issues/223)
 - Order of Dimensions in Life Map results screen [\#220](https://github.com/FundacionParaguaya/MentorApp/issues/220)
 - Amend order of Indicators in UK Survey [\#200](https://github.com/FundacionParaguaya/MentorApp/issues/200)
-- Validation requirements for Socio Economic \(in the UK Survey + set general future procedure\) [\#192](https://github.com/FundacionParaguaya/MentorApp/issues/192)
 - Default Dropdown Content for Poverty Stoplight Question [\#183](https://github.com/FundacionParaguaya/MentorApp/issues/183)
 - Choosing 5 priorities should not be mandatory [\#180](https://github.com/FundacionParaguaya/MentorApp/issues/180)
 - UK privacy notice [\#178](https://github.com/FundacionParaguaya/MentorApp/issues/178)
