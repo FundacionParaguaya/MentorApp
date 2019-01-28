@@ -201,6 +201,7 @@ export class FamilyParticipant extends Component {
             showErrors={showErrors}
           />
           <Select
+            id="country"
             required
             onChange={this.addSurveyData}
             label={t('views.family.countryOfBirth')}
