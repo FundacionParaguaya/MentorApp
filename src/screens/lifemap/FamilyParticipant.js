@@ -208,7 +208,10 @@ export class FamilyParticipant extends Component {
             country={this.survey.surveyConfig.surveyLocation.country}
             placeholder={t('views.family.selectACountry')}
             field="birthCountry"
-            value={this.getFieldValue(draft, 'birthCountry') || ''}
+            value={
+              this.getFieldValue(draft, 'birthCountry') ||
+              this.survey.surveyConfig.surveyLocation.country
+            }
             detectError={this.detectError}
             showErrors={showErrors}
           />

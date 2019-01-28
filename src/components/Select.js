@@ -158,7 +158,7 @@ class Select extends Component {
               <View style={styles.dropdown}>
                 {countrySelect ? (
                   <ScrollView>
-                    {countries.map((item, i) => (
+                    {countries.map(item => (
                       <TouchableOpacity
                         key={item.code}
                         onPress={() => this.validateInput(item.code)}
