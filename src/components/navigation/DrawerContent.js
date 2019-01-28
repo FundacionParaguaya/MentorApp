@@ -63,7 +63,7 @@ export class DrawerContent extends Component {
   }
   render() {
     const { lng, user, navigation } = this.props
-    const { checkboxesVisible } = this.state
+    const { checkboxesVisible, showErrors } = this.state
     const unsyncedDrafts = this.props.drafts.filter(
       draft => draft.status !== 'Synced'
     ).length
@@ -204,7 +204,7 @@ export class DrawerContent extends Component {
             ) : (
               // Checkboxes section
               <View style={{ alignItems: 'center' }}>
-                <View style={{ marginBottom: 25 }}>
+                <View style={{ marginBottom: 25, alignItems: 'center' }}>
                   <Text style={globalStyles.h3}>
                     {i18n.t('views.logout.looseYourData')}
                   </Text>
@@ -212,17 +212,45 @@ export class DrawerContent extends Component {
                     {i18n.t('views.logout.cannotUndo')}
                   </Text>
                 </View>
-                <View style={{ marginBottom: 35 }}>
+                <View style={{ marginBottom: 15 }}>
                   <Checkbox
+                    containerStyle={styles.checkbox}
+                    checkboxColor={colors.palered}
+                    textStyle={styles.checkboxText}
+                    showErrors={showErrors}
                     onIconPress={this.onPressCheckbox}
                     title={`${i18n.t('general.delete')} ${i18n.t(
                       'general.drafts'
                     )}`}
                   />
                   <Checkbox
+                    containerStyle={styles.checkbox}
+                    checkboxColor={colors.palered}
+                    textStyle={styles.checkboxText}
+                    showErrors={showErrors}
                     onIconPress={this.onPressCheckbox}
                     title={`${i18n.t('general.delete')} ${i18n.t(
-                      'logout.lifeMaps'
+                      'general.lifeMaps'
+                    )}`}
+                  />
+                  <Checkbox
+                    containerStyle={styles.checkbox}
+                    checkboxColor={colors.palered}
+                    textStyle={styles.checkboxText}
+                    showErrors={showErrors}
+                    onIconPress={this.onPressCheckbox}
+                    title={`${i18n.t('general.delete')} ${i18n.t(
+                      'general.familyInfo'
+                    )}`}
+                  />
+                  <Checkbox
+                    containerStyle={styles.checkbox}
+                    checkboxColor={colors.palered}
+                    textStyle={styles.checkboxText}
+                    showErrors={showErrors}
+                    onIconPress={this.onPressCheckbox}
+                    title={`${i18n.t('general.delete')} ${i18n.t(
+                      'general.cachedData'
                     )}`}
                   />
                 </View>
@@ -366,5 +394,18 @@ const styles = StyleSheet.create({
     marginBottom: 80,
     flexDirection: 'row',
     justifyContent: 'space-between'
+  },
+  checkbox: {
+    marginTop: 0,
+    marginBottom: 18,
+    paddingVertical: 0,
+    backgroundColor: 'transparent',
+    borderWidth: 0
+  },
+  checkboxText: {
+    fontWeight: 'normal',
+    fontSize: 16,
+    fontFamily: 'Roboto',
+    color: colors.lightdark
   }
 })

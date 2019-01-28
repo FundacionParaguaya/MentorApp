@@ -14,20 +14,24 @@ class Checkbox extends Component {
   }
 
   render() {
-    const { containerStyle, style } = this.props
+    const { checked } = this.state
+    const { containerStyle, textStyle, checkboxColor, showErrors } = this.props
+
     return (
       <TouchableOpacity style={styles.touchable} onPress={this.onIconPress}>
         <CheckBox
           disabled
-          title={this.props.title}
+          title={`${this.props.title}${showErrors && !checked ? ' *' : ''}`}
           iconType="material"
-          checkedColor={colors.green}
+          checkedColor={checkboxColor || colors.green}
           checkedIcon="check-box"
           uncheckedIcon="check-box-outline-blank"
-          checked={this.state.checked}
-          textStyle={globalStyles.subline}
+          checked={checked}
           containerStyle={containerStyle || styles.containerStyle}
-          style={style}
+          textStyle={[
+            textStyle || globalStyles.subline,
+            showErrors && !checked ? styles.error : {}
+          ]}
         />
       </TouchableOpacity>
     )
@@ -38,7 +42,9 @@ Checkbox.propTypes = {
   title: PropTypes.string.isRequired,
   onIconPress: PropTypes.func.isRequired,
   containerStyle: PropTypes.object,
-  style: PropTypes.object
+  checkboxColor: PropTypes.string,
+  showErrors: PropTypes.bool,
+  textStyle: PropTypes.object
 }
 
 export default Checkbox
@@ -50,5 +56,9 @@ const styles = StyleSheet.create({
   containerStyle: {
     backgroundColor: 'transparent',
     borderWidth: 0
+  },
+  error: {
+    color: colors.palered,
+    textDecorationLine: 'underline'
   }
 })
