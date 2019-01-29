@@ -160,7 +160,7 @@ class Select extends Component {
                   <ScrollView>
                     {countries.map((item, i) => (
                       <TouchableOpacity
-                        key={i}
+                        key={item.code}
                         onPress={() => this.validateInput(item.code)}
                       >
                         <Text

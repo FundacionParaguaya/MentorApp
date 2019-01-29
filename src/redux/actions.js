@@ -111,6 +111,8 @@ export const DELETE_DRAFT = 'DELETE_DRAFT'
 export const ADD_SURVEY_DATA = 'ADD_SURVEY_DATA'
 export const ADD_SURVEY_PRIORITY_ACHEIVEMENT_DATA =
   'ADD_SURVEY_PRIORITY_ACHEIVEMENT_DATA'
+export const DELETE_SURVEY_PRIORITY_ACHEIVEMENT_DATA =
+  'DELETE_SURVEY_PRIORITY_ACHEIVEMENT_DATA'
 export const ADD_SURVEY_FAMILY_MEMBER_DATA = 'ADD_SURVEY_FAMILY_MEMBER_DATA'
 export const SUBMIT_DRAFT = 'SUBMIT_DRAFT'
 export const SUBMIT_DRAFT_COMMIT = 'SUBMIT_DRAFT_COMMIT'
@@ -143,6 +145,17 @@ export const addSurveyPriorityAcheivementData = ({
   id,
   category,
   payload
+})
+
+export const deleteSurveyPriorityAcheivementData = ({
+  id,
+  category,
+  indicator
+}) => ({
+  type: DELETE_SURVEY_PRIORITY_ACHEIVEMENT_DATA,
+  id,
+  category,
+  indicator
 })
 
 export const addSurveyFamilyMemberData = ({

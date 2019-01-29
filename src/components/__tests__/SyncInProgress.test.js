@@ -2,7 +2,7 @@ import React from 'react'
 
 import { shallow } from 'enzyme'
 import { Text, ProgressBarAndroid } from 'react-native'
-import { SyncInProgress } from '../SyncInProgress'
+import { SyncInProgress } from '../sync/SyncInProgress'
 
 const createTestProps = props => ({ pendingDraftsLength: 3, ...props })
 

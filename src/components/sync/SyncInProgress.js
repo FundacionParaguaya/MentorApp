@@ -2,11 +2,10 @@ import React, { Component } from 'react'
 import { StyleSheet, View, Text, ProgressBarAndroid } from 'react-native'
 import { withNamespaces } from 'react-i18next'
 import PropTypes from 'prop-types'
-import Icon from 'react-native-vector-icons/MaterialCommunityIcons'
 
-import colors from '../theme.json'
-import globalStyles from '../globalStyles'
-import i18n from '../i18n'
+import colors from '../../theme.json'
+import globalStyles from '../../globalStyles'
+import i18n from '../../i18n'
 
 export class SyncInProgress extends Component {
   initalNumOfDraftsPending = this.props.pendingDraftsLength

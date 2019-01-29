@@ -3,7 +3,7 @@ import React from 'react'
 import { shallow } from 'enzyme'
 import { Text } from 'react-native'
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons'
-import { SyncOffline } from '../SyncOffline'
+import { SyncOffline } from '../sync/SyncOffline'
 
 const createTestProps = props => ({ pendingDraftsLength: 3, ...props })
 

@@ -3,7 +3,7 @@ import React from 'react'
 import { shallow } from 'enzyme'
 import { TouchableOpacity, Text, View } from 'react-native'
 import Icon from 'react-native-vector-icons/MaterialIcons'
-import SyncListItem from '../SyncListItem'
+import SyncListItem from '../sync/SyncListItem'
 
 const createTestProps = props => ({
   handleClick: jest.fn(),

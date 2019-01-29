@@ -3,8 +3,8 @@ import PropTypes from 'prop-types'
 import Icon from 'react-native-vector-icons/MaterialIcons'
 import { Text, StyleSheet, View } from 'react-native'
 
-import colors from '../theme.json'
-import globalStyles from '../globalStyles'
+import colors from '../../theme.json'
+import globalStyles from '../../globalStyles'
 
 class SyncListItem extends Component {
   render() {

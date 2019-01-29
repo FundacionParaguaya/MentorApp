@@ -9,6 +9,7 @@ import {
   CREATE_DRAFT,
   ADD_SURVEY_DATA,
   ADD_SURVEY_PRIORITY_ACHEIVEMENT_DATA,
+  DELETE_SURVEY_PRIORITY_ACHEIVEMENT_DATA,
   ADD_SURVEY_FAMILY_MEMBER_DATA,
   REMOVE_FAMILY_MEMBERS,
   DELETE_DRAFT,
@@ -97,6 +98,7 @@ export const drafts = (state = [], action) => {
   switch (action.type) {
     case CREATE_DRAFT:
       return [...state, { ...action.payload, status: 'In progress' }]
+
     case ADD_SURVEY_PRIORITY_ACHEIVEMENT_DATA:
       return state.map(draft => {
         // if this is the draft we are editing
@@ -127,6 +129,19 @@ export const drafts = (state = [], action) => {
           return draft
         }
       })
+    case DELETE_SURVEY_PRIORITY_ACHEIVEMENT_DATA:
+      return state.map(draft =>
+        draft.draftId === action.id
+          ? {
+              ...draft,
+              [action.category]: [
+                ...draft[action.category].filter(
+                  item => item.indicator !== action.indicator
+                )
+              ]
+            }
+          : draft
+      )
     case ADD_SURVEY_DATA:
       return state.map(draft => {
         // if this is the draft we are editing

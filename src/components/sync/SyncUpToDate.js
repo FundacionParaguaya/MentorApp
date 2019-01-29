@@ -5,9 +5,9 @@ import PropTypes from 'prop-types'
 import Icon from 'react-native-vector-icons/MaterialIcons'
 import moment from 'moment'
 
-import colors from '../theme.json'
-import globalStyles from '../globalStyles'
-import i18n from '../i18n'
+import colors from '../../theme.json'
+import globalStyles from '../../globalStyles'
+import i18n from '../../i18n'
 
 export class SyncUpToDate extends Component {
   render() {
@@ -15,16 +15,18 @@ export class SyncUpToDate extends Component {
       <View style={styles.view}>
         <Text style={globalStyles.h3}>{i18n.t('views.sync.upToDate')}</Text>
         <Icon style={styles.icon} name="done" size={60} color={colors.green} />
-        <Text>{`${i18n.t('views.sync.lastSync')}${moment(
-          this.props.date
-        ).format('MMM, DD YYYY')}`}</Text>
+        {this.props.date ? (
+          <Text>{`${i18n.t('views.sync.lastSync')}${moment(
+            this.props.date
+          ).format('MMM, DD YYYY')}`}</Text>
+        ) : null}
       </View>
     )
   }
 }
 
 SyncUpToDate.propTypes = {
-  date: PropTypes.number.isRequired
+  date: PropTypes.number
 }
 const styles = StyleSheet.create({
   view: {

@@ -37,6 +37,27 @@ export class Dashboard extends Component {
   componentWillUnmount() {
     this.clearTimers()
   }
+  navigateToDraft = draft => {
+    console.log(draft)
+    if (
+      draft.progress.screen !== 'Question' &&
+      draft.progress.screen !== 'Skipped' &&
+      draft.progress.screen !== 'Final' &&
+      draft.progress.screen !== 'Overview'
+    ) {
+      this.props.navigation.navigate(draft.progress.screen, {
+        draftId: draft.draftId,
+        survey: this.props.surveys.find(survey => survey.id === draft.surveyId),
+        step: draft.progress.step,
+        socioEconomics: draft.progress.socioEconomics
+      })
+    } else
+      this.props.navigation.navigate('Overview', {
+        draftId: draft.draftId,
+        survey: this.props.surveys.find(survey => survey.id === draft.surveyId),
+        resumeDraft: true
+      })
+  }
 
   render() {
     const { t, navigation, drafts } = this.props
@@ -84,15 +105,7 @@ export class Dashboard extends Component {
               renderItem={({ item }) => (
                 <DraftListItem
                   item={item}
-                  handleClick={() => {
-                    navigation.navigate('Overview', {
-                      draftId: item.draftId,
-                      survey: this.props.surveys.find(
-                        survey => survey.id === item.surveyId
-                      ),
-                      resumeDraft: true
-                    })
-                  }}
+                  handleClick={() => this.navigateToDraft(item)}
                 />
               )}
             />
