@@ -76,7 +76,6 @@ export class Overview extends Component {
     const draft = this.props.drafts.find(item => item.draftId === this.draftId)
     const mandatoryPrioritiesCount = this.getMandatoryPrioritiesCount(draft)
     const resumeDraft = this.props.navigation.getParam('resumeDraft')
-    console.log(draft)
     return (
       <ScrollView
         style={globalStyles.background}
