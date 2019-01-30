@@ -155,6 +155,10 @@ describe('Family Participant View', () => {
       expect(wrapper.find(Button)).toHaveLength(1)
     })
 
+    it('country select has preselected default country', () => {
+      expect(wrapper.find('#country')).toHaveProp({ value: 'BG' })
+    })
+
     it('sets proper TextInput value from draft', () => {
       const props = createTestProps({
         navigation: {

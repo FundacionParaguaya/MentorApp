@@ -38,7 +38,6 @@ export class Dashboard extends Component {
     this.clearTimers()
   }
   navigateToDraft = draft => {
-    console.log(draft)
     if (
       draft.progress.screen !== 'Question' &&
       draft.progress.screen !== 'Skipped' &&
