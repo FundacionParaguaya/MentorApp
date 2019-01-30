@@ -138,6 +138,14 @@ export class DrawerContent extends Component {
           logUserOut={this.logUserOut}
           showCheckboxes={this.showCheckboxes}
           onPressCheckbox={this.onPressCheckbox}
+          onModalClose={() => {
+            this.setState({
+              checkboxesVisible: false,
+              showErrors: false,
+              ckeckedBoxes: 0
+            })
+            navigation.setParams({ logoutModalOpen: false })
+          }}
         />
       </ScrollView>
     )

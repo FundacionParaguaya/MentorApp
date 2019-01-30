@@ -19,17 +19,13 @@ export default class LogoutPopup extends Component {
       unsyncedDrafts,
       logUserOut,
       showCheckboxes,
-      onPressCheckbox
+      onPressCheckbox,
+      onModalClose
     } = this.props
     return (
       <Popup
         isOpen={navigation.getParam('logoutModalOpen')}
-        onClose={() => {
-          this.setState({
-            checkboxesVisible: false
-          })
-          navigation.setParams({ logoutModalOpen: false })
-        }}
+        onClose={onModalClose}
       >
         <View style={{ alignItems: 'flex-end' }}>
           <Icon name="close" size={20} />
@@ -172,12 +168,7 @@ export default class LogoutPopup extends Component {
                   : i18n.t('general.cancel')
               }
               style={{ width: 107, alignSelf: 'flex-end' }}
-              handleClick={() => {
-                this.setState({
-                  checkboxesVisible: false
-                })
-                navigation.setParams({ logoutModalOpen: false })
-              }}
+              handleClick={onModalClose}
             />
           </View>
         </View>
@@ -193,6 +184,7 @@ LogoutPopup.propTypes = {
   unsyncedDrafts: PropTypes.number.isRequired,
   logUserOut: PropTypes.func.isRequired,
   showCheckboxes: PropTypes.func.isRequired,
+  onModalClose: PropTypes.func,
   onPressCheckbox: PropTypes.func.isRequired
 }
 

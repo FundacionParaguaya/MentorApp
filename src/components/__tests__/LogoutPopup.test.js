@@ -17,6 +17,7 @@ const createTestProps = props => ({
   logUserOut: jest.fn(),
   showCheckboxes: jest.fn(),
   onPressCheckbox: jest.fn(),
+  onModalClose: jest.fn(),
   ...props
 })
 
@@ -63,7 +64,7 @@ describe('Logout Modal', () => {
         .props()
         .handleClick()
 
-      expect(props.navigation.setParams).toHaveBeenCalledTimes(1)
+      expect(props.onModalClose).toHaveBeenCalledTimes(1)
     })
   })
 
