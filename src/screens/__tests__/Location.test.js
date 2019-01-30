@@ -278,4 +278,8 @@ describe('Render optimization', () => {
     wrapper = shallow(<Location {...props} />)
     expect(wrapper.instance().props.drafts[2]).toBeFalsy()
   })
+
+  it('country select has preselected default country', () => {
+    expect(wrapper.find('#countrySelect')).toHaveProp({ value: 'BG' })
+  })
 })

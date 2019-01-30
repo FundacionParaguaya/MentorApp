@@ -381,7 +381,10 @@ export class Location extends Component {
             countrySelect
             placeholder={t('views.family.selectACountry')}
             field="country"
-            value={this.getFieldValue(draft, 'country') || ''}
+            value={
+              this.getFieldValue(draft, 'country') ||
+              this.survey.surveyConfig.surveyLocation.country
+            }
             detectError={this.detectError}
             country={this.survey.surveyConfig.surveyLocation.country}
           />

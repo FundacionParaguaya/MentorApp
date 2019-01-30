@@ -1,12 +1,13 @@
 import React from 'react'
 import { shallow } from 'enzyme'
-import { ScrollView, TextInput, Text } from 'react-native'
+import { ScrollView, TextInput, Text, Dimensions } from 'react-native'
 import Button from '../../components/Button'
 import { Login } from '../Login'
 
 const createTestProps = props => ({
   setEnv: jest.fn(),
   setSyncedState: jest.fn(),
+  setDimensions: jest.fn(),
   login: jest.fn(() => new Promise(resolve => resolve(true))),
   env: 'production',
   user: { status: null },
@@ -43,6 +44,11 @@ describe('Login View', () => {
         connection: false
       })
     })
+
+    it('call setDimensions on mount', () => {
+      expect(wrapper.instance().props.setDimensions).toHaveBeenCalledTimes(1)
+    })
+
     it('renders error message when user status is 401', async () => {
       props = createTestProps({ user: { status: 401 } })
       wrapper = shallow(<Login {...props} />)
