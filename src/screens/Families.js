@@ -59,7 +59,17 @@ export class Families extends Component {
           data={families}
           keyExtractor={(item, index) => index.toString()}
           renderItem={({ item }) => (
-            <FamiliesListItem handleClick={() => {}} family={item} />
+            <FamiliesListItem
+              handleClick={() =>
+                this.props.navigation.navigate('Overview', {
+                  familyLifemap: item.snapshotList[0],
+                  survey: this.props.surveys.find(
+                    survey => survey.id === item.snapshotList[0].surveyId
+                  )
+                })
+              }
+              family={item}
+            />
           )}
         />
       </ScrollView>
@@ -86,11 +96,12 @@ const styles = StyleSheet.create({
   search: { margin: 10 }
 })
 
-const mapStateToProps = ({ families, user, offline, env }) => ({
+const mapStateToProps = ({ families, user, offline, env, surveys }) => ({
   families,
   user,
   offline,
-  env
+  env,
+  surveys
 })
 
 const mapDispatchToProps = {

@@ -15,6 +15,7 @@ import colors from '../../theme.json'
 
 export class Overview extends Component {
   draftId = this.props.navigation.getParam('draftId')
+  familyLifemap = this.props.navigation.getParam('familyLifemap')
   survey = this.props.navigation.getParam('survey')
   indicatorsArray = this.survey.surveyStoplightQuestions.map(
     item => item.codeName
@@ -73,17 +74,20 @@ export class Overview extends Component {
 
   render() {
     const { t } = this.props
-    const draft = this.props.drafts.find(item => item.draftId === this.draftId)
-    const mandatoryPrioritiesCount = this.getMandatoryPrioritiesCount(draft)
+    const data = this.familyLifemap
+      ? this.familyLifemap
+      : this.props.drafts.find(item => item.draftId === this.draftId)
+
+    const mandatoryPrioritiesCount = this.getMandatoryPrioritiesCount(data)
     const resumeDraft = this.props.navigation.getParam('resumeDraft')
     return (
       <View style={[globalStyles.background, styles.contentContainer]}>
         <ScrollView>
           <View style={styles.indicatorsContainer}>
             <LifemapVisual
-              questions={draft.indicatorSurveyDataList}
-              priorities={draft.priorities}
-              achievements={draft.achievements}
+              questions={data.indicatorSurveyDataList}
+              priorities={data.priorities}
+              achievements={data.achievements}
               questionsLength={this.survey.surveyStoplightQuestions.length}
             />
             {resumeDraft ? (
@@ -94,11 +98,11 @@ export class Overview extends Component {
                 colored
                 text={t('general.resumeDraft')}
                 handleClick={() => {
-                  this.props.navigation.replace(draft.progress.screen, {
+                  this.props.navigation.replace(data.progress.screen, {
                     draftId: this.draftId,
                     survey: this.survey,
-                    step: draft.progress.step,
-                    socioEconomics: draft.progress.socioEconomics
+                    step: data.progress.step,
+                    socioEconomics: data.progress.socioEconomics
                   })
                 }}
               />
@@ -110,7 +114,7 @@ export class Overview extends Component {
             </Text>
             <LifemapOverview
               surveyData={this.survey.surveyStoplightQuestions}
-              draftData={draft}
+              draftData={data}
               navigateToScreen={this.navigateToScreen}
             />
           </View>
@@ -139,7 +143,7 @@ export class Overview extends Component {
               handleClick={() => {
                 this.navigateToScreen('Final')
               }}
-              disabled={mandatoryPrioritiesCount > draft.priorities.length}
+              disabled={mandatoryPrioritiesCount > data.priorities.length}
             />
           </View>
         ) : null}
