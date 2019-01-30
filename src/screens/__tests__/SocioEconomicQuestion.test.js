@@ -2,7 +2,6 @@ import React from 'react'
 import { shallow } from 'enzyme'
 import { SocioEconomicQuestion } from '../lifemap/SocioEconomicQuestion'
 import Select from '../../components/Select'
-import Button from '../../components/Button'
 import TextInput from '../../components/TextInput'
 import data from '../__mocks__/fake-socio-economic-data.json'
 
@@ -132,30 +131,6 @@ describe('SocioEconomicQuestion screens', () => {
       })
     })
 
-    it('renders a continue button', () => {
-      expect(wrapper.find(Button)).toHaveLength(1)
-
-      expect(wrapper.find(Button).last()).toHaveProp({
-        colored: true,
-        text: 'general.continue'
-      })
-    })
-
-    it('navigates to next socio-economics screen on pressing continue', () => {
-      wrapper
-        .find(Button)
-        .last()
-        .props()
-        .handleClick()
-
-      expect(wrapper.instance().props.navigation.push).toHaveBeenCalledTimes(1)
-
-      expect(wrapper.instance().props.navigation.push).toHaveBeenCalledWith(
-        'SocioEconomicQuestion',
-        expect.any(Object)
-      )
-    })
-
     it('calls addDraftProgress on mount', () => {
       expect(wrapper.instance().props.addDraftProgress).toHaveBeenCalledTimes(1)
     })
@@ -225,23 +200,6 @@ describe('SocioEconomicQuestion screens', () => {
         placeholder:
           'Please estimate your gross monthly household income (i.e, before taxes National Insurance contributions or other deductions)'
       })
-    })
-
-    it('navigates to next non-socio-economic screen after done with all questions', () => {
-      wrapper
-        .find(Button)
-        .last()
-        .props()
-        .handleClick()
-
-      expect(
-        wrapper.instance().props.navigation.navigate
-      ).toHaveBeenCalledTimes(1)
-
-      expect(wrapper.instance().props.navigation.navigate).toHaveBeenCalledWith(
-        'BeginLifemap',
-        expect.any(Object)
-      )
     })
   })
 })

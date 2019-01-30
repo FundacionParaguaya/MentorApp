@@ -1,12 +1,11 @@
 import React from 'react'
 import { shallow } from 'enzyme'
-import { ScrollView, Text } from 'react-native'
+import { Text } from 'react-native'
 
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons'
 
 import { AddPriority } from '../lifemap/AddPriority'
 import TextInput from '../../components/TextInput'
-import Button from '../../components/Button'
 import Counter from '../../components/Counter'
 
 const createTestProps = props => ({
@@ -35,9 +34,6 @@ describe('AddPriority View', () => {
     wrapper = shallow(<AddPriority {...props} />)
   })
   describe('rendering', () => {
-    it('renders ScrollView', () => {
-      expect(wrapper.find(ScrollView)).toHaveLength(1)
-    })
     it('renders Icon', () => {
       expect(wrapper.find(Icon)).toHaveLength(1)
     })
@@ -46,9 +42,6 @@ describe('AddPriority View', () => {
     })
     it('renders Counter', () => {
       expect(wrapper.find(Counter)).toHaveLength(1)
-    })
-    it('renders Button', () => {
-      expect(wrapper.find(Button)).toHaveLength(1)
     })
   })
 
@@ -99,28 +92,6 @@ describe('AddPriority View', () => {
         .props()
         .onChangeText('Some action')
       expect(wrapper.instance().state.action).toEqual('Some action')
-    })
-    it('doesn\'t save the priority if no months entered', () => {
-      wrapper
-        .find(Button)
-        .props()
-        .handleClick()
-
-      expect(
-        wrapper.instance().props.addSurveyPriorityAcheivementData
-      ).toHaveBeenCalledTimes(0)
-    })
-    it('saves the priority if valid', () => {
-      wrapper.instance().setState({ estimatedDate: 2 })
-
-      wrapper
-        .find(Button)
-        .props()
-        .handleClick()
-
-      expect(
-        wrapper.instance().props.addSurveyPriorityAcheivementData
-      ).toHaveBeenCalledTimes(1)
     })
   })
 })

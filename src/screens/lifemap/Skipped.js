@@ -1,15 +1,12 @@
 import React, { Component } from 'react'
-import { StyleSheet, ScrollView, Image, View, FlatList } from 'react-native'
+import { StyleSheet, Image, FlatList } from 'react-native'
 import { connect } from 'react-redux'
 import PropTypes from 'prop-types'
 import { withNamespaces } from 'react-i18next'
 import { addDraftProgress } from '../../redux/actions'
-
+import StickyFooter from '../../components/StickyFooter'
 import Tip from '../../components/Tip'
 import SkippedListItem from '../../components/SkippedListItem'
-import Button from '../../components/Button'
-
-import globalStyles from '../../globalStyles'
 
 export class Skipped extends Component {
   draftId = this.props.navigation.getParam('draftId')
@@ -53,9 +50,9 @@ export class Skipped extends Component {
       question => question.value === 0
     )
     return (
-      <ScrollView
-        style={globalStyles.background}
-        contentContainerStyle={styles.contentContainer}
+      <StickyFooter
+        handleClick={this.handleClick}
+        continueLabel={t('general.continue')}
       >
         <Image
           style={styles.image}
@@ -84,28 +81,16 @@ export class Skipped extends Component {
             />
           )}
         />
-        <View style={{ height: 50, marginTop: 20 }}>
-          <Button
-            colored
-            text={t('general.continue')}
-            handleClick={() => this.handleClick()}
-          />
-        </View>
         <Tip
           title={t('views.lifemap.youSkipped')}
           description={t('views.lifemap.whyNotTryAgain')}
         />
-      </ScrollView>
+      </StickyFooter>
     )
   }
 }
 const styles = StyleSheet.create({
-  image: { alignSelf: 'center', marginVertical: 50 },
-  contentContainer: {
-    flexGrow: 1,
-    flexDirection: 'column',
-    justifyContent: 'space-between'
-  }
+  image: { alignSelf: 'center', marginVertical: 50 }
 })
 
 Skipped.propTypes = {

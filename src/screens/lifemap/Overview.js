@@ -76,19 +76,10 @@ export class Overview extends Component {
     const draft = this.props.drafts.find(item => item.draftId === this.draftId)
     const mandatoryPrioritiesCount = this.getMandatoryPrioritiesCount(draft)
     const resumeDraft = this.props.navigation.getParam('resumeDraft')
-    console.log(draft)
     return (
-      <ScrollView
-        style={globalStyles.background}
-        contentContainerStyle={styles.contentContainer}
-      >
-        <View>
-          <View
-            style={{
-              ...globalStyles.container,
-              paddingTop: 20
-            }}
-          >
+      <View style={[globalStyles.background, styles.contentContainer]}>
+        <ScrollView>
+          <View>
             <LifemapVisual
               questions={draft.indicatorSurveyDataList}
               priorities={draft.priorities}
@@ -123,7 +114,23 @@ export class Overview extends Component {
               navigateToScreen={this.navigateToScreen}
             />
           </View>
-        </View>
+
+          {mandatoryPrioritiesCount ? (
+            <Tip
+              title={t('views.lifemap.beforeTheLifeMapIsCompleted')}
+              description={
+                mandatoryPrioritiesCount === 1
+                  ? t('views.lifemap.youNeedToAddPriotity')
+                  : t('views.lifemap.youNeedToAddPriorities').replace(
+                      '%n',
+                      mandatoryPrioritiesCount
+                    )
+              }
+            />
+          ) : (
+            <View />
+          )}
+        </ScrollView>
         {!resumeDraft ? (
           <View style={{ height: 50 }}>
             <Button
@@ -136,31 +143,17 @@ export class Overview extends Component {
             />
           </View>
         ) : null}
-
-        {mandatoryPrioritiesCount ? (
-          <Tip
-            title={t('views.lifemap.beforeTheLifeMapIsCompleted')}
-            description={
-              mandatoryPrioritiesCount === 1
-                ? t('views.lifemap.youNeedToAddPriotity')
-                : t('views.lifemap.youNeedToAddPriorities').replace(
-                    '%n',
-                    mandatoryPrioritiesCount
-                  )
-            }
-          />
-        ) : (
-          <View />
-        )}
-      </ScrollView>
+      </View>
     )
   }
 }
 const styles = StyleSheet.create({
   contentContainer: {
-    flexGrow: 1,
+    paddingTop: 20,
+    flex: 1,
     flexDirection: 'column',
-    justifyContent: 'space-between'
+    justifyContent: 'center',
+    alignItems: 'stretch'
   },
   listTitle: {
     backgroundColor: colors.beige,

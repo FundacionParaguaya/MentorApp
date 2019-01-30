@@ -1,15 +1,14 @@
 import React, { Component } from 'react'
-import { ScrollView, StyleSheet, View, Text } from 'react-native'
+import { View, Text } from 'react-native'
 import { connect } from 'react-redux'
 import PropTypes from 'prop-types'
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons'
 import { Divider } from 'react-native-elements'
 import { withNamespaces } from 'react-i18next'
 import { addSurveyPriorityAcheivementData } from '../../redux/actions'
-
+import StickyFooter from '../../components/StickyFooter'
 import globalStyles from '../../globalStyles'
 import colors from '../../theme.json'
-import Button from '../../components/Button'
 import TextInput from '../../components/TextInput'
 import Counter from '../../components/Counter'
 
@@ -80,80 +79,64 @@ export class AddPriority extends Component {
     const priority = this.getPriorityValue(draft)
 
     return (
-      <ScrollView
-        style={globalStyles.background}
-        contentContainerStyle={styles.contentContainer}
+      <StickyFooter
+        continueLabel={t('general.save')}
+        handleClick={this.addPriority}
       >
-        <View>
-          <View style={globalStyles.container}>
-            <Text style={globalStyles.h2}>
-              {this.props.navigation.getParam('indicatorText')}
-            </Text>
-            <Divider
-              style={{ backgroundColor: colors.palegrey, marginVertical: 10 }}
-            />
-            <View
-              style={{
-                flexDirection: 'row'
-              }}
-            >
-              <Icon
-                name="pin"
-                color={colors.blue}
-                size={17}
-                style={{ marginRight: 10, marginLeft: -10 }}
-              />
-              <Text style={globalStyles.h3}>{t('views.lifemap.priority')}</Text>
-            </View>
-          </View>
-          <TextInput
-            onChangeText={text => this.setState({ reason: text })}
-            placeholder={reason ? '' : t('views.lifemap.writeYourAnswerHere')}
-            label={t('views.lifemap.whyDontYouHaveIt')}
-            value={priority ? priority.reason : ''}
-            multiline
+        <View style={globalStyles.container}>
+          <Text style={globalStyles.h2}>
+            {this.props.navigation.getParam('indicatorText')}
+          </Text>
+          <Divider
+            style={{ backgroundColor: colors.palegrey, marginVertical: 10 }}
           />
-          <TextInput
-            label={t('views.lifemap.whatWillYouDoToGetIt')}
-            onChangeText={text => this.setState({ action: text })}
-            placeholder={action ? '' : t('views.lifemap.writeYourAnswerHere')}
-            value={priority ? priority.action : ''}
-            multiline
-          />
-          <View style={{ padding: 15 }}>
-            <Counter
-              editCounter={this.editCounter}
-              count={estimatedDate}
-              text={t('views.lifemap.howManyMonthsWillItTake')}
+          <View
+            style={{
+              flexDirection: 'row'
+            }}
+          >
+            <Icon
+              name="pin"
+              color={colors.blue}
+              size={17}
+              style={{ marginRight: 10, marginLeft: -10 }}
             />
+            <Text style={globalStyles.h3}>{t('views.lifemap.priority')}</Text>
           </View>
-          {/* Error message */}
-          {validationError ? (
-            <Text style={{ paddingHorizontal: 15, color: colors.red }}>
-              {t('validation.fieldIsRequired')}
-            </Text>
-          ) : (
-            <View />
-          )}
         </View>
-        <View style={{ height: 50 }}>
-          <Button
-            colored
-            text={t('general.save')}
-            handleClick={() => this.addPriority()}
+        <TextInput
+          onChangeText={text => this.setState({ reason: text })}
+          placeholder={reason ? '' : t('views.lifemap.writeYourAnswerHere')}
+          label={t('views.lifemap.whyDontYouHaveIt')}
+          value={priority ? priority.reason : ''}
+          multiline
+        />
+        <TextInput
+          label={t('views.lifemap.whatWillYouDoToGetIt')}
+          onChangeText={text => this.setState({ action: text })}
+          placeholder={action ? '' : t('views.lifemap.writeYourAnswerHere')}
+          value={priority ? priority.action : ''}
+          multiline
+        />
+        <View style={{ padding: 15 }}>
+          <Counter
+            editCounter={this.editCounter}
+            count={estimatedDate}
+            text={t('views.lifemap.howManyMonthsWillItTake')}
           />
         </View>
-      </ScrollView>
+        {/* Error message */}
+        {validationError ? (
+          <Text style={{ paddingHorizontal: 15, color: colors.red }}>
+            {t('validation.fieldIsRequired')}
+          </Text>
+        ) : (
+          <View />
+        )}
+      </StickyFooter>
     )
   }
 }
-const styles = StyleSheet.create({
-  contentContainer: {
-    flexGrow: 1,
-    flexDirection: 'column',
-    justifyContent: 'space-between'
-  }
-})
 
 AddPriority.propTypes = {
   t: PropTypes.func.isRequired,

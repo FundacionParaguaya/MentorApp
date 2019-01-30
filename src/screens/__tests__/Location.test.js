@@ -1,6 +1,5 @@
 import React from 'react'
 import { shallow } from 'enzyme'
-import { ScrollView } from 'react-native'
 import MapView from 'react-native-maps'
 import { Location } from '../lifemap/Location'
 import SearchBar from '../../components/SearchBar'
@@ -77,10 +76,6 @@ describe('Family Location component', () => {
     wrapper = shallow(<Location {...props} />)
   })
   describe('offline', () => {
-    it('renders base ScrollView', () => {
-      expect(wrapper.find(ScrollView)).toHaveLength(1)
-    })
-
     it('edits draft in field change', () => {
       wrapper
         .find('#postCode')
@@ -179,23 +174,6 @@ describe('Family Location component', () => {
     })
   })
 
-  it('navigates to SocioEconomicQuestion with proper params', () => {
-    wrapper
-      .find('#continue')
-      .props()
-      .handleClick()
-
-    expect(wrapper.instance().props.navigation.replace).toHaveBeenCalledWith(
-      'SocioEconomicQuestion',
-      {
-        draftId: 2,
-        survey: {
-          surveyId: 100,
-          surveyConfig: { surveyLocation: { country: 'BG' } }
-        }
-      }
-    )
-  })
   it('detects errors', () => {
     wrapper
       .find('#countrySelect')
