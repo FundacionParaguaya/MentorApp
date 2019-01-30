@@ -107,7 +107,7 @@ describe('families actions', () => {
             headers: { Authorization: `Bearer ${token}` },
             body: JSON.stringify({
               query:
-                'query { familiesNewStructure { code familyId name address user { username } country { country } organization { code name } snapshotList { surveyId createdAt economicSurveyDataList { key value } indicatorSurveyDataList { key value } snapshotStoplightAchievements { action indicator roadmap } snapshotStoplightPriorities { action estimatedDate indicator reason } } countFamilyMembers familyMemberDTOList{ birthCountry birthDate documentNumber documentType email familyId firstName firstParticipant gender id lastName memberIdentifier phoneNumber personalSurveyDataList {key, value} socioEconomicAnswers {key, value} }  } }'
+                'query { familiesNewStructure {familyId name code snapshotList { surveyId createdAt familyData { familyMembersList { birthCountry birthDate documentNumber documentType email familyId firstName firstParticipant gender id lastName memberIdentifier phoneNumber socioEconomicAnswers { key value}  }  countFamilyMembers latitude longitude country accuracy } economicSurveyDataList { key value } indicatorSurveyDataList { key value } achievements { action indicator roadmap } priorities { action estimatedDate indicator reason } } } }'
             })
           },
           commit: { type: action.LOAD_FAMILIES }

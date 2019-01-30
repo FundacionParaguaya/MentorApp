@@ -11,7 +11,7 @@ import stoplight from '../../assets/images/stoplight.png'
 class FamiliesListItem extends Component {
   render() {
     const { family } = this.props
-    const firstParticipant = this.props.family.familyMemberDTOList.find(
+    const firstParticipant = family.snapshotList[0].familyData.familyMembersList.find(
       item => item.firstParticipant
     )
     const birthDate = firstParticipant ? firstParticipant.birthDate : ''
@@ -23,9 +23,7 @@ class FamiliesListItem extends Component {
       >
         <Icon name="face" color={colors.grey} size={40} style={styles.icon} />
         <View style={styles.listItemContainer}>
-          <Text style={{ ...globalStyles.p, ...styles.p }}>
-            {this.props.family.name}
-          </Text>
+          <Text style={{ ...globalStyles.p, ...styles.p }}>{family.name}</Text>
           <Text style={{ ...globalStyles.subline, ...styles.p }}>
             {`DOB: ${moment(birthDate).format('MMM, DD YYYY')}`}
           </Text>

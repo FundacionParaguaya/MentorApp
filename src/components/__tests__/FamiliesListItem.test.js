@@ -9,12 +9,18 @@ const createTestProps = props => ({
   handleClick: jest.fn(),
   family: {
     name: 'Juan Perez',
-    familyMemberDTOList: [
+    snapshotList: [
       {
-        firstName: 'Juan',
-        lastName: 'Perez',
-        birthDate: 1539971763946,
-        firstParticipant: true
+        familyData: {
+          familyMembersList: [
+            {
+              firstName: 'Juan',
+              lastName: 'Perez',
+              birthDate: 1539971763946,
+              firstParticipant: true
+            }
+          ]
+        }
       }
     ]
   },
