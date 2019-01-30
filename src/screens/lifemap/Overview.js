@@ -26,6 +26,7 @@ export class Overview extends Component {
       this.props.addDraftProgress(this.draftId, {
         screen: 'Overview'
       })
+
       this.props.navigation.setParams({
         onPressBack: this.onPressBack
       })
@@ -33,21 +34,29 @@ export class Overview extends Component {
   }
 
   onPressBack = () => {
-    const draft = this.props.drafts.find(item => item.draftId === this.draftId)
-    const skippedQuestions = draft.indicatorSurveyDataList.filter(
-      question => question.value === 0
-    )
-    if (skippedQuestions.length > 0) {
-      this.props.navigation.navigate('Skipped', {
-        draftId: this.draftId,
-        survey: this.survey
-      })
-    } else
-      this.props.navigation.navigate('Question', {
-        draftId: this.draftId,
-        survey: this.survey,
-        step: this.survey.surveyStoplightQuestions.length - 1
-      })
+    //If we do not arrive to this screen from the families screen
+    if (!this.familyLifemap) {
+      const draft = this.props.drafts.find(
+        item => item.draftId === this.draftId
+      )
+      const skippedQuestions = draft.indicatorSurveyDataList.filter(
+        question => question.value === 0
+      )
+      // If there are no skipped questions
+      if (skippedQuestions.length > 0) {
+        this.props.navigation.navigate('Skipped', {
+          draftId: this.draftId,
+          survey: this.survey
+        })
+      } else
+        this.props.navigation.navigate('Question', {
+          draftId: this.draftId,
+          survey: this.survey,
+          step: this.survey.surveyStoplightQuestions.length - 1
+        })
+    }
+    // If we arrive to this screen from the families screen
+    else this.props.navigation.navigate('Families')
   }
 
   navigateToScreen = (screen, indicator, indicatorText) =>
