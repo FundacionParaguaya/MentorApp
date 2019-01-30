@@ -88,7 +88,7 @@ export default class LogoutPopup extends Component {
             // Checkboxes section
             <View style={{ alignItems: 'center' }}>
               <View style={{ marginBottom: 25, alignItems: 'center' }}>
-                <Text style={globalStyles.h3}>
+                <Text style={[globalStyles.h3, { textAlign: 'center' }]}>
                   {i18n.t('views.logout.looseYourData')}
                 </Text>
                 <Text style={[globalStyles.h3, { color: colors.palered }]}>
