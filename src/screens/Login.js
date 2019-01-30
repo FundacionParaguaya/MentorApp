@@ -8,10 +8,11 @@ import {
   Image,
   StyleSheet,
   View,
-  NetInfo
+  NetInfo,
+  Dimensions
 } from 'react-native'
 import { connect } from 'react-redux'
-import { setEnv, login, setSyncedState } from '../redux/actions'
+import { setEnv, login, setSyncedState, setDimensions } from '../redux/actions'
 import logo from '../../assets/images/logo.png'
 import { url } from '../config'
 import globalStyles from '../globalStyles'
@@ -27,6 +28,7 @@ export class Login extends Component {
     loading: false
   }
   componentDidMount() {
+    this.setDimensions()
     this.checkConnectivity().then(isConnected =>
       this.setConnectivityState(isConnected)
     )
@@ -47,6 +49,14 @@ export class Login extends Component {
         error: this.state.connection ? 'No connection' : false
       })
     )
+  }
+
+  setDimensions = () => {
+    this.props.setDimensions({
+      height: Dimensions.get('window').height,
+      width: Dimensions.get('window').width,
+      scale: Dimensions.get('window').scale
+    })
   }
 
   componentDidUpdate() {
@@ -146,6 +156,7 @@ Login.propTypes = {
   setEnv: PropTypes.func.isRequired,
   login: PropTypes.func.isRequired,
   setSyncedState: PropTypes.func.isRequired,
+  setDimensions: PropTypes.func.isRequired,
   env: PropTypes.oneOf(['production', 'demo', 'testing', 'development']),
   navigation: PropTypes.object.isRequired,
   user: PropTypes.object.isRequired
@@ -175,7 +186,8 @@ const mapStateToProps = ({ env, user }) => ({
 const mapDispatchToProps = {
   setEnv,
   login,
-  setSyncedState
+  setSyncedState,
+  setDimensions
 }
 
 export default connect(
