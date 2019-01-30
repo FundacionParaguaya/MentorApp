@@ -1,12 +1,10 @@
 import React from 'react'
 import { shallow } from 'enzyme'
-import { ScrollView, Text } from 'react-native'
-
+import { Text } from 'react-native'
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons'
-
+import StickyFooter from '../../components/StickyFooter'
 import { AddPriority } from '../lifemap/AddPriority'
 import TextInput from '../../components/TextInput'
-import Button from '../../components/Button'
 import Counter from '../../components/Counter'
 
 const createTestProps = props => ({
@@ -35,8 +33,10 @@ describe('AddPriority View', () => {
     wrapper = shallow(<AddPriority {...props} />)
   })
   describe('rendering', () => {
-    it('renders ScrollView', () => {
-      expect(wrapper.find(ScrollView)).toHaveLength(1)
+    it('renders the continue button with proper label', () => {
+      expect(wrapper.find(StickyFooter)).toHaveProp({
+        continueLabel: 'general.save'
+      })
     })
     it('renders Icon', () => {
       expect(wrapper.find(Icon)).toHaveLength(1)
@@ -47,12 +47,31 @@ describe('AddPriority View', () => {
     it('renders Counter', () => {
       expect(wrapper.find(Counter)).toHaveLength(1)
     })
-    it('renders Button', () => {
-      expect(wrapper.find(Button)).toHaveLength(1)
-    })
   })
 
   describe('functionality', () => {
+    it('doesn\'t save the priority if no months entered', () => {
+      wrapper
+        .find(StickyFooter)
+        .props()
+        .handleClick()
+
+      expect(
+        wrapper.instance().props.addSurveyPriorityAcheivementData
+      ).toHaveBeenCalledTimes(0)
+    })
+    it('saves the priority if valid', () => {
+      wrapper.instance().setState({ estimatedDate: 2 })
+
+      wrapper
+        .find(StickyFooter)
+        .props()
+        .handleClick()
+
+      expect(
+        wrapper.instance().props.addSurveyPriorityAcheivementData
+      ).toHaveBeenCalledTimes(1)
+    })
     it('has correct initial state', () => {
       expect(wrapper.instance().state).toEqual({
         action: '',
@@ -99,28 +118,6 @@ describe('AddPriority View', () => {
         .props()
         .onChangeText('Some action')
       expect(wrapper.instance().state.action).toEqual('Some action')
-    })
-    it('doesn\'t save the priority if no months entered', () => {
-      wrapper
-        .find(Button)
-        .props()
-        .handleClick()
-
-      expect(
-        wrapper.instance().props.addSurveyPriorityAcheivementData
-      ).toHaveBeenCalledTimes(0)
-    })
-    it('saves the priority if valid', () => {
-      wrapper.instance().setState({ estimatedDate: 2 })
-
-      wrapper
-        .find(Button)
-        .props()
-        .handleClick()
-
-      expect(
-        wrapper.instance().props.addSurveyPriorityAcheivementData
-      ).toHaveBeenCalledTimes(1)
     })
   })
 })

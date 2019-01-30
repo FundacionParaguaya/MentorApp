@@ -1,16 +1,14 @@
 import React, { Component } from 'react'
-import { ScrollView, StyleSheet, View, Text } from 'react-native'
+import { View, Text } from 'react-native'
 import { connect } from 'react-redux'
 import PropTypes from 'prop-types'
 import { withNamespaces } from 'react-i18next'
-
+import StickyFooter from '../../components/StickyFooter'
 import {
   addSurveyFamilyMemberData,
   addDraftProgress
 } from '../../redux/actions'
-
 import globalStyles from '../../globalStyles'
-import Button from '../../components/Button'
 import Select from '../../components/Select'
 
 export class FamilyMembersGender extends Component {
@@ -53,7 +51,7 @@ export class FamilyMembersGender extends Component {
     })
   }
 
-  handleClick() {
+  handleClick = () => {
     this.props.navigation.navigate('FamilyMembersBirthdates', {
       draftId: this.draftId,
       survey: this.survey
@@ -85,57 +83,39 @@ export class FamilyMembersGender extends Component {
     )[0]
 
     return (
-      <ScrollView
-        style={globalStyles.background}
-        contentContainerStyle={styles.contentContainer}
+      <StickyFooter
+        handleClick={this.handleClick}
+        continueLabel={t('general.continue')}
       >
-        <View style={{ ...globalStyles.container, padding: 0 }}>
-          {draft.familyData.familyMembersList.slice(1).map((item, i) => (
-            <View key={i}>
-              <Text
-                style={{
-                  ...globalStyles.h3,
-                  paddingHorizontal: 20,
-                  marginTop: 15
-                }}
-              >
-                {item.firstName}
-              </Text>
-              <Select
-                field={i.toString()}
-                onChange={text => this.addFamilyMemberGender(text, i + 1)}
-                label={t('views.family.gender')}
-                placeholder={t('views.family.selectGender')}
-                value={
-                  (this.getFieldValue(draft, 'familyMembersList')[i + 1] || {})
-                    .gender || ''
-                }
-                detectError={this.detectError}
-                options={this.gender}
-              />
-            </View>
-          ))}
-        </View>
-
-        <View style={{ height: 50, marginTop: 30 }}>
-          <Button
-            disabled={!!this.errorsDetected.length}
-            colored
-            text={t('general.continue')}
-            handleClick={() => this.handleClick()}
-          />
-        </View>
-      </ScrollView>
+        {draft.familyData.familyMembersList.slice(1).map((item, i) => (
+          <View key={i}>
+            <Text
+              style={{
+                ...globalStyles.h3,
+                paddingHorizontal: 20,
+                marginTop: 15
+              }}
+            >
+              {item.firstName}
+            </Text>
+            <Select
+              field={i.toString()}
+              onChange={text => this.addFamilyMemberGender(text, i + 1)}
+              label={t('views.family.gender')}
+              placeholder={t('views.family.selectGender')}
+              value={
+                (this.getFieldValue(draft, 'familyMembersList')[i + 1] || {})
+                  .gender || ''
+              }
+              detectError={this.detectError}
+              options={this.gender}
+            />
+          </View>
+        ))}
+      </StickyFooter>
     )
   }
 }
-const styles = StyleSheet.create({
-  contentContainer: {
-    flexGrow: 1,
-    flexDirection: 'column',
-    justifyContent: 'space-between'
-  }
-})
 
 FamilyMembersGender.propTypes = {
   t: PropTypes.func.isRequired,

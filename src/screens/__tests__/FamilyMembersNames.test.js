@@ -1,11 +1,9 @@
 import React from 'react'
 import { shallow } from 'enzyme'
-import { ScrollView } from 'react-native'
 import { FamilyMembersNames } from '../lifemap/FamilyMembersNames'
-
-import Button from '../../components/Button'
 import TextInput from '../../components/TextInput'
 import Select from '../../components/Select'
+import StickyFooter from '../../components/StickyFooter'
 
 const createTestProps = props => ({
   t: value => value,
@@ -59,12 +57,10 @@ describe('FamilyMembersNames View', () => {
     wrapper = shallow(<FamilyMembersNames {...props} />)
   })
   describe('rendering', () => {
-    it('renders ScrollView', () => {
-      expect(wrapper.find(ScrollView)).toHaveLength(1)
-    })
-
-    it('renders Button', () => {
-      expect(wrapper.find(Button)).toHaveLength(1)
+    it('renders the continue button with proper label', () => {
+      expect(wrapper.find(StickyFooter)).toHaveProp({
+        continueLabel: 'general.continue'
+      })
     })
     it('renders Select', () => {
       expect(wrapper.find(Select)).toHaveLength(1)
@@ -75,6 +71,16 @@ describe('FamilyMembersNames View', () => {
   })
 
   describe('functionality', () => {
+    it('calls navigate function when button is pressed', () => {
+      wrapper
+        .find(StickyFooter)
+        .props()
+        .handleClick()
+
+      expect(
+        wrapper.instance().props.navigation.navigate
+      ).toHaveBeenCalledTimes(1)
+    })
     it('calls setParam on mount', () => {
       expect(
         wrapper.instance().props.navigation.setParams
@@ -88,16 +94,6 @@ describe('FamilyMembersNames View', () => {
 
       wrapper.instance().onPressBack()
       expect(spy).toHaveBeenCalledTimes(1)
-    })
-    it('calls navigate function when button is pressed', () => {
-      wrapper
-        .find(Button)
-        .props()
-        .handleClick()
-
-      expect(
-        wrapper.instance().props.navigation.navigate
-      ).toHaveBeenCalledTimes(1)
     })
   })
   it('gives Select the proper value', () => {

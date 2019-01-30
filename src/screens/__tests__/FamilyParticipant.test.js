@@ -1,12 +1,11 @@
 import React from 'react'
 import { shallow } from 'enzyme'
-import { ScrollView } from 'react-native'
 import { FamilyParticipant } from '../lifemap/FamilyParticipant'
 import Select from '../../components/Select'
 import DateInputComponent from '../../components/DateInput'
-import Button from '../../components/Button'
 import TextInput from '../../components/TextInput'
 import draft from '../__mocks__/draftMock.json'
+import StickyFooter from '../../components/StickyFooter'
 
 const createTestProps = props => ({
   t: value => value,
@@ -139,8 +138,10 @@ describe('Family Participant View', () => {
   })
 
   describe('rendering', () => {
-    it('renders base ScrollView', () => {
-      expect(wrapper.find(ScrollView)).toHaveLength(1)
+    it('renders the continue button with proper label', () => {
+      expect(wrapper.find(StickyFooter)).toHaveProp({
+        continueLabel: 'general.continue'
+      })
     })
     it('renders TextInput', () => {
       expect(wrapper.find(TextInput)).toHaveLength(5)
@@ -150,9 +151,6 @@ describe('Family Participant View', () => {
     })
     it('renders DateInput', () => {
       expect(wrapper.find(DateInputComponent)).toHaveLength(1)
-    })
-    it('renders continue draft button', () => {
-      expect(wrapper.find(Button)).toHaveLength(1)
     })
 
     it('country select has preselected default country', () => {
@@ -181,6 +179,16 @@ describe('Family Participant View', () => {
   })
 
   describe('functionality', () => {
+    it('calls navigator function on pressing Continue button', () => {
+      wrapper
+        .find(StickyFooter)
+        .props()
+        .handleClick()
+      expect(
+        wrapper.instance().props.navigation.navigate
+      ).toHaveBeenCalledTimes(1)
+    })
+
     it('calls addSurveyFamilyMemberData on input change', () => {
       wrapper
         .find(TextInput)
@@ -211,16 +219,6 @@ describe('Family Participant View', () => {
         .onValidDate('January 21 1999')
       expect(
         wrapper.instance().props.addSurveyFamilyMemberData
-      ).toHaveBeenCalledTimes(1)
-    })
-
-    it('calls navigator function on pressing Continue button', () => {
-      wrapper
-        .find(Button)
-        .props()
-        .handleClick()
-      expect(
-        wrapper.instance().props.navigation.navigate
       ).toHaveBeenCalledTimes(1)
     })
 
