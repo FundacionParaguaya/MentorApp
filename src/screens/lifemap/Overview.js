@@ -79,7 +79,7 @@ export class Overview extends Component {
     return (
       <View style={[globalStyles.background, styles.contentContainer]}>
         <ScrollView>
-          <View>
+          <View style={styles.indicatorsContainer}>
             <LifemapVisual
               questions={draft.indicatorSurveyDataList}
               priorities={draft.priorities}
@@ -161,6 +161,10 @@ const styles = StyleSheet.create({
     lineHeight: 45,
     flex: 1,
     textAlign: 'center'
+  },
+  indicatorsContainer: {
+    paddingHorizontal: 20,
+    paddingBottom: 25
   }
 })
 
