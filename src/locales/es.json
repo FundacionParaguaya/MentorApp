@@ -13,7 +13,14 @@
     "close": "Guardar & cerrar",
     "yes": "Sí",
     "no": "No",
-    "resumeDraft": "Continuar borrador"
+    "delete": "Eliminar",
+    "warning": "Cuidado",
+    "cancel": "Cancelar",
+    "drafts": "Borradores",
+    "resumeDraft": "Continuar borrador",
+    "lifeMaps": "Mapas de Vida",
+    "familyInfo": "Información de la familia",
+    "cachedData": "Datos almacenados"
   },
   "validation": {
     "fieldIsRequired": "Este campo es requerido",
@@ -127,6 +134,8 @@
       "thisDataWillBeLost": "Estos datos se perderán",
       "weWillMissYou": "Te extrañaremos",
       "comeBackSoon": "¡Vuelve pronto!",
+      "looseYourData": "Perderás datos sin sincronizar.",
+      "cannotUndo": "Esto no se puede deshacer.",
       "areYouSureYouWantToLogOut": "¿Estás seguro de que quieres cerrar sesión?"
     },
     "sync": {
