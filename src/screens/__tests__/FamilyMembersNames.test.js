@@ -3,6 +3,7 @@ import { shallow } from 'enzyme'
 import { FamilyMembersNames } from '../lifemap/FamilyMembersNames'
 import TextInput from '../../components/TextInput'
 import Select from '../../components/Select'
+import StickyFooter from '../../components/StickyFooter'
 
 const createTestProps = props => ({
   t: value => value,
@@ -56,6 +57,11 @@ describe('FamilyMembersNames View', () => {
     wrapper = shallow(<FamilyMembersNames {...props} />)
   })
   describe('rendering', () => {
+    it('renders the continue button with proper label', () => {
+      expect(wrapper.find(StickyFooter)).toHaveProp({
+        continueLabel: 'general.continue'
+      })
+    })
     it('renders Select', () => {
       expect(wrapper.find(Select)).toHaveLength(1)
     })
@@ -65,6 +71,16 @@ describe('FamilyMembersNames View', () => {
   })
 
   describe('functionality', () => {
+    it('calls navigate function when button is pressed', () => {
+      wrapper
+        .find(StickyFooter)
+        .props()
+        .handleClick()
+
+      expect(
+        wrapper.instance().props.navigation.navigate
+      ).toHaveBeenCalledTimes(1)
+    })
     it('calls setParam on mount', () => {
       expect(
         wrapper.instance().props.navigation.setParams

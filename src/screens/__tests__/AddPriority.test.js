@@ -1,9 +1,8 @@
 import React from 'react'
 import { shallow } from 'enzyme'
 import { Text } from 'react-native'
-
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons'
-
+import StickyFooter from '../../components/StickyFooter'
 import { AddPriority } from '../lifemap/AddPriority'
 import TextInput from '../../components/TextInput'
 import Counter from '../../components/Counter'
@@ -34,6 +33,11 @@ describe('AddPriority View', () => {
     wrapper = shallow(<AddPriority {...props} />)
   })
   describe('rendering', () => {
+    it('renders the continue button with proper label', () => {
+      expect(wrapper.find(StickyFooter)).toHaveProp({
+        continueLabel: 'general.save'
+      })
+    })
     it('renders Icon', () => {
       expect(wrapper.find(Icon)).toHaveLength(1)
     })
@@ -46,6 +50,28 @@ describe('AddPriority View', () => {
   })
 
   describe('functionality', () => {
+    it('doesn\'t save the priority if no months entered', () => {
+      wrapper
+        .find(StickyFooter)
+        .props()
+        .handleClick()
+
+      expect(
+        wrapper.instance().props.addSurveyPriorityAcheivementData
+      ).toHaveBeenCalledTimes(0)
+    })
+    it('saves the priority if valid', () => {
+      wrapper.instance().setState({ estimatedDate: 2 })
+
+      wrapper
+        .find(StickyFooter)
+        .props()
+        .handleClick()
+
+      expect(
+        wrapper.instance().props.addSurveyPriorityAcheivementData
+      ).toHaveBeenCalledTimes(1)
+    })
     it('has correct initial state', () => {
       expect(wrapper.instance().state).toEqual({
         action: '',

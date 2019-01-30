@@ -3,6 +3,7 @@ import { shallow } from 'enzyme'
 import { Image, FlatList } from 'react-native'
 import { Skipped } from '../lifemap/Skipped'
 import Tip from '../../components/Tip'
+import StickyFooter from '../../components/StickyFooter'
 
 const createTestProps = props => ({
   t: value => value,
@@ -48,6 +49,11 @@ describe('Skipped Questions View when questions are skipped', () => {
     wrapper = shallow(<Skipped {...props} />)
   })
   describe('rendering', () => {
+    it('renders the continue button with proper label', () => {
+      expect(wrapper.find(StickyFooter)).toHaveProp({
+        continueLabel: 'general.continue'
+      })
+    })
     it('renders Image', () => {
       expect(wrapper.find(Image)).toHaveLength(1)
     })
@@ -60,6 +66,15 @@ describe('Skipped Questions View when questions are skipped', () => {
     })
   })
   describe('functionality', () => {
+    it('calls navigator function on pressing Continue button', () => {
+      wrapper
+        .find(StickyFooter)
+        .props()
+        .handleClick()
+      expect(
+        wrapper.instance().props.navigation.navigate
+      ).toHaveBeenCalledTimes(1)
+    })
     it('passess the correct data to FlatList', () => {
       expect(wrapper.find(FlatList).props().data).toEqual([
         { key: 'phoneNumber', value: 0 }

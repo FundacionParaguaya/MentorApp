@@ -3,6 +3,7 @@ import { shallow } from 'enzyme'
 import MapView from 'react-native-maps'
 import { Location } from '../lifemap/Location'
 import SearchBar from '../../components/SearchBar'
+import StickyFooter from '../../components/StickyFooter'
 
 // navigator mock
 /* eslint-disable no-undef */
@@ -74,6 +75,11 @@ describe('Family Location component', () => {
   beforeEach(() => {
     const props = createTestProps()
     wrapper = shallow(<Location {...props} />)
+  })
+  it('renders the continue button with proper label', () => {
+    expect(wrapper.find(StickyFooter)).toHaveProp({
+      continueLabel: 'general.continue'
+    })
   })
   describe('offline', () => {
     it('edits draft in field change', () => {
@@ -281,5 +287,23 @@ describe('Render optimization', () => {
 
   it('country select has preselected default country', () => {
     expect(wrapper.find('#countrySelect')).toHaveProp({ value: 'BG' })
+  })
+
+  it('navigates to SocioEconomicQuestion with proper params', () => {
+    wrapper
+      .find(StickyFooter)
+      .props()
+      .handleClick()
+
+    expect(wrapper.instance().props.navigation.replace).toHaveBeenCalledWith(
+      'SocioEconomicQuestion',
+      {
+        draftId: 2,
+        survey: {
+          surveyId: 100,
+          surveyConfig: { surveyLocation: { country: 'BG' } }
+        }
+      }
+    )
   })
 })

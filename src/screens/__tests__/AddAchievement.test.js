@@ -4,6 +4,7 @@ import { Text } from 'react-native'
 import Icon from 'react-native-vector-icons/MaterialIcons'
 import { AddAchievement } from '../lifemap/AddAchievement'
 import TextInput from '../../components/TextInput'
+import StickyFooter from '../../components/StickyFooter'
 
 const createTestProps = props => ({
   t: value => value,
@@ -31,6 +32,11 @@ describe('AddAchievement View', () => {
     wrapper = shallow(<AddAchievement {...props} />)
   })
   describe('rendering', () => {
+    it('renders the continue button with proper label', () => {
+      expect(wrapper.find(StickyFooter)).toHaveProp({
+        continueLabel: 'general.save'
+      })
+    })
     it('renders Icon', () => {
       expect(wrapper.find(Icon)).toHaveLength(1)
     })
@@ -101,5 +107,16 @@ describe('Render optimization', () => {
     })
     wrapper = shallow(<AddAchievement {...props} />)
     expect(wrapper.instance().props.drafts[1]).toBeFalsy()
+  })
+
+  it('saves the achievement', () => {
+    wrapper
+      .find(StickyFooter)
+      .props()
+      .handleClick()
+
+    expect(
+      wrapper.instance().props.addSurveyPriorityAcheivementData
+    ).toHaveBeenCalledTimes(1)
   })
 })

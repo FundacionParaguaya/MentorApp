@@ -4,6 +4,7 @@ import { SocioEconomicQuestion } from '../lifemap/SocioEconomicQuestion'
 import Select from '../../components/Select'
 import TextInput from '../../components/TextInput'
 import data from '../__mocks__/fake-socio-economic-data.json'
+import StickyFooter from '../../components/StickyFooter'
 
 const createTestProps = props => ({
   t: value => value,
@@ -110,6 +111,27 @@ describe('SocioEconomicQuestion screens', () => {
       wrapper = shallow(<SocioEconomicQuestion {...props} />)
     })
 
+    it('renders the continue button with proper label', () => {
+      expect(wrapper.find(StickyFooter)).toHaveProp({
+        continueLabel: 'general.continue'
+      })
+    })
+
+    it('navigates to next socio-economics screen on pressing continue', () => {
+      wrapper
+        .find(StickyFooter)
+        .last()
+        .props()
+        .handleClick()
+
+      expect(wrapper.instance().props.navigation.push).toHaveBeenCalledTimes(1)
+
+      expect(wrapper.instance().props.navigation.push).toHaveBeenCalledWith(
+        'SocioEconomicQuestion',
+        expect.any(Object)
+      )
+    })
+
     it('renders Select elements for each select question', () => {
       expect(wrapper.find(Select)).toHaveLength(2)
     })
@@ -200,6 +222,23 @@ describe('SocioEconomicQuestion screens', () => {
         placeholder:
           'Please estimate your gross monthly household income (i.e, before taxes National Insurance contributions or other deductions)'
       })
+    })
+
+    it('navigates to next non-socio-economic screen after done with all questions', () => {
+      wrapper
+        .find(StickyFooter)
+        .last()
+        .props()
+        .handleClick()
+
+      expect(
+        wrapper.instance().props.navigation.navigate
+      ).toHaveBeenCalledTimes(1)
+
+      expect(wrapper.instance().props.navigation.navigate).toHaveBeenCalledWith(
+        'BeginLifemap',
+        expect.any(Object)
+      )
     })
   })
 })

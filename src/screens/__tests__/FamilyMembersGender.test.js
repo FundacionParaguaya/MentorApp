@@ -3,6 +3,7 @@ import { shallow } from 'enzyme'
 import { Text } from 'react-native'
 import { FamilyMembersGender } from '../lifemap/FamilyMembersGender'
 import Select from '../../components/Select'
+import StickyFooter from '../../components/StickyFooter'
 
 const createTestProps = props => ({
   t: value => value,
@@ -66,6 +67,11 @@ describe('FamilyMembersGender View', () => {
     wrapper = shallow(<FamilyMembersGender {...props} />)
   })
   describe('rendering', () => {
+    it('renders the continue button with proper label', () => {
+      expect(wrapper.find(StickyFooter)).toHaveProp({
+        continueLabel: 'general.continue'
+      })
+    })
     it('renders Select', () => {
       expect(wrapper.find(Select)).toHaveLength(1)
     })
@@ -75,6 +81,16 @@ describe('FamilyMembersGender View', () => {
   })
 
   describe('functionality', () => {
+    it('calls navigate function when button is pressed', () => {
+      wrapper
+        .find(StickyFooter)
+        .props()
+        .handleClick()
+
+      expect(
+        wrapper.instance().props.navigation.navigate
+      ).toHaveBeenCalledTimes(1)
+    })
     it('gives Select the proper value', () => {
       expect(wrapper.find(Select).props().value).toBe('F')
     })

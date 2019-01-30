@@ -3,6 +3,7 @@ import { shallow } from 'enzyme'
 import { Text } from 'react-native'
 import { FamilyMembersBirthdates } from '../lifemap/FamilyMembersBirthdates'
 import DateInputComponent from '../../components/DateInput'
+import StickyFooter from '../../components/StickyFooter'
 
 const createTestProps = props => ({
   t: value => value,
@@ -46,6 +47,11 @@ describe('FamilyMembersBirthDates View', () => {
     wrapper = shallow(<FamilyMembersBirthdates {...props} />)
   })
   describe('rendering', () => {
+    it('renders the continue button with proper label', () => {
+      expect(wrapper.find(StickyFooter)).toHaveProp({
+        continueLabel: 'general.continue'
+      })
+    })
     it('renders DateInput', () => {
       expect(wrapper.find(DateInputComponent)).toHaveLength(1)
     })
@@ -116,5 +122,16 @@ describe('Render optimization', () => {
 
     wrapper = shallow(<FamilyMembersBirthdates {...props} />)
     expect(wrapper.instance().props.drafts[1]).toBeFalsy()
+  })
+
+  it('calls navigate function when button is pressed', () => {
+    wrapper
+      .find(StickyFooter)
+      .props()
+      .handleClick()
+
+    expect(wrapper.instance().props.navigation.navigate).toHaveBeenCalledTimes(
+      1
+    )
   })
 })
