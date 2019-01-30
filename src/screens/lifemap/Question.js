@@ -12,7 +12,11 @@ import { connect } from 'react-redux'
 import PropTypes from 'prop-types'
 import { withNamespaces } from 'react-i18next'
 
-import { addSurveyData, addDraftProgress } from '../../redux/actions'
+import {
+  addSurveyData,
+  addDraftProgress,
+  deleteSurveyPriorityAcheivementData
+} from '../../redux/actions'
 import globalStyles from '../../globalStyles'
 import colors from '../../theme.json'
 import SliderComponent from '../../components/Slider'
@@ -49,16 +53,40 @@ export class Question extends Component {
     }
   }
 
-  selectAnswer(answer) {
-    this.props.addSurveyData(this.draftId, 'indicatorSurveyDataList', {
-      [this.indicator.codeName]: answer
-    })
-
+  selectAnswer = answer => {
     const draft = this.props.drafts.find(item => item.draftId === this.draftId)
 
     const skippedQuestions = draft.indicatorSurveyDataList.filter(
       question => question.value === 0
     )
+    const fieldValue = this.getFieldValue(draft, this.indicator.codeName)
+
+    //When the user changes the answer of a question
+    if (fieldValue !== answer) {
+      //If the indicator is green or skipped
+
+      if (answer === 3 || answer === 0) {
+        //delete priority
+        this.props.deleteSurveyPriorityAcheivementData({
+          id: this.draftId,
+          category: 'priorities',
+          indicator: this.indicator.codeName
+        })
+      }
+      //If indicator is yellow, red or skipped
+      if (answer < 3) {
+        //Delete achievements
+        this.props.deleteSurveyPriorityAcheivementData({
+          id: this.draftId,
+          category: 'achievements',
+          indicator: this.indicator.codeName
+        })
+      }
+    }
+
+    this.props.addSurveyData(this.draftId, 'indicatorSurveyDataList', {
+      [this.indicator.codeName]: answer
+    })
 
     if (
       this.step + 1 < this.indicators.length &&
@@ -165,7 +193,8 @@ Question.propTypes = {
   addSurveyData: PropTypes.func.isRequired,
   navigation: PropTypes.object.isRequired,
   drafts: PropTypes.array.isRequired,
-  addDraftProgress: PropTypes.func.isRequired
+  addDraftProgress: PropTypes.func.isRequired,
+  deleteSurveyPriorityAcheivementData: PropTypes.func.isRequired
 }
 
 const mapStateToProps = ({ drafts }) => ({
@@ -174,7 +203,8 @@ const mapStateToProps = ({ drafts }) => ({
 
 const mapDispatchToProps = {
   addSurveyData,
-  addDraftProgress
+  addDraftProgress,
+  deleteSurveyPriorityAcheivementData
 }
 
 export default withNamespaces()(

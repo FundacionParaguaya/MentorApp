@@ -13,7 +13,14 @@
     "close": "Guardar & cerrar",
     "yes": "Sí",
     "no": "No",
-    "resumeDraft": "Continuar borrador"
+    "delete": "Eliminar",
+    "warning": "Cuidado",
+    "cancel": "Cancelar",
+    "drafts": "Borradores",
+    "resumeDraft": "Continuar borrador",
+    "lifeMaps": "Mapas de Vida",
+    "familyInfo": "Información de la familia",
+    "cachedData": "Datos almacenados"
   },
   "validation": {
     "fieldIsRequired": "Este campo es requerido",
@@ -71,6 +78,8 @@
       "selectValidDate": "Favor ingrese una fecha válida. Por ejemplo, 03 de mayo de 1977.",
       "name": "Nombre",
       "peopleLivingInThisHousehold": "Número de personas viviendo en esta casa. ",
+      "onlyPerson": "1 - Soy la única persona",
+      "preferNotToSay": "Prefiero no responder",
       "familyMember": "Miembro de la familia",
       "participant": "Participante",
       "gender": "Género",
@@ -85,7 +94,11 @@
       "checkLocationServicesTurnedOn": "¡Comprueba que los servicios de localización están activados en la configuración de tu dispositivo!",
       "giveDetailInTheFormBelow": "¡Alternativamente, dé tantos detalles como pueda con respecto a la ubicación en el siguiente formulario!",
       "searchByStreetOrPostalCode": "Búsqueda por calle o código postal",
-      "gettingYourLocation": "Obteniendo tu ubicación..."
+      "gettingYourLocation": "Obteniendo tu ubicación...",
+      "mapUnavailavleOffline": "Desafortunadamente, no podemos cargar el mapa porque estás sin conexión.",
+      "weHaveLocation": "Sin embargo, pudimos obtener la ubicación de su dispositivo.",
+      "neitherMapNorLocation": "Desafortunadamente, no podemos cargar el mapa ni obtener la ubicación de su dispositivo.",
+      "describeLocation": "¿Podría describir su ubicación de la forma más precisa posible a continuación?"
     },
     "lifemap": {
       "thisLifeMapHas": "Este Mapa de Vida tiene %n preguntas. ¡Tardará aproximadamente 35 minutos en completarse!",
@@ -121,7 +134,20 @@
       "thisDataWillBeLost": "Estos datos se perderán",
       "weWillMissYou": "Te extrañaremos",
       "comeBackSoon": "¡Vuelve pronto!",
+      "looseYourData": "Perderás datos sin sincronizar.",
+      "cannotUndo": "Esto no se puede deshacer.",
       "areYouSureYouWantToLogOut": "¿Estás seguro de que quieres cerrar sesión?"
+    },
+    "sync": {
+      "upToDate": "¡Estás al día!",
+      "lastSync": "Última sincronización: ",
+      "syncStatus": "Sincronización",
+      "offline": "Sin conexión",
+      "updatesPending": "%n actualizaciones pendientes",
+      "updatePending": "1 actualización pendiente",
+      "inProgress": "Sincronización en marcha",
+      "of": "de",
+      "updates": "actualizaciones"
     }
   }
 }

@@ -13,7 +13,14 @@
     "close": "Save & close",
     "yes": "Yes",
     "no": "No",
-    "resumeDraft": "Resume draft"
+    "delete": "Delete",
+    "warning": "Warning",
+    "cancel": "Cancel",
+    "drafts": "drafts",
+    "resumeDraft": "Resume draft",
+    "lifeMaps": "Life Maps",
+    "familyInfo": "family info",
+    "cachedData": "cached data"
   },
   "validation": {
     "fieldIsRequired": "This field is required",
@@ -71,6 +78,8 @@
       "selectValidDate": "Please enter a valid date e.g. May 03 1977",
       "name": "Name",
       "peopleLivingInThisHousehold": "Number of people living in this household",
+      "onlyPerson": "1 - I am the only person",
+      "preferNotToSay": "I prefer not to answer",
       "familyMember": "Family member",
       "participant": "Participant",
       "gender": "Gender",
@@ -85,7 +94,11 @@
       "checkLocationServicesTurnedOn": "Check that location services are turned on in your device settings!",
       "giveDetailInTheFormBelow": "Alternatively give as much detail as you can regarding the location in the form below!",
       "searchByStreetOrPostalCode": "Search by street or postal code",
-      "gettingYourLocation": "Getting your location..."
+      "gettingYourLocation": "Getting your location...",
+      "mapUnavailavleOffline": "Unfortunately we cannot load the map because you are offline.",
+      "weHaveLocation": "However we were able to get your device location.",
+      "neitherMapNorLocation": "Unfortunately we cannot load the map nor can we get your device location.",
+      "describeLocation": "Could you describe your location as accurate as possible below?"
     },
     "lifemap": {
       "thisLifeMapHas": "This life map has %n questions. It will take approximately 35 minutes to complete!",
@@ -121,7 +134,20 @@
       "thisDataWillBeLost": "This data will be lost.",
       "weWillMissYou": "We will miss you.",
       "comeBackSoon": "Come back soon!",
+      "looseYourData": "You will loose unsynced data.",
+      "cannotUndo": "This cannot be undone.",
       "areYouSureYouWantToLogOut": "Are you sure you want to log out?"
+    },
+    "sync": {
+      "upToDate": "You are up to date!",
+      "lastSync": "Last sync: ",
+      "syncStatus": "Sync Status",
+      "offline": "You are offline",
+      "updatesPending": "%n updates pending",
+      "updatePending": "1 update pending",
+      "inProgress": "Sync in progress",
+      "of": "of",
+      "updates": "updates"
     }
   }
 }

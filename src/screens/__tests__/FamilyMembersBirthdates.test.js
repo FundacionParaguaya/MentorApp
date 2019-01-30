@@ -1,10 +1,9 @@
 import React from 'react'
 import { shallow } from 'enzyme'
-import { ScrollView, Text } from 'react-native'
+import { Text } from 'react-native'
 import { FamilyMembersBirthdates } from '../lifemap/FamilyMembersBirthdates'
-
-import Button from '../../components/Button'
 import DateInputComponent from '../../components/DateInput'
+import StickyFooter from '../../components/StickyFooter'
 
 const createTestProps = props => ({
   t: value => value,
@@ -48,31 +47,16 @@ describe('FamilyMembersBirthDates View', () => {
     wrapper = shallow(<FamilyMembersBirthdates {...props} />)
   })
   describe('rendering', () => {
-    it('renders ScrollView', () => {
-      expect(wrapper.find(ScrollView)).toHaveLength(1)
-    })
-
-    it('renders Button', () => {
-      expect(wrapper.find(Button)).toHaveLength(1)
+    it('renders the continue button with proper label', () => {
+      expect(wrapper.find(StickyFooter)).toHaveProp({
+        continueLabel: 'general.continue'
+      })
     })
     it('renders DateInput', () => {
       expect(wrapper.find(DateInputComponent)).toHaveLength(1)
     })
     it('renders Text', () => {
       expect(wrapper.find(Text)).toHaveLength(1)
-    })
-  })
-
-  describe('functionality', () => {
-    it('calls navigate function when button is pressed', () => {
-      wrapper
-        .find(Button)
-        .props()
-        .handleClick()
-
-      expect(
-        wrapper.instance().props.navigation.navigate
-      ).toHaveBeenCalledTimes(1)
     })
   })
 
@@ -91,25 +75,6 @@ describe('FamilyMembersBirthDates View', () => {
     expect(spy).toHaveBeenCalledTimes(1)
   })
 
-  it('enables Button by default', () => {
-    expect(
-      wrapper
-        .find(Button)
-        .last()
-        .props().disabled
-    ).toBe(false)
-  })
-  it('disables Button when an error occurs', () => {
-    wrapper.instance().errorsDetected = ['error']
-    wrapper.setState({ errorsDetected: ['error'] })
-
-    expect(
-      wrapper
-        .find(Button)
-        .last()
-        .props().disabled
-    ).toBe(true)
-  })
   it('calls setParam on mount', () => {
     expect(wrapper.instance().props.navigation.setParams).toHaveBeenCalledTimes(
       1
@@ -157,5 +122,16 @@ describe('Render optimization', () => {
 
     wrapper = shallow(<FamilyMembersBirthdates {...props} />)
     expect(wrapper.instance().props.drafts[1]).toBeFalsy()
+  })
+
+  it('calls navigate function when button is pressed', () => {
+    wrapper
+      .find(StickyFooter)
+      .props()
+      .handleClick()
+
+    expect(wrapper.instance().props.navigation.navigate).toHaveBeenCalledTimes(
+      1
+    )
   })
 })

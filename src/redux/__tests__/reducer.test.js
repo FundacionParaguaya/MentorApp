@@ -225,6 +225,7 @@ describe('drafts reducer', () => {
     ).toEqual(expectedStore)
   })
   it('should handle SUBMIT_DRAFT_COMMIT', () => {
+    const syncedAt = Date.now()
     const expectedStore = [
       {
         draftId: 1,
@@ -233,6 +234,7 @@ describe('drafts reducer', () => {
       {
         draftId: 2,
         status: 'Synced',
+        syncedAt,
         priorities: [
           { indicator: 'phoneNumber', action: 'Action', reason: 'reason' }
         ],
@@ -348,6 +350,30 @@ describe('drafts reducer', () => {
         id: 2,
         category: 'priorities',
         payload: { indicator: 'Income', action: 'Some action' }
+      })
+    ).toEqual(expectedStore)
+  })
+  it('should handle DELETE_SURVEY_PRIORITY_ACHEIVEMENT_DATA', () => {
+    const expectedStore = [
+      {
+        draftId: 1,
+        status: 'Synced'
+      },
+      {
+        draftId: 2,
+        status: 'In progress',
+        priorities: [],
+        familyData: {
+          familyMembersList: [({ name: 'Joan' }, { name: 'Jane' })]
+        }
+      }
+    ]
+    expect(
+      reducer.drafts(initialStore, {
+        type: action.DELETE_SURVEY_PRIORITY_ACHEIVEMENT_DATA,
+        id: 2,
+        category: 'priorities',
+        indicator: 'phoneNumber'
       })
     ).toEqual(expectedStore)
   })

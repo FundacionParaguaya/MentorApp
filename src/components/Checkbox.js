@@ -8,32 +8,30 @@ import globalStyles from '../globalStyles'
 class Checkbox extends Component {
   state = { checked: false }
 
-  onIconPress() {
-    this.props.onIconPress()
+  onIconPress = () => {
+    this.props.onIconPress(!this.state.checked)
     this.setState({ checked: !this.state.checked })
   }
 
   render() {
+    const { checked } = this.state
+    const { containerStyle, textStyle, checkboxColor, showErrors } = this.props
+
     return (
-      <TouchableOpacity
-        style={styles.touchable}
-        onPress={() => this.onIconPress()}
-      >
+      <TouchableOpacity style={styles.touchable} onPress={this.onIconPress}>
         <CheckBox
           disabled
-          title={this.props.title}
+          title={`${this.props.title}${showErrors && !checked ? ' *' : ''}`}
           iconType="material"
-          checkedColor={colors.green}
+          checkedColor={checkboxColor || colors.green}
           checkedIcon="check-box"
           uncheckedIcon="check-box-outline-blank"
-          checked={this.state.checked}
-          textStyle={globalStyles.subline}
-          containerStyle={{
-            backgroundColor: colors.palebeige,
-            borderColor: colors.palebeige,
-            padding: 0,
-            marginLeft: 0
-          }}
+          checked={checked}
+          containerStyle={containerStyle || styles.containerStyle}
+          textStyle={[
+            textStyle || globalStyles.subline,
+            showErrors && !checked ? styles.error : {}
+          ]}
         />
       </TouchableOpacity>
     )
@@ -42,7 +40,11 @@ class Checkbox extends Component {
 
 Checkbox.propTypes = {
   title: PropTypes.string.isRequired,
-  onIconPress: PropTypes.func.isRequired
+  onIconPress: PropTypes.func.isRequired,
+  containerStyle: PropTypes.object,
+  checkboxColor: PropTypes.string,
+  showErrors: PropTypes.bool,
+  textStyle: PropTypes.object
 }
 
 export default Checkbox
@@ -50,5 +52,13 @@ export default Checkbox
 const styles = StyleSheet.create({
   touchable: {
     justifyContent: 'center'
+  },
+  containerStyle: {
+    backgroundColor: 'transparent',
+    borderWidth: 0
+  },
+  error: {
+    color: colors.palered,
+    textDecorationLine: 'underline'
   }
 })

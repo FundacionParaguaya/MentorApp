@@ -37,9 +37,35 @@ export class Dashboard extends Component {
   componentWillUnmount() {
     this.clearTimers()
   }
+  navigateToDraft = draft => {
+    if (
+      draft.progress.screen !== 'Question' &&
+      draft.progress.screen !== 'Skipped' &&
+      draft.progress.screen !== 'Final' &&
+      draft.progress.screen !== 'Overview'
+    ) {
+      this.props.navigation.navigate(draft.progress.screen, {
+        draftId: draft.draftId,
+        survey: this.props.surveys.find(survey => survey.id === draft.surveyId),
+        step: draft.progress.step,
+        socioEconomics: draft.progress.socioEconomics
+      })
+    } else
+      this.props.navigation.navigate('Overview', {
+        draftId: draft.draftId,
+        survey: this.props.surveys.find(survey => survey.id === draft.surveyId),
+        resumeDraft: true
+      })
+  }
 
   render() {
     const { t, navigation, drafts } = this.props
+
+    const firstFiveDrafts =
+      drafts.length > 5
+        ? drafts.slice(drafts.length - 5).reverse()
+        : drafts.slice().reverse()
+
     return (
       <ScrollView style={globalStyles.background}>
         {this.props.offline.outbox.length &&
@@ -54,7 +80,7 @@ export class Dashboard extends Component {
                     alignSelf: 'center'
                   }}
                 >
-                  {t('general.welcome')}!
+                  {t('general.welcome')}
                 </Text>
               </View>
               <RoundImage source="family" />
@@ -64,44 +90,24 @@ export class Dashboard extends Component {
                 handleClick={() => this.props.navigation.navigate('Surveys')}
               />
             </View>
-            <View style={styles.borderBottom}>
-              <Text style={{ ...globalStyles.subline, ...styles.listTitle }}>
-                {t('views.latestDrafts')}
-              </Text>
-            </View>
+            {drafts.length ? (
+              <View style={styles.borderBottom}>
+                <Text style={{ ...globalStyles.subline, ...styles.listTitle }}>
+                  {t('views.latestDrafts')}
+                </Text>
+              </View>
+            ) : null}
             <FlatList
               style={{ ...styles.background, paddingLeft: 25 }}
-              data={drafts}
+              data={firstFiveDrafts}
               keyExtractor={(item, index) => index.toString()}
               renderItem={({ item }) => (
                 <DraftListItem
                   item={item}
-                  handleClick={() => {
-                    navigation.navigate('Overview', {
-                      draftId: item.draftId,
-                      survey: this.props.surveys.find(
-                        survey => survey.id === item.surveyId
-                      ),
-                      resumeDraft: true
-                    })
-                  }}
+                  handleClick={() => this.navigateToDraft(item)}
                 />
               )}
             />
-            {!drafts.length ? (
-              <Text
-                id="no-drafts-message"
-                style={{
-                  ...globalStyles.subline,
-                  textAlign: 'center',
-                  marginTop: 10
-                }}
-              >
-                {t('views.noDrafts')}
-              </Text>
-            ) : (
-              <View />
-            )}
           </View>
         )}
       </ScrollView>

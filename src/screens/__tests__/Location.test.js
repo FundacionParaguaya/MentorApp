@@ -1,9 +1,9 @@
 import React from 'react'
 import { shallow } from 'enzyme'
-import { ScrollView } from 'react-native'
 import MapView from 'react-native-maps'
 import { Location } from '../lifemap/Location'
 import SearchBar from '../../components/SearchBar'
+import StickyFooter from '../../components/StickyFooter'
 
 // navigator mock
 /* eslint-disable no-undef */
@@ -76,11 +76,12 @@ describe('Family Location component', () => {
     const props = createTestProps()
     wrapper = shallow(<Location {...props} />)
   })
-  describe('offline', () => {
-    it('renders base ScrollView', () => {
-      expect(wrapper.find(ScrollView)).toHaveLength(1)
+  it('renders the continue button with proper label', () => {
+    expect(wrapper.find(StickyFooter)).toHaveProp({
+      continueLabel: 'general.continue'
     })
-
+  })
+  describe('offline', () => {
     it('edits draft in field change', () => {
       wrapper
         .find('#postCode')
@@ -92,7 +93,7 @@ describe('Family Location component', () => {
         .props()
         .onChangeText('Foo', 'address')
 
-      expect(wrapper.instance().props.addSurveyData).toHaveBeenCalledTimes(4)
+      expect(wrapper.instance().props.addSurveyData).toHaveBeenCalledTimes(5)
     })
   })
 
@@ -179,23 +180,6 @@ describe('Family Location component', () => {
     })
   })
 
-  it('navigates to SocioEconomicQuestion with proper params', () => {
-    wrapper
-      .find('#continue')
-      .props()
-      .handleClick()
-
-    expect(wrapper.instance().props.navigation.replace).toHaveBeenCalledWith(
-      'SocioEconomicQuestion',
-      {
-        draftId: 2,
-        survey: {
-          surveyId: 100,
-          surveyConfig: { surveyLocation: { country: 'BG' } }
-        }
-      }
-    )
-  })
   it('detects errors', () => {
     wrapper
       .find('#countrySelect')
@@ -299,5 +283,27 @@ describe('Render optimization', () => {
     })
     wrapper = shallow(<Location {...props} />)
     expect(wrapper.instance().props.drafts[2]).toBeFalsy()
+  })
+
+  it('country select has preselected default country', () => {
+    expect(wrapper.find('#countrySelect')).toHaveProp({ value: 'BG' })
+  })
+
+  it('navigates to SocioEconomicQuestion with proper params', () => {
+    wrapper
+      .find(StickyFooter)
+      .props()
+      .handleClick()
+
+    expect(wrapper.instance().props.navigation.replace).toHaveBeenCalledWith(
+      'SocioEconomicQuestion',
+      {
+        draftId: 2,
+        survey: {
+          surveyId: 100,
+          surveyConfig: { surveyLocation: { country: 'BG' } }
+        }
+      }
+    )
   })
 })

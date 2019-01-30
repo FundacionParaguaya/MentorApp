@@ -1,10 +1,9 @@
 import React from 'react'
 import { shallow } from 'enzyme'
-import { ScrollView, Text } from 'react-native'
+import { Text } from 'react-native'
 import { FamilyMembersGender } from '../lifemap/FamilyMembersGender'
-
-import Button from '../../components/Button'
 import Select from '../../components/Select'
+import StickyFooter from '../../components/StickyFooter'
 
 const createTestProps = props => ({
   t: value => value,
@@ -68,12 +67,10 @@ describe('FamilyMembersGender View', () => {
     wrapper = shallow(<FamilyMembersGender {...props} />)
   })
   describe('rendering', () => {
-    it('renders ScrollView', () => {
-      expect(wrapper.find(ScrollView)).toHaveLength(1)
-    })
-
-    it('renders Button', () => {
-      expect(wrapper.find(Button)).toHaveLength(1)
+    it('renders the continue button with proper label', () => {
+      expect(wrapper.find(StickyFooter)).toHaveProp({
+        continueLabel: 'general.continue'
+      })
     })
     it('renders Select', () => {
       expect(wrapper.find(Select)).toHaveLength(1)
@@ -86,7 +83,7 @@ describe('FamilyMembersGender View', () => {
   describe('functionality', () => {
     it('calls navigate function when button is pressed', () => {
       wrapper
-        .find(Button)
+        .find(StickyFooter)
         .props()
         .handleClick()
 
@@ -94,87 +91,67 @@ describe('FamilyMembersGender View', () => {
         wrapper.instance().props.navigation.navigate
       ).toHaveBeenCalledTimes(1)
     })
-  })
-  it('gives Select the proper value', () => {
-    expect(wrapper.find(Select).props().value).toBe('F')
-  })
+    it('gives Select the proper value', () => {
+      expect(wrapper.find(Select).props().value).toBe('F')
+    })
 
-  it('calls addFamilyMemberGender on change', () => {
-    const spy = jest.spyOn(wrapper.instance(), 'addFamilyMemberGender')
+    it('calls addFamilyMemberGender on change', () => {
+      const spy = jest.spyOn(wrapper.instance(), 'addFamilyMemberGender')
 
-    wrapper
-      .find(Select)
-      .last()
-      .props()
-      .onChange()
-    expect(spy).toHaveBeenCalledTimes(1)
-  })
-
-  it('enables Button by default', () => {
-    expect(
       wrapper
-        .find(Button)
+        .find(Select)
         .last()
-        .props().disabled
-    ).toBe(false)
+        .props()
+        .onChange()
+      expect(spy).toHaveBeenCalledTimes(1)
+    })
+
+    it('calls setParam on mount', () => {
+      expect(
+        wrapper.instance().props.navigation.setParams
+      ).toHaveBeenCalledTimes(1)
+    })
+    it('calls addDraftProgress on mount', () => {
+      expect(wrapper.instance().props.addDraftProgress).toHaveBeenCalledTimes(1)
+    })
+    it('calls onPressBack', () => {
+      const spy = jest.spyOn(wrapper.instance(), 'onPressBack')
+
+      wrapper.instance().onPressBack()
+      expect(spy).toHaveBeenCalledTimes(1)
+    })
   })
 
-  it('disables Button when an error occurs', () => {
-    wrapper.instance().errorsDetected = ['error']
-    wrapper.setState({ errorsDetected: ['error'] })
-
-    expect(
-      wrapper
-        .find(Button)
-        .last()
-        .props().disabled
-    ).toBe(true)
-  })
-  it('calls setParam on mount', () => {
-    expect(wrapper.instance().props.navigation.setParams).toHaveBeenCalledTimes(
-      1
-    )
-  })
-  it('calls addDraftProgress on mount', () => {
-    expect(wrapper.instance().props.addDraftProgress).toHaveBeenCalledTimes(1)
-  })
-  it('calls onPressBack', () => {
-    const spy = jest.spyOn(wrapper.instance(), 'onPressBack')
-
-    wrapper.instance().onPressBack()
-    expect(spy).toHaveBeenCalledTimes(1)
-  })
-})
-
-describe('Render optimization', () => {
-  let wrapper
-  let props
-  beforeEach(() => {
-    props = createTestProps()
-    wrapper = shallow(<FamilyMembersGender {...props} />)
-  })
-  it('checks if screen is focused before updating', () => {
-    wrapper.setProps({
-      drafts: [...wrapper.instance().props.drafts, { draftId: 5 }]
+  describe('Render optimization', () => {
+    let wrapper
+    let props
+    beforeEach(() => {
+      props = createTestProps()
+      wrapper = shallow(<FamilyMembersGender {...props} />)
     })
-    expect(wrapper.instance().props.navigation.isFocused).toHaveBeenCalledTimes(
-      1
-    )
-  })
-  it('updates screen if focused', () => {
-    wrapper.setProps({
-      drafts: [...wrapper.instance().props.drafts, { draftId: 5 }]
+    it('checks if screen is focused before updating', () => {
+      wrapper.setProps({
+        drafts: [...wrapper.instance().props.drafts, { draftId: 5 }]
+      })
+      expect(
+        wrapper.instance().props.navigation.isFocused
+      ).toHaveBeenCalledTimes(1)
     })
-    expect(wrapper.instance().props.drafts[1]).toEqual({ draftId: 5 })
-  })
-  it('does not update screen if not focused', () => {
-    wrapper.setProps({
-      drafts: [...wrapper.instance().props.drafts, { draftId: 5 }]
+    it('updates screen if focused', () => {
+      wrapper.setProps({
+        drafts: [...wrapper.instance().props.drafts, { draftId: 5 }]
+      })
+      expect(wrapper.instance().props.drafts[1]).toEqual({ draftId: 5 })
     })
-    props = createTestProps({
-      navigation: { ...props.navigation, isFocused: jest.fn(() => false) }
+    it('does not update screen if not focused', () => {
+      wrapper.setProps({
+        drafts: [...wrapper.instance().props.drafts, { draftId: 5 }]
+      })
+      props = createTestProps({
+        navigation: { ...props.navigation, isFocused: jest.fn(() => false) }
+      })
+      wrapper = shallow(<FamilyMembersGender {...props} />)
+      expect(wrapper.instance().props.drafts[1]).toBeFalsy()
     })
-    wrapper = shallow(<FamilyMembersGender {...props} />)
-    expect(wrapper.instance().props.drafts[1]).toBeFalsy()
   })
 })

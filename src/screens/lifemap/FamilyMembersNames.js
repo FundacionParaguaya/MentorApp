@@ -1,18 +1,14 @@
 import React, { Component } from 'react'
-import { ScrollView, StyleSheet, View } from 'react-native'
 import { connect } from 'react-redux'
 import PropTypes from 'prop-types'
 import { withNamespaces } from 'react-i18next'
-
 import {
   addSurveyData,
   addSurveyFamilyMemberData,
   removeFamilyMembers,
   addDraftProgress
 } from '../../redux/actions'
-
-import globalStyles from '../../globalStyles'
-import Button from '../../components/Button'
+import StickyFooter from '../../components/StickyFooter'
 import Select from '../../components/Select'
 import TextInput from '../../components/TextInput'
 
@@ -55,8 +51,8 @@ export class FamilyMembersNames extends Component {
     })
   }
 
-  handleClick() {
-    if (this.errorsDetected.length) {
+  handleClick = () => {
+    if (this.state.errorsDetected.length) {
       this.setState({
         showErrors: true
       })
@@ -86,12 +82,13 @@ export class FamilyMembersNames extends Component {
 
   addFamilyCount = (text, field) => {
     // if reducing the number of family members remove the rest
-    if (text !== '' && this.getFieldValue('countFamilyMembers') > text) {
-      this.props.removeFamilyMembers(this.draftId, text)
+    if (text && this.getFieldValue('countFamilyMembers') > text) {
+      const index = text === -1 ? 1 : text
+      this.props.removeFamilyMembers(this.draftId, index)
 
       // also remove these from the errors array
       for (
-        var i = text - 1;
+        var i = index - 1;
         i < this.getFieldValue('countFamilyMembers') - 1;
         i++
       ) {
@@ -125,89 +122,82 @@ export class FamilyMembersNames extends Component {
     })
   }
 
+  getFamilyMembersCountArray = t => [
+    { text: t('views.family.onlyPerson'), value: 1 },
+    ...Array.from(new Array(24), (val, index) => ({
+      value: index + 2,
+      text: `${index + 2}`
+    })),
+
+    {
+      text: t('views.family.preferNotToSay'),
+      value: -1
+    }
+  ]
+
   render() {
     const { t } = this.props
     const { showErrors } = this.state
     const draft = this.getDraft()
 
-    const familyMembersCount = draft.familyData.countFamilyMembers
-      ? Array(draft.familyData.countFamilyMembers - 1)
-          .fill()
-          .map((item, index) => index)
-      : []
+    const familyMembersCount =
+      draft.familyData.countFamilyMembers &&
+      draft.familyData.countFamilyMembers !== -1
+        ? Array(draft.familyData.countFamilyMembers - 1)
+            .fill()
+            .map((item, index) => index)
+        : []
 
     return (
-      <ScrollView
-        style={globalStyles.background}
-        contentContainerStyle={styles.contentContainer}
+      <StickyFooter
+        handleClick={() => this.handleClick(draft)}
+        continueLabel={t('general.continue')}
       >
-        <View style={{ ...globalStyles.container, padding: 0 }}>
-          <Select
-            id="familyMembersCount"
-            required
-            onChange={this.addFamilyCount}
-            label={t('views.family.peopleLivingInThisHousehold')}
-            placeholder={t('views.family.peopleLivingInThisHousehold')}
-            field="countFamilyMembers"
-            value={this.getFieldValue('countFamilyMembers') || ''}
-            detectError={this.detectError}
-            showErrors={showErrors}
-            options={Array(10)
-              .fill()
-              .map((item, index) => ({
-                text: `${index + 1}`,
-                value: index + 1
-              }))}
-          />
+        <Select
+          id="familyMembersCount"
+          required
+          onChange={this.addFamilyCount}
+          label={t('views.family.peopleLivingInThisHousehold')}
+          placeholder={t('views.family.peopleLivingInThisHousehold')}
+          field="countFamilyMembers"
+          value={this.getFieldValue('countFamilyMembers') || ''}
+          detectError={this.detectError}
+          showErrors={showErrors}
+          options={this.getFamilyMembersCountArray(t)}
+        />
+        <TextInput
+          validation="string"
+          field=""
+          onChangeText={() => {}}
+          placeholder={`${t('views.family.familyMember')} 1 - ${t(
+            'views.family.participant'
+          )}`}
+          value={draft.familyData.familyMembersList[0].firstName}
+          required
+          readonly
+          detectError={this.detectError}
+          showErrors={showErrors}
+        />
+        {familyMembersCount.map((item, i) => (
           <TextInput
+            key={i}
             validation="string"
-            field=""
-            onChangeText={() => {}}
-            placeholder={`${t('views.family.familyMember')} 1 - ${t(
-              'views.family.participant'
-            )}`}
-            value={draft.familyData.familyMembersList[0].firstName}
+            field={i.toString()}
+            onChangeText={text => this.addFamilyMemberName(text, i + 1)}
+            placeholder={`${t('views.family.familyMember')} ${i + 2}`}
+            value={
+              (this.getFieldValue('familyMembersList')[i + 1] || {})
+                .firstName || ''
+            }
             required
-            readonly
             detectError={this.detectError}
             showErrors={showErrors}
           />
-          {familyMembersCount.map((item, i) => (
-            <TextInput
-              key={i}
-              validation="string"
-              field={i.toString()}
-              onChangeText={text => this.addFamilyMemberName(text, i + 1)}
-              placeholder={`${t('views.family.familyMember')} ${i + 2}`}
-              value={
-                (this.getFieldValue('familyMembersList')[i + 1] || {})
-                  .firstName || ''
-              }
-              required
-              detectError={this.detectError}
-              showErrors={showErrors}
-            />
-          ))}
-        </View>
-
-        <View style={{ height: 50, marginTop: 30 }}>
-          <Button
-            colored
-            text={t('general.continue')}
-            handleClick={() => this.handleClick(draft)}
-          />
-        </View>
-      </ScrollView>
+        ))}
+      </StickyFooter>
     )
   }
 }
-const styles = StyleSheet.create({
-  contentContainer: {
-    flexGrow: 1,
-    flexDirection: 'column',
-    justifyContent: 'space-between'
-  }
-})
 
 FamilyMembersNames.propTypes = {
   drafts: PropTypes.array,

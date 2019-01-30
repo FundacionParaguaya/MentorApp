@@ -215,6 +215,22 @@ describe('drafts actions', () => {
     ).toEqual(expectedAction)
   })
 
+  it('should create an action to delete priority or achievement to draft', () => {
+    const id = 1
+    const category = 'priority'
+    const indicator = 'indicator'
+
+    const expectedAction = {
+      type: action.DELETE_SURVEY_PRIORITY_ACHEIVEMENT_DATA,
+      id,
+      category,
+      indicator
+    }
+    expect(
+      action.deleteSurveyPriorityAcheivementData({ id, category, indicator })
+    ).toEqual(expectedAction)
+  })
+
   it('should create an action to add surcey data to a family member', () => {
     const id = 1
     const index = 2

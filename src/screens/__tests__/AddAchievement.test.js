@@ -1,12 +1,10 @@
 import React from 'react'
 import { shallow } from 'enzyme'
-import { ScrollView, Text } from 'react-native'
-
+import { Text } from 'react-native'
 import Icon from 'react-native-vector-icons/MaterialIcons'
-
 import { AddAchievement } from '../lifemap/AddAchievement'
 import TextInput from '../../components/TextInput'
-import Button from '../../components/Button'
+import StickyFooter from '../../components/StickyFooter'
 
 const createTestProps = props => ({
   t: value => value,
@@ -34,17 +32,16 @@ describe('AddAchievement View', () => {
     wrapper = shallow(<AddAchievement {...props} />)
   })
   describe('rendering', () => {
-    it('renders ScrollView', () => {
-      expect(wrapper.find(ScrollView)).toHaveLength(1)
+    it('renders the continue button with proper label', () => {
+      expect(wrapper.find(StickyFooter)).toHaveProp({
+        continueLabel: 'general.save'
+      })
     })
     it('renders Icon', () => {
       expect(wrapper.find(Icon)).toHaveLength(1)
     })
     it('renders Text', () => {
       expect(wrapper.find(Text)).toHaveLength(2)
-    })
-    it('renders Button', () => {
-      expect(wrapper.find(Button)).toHaveLength(1)
     })
   })
 
@@ -75,17 +72,6 @@ describe('AddAchievement View', () => {
         .props()
         .onChangeText('Some roadmap')
       expect(wrapper.instance().state.roadmap).toEqual('Some roadmap')
-    })
-
-    it('saves the achievement', () => {
-      wrapper
-        .find(Button)
-        .props()
-        .handleClick()
-
-      expect(
-        wrapper.instance().props.addSurveyPriorityAcheivementData
-      ).toHaveBeenCalledTimes(1)
     })
   })
 })
@@ -121,5 +107,16 @@ describe('Render optimization', () => {
     })
     wrapper = shallow(<AddAchievement {...props} />)
     expect(wrapper.instance().props.drafts[1]).toBeFalsy()
+  })
+
+  it('saves the achievement', () => {
+    wrapper
+      .find(StickyFooter)
+      .props()
+      .handleClick()
+
+    expect(
+      wrapper.instance().props.addSurveyPriorityAcheivementData
+    ).toHaveBeenCalledTimes(1)
   })
 })

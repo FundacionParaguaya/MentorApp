@@ -1,16 +1,14 @@
 import React, { Component } from 'react'
-import { ScrollView, StyleSheet, View, Text } from 'react-native'
+import { View, Text } from 'react-native'
 import { connect } from 'react-redux'
 import PropTypes from 'prop-types'
 import { withNamespaces } from 'react-i18next'
-
+import StickyFooter from '../../components/StickyFooter'
 import {
   addSurveyFamilyMemberData,
   addDraftProgress
 } from '../../redux/actions'
-
 import globalStyles from '../../globalStyles'
-import Button from '../../components/Button'
 import DateInputComponent from '../../components/DateInput'
 
 export class FamilyMembersBirthdates extends Component {
@@ -53,7 +51,7 @@ export class FamilyMembersBirthdates extends Component {
     })
   }
 
-  handleClick() {
+  handleClick = () => {
     this.props.navigation.navigate('Location', {
       draftId: this.draftId,
       survey: this.survey
@@ -84,55 +82,37 @@ export class FamilyMembersBirthdates extends Component {
     )[0]
 
     return (
-      <ScrollView
-        style={globalStyles.background}
-        contentContainerStyle={styles.contentContainer}
+      <StickyFooter
+        handleClick={this.handleClick}
+        continueLabel={t('general.continue')}
       >
-        <View style={{ ...globalStyles.container, padding: 0 }}>
-          {draft.familyData.familyMembersList.slice(1).map((item, i) => (
-            <View key={i}>
-              <Text
-                style={{
-                  ...globalStyles.h3,
-                  paddingHorizontal: 20,
-                  marginTop: 15,
-                  marginBottom: -30
-                }}
-              >
-                {item.firstName}
-              </Text>
-              <DateInputComponent
-                field={i.toString()}
-                detectError={this.detectError}
-                onValidDate={date => this.addFamilyMemberBirthdate(date, i + 1)}
-                value={
-                  (this.getFieldValue(draft, 'familyMembersList')[i + 1] || {})
-                    .birthDate
-                }
-              />
-            </View>
-          ))}
-        </View>
-
-        <View style={{ height: 50, marginTop: 30 }}>
-          <Button
-            disabled={!!this.errorsDetected.length}
-            colored
-            text={t('general.continue')}
-            handleClick={() => this.handleClick()}
-          />
-        </View>
-      </ScrollView>
+        {draft.familyData.familyMembersList.slice(1).map((item, i) => (
+          <View key={i}>
+            <Text
+              style={{
+                ...globalStyles.h3,
+                paddingHorizontal: 20,
+                marginTop: 15,
+                marginBottom: -30
+              }}
+            >
+              {item.firstName}
+            </Text>
+            <DateInputComponent
+              field={i.toString()}
+              detectError={this.detectError}
+              onValidDate={date => this.addFamilyMemberBirthdate(date, i + 1)}
+              value={
+                (this.getFieldValue(draft, 'familyMembersList')[i + 1] || {})
+                  .birthDate
+              }
+            />
+          </View>
+        ))}
+      </StickyFooter>
     )
   }
 }
-const styles = StyleSheet.create({
-  contentContainer: {
-    flexGrow: 1,
-    flexDirection: 'column',
-    justifyContent: 'space-between'
-  }
-})
 
 FamilyMembersBirthdates.propTypes = {
   t: PropTypes.func.isRequired,

@@ -21,6 +21,7 @@ const createTestProps = props => ({
     }
   },
   surveys: [],
+  families: [],
   offline: {},
   ...props
 })

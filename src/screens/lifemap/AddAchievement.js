@@ -1,16 +1,14 @@
 import React, { Component } from 'react'
-import { ScrollView, StyleSheet, View, Text } from 'react-native'
+import { View, Text } from 'react-native'
 import { connect } from 'react-redux'
 import PropTypes from 'prop-types'
 import Icon from 'react-native-vector-icons/MaterialIcons'
 import { Divider } from 'react-native-elements'
 import { withNamespaces } from 'react-i18next'
-
+import StickyFooter from '../../components/StickyFooter'
 import { addSurveyPriorityAcheivementData } from '../../redux/actions'
-
 import globalStyles from '../../globalStyles'
 import colors from '../../theme.json'
-import Button from '../../components/Button'
 import TextInput from '../../components/TextInput'
 
 export class AddAchievement extends Component {
@@ -81,76 +79,59 @@ export class AddAchievement extends Component {
     const achievement = this.getAchievementValue(draft)
 
     return (
-      <ScrollView
-        style={globalStyles.background}
-        contentContainerStyle={styles.contentContainer}
+      <StickyFooter
+        continueLabel={t('general.save')}
+        handleClick={this.addAchievement}
       >
-        <View>
-          <View style={globalStyles.container}>
-            <Text style={globalStyles.h2}>
-              {this.props.navigation.getParam('indicatorText')}
-            </Text>
-            <Divider
-              style={{ backgroundColor: colors.palegrey, marginVertical: 10 }}
+        <View style={globalStyles.container}>
+          <Text style={globalStyles.h2}>
+            {this.props.navigation.getParam('indicatorText')}
+          </Text>
+          <Divider
+            style={{ backgroundColor: colors.palegrey, marginVertical: 10 }}
+          />
+          <View
+            style={{
+              flexDirection: 'row'
+            }}
+          >
+            <Icon
+              name="stars"
+              color={colors.blue}
+              size={17}
+              style={{ marginRight: 10, marginLeft: -10 }}
             />
-            <View
-              style={{
-                flexDirection: 'row'
-              }}
-            >
-              <Icon
-                name="stars"
-                color={colors.blue}
-                size={17}
-                style={{ marginRight: 10, marginLeft: -10 }}
-              />
-              <Text style={globalStyles.h3}>
-                {t('views.lifemap.achievement')}
-              </Text>
-            </View>
+            <Text style={globalStyles.h3}>
+              {t('views.lifemap.achievement')}
+            </Text>
           </View>
-          <TextInput
-            field="action"
-            required
-            showErrors={showErrors}
-            detectError={this.detectError}
-            onChangeText={text => this.setState({ action: text })}
-            placeholder={
-              this.state.action ? '' : t('views.lifemap.writeYourAnswerHere')
-            }
-            label={t('views.lifemap.howDidYouGetIt')}
-            value={achievement ? achievement.action : ''}
-            multiline
-          />
-          <TextInput
-            label={t('views.lifemap.whatDidItTakeToAchieveThis')}
-            onChangeText={text => this.setState({ roadmap: text })}
-            placeholder={
-              this.state.roadmap ? '' : t('views.lifemap.writeYourAnswerHere')
-            }
-            value={achievement ? achievement.roadmap : ''}
-            multiline
-          />
         </View>
-        <View style={{ height: 50 }}>
-          <Button
-            id="save"
-            colored
-            text={t('general.save')}
-            handleClick={() => this.addAchievement()}
-          />
-        </View>
-      </ScrollView>
+        <TextInput
+          field="action"
+          required
+          showErrors={showErrors}
+          detectError={this.detectError}
+          onChangeText={text => this.setState({ action: text })}
+          placeholder={
+            this.state.action ? '' : t('views.lifemap.writeYourAnswerHere')
+          }
+          label={t('views.lifemap.howDidYouGetIt')}
+          value={achievement ? achievement.action : ''}
+          multiline
+        />
+        <TextInput
+          label={t('views.lifemap.whatDidItTakeToAchieveThis')}
+          onChangeText={text => this.setState({ roadmap: text })}
+          placeholder={
+            this.state.roadmap ? '' : t('views.lifemap.writeYourAnswerHere')
+          }
+          value={achievement ? achievement.roadmap : ''}
+          multiline
+        />
+      </StickyFooter>
     )
   }
 }
-const styles = StyleSheet.create({
-  contentContainer: {
-    flexGrow: 1,
-    flexDirection: 'column',
-    justifyContent: 'space-between'
-  }
-})
 
 AddAchievement.propTypes = {
   t: PropTypes.func.isRequired,

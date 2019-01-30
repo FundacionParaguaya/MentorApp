@@ -60,6 +60,13 @@ class Select extends Component {
     if (this.props.required && !this.props.value) {
       this.props.detectError(true, this.props.field)
     }
+
+    // save country to draft on mount
+    setTimeout(() => {
+      if (this.props.countrySelect) {
+        this.props.onChange(this.props.value, this.props.field)
+      }
+    }, 1000)
   }
 
   componentDidUpdate(prevProps) {
@@ -111,9 +118,9 @@ class Select extends Component {
                 style={[
                   styles.title,
                   isOpen &&
-                  !errorMsg && {
+                    !errorMsg && {
                       color: colors.green
-                  }
+                    }
                 ]}
               >{`${placeholder}${required ? ' *' : ''}`}</Text>
             )}
