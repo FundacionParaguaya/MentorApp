@@ -50,26 +50,5 @@ describe('Navigation', () => {
       expect(spy).toHaveBeenCalledTimes(1)
       expect(spy).toHaveBeenCalledWith('en')
     })
-    it('opens logout modal on clicking logout', () => {
-      const wrapper = shallow(
-        <DrawerContent
-          navigation={{
-            toggleDrawer: jest.fn(),
-            getParam: () => true,
-            setParams: jest.fn()
-          }}
-          switchLanguage={jest.fn()}
-          user={{ username: 'test' }}
-          drafts={[]}
-        />
-      )
-
-      wrapper
-        .find('#logout')
-        .props()
-        .onPress()
-
-      expect(wrapper.find(Popup)).toHaveProp('isOpen', true)
-    })
   })
 })
