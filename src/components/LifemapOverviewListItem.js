@@ -26,11 +26,15 @@ class LifemapOverviewListItem extends Component {
   }
 
   render() {
+    const disabledButton = this.props.draftOverview
+      ? !this.props.color
+      : !this.props.achievement && !this.props.priority
+    console.log(this.props.draftOverview)
     return (
       <TouchableOpacity
         onPress={this.props.handleClick}
         style={styles.container}
-        disabled={!this.props.color}
+        disabled={disabledButton}
       >
         <View>
           {this.props.achievement ? (
@@ -72,7 +76,7 @@ class LifemapOverviewListItem extends Component {
         </View>
         <View style={[styles.listItem, styles.borderBottom]}>
           <Text style={{ ...globalStyles.p }}>{this.props.name}</Text>
-          {this.props.color ? (
+          {!disabledButton ? (
             <Icon name="navigate-next" size={23} color={colors.lightdark} />
           ) : (
             <View />

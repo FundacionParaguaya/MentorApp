@@ -126,6 +126,7 @@ export class Overview extends Component {
               surveyData={this.survey.surveyStoplightQuestions}
               draftData={data}
               navigateToScreen={this.navigateToScreen}
+              draftOverview={!!this.draftId}
             />
           </View>
 

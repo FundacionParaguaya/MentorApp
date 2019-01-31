@@ -59,6 +59,7 @@ class LifemapOverview extends Component {
                 key={indicator.questionText}
                 name={indicator.questionText}
                 color={this.getColor(indicator.codeName)}
+                draftOverview={this.props.draftOverview}
                 priority={priorities.includes(indicator.codeName)}
                 achievement={achievements.includes(indicator.codeName)}
                 handleClick={() =>
@@ -80,7 +81,8 @@ class LifemapOverview extends Component {
 LifemapOverview.propTypes = {
   surveyData: PropTypes.array.isRequired,
   draftData: PropTypes.object.isRequired,
-  navigateToScreen: PropTypes.func.isRequired
+  navigateToScreen: PropTypes.func.isRequired,
+  draftOverview: PropTypes.bool
 }
 
 const styles = StyleSheet.create({
