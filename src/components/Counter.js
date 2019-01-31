@@ -16,6 +16,7 @@ class Counter extends Component {
           <TouchableOpacity
             style={styles.countButton}
             onPress={() => this.props.editCounter('minus')}
+            disabled={this.props.readonly}
           >
             <Icon
               style={styles.icon}
@@ -27,6 +28,7 @@ class Counter extends Component {
           <TouchableOpacity
             style={styles.countButton}
             onPress={() => this.props.editCounter('plus')}
+            disabled={this.props.readonly}
           >
             <Icon
               style={styles.icon}
@@ -44,7 +46,8 @@ class Counter extends Component {
 Counter.propTypes = {
   editCounter: PropTypes.func.isRequired,
   count: PropTypes.number.isRequired,
-  text: PropTypes.string
+  text: PropTypes.string,
+  readonly: PropTypes.bool
 }
 
 export default Counter

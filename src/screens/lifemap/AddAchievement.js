@@ -20,7 +20,7 @@ export class AddAchievement extends Component {
     showErrors: false,
     indicator: this.props.navigation.getParam('indicator')
   }
-
+  draftId = this.props.navigation.getParam('draftId')
   detectError = (error, field) => {
     if (error && !this.errorsDetected.includes(field)) {
       this.errorsDetected.push(field)
@@ -44,10 +44,8 @@ export class AddAchievement extends Component {
   }
 
   getData = () =>
-    this.props.navigation.getParam('draftId')
-      ? this.props.drafts.filter(
-          draft => draft.draftId === this.props.navigation.getParam('draftId')
-        )[0]
+    this.draftId
+      ? this.props.drafts.filter(draft => draft.draftId === this.draftId)[0]
       : this.props.navigation.getParam('familyLifemap')
 
   addAchievement = () => {
@@ -58,7 +56,7 @@ export class AddAchievement extends Component {
     } else {
       const { action, roadmap, indicator } = this.state
       this.props.addSurveyPriorityAcheivementData({
-        id: this.props.navigation.getParam('draftId'),
+        id: this.draftId,
         category: 'achievements',
         payload: { action, roadmap, indicator }
       })
@@ -84,6 +82,7 @@ export class AddAchievement extends Component {
       <StickyFooter
         continueLabel={t('general.save')}
         handleClick={this.addAchievement}
+        hidden={!this.draftId}
       >
         <View style={globalStyles.container}>
           <Text style={globalStyles.h2}>
@@ -111,6 +110,7 @@ export class AddAchievement extends Component {
         <TextInput
           field="action"
           required
+          readonly={!this.draftId}
           showErrors={showErrors}
           detectError={this.detectError}
           onChangeText={text => this.setState({ action: text })}
@@ -127,6 +127,7 @@ export class AddAchievement extends Component {
           placeholder={
             this.state.roadmap ? '' : t('views.lifemap.writeYourAnswerHere')
           }
+          readonly={!this.draftId}
           value={achievement ? achievement.roadmap : ''}
           multiline
         />

@@ -32,4 +32,10 @@ describe('Sticky Footer', () => {
       .handleClick()
     expect(props.handleClick).toHaveBeenCalledTimes(1)
   })
+  it('does not render button when hidden prop is true', () => {
+    props = createTestProps({ hidden: true })
+    wrapper = shallow(<StickyFooter {...props} />)
+
+    expect(wrapper.find(Button)).toHaveLength(0)
+  })
 })

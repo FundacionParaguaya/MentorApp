@@ -33,7 +33,7 @@ class LifemapOverviewListItem extends Component {
         disabled={!this.props.color}
       >
         <View>
-          {this.props.achievement && this.props.color === 3 ? (
+          {this.props.achievement ? (
             <Icon
               name="stars"
               color={colors.blue}
@@ -47,8 +47,7 @@ class LifemapOverviewListItem extends Component {
           ) : (
             <View />
           )}
-          {this.props.priority &&
-          (this.props.color === 1 || this.props.color === 2) ? (
+          {this.props.priority ? (
             <View
               style={{
                 ...styles.blueIcon,

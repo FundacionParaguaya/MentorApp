@@ -9,14 +9,16 @@ export default class StickyFooter extends Component {
     return (
       <View style={[globalStyles.background, styles.contentContainer]}>
         <ScrollView>{this.props.children}</ScrollView>
-        <View style={{ height: 50 }}>
-          <Button
-            id="continue"
-            colored
-            text={this.props.continueLabel}
-            handleClick={this.props.handleClick}
-          />
-        </View>
+        {!this.props.hidden && (
+          <View style={{ height: 50 }}>
+            <Button
+              id="continue"
+              colored
+              text={this.props.continueLabel}
+              handleClick={this.props.handleClick}
+            />
+          </View>
+        )}
       </View>
     )
   }
@@ -25,7 +27,8 @@ export default class StickyFooter extends Component {
 StickyFooter.propTypes = {
   children: PropTypes.array.isRequired,
   handleClick: PropTypes.func,
-  continueLabel: PropTypes.string
+  continueLabel: PropTypes.string,
+  hidden: PropTypes.bool
 }
 
 const styles = StyleSheet.create({

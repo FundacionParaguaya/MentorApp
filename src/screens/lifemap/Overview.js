@@ -145,7 +145,7 @@ export class Overview extends Component {
             <View />
           )}
         </ScrollView>
-        {!resumeDraft ? (
+        {!resumeDraft && this.draftId ? (
           <View style={{ height: 50 }}>
             <Button
               colored
