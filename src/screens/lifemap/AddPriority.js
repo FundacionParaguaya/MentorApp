@@ -37,16 +37,18 @@ export class AddPriority extends Component {
   }
 
   componentDidMount() {
-    const draft = this.getDraft()
+    const draft = this.getData()
     const priority = this.getPriorityValue(draft)
 
     this.setState(priority)
   }
 
-  getDraft = () =>
-    this.props.drafts.filter(
-      draft => draft.draftId === this.props.navigation.getParam('draftId')
-    )[0]
+  getData = () =>
+    this.props.navigation.getParam('draftId')
+      ? this.props.drafts.filter(
+          draft => draft.draftId === this.props.navigation.getParam('draftId')
+        )[0]
+      : this.props.navigation.getParam('familyLifemap')
 
   addPriority = () => {
     if (!this.state.estimatedDate) {
@@ -64,8 +66,8 @@ export class AddPriority extends Component {
     }
   }
 
-  getPriorityValue = draft => {
-    const priority = draft.priorities.filter(
+  getPriorityValue = data => {
+    const priority = data.priorities.filter(
       priority =>
         priority.indicator === this.props.navigation.getParam('indicator')
     )
@@ -75,8 +77,8 @@ export class AddPriority extends Component {
   render() {
     const { t } = this.props
     const { validationError, reason, action, estimatedDate } = this.state
-    const draft = this.getDraft()
-    const priority = this.getPriorityValue(draft)
+    const data = this.getData()
+    const priority = this.getPriorityValue(data)
 
     return (
       <StickyFooter

@@ -34,8 +34,8 @@ export class AddAchievement extends Component {
   }
 
   componentDidMount() {
-    const draft = this.getDraft()
-    const achievement = this.getAchievementValue(draft)
+    const data = this.getData()
+    const achievement = this.getAchievementValue(data)
     this.setState(achievement)
   }
 
@@ -43,10 +43,12 @@ export class AddAchievement extends Component {
     return this.props.navigation.isFocused()
   }
 
-  getDraft = () =>
-    this.props.drafts.filter(
-      draft => draft.draftId === this.props.navigation.getParam('draftId')
-    )[0]
+  getData = () =>
+    this.props.navigation.getParam('draftId')
+      ? this.props.drafts.filter(
+          draft => draft.draftId === this.props.navigation.getParam('draftId')
+        )[0]
+      : this.props.navigation.getParam('familyLifemap')
 
   addAchievement = () => {
     if (this.errorsDetected.length) {
@@ -64,8 +66,8 @@ export class AddAchievement extends Component {
     }
   }
 
-  getAchievementValue = draft => {
-    const achievement = draft.achievements.filter(
+  getAchievementValue = data => {
+    const achievement = data.achievements.filter(
       achievement =>
         achievement.indicator === this.props.navigation.getParam('indicator')
     )
@@ -75,8 +77,8 @@ export class AddAchievement extends Component {
   render() {
     const { t } = this.props
     const { showErrors } = this.state
-    const draft = this.getDraft()
-    const achievement = this.getAchievementValue(draft)
+    const data = this.getData()
+    const achievement = this.getAchievementValue(data)
 
     return (
       <StickyFooter

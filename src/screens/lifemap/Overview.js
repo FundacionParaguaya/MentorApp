@@ -62,6 +62,7 @@ export class Overview extends Component {
   navigateToScreen = (screen, indicator, indicatorText) =>
     this.props.navigation.navigate(screen, {
       draftId: this.draftId,
+      familyLifemap: this.familyLifemap,
       survey: this.survey,
       indicator,
       indicatorText
