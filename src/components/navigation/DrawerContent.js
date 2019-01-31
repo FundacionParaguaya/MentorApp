@@ -35,7 +35,8 @@ export class DrawerContent extends Component {
     this.props.navigation.toggleDrawer() // close drawer
   }
   logUserOut = () => {
-    if (this.state.ckeckedBoxes === 4) {
+    const { checkboxesVisible, ckeckedBoxes } = this.state
+    if (!checkboxesVisible || (checkboxesVisible && ckeckedBoxes === 4)) {
       this.setState({
         showErrors: false
       })

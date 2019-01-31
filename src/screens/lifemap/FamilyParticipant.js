@@ -199,7 +199,7 @@ export class FamilyParticipant extends Component {
           label={t('views.family.countryOfBirth')}
           countrySelect
           country={this.survey.surveyConfig.surveyLocation.country}
-          placeholder={t('views.family.selectACountry')}
+          placeholder={t('views.family.countryOfBirth')}
           field="birthCountry"
           value={
             this.getFieldValue(draft, 'birthCountry') ||
