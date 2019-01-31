@@ -55,10 +55,14 @@ describe('Drawer Content', () => {
 
     expect(spy).toHaveBeenCalledTimes(1)
   })
-
-  it('checks for user confirmation before loging out', () => {
+  it('check for errror on log out', () => {
+    wrapper.setState({ checkboxesVisible: true })
     wrapper.instance().logUserOut()
     expect(wrapper).toHaveState({ showErrors: true })
+  })
+  it('resets error state on loging out', () => {
+    wrapper.instance().logUserOut()
+    expect(wrapper).toHaveState({ showErrors: false })
   })
   it('logs out if user has confirmed', () => {
     wrapper.setState({ ckeckedBoxes: 4 })
