@@ -2,6 +2,7 @@ import React from 'react'
 import { shallow } from 'enzyme'
 import { TouchableOpacity, Text, Modal } from 'react-native'
 import Select from '../Select'
+import BottomModal from '../BottomModal'
 
 const createTestProps = props => ({
   onChange: jest.fn(),
@@ -40,51 +41,31 @@ describe('Select dropdown', () => {
       .onPress()
 
     expect(wrapper).toHaveState({ isOpen: true })
-    expect(
-      wrapper
-        .find(Modal)
-        .last()
-        .find(TouchableOpacity)
-    ).toHaveLength(5)
+    expect(wrapper.find(BottomModal)).toHaveProp({ isOpen: true })
   })
 
   it('selects an option when one is pressed', () => {
     const spy = jest.spyOn(wrapper.instance(), 'validateInput')
-    wrapper
-      .find(TouchableOpacity)
-      .first()
-      .props()
-      .onPress()
 
     wrapper
-      .find(Modal)
-      .last()
+      .find(BottomModal)
       .find(TouchableOpacity)
-      .at(3)
+      .at(1)
       .props()
       .onPress()
 
     expect(spy).toHaveBeenCalledTimes(1)
-    expect(spy).toHaveBeenCalledWith('us')
+    expect(spy).toHaveBeenCalledWith('bg')
   })
   it('selects NONE if the last option is pressed', () => {
     const spy = jest.spyOn(wrapper.instance(), 'validateInput')
     wrapper
-      .find(TouchableOpacity)
-      .first()
+      .find(BottomModal)
       .props()
-      .onPress()
-
-    wrapper
-      .find(Modal)
-      .last()
-      .find(TouchableOpacity)
-      .last()
-      .props()
-      .onPress()
+      .onEmptyClose()
 
     expect(spy).toHaveBeenCalledTimes(1)
-    expect(spy).toHaveBeenCalledWith('NONE')
+    expect(spy).toHaveBeenCalledWith('')
   })
   it('render a list of items when passed options', () => {
     props = createTestProps({
@@ -103,13 +84,13 @@ describe('Select dropdown', () => {
 
     expect(
       wrapper
-        .find(Modal)
+        .find(BottomModal)
         .last()
         .find(TouchableOpacity)
-    ).toHaveLength(3)
+    ).toHaveLength(2)
 
     wrapper
-      .find(Modal)
+      .find(BottomModal)
       .last()
       .find(TouchableOpacity)
       .last()

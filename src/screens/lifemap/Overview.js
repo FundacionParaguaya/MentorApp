@@ -1,19 +1,28 @@
 import React, { Component } from 'react'
-import { StyleSheet, ScrollView, View, Text } from 'react-native'
+import {
+  StyleSheet,
+  ScrollView,
+  View,
+  Text,
+  Image,
+  TouchableOpacity
+} from 'react-native'
 import { connect } from 'react-redux'
 import PropTypes from 'prop-types'
 import { withNamespaces } from 'react-i18next'
 import { addDraftProgress } from '../../redux/actions'
-
 import Tip from '../../components/Tip'
 import LifemapVisual from '../../components/LifemapVisual'
 import Button from '../../components/Button'
 import LifemapOverview from '../../components/LifemapOverview'
-
+import arrow from '../../../assets/images/selectArrow.png'
 import globalStyles from '../../globalStyles'
 import colors from '../../theme.json'
 
 export class Overview extends Component {
+  state = {
+    filterModalIsOpen: false
+  }
   draftId = this.props.navigation.getParam('draftId')
   survey = this.props.navigation.getParam('survey')
   indicatorsArray = this.survey.surveyStoplightQuestions.map(
@@ -61,6 +70,13 @@ export class Overview extends Component {
     return this.props.navigation.isFocused()
   }
 
+  toggleFilterModal = () => {
+    console.log('toggleFilterModal')
+    this.setState({
+      filterModalIsOpen: !this.state.filterModalIsOpen
+    })
+  }
+
   getMandatoryPrioritiesCount(draft) {
     const potentialPrioritiesCount = draft.indicatorSurveyDataList.filter(
       question => question.value === 1 || question.value === 2
@@ -105,9 +121,14 @@ export class Overview extends Component {
             ) : null}
           </View>
           <View>
-            <Text style={{ ...globalStyles.subline, ...styles.listTitle }}>
-              {t('views.lifemap.allIndicators')}
-            </Text>
+            <TouchableOpacity onPress={this.toggleFilterModal}>
+              <View style={styles.listTitle}>
+                <Text style={globalStyles.subline}>
+                  {t('views.lifemap.allIndicators')}
+                </Text>
+                <Image source={arrow} style={styles.arrow} />
+              </View>
+            </TouchableOpacity>
             <LifemapOverview
               surveyData={this.survey.surveyStoplightQuestions}
               draftData={draft}
@@ -157,14 +178,20 @@ const styles = StyleSheet.create({
   },
   listTitle: {
     backgroundColor: colors.beige,
-    height: 45,
-    lineHeight: 45,
-    flex: 1,
-    textAlign: 'center'
+    height: 47,
+    alignItems: 'center',
+    justifyContent: 'center',
+    flexDirection: 'row'
   },
   indicatorsContainer: {
     paddingHorizontal: 20,
     paddingBottom: 25
+  },
+  arrow: {
+    marginLeft: 7,
+    marginTop: 3,
+    width: 10,
+    height: 5
   }
 })
 
