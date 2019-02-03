@@ -34,6 +34,7 @@ const createTestProps = props => ({
       }
     ]
   },
+  selectedFilter: false,
   navigateToScreen: jest.fn(),
   ...props
 })

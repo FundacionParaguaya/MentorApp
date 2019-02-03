@@ -20,7 +20,8 @@
     "resumeDraft": "Continuar borrador",
     "lifeMaps": "Mapas de Vida",
     "familyInfo": "Información de la familia",
-    "cachedData": "Datos almacenados"
+    "cachedData": "Datos almacenados",
+    "chooseView": "Elegir vista"
   },
   "validation": {
     "fieldIsRequired": "Este campo es requerido",
@@ -119,7 +120,12 @@
       "youHaveCompletedTheLifemap": "Has completado tu Mapa de Vida",
       "youNeedToAddPriotity": "Necesitas agregar una prioridad",
       "youNeedToAddPriorities": "Necesitas agregar %n prioridades",
-      "beforeTheLifeMapIsCompleted": "Antes de que se complete el Mapa de Vida...."
+      "beforeTheLifeMapIsCompleted": "Antes de que se complete el Mapa de Vida....",
+      "green": "Verde",
+      "yellow": "Amarillo",
+      "red": "Rojo",
+      "priorities": "Prioridades",
+      "achievements": "Logros"
     },
     "modals": {
       "lifeMapWillNotBeSaved": "Si no ingresa todos los detalles en esta página, ¡el Mapa de Vida no se guardará!",

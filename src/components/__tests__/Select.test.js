@@ -1,6 +1,6 @@
 import React from 'react'
 import { shallow } from 'enzyme'
-import { TouchableOpacity, Text, Modal } from 'react-native'
+import { TouchableOpacity, Text } from 'react-native'
 import Select from '../Select'
 import BottomModal from '../BottomModal'
 

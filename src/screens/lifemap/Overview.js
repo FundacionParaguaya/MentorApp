@@ -15,19 +15,18 @@ import Tip from '../../components/Tip'
 import LifemapVisual from '../../components/LifemapVisual'
 import Button from '../../components/Button'
 import LifemapOverview from '../../components/LifemapOverview'
+import BottomModal from '../../components/BottomModal'
 import arrow from '../../../assets/images/selectArrow.png'
 import globalStyles from '../../globalStyles'
 import colors from '../../theme.json'
 
 export class Overview extends Component {
   state = {
-    filterModalIsOpen: false
+    filterModalIsOpen: false,
+    selectedFilter: false
   }
   draftId = this.props.navigation.getParam('draftId')
   survey = this.props.navigation.getParam('survey')
-  indicatorsArray = this.survey.surveyStoplightQuestions.map(
-    item => item.codeName
-  )
 
   componentDidMount() {
     if (!this.props.navigation.getParam('resumeDraft')) {
@@ -71,9 +70,15 @@ export class Overview extends Component {
   }
 
   toggleFilterModal = () => {
-    console.log('toggleFilterModal')
     this.setState({
       filterModalIsOpen: !this.state.filterModalIsOpen
+    })
+  }
+
+  selectFilter = filter => {
+    this.setState({
+      selectedFilter: filter,
+      filterModalIsOpen: false
     })
   }
 
@@ -89,9 +94,11 @@ export class Overview extends Component {
 
   render() {
     const { t } = this.props
+    const { filterModalIsOpen, selectedFilter } = this.state
     const draft = this.props.drafts.find(item => item.draftId === this.draftId)
     const mandatoryPrioritiesCount = this.getMandatoryPrioritiesCount(draft)
     const resumeDraft = this.props.navigation.getParam('resumeDraft')
+
     return (
       <View style={[globalStyles.background, styles.contentContainer]}>
         <ScrollView>
@@ -133,6 +140,7 @@ export class Overview extends Component {
               surveyData={this.survey.surveyStoplightQuestions}
               draftData={draft}
               navigateToScreen={this.navigateToScreen}
+              selectedFilter={selectedFilter}
             />
           </View>
 
@@ -164,6 +172,111 @@ export class Overview extends Component {
             />
           </View>
         ) : null}
+        {/* Filters modal */}
+        <BottomModal
+          isOpen={filterModalIsOpen}
+          onRequestClose={this.toggleFilterModal}
+          onEmptyClose={() => this.selectFilter(false)}
+        >
+          <View style={styles.dropdown}>
+            <Text style={[globalStyles.p, styles.modalTitle]}>
+              {t('general.chooseView')}
+            </Text>
+
+            {/* All */}
+            <TouchableOpacity
+              style={styles.row}
+              onPress={() => this.selectFilter(false)}
+            >
+              <View style={[styles.circle, { backgroundColor: '#EAD1AF' }]} />
+              <Text>
+                {t('views.lifemap.allIndicators')} (
+                {draft.indicatorSurveyDataList.length})
+              </Text>
+            </TouchableOpacity>
+
+            {/* Green */}
+            <TouchableOpacity
+              style={styles.row}
+              onPress={() => this.selectFilter(3)}
+            >
+              <View
+                style={[styles.circle, { backgroundColor: colors.green }]}
+              />
+              <Text>
+                {t('views.lifemap.green')} (
+                {
+                  draft.indicatorSurveyDataList.filter(item => item.value === 3)
+                    .length
+                }
+                )
+              </Text>
+            </TouchableOpacity>
+
+            {/* Yellow */}
+            <TouchableOpacity
+              style={styles.row}
+              onPress={() => this.selectFilter(2)}
+            >
+              <View style={[styles.circle, { backgroundColor: colors.gold }]} />
+              <Text>
+                {t('views.lifemap.yellow')} (
+                {
+                  draft.indicatorSurveyDataList.filter(item => item.value === 2)
+                    .length
+                }
+                )
+              </Text>
+            </TouchableOpacity>
+
+            {/* Red */}
+            <TouchableOpacity
+              style={styles.row}
+              onPress={() => this.selectFilter(1)}
+            >
+              <View style={[styles.circle, { backgroundColor: colors.red }]} />
+              <Text>
+                {t('views.lifemap.red')} (
+                {
+                  draft.indicatorSurveyDataList.filter(item => item.value === 1)
+                    .length
+                }
+                )
+              </Text>
+            </TouchableOpacity>
+
+            {/* Priorities/achievements */}
+            <TouchableOpacity
+              style={styles.row}
+              onPress={() => this.selectFilter('priorities')}
+            >
+              <View style={[styles.circle, { backgroundColor: colors.blue }]} />
+              <Text>
+                {t('views.lifemap.priorities')} &{' '}
+                {t('views.lifemap.achievements')} (
+                {draft.priorities.length + draft.achievements.length})
+              </Text>
+            </TouchableOpacity>
+
+            {/* Skipped */}
+            <TouchableOpacity
+              style={styles.row}
+              onPress={() => this.selectFilter(0)}
+            >
+              <View
+                style={[styles.circle, { backgroundColor: colors.palegrey }]}
+              />
+              <Text>
+                {t('views.skippedIndicators')} (
+                {
+                  draft.indicatorSurveyDataList.filter(item => item.value === 0)
+                    .length
+                }
+                )
+              </Text>
+            </TouchableOpacity>
+          </View>
+        </BottomModal>
       </View>
     )
   }
@@ -192,6 +305,26 @@ const styles = StyleSheet.create({
     marginTop: 3,
     width: 10,
     height: 5
+  },
+  dropdown: {
+    padding: 16,
+    position: 'absolute',
+    bottom: 0,
+    left: 0,
+    right: 0,
+    backgroundColor: colors.palebeige
+  },
+  modalTitle: { color: colors.grey, fontWeight: '300', marginBottom: 25 },
+  circle: {
+    width: 25,
+    height: 25,
+    borderRadius: 50,
+    marginRight: 30
+  },
+  row: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 23
   }
 })
 

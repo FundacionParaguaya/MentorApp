@@ -47,7 +47,7 @@ BottomModal.propTypes = {
   isOpen: PropTypes.bool.isRequired,
   onRequestClose: PropTypes.func.isRequired,
   onEmptyClose: PropTypes.func.isRequired,
-  children: PropTypes.array
+  children: PropTypes.oneOfType([PropTypes.object, PropTypes.array])
 }
 
 const styles = StyleSheet.create({
