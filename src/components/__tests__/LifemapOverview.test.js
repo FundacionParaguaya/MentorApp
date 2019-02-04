@@ -17,11 +17,21 @@ const createTestProps = props => ({
       codeName: 'FamilyIncome',
       questionText: 'Family Income',
       dimension: 'Income'
+    },
+    {
+      codeName: 'FamilyHealth',
+      questionText: 'Family Health',
+      dimension: 'Health & Environment'
+    },
+    {
+      codeName: 'Money',
+      questionText: 'Family Money',
+      dimension: 'Income'
     }
   ],
   draftData: {
     draftId: 1,
-    priorities: [{ action: 'Some action' }],
+    priorities: [{ action: 'Some action', indicator: 'FamilyHealth' }],
     achievements: [{ action: 'Some action' }],
     indicatorSurveyDataList: [
       {
@@ -31,9 +41,14 @@ const createTestProps = props => ({
       {
         key: 'FamilyIncome',
         value: 3
+      },
+      {
+        key: 'FamilyHealth',
+        value: 2
       }
     ]
   },
+  selectedFilter: false,
   navigateToScreen: jest.fn(),
   ...props
 })
@@ -54,7 +69,7 @@ describe('LifemapOverview Component', () => {
       expect(wrapper.find(Text)).toHaveLength(2)
     })
     it('renders LifemapOverviewListItem', () => {
-      expect(wrapper.find(LifemapOverviewListItem)).toHaveLength(2)
+      expect(wrapper.find(LifemapOverviewListItem)).toHaveLength(3)
     })
   })
   describe('functionality', () => {
@@ -170,6 +185,46 @@ describe('LifemapOverview Component', () => {
         'FamilyIncome',
         'Family Income'
       )
+    })
+    it('filters color items by dimension', () => {
+      props = createTestProps({
+        selectedFilter: 2
+      })
+      wrapper = shallow(<LifemapOverview {...props} />)
+      expect(
+        wrapper.instance().filterByDimension('Health & Environment')
+      ).toHaveLength(2)
+    })
+    it('filters skipped items by dimension', () => {
+      props = createTestProps({
+        selectedFilter: 0,
+        draftData: {
+          draftId: 1,
+          priorities: [],
+          achievements: [],
+          indicatorSurveyDataList: [
+            {
+              key: 'FamilySavings',
+              value: 2
+            },
+            {
+              key: 'Money',
+              value: 0
+            }
+          ]
+        }
+      })
+      wrapper = shallow(<LifemapOverview {...props} />)
+      expect(wrapper.instance().filterByDimension('Income')).toHaveLength(1)
+    })
+    it('filters items with achievements/priorities by dimension', () => {
+      props = createTestProps({
+        selectedFilter: 'priorities'
+      })
+      wrapper = shallow(<LifemapOverview {...props} />)
+      expect(
+        wrapper.instance().filterByDimension('Health & Environment')
+      ).toHaveLength(1)
     })
   })
 })

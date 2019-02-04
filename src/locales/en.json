@@ -20,7 +20,8 @@
     "resumeDraft": "Resume draft",
     "lifeMaps": "Life Maps",
     "familyInfo": "family info",
-    "cachedData": "cached data"
+    "cachedData": "cached data",
+    "chooseView": "Choose view"
   },
   "validation": {
     "fieldIsRequired": "This field is required",
@@ -119,7 +120,12 @@
       "youHaveCompletedTheLifemap": "You have completed the lifemap",
       "youNeedToAddPriotity": "You need to add one priority",
       "youNeedToAddPriorities": "You need to add %n priorities",
-      "beforeTheLifeMapIsCompleted": "Before the life map is completed..."
+      "beforeTheLifeMapIsCompleted": "Before the life map is completed...",
+      "green": "Green",
+      "yellow": "Yellow",
+      "red": "Red",
+      "priorities": "Priorities",
+      "achievements": "Achievements"
     },
     "modals": {
       "lifeMapWillNotBeSaved": "If you do not enter all details on this page the life map will not be saved!",
