@@ -6,6 +6,7 @@ import Button from '../../components/Button'
 import Tip from '../../components/Tip'
 import LifemapVisual from '../../components/LifemapVisual'
 import LifemapOverview from '../../components/LifemapOverview'
+import BottomModal from '../../components/BottomModal'
 
 const createTestProps = props => ({
   t: value => value,
@@ -42,7 +43,8 @@ const createTestProps = props => ({
         { key: 'phoneNumber', value: 3 },
         { key: 'education', value: 1 },
         { key: 'ind', value: 1 },
-        { key: 'Other ind', value: 2 }
+        { key: 'Other ind', value: 2 },
+        { key: 'Skipped', value: 0 }
       ]
     }
   ],
@@ -138,7 +140,8 @@ describe('Overview Lifemap View when no questions are skipped', () => {
           { key: 'phoneNumber', value: 3 },
           { key: 'education', value: 1 },
           { key: 'ind', value: 1 },
-          { key: 'Other ind', value: 2 }
+          { key: 'Other ind', value: 2 },
+          { key: 'Skipped', value: 0 }
         ]
       })
     })
@@ -189,5 +192,117 @@ describe('Render optimization', () => {
 
     wrapper.instance().onPressBack()
     expect(spy).toHaveBeenCalledTimes(1)
+    expect(props.navigation.navigate).toHaveBeenCalledTimes(1)
+  })
+
+  it('navigates back to skipped screen if there are skipped questions', () => {
+    wrapper.instance().onPressBack()
+
+    expect(props.navigation.navigate).toHaveBeenCalledWith('Skipped', {
+      draftId: 1,
+      survey: {
+        id: 2,
+        minimumPriorities: 5,
+        surveyStoplightQuestions: [
+          { phoneNumber: 'phoneNumber' },
+          { education: 'education' },
+          { c: 'c' }
+        ],
+        title: 'Other survey'
+      }
+    })
+  })
+
+  it('can filter by colors', () => {
+    wrapper
+      .find('#green')
+      .props()
+      .onPress()
+
+    expect(wrapper).toHaveState({ selectedFilter: 3 })
+
+    wrapper
+      .find('#yellow')
+      .props()
+      .onPress()
+
+    expect(wrapper).toHaveState({ filterLabel: 'views.lifemap.yellow' })
+
+    const spy = jest.spyOn(wrapper.instance(), 'selectFilter')
+
+    wrapper
+      .find('#red')
+      .props()
+      .onPress()
+
+    expect(spy).toHaveBeenCalledWith(1, 'views.lifemap.red')
+
+    expect(wrapper).toHaveState({
+      filterLabel: 'views.lifemap.red',
+      selectedFilter: 1
+    })
+  })
+
+  it('can filter skipped questions', () => {
+    const spy = jest.spyOn(wrapper.instance(), 'selectFilter')
+
+    wrapper
+      .find('#skipped')
+      .props()
+      .onPress()
+
+    expect(wrapper).toHaveState({ selectedFilter: 0 })
+    expect(spy).toHaveBeenCalledTimes(1)
+  })
+
+  it('can filter questions by priorities/achievements', () => {
+    const spy = jest.spyOn(wrapper.instance(), 'selectFilter')
+
+    wrapper
+      .find('#priorities')
+      .props()
+      .onPress()
+
+    expect(wrapper).toHaveState({ selectedFilter: 'priorities' })
+    expect(spy).toHaveBeenCalledWith(
+      'priorities',
+      'views.lifemap.priorities & views.lifemap.achievements'
+    )
+  })
+
+  it('will revert to all indicators when selected or when closing the modal', () => {
+    const spy = jest.spyOn(wrapper.instance(), 'selectFilter')
+
+    wrapper
+      .find('#all')
+      .props()
+      .onPress()
+
+    expect(wrapper).toHaveState({ selectedFilter: false })
+    expect(spy).toHaveBeenCalledTimes(1)
+
+    wrapper
+      .find(BottomModal)
+      .props()
+      .onEmptyClose()
+
+    expect(wrapper).toHaveState({ selectedFilter: false })
+    expect(spy).toHaveBeenCalledTimes(2)
+  })
+
+  it('will toggle modal', () => {
+    wrapper
+      .find('#filters')
+      .props()
+      .onPress()
+
+    expect(wrapper).toHaveState({ filterModalIsOpen: true })
+
+    wrapper
+      .find(BottomModal)
+      .props()
+      .onRequestClose()
+
+    expect(wrapper).toHaveState({ filterModalIsOpen: false })
   })
 })

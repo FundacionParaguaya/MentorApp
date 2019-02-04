@@ -130,7 +130,7 @@ export class Overview extends Component {
             ) : null}
           </View>
           <View>
-            <TouchableOpacity onPress={this.toggleFilterModal}>
+            <TouchableOpacity id="filters" onPress={this.toggleFilterModal}>
               <View style={styles.listTitle}>
                 <Text style={globalStyles.subline}>
                   {filterLabel || t('views.lifemap.allIndicators')}
@@ -188,6 +188,7 @@ export class Overview extends Component {
 
             {/* All */}
             <TouchableOpacity
+              id="all"
               style={styles.row}
               onPress={() => this.selectFilter(false)}
             >
@@ -200,6 +201,7 @@ export class Overview extends Component {
 
             {/* Green */}
             <TouchableOpacity
+              id="green"
               style={styles.row}
               onPress={() => this.selectFilter(3, t('views.lifemap.green'))}
             >
@@ -218,6 +220,7 @@ export class Overview extends Component {
 
             {/* Yellow */}
             <TouchableOpacity
+              id="yellow"
               style={styles.row}
               onPress={() => this.selectFilter(2, t('views.lifemap.yellow'))}
             >
@@ -234,6 +237,7 @@ export class Overview extends Component {
 
             {/* Red */}
             <TouchableOpacity
+              id="red"
               style={styles.row}
               onPress={() => this.selectFilter(1, t('views.lifemap.red'))}
             >
@@ -250,6 +254,7 @@ export class Overview extends Component {
 
             {/* Priorities/achievements */}
             <TouchableOpacity
+              id="priorities"
               style={styles.row}
               onPress={() =>
                 this.selectFilter(
@@ -270,6 +275,7 @@ export class Overview extends Component {
 
             {/* Skipped */}
             <TouchableOpacity
+              id="skipped"
               style={styles.row}
               onPress={() => this.selectFilter(0, t('views.skippedIndicators'))}
             >
