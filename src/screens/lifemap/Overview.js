@@ -23,7 +23,8 @@ import colors from '../../theme.json'
 export class Overview extends Component {
   state = {
     filterModalIsOpen: false,
-    selectedFilter: false
+    selectedFilter: false,
+    filterLabel: false
   }
   draftId = this.props.navigation.getParam('draftId')
   survey = this.props.navigation.getParam('survey')
@@ -75,10 +76,11 @@ export class Overview extends Component {
     })
   }
 
-  selectFilter = filter => {
+  selectFilter = (filter, filterLabel = false) => {
     this.setState({
       selectedFilter: filter,
-      filterModalIsOpen: false
+      filterModalIsOpen: false,
+      filterLabel: filterLabel
     })
   }
 
@@ -94,7 +96,7 @@ export class Overview extends Component {
 
   render() {
     const { t } = this.props
-    const { filterModalIsOpen, selectedFilter } = this.state
+    const { filterModalIsOpen, selectedFilter, filterLabel } = this.state
     const draft = this.props.drafts.find(item => item.draftId === this.draftId)
     const mandatoryPrioritiesCount = this.getMandatoryPrioritiesCount(draft)
     const resumeDraft = this.props.navigation.getParam('resumeDraft')
@@ -131,7 +133,7 @@ export class Overview extends Component {
             <TouchableOpacity onPress={this.toggleFilterModal}>
               <View style={styles.listTitle}>
                 <Text style={globalStyles.subline}>
-                  {t('views.lifemap.allIndicators')}
+                  {filterLabel || t('views.lifemap.allIndicators')}
                 </Text>
                 <Image source={arrow} style={styles.arrow} />
               </View>
@@ -172,6 +174,7 @@ export class Overview extends Component {
             />
           </View>
         ) : null}
+
         {/* Filters modal */}
         <BottomModal
           isOpen={filterModalIsOpen}
@@ -198,7 +201,7 @@ export class Overview extends Component {
             {/* Green */}
             <TouchableOpacity
               style={styles.row}
-              onPress={() => this.selectFilter(3)}
+              onPress={() => this.selectFilter(3, t('views.lifemap.green'))}
             >
               <View
                 style={[styles.circle, { backgroundColor: colors.green }]}
@@ -216,7 +219,7 @@ export class Overview extends Component {
             {/* Yellow */}
             <TouchableOpacity
               style={styles.row}
-              onPress={() => this.selectFilter(2)}
+              onPress={() => this.selectFilter(2, t('views.lifemap.yellow'))}
             >
               <View style={[styles.circle, { backgroundColor: colors.gold }]} />
               <Text>
@@ -232,7 +235,7 @@ export class Overview extends Component {
             {/* Red */}
             <TouchableOpacity
               style={styles.row}
-              onPress={() => this.selectFilter(1)}
+              onPress={() => this.selectFilter(1, t('views.lifemap.red'))}
             >
               <View style={[styles.circle, { backgroundColor: colors.red }]} />
               <Text>
@@ -248,7 +251,14 @@ export class Overview extends Component {
             {/* Priorities/achievements */}
             <TouchableOpacity
               style={styles.row}
-              onPress={() => this.selectFilter('priorities')}
+              onPress={() =>
+                this.selectFilter(
+                  'priorities',
+                  `${t('views.lifemap.priorities')} & ${t(
+                    'views.lifemap.achievements'
+                  )}`
+                )
+              }
             >
               <View style={[styles.circle, { backgroundColor: colors.blue }]} />
               <Text>
@@ -261,7 +271,7 @@ export class Overview extends Component {
             {/* Skipped */}
             <TouchableOpacity
               style={styles.row}
-              onPress={() => this.selectFilter(0)}
+              onPress={() => this.selectFilter(0, t('views.skippedIndicators'))}
             >
               <View
                 style={[styles.circle, { backgroundColor: colors.palegrey }]}
