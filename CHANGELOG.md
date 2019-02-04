@@ -2,15 +2,12 @@
 
 ## [v1.4.0](https://github.com/FundacionParaguaya/MentorApp/tree/v1.4.0) (2019-02-04)
 
-[Full Changelog](https://github.com/FundacionParaguaya/MentorApp/compare/ls...v1.4.0)
-
-## [ls](https://github.com/FundacionParaguaya/MentorApp/tree/ls) (2019-02-04)
-
-[Full Changelog](https://github.com/FundacionParaguaya/MentorApp/compare/v1.3.1...ls)
+[Full Changelog](https://github.com/FundacionParaguaya/MentorApp/compare/v1.3.1...v1.4.0)
 
 **Implemented enhancements:**
 
 - Filters on the lifemap page. [\#228](https://github.com/FundacionParaguaya/MentorApp/issues/228)
+
 - UX warnings for Logout with Unsynced data [\#231](https://github.com/FundacionParaguaya/MentorApp/issues/231)
 - Auto Select Country on Location page [\#219](https://github.com/FundacionParaguaya/MentorApp/issues/219)
 - Sticky Footer continue button [\#218](https://github.com/FundacionParaguaya/MentorApp/issues/218)
