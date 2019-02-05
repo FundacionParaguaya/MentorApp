@@ -93,7 +93,7 @@ describe('DateInput Component', () => {
     it('calls detectError if date is invalid', () => {
       wrapper.setState({ year: '12345', day: '123', month: 'January' })
 
-      expect(wrapper.instance().props.detectError).toHaveBeenCalledTimes(2)
+      expect(wrapper.instance().props.detectError).toHaveBeenCalledTimes(3)
     })
     it('calls detectError with first argument true if date is invalid', () => {
       wrapper.instance().validateDate()

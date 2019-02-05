@@ -78,8 +78,12 @@ export class DateInput extends React.Component {
 
   componentDidUpdate(prevProps, prevState) {
     const { day, month, year } = this.state
+
     if (JSON.stringify(prevState) !== JSON.stringify(this.state)) {
       if (day && month && year) {
+        this.validateDate()
+      }
+      if (prevState.day && prevState.month && prevState.year) {
         this.validateDate()
       }
     }
