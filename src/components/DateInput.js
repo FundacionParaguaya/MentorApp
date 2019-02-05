@@ -17,60 +17,42 @@ export class DateInput extends React.Component {
 
   setDay = day => {
     this.setState({ day })
-    this.validateDate({ day })
   }
 
   setMonth = month => {
     this.setState({ month })
-    this.validateDate({ month })
   }
 
   setYear = year => {
     this.setState({ year })
-    this.validateDate({ year })
   }
 
-  validateDate({ day, month, year }) {
-    const validDate =
-      moment.unix(this.props.value).format('YYYY MMMM D') !== 'Invalid date'
+  //Make array of the days
+  days = Array.from({ length: 31 }, (v, i) => ({
+    text: i + 1,
+    value: i + 1
+  }))
 
-    const yearInput =
-      typeof year === 'string'
-        ? year
-        : year ||
-          this.state.year ||
-          (validDate ? moment.unix(this.props.value).format('YYYY') : '')
-
-    const monthInput =
-      month ||
-      this.state.month ||
-      (validDate ? moment.unix(this.props.value).format('MMMM') : '')
-
-    const dayInput =
-      typeof day === 'string'
-        ? day
-        : day ||
-          this.state.day ||
-          (validDate ? moment.unix(this.props.value).format('D') : '')
-
+  //Make array of the years
+  years = Array.from({ length: 101 }, (v, i) => {
     let d = new Date()
+    let value = d.getFullYear() - 101 + i + 1
+    return { text: value, value }
+  }).reverse()
 
-    const error =
-      !moment(
-        `${yearInput} ${monthInput} ${dayInput}`,
-        'YYYY MMMM D',
-        true
-      ).isValid(dayInput) ||
-      Number(year) < 1900 ||
-      Number(year) > d.getFullYear()
+  validateDate() {
+    const { day, month, year } = this.state
+
+    const error = !moment(
+      `${year} ${month} ${day}`,
+      'YYYY MMMM D',
+      true
+    ).isValid()
 
     if (error) {
       this.props.detectError(true, this.props.field)
     } else {
-      const unix = moment
-        .utc(`${yearInput} ${monthInput} ${dayInput}`, 'YYYY MMMM D')
-        .unix()
-
+      const unix = moment.utc(`${year} ${month} ${day}`, 'YYYY MMMM D').unix()
       this.props.detectError(false, this.props.field)
       this.props.onValidDate(unix, this.props.field)
     }
@@ -84,29 +66,31 @@ export class DateInput extends React.Component {
     if (this.props.required && !this.props.value) {
       this.props.detectError(true, this.props.field)
     }
+
+    if (this.props.value) {
+      this.setState({
+        day: moment.unix(this.props.value).format('D'),
+        month: moment.unix(this.props.value).format('MMMM'),
+        year: moment.unix(this.props.value).format('YYYY')
+      })
+    }
   }
 
-  componentDidUpdate(prevProps) {
+  componentDidUpdate(prevProps, prevState) {
+    const { day, month, year } = this.state
+    if (JSON.stringify(prevState) !== JSON.stringify(this.state)) {
+      if (day && month && year) {
+        this.validateDate()
+      }
+    }
     if (prevProps.showErrors !== this.props.showErrors) {
-      this.validateDate(this.props.value || '')
+      this.validateDate()
     }
   }
 
   render() {
-    const { t } = this.props
-    const validDate =
-      moment.unix(this.props.value).format('YYYY MMMM D') !== 'Invalid date'
-    const month =
-      this.state.month ||
-      (validDate ? moment.unix(this.props.value).format('MMMM') : '')
-
-    const year =
-      this.state.year ||
-      (validDate ? moment.unix(this.props.value).format('YYYY') : '')
-    const day =
-      this.state.day ||
-      (validDate ? moment.unix(this.props.value).format('D') : '')
-
+    const { t, value } = this.props
+    const { day, month, year } = this.state
     const months = [
       { text: t('months.january'), value: 'January' },
       { text: t('months.february'), value: 'February' },
@@ -137,19 +121,23 @@ export class DateInput extends React.Component {
             />
           </View>
           <View style={styles.day}>
-            <TextInput
-              onChangeText={day => this.setDay(day)}
-              value={day}
+            <Select
+              onChange={day => this.setDay(day)}
               placeholder={t('general.day')}
-              keyboardType="numeric"
+              placeholder={t('general.day')}
+              field=""
+              value={Number(day)}
+              options={this.days}
             />
           </View>
           <View style={styles.year}>
-            <TextInput
-              onChangeText={year => this.setYear(year)}
-              value={year}
+            <Select
+              onChange={year => this.setYear(year)}
               placeholder={t('general.year')}
-              keyboardType="numeric"
+              placeholder={t('general.year')}
+              field=""
+              value={Number(year)}
+              options={this.years}
             />
           </View>
         </View>
