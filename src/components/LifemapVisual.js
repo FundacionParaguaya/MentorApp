@@ -90,10 +90,7 @@ LifemapVisual.propTypes = {
 const styles = StyleSheet.create({
   container: {
     flexDirection: 'row',
-    flexWrap: 'wrap',
-    alignItems: 'stretch',
-    alignContent: 'stretch',
-    flexGrow: 2
+    flexWrap: 'wrap'
   },
   iconBlue: {
     right: 3,
