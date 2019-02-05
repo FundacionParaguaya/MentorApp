@@ -45,9 +45,16 @@ describe('Sync Lifemap View when no questions are skipped', () => {
     it('renders does not render FlatList when outbox is empty', () => {
       expect(wrapper.find(FlatList)).toHaveLength(0)
     })
-    it('renders FlatList when outbox is not empty', () => {
+    it('renders FlatList when draft has status error is not empty', () => {
       props = createTestProps({
-        offline: { outbox: [{ type: 'SUBMIT_DRAFT' }], online: false }
+        drafts: [{ syncedAt: 1, status: 'Sync error' }, { syncedAt: 2 }]
+      })
+      wrapper = shallow(<Sync {...props} />)
+      expect(wrapper.find(FlatList)).toHaveLength(1)
+    })
+    it('renders FlatList when draft has status pending is not empty', () => {
+      props = createTestProps({
+        drafts: [{ syncedAt: 1, status: 'Pending sync' }, { syncedAt: 2 }]
       })
       wrapper = shallow(<Sync {...props} />)
       expect(wrapper.find(FlatList)).toHaveLength(1)

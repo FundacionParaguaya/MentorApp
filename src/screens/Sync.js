@@ -21,6 +21,10 @@ export class Sync extends Component {
       item => item.type === 'SUBMIT_DRAFT'
     )
 
+    const list = drafts.filter(
+      draft => draft.status === 'Sync error' || draft.status === 'Pending sync'
+    )
+
     return (
       <ScrollView contentContainerStyle={[globalStyles.container, styles.view]}>
         {offline.online && !pendingDrafts.length ? (
@@ -32,13 +36,13 @@ export class Sync extends Component {
         {!offline.online ? (
           <SyncOffline pendingDraftsLength={pendingDrafts.length} />
         ) : null}
-        {pendingDrafts.length ? (
+        {list.length ? (
           <FlatList
             style={{ marginTop: 15 }}
-            data={pendingDrafts}
+            data={list}
             keyExtractor={(item, index) => index.toString()}
             renderItem={({ item }) => (
-              <SyncListItem item={item.payload.familyData} />
+              <SyncListItem item={item.familyData} status={item.status} />
             )}
           />
         ) : null}

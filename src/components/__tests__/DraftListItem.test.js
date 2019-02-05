@@ -13,8 +13,8 @@ const createTestProps = props => ({
     familyData: {
       familyMembersList: [
         {
-          firstName: 'Juan', //mandatory
-          lastName: 'Perez' //mandatory
+          firstName: 'Juan',
+          lastName: 'Perez'
         }
       ]
     },
@@ -106,7 +106,7 @@ describe('DraftListItem Component', () => {
       expect(wrapper.find(TouchableOpacity).props().disabled).toBe(true)
       expect(wrapper.find(Icon)).toHaveLength(0)
     })
-    it('enables link when status is Error', () => {
+    it('disables link when status is Error', () => {
       props = createTestProps({
         item: {
           status: 'Sync error',
@@ -122,8 +122,8 @@ describe('DraftListItem Component', () => {
       })
       wrapper = shallow(<DraftListItem {...props} />)
 
-      expect(wrapper.find(TouchableOpacity).props().disabled).toBe(false)
-      expect(wrapper.find(Icon)).toHaveLength(1)
+      expect(wrapper.find(TouchableOpacity).props().disabled).toBe(true)
+      expect(wrapper.find(Icon)).toHaveLength(0)
     })
   })
 })
