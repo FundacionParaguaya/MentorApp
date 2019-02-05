@@ -8,8 +8,7 @@ import globalStyles from '../../globalStyles'
 
 class SyncListItem extends Component {
   render() {
-    const { item } = this.props
-
+    const { item, status } = this.props
     return (
       <View style={[styles.view, styles.borderBottom]}>
         <View style={styles.container}>
@@ -27,14 +26,19 @@ class SyncListItem extends Component {
               : ''
           }`}</Text>
         </View>
-        <Text style={styles.label}>Pending</Text>
+        {status === 'Pending sync' ? (
+          <Text style={styles.label}>Pending</Text>
+        ) : (
+          <Text style={[styles.label, styles.error]}>Sync error</Text>
+        )}
       </View>
     )
   }
 }
 
 SyncListItem.propTypes = {
-  item: PropTypes.object.isRequired
+  item: PropTypes.object.isRequired,
+  status: PropTypes.string.isRequired
 }
 
 const styles = StyleSheet.create({
@@ -59,6 +63,10 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     marginTop: 5,
     backgroundColor: colors.lightgrey
+  },
+  error: {
+    backgroundColor: colors.palered,
+    color: colors.white
   }
 })
 
