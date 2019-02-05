@@ -76,7 +76,7 @@
       "documentType": "Tipo de documento",
       "countryOfBirth": "País de nacimiento",
       "selectMonth": "Seleccione mes",
-      "selectValidDate": "Favor ingrese una fecha válida. Por ejemplo, 03 de mayo de 1977.",
+      "selectValidDate": "Favor ingrese una fecha válida",
       "name": "Nombre",
       "peopleLivingInThisHousehold": "Número de personas viviendo en esta casa. ",
       "onlyPerson": "1 - Soy la única persona",
