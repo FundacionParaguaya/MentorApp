@@ -21,7 +21,8 @@
     "lifeMaps": "Life Maps",
     "familyInfo": "family info",
     "cachedData": "cached data",
-    "chooseView": "Choose view"
+    "chooseView": "Choose view",
+    "create": "Create"
   },
   "validation": {
     "fieldIsRequired": "This field is required",
@@ -125,7 +126,8 @@
       "yellow": "Yellow",
       "red": "Red",
       "priorities": "Priorities",
-      "achievements": "Achievements"
+      "achievements": "Achievements",
+      "toComplete": "To compmete the lifemap..."
     },
     "modals": {
       "lifeMapWillNotBeSaved": "If you do not enter all details on this page the life map will not be saved!",

@@ -21,7 +21,8 @@
     "lifeMaps": "Mapas de Vida",
     "familyInfo": "Información de la familia",
     "cachedData": "Datos almacenados",
-    "chooseView": "Elegir vista"
+    "chooseView": "Elegir vista",
+    "create": "Crear"
   },
   "validation": {
     "fieldIsRequired": "Este campo es requerido",

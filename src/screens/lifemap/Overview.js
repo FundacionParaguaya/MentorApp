@@ -84,10 +84,14 @@ export class Overview extends Component {
     })
   }
 
-  getMandatoryPrioritiesCount(draft) {
-    const potentialPrioritiesCount = draft.indicatorSurveyDataList.filter(
+  getPotentialPrioritiesCount(draft) {
+    return draft.indicatorSurveyDataList.filter(
       question => question.value === 1 || question.value === 2
     ).length
+  }
+
+  getMandatoryPrioritiesCount(draft) {
+    const potentialPrioritiesCount = this.getPotentialPrioritiesCount(draft)
 
     return potentialPrioritiesCount > this.survey.minimumPriorities
       ? this.survey.minimumPriorities
@@ -113,6 +117,7 @@ export class Overview extends Component {
             />
             {resumeDraft ? (
               <Button
+                id="resume-draft"
                 style={{
                   marginTop: 20
                 }}
@@ -146,18 +151,39 @@ export class Overview extends Component {
             />
           </View>
 
-          {mandatoryPrioritiesCount ? (
-            <Tip
-              title={t('views.lifemap.beforeTheLifeMapIsCompleted')}
-              description={
-                mandatoryPrioritiesCount === 1
-                  ? t('views.lifemap.youNeedToAddPriotity')
-                  : t('views.lifemap.youNeedToAddPriorities').replace(
-                      '%n',
-                      mandatoryPrioritiesCount
-                    )
-              }
-            />
+          {/*Priorities Tooltip - show only if on resume draft screen*/}
+          {!resumeDraft ? (
+            <View>
+              {/* if there are possible mandatory priorities */}
+              {mandatoryPrioritiesCount ? (
+                <Tip
+                  title={t('views.lifemap.beforeTheLifeMapIsCompleted')}
+                  description={
+                    mandatoryPrioritiesCount === 1
+                      ? t('views.lifemap.youNeedToAddPriotity')
+                      : t('views.lifemap.youNeedToAddPriorities').replace(
+                          '%n',
+                          mandatoryPrioritiesCount
+                        )
+                  }
+                />
+              ) : (
+                <View />
+              )}
+
+              {/* if there are no mandatory priorities, but it's possible to add priorities */}
+              {this.getPotentialPrioritiesCount(draft) &&
+              !mandatoryPrioritiesCount ? (
+                <Tip
+                  title={t('views.lifemap.toComplete')}
+                  description={`${t('general.create')} ${t(
+                    'views.lifemap.priorities'
+                  ).toLowerCase()}!`}
+                />
+              ) : (
+                <View />
+              )}
+            </View>
           ) : (
             <View />
           )}
