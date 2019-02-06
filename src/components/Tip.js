@@ -1,7 +1,6 @@
 import React, { Component } from 'react'
 import { StyleSheet, Text, View, Modal } from 'react-native'
 import PropTypes from 'prop-types'
-
 import Button from './Button'
 import colors from '../theme.json'
 import globalStyles from '../globalStyles'
@@ -27,7 +26,7 @@ class Tip extends Component {
     return (
       <Modal
         transparent={true}
-        visible={this.props.visible && this.state.tipVisible}
+        visible={this.props.visible || this.state.tipVisible}
         onRequestClose={this.hideTip}
         animationType="slide"
         style={{

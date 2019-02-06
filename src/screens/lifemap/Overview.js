@@ -123,6 +123,7 @@ export class Overview extends Component {
       filterLabel,
       tipIsVisible
     } = this.state
+
     const draft = this.props.drafts.find(item => item.draftId === this.draftId)
     const mandatoryPrioritiesCount = this.getMandatoryPrioritiesCount(draft)
     const resumeDraft = this.props.navigation.getParam('resumeDraft')
@@ -218,6 +219,7 @@ export class Overview extends Component {
         {!resumeDraft && !tipIsVisible ? (
           <View style={{ height: 50 }}>
             <Button
+              id="continue"
               colored
               text={t('general.continue')}
               handleClick={() =>
@@ -225,7 +227,9 @@ export class Overview extends Component {
               }
             />
           </View>
-        ) : null}
+        ) : (
+          <View />
+        )}
 
         {/* Filters modal */}
         <BottomModal

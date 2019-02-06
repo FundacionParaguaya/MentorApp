@@ -31,6 +31,9 @@ const createTestProps = props => ({
           ]
         }
       }
+      if (param === 'resumeDraft') {
+        return false
+      }
     })
   },
   drafts: [
