@@ -1,17 +1,69 @@
 # Change Log
 
-## [v1.3.1](https://github.com/FundacionParaguaya/MentorApp/tree/HEAD)
+## [v1.4.0](https://github.com/FundacionParaguaya/MentorApp/tree/v1.4.0) (2019-02-04)
 
-[Full Changelog](https://github.com/FundacionParaguaya/MentorApp/compare/v1.3.1...HEAD)
+[Full Changelog](https://github.com/FundacionParaguaya/MentorApp/compare/v1.3.1...v1.4.0)
+
+**Implemented enhancements:**
+
+- Filters on the lifemap page. [\#228](https://github.com/FundacionParaguaya/MentorApp/issues/228)
+
+- UX warnings for Logout with Unsynced data [\#231](https://github.com/FundacionParaguaya/MentorApp/issues/231)
+- Auto Select Country on Location page [\#219](https://github.com/FundacionParaguaya/MentorApp/issues/219)
+- Sticky Footer continue button [\#218](https://github.com/FundacionParaguaya/MentorApp/issues/218)
 
 **Fixed bugs:**
 
+- Primary Participant Country of Birth [\#314](https://github.com/FundacionParaguaya/MentorApp/issues/314)
 - Create priorities for red indicators [\#310](https://github.com/FundacionParaguaya/MentorApp/issues/310)
 - App allows invalid data input. Family count [\#309](https://github.com/FundacionParaguaya/MentorApp/issues/309)
+- On logout and login again slider in question screen does not slide to the correct position [\#283](https://github.com/FundacionParaguaya/MentorApp/issues/283)
+- Duplicate key props of dropdown options in Primary Participant view [\#266](https://github.com/FundacionParaguaya/MentorApp/issues/266)
 
 **Closed issues:**
 
+- Uploading Paraguay indicators [\#317](https://github.com/FundacionParaguaya/MentorApp/issues/317)
+- Welcome message in Spanish has a typo [\#307](https://github.com/FundacionParaguaya/MentorApp/issues/307)
+- Sync error [\#305](https://github.com/FundacionParaguaya/MentorApp/issues/305)
 - Resume Draft leads to LifeMap review before arriving to this page [\#300](https://github.com/FundacionParaguaya/MentorApp/issues/300)
+- The App won't work if location services are disabled. [\#286](https://github.com/FundacionParaguaya/MentorApp/issues/286)
+- Client release requirements [\#212](https://github.com/FundacionParaguaya/MentorApp/issues/212)
+
+**Merged pull requests:**
+
+- Indicator filters [\#334](https://github.com/FundacionParaguaya/MentorApp/pull/334) ([Danman7](https://github.com/Danman7))
+- Fix all synced data can't logout [\#327](https://github.com/FundacionParaguaya/MentorApp/pull/327) ([Danman7](https://github.com/Danman7))
+- Fix placeholder for country of birth in family participant [\#323](https://github.com/FundacionParaguaya/MentorApp/pull/323) ([IvaKop](https://github.com/IvaKop))
+- Fixed footer in lifemap process [\#319](https://github.com/FundacionParaguaya/MentorApp/pull/319) ([Danman7](https://github.com/Danman7))
+- Fix images bug [\#316](https://github.com/FundacionParaguaya/MentorApp/pull/316) ([IvaKop](https://github.com/IvaKop))
+- Auto select country [\#313](https://github.com/FundacionParaguaya/MentorApp/pull/313) ([Danman7](https://github.com/Danman7))
+- Logout confirmation [\#312](https://github.com/FundacionParaguaya/MentorApp/pull/312) ([Danman7](https://github.com/Danman7))
+
+## [v1.3.1](https://github.com/FundacionParaguaya/MentorApp/tree/v1.3.1) (2019-01-24)
+
+[Full Changelog](https://github.com/FundacionParaguaya/MentorApp/compare/v1.3.0...v1.3.1)
+
+**Implemented enhancements:**
+
+- Sync Screen - You are offline [\#279](https://github.com/FundacionParaguaya/MentorApp/issues/279)
+- Sync Screen - You are up to date! [\#278](https://github.com/FundacionParaguaya/MentorApp/issues/278)
+- Offline Map [\#273](https://github.com/FundacionParaguaya/MentorApp/issues/273)
+- Fix options in membersInHousehold question [\#263](https://github.com/FundacionParaguaya/MentorApp/issues/263)
+- Map - try to get GPS coordinates even if user is offline [\#250](https://github.com/FundacionParaguaya/MentorApp/issues/250)
+- Up to date screen [\#306](https://github.com/FundacionParaguaya/MentorApp/pull/306) ([IvaKop](https://github.com/IvaKop))
+- Family count [\#298](https://github.com/FundacionParaguaya/MentorApp/pull/298) ([IvaKop](https://github.com/IvaKop))
+
+**Fixed bugs:**
+
+- Cursor Element sticky on screen. [\#120](https://github.com/FundacionParaguaya/MentorApp/issues/120)
+
+**Closed issues:**
+
+- Restrict recent updates on the dashboard to 5 [\#299](https://github.com/FundacionParaguaya/MentorApp/issues/299)
+- Sync Screen - Sync in progress [\#295](https://github.com/FundacionParaguaya/MentorApp/issues/295)
+- Validation requirements for Socio Economic \(in the UK Survey + set general future procedure\) [\#192](https://github.com/FundacionParaguaya/MentorApp/issues/192)
+- Testcases [\#114](https://github.com/FundacionParaguaya/MentorApp/issues/114)
+- Dashboard Latest Drafts [\#84](https://github.com/FundacionParaguaya/MentorApp/issues/84)
 
 ## [v1.3.0](https://github.com/FundacionParaguaya/MentorApp/tree/v1.3.0) (2019-01-21)
 

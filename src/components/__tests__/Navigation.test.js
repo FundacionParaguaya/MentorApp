@@ -2,7 +2,6 @@ import React from 'react'
 import { shallow } from 'enzyme'
 import { Image } from 'react-native'
 import { AppStack } from '../navigation'
-import Popup from '../Popup'
 import { DrawerContent } from '../navigation/DrawerContent'
 
 describe('Navigation', () => {

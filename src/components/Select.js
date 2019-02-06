@@ -5,10 +5,10 @@ import {
   StyleSheet,
   View,
   Text,
-  Modal,
   Image,
   ScrollView
 } from 'react-native'
+import BottomModal from './BottomModal'
 import countries from 'localized-countries'
 import arrow from '../../assets/images/selectArrow.png'
 import colors from '../theme.json'
@@ -134,34 +134,14 @@ class Select extends Component {
             </Text>
             <Image source={arrow} style={styles.arrow} />
 
-            <Modal
-              transparent={true}
-              visible={isOpen}
+            <BottomModal
+              isOpen={isOpen}
               onRequestClose={this.toggleDropdown}
+              onEmptyClose={() => {
+                this.validateInput('')
+                this.toggleDropdown()
+              }}
             >
-              <TouchableOpacity
-                style={[
-                  styles.overlay,
-                  {
-                    backgroundColor: 'rgba(47,38,28, 0.2)'
-                  }
-                ]}
-                onPress={this.toggleDropdown}
-              />
-            </Modal>
-            <Modal
-              animationType="slide"
-              transparent={true}
-              visible={isOpen}
-              onRequestClose={this.toggleDropdown}
-            >
-              <TouchableOpacity
-                style={styles.overlay}
-                onPress={() => {
-                  this.validateInput('')
-                  this.toggleDropdown()
-                }}
-              />
               <View style={styles.dropdown}>
                 {countrySelect ? (
                   <ScrollView>
@@ -201,7 +181,7 @@ class Select extends Component {
                   </ScrollView>
                 )}
               </View>
-            </Modal>
+            </BottomModal>
           </View>
           {/* Error message */}
           {!!errorMsg && (
@@ -279,16 +259,6 @@ const styles = StyleSheet.create({
   error: {
     backgroundColor: colors.white,
     borderBottomColor: colors.red
-  },
-  overlay: {
-    position: 'absolute',
-    top: 0,
-    left: 0,
-    right: 0,
-    bottom: -200,
-    flexDirection: 'column',
-    justifyContent: 'center',
-    alignItems: 'center'
   },
   selected: {
     backgroundColor: colors.lightgrey
