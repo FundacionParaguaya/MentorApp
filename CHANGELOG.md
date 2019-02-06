@@ -1,12 +1,27 @@
 # Change Log
 
-## [v1.4.0](https://github.com/FundacionParaguaya/MentorApp/tree/v1.4.0) (2019-02-04)
+## [v1.4.1](https://github.com/FundacionParaguaya/MentorApp/tree/v1.4.1) (2019-02-06)
+[Full Changelog](https://github.com/FundacionParaguaya/MentorApp/compare/v1.4.0...v1.4.1)
 
+**Fixed bugs:**
+
+- Elmira - survey stopped message [\#330](https://github.com/FundacionParaguaya/MentorApp/issues/330)
+
+**Closed issues:**
+
+- LifeMap updates on the dashboard will again contain ALL [\#338](https://github.com/FundacionParaguaya/MentorApp/issues/338)
+- Sync List Improvements [\#332](https://github.com/FundacionParaguaya/MentorApp/issues/332)
+- Filters on the lifemap page. [\#228](https://github.com/FundacionParaguaya/MentorApp/issues/228)
+
+**Merged pull requests:**
+
+- Sync list change [\#344](https://github.com/FundacionParaguaya/MentorApp/pull/344) ([IvaKop](https://github.com/IvaKop))
+- Remove limit of 5 to dashboard list [\#340](https://github.com/FundacionParaguaya/MentorApp/pull/340) ([IvaKop](https://github.com/IvaKop))
+
+## [v1.4.0](https://github.com/FundacionParaguaya/MentorApp/tree/v1.4.0) (2019-02-04)
 [Full Changelog](https://github.com/FundacionParaguaya/MentorApp/compare/v1.3.1...v1.4.0)
 
 **Implemented enhancements:**
-
-- Filters on the lifemap page. [\#228](https://github.com/FundacionParaguaya/MentorApp/issues/228)
 
 - UX warnings for Logout with Unsynced data [\#231](https://github.com/FundacionParaguaya/MentorApp/issues/231)
 - Auto Select Country on Location page [\#219](https://github.com/FundacionParaguaya/MentorApp/issues/219)
@@ -15,8 +30,8 @@
 **Fixed bugs:**
 
 - Primary Participant Country of Birth [\#314](https://github.com/FundacionParaguaya/MentorApp/issues/314)
-- Create priorities for red indicators [\#310](https://github.com/FundacionParaguaya/MentorApp/issues/310)
-- App allows invalid data input. Family count [\#309](https://github.com/FundacionParaguaya/MentorApp/issues/309)
+- Create priorities for red indicators  [\#310](https://github.com/FundacionParaguaya/MentorApp/issues/310)
+- App allows invalid data input. Family count  [\#309](https://github.com/FundacionParaguaya/MentorApp/issues/309)
 - On logout and login again slider in question screen does not slide to the correct position [\#283](https://github.com/FundacionParaguaya/MentorApp/issues/283)
 - Duplicate key props of dropdown options in Primary Participant view [\#266](https://github.com/FundacionParaguaya/MentorApp/issues/266)
 
@@ -26,7 +41,7 @@
 - Welcome message in Spanish has a typo [\#307](https://github.com/FundacionParaguaya/MentorApp/issues/307)
 - Sync error [\#305](https://github.com/FundacionParaguaya/MentorApp/issues/305)
 - Resume Draft leads to LifeMap review before arriving to this page [\#300](https://github.com/FundacionParaguaya/MentorApp/issues/300)
-- The App won't work if location services are disabled. [\#286](https://github.com/FundacionParaguaya/MentorApp/issues/286)
+- The App won't work if location services are disabled.  [\#286](https://github.com/FundacionParaguaya/MentorApp/issues/286)
 - Client release requirements [\#212](https://github.com/FundacionParaguaya/MentorApp/issues/212)
 
 **Merged pull requests:**
@@ -40,7 +55,6 @@
 - Logout confirmation [\#312](https://github.com/FundacionParaguaya/MentorApp/pull/312) ([Danman7](https://github.com/Danman7))
 
 ## [v1.3.1](https://github.com/FundacionParaguaya/MentorApp/tree/v1.3.1) (2019-01-24)
-
 [Full Changelog](https://github.com/FundacionParaguaya/MentorApp/compare/v1.3.0...v1.3.1)
 
 **Implemented enhancements:**
@@ -62,11 +76,9 @@
 - Restrict recent updates on the dashboard to 5 [\#299](https://github.com/FundacionParaguaya/MentorApp/issues/299)
 - Sync Screen - Sync in progress [\#295](https://github.com/FundacionParaguaya/MentorApp/issues/295)
 - Validation requirements for Socio Economic \(in the UK Survey + set general future procedure\) [\#192](https://github.com/FundacionParaguaya/MentorApp/issues/192)
-- Testcases [\#114](https://github.com/FundacionParaguaya/MentorApp/issues/114)
 - Dashboard Latest Drafts [\#84](https://github.com/FundacionParaguaya/MentorApp/issues/84)
 
 ## [v1.3.0](https://github.com/FundacionParaguaya/MentorApp/tree/v1.3.0) (2019-01-21)
-
 [Full Changelog](https://github.com/FundacionParaguaya/MentorApp/compare/v1.2.3...v1.3.0)
 
 **Implemented enhancements:**
@@ -75,7 +87,7 @@
 - Families - fetch API call and redux structure [\#275](https://github.com/FundacionParaguaya/MentorApp/issues/275)
 - Remove numbers on indicators [\#233](https://github.com/FundacionParaguaya/MentorApp/issues/233)
 - Continue button and validation [\#232](https://github.com/FundacionParaguaya/MentorApp/issues/232)
-- Family Members Page Edition Changes within Form [\#224](https://github.com/FundacionParaguaya/MentorApp/issues/224)
+- Family Members Page Edition Changes within Form  [\#224](https://github.com/FundacionParaguaya/MentorApp/issues/224)
 - 1 Mandatory fields required in creation of priorities or achievements [\#198](https://github.com/FundacionParaguaya/MentorApp/issues/198)
 - Add handling for families in redux [\#284](https://github.com/FundacionParaguaya/MentorApp/pull/284) ([IvaKop](https://github.com/IvaKop))
 - Make achievements first question and priorities months mandatory [\#269](https://github.com/FundacionParaguaya/MentorApp/pull/269) ([Danman7](https://github.com/Danman7))
@@ -117,7 +129,6 @@
 - Formfields cut content [\#270](https://github.com/FundacionParaguaya/MentorApp/pull/270) ([Danman7](https://github.com/Danman7))
 
 ## [v1.2.3](https://github.com/FundacionParaguaya/MentorApp/tree/v1.2.3) (2019-01-09)
-
 [Full Changelog](https://github.com/FundacionParaguaya/MentorApp/compare/v1.2.2...v1.2.3)
 
 **Implemented enhancements:**
@@ -160,7 +171,6 @@
 - Map ui update [\#196](https://github.com/FundacionParaguaya/MentorApp/pull/196) ([Danman7](https://github.com/Danman7))
 
 ## [v1.2.2](https://github.com/FundacionParaguaya/MentorApp/tree/v1.2.2) (2018-12-21)
-
 [Full Changelog](https://github.com/FundacionParaguaya/MentorApp/compare/v1.2.1...v1.2.2)
 
 **Fixed bugs:**
@@ -186,11 +196,9 @@
 - Pre release miscelleneous fixes [\#206](https://github.com/FundacionParaguaya/MentorApp/pull/206) ([IvaKop](https://github.com/IvaKop))
 
 ## [v1.2.1](https://github.com/FundacionParaguaya/MentorApp/tree/v1.2.1) (2018-12-14)
-
 [Full Changelog](https://github.com/FundacionParaguaya/MentorApp/compare/v1.2.0...v1.2.1)
 
 ## [v1.2.0](https://github.com/FundacionParaguaya/MentorApp/tree/v1.2.0) (2018-12-14)
-
 [Full Changelog](https://github.com/FundacionParaguaya/MentorApp/compare/v1.1.0...v1.2.0)
 
 **Implemented enhancements:**
@@ -227,7 +235,6 @@
 - Update en.json [\#170](https://github.com/FundacionParaguaya/MentorApp/pull/170) ([stacylorraineprendeville](https://github.com/stacylorraineprendeville))
 
 ## [v1.1.0](https://github.com/FundacionParaguaya/MentorApp/tree/v1.1.0) (2018-12-11)
-
 [Full Changelog](https://github.com/FundacionParaguaya/MentorApp/compare/v1.0...v1.1.0)
 
 **Implemented enhancements:**
@@ -246,7 +253,6 @@
 - Green check button on indicator page does not work [\#129](https://github.com/FundacionParaguaya/MentorApp/issues/129)
 
 ## [v1.0](https://github.com/FundacionParaguaya/MentorApp/tree/v1.0) (2018-12-10)
-
 [Full Changelog](https://github.com/FundacionParaguaya/MentorApp/compare/v0.9.2...v1.0)
 
 **Implemented enhancements:**
@@ -278,7 +284,6 @@
 - Feature/issue 1/internationalize app strings [\#151](https://github.com/FundacionParaguaya/MentorApp/pull/151) ([pA1nD](https://github.com/pA1nD))
 
 ## [v0.9.2](https://github.com/FundacionParaguaya/MentorApp/tree/v0.9.2) (2018-12-08)
-
 [Full Changelog](https://github.com/FundacionParaguaya/MentorApp/compare/v0.9.1...v0.9.2)
 
 **Implemented enhancements:**
@@ -306,7 +311,6 @@
 - Mandatory priorities [\#128](https://github.com/FundacionParaguaya/MentorApp/pull/128) ([IvaKop](https://github.com/IvaKop))
 
 ## [v0.9.1](https://github.com/FundacionParaguaya/MentorApp/tree/v0.9.1) (2018-12-05)
-
 [Full Changelog](https://github.com/FundacionParaguaya/MentorApp/compare/v0.9.0...v0.9.1)
 
 **Implemented enhancements:**
@@ -337,7 +341,6 @@
 - Fonts, navigation icon, dashboard changes and skipped screen [\#113](https://github.com/FundacionParaguaya/MentorApp/pull/113) ([IvaKop](https://github.com/IvaKop))
 
 ## [v0.9.0](https://github.com/FundacionParaguaya/MentorApp/tree/v0.9.0) (2018-11-30)
-
 **Implemented enhancements:**
 
 - Switch survey endpoint to graphql [\#64](https://github.com/FundacionParaguaya/MentorApp/issues/64)
@@ -402,9 +405,9 @@
 
 **Merged pull requests:**
 
-- Update bug_report.md [\#102](https://github.com/FundacionParaguaya/MentorApp/pull/102) ([gigerbytes](https://github.com/gigerbytes))
-- Update bug_report.md [\#101](https://github.com/FundacionParaguaya/MentorApp/pull/101) ([gigerbytes](https://github.com/gigerbytes))
-- Create CODE_OF_CONDUCT.md [\#100](https://github.com/FundacionParaguaya/MentorApp/pull/100) ([gigerbytes](https://github.com/gigerbytes))
+- Update bug\_report.md [\#102](https://github.com/FundacionParaguaya/MentorApp/pull/102) ([gigerbytes](https://github.com/gigerbytes))
+- Update bug\_report.md [\#101](https://github.com/FundacionParaguaya/MentorApp/pull/101) ([gigerbytes](https://github.com/gigerbytes))
+- Create CODE\_OF\_CONDUCT.md [\#100](https://github.com/FundacionParaguaya/MentorApp/pull/100) ([gigerbytes](https://github.com/gigerbytes))
 - Update issue templates [\#99](https://github.com/FundacionParaguaya/MentorApp/pull/99) ([gigerbytes](https://github.com/gigerbytes))
 - Add demo env [\#60](https://github.com/FundacionParaguaya/MentorApp/pull/60) ([IvaKop](https://github.com/IvaKop))
 - Splashscreen [\#51](https://github.com/FundacionParaguaya/MentorApp/pull/51) ([IvaKop](https://github.com/IvaKop))
@@ -419,4 +422,6 @@
 - Implement login screen [\#17](https://github.com/FundacionParaguaya/MentorApp/pull/17) ([IvaKop](https://github.com/IvaKop))
 - Increase android AsyncStorage limit to 50mb [\#12](https://github.com/FundacionParaguaya/MentorApp/pull/12) ([IvaKop](https://github.com/IvaKop))
 
-\* _This Change Log was automatically generated by [github_changelog_generator](https://github.com/skywinder/Github-Changelog-Generator)_
+
+
+\* *This Change Log was automatically generated by [github_changelog_generator](https://github.com/skywinder/Github-Changelog-Generator)*
