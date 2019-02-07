@@ -76,7 +76,7 @@
       "documentType": "Document type",
       "countryOfBirth": "Country of birth",
       "selectMonth": "Select month",
-      "selectValidDate": "Please enter a valid date e.g. May 03 1977",
+      "selectValidDate": "Please enter a valid date",
       "name": "Name",
       "peopleLivingInThisHousehold": "Number of people living in this household",
       "onlyPerson": "1 - I am the only person",

@@ -31,8 +31,7 @@ describe('Navigation Wrapper', () => {
   describe('before rehydration', () => {
     it('display status bar with contrasting colors', () => {
       expect(wrapper.find(StatusBar)).toHaveProp({
-        backgroundColor: colors.palebeige,
-        barStyle: 'dark-content'
+        barStyle: 'light-content'
       })
     })
 
