@@ -1,6 +1,6 @@
 import React from 'react'
 import { shallow } from 'enzyme'
-import { ScrollView } from 'react-native'
+import { ScrollView, View } from 'react-native'
 import { Overview } from '../lifemap/Overview'
 import Button from '../../components/Button'
 import Tip from '../../components/Tip'
@@ -75,6 +75,18 @@ describe('Overview', () => {
     it('renders Tip', () => {
       expect(wrapper.find(Tip)).toHaveLength(1)
     })
+    it('does not render button initially', () => {
+      expect(wrapper.find(Button)).toHaveLength(0)
+    })
+    it('closing tip changes state', () => {
+      wrapper
+        .find(Tip)
+        .props()
+        .onTipClose()
+
+      expect(wrapper.instance().state.tipIsVisible).toBe(false)
+    })
+
     it('does not render Tip when no priorities can be added (all indicators are green)', () => {
       const props = createTestProps({
         drafts: [

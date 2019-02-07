@@ -213,9 +213,7 @@ export class Overview extends Component {
                 <View />
               )}
             </View>
-          ) : (
-            <View />
-          )}
+          ) : null}
         </ScrollView>
         {!resumeDraft && !tipIsVisible ? (
           <View style={{ height: 50 }}>
@@ -228,9 +226,7 @@ export class Overview extends Component {
               }
             />
           </View>
-        ) : (
-          <View />
-        )}
+        ) : null}
 
         {/* Filters modal */}
         <BottomModal
