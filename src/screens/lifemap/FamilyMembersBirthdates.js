@@ -17,7 +17,7 @@ export class FamilyMembersBirthdates extends Component {
 
   errorsDetected = []
 
-  state = { errorsDetected: [] }
+  state = { errorsDetected: [], showErrors: false }
 
   componentDidMount() {
     this.props.addDraftProgress(this.draftId, {
@@ -52,12 +52,17 @@ export class FamilyMembersBirthdates extends Component {
   }
 
   handleClick = () => {
-    this.props.navigation.navigate('Location', {
-      draftId: this.draftId,
-      survey: this.survey
-    })
+    if (this.errorsDetected.length) {
+      this.setState({
+        showErrors: true
+      })
+    } else {
+      this.props.navigation.navigate('Location', {
+        draftId: this.draftId,
+        survey: this.survey
+      })
+    }
   }
-
   getFieldValue = (draft, field) => {
     if (!draft) {
       return
@@ -101,6 +106,7 @@ export class FamilyMembersBirthdates extends Component {
             <DateInputComponent
               field={i.toString()}
               detectError={this.detectError}
+              showErrors={this.state.showErrors}
               onValidDate={date => this.addFamilyMemberBirthdate(date, i + 1)}
               value={
                 (this.getFieldValue(draft, 'familyMembersList')[i + 1] || {})
