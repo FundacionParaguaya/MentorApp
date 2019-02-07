@@ -2,7 +2,6 @@ import React, { Component } from 'react'
 import {
   View,
   StyleSheet,
-  Button,
   ScrollView,
   ActivityIndicator,
   FlatList
@@ -30,7 +29,7 @@ export class Families extends Component {
       this.props.offline.online &&
       this.props.offline.outbox.find(item => item.type === 'LOAD_FAMILIES')
 
-    const families = this.props.families.filter(
+    const filteredFamilies = this.props.families.filter(
       family =>
         family.name.includes(this.state.search) ||
         family.code.includes(this.state.search)
@@ -56,7 +55,7 @@ export class Families extends Component {
           value={this.state.search}
         />
         <FlatList
-          data={families}
+          data={filteredFamilies}
           keyExtractor={(item, index) => index.toString()}
           renderItem={({ item }) => (
             <FamiliesListItem
@@ -79,6 +78,7 @@ export class Families extends Component {
 
 Families.propTypes = {
   families: PropTypes.array,
+  surveys: PropTypes.array,
   navigation: PropTypes.object.isRequired,
   loadFamilies: PropTypes.func.isRequired,
   env: PropTypes.oneOf(['production', 'demo', 'testing', 'development']),

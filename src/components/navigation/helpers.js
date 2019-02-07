@@ -44,7 +44,9 @@ export const generateNavOptions = ({ navigation, burgerMenu = true }) => ({
     marginRight: -16
   },
   headerRight:
-    navigation.state.routeName !== 'Final' && !burgerMenu ? (
+    navigation.state.routeName !== 'Final' &&
+    !burgerMenu &&
+    !navigation.getParam('withoutCloseButton') ? (
       <View>
         <TouchableOpacity
           style={styles.touchable}

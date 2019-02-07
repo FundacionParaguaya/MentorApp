@@ -92,7 +92,8 @@ LifemapOverviewListItem.propTypes = {
   achievement: PropTypes.bool,
   priority: PropTypes.bool,
   color: PropTypes.number.isRequired,
-  handleClick: PropTypes.func.isRequired
+  handleClick: PropTypes.func.isRequired,
+  draftOverview: PropTypes.bool
 }
 
 const styles = StyleSheet.create({

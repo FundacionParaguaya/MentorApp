@@ -41,6 +41,10 @@ export class AddPriority extends Component {
     const priority = this.getPriorityValue(draft)
 
     this.setState(priority)
+
+    this.props.navigation.setParams({
+      withoutCloseButton: this.draftId ? false : true
+    })
   }
 
   getData = () =>

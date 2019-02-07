@@ -12,6 +12,7 @@ const createTestProps = props => ({
     navigate: jest.fn(),
     goBack: jest.fn(),
     isFocused: jest.fn(),
+    setParams: jest.fn(),
     getParam: jest.fn(param => {
       if (param === 'indicator') {
         return 'income'
@@ -136,6 +137,7 @@ describe('Render optimization', () => {
         navigate: jest.fn(),
         goBack: jest.fn(),
         isFocused: jest.fn(),
+        setParams: jest.fn(),
         getParam: jest.fn(param => {
           if (param === 'indicator') {
             return 'income'

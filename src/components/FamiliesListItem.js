@@ -6,14 +6,15 @@ import moment from 'moment'
 
 import colors from '../theme.json'
 import globalStyles from '../globalStyles'
-import stoplight from '../../assets/images/stoplight.png'
 
 class FamiliesListItem extends Component {
   render() {
     const { family } = this.props
-    const firstParticipant = family.snapshotList[0].familyData.familyMembersList.find(
-      item => item.firstParticipant
-    )
+    const firstParticipant = family.snapshotList.length
+      ? family.snapshotList[0].familyData.familyMembersList.find(
+          item => item.firstParticipant
+        )
+      : null
     const birthDate = firstParticipant ? firstParticipant.birthDate : ''
 
     return (
@@ -54,10 +55,6 @@ const styles = StyleSheet.create({
     flexWrap: 'wrap',
     flex: 1,
     justifyContent: 'center'
-  },
-  image: {
-    height: 65,
-    width: 65
   },
   p: {
     paddingRight: 20

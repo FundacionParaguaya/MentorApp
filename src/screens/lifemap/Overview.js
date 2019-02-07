@@ -37,7 +37,8 @@ export class Overview extends Component {
       })
 
       this.props.navigation.setParams({
-        onPressBack: this.onPressBack
+        onPressBack: this.onPressBack,
+        withoutCloseButton: this.draftId ? false : true
       })
     }
   }
@@ -161,8 +162,7 @@ export class Overview extends Component {
               selectedFilter={selectedFilter}
             />
           </View>
-
-          {mandatoryPrioritiesCount ? (
+          {mandatoryPrioritiesCount && !resumeDraft && this.draftId ? (
             <Tip
               title={t('views.lifemap.beforeTheLifeMapIsCompleted')}
               description={
@@ -174,9 +174,7 @@ export class Overview extends Component {
                     )
               }
             />
-          ) : (
-            <View />
-          )}
+          ) : null}
         </ScrollView>
         {!resumeDraft && this.draftId ? (
           <View style={{ height: 50 }}>

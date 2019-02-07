@@ -37,6 +37,10 @@ export class AddAchievement extends Component {
     const data = this.getData()
     const achievement = this.getAchievementValue(data)
     this.setState(achievement)
+
+    this.props.navigation.setParams({
+      withoutCloseButton: this.draftId ? false : true
+    })
   }
 
   shouldComponentUpdate() {

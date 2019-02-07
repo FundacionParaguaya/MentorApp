@@ -27,6 +27,10 @@ describe('Search bar', () => {
   it('renders a native TextInput', () => {
     expect(wrapper.find(TextInput)).toHaveLength(1)
   })
+
+  it('displays placeholder', () => {
+    expect(wrapper.find(TextInput).props().placeholder).toBe('placeholder')
+  })
   it('calls onChangeText prop when editing the search bar', () => {
     wrapper
       .find('#search-bar')
