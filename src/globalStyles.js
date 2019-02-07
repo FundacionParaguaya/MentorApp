@@ -3,11 +3,11 @@ import colors from './theme.json'
 
 export default StyleSheet.create({
   background: {
-    backgroundColor: colors.palebeige
+    backgroundColor: colors.white
   },
   container: {
     flex: 1,
-    backgroundColor: colors.palebeige,
+    backgroundColor: colors.white,
     padding: 25,
     paddingTop: 48
   },

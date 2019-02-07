@@ -360,7 +360,7 @@ const styles = StyleSheet.create({
     alignItems: 'stretch'
   },
   listTitle: {
-    backgroundColor: colors.beige,
+    backgroundColor: colors.primary,
     height: 47,
     alignItems: 'center',
     justifyContent: 'center',
@@ -382,7 +382,7 @@ const styles = StyleSheet.create({
     bottom: 0,
     left: 0,
     right: 0,
-    backgroundColor: colors.palebeige
+    backgroundColor: colors.white
   },
   modalTitle: { color: colors.grey, fontWeight: '300', marginBottom: 25 },
   circle: {

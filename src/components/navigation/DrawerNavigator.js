@@ -80,7 +80,7 @@ export default createDrawerNavigator(
         opacity: 1,
         marginRight: 0
       },
-      activeBackgroundColor: colors.palebeige,
+      activeBackgroundColor: colors.primary,
       activeTintColor: colors.palegreen,
       itemsContainerStyle: {
         marginVertical: 0
