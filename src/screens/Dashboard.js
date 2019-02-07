@@ -3,6 +3,7 @@ import { ScrollView, Text, View, StyleSheet, FlatList } from 'react-native'
 import { withNamespaces } from 'react-i18next'
 import PropTypes from 'prop-types'
 import Button from '../components/Button'
+import Decoration from '../components/Decoration'
 import RoundImage from '../components/RoundImage'
 import DraftListItem from '../components/DraftListItem'
 import globalStyles from '../globalStyles'
@@ -80,7 +81,9 @@ export class Dashboard extends Component {
                   {t('general.welcome')}
                 </Text>
               </View>
-              <RoundImage source="family" />
+              <Decoration>
+                <RoundImage source="family" />
+              </Decoration>
               <Button
                 text={t('views.createLifemap')}
                 colored
