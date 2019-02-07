@@ -184,7 +184,8 @@ export class Overview extends Component {
                 <Tip
                   title={t('views.lifemap.toComplete')}
                   description={
-                    mandatoryPrioritiesCount === 1
+                    mandatoryPrioritiesCount === 1 ||
+                    mandatoryPrioritiesCount - draft.priorities.length === 1
                       ? t('views.lifemap.youNeedToAddPriotity')
                       : `${t('general.create')} ${mandatoryPrioritiesCount -
                           draft.priorities.length} ${t(
