@@ -2,10 +2,7 @@
 <layer-list xmlns:android="http://schemas.android.com/apk/res/android">
 
     <item
-        android:drawable="@color/beige"/>
-    <item
-        android:drawable="@color/palebeige"/>
-
+        android:drawable="@color/white"/>
     <item
         android:width="200dp"
         android:height="200dp"

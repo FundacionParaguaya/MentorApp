@@ -123,7 +123,7 @@ const styles = StyleSheet.create({
     padding: 15
   },
   transparent: {
-    backgroundColor: colors.palebeige
+    backgroundColor: colors.white
   },
   disabled: {
     backgroundColor: colors.palegrey
