@@ -25,6 +25,7 @@ class LifemapVisual extends Component {
   ).fill()
 
   render() {
+    const { large, bigMargin } = this.props
     const prioritiesAndAchievements = [
       ...this.props.priorities.map(priority => priority.indicator),
       ...this.props.achievements.map(priority => priority.indicator)
@@ -38,21 +39,23 @@ class LifemapVisual extends Component {
               <Icon
                 name="brightness-1"
                 color={colors.blue}
-                size={10}
+                size={large ? 12 : 10}
                 style={{
                   ...styles.iconBlue,
-                  top: this.props.bigMargin ? 2 : 0,
-                  right: this.props.bigMargin ? 6 : 3
+                  width: large ? 12 : 10,
+                  height: large ? 12 : 10,
+                  top: bigMargin ? 2 : 0,
+                  right: bigMargin ? 6 : 3
                 }}
               />
             ) : null}
             <Icon
               name="brightness-1"
               color={item}
-              size={17}
+              size={large ? 25 : 17}
               style={{
-                marginHorizontal: this.props.bigMargin ? 8 : 4,
-                marginVertical: this.props.bigMargin ? 4 : 2
+                marginHorizontal: bigMargin ? 8 : 4,
+                marginVertical: bigMargin ? 4 : 2
               }}
             />
           </View>
@@ -64,8 +67,8 @@ class LifemapVisual extends Component {
               color={colors.palegrey}
               size={17}
               style={{
-                marginHorizontal: this.props.bigMargin ? 8 : 4,
-                marginVertical: this.props.bigMargin ? 4 : 2
+                marginHorizontal: bigMargin ? 8 : 4,
+                marginVertical: bigMargin ? 4 : 2
               }}
             />
           </View>
@@ -80,16 +83,19 @@ LifemapVisual.propTypes = {
   questionsLength: PropTypes.number.isRequired,
   achievements: PropTypes.array.isRequired,
   priorities: PropTypes.array.isRequired,
-  bigMargin: PropTypes.bool
+  bigMargin: PropTypes.bool,
+  large: PropTypes.bool
 }
 
 const styles = StyleSheet.create({
-  container: { flexDirection: 'row', flexWrap: 'wrap' },
+  container: {
+    flexDirection: 'row',
+    flexWrap: 'wrap'
+  },
   iconBlue: {
     right: 3,
     position: 'absolute',
-    width: 10,
-    height: 10,
+
     zIndex: 10,
     borderColor: '#FFFFFF',
     borderWidth: 2,
