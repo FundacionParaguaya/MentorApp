@@ -24,7 +24,8 @@ export class Overview extends Component {
   state = {
     filterModalIsOpen: false,
     selectedFilter: false,
-    filterLabel: false
+    filterLabel: false,
+    tipIsVisible: true
   }
   draftId = this.props.navigation.getParam('draftId')
   survey = this.props.navigation.getParam('survey')
@@ -84,19 +85,45 @@ export class Overview extends Component {
     })
   }
 
-  getMandatoryPrioritiesCount(draft) {
-    const potentialPrioritiesCount = draft.indicatorSurveyDataList.filter(
+  getPotentialPrioritiesCount(draft) {
+    return draft.indicatorSurveyDataList.filter(
       question => question.value === 1 || question.value === 2
     ).length
+  }
+
+  getMandatoryPrioritiesCount(draft) {
+    const potentialPrioritiesCount = this.getPotentialPrioritiesCount(draft)
 
     return potentialPrioritiesCount > this.survey.minimumPriorities
       ? this.survey.minimumPriorities
       : potentialPrioritiesCount
   }
 
+  onTipClose = () => {
+    this.setState({
+      tipIsVisible: false
+    })
+  }
+
+  handleContinue = (mandatoryPrioritiesCount, draft) => {
+    if (mandatoryPrioritiesCount > draft.priorities.length) {
+      this.setState({
+        tipIsVisible: true
+      })
+    } else {
+      this.navigateToScreen('Final')
+    }
+  }
+
   render() {
     const { t } = this.props
-    const { filterModalIsOpen, selectedFilter, filterLabel } = this.state
+    const {
+      filterModalIsOpen,
+      selectedFilter,
+      filterLabel,
+      tipIsVisible
+    } = this.state
+
     const draft = this.props.drafts.find(item => item.draftId === this.draftId)
     const mandatoryPrioritiesCount = this.getMandatoryPrioritiesCount(draft)
     const resumeDraft = this.props.navigation.getParam('resumeDraft')
@@ -114,6 +141,7 @@ export class Overview extends Component {
             />
             {resumeDraft ? (
               <Button
+                id="resume-draft"
                 style={{
                   marginTop: 20
                 }}
@@ -147,31 +175,56 @@ export class Overview extends Component {
             />
           </View>
 
-          {mandatoryPrioritiesCount ? (
-            <Tip
-              title={t('views.lifemap.beforeTheLifeMapIsCompleted')}
-              description={
-                mandatoryPrioritiesCount === 1
-                  ? t('views.lifemap.youNeedToAddPriotity')
-                  : t('views.lifemap.youNeedToAddPriorities').replace(
-                      '%n',
-                      mandatoryPrioritiesCount
-                    )
-              }
-            />
-          ) : (
-            <View />
-          )}
+          {/*Priorities Tooltip - show only if on resume draft screen*/}
+          {!resumeDraft ? (
+            <View>
+              {/* if there are possible mandatory priorities */}
+              {mandatoryPrioritiesCount &&
+              mandatoryPrioritiesCount > draft.priorities.length ? (
+                <Tip
+                  title={t('views.lifemap.toComplete')}
+                  description={
+                    mandatoryPrioritiesCount === 1 ||
+                    mandatoryPrioritiesCount - draft.priorities.length === 1
+                      ? t('views.lifemap.youNeedToAddPriotity')
+                      : `${t('general.create')} ${mandatoryPrioritiesCount -
+                          draft.priorities.length} ${t(
+                          'views.lifemap.priorities'
+                        ).toLowerCase()}!`
+                  }
+                  visible={tipIsVisible}
+                  onTipClose={this.onTipClose}
+                />
+              ) : (
+                <View />
+              )}
+
+              {/* if there are no mandatory priorities, but it's possible to add priorities */}
+              {this.getPotentialPrioritiesCount(draft) &&
+              !mandatoryPrioritiesCount ? (
+                <Tip
+                  title={t('views.lifemap.toComplete')}
+                  description={`${t('general.create')} ${t(
+                    'views.lifemap.priorities'
+                  ).toLowerCase()}!`}
+                  visible={tipIsVisible}
+                  onTipClose={this.onTipClose}
+                />
+              ) : (
+                <View />
+              )}
+            </View>
+          ) : null}
         </ScrollView>
-        {!resumeDraft ? (
+        {!resumeDraft && !tipIsVisible ? (
           <View style={{ height: 50 }}>
             <Button
+              id="continue"
               colored
               text={t('general.continue')}
-              handleClick={() => {
-                this.navigateToScreen('Final')
-              }}
-              disabled={mandatoryPrioritiesCount > draft.priorities.length}
+              handleClick={() =>
+                this.handleContinue(mandatoryPrioritiesCount, draft)
+              }
             />
           </View>
         ) : null}

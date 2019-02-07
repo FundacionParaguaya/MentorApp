@@ -1,7 +1,6 @@
 import React, { Component } from 'react'
 import { StyleSheet, Text, View, Modal } from 'react-native'
 import PropTypes from 'prop-types'
-
 import Button from './Button'
 import colors from '../theme.json'
 import globalStyles from '../globalStyles'
@@ -11,19 +10,23 @@ class Tip extends Component {
   constructor(props) {
     super(props)
     this.state = {
-      tipVisible: true
+      tipVisible: props.visible || true
     }
   }
 
   hideTip() {
     this.setState({ tipVisible: false })
+
+    if (this.props.onTipClose) {
+      this.props.onTipClose()
+    }
   }
 
   render() {
     return (
       <Modal
         transparent={true}
-        visible={this.state.tipVisible}
+        visible={this.props.visible || this.state.tipVisible}
         onRequestClose={this.hideTip}
         animationType="slide"
         style={{
@@ -71,7 +74,9 @@ class Tip extends Component {
 
 Tip.propTypes = {
   title: PropTypes.string.isRequired,
-  description: PropTypes.string.isRequired
+  description: PropTypes.string.isRequired,
+  onTipClose: PropTypes.func,
+  visible: PropTypes.bool
 }
 const styles = StyleSheet.create({
   container: {
