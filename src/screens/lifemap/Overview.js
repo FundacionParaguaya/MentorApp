@@ -133,6 +133,7 @@ export class Overview extends Component {
         <ScrollView>
           <View style={styles.indicatorsContainer}>
             <LifemapVisual
+              large
               questions={draft.indicatorSurveyDataList}
               priorities={draft.priorities}
               achievements={draft.achievements}
