@@ -14,7 +14,7 @@ describe('Navigation', () => {
       // expect(wrapper.instance()._navigation.navigate('Families')).toBe(true)
       expect(wrapper.instance()._navigation.navigate('Surveys')).toBe(true)
       expect(wrapper.instance()._navigation.navigate('Dashboard')).toBe(true)
-      // expect(wrapper.instance()._navigation.navigate('Sync')).toBe(true)
+      expect(wrapper.instance()._navigation.navigate('Sync')).toBe(true)
       // expect(wrapper.instance()._navigation.navigate('Family')).toBe(true)
       expect(wrapper.instance()._navigation.navigate('Question')).toBe(true)
     })
@@ -33,7 +33,7 @@ describe('Navigation', () => {
       />
     )
     it('renders nav image', () => {
-      expect(wrapper.find(Image)).toHaveLength(1)
+      expect(wrapper.find(Image)).toHaveLength(2)
     })
     it('shows proper username', () => {
       expect(wrapper.find('#username')).toHaveHTML(

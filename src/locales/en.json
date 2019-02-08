@@ -48,6 +48,7 @@
     "december": "December"
   },
   "views": {
+    "synced": "Sync",
     "dashboard": "Dashboard",
     "createLifemap": "Create a life map",
     "latestDrafts": "Latest life maps",
