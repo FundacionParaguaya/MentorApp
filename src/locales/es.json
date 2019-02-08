@@ -21,7 +21,8 @@
     "lifeMaps": "Mapas de Vida",
     "familyInfo": "Información de la familia",
     "cachedData": "Datos almacenados",
-    "chooseView": "Elegir vista"
+    "chooseView": "Elegir vista",
+    "create": "Crear"
   },
   "validation": {
     "fieldIsRequired": "Este campo es requerido",
@@ -125,7 +126,8 @@
       "yellow": "Amarillo",
       "red": "Rojo",
       "priorities": "Prioridades",
-      "achievements": "Logros"
+      "achievements": "Logros",
+      "toComplete": "Antes de que se complete el Mapa de Vida...."
     },
     "modals": {
       "lifeMapWillNotBeSaved": "Si no ingresa todos los detalles en esta página, ¡el Mapa de Vida no se guardará!",

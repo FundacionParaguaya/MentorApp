@@ -116,7 +116,7 @@ export class Dashboard extends Component {
 }
 const styles = StyleSheet.create({
   listTitle: {
-    backgroundColor: colors.beige,
+    backgroundColor: colors.primary,
     height: 41,
     lineHeight: 41,
     flex: 1,

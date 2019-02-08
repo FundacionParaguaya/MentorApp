@@ -34,12 +34,23 @@ describe('Tip Component', () => {
     it('has correct initial state', () => {
       expect(wrapper.instance().state).toEqual({ tipVisible: true })
     })
-    it('clicking Button changes visible state to false', () => {
+    it('clicking Button changes visible state to false and fires onTipClose', () => {
       wrapper
         .find(Button)
         .props()
         .handleClick()
       expect(wrapper.instance().state).toEqual({ tipVisible: false })
+    })
+    it('clicking Button fires onTipClose if providex', () => {
+      props = createTestProps({ onTipClose: jest.fn() })
+      wrapper = shallow(<Tip {...props} />)
+
+      wrapper
+        .find(Button)
+        .props()
+        .handleClick()
+
+      expect(props.onTipClose).toHaveBeenCalledTimes(1)
     })
     it('shows correct title', () => {
       expect(

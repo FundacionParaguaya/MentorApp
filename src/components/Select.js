@@ -227,7 +227,7 @@ const styles = StyleSheet.create({
     ...globalStyles.subline
   },
   withoutValue: {
-    backgroundColor: colors.beige
+    backgroundColor: colors.primary
   },
   dropdown: {
     paddingVertical: 25,
@@ -236,7 +236,7 @@ const styles = StyleSheet.create({
     bottom: 0,
     left: 0,
     right: 0,
-    backgroundColor: colors.palebeige
+    backgroundColor: colors.white
   },
   option: {
     paddingHorizontal: 25,
