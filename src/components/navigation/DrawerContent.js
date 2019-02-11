@@ -62,7 +62,6 @@ export class DrawerContent extends Component {
     })
   }
   navigateToScreen = screen => {
-    console.log(screen)
     this.setState({ activeTab: screen })
     this.props.navigation.toggleDrawer()
     this.props.navigation.navigate(screen)
