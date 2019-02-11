@@ -61,6 +61,12 @@ export class DrawerContent extends Component {
       ckeckedBoxes: state ? ckeckedBoxes + 1 : ckeckedBoxes - 1
     })
   }
+  navigateToScreen = screen => {
+    console.log(screen)
+    this.setState({ activeTab: screen })
+    this.props.navigation.toggleDrawer()
+    this.props.navigation.navigate(screen)
+  }
   render() {
     const { lng, user, navigation } = this.props
     const { checkboxesVisible, showErrors } = this.state
@@ -118,11 +124,7 @@ export class DrawerContent extends Component {
                 backgroundColor:
                   this.state.activeTab === 'Dashboard' ? colors.primary : null
               }}
-              onPress={() => {
-                this.setState({ activeTab: 'Dashboard' })
-                this.props.navigation.toggleDrawer()
-                navigation.navigate('Dashboard')
-              }}
+              onPress={() => this.navigateToScreen('Dashboard')}
             >
               <Image source={dashboardIcon} />
               <Text style={styles.label}>{i18n.t('views.dashboard')}</Text>
@@ -134,11 +136,7 @@ export class DrawerContent extends Component {
                 backgroundColor:
                   this.state.activeTab === 'Surveys' ? colors.primary : null
               }}
-              onPress={() => {
-                this.setState({ activeTab: 'Surveys' })
-                this.props.navigation.toggleDrawer()
-                navigation.navigate('Surveys')
-              }}
+              onPress={() => this.navigateToScreen('Surveys')}
             >
               <Icon
                 name="swap-calls"
@@ -155,11 +153,7 @@ export class DrawerContent extends Component {
                 backgroundColor:
                   this.state.activeTab === 'Sync' ? colors.primary : null
               }}
-              onPress={() => {
-                this.setState({ activeTab: 'Sync' })
-                this.props.navigation.toggleDrawer()
-                navigation.navigate('Sync')
-              }}
+              onPress={() => this.navigateToScreen('Sync')}
             >
               <Icon name="sync" size={20} color={colors.palegreen} />
               <Text style={styles.label}>{i18n.t('views.synced')}</Text>
