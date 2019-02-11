@@ -1,6 +1,7 @@
 import React, { Component } from 'react'
 import { StyleSheet, Animated } from 'react-native'
 import PropTypes from 'prop-types'
+import colors from '../../theme.json'
 
 export default class Orb extends Component {
   constructor(props) {
@@ -8,14 +9,16 @@ export default class Orb extends Component {
     this.state = {
       animateX: props.startingPosition
         ? new Animated.Value(props.startingPosition.x)
-        : false,
+        : props.position.x,
       animateY: props.startingPosition
         ? new Animated.Value(props.startingPosition.y)
-        : false
+        : props.position.y,
+      animateColor: new Animated.Value(0)
     }
   }
-  componentDidMount() {
+  cycleAnimation() {
     const { position, startingPosition } = this.props
+    const delay = Math.floor(Math.random() * 3000)
     if (startingPosition) {
       Animated.sequence([
         Animated.parallel([
@@ -27,12 +30,44 @@ export default class Orb extends Component {
             toValue: position.y,
             duration: 3000
           })
-        ])
-      ]).start()
+        ]),
+        Animated.timing(this.state.animateColor, {
+          toValue: 1,
+          duration: 3000,
+          delay
+        }),
+        Animated.parallel([
+          Animated.timing(this.state.animateX, {
+            toValue: startingPosition.x,
+            duration: 3000,
+            delay: 3000 - delay
+          }),
+          Animated.timing(this.state.animateY, {
+            toValue: startingPosition.y,
+            duration: 3000,
+            delay: 3000 - delay
+          })
+        ]),
+        Animated.timing(this.state.animateColor, {
+          toValue: 0,
+          duration: 1
+        })
+      ]).start(() => {
+        this.cycleAnimation()
+      })
     }
   }
+  componentDidMount() {
+    this.cycleAnimation()
+  }
   render() {
-    let { animateX, animateY } = this.state
+    const { animateX, animateY, animateColor } = this.state
+    const { size, color } = this.props
+
+    const backgroundColor = animateColor.interpolate({
+      inputRange: [0, 1],
+      outputRange: [color || colors.yellow, colors.green]
+    })
 
     return (
       <Animated.View
@@ -40,7 +75,10 @@ export default class Orb extends Component {
           styles.orb,
           this.props.style,
           {
-            transform: [{ translateX: animateX }, { translateY: animateY }]
+            transform: [{ translateX: animateX }, { translateY: animateY }],
+            width: size || 35,
+            height: size || 35,
+            backgroundColor
           }
         ]}
       />
@@ -51,7 +89,9 @@ export default class Orb extends Component {
 Orb.propTypes = {
   style: PropTypes.oneOfType([PropTypes.object, PropTypes.array]),
   startingPosition: PropTypes.object,
-  position: PropTypes.object.isRequired
+  position: PropTypes.object.isRequired,
+  size: PropTypes.number,
+  color: PropTypes.string
 }
 
 const styles = StyleSheet.create({

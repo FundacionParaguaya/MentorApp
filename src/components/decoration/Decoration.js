@@ -8,20 +8,55 @@ export default class Decoration extends Component {
   render() {
     return (
       <View style={styles.container}>
-        <View style={styles.ballsContainer}>
+        <View
+          style={[
+            styles.ballsContainer,
+            {
+              zIndex: 3
+            }
+          ]}
+        >
           <Orb
-            style={[
-              {
-                width: 35,
-                height: 35,
-                backgroundColor: colors.gold
-              }
-            ]}
+            size={35}
+            color={colors.gold}
             position={{ x: 70, y: -70 }}
-            startingPosition={{ x: 700, y: -700 }}
+            startingPosition={{ x: 500, y: -500 }}
+          />
+          <Orb
+            size={25}
+            color={colors.red}
+            position={{ x: -100, y: -50 }}
+            startingPosition={{ x: -500, y: -300 }}
+          />
+          <Orb
+            size={35}
+            color={colors.gold}
+            position={{ x: -175, y: 10 }}
+            startingPosition={{ x: -700, y: 300 }}
+          />
+          <Orb
+            size={45}
+            color={colors.gold}
+            position={{ x: 170, y: -70 }}
+            startingPosition={{ x: 500, y: -300 }}
           />
         </View>
         <View style={styles.childContainer}>{this.props.children}</View>
+        <View
+          style={[
+            styles.ballsContainer,
+            {
+              zIndex: 1
+            }
+          ]}
+        >
+          <Orb
+            size={45}
+            color={colors.red}
+            position={{ x: -30, y: 60 }}
+            startingPosition={{ x: -400, y: 80 }}
+          />
+        </View>
       </View>
     )
   }
@@ -33,7 +68,6 @@ Decoration.propTypes = {
 
 const styles = StyleSheet.create({
   ballsContainer: {
-    zIndex: 3,
     justifyContent: 'center',
     alignItems: 'center',
     position: 'absolute',
