@@ -8,6 +8,8 @@ import SyncInProgress from '../../components/sync/SyncInProgress'
 
 const createTestProps = props => ({
   t: value => value,
+  navigation: { setParams: jest.fn() },
+  lng: 'en',
   drafts: [{ syncedAt: 1 }, { syncedAt: 2 }],
   offline: { outbox: [], online: true },
   ...props
@@ -58,6 +60,20 @@ describe('Sync Lifemap View when no questions are skipped', () => {
       })
       wrapper = shallow(<Sync {...props} />)
       expect(wrapper.find(FlatList)).toHaveLength(1)
+    })
+    it('calls sets the screen title on mount', () => {
+      expect(
+        wrapper.instance().props.navigation.setParams
+      ).toHaveBeenCalledTimes(1)
+    })
+    it('updates screen title when lng prop changes', () => {
+      wrapper.setProps({ lng: 'es' })
+      expect(
+        wrapper.instance().props.navigation.setParams
+      ).toHaveBeenCalledTimes(2)
+      expect(
+        wrapper.instance().props.navigation.setParams
+      ).toHaveBeenCalledWith({ title: 'views.synced' })
     })
   })
 })
