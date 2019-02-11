@@ -132,7 +132,7 @@ Dashboard.propTypes = {
   env: PropTypes.oneOf(['production', 'demo', 'testing', 'development']),
   user: PropTypes.object.isRequired,
   offline: PropTypes.object,
-  lng: PropTypes.string,
+  lng: PropTypes.string.isRequired,
   surveys: PropTypes.array
 }
 

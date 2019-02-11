@@ -75,7 +75,8 @@ export class Sync extends Component {
 
 Sync.propTypes = {
   drafts: PropTypes.array.isRequired,
-  offline: PropTypes.object.isRequired
+  offline: PropTypes.object.isRequired,
+  lng: PropTypes.string.isRequired
 }
 
 const styles = StyleSheet.create({
