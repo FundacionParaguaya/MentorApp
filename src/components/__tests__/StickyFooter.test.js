@@ -32,4 +32,10 @@ describe('Sticky Footer', () => {
       .handleClick()
     expect(props.handleClick).toHaveBeenCalledTimes(1)
   })
+
+  // I wasn't able to simulate Keyboard evets - Dan
+  it('hides the continue button when the keyboard is up', () => {
+    wrapper.setState({ continueVisible: false })
+    expect(wrapper.find(Button)).toHaveLength(0)
+  })
 })
