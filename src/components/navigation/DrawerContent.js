@@ -108,7 +108,6 @@ export class DrawerContent extends Component {
             {user.username}
           </Text>
           {/* Links */}
-          {/* <DrawerItems {...this.props}> */}
         </View>
         <View style={styles.itemsContainer}>
           <View>
