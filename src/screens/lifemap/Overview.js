@@ -127,7 +127,10 @@ export class Overview extends Component {
 
     const getTipDescription = () => {
       //no mandatory priotities
-      if (!mandatoryPrioritiesCount) {
+      if (
+        !mandatoryPrioritiesCount ||
+        mandatoryPrioritiesCount - draft.priorities.length <= 0
+      ) {
         return `${t('general.create')} ${t(
           'views.lifemap.priorities'
         ).toLowerCase()}!`
