@@ -2,8 +2,8 @@ import React from 'react'
 import { shallow } from 'enzyme'
 import { ScrollView, View } from 'react-native'
 import { Overview } from '../lifemap/Overview'
+import StickyFooter from '../../components/StickyFooter'
 import Button from '../../components/Button'
-import Tip from '../../components/Tip'
 import LifemapVisual from '../../components/LifemapVisual'
 import LifemapOverview from '../../components/LifemapOverview'
 import BottomModal from '../../components/BottomModal'
@@ -69,22 +69,20 @@ describe('Overview', () => {
     it('renders LifemapOverview', () => {
       expect(wrapper.find(LifemapOverview)).toHaveLength(1)
     })
-    it('renders Tip', () => {
-      expect(wrapper.find(Tip)).toHaveLength(1)
-    })
+
     it('does not render button initially', () => {
       expect(wrapper.find(Button)).toHaveLength(0)
     })
     it('closing tip changes state', () => {
       wrapper
-        .find(Tip)
+        .find(StickyFooter)
         .props()
         .onTipClose()
 
       expect(wrapper.instance().state.tipIsVisible).toBe(false)
     })
 
-    it('Tip is not visible when on resumeDraft screen', () => {
+    it('StickyFooter is not visible when on resumeDraft screen', () => {
       const props = createTestProps({
         navigation: {
           navigate: jest.fn(),
@@ -113,7 +111,7 @@ describe('Overview', () => {
         }
       })
       wrapper = shallow(<Overview {...props} />)
-      expect(wrapper.find(Tip).props().visible).toBe(false)
+      expect(wrapper.find(StickyFooter).props().visible).toBe(false)
     })
   })
   describe('functionality', () => {

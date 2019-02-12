@@ -8,41 +8,34 @@ import i18n from '../i18n'
 
 class Tip extends Component {
   render() {
-    if (this.props.visible) {
-      return (
-        <View style={styles.container}>
-          <ScrollView>{this.props.children}</ScrollView>
-          <View style={styles.tipview}>
-            <Text style={[globalStyles.h3, styles.text]}>
-              {this.props.title}
-            </Text>
-            <Text style={[globalStyles.p, styles.text]}>
-              {this.props.description}
-            </Text>
-            <View
-              style={{
-                height: 48
-              }}
-            >
-              <Button
-                text={i18n.t('general.gotIt')}
-                icon="done"
-                handleClick={() => this.props.onTipClose()}
-              />
-            </View>
-          </View>
+    return (
+      <View style={styles.tipview}>
+        <Text style={[globalStyles.h3, styles.text]}>{this.props.title}</Text>
+        <Text style={[globalStyles.p, styles.text]}>
+          {this.props.description}
+        </Text>
+        <View
+          style={{
+            height: 48
+          }}
+        >
+          <Button
+            text={i18n.t('general.gotIt')}
+            icon="done"
+            handleClick={() => this.props.onTipClose()}
+          />
         </View>
-      )
-    } else return this.props.children
+      </View>
+    )
   }
 }
 
 Tip.propTypes = {
   title: PropTypes.string.isRequired,
   description: PropTypes.string.isRequired,
-  onTipClose: PropTypes.func,
-  visible: PropTypes.bool
+  onTipClose: PropTypes.func
 }
+
 const styles = StyleSheet.create({
   container: {
     flex: 1,

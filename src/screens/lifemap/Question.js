@@ -114,7 +114,7 @@ export class Question extends Component {
         resumeDraft: false
       })
     } else {
-      return this.props.navigation.navigate('Skipped', {
+      return this.props.navigation.replace('Skipped', {
         draftId: this.draftId,
         survey: this.survey
       })

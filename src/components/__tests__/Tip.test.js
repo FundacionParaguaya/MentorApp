@@ -27,16 +27,6 @@ describe('Tip Component', () => {
     it('renders Button', () => {
       expect(wrapper.find(Button)).toHaveLength(1)
     })
-    it('does not render text when not visible', () => {
-      props = createTestProps({ visible: false })
-      wrapper = shallow(<Tip {...props} />)
-      expect(wrapper.find(Text)).toHaveLength(0)
-    })
-    it('does not render button when not visible', () => {
-      props = createTestProps({ visible: false })
-      wrapper = shallow(<Tip {...props} />)
-      expect(wrapper.find(Button)).toHaveLength(0)
-    })
   })
 
   describe('functionality', () => {

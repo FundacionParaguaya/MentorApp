@@ -38,7 +38,7 @@ export class Skipped extends Component {
     return this.props.navigation.isFocused()
   }
   handleClick = () =>
-    this.props.navigation.navigate('Overview', {
+    this.props.navigation.replace('Overview', {
       draftId: this.draftId,
       survey: this.survey,
       resumeDraft: false
@@ -58,46 +58,42 @@ export class Skipped extends Component {
       question => question.value === 0
     )
     return (
-      <Tip
-        title={t('views.lifemap.youSkipped')}
-        description={t('views.lifemap.whyNotTryAgain')}
-        visible={this.state.tipIsVisible}
+      <StickyFooter
+        handleClick={this.handleClick}
+        continueLabel={t('general.continue')}
+        type={this.state.tipIsVisible ? 'tip' : 'button'}
+        tipTitle={t('views.lifemap.youSkipped')}
+        tipDescription={t('views.lifemap.whyNotTryAgain')}
         onTipClose={this.onTipClose}
       >
-        <StickyFooter
-          handleClick={this.handleClick}
-          continueLabel={t('general.continue')}
-          visible={!this.state.tipIsVisible}
-        >
-          <Image
-            style={styles.image}
-            source={require('../../../assets/images/skipped.png')}
-          />
+        <Image
+          style={styles.image}
+          source={require('../../../assets/images/skipped.png')}
+        />
 
-          <FlatList
-            style={{ ...styles.background, paddingLeft: 25 }}
-            data={skippedQuestions}
-            keyExtractor={(item, index) => index.toString()}
-            renderItem={({ item }) => (
-              <SkippedListItem
-                item={
-                  this.survey.surveyStoplightQuestions.filter(
-                    question => question.codeName === item.key
-                  )[0].questionText
-                }
-                handleClick={() =>
-                  this.props.navigation.push('Question', {
-                    draftId: this.draftId,
-                    survey: this.survey,
-                    step: this.indicatorsArray.indexOf(item.key),
-                    skipped: true
-                  })
-                }
-              />
-            )}
-          />
-        </StickyFooter>
-      </Tip>
+        <FlatList
+          style={{ ...styles.background, paddingLeft: 25 }}
+          data={skippedQuestions}
+          keyExtractor={(item, index) => index.toString()}
+          renderItem={({ item }) => (
+            <SkippedListItem
+              item={
+                this.survey.surveyStoplightQuestions.filter(
+                  question => question.codeName === item.key
+                )[0].questionText
+              }
+              handleClick={() =>
+                this.props.navigation.push('Question', {
+                  draftId: this.draftId,
+                  survey: this.survey,
+                  step: this.indicatorsArray.indexOf(item.key),
+                  skipped: true
+                })
+              }
+            />
+          )}
+        />
+      </StickyFooter>
     )
   }
 }
