@@ -55,4 +55,8 @@ describe('Sticky Footer', () => {
     expect(wrapper.find(Button)).toHaveLength(0)
     expect(wrapper.find(Tip)).toHaveLength(0)
   })
+  it('hides the continue button when the keyboard is up', () => {
+    wrapper.setState({ continueVisible: false })
+    expect(wrapper.find(Button)).toHaveLength(0)
+  })
 })

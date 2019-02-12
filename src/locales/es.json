@@ -48,6 +48,7 @@
     "december": "Diciembre"
   },
   "views": {
+    "synced": "Sincronización",
     "dashboard": "Tablero",
     "createLifemap": "Crear un Mapa de Vida",
     "latestDrafts": "Últimas instantáneas",

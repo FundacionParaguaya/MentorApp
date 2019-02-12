@@ -6,9 +6,12 @@ import RoundImage from '../../components/RoundImage'
 
 const createTestProps = props => ({
   loadSurveys: jest.fn(),
+  t: value => value,
   navigation: {
-    navigate: jest.fn()
+    navigate: jest.fn(),
+    setParams: jest.fn()
   },
+  lng: 'en',
   surveys: [
     {
       id: 1,
@@ -46,6 +49,20 @@ describe('Surveys View', () => {
           wrapper.instance().props.surveys
         )
       })
+    })
+    it('calls sets the screen title on mount', () => {
+      expect(
+        wrapper.instance().props.navigation.setParams
+      ).toHaveBeenCalledTimes(1)
+    })
+    it('updates screen title when lng prop changes', () => {
+      wrapper.setProps({ lng: 'es' })
+      expect(
+        wrapper.instance().props.navigation.setParams
+      ).toHaveBeenCalledTimes(2)
+      expect(
+        wrapper.instance().props.navigation.setParams
+      ).toHaveBeenCalledWith({ title: 'views.createLifemap' })
     })
   })
 })

@@ -12,8 +12,7 @@ import colors from '../theme.json'
 export class Dashboard extends Component {
   static navigationOptions = ({ navigation }) => {
     return {
-      title: navigation.getParam('title', 'Dashboard'),
-      drawerLabel: navigation.getParam('title', 'Dashboard')
+      title: navigation.getParam('title', 'Dashboard')
     }
   }
   slowLoadingTimer
@@ -133,7 +132,7 @@ Dashboard.propTypes = {
   env: PropTypes.oneOf(['production', 'demo', 'testing', 'development']),
   user: PropTypes.object.isRequired,
   offline: PropTypes.object,
-  lng: PropTypes.string,
+  lng: PropTypes.string.isRequired,
   surveys: PropTypes.array
 }
 

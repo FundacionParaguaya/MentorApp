@@ -1,6 +1,6 @@
 {
   "general": {
-    "welcome": "Welcome",
+    "welcome": "Welcome!",
     "thankYou": "Thank you!",
     "disagree": "Disagree",
     "agree": "Agree",
@@ -48,6 +48,7 @@
     "december": "December"
   },
   "views": {
+    "synced": "Sync",
     "dashboard": "Dashboard",
     "createLifemap": "Create a life map",
     "latestDrafts": "Latest life maps",

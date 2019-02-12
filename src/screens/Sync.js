@@ -3,6 +3,7 @@ import { StyleSheet, ScrollView, Text, FlatList } from 'react-native'
 import { connect } from 'react-redux'
 import PropTypes from 'prop-types'
 import globalStyles from '../globalStyles'
+import { withNamespaces } from 'react-i18next'
 
 import SyncUpToDate from '../components/sync/SyncUpToDate'
 import SyncOffline from '../components/sync/SyncOffline'
@@ -10,6 +11,27 @@ import SyncInProgress from '../components/sync/SyncInProgress'
 import SyncListItem from '../components/sync/SyncListItem'
 
 export class Sync extends Component {
+  static navigationOptions = ({ navigation }) => {
+    return {
+      title: navigation.getParam('title', 'Sync')
+    }
+  }
+
+  updateTitle = () =>
+    this.props.navigation.setParams({
+      title: this.props.t('views.synced')
+    })
+
+  componentDidMount() {
+    this.updateTitle()
+  }
+
+  componentDidUpdate(prevProps) {
+    if (prevProps.lng !== this.props.lng) {
+      this.updateTitle()
+    }
+  }
+
   render() {
     const { drafts, offline } = this.props
     const lastSync = drafts.reduce(
@@ -53,7 +75,8 @@ export class Sync extends Component {
 
 Sync.propTypes = {
   drafts: PropTypes.array.isRequired,
-  offline: PropTypes.object.isRequired
+  offline: PropTypes.object.isRequired,
+  lng: PropTypes.string.isRequired
 }
 
 const styles = StyleSheet.create({
@@ -68,4 +91,4 @@ const mapStateToProps = ({ drafts, offline }) => ({
   offline
 })
 
-export default connect(mapStateToProps)(Sync)
+export default withNamespaces()(connect(mapStateToProps)(Sync))
