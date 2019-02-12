@@ -1,67 +1,77 @@
 import React, { Component } from 'react'
-import { StyleSheet, Animated } from 'react-native'
+import { StyleSheet, Animated, Easing } from 'react-native'
 import PropTypes from 'prop-types'
 import colors from '../../theme.json'
 
 export default class Orb extends Component {
-  constructor(props) {
-    super(props)
-    this.state = {
-      animateX: props.startingPosition
-        ? new Animated.Value(props.startingPosition.x)
-        : props.position.x,
-      animateY: props.startingPosition
-        ? new Animated.Value(props.startingPosition.y)
-        : props.position.y,
-      animateColor: new Animated.Value(0)
-    }
+  state = {
+    animateX: new Animated.Value(0),
+    animateY: new Animated.Value(0),
+    animateScale: new Animated.Value(1),
+    animateColor: new Animated.Value(0)
   }
+
+  // animation sequence
   cycleAnimation() {
-    const { position, startingPosition } = this.props
-    const delay = Math.floor(Math.random() * 3000)
-    if (startingPosition) {
-      Animated.sequence([
-        Animated.parallel([
-          Animated.timing(this.state.animateX, {
-            toValue: position.x,
-            duration: 3000
-          }),
-          Animated.timing(this.state.animateY, {
-            toValue: position.y,
-            duration: 3000
-          })
-        ]),
-        Animated.timing(this.state.animateColor, {
-          toValue: 1,
-          duration: 3000,
-          delay
+    const { position } = this.props
+    const { animateX, animateY, animateColor, animateScale } = this.state
+    const delay = Math.floor(Math.random() * 300)
+    Animated.sequence([
+      Animated.parallel([
+        Animated.timing(animateX, {
+          toValue: position.x,
+          duration: 1500,
+          delay: 500,
+          easing: Easing.elastic()
         }),
-        Animated.parallel([
-          Animated.timing(this.state.animateX, {
-            toValue: startingPosition.x,
-            duration: 3000,
-            delay: 3000 - delay
-          }),
-          Animated.timing(this.state.animateY, {
-            toValue: startingPosition.y,
-            duration: 3000,
-            delay: 3000 - delay
-          })
-        ]),
-        Animated.timing(this.state.animateColor, {
-          toValue: 0,
-          duration: 1
+        Animated.timing(animateY, {
+          toValue: position.y,
+          duration: 1500,
+          delay: 500,
+          easing: Easing.elastic()
         })
-      ]).start(() => {
-        this.cycleAnimation()
+      ]),
+      Animated.timing(animateScale, {
+        toValue: 0.5,
+        duration: 100,
+        delay
+      }),
+      Animated.timing(animateColor, {
+        toValue: 1,
+        duration: 1
+      }),
+      Animated.timing(animateScale, {
+        toValue: 1,
+        duration: 300,
+        easing: Easing.elastic(3)
+      }),
+      Animated.parallel([
+        Animated.timing(animateX, {
+          toValue: 0,
+          duration: 1500,
+          delay: 500 - delay,
+          easing: Easing.back()
+        }),
+        Animated.timing(animateY, {
+          toValue: 0,
+          duration: 1500,
+          delay: 500 - delay,
+          easing: Easing.back()
+        })
+      ]),
+      Animated.timing(animateColor, {
+        toValue: 0,
+        duration: 1
       })
-    }
+    ]).start(() => {
+      this.cycleAnimation()
+    })
   }
   componentDidMount() {
     this.cycleAnimation()
   }
   render() {
-    const { animateX, animateY, animateColor } = this.state
+    const { animateX, animateY, animateColor, animateScale } = this.state
     const { size, color } = this.props
 
     const backgroundColor = animateColor.interpolate({
@@ -75,7 +85,12 @@ export default class Orb extends Component {
           styles.orb,
           this.props.style,
           {
-            transform: [{ translateX: animateX }, { translateY: animateY }],
+            transform: [
+              { translateX: animateX },
+              { translateY: animateY },
+              { scaleX: animateScale },
+              { scaleY: animateScale }
+            ],
             width: size || 35,
             height: size || 35,
             backgroundColor
@@ -88,7 +103,6 @@ export default class Orb extends Component {
 
 Orb.propTypes = {
   style: PropTypes.oneOfType([PropTypes.object, PropTypes.array]),
-  startingPosition: PropTypes.object,
   position: PropTypes.object.isRequired,
   size: PropTypes.number,
   color: PropTypes.string
