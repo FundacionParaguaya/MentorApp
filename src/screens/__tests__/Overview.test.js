@@ -63,9 +63,6 @@ describe('Overview', () => {
     wrapper = shallow(<Overview {...props} />)
   })
   describe('rendering', () => {
-    it('renders ScrollView', () => {
-      expect(wrapper.find(ScrollView)).toHaveLength(1)
-    })
     it('renders LifemapVisual', () => {
       expect(wrapper.find(LifemapVisual)).toHaveLength(1)
     })
@@ -87,23 +84,38 @@ describe('Overview', () => {
       expect(wrapper.instance().state.tipIsVisible).toBe(false)
     })
 
-    it('does not render Tip when no priorities can be added (all indicators are green)', () => {
+    it('Tip is not visible when on resumeDraft screen', () => {
       const props = createTestProps({
-        drafts: [
-          {
-            draftId: 1,
-            priorities: [{ action: 'Some action' }],
-            achievements: [],
-            indicatorSurveyDataList: [{ key: 'phoneNumber', value: 3 }],
-            progress: { screen: 'Location' }
-          }
-        ]
+        navigation: {
+          navigate: jest.fn(),
+          isFocused: jest.fn(),
+          setParams: jest.fn(),
+          getParam: jest.fn(param => {
+            if (param === 'draftId') {
+              return 1
+            }
+            if (param === 'survey') {
+              return {
+                id: 2,
+                title: 'Other survey',
+                minimumPriorities: 5,
+                surveyStoplightQuestions: [
+                  { phoneNumber: 'phoneNumber' },
+                  { education: 'education' },
+                  { c: 'c' }
+                ]
+              }
+            }
+            if (param === 'resumeDraft') {
+              return true
+            }
+          })
+        }
       })
       wrapper = shallow(<Overview {...props} />)
-      expect(wrapper.find(Tip)).toHaveLength(0)
+      expect(wrapper.find(Tip).props().visible).toBe(false)
     })
   })
-
   describe('functionality', () => {
     it('passes the correct survey data to lifemap overview', () => {
       expect(wrapper.find(LifemapOverview).props().surveyData).toEqual([

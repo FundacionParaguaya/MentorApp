@@ -1,13 +1,15 @@
 import React from 'react'
 
 import { shallow } from 'enzyme'
-import { Text, Modal } from 'react-native'
+import { Text } from 'react-native'
 import Button from '../Button'
 import Tip from '../Tip'
 
 const createTestProps = props => ({
   title: 'Title',
   description: 'Description',
+  visible: true,
+  onTipClose: jest.fn(),
   ...props
 })
 
@@ -19,32 +21,26 @@ describe('Tip Component', () => {
     wrapper = shallow(<Tip {...props} />)
   })
   describe('rendering', () => {
-    it('renders Modal', () => {
-      expect(wrapper.find(Modal)).toHaveLength(1)
-    })
     it('renders title and description', () => {
       expect(wrapper.find(Text)).toHaveLength(2)
     })
     it('renders Button', () => {
       expect(wrapper.find(Button)).toHaveLength(1)
     })
+    it('does not render text when not visible', () => {
+      props = createTestProps({ visible: false })
+      wrapper = shallow(<Tip {...props} />)
+      expect(wrapper.find(Text)).toHaveLength(0)
+    })
+    it('does not render button when not visible', () => {
+      props = createTestProps({ visible: false })
+      wrapper = shallow(<Tip {...props} />)
+      expect(wrapper.find(Button)).toHaveLength(0)
+    })
   })
 
   describe('functionality', () => {
-    it('has correct initial state', () => {
-      expect(wrapper.instance().state).toEqual({ tipVisible: true })
-    })
-    it('clicking Button changes visible state to false and fires onTipClose', () => {
-      wrapper
-        .find(Button)
-        .props()
-        .handleClick()
-      expect(wrapper.instance().state).toEqual({ tipVisible: false })
-    })
     it('clicking Button fires onTipClose if providex', () => {
-      props = createTestProps({ onTipClose: jest.fn() })
-      wrapper = shallow(<Tip {...props} />)
-
       wrapper
         .find(Button)
         .props()

@@ -6,6 +6,7 @@ import StickyFooter from '../StickyFooter'
 
 const createTestProps = props => ({
   children: [],
+  visible: true,
   handleClick: jest.fn(),
   continueLabel: 'Continue',
   ...props
@@ -31,5 +32,11 @@ describe('Sticky Footer', () => {
       .props()
       .handleClick()
     expect(props.handleClick).toHaveBeenCalledTimes(1)
+  })
+  it('does not render button when visible prop is false', () => {
+    props = createTestProps({ visible: false })
+    wrapper = shallow(<StickyFooter {...props} />)
+
+    expect(wrapper.find(Button)).toHaveLength(0)
   })
 })
