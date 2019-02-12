@@ -80,6 +80,16 @@ describe('Skipped Questions View when questions are skipped', () => {
         { key: 'phoneNumber', value: 0 }
       ])
     })
+    it('has correct initial state', () => {
+      expect(wrapper.instance().state).toEqual({ tipIsVisible: true })
+    })
+    it('changes tipVisible state when tip is closed', () => {
+      wrapper
+        .find(Tip)
+        .props()
+        .onTipClose()
+      expect(wrapper.instance().state.tipIsVisible).toBe(false)
+    })
   })
   describe('Render optimization', () => {
     it('checks if screen is focused before updating', () => {

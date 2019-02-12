@@ -7,6 +7,7 @@ import { addDraftProgress } from '../../redux/actions'
 import StickyFooter from '../../components/StickyFooter'
 import Tip from '../../components/Tip'
 import SkippedListItem from '../../components/SkippedListItem'
+import globalStyles from '../../globalStyles'
 
 export class Skipped extends Component {
   draftId = this.props.navigation.getParam('draftId')
@@ -14,6 +15,7 @@ export class Skipped extends Component {
   indicatorsArray = this.survey.surveyStoplightQuestions.map(
     item => item.codeName
   )
+  state = { tipIsVisible: true }
 
   componentDidMount() {
     this.props.addDraftProgress(this.draftId, {
@@ -42,6 +44,12 @@ export class Skipped extends Component {
       resumeDraft: false
     })
 
+  onTipClose = () => {
+    this.setState({
+      tipIsVisible: false
+    })
+  }
+
   render() {
     const { t } = this.props
     const draft = this.props.drafts.find(item => item.draftId === this.draftId)
@@ -50,42 +58,46 @@ export class Skipped extends Component {
       question => question.value === 0
     )
     return (
-      <StickyFooter
-        handleClick={this.handleClick}
-        continueLabel={t('general.continue')}
+      <Tip
+        title={t('views.lifemap.youSkipped')}
+        description={t('views.lifemap.whyNotTryAgain')}
+        visible={this.state.tipIsVisible}
+        onTipClose={this.onTipClose}
       >
-        <Image
-          style={styles.image}
-          source={require('../../../assets/images/skipped.png')}
-        />
+        <StickyFooter
+          handleClick={this.handleClick}
+          continueLabel={t('general.continue')}
+          visible={!this.state.tipIsVisible}
+        >
+          <Image
+            style={styles.image}
+            source={require('../../../assets/images/skipped.png')}
+          />
 
-        <FlatList
-          style={{ ...styles.background, paddingLeft: 25 }}
-          data={skippedQuestions}
-          keyExtractor={(item, index) => index.toString()}
-          renderItem={({ item }) => (
-            <SkippedListItem
-              item={
-                this.survey.surveyStoplightQuestions.filter(
-                  question => question.codeName === item.key
-                )[0].questionText
-              }
-              handleClick={() =>
-                this.props.navigation.push('Question', {
-                  draftId: this.draftId,
-                  survey: this.survey,
-                  step: this.indicatorsArray.indexOf(item.key),
-                  skipped: true
-                })
-              }
-            />
-          )}
-        />
-        <Tip
-          title={t('views.lifemap.youSkipped')}
-          description={t('views.lifemap.whyNotTryAgain')}
-        />
-      </StickyFooter>
+          <FlatList
+            style={{ ...styles.background, paddingLeft: 25 }}
+            data={skippedQuestions}
+            keyExtractor={(item, index) => index.toString()}
+            renderItem={({ item }) => (
+              <SkippedListItem
+                item={
+                  this.survey.surveyStoplightQuestions.filter(
+                    question => question.codeName === item.key
+                  )[0].questionText
+                }
+                handleClick={() =>
+                  this.props.navigation.push('Question', {
+                    draftId: this.draftId,
+                    survey: this.survey,
+                    step: this.indicatorsArray.indexOf(item.key),
+                    skipped: true
+                  })
+                }
+              />
+            )}
+          />
+        </StickyFooter>
+      </Tip>
     )
   }
 }

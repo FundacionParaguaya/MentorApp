@@ -33,7 +33,7 @@ class Tip extends Component {
           </View>
         </View>
       )
-    } else return <View style={styles.container}>{this.props.children}</View>
+    } else return this.props.children
   }
 }
 
@@ -47,7 +47,10 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     flexDirection: 'column',
-    justifyContent: 'flex-end'
+
+    justifyContent: 'flex-end',
+
+    backgroundColor: colors.white
   },
   tipview: {
     width: '100%',
