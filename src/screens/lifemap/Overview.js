@@ -11,7 +11,7 @@ import { connect } from 'react-redux'
 import PropTypes from 'prop-types'
 import { withNamespaces } from 'react-i18next'
 import { addDraftProgress } from '../../redux/actions'
-import Tip from '../../components/Tip'
+import StickyFooter from '../../components/StickyFooter'
 import LifemapVisual from '../../components/LifemapVisual'
 import Button from '../../components/Button'
 import LifemapOverview from '../../components/LifemapOverview'
@@ -117,20 +117,46 @@ export class Overview extends Component {
 
   render() {
     const { t } = this.props
-    const {
-      filterModalIsOpen,
-      selectedFilter,
-      filterLabel,
-      tipIsVisible
-    } = this.state
+    const { filterModalIsOpen, selectedFilter, filterLabel } = this.state
 
     const draft = this.props.drafts.find(item => item.draftId === this.draftId)
     const mandatoryPrioritiesCount = this.getMandatoryPrioritiesCount(draft)
     const resumeDraft = this.props.navigation.getParam('resumeDraft')
+    const tipIsVisible = !resumeDraft && this.state.tipIsVisible
+
+    const getTipDescription = () => {
+      //no mandatory priotities
+      if (
+        !mandatoryPrioritiesCount ||
+        mandatoryPrioritiesCount - draft.priorities.length <= 0
+      ) {
+        return `${t('general.create')} ${t(
+          'views.lifemap.priorities'
+        ).toLowerCase()}!`
+        //only one mandatory priority
+      } else if (mandatoryPrioritiesCount - draft.priorities.length === 1) {
+        return t('views.lifemap.youNeedToAddPriotity')
+      }
+      //more than one mandatory priority
+      else {
+        return `${t('general.create')} ${mandatoryPrioritiesCount -
+          draft.priorities.length} ${t(
+          'views.lifemap.priorities'
+        ).toLowerCase()}!`
+      }
+    }
 
     return (
-      <View style={[globalStyles.background, styles.contentContainer]}>
-        <ScrollView>
+      <StickyFooter
+        continueLabel={t('general.continue')}
+        handleClick={() => this.handleContinue(mandatoryPrioritiesCount, draft)}
+        visible={!resumeDraft}
+        type={tipIsVisible ? 'tip' : 'button'}
+        tipTitle={t('views.lifemap.toComplete')}
+        onTipClose={this.onTipClose}
+        tipDescription={getTipDescription()}
+      >
+        <View style={[globalStyles.background, styles.contentContainer]}>
           <View style={styles.indicatorsContainer}>
             <LifemapVisual
               large
@@ -175,179 +201,138 @@ export class Overview extends Component {
             />
           </View>
 
-          {/*Priorities Tooltip - show only if on resume draft screen*/}
-          {!resumeDraft ? (
-            <View>
-              {/* if there are possible mandatory priorities */}
-              {mandatoryPrioritiesCount &&
-              mandatoryPrioritiesCount > draft.priorities.length ? (
-                <Tip
-                  title={t('views.lifemap.toComplete')}
-                  description={
-                    mandatoryPrioritiesCount === 1 ||
-                    mandatoryPrioritiesCount - draft.priorities.length === 1
-                      ? t('views.lifemap.youNeedToAddPriotity')
-                      : `${t('general.create')} ${mandatoryPrioritiesCount -
-                          draft.priorities.length} ${t(
-                          'views.lifemap.priorities'
-                        ).toLowerCase()}!`
+          {/* Filters modal */}
+          <BottomModal
+            isOpen={filterModalIsOpen}
+            onRequestClose={this.toggleFilterModal}
+            onEmptyClose={() => this.selectFilter(false)}
+          >
+            <View style={styles.dropdown}>
+              <Text style={[globalStyles.p, styles.modalTitle]}>
+                {t('general.chooseView')}
+              </Text>
+
+              {/* All */}
+              <TouchableOpacity
+                id="all"
+                style={styles.row}
+                onPress={() => this.selectFilter(false)}
+              >
+                <View style={[styles.circle, { backgroundColor: '#EAD1AF' }]} />
+                <Text>
+                  {t('views.lifemap.allIndicators')} (
+                  {draft.indicatorSurveyDataList.length})
+                </Text>
+              </TouchableOpacity>
+
+              {/* Green */}
+              <TouchableOpacity
+                id="green"
+                style={styles.row}
+                onPress={() => this.selectFilter(3, t('views.lifemap.green'))}
+              >
+                <View
+                  style={[styles.circle, { backgroundColor: colors.green }]}
+                />
+                <Text>
+                  {t('views.lifemap.green')} (
+                  {
+                    draft.indicatorSurveyDataList.filter(
+                      item => item.value === 3
+                    ).length
                   }
-                  visible={tipIsVisible}
-                  onTipClose={this.onTipClose}
-                />
-              ) : (
-                <View />
-              )}
+                  )
+                </Text>
+              </TouchableOpacity>
 
-              {/* if there are no mandatory priorities, but it's possible to add priorities */}
-              {this.getPotentialPrioritiesCount(draft) &&
-              !mandatoryPrioritiesCount ? (
-                <Tip
-                  title={t('views.lifemap.toComplete')}
-                  description={`${t('general.create')} ${t(
-                    'views.lifemap.priorities'
-                  ).toLowerCase()}!`}
-                  visible={tipIsVisible}
-                  onTipClose={this.onTipClose}
+              {/* Yellow */}
+              <TouchableOpacity
+                id="yellow"
+                style={styles.row}
+                onPress={() => this.selectFilter(2, t('views.lifemap.yellow'))}
+              >
+                <View
+                  style={[styles.circle, { backgroundColor: colors.gold }]}
                 />
-              ) : (
-                <View />
-              )}
+                <Text>
+                  {t('views.lifemap.yellow')} (
+                  {
+                    draft.indicatorSurveyDataList.filter(
+                      item => item.value === 2
+                    ).length
+                  }
+                  )
+                </Text>
+              </TouchableOpacity>
+
+              {/* Red */}
+              <TouchableOpacity
+                id="red"
+                style={styles.row}
+                onPress={() => this.selectFilter(1, t('views.lifemap.red'))}
+              >
+                <View
+                  style={[styles.circle, { backgroundColor: colors.red }]}
+                />
+                <Text>
+                  {t('views.lifemap.red')} (
+                  {
+                    draft.indicatorSurveyDataList.filter(
+                      item => item.value === 1
+                    ).length
+                  }
+                  )
+                </Text>
+              </TouchableOpacity>
+
+              {/* Priorities/achievements */}
+              <TouchableOpacity
+                id="priorities"
+                style={styles.row}
+                onPress={() =>
+                  this.selectFilter(
+                    'priorities',
+                    `${t('views.lifemap.priorities')} & ${t(
+                      'views.lifemap.achievements'
+                    )}`
+                  )
+                }
+              >
+                <View
+                  style={[styles.circle, { backgroundColor: colors.blue }]}
+                />
+                <Text>
+                  {t('views.lifemap.priorities')} &{' '}
+                  {t('views.lifemap.achievements')} (
+                  {draft.priorities.length + draft.achievements.length})
+                </Text>
+              </TouchableOpacity>
+
+              {/* Skipped */}
+              <TouchableOpacity
+                id="skipped"
+                style={styles.row}
+                onPress={() =>
+                  this.selectFilter(0, t('views.skippedIndicators'))
+                }
+              >
+                <View
+                  style={[styles.circle, { backgroundColor: colors.palegrey }]}
+                />
+                <Text>
+                  {t('views.skippedIndicators')} (
+                  {
+                    draft.indicatorSurveyDataList.filter(
+                      item => item.value === 0
+                    ).length
+                  }
+                  )
+                </Text>
+              </TouchableOpacity>
             </View>
-          ) : null}
-        </ScrollView>
-        {!resumeDraft && !tipIsVisible ? (
-          <View style={{ height: 50 }}>
-            <Button
-              id="continue"
-              colored
-              text={t('general.continue')}
-              handleClick={() =>
-                this.handleContinue(mandatoryPrioritiesCount, draft)
-              }
-            />
-          </View>
-        ) : null}
-
-        {/* Filters modal */}
-        <BottomModal
-          isOpen={filterModalIsOpen}
-          onRequestClose={this.toggleFilterModal}
-          onEmptyClose={() => this.selectFilter(false)}
-        >
-          <View style={styles.dropdown}>
-            <Text style={[globalStyles.p, styles.modalTitle]}>
-              {t('general.chooseView')}
-            </Text>
-
-            {/* All */}
-            <TouchableOpacity
-              id="all"
-              style={styles.row}
-              onPress={() => this.selectFilter(false)}
-            >
-              <View style={[styles.circle, { backgroundColor: '#EAD1AF' }]} />
-              <Text>
-                {t('views.lifemap.allIndicators')} (
-                {draft.indicatorSurveyDataList.length})
-              </Text>
-            </TouchableOpacity>
-
-            {/* Green */}
-            <TouchableOpacity
-              id="green"
-              style={styles.row}
-              onPress={() => this.selectFilter(3, t('views.lifemap.green'))}
-            >
-              <View
-                style={[styles.circle, { backgroundColor: colors.green }]}
-              />
-              <Text>
-                {t('views.lifemap.green')} (
-                {
-                  draft.indicatorSurveyDataList.filter(item => item.value === 3)
-                    .length
-                }
-                )
-              </Text>
-            </TouchableOpacity>
-
-            {/* Yellow */}
-            <TouchableOpacity
-              id="yellow"
-              style={styles.row}
-              onPress={() => this.selectFilter(2, t('views.lifemap.yellow'))}
-            >
-              <View style={[styles.circle, { backgroundColor: colors.gold }]} />
-              <Text>
-                {t('views.lifemap.yellow')} (
-                {
-                  draft.indicatorSurveyDataList.filter(item => item.value === 2)
-                    .length
-                }
-                )
-              </Text>
-            </TouchableOpacity>
-
-            {/* Red */}
-            <TouchableOpacity
-              id="red"
-              style={styles.row}
-              onPress={() => this.selectFilter(1, t('views.lifemap.red'))}
-            >
-              <View style={[styles.circle, { backgroundColor: colors.red }]} />
-              <Text>
-                {t('views.lifemap.red')} (
-                {
-                  draft.indicatorSurveyDataList.filter(item => item.value === 1)
-                    .length
-                }
-                )
-              </Text>
-            </TouchableOpacity>
-
-            {/* Priorities/achievements */}
-            <TouchableOpacity
-              id="priorities"
-              style={styles.row}
-              onPress={() =>
-                this.selectFilter(
-                  'priorities',
-                  `${t('views.lifemap.priorities')} & ${t(
-                    'views.lifemap.achievements'
-                  )}`
-                )
-              }
-            >
-              <View style={[styles.circle, { backgroundColor: colors.blue }]} />
-              <Text>
-                {t('views.lifemap.priorities')} &{' '}
-                {t('views.lifemap.achievements')} (
-                {draft.priorities.length + draft.achievements.length})
-              </Text>
-            </TouchableOpacity>
-
-            {/* Skipped */}
-            <TouchableOpacity
-              id="skipped"
-              style={styles.row}
-              onPress={() => this.selectFilter(0, t('views.skippedIndicators'))}
-            >
-              <View
-                style={[styles.circle, { backgroundColor: colors.palegrey }]}
-              />
-              <Text>
-                {t('views.skippedIndicators')} (
-                {
-                  draft.indicatorSurveyDataList.filter(item => item.value === 0)
-                    .length
-                }
-                )
-              </Text>
-            </TouchableOpacity>
-          </View>
-        </BottomModal>
-      </View>
+          </BottomModal>
+        </View>
+      </StickyFooter>
     )
   }
 }

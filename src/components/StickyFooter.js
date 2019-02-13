@@ -1,6 +1,7 @@
 import React, { Component } from 'react'
 import { View, ScrollView, StyleSheet, Keyboard } from 'react-native'
 import Button from './Button'
+import Tip from './Tip'
 import PropTypes from 'prop-types'
 import globalStyles from '../globalStyles'
 
@@ -31,27 +32,46 @@ export default class StickyFooter extends Component {
     return (
       <View style={[globalStyles.background, styles.contentContainer]}>
         <ScrollView>{this.props.children}</ScrollView>
-        {this.state.continueVisible ? (
-          <View style={{ height: 50 }}>
-            <Button
-              id="continue"
-              colored
-              text={this.props.continueLabel}
-              handleClick={this.props.handleClick}
-            />
+        {this.props.visible && this.state.continueVisible ? (
+          <View>
+            {this.props.type === 'button' ? (
+              <View style={{ height: 50 }}>
+                <Button
+                  id="continue"
+                  colored
+                  text={this.props.continueLabel}
+                  handleClick={this.props.handleClick}
+                />
+              </View>
+            ) : (
+              <Tip
+                visible={this.props.tipIsVisible}
+                title={this.props.tipTitle}
+                onTipClose={this.props.onTipClose}
+                description={this.props.tipDescription}
+              />
+            )}
           </View>
-        ) : (
-          <View />
-        )}
+        ) : null}
       </View>
     )
   }
 }
 
 StickyFooter.propTypes = {
-  children: PropTypes.array.isRequired,
+  children: PropTypes.oneOfType([PropTypes.array, PropTypes.object]).isRequired,
   handleClick: PropTypes.func,
-  continueLabel: PropTypes.string
+  visible: PropTypes.bool.isRequired,
+  continueLabel: PropTypes.string,
+  type: PropTypes.oneOf(['button', 'tip']),
+  tipTitle: PropTypes.string,
+  tipDescription: PropTypes.string,
+  onTipClose: PropTypes.func
+}
+
+StickyFooter.defaultProps = {
+  type: 'button',
+  visible: true
 }
 
 const styles = StyleSheet.create({
