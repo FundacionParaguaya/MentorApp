@@ -12,14 +12,15 @@ import {
 import { withNamespaces } from 'react-i18next'
 import { connect } from 'react-redux'
 import PropTypes from 'prop-types'
-import { DrawerItems } from 'react-navigation'
 import CommunityIcon from 'react-native-vector-icons/MaterialCommunityIcons'
+import Icon from 'react-native-vector-icons/MaterialIcons'
 import { url } from '../../config'
 import globalStyles from '../../globalStyles'
 import i18n from '../../i18n'
 import colors from '../../theme.json'
 import { switchLanguage, logout } from '../../redux/actions'
 import LogoutPopup from './LogoutPopup'
+import dashboardIcon from '../../../assets/images/icon_dashboard.png'
 
 // Component that renders the drawer menu content. DrawerItems are the links to
 // the given views.
@@ -27,7 +28,8 @@ export class DrawerContent extends Component {
   state = {
     checkboxesVisible: false,
     ckeckedBoxes: 0,
-    showErrors: false
+    showErrors: false,
+    activeTab: 'Dashboard'
   }
   changeLanguage = lng => {
     i18n.changeLanguage(lng) // change the currently uses i18n language
@@ -59,6 +61,11 @@ export class DrawerContent extends Component {
       ckeckedBoxes: state ? ckeckedBoxes + 1 : ckeckedBoxes - 1
     })
   }
+  navigateToScreen = screen => {
+    this.setState({ activeTab: screen })
+    this.props.navigation.toggleDrawer()
+    this.props.navigation.navigate(screen)
+  }
   render() {
     const { lng, user, navigation } = this.props
     const { checkboxesVisible, showErrors } = this.state
@@ -73,7 +80,6 @@ export class DrawerContent extends Component {
             style={{ height: 172, width: 304 }}
             source={require('../../../assets/images/navigation_image.png')}
           />
-
           {/* Language Switcher */}
           <View style={styles.languageSwitch}>
             <TouchableOpacity id="en" onPress={() => this.changeLanguage('en')}>
@@ -106,15 +112,57 @@ export class DrawerContent extends Component {
           >
             {user.username}
           </Text>
-
           {/* Links */}
-          <DrawerItems {...this.props} />
         </View>
-
+        <View style={styles.itemsContainer}>
+          <View>
+            <TouchableOpacity
+              id="dashboard"
+              style={{
+                ...styles.navItem,
+                backgroundColor:
+                  this.state.activeTab === 'Dashboard' ? colors.primary : null
+              }}
+              onPress={() => this.navigateToScreen('Dashboard')}
+            >
+              <Image source={dashboardIcon} />
+              <Text style={styles.label}>{i18n.t('views.dashboard')}</Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              id="surveys"
+              style={{
+                ...styles.navItem,
+                backgroundColor:
+                  this.state.activeTab === 'Surveys' ? colors.primary : null
+              }}
+              onPress={() => this.navigateToScreen('Surveys')}
+            >
+              <Icon
+                name="swap-calls"
+                style={{ transform: [{ rotate: '90deg' }] }}
+                size={20}
+                color={colors.palegreen}
+              />
+              <Text style={styles.label}>{i18n.t('views.createLifemap')}</Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              id="sync"
+              style={{
+                ...styles.navItem,
+                backgroundColor:
+                  this.state.activeTab === 'Sync' ? colors.primary : null
+              }}
+              onPress={() => this.navigateToScreen('Sync')}
+            >
+              <Icon name="sync" size={20} color={colors.palegreen} />
+              <Text style={styles.label}>{i18n.t('views.synced')}</Text>
+            </TouchableOpacity>
+          </View>
+        </View>
         {/* Logout button */}
         <TouchableOpacity
           id="logout"
-          style={styles.logout}
+          style={styles.navItem}
           onPress={() => {
             this.props.navigation.toggleDrawer()
             navigation.setParams({ logoutModalOpen: true })
@@ -125,9 +173,7 @@ export class DrawerContent extends Component {
             size={20}
             color={colors.palegreen}
           />
-          <Text style={styles.logoutLabel}>
-            {i18n.t('views.logout.logout')}
-          </Text>
+          <Text style={styles.label}>{i18n.t('views.logout.logout')}</Text>
         </TouchableOpacity>
 
         {/* Logout popup */}
@@ -182,6 +228,10 @@ export default withNamespaces()(
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    flexDirection: 'column'
+  },
+  itemsContainer: {
+    flex: 1,
     flexDirection: 'column',
     justifyContent: 'space-between'
   },
@@ -202,13 +252,15 @@ const styles = StyleSheet.create({
     top: 139,
     left: 16
   },
-  logout: {
+  navItem: {
     flexDirection: 'row',
-    marginLeft: 15,
-    marginBottom: 25
+    paddingLeft: 15,
+    paddingBottom: 15,
+    paddingTop: 15
   },
-  logoutLabel: {
+  label: {
     marginLeft: 20,
+
     ...Platform.select({
       ios: {
         fontFamily: 'Poppins',

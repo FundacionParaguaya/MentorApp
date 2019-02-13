@@ -1,13 +1,15 @@
 import React from 'react'
 
 import { shallow } from 'enzyme'
-import { Text, Modal } from 'react-native'
+import { Text } from 'react-native'
 import Button from '../Button'
 import Tip from '../Tip'
 
 const createTestProps = props => ({
   title: 'Title',
   description: 'Description',
+  visible: true,
+  onTipClose: jest.fn(),
   ...props
 })
 
@@ -19,9 +21,6 @@ describe('Tip Component', () => {
     wrapper = shallow(<Tip {...props} />)
   })
   describe('rendering', () => {
-    it('renders Modal', () => {
-      expect(wrapper.find(Modal)).toHaveLength(1)
-    })
     it('renders title and description', () => {
       expect(wrapper.find(Text)).toHaveLength(2)
     })
@@ -31,15 +30,13 @@ describe('Tip Component', () => {
   })
 
   describe('functionality', () => {
-    it('has correct initial state', () => {
-      expect(wrapper.instance().state).toEqual({ tipVisible: true })
-    })
-    it('clicking Button changes visible state to false', () => {
+    it('clicking Button fires onTipClose if providex', () => {
       wrapper
         .find(Button)
         .props()
         .handleClick()
-      expect(wrapper.instance().state).toEqual({ tipVisible: false })
+
+      expect(props.onTipClose).toHaveBeenCalledTimes(1)
     })
     it('shows correct title', () => {
       expect(

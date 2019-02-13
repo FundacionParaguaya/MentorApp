@@ -35,7 +35,7 @@ export const generateNavOptions = ({ navigation, burgerMenu = true }) => ({
   },
   headerStyle: {
     height: 66,
-    backgroundColor: colors.beige
+    backgroundColor: colors.white
   },
   headerLeftContainerStyle: {
     marginLeft: 19
@@ -52,7 +52,7 @@ export const generateNavOptions = ({ navigation, burgerMenu = true }) => ({
           style={styles.touchable}
           onPress={() => navigation.setParams({ modalOpen: true })}
         >
-          <Icon name="close" size={25} color={colors.lightdark} />
+          <Icon name="close" size={25} color={colors.palegreen} />
         </TouchableOpacity>
         <Popup
           isOpen={navigation.getParam('modalOpen')}
@@ -113,7 +113,7 @@ export const generateNavOptions = ({ navigation, burgerMenu = true }) => ({
       style={styles.touchable}
       onPress={() => navigation.toggleDrawer()}
     >
-      <Icon name="menu" size={30} color={colors.lightdark} />
+      <Icon name="menu" size={30} color={colors.palegreen} />
     </TouchableOpacity>
   ) : (
     <AndroidBackHandler
@@ -138,7 +138,7 @@ export const generateNavOptions = ({ navigation, burgerMenu = true }) => ({
             }
           }}
         >
-          <Icon name="arrow-back" size={25} color={colors.lightdark} />
+          <Icon name="arrow-back" size={25} color={colors.palegreen} />
         </TouchableOpacity>
         <Popup
           isOpen={navigation.getParam('backModalOpen')}

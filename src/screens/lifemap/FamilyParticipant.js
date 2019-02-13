@@ -70,7 +70,6 @@ export class FamilyParticipant extends Component {
 
   componentDidMount() {
     this.getDraft()
-
     this.props.addDraftProgress(this.draftId, {
       screen: 'FamilyParticipant'
     })

@@ -3,7 +3,7 @@
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/palebeige"
+    android:background="@color/white"
     android:gravity="center">
     <ImageView
         android:src="@drawable/background_splash"

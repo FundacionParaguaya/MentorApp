@@ -1,9 +1,8 @@
 import React from 'react'
 import { shallow } from 'enzyme'
-import { ScrollView } from 'react-native'
 import { Overview } from '../lifemap/Overview'
+import StickyFooter from '../../components/StickyFooter'
 import Button from '../../components/Button'
-import Tip from '../../components/Tip'
 import LifemapVisual from '../../components/LifemapVisual'
 import LifemapOverview from '../../components/LifemapOverview'
 import BottomModal from '../../components/BottomModal'
@@ -31,6 +30,9 @@ const createTestProps = props => ({
           ]
         }
       }
+      if (param === 'resumeDraft') {
+        return false
+      }
     })
   },
   drafts: [
@@ -52,77 +54,66 @@ const createTestProps = props => ({
   ...props
 })
 
-describe('Overview Lifemap View when no questions are skipped', () => {
+describe('Overview', () => {
   let wrapper
+  let props
   beforeEach(() => {
-    const props = createTestProps()
+    props = createTestProps()
     wrapper = shallow(<Overview {...props} />)
   })
   describe('rendering', () => {
-    it('renders ScrollView', () => {
-      expect(wrapper.find(ScrollView)).toHaveLength(1)
-    })
     it('renders LifemapVisual', () => {
       expect(wrapper.find(LifemapVisual)).toHaveLength(1)
     })
     it('renders LifemapOverview', () => {
       expect(wrapper.find(LifemapOverview)).toHaveLength(1)
     })
-    it('renders Button', () => {
-      expect(wrapper.find(Button)).toHaveLength(1)
+
+    it('does not render button initially', () => {
+      expect(wrapper.find(Button)).toHaveLength(0)
     })
-    it('renders Tip', () => {
-      expect(wrapper.find(Tip)).toHaveLength(1)
+    it('closing tip changes state', () => {
+      wrapper
+        .find(StickyFooter)
+        .props()
+        .onTipClose()
+
+      expect(wrapper.instance().state.tipIsVisible).toBe(false)
     })
-    it('does not render Tip when no priorities can be added (all indicators are green)', () => {
+
+    it('StickyFooter is not visible when on resumeDraft screen', () => {
       const props = createTestProps({
-        drafts: [
-          {
-            draftId: 1,
-            priorities: [{ action: 'Some action' }],
-            achievements: [],
-            indicatorSurveyDataList: [{ key: 'phoneNumber', value: 3 }],
-            progress: { screen: 'Location' }
-          }
-        ]
+        navigation: {
+          navigate: jest.fn(),
+          isFocused: jest.fn(),
+          setParams: jest.fn(),
+          getParam: jest.fn(param => {
+            if (param === 'draftId') {
+              return 1
+            }
+            if (param === 'survey') {
+              return {
+                id: 2,
+                title: 'Other survey',
+                minimumPriorities: 5,
+                surveyStoplightQuestions: [
+                  { phoneNumber: 'phoneNumber' },
+                  { education: 'education' },
+                  { c: 'c' }
+                ]
+              }
+            }
+            if (param === 'resumeDraft') {
+              return true
+            }
+          })
+        }
       })
       wrapper = shallow(<Overview {...props} />)
-      expect(wrapper.find(Tip)).toHaveLength(0)
+      expect(wrapper.find(StickyFooter).props().visible).toBe(false)
     })
   })
-
   describe('functionality', () => {
-    it('calls handleClick function when Button is clicked', () => {
-      wrapper
-        .find(Button)
-        .props()
-        .handleClick()
-      expect(
-        wrapper.instance().props.navigation.navigate
-      ).toHaveBeenCalledTimes(1)
-    })
-
-    it('button is enabled when enough priorities', () => {
-      const props = createTestProps({
-        drafts: [
-          {
-            draftId: 1,
-            priorities: [{ action: 'Some action' }],
-            achievements: [],
-            progress: { screen: 'Location' },
-            indicatorSurveyDataList: [
-              { key: 'phoneNumber', value: 3 },
-              { key: 'education', value: 1 }
-            ]
-          }
-        ]
-      })
-      wrapper = shallow(<Overview {...props} />)
-      expect(wrapper.find(Button).props().disabled).toBe(false)
-    })
-    it('button is disabled when not enough priorities', () => {
-      expect(wrapper.find(Button).props().disabled).toBe(true)
-    })
     it('passes the correct survey data to lifemap overview', () => {
       expect(wrapper.find(LifemapOverview).props().surveyData).toEqual([
         { phoneNumber: 'phoneNumber' },
@@ -143,6 +134,59 @@ describe('Overview Lifemap View when no questions are skipped', () => {
           { key: 'Other ind', value: 2 },
           { key: 'Skipped', value: 0 }
         ]
+      })
+    })
+
+    it('resumes the draft when Resume is clicked', () => {
+      props = createTestProps({
+        navigation: {
+          navigate: jest.fn(),
+          isFocused: jest.fn(),
+          setParams: jest.fn(),
+          replace: jest.fn(),
+          getParam: jest.fn(param => {
+            if (param === 'draftId') {
+              return 1
+            }
+            if (param === 'survey') {
+              return {
+                id: 2,
+                title: 'Other survey',
+                minimumPriorities: 5,
+                surveyStoplightQuestions: [
+                  { phoneNumber: 'phoneNumber' },
+                  { education: 'education' },
+                  { c: 'c' }
+                ]
+              }
+            }
+            if (param === 'resumeDraft') {
+              return true
+            }
+          })
+        }
+      })
+      wrapper = shallow(<Overview {...props} />)
+
+      wrapper
+        .find('#resume-draft')
+        .props()
+        .handleClick()
+      expect(props.navigation.replace).toHaveBeenCalledTimes(1)
+      expect(props.navigation.replace).toHaveBeenCalledWith('Location', {
+        draftId: 1,
+        socioEconomics: undefined,
+        step: undefined,
+        survey: {
+          id: 2,
+          minimumPriorities: 5,
+          surveyStoplightQuestions: [
+            { phoneNumber: 'phoneNumber' },
+            { education: 'education' },
+            { c: 'c' }
+          ],
+          title: 'Other survey'
+        }
       })
     })
   })
@@ -187,19 +231,49 @@ describe('Render optimization', () => {
   it('calls addDraftProgress on mount', () => {
     expect(wrapper.instance().props.addDraftProgress).toHaveBeenCalledTimes(1)
   })
-  it('calls onPressBack', () => {
-    const spy = jest.spyOn(wrapper.instance(), 'onPressBack')
-
-    wrapper.instance().onPressBack()
-    expect(spy).toHaveBeenCalledTimes(1)
-    expect(props.navigation.navigate).toHaveBeenCalledTimes(1)
-  })
 
   it('navigates back to skipped screen if there are skipped questions', () => {
     wrapper.instance().onPressBack()
 
     expect(props.navigation.navigate).toHaveBeenCalledWith('Skipped', {
       draftId: 1,
+      survey: {
+        id: 2,
+        minimumPriorities: 5,
+        surveyStoplightQuestions: [
+          { phoneNumber: 'phoneNumber' },
+          { education: 'education' },
+          { c: 'c' }
+        ],
+        title: 'Other survey'
+      }
+    })
+  })
+
+  it('navigates to Question screen when there are no skipped questions', () => {
+    props = createTestProps({
+      drafts: [
+        {
+          draftId: 1,
+          priorities: [{ action: 'Some action' }],
+          achievements: [],
+          progress: { screen: 'Location' },
+          indicatorSurveyDataList: [
+            { key: 'phoneNumber', value: 3 },
+            { key: 'education', value: 1 },
+            { key: 'ind', value: 1 },
+            { key: 'Other ind', value: 2 }
+          ]
+        }
+      ]
+    })
+
+    wrapper = shallow(<Overview {...props} />)
+    wrapper.instance().onPressBack()
+
+    expect(props.navigation.navigate).toHaveBeenCalledWith('Question', {
+      draftId: 1,
+      step: 2,
       survey: {
         id: 2,
         minimumPriorities: 5,

@@ -11,7 +11,7 @@ import { connect } from 'react-redux'
 import PropTypes from 'prop-types'
 import { withNamespaces } from 'react-i18next'
 import { addDraftProgress } from '../../redux/actions'
-import Tip from '../../components/Tip'
+import StickyFooter from '../../components/StickyFooter'
 import LifemapVisual from '../../components/LifemapVisual'
 import Button from '../../components/Button'
 import LifemapOverview from '../../components/LifemapOverview'
@@ -24,7 +24,8 @@ export class Overview extends Component {
   state = {
     filterModalIsOpen: false,
     selectedFilter: false,
-    filterLabel: false
+    filterLabel: false,
+    tipIsVisible: true
   }
   draftId = this.props.navigation.getParam('draftId')
   familyLifemap = this.props.navigation.getParam('familyLifemap')
@@ -96,14 +97,34 @@ export class Overview extends Component {
     })
   }
 
-  getMandatoryPrioritiesCount(draft) {
-    const potentialPrioritiesCount = draft.indicatorSurveyDataList.filter(
+  getPotentialPrioritiesCount(draft) {
+    return draft.indicatorSurveyDataList.filter(
       question => question.value === 1 || question.value === 2
     ).length
+  }
+
+  getMandatoryPrioritiesCount(draft) {
+    const potentialPrioritiesCount = this.getPotentialPrioritiesCount(draft)
 
     return potentialPrioritiesCount > this.survey.minimumPriorities
       ? this.survey.minimumPriorities
       : potentialPrioritiesCount
+  }
+
+  onTipClose = () => {
+    this.setState({
+      tipIsVisible: false
+    })
+  }
+
+  handleContinue = (mandatoryPrioritiesCount, draft) => {
+    if (mandatoryPrioritiesCount > draft.priorities.length) {
+      this.setState({
+        tipIsVisible: true
+      })
+    } else {
+      this.navigateToScreen('Final')
+    }
   }
 
   render() {
@@ -115,10 +136,41 @@ export class Overview extends Component {
 
     const mandatoryPrioritiesCount = this.getMandatoryPrioritiesCount(data)
     const resumeDraft = this.props.navigation.getParam('resumeDraft')
+    const tipIsVisible = !resumeDraft && this.state.tipIsVisible
+
+    const getTipDescription = () => {
+      //no mandatory priotities
+      if (
+        !mandatoryPrioritiesCount ||
+        mandatoryPrioritiesCount - data.priorities.length <= 0
+      ) {
+        return `${t('general.create')} ${t(
+          'views.lifemap.priorities'
+        ).toLowerCase()}!`
+        //only one mandatory priority
+      } else if (mandatoryPrioritiesCount - data.priorities.length === 1) {
+        return t('views.lifemap.youNeedToAddPriotity')
+      }
+      //more than one mandatory priority
+      else {
+        return `${t('general.create')} ${mandatoryPrioritiesCount -
+          data.priorities.length} ${t(
+          'views.lifemap.priorities'
+        ).toLowerCase()}!`
+      }
+    }
 
     return (
-      <View style={[globalStyles.background, styles.contentContainer]}>
-        <ScrollView>
+      <StickyFooter
+        continueLabel={t('general.continue')}
+        handleClick={() => this.handleContinue(mandatoryPrioritiesCount, data)}
+        visible={!resumeDraft}
+        type={tipIsVisible ? 'tip' : 'button'}
+        tipTitle={t('views.lifemap.toComplete')}
+        onTipClose={this.onTipClose}
+        tipDescription={getTipDescription()}
+      >
+        <View style={[globalStyles.background, styles.contentContainer]}>
           <View style={styles.indicatorsContainer}>
             <LifemapVisual
               large
@@ -129,6 +181,7 @@ export class Overview extends Component {
             />
             {resumeDraft ? (
               <Button
+                id="resume-draft"
                 style={{
                   marginTop: 20
                 }}
@@ -162,152 +215,138 @@ export class Overview extends Component {
               selectedFilter={selectedFilter}
             />
           </View>
-          {mandatoryPrioritiesCount && !resumeDraft && this.draftId ? (
-            <Tip
-              title={t('views.lifemap.beforeTheLifeMapIsCompleted')}
-              description={
-                mandatoryPrioritiesCount === 1
-                  ? t('views.lifemap.youNeedToAddPriotity')
-                  : t('views.lifemap.youNeedToAddPriorities').replace(
-                      '%n',
-                      mandatoryPrioritiesCount
-                    )
-              }
-            />
-          ) : null}
-        </ScrollView>
-        {!resumeDraft && this.draftId ? (
-          <View style={{ height: 50 }}>
-            <Button
-              colored
-              text={t('general.continue')}
-              handleClick={() => {
-                this.navigateToScreen('Final')
-              }}
-              disabled={mandatoryPrioritiesCount > data.priorities.length}
-            />
-          </View>
-        ) : null}
 
-        {/* Filters modal */}
-        <BottomModal
-          isOpen={filterModalIsOpen}
-          onRequestClose={this.toggleFilterModal}
-          onEmptyClose={() => this.selectFilter(false)}
-        >
-          <View style={styles.dropdown}>
-            <Text style={[globalStyles.p, styles.modalTitle]}>
-              {t('general.chooseView')}
-            </Text>
-
-            {/* All */}
-            <TouchableOpacity
-              id="all"
-              style={styles.row}
-              onPress={() => this.selectFilter(false)}
-            >
-              <View style={[styles.circle, { backgroundColor: '#EAD1AF' }]} />
-              <Text>
-                {t('views.lifemap.allIndicators')} (
-                {data.indicatorSurveyDataList.length})
+          {/* Filters modal */}
+          <BottomModal
+            isOpen={filterModalIsOpen}
+            onRequestClose={this.toggleFilterModal}
+            onEmptyClose={() => this.selectFilter(false)}
+          >
+            <View style={styles.dropdown}>
+              <Text style={[globalStyles.p, styles.modalTitle]}>
+                {t('general.chooseView')}
               </Text>
-            </TouchableOpacity>
 
-            {/* Green */}
-            <TouchableOpacity
-              id="green"
-              style={styles.row}
-              onPress={() => this.selectFilter(3, t('views.lifemap.green'))}
-            >
-              <View
-                style={[styles.circle, { backgroundColor: colors.green }]}
-              />
-              <Text>
-                {t('views.lifemap.green')} (
-                {
-                  data.indicatorSurveyDataList.filter(item => item.value === 3)
-                    .length
+              {/* All */}
+              <TouchableOpacity
+                id="all"
+                style={styles.row}
+                onPress={() => this.selectFilter(false)}
+              >
+                <View style={[styles.circle, { backgroundColor: '#EAD1AF' }]} />
+                <Text>
+                  {t('views.lifemap.allIndicators')} (
+                  {data.indicatorSurveyDataList.length})
+                </Text>
+              </TouchableOpacity>
+
+              {/* Green */}
+              <TouchableOpacity
+                id="green"
+                style={styles.row}
+                onPress={() => this.selectFilter(3, t('views.lifemap.green'))}
+              >
+                <View
+                  style={[styles.circle, { backgroundColor: colors.green }]}
+                />
+                <Text>
+                  {t('views.lifemap.green')} (
+                  {
+                    data.indicatorSurveyDataList.filter(
+                      item => item.value === 3
+                    ).length
+                  }
+                  )
+                </Text>
+              </TouchableOpacity>
+
+              {/* Yellow */}
+              <TouchableOpacity
+                id="yellow"
+                style={styles.row}
+                onPress={() => this.selectFilter(2, t('views.lifemap.yellow'))}
+              >
+                <View
+                  style={[styles.circle, { backgroundColor: colors.gold }]}
+                />
+                <Text>
+                  {t('views.lifemap.yellow')} (
+                  {
+                    data.indicatorSurveyDataList.filter(
+                      item => item.value === 2
+                    ).length
+                  }
+                  )
+                </Text>
+              </TouchableOpacity>
+
+              {/* Red */}
+              <TouchableOpacity
+                id="red"
+                style={styles.row}
+                onPress={() => this.selectFilter(1, t('views.lifemap.red'))}
+              >
+                <View
+                  style={[styles.circle, { backgroundColor: colors.red }]}
+                />
+                <Text>
+                  {t('views.lifemap.red')} (
+                  {
+                    data.indicatorSurveyDataList.filter(
+                      item => item.value === 1
+                    ).length
+                  }
+                  )
+                </Text>
+              </TouchableOpacity>
+
+              {/* Priorities/achievements */}
+              <TouchableOpacity
+                id="priorities"
+                style={styles.row}
+                onPress={() =>
+                  this.selectFilter(
+                    'priorities',
+                    `${t('views.lifemap.priorities')} & ${t(
+                      'views.lifemap.achievements'
+                    )}`
+                  )
                 }
-                )
-              </Text>
-            </TouchableOpacity>
+              >
+                <View
+                  style={[styles.circle, { backgroundColor: colors.blue }]}
+                />
+                <Text>
+                  {t('views.lifemap.priorities')} &{' '}
+                  {t('views.lifemap.achievements')} (
+                  {data.priorities.length + data.achievements.length})
+                </Text>
+              </TouchableOpacity>
 
-            {/* Yellow */}
-            <TouchableOpacity
-              id="yellow"
-              style={styles.row}
-              onPress={() => this.selectFilter(2, t('views.lifemap.yellow'))}
-            >
-              <View style={[styles.circle, { backgroundColor: colors.gold }]} />
-              <Text>
-                {t('views.lifemap.yellow')} (
-                {
-                  data.indicatorSurveyDataList.filter(item => item.value === 2)
-                    .length
+              {/* Skipped */}
+              <TouchableOpacity
+                id="skipped"
+                style={styles.row}
+                onPress={() =>
+                  this.selectFilter(0, t('views.skippedIndicators'))
                 }
-                )
-              </Text>
-            </TouchableOpacity>
-
-            {/* Red */}
-            <TouchableOpacity
-              id="red"
-              style={styles.row}
-              onPress={() => this.selectFilter(1, t('views.lifemap.red'))}
-            >
-              <View style={[styles.circle, { backgroundColor: colors.red }]} />
-              <Text>
-                {t('views.lifemap.red')} (
-                {
-                  data.indicatorSurveyDataList.filter(item => item.value === 1)
-                    .length
-                }
-                )
-              </Text>
-            </TouchableOpacity>
-
-            {/* Priorities/achievements */}
-            <TouchableOpacity
-              id="priorities"
-              style={styles.row}
-              onPress={() =>
-                this.selectFilter(
-                  'priorities',
-                  `${t('views.lifemap.priorities')} & ${t(
-                    'views.lifemap.achievements'
-                  )}`
-                )
-              }
-            >
-              <View style={[styles.circle, { backgroundColor: colors.blue }]} />
-              <Text>
-                {t('views.lifemap.priorities')} &{' '}
-                {t('views.lifemap.achievements')} (
-                {data.priorities.length + data.achievements.length})
-              </Text>
-            </TouchableOpacity>
-
-            {/* Skipped */}
-            <TouchableOpacity
-              id="skipped"
-              style={styles.row}
-              onPress={() => this.selectFilter(0, t('views.skippedIndicators'))}
-            >
-              <View
-                style={[styles.circle, { backgroundColor: colors.palegrey }]}
-              />
-              <Text>
-                {t('views.skippedIndicators')} (
-                {
-                  data.indicatorSurveyDataList.filter(item => item.value === 0)
-                    .length
-                }
-                )
-              </Text>
-            </TouchableOpacity>
-          </View>
-        </BottomModal>
-      </View>
+              >
+                <View
+                  style={[styles.circle, { backgroundColor: colors.palegrey }]}
+                />
+                <Text>
+                  {t('views.skippedIndicators')} (
+                  {
+                    data.indicatorSurveyDataList.filter(
+                      item => item.value === 0
+                    ).length
+                  }
+                </Text>
+              </TouchableOpacity>
+            </View>
+          </BottomModal>
+        </View>
+      </StickyFooter>
     )
   }
 }
@@ -320,7 +359,7 @@ const styles = StyleSheet.create({
     alignItems: 'stretch'
   },
   listTitle: {
-    backgroundColor: colors.beige,
+    backgroundColor: colors.primary,
     height: 47,
     alignItems: 'center',
     justifyContent: 'center',
@@ -342,7 +381,7 @@ const styles = StyleSheet.create({
     bottom: 0,
     left: 0,
     right: 0,
-    backgroundColor: colors.palebeige
+    backgroundColor: colors.white
   },
   modalTitle: { color: colors.grey, fontWeight: '300', marginBottom: 25 },
   circle: {

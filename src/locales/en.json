@@ -1,6 +1,6 @@
 {
   "general": {
-    "welcome": "Welcome",
+    "welcome": "Welcome!",
     "thankYou": "Thank you!",
     "disagree": "Disagree",
     "agree": "Agree",
@@ -21,7 +21,8 @@
     "lifeMaps": "Life Maps",
     "familyInfo": "family info",
     "cachedData": "cached data",
-    "chooseView": "Choose view"
+    "chooseView": "Choose view",
+    "create": "Create"
   },
   "validation": {
     "fieldIsRequired": "This field is required",
@@ -47,6 +48,7 @@
     "december": "December"
   },
   "views": {
+    "synced": "Sync",
     "dashboard": "Dashboard",
     "createLifemap": "Create a life map",
     "latestDrafts": "Latest life maps",
@@ -76,7 +78,7 @@
       "documentType": "Document type",
       "countryOfBirth": "Country of birth",
       "selectMonth": "Select month",
-      "selectValidDate": "Please enter a valid date e.g. May 03 1977",
+      "selectValidDate": "Please enter a valid date",
       "name": "Name",
       "peopleLivingInThisHousehold": "Number of people living in this household",
       "onlyPerson": "1 - I am the only person",
@@ -125,7 +127,8 @@
       "yellow": "Yellow",
       "red": "Red",
       "priorities": "Priorities",
-      "achievements": "Achievements"
+      "achievements": "Achievements",
+      "toComplete": "To complete the lifemap..."
     },
     "modals": {
       "lifeMapWillNotBeSaved": "If you do not enter all details on this page the life map will not be saved!",

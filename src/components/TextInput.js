@@ -207,11 +207,11 @@ const styles = StyleSheet.create({
     paddingBottom: 0
   },
   blur: {
-    backgroundColor: colors.beige,
+    backgroundColor: colors.primary,
     borderBottomColor: colors.grey
   },
   filled: {
-    backgroundColor: colors.palebeige,
+    backgroundColor: colors.white,
     borderBottomColor: colors.grey
   },
   active: {

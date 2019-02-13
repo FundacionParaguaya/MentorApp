@@ -2,7 +2,6 @@ import React from 'react'
 import { shallow } from 'enzyme'
 import { Image, FlatList } from 'react-native'
 import { Skipped } from '../lifemap/Skipped'
-import Tip from '../../components/Tip'
 import StickyFooter from '../../components/StickyFooter'
 
 const createTestProps = props => ({
@@ -12,6 +11,7 @@ const createTestProps = props => ({
     navigate: jest.fn(),
     isFocused: jest.fn(),
     setParams: jest.fn(),
+    replace: jest.fn(),
     getParam: jest.fn(param => {
       if (param === 'draftId') {
         return 1
@@ -61,9 +61,6 @@ describe('Skipped Questions View when questions are skipped', () => {
     it('rendersFlatList', () => {
       expect(wrapper.find(FlatList)).toHaveLength(1)
     })
-    it('renders Tip', () => {
-      expect(wrapper.find(Tip)).toHaveLength(1)
-    })
   })
   describe('functionality', () => {
     it('calls navigator function on pressing Continue button', () => {
@@ -71,14 +68,24 @@ describe('Skipped Questions View when questions are skipped', () => {
         .find(StickyFooter)
         .props()
         .handleClick()
-      expect(
-        wrapper.instance().props.navigation.navigate
-      ).toHaveBeenCalledTimes(1)
+      expect(wrapper.instance().props.navigation.replace).toHaveBeenCalledTimes(
+        1
+      )
     })
     it('passess the correct data to FlatList', () => {
       expect(wrapper.find(FlatList).props().data).toEqual([
         { key: 'phoneNumber', value: 0 }
       ])
+    })
+    it('has correct initial state', () => {
+      expect(wrapper.instance().state).toEqual({ tipIsVisible: true })
+    })
+    it('changes tipVisible state when tip is closed', () => {
+      wrapper
+        .find(StickyFooter)
+        .props()
+        .onTipClose()
+      expect(wrapper.instance().state.tipIsVisible).toBe(false)
     })
   })
   describe('Render optimization', () => {

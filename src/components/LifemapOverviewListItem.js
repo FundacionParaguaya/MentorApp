@@ -29,7 +29,7 @@ class LifemapOverviewListItem extends Component {
     const disabledButton = this.props.draftOverview
       ? !this.props.color
       : !this.props.achievement && !this.props.priority
-    console.log(this.props.draftOverview)
+
     return (
       <TouchableOpacity
         onPress={this.props.handleClick}
