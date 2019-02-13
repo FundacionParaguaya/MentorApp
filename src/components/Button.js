@@ -3,7 +3,7 @@ import PropTypes from 'prop-types'
 import Icon from 'react-native-vector-icons/MaterialIcons'
 import {
   Text,
-  TouchableOpacity,
+  TouchableHighlight,
   StyleSheet,
   Platform,
   View
@@ -11,23 +11,28 @@ import {
 import colors from '../theme.json'
 
 class Button extends Component {
-  defineButtonStyle() {
-    if (this.props.disabled) {
-      return styles.disabled
-    }
+  defineUnderlayColor = () => {
     if (this.props.colored) {
-      return styles.colored
+      return colors.green
     }
-    if (this.props.outlined) {
-      return styles.outlined
-    }
-    return styles.transparent
+
+    return 'transparent'
   }
 
   render() {
-    const { style, borderColor, disabled, colored, outlined } = this.props
+    const {
+      style,
+      borderColor,
+      disabled,
+      colored,
+      outlined,
+      icon,
+      handleClick,
+      underlined,
+      text
+    } = this.props
     return (
-      <TouchableOpacity
+      <TouchableHighlight
         style={[
           styles.buttonStyle,
           colored && styles.colored,
@@ -41,36 +46,40 @@ class Button extends Component {
               }
             : { borderColor: colors.palegreen }
         ]}
-        onPress={this.props.handleClick}
-        disabled={this.props.disabled}
+        activeOpacity={1}
+        underlayColor={this.defineUnderlayColor()}
+        onPress={handleClick}
+        disabled={disabled}
       >
-        {this.props.icon ? (
-          <Icon
-            name={this.props.icon}
-            size={21}
-            color={colors.palegreen}
-            style={styles.icon}
-          />
-        ) : (
-          <View />
-        )}
-        <Text
-          style={[
-            styles.buttonText,
-            outlined && borderColor
-              ? {
-                  color: borderColor
-                }
-              : this.props.colored
+        <View>
+          {icon ? (
+            <Icon
+              name={icon}
+              size={21}
+              color={colors.palegreen}
+              style={styles.icon}
+            />
+          ) : (
+            <View />
+          )}
+          <Text
+            style={[
+              styles.buttonText,
+              outlined && borderColor
+                ? {
+                    color: borderColor
+                  }
+                : colored
                 ? styles.whiteText
                 : styles.greenText,
 
-            this.props.underlined ? styles.underlined : {}
-          ]}
-        >
-          {this.props.text}
-        </Text>
-      </TouchableOpacity>
+              underlined ? styles.underlined : {}
+            ]}
+          >
+            {text}
+          </Text>
+        </View>
+      </TouchableHighlight>
     )
   }
 }
