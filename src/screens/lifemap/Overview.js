@@ -164,7 +164,7 @@ export class Overview extends Component {
       <StickyFooter
         continueLabel={t('general.continue')}
         handleClick={() => this.handleContinue(mandatoryPrioritiesCount, data)}
-        visible={!resumeDraft}
+        visible={!resumeDraft && !this.familyLifemap}
         type={tipIsVisible ? 'tip' : 'button'}
         tipTitle={t('views.lifemap.toComplete')}
         onTipClose={this.onTipClose}
