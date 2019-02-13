@@ -5,7 +5,6 @@ import PropTypes from 'prop-types'
 import { withNamespaces } from 'react-i18next'
 import { addDraftProgress } from '../../redux/actions'
 import StickyFooter from '../../components/StickyFooter'
-import Tip from '../../components/Tip'
 import SkippedListItem from '../../components/SkippedListItem'
 
 export class Skipped extends Component {
@@ -14,6 +13,7 @@ export class Skipped extends Component {
   indicatorsArray = this.survey.surveyStoplightQuestions.map(
     item => item.codeName
   )
+  state = { tipIsVisible: true }
 
   componentDidMount() {
     this.props.addDraftProgress(this.draftId, {
@@ -36,11 +36,17 @@ export class Skipped extends Component {
     return this.props.navigation.isFocused()
   }
   handleClick = () =>
-    this.props.navigation.navigate('Overview', {
+    this.props.navigation.replace('Overview', {
       draftId: this.draftId,
       survey: this.survey,
       resumeDraft: false
     })
+
+  onTipClose = () => {
+    this.setState({
+      tipIsVisible: false
+    })
+  }
 
   render() {
     const { t } = this.props
@@ -53,6 +59,10 @@ export class Skipped extends Component {
       <StickyFooter
         handleClick={this.handleClick}
         continueLabel={t('general.continue')}
+        type={this.state.tipIsVisible ? 'tip' : 'button'}
+        tipTitle={t('views.lifemap.youSkipped')}
+        tipDescription={t('views.lifemap.whyNotTryAgain')}
+        onTipClose={this.onTipClose}
       >
         <Image
           style={styles.image}
@@ -80,10 +90,6 @@ export class Skipped extends Component {
               }
             />
           )}
-        />
-        <Tip
-          title={t('views.lifemap.youSkipped')}
-          description={t('views.lifemap.whyNotTryAgain')}
         />
       </StickyFooter>
     )
