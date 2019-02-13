@@ -9,7 +9,7 @@ const createTestProps = props => ({
   handleClick: jest.fn(),
   item: {
     draftId: 1,
-    status: 'In progress',
+    status: 'Draft',
     familyData: {
       familyMembersList: [
         {
