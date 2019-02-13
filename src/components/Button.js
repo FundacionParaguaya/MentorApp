@@ -59,7 +59,7 @@ class Button extends Component {
                 : colors.lightdark
             }
         ]}
-        underlayColor={colored ? colors.green : 'transparent'}
+        underlayColor={colored ? colors.green : colors.white}
         activeOpacity={1}
         onPress={handleClick}
         disabled={disabled}
@@ -71,7 +71,7 @@ class Button extends Component {
             <Icon
               name={icon}
               size={21}
-              color={colors.palegreen}
+              color={pressed ? colors.green : colors.palegreen}
               style={styles.icon}
             />
           ) : (
