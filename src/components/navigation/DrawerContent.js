@@ -21,6 +21,7 @@ import colors from '../../theme.json'
 import { switchLanguage, logout } from '../../redux/actions'
 import LogoutPopup from './LogoutPopup'
 import dashboardIcon from '../../../assets/images/icon_dashboard.png'
+import familyNavIcon from '../../../assets/images/icon_family_nav.png'
 
 // Component that renders the drawer menu content. DrawerItems are the links to
 // the given views.
@@ -144,6 +145,18 @@ export class DrawerContent extends Component {
                 color={colors.palegreen}
               />
               <Text style={styles.label}>{i18n.t('views.createLifemap')}</Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              id="families"
+              style={{
+                ...styles.navItem,
+                backgroundColor:
+                  this.state.activeTab === 'Families' ? colors.primary : null
+              }}
+              onPress={() => this.navigateToScreen('Families')}
+            >
+              <Image source={familyNavIcon} />
+              <Text style={styles.label}>{i18n.t('views.families')}</Text>
             </TouchableOpacity>
             <TouchableOpacity
               id="sync"

@@ -49,6 +49,7 @@
   },
   "views": {
     "synced": "Sincronización",
+    "families": "Familias",
     "dashboard": "Tablero",
     "createLifemap": "Crear un Mapa de Vida",
     "latestDrafts": "Últimas instantáneas",

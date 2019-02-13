@@ -50,6 +50,7 @@
   "views": {
     "synced": "Sync",
     "dashboard": "Dashboard",
+    "families": "Families",
     "createLifemap": "Create a life map",
     "latestDrafts": "Latest life maps",
     "noDrafts": "No drafts to display",
