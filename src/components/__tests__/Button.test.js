@@ -35,18 +35,6 @@ describe('Button Component', () => {
     it('does not render <Icon /> when icon property is not defined', () => {
       expect(wrapper.find(Icon)).toHaveLength(0)
     })
-    it('has proper backgroundColor and text color when passed colored = true', () => {
-      props = createTestProps({
-        colored: true
-      })
-      wrapper = shallow(<Button {...props} />)
-
-      expect(
-        wrapper.find(TouchableHighlight).props().style[1].backgroundColor
-      ).toBe(colors.palegreen)
-
-      expect(wrapper.find(Text).props().style[1].color).toBe(colors.white)
-    })
   })
   describe('functionality', () => {
     it('should call handleClick onPress', () => {

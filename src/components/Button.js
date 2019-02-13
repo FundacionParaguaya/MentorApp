@@ -11,17 +11,18 @@ import {
 import colors from '../theme.json'
 
 class Button extends Component {
-  defineUnderlayColor = () => {
-    if (this.props.colored) {
-      return colors.green
-    }
+  state = {
+    pressed: false
+  }
 
-    return 'transparent'
+  togglePressedState = () => {
+    this.setState({
+      pressed: !this.state.pressed
+    })
   }
 
   render() {
     const {
-      style,
       borderColor,
       disabled,
       colored,
@@ -29,27 +30,41 @@ class Button extends Component {
       icon,
       handleClick,
       underlined,
-      text
+      text,
+      style
     } = this.props
+
+    const { pressed } = this.state
+
     return (
       <TouchableHighlight
         style={[
           styles.buttonStyle,
-          colored && styles.colored,
-          disabled && styles.disabled,
-          outlined && styles.outlined,
           !colored && !disabled && !outlined && styles.transparent,
           style,
-          outlined && borderColor
-            ? {
-                borderColor
-              }
-            : { borderColor: colors.palegreen }
+          ['colored', 'disabled', 'outlined'].map(item =>
+            this.props[item] ? styles[item] : {}
+          ),
+          {
+            borderColor:
+              outlined && borderColor ? borderColor : colors.palegreen
+          },
+          pressed &&
+            !colored &&
+            !underlined && {
+              borderColor: !borderColor
+                ? colors.green
+                : borderColor === colors.palered
+                ? colors.red
+                : colors.lightdark
+            }
         ]}
+        underlayColor={colored ? colors.green : 'transparent'}
         activeOpacity={1}
-        underlayColor={this.defineUnderlayColor()}
         onPress={handleClick}
         disabled={disabled}
+        onHideUnderlay={this.togglePressedState}
+        onShowUnderlay={this.togglePressedState}
       >
         <View>
           {icon ? (
@@ -72,8 +87,15 @@ class Button extends Component {
                 : colored
                 ? styles.whiteText
                 : styles.greenText,
-
-              underlined ? styles.underlined : {}
+              underlined ? styles.underlined : {},
+              pressed &&
+                !colored && {
+                  color: !borderColor
+                    ? colors.green
+                    : borderColor === colors.palered
+                    ? colors.red
+                    : colors.lightdark
+                }
             ]}
           >
             {text}
@@ -96,6 +118,7 @@ Button.propTypes = {
   style: PropTypes.object
 }
 
+/* eslint-disable react-native/no-unused-styles */
 const styles = StyleSheet.create({
   buttonText: {
     ...Platform.select({
@@ -126,7 +149,6 @@ const styles = StyleSheet.create({
   },
   outlined: {
     flex: 0,
-    fontSize: 14,
     borderRadius: 4,
     borderWidth: 1.5,
     padding: 15
