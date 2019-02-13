@@ -220,7 +220,9 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     minHeight: 60,
     paddingBottom: 6,
-    borderBottomColor: colors.grey
+    borderBottomColor: colors.grey,
+    borderTopLeftRadius: 8,
+    borderTopRightRadius: 8
   },
   placeholder: {
     paddingHorizontal: 15,

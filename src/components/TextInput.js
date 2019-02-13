@@ -186,7 +186,9 @@ const styles = StyleSheet.create({
     borderBottomWidth: 1,
     marginHorizontal: 15,
     justifyContent: 'center',
-    minHeight: 60
+    minHeight: 60,
+    borderTopLeftRadius: 8,
+    borderTopRightRadius: 8
   },
   label: {
     paddingHorizontal: 15,
