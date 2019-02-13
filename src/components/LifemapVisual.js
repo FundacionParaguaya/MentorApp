@@ -65,7 +65,7 @@ class LifemapVisual extends Component {
             <Icon
               name="brightness-1"
               color={colors.palegrey}
-              size={17}
+              size={large ? 25 : 17}
               style={{
                 marginHorizontal: bigMargin ? 8 : 4,
                 marginVertical: bigMargin ? 4 : 2
