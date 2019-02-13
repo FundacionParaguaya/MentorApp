@@ -341,6 +341,7 @@ export class Overview extends Component {
                       item => item.value === 0
                     ).length
                   }
+                  )
                 </Text>
               </TouchableOpacity>
             </View>
