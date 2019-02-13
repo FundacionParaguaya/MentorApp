@@ -64,8 +64,8 @@ StickyFooter.propTypes = {
   visible: PropTypes.bool.isRequired,
   continueLabel: PropTypes.string,
   type: PropTypes.oneOf(['button', 'tip']),
-  title: PropTypes.string,
-  description: PropTypes.string,
+  tipTitle: PropTypes.string,
+  tipDescription: PropTypes.string,
   onTipClose: PropTypes.func
 }
 

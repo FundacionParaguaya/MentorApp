@@ -5,9 +5,7 @@ import PropTypes from 'prop-types'
 import { withNamespaces } from 'react-i18next'
 import { addDraftProgress } from '../../redux/actions'
 import StickyFooter from '../../components/StickyFooter'
-import Tip from '../../components/Tip'
 import SkippedListItem from '../../components/SkippedListItem'
-import globalStyles from '../../globalStyles'
 
 export class Skipped extends Component {
   draftId = this.props.navigation.getParam('draftId')

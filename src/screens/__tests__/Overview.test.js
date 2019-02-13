@@ -1,6 +1,5 @@
 import React from 'react'
 import { shallow } from 'enzyme'
-import { ScrollView, View } from 'react-native'
 import { Overview } from '../lifemap/Overview'
 import StickyFooter from '../../components/StickyFooter'
 import Button from '../../components/Button'
