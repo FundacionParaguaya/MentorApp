@@ -168,7 +168,7 @@ const styles = StyleSheet.create({
   },
   year: { width: '36%', marginLeft: '-3%' },
   month: { width: '45%' },
-  text: { paddingLeft: 25, marginBottom: 15 }
+  text: { marginLeft: 30, marginBottom: 15 }
 })
 
 DateInput.propTypes = {

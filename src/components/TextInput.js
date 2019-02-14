@@ -170,12 +170,10 @@ class TextInput extends Component {
           </FormInput>
         </View>
         {status === 'error' && errorMsg ? (
-          <Text style={{ paddingHorizontal: 15, color: colors.red }}>
-            {errorMsg}
-          </Text>
-        ) : (
-          <View />
-        )}
+          <View style={{ marginLeft: 30 }}>
+            <Text style={{ color: colors.red }}>{errorMsg}</Text>
+          </View>
+        ) : null}
       </View>
     )
   }
@@ -227,7 +225,7 @@ const styles = StyleSheet.create({
     borderBottomColor: colors.red
   },
   text: {
-    marginLeft: 20,
+    marginLeft: 15,
     zIndex: 100
   }
 })

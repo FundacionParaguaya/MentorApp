@@ -185,9 +185,9 @@ class Select extends Component {
           </View>
           {/* Error message */}
           {!!errorMsg && (
-            <Text style={{ paddingHorizontal: 15, color: colors.red }}>
-              {errorMsg}
-            </Text>
+            <View style={{ marginLeft: 30 }}>
+              <Text style={{ color: colors.red }}>{errorMsg}</Text>
+            </View>
           )}
         </View>
       </TouchableOpacity>

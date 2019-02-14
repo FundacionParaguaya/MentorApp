@@ -364,7 +364,7 @@ export class Location extends Component {
         </View>
 
         <View>
-          <Text id="accuracy" style={styles.container}>
+          <Text id="accuracy" style={styles.accuracy}>
             {accuracy
               ? `${t('views.family.gpsAccurate').replace(
                   '%n',
@@ -448,6 +448,7 @@ const styles = StyleSheet.create({
   container: {
     paddingHorizontal: 16
   },
+  accuracy: { marginLeft: 30 },
   fakeMarker: {
     zIndex: 2,
     position: 'absolute',
