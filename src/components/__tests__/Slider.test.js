@@ -1,7 +1,7 @@
 import React from 'react'
 
 import { shallow } from 'enzyme'
-import { ScrollView, Text, TouchableOpacity } from 'react-native'
+import { ScrollView, Text, TouchableHighlight } from 'react-native'
 import Image from '../CachedImage'
 import Icon from 'react-native-vector-icons/MaterialIcons'
 import { Slider } from '../Slider'
@@ -46,8 +46,8 @@ describe('Slider Component', () => {
     it('renders ScrollView', () => {
       expect(wrapper.find(ScrollView)).toHaveLength(1)
     })
-    it('renders TouchableOpacity', () => {
-      expect(wrapper.find(TouchableOpacity)).toHaveLength(3)
+    it('renders TouchableHighlight', () => {
+      expect(wrapper.find(TouchableHighlight)).toHaveLength(3)
     })
     it('renders Image', () => {
       expect(wrapper.find(Image)).toHaveLength(3)
@@ -66,7 +66,7 @@ describe('Slider Component', () => {
     })
     it('does not change state when user clicks on green slide', () => {
       wrapper
-        .find(TouchableOpacity)
+        .find(TouchableHighlight)
         .at(0)
         .props()
         .onPress()
@@ -74,7 +74,7 @@ describe('Slider Component', () => {
     })
     it('does changes state to yellow when user clicks on yellow slide', () => {
       wrapper
-        .find(TouchableOpacity)
+        .find(TouchableHighlight)
         .at(1)
         .props()
         .onPress()
@@ -83,7 +83,7 @@ describe('Slider Component', () => {
   })
   it('does changes state to red when user clicks on red slide', () => {
     wrapper
-      .find(TouchableOpacity)
+      .find(TouchableHighlight)
       .at(2)
       .props()
       .onPress()
@@ -115,7 +115,7 @@ describe('Slider Component', () => {
   })
   it('calls selectAnswer function with the correct argument for green', () => {
     wrapper
-      .find(TouchableOpacity)
+      .find(TouchableHighlight)
       .at(0)
       .props()
       .onPress()
@@ -124,7 +124,7 @@ describe('Slider Component', () => {
   })
   it('calls selectAnswer function with the correct argument for yellow', () => {
     wrapper
-      .find(TouchableOpacity)
+      .find(TouchableHighlight)
       .at(1)
       .props()
       .onPress()
@@ -133,7 +133,7 @@ describe('Slider Component', () => {
   })
   it('calls selectAnswer function with the correct argument for red', () => {
     wrapper
-      .find(TouchableOpacity)
+      .find(TouchableHighlight)
       .at(2)
       .props()
       .onPress()

@@ -4,10 +4,11 @@ import {
   ScrollView,
   Text,
   ProgressBarAndroid,
-  TouchableOpacity
+  TouchableHighlight
 } from 'react-native'
 import { Question } from '../lifemap/Question'
 import SliderComponent from '../../components/Slider'
+import IconButton from '../../components/IconButton'
 
 const createTestProps = props => ({
   t: value => value,
@@ -52,7 +53,7 @@ describe('Question View', () => {
       expect(wrapper.find(ScrollView)).toHaveLength(1)
     })
     it('renders Text', () => {
-      expect(wrapper.find(Text)).toHaveLength(3)
+      expect(wrapper.find(Text)).toHaveLength(2)
     })
     it('renders ProgressBarAndroid', () => {
       expect(wrapper.find(ProgressBarAndroid)).toHaveLength(1)
@@ -76,21 +77,21 @@ describe('Question View', () => {
     it('calls selectAnswer with argument 0 when link is clicked', () => {
       const spy = jest.spyOn(wrapper.instance(), 'selectAnswer')
       wrapper
-        .find(TouchableOpacity)
+        .find(IconButton)
         .props()
         .onPress()
 
       expect(spy).toHaveBeenCalledTimes(1)
       expect(spy).toHaveBeenCalledWith(0)
     })
-    it('renders TouchableOpacity when indicator is not required', () => {
-      expect(wrapper.find(TouchableOpacity)).toHaveLength(1)
+    it('renders IconButton when indicator is not required', () => {
+      expect(wrapper.find(IconButton)).toHaveLength(1)
     })
     it('renders Text when indicator is required', () => {
       survey.surveyStoplightQuestions[0].required = true
       const props = createTestProps()
       wrapper = shallow(<Question {...props} />)
-      expect(wrapper.find(TouchableOpacity)).toHaveLength(0)
+      expect(wrapper.find(TouchableHighlight)).toHaveLength(0)
     })
   })
 })

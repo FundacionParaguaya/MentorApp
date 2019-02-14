@@ -5,7 +5,7 @@ import {
   ScrollView,
   Text,
   View,
-  TouchableOpacity
+  TouchableHighlight
 } from 'react-native'
 import Image from './CachedImage'
 import colors from '../theme.json'
@@ -85,7 +85,9 @@ export class Slider extends Component {
                 backgroundColor: colors[slideColors[slide.value]]
               }}
             >
-              <TouchableOpacity
+              <TouchableHighlight
+                activeOpacity={1}
+                underlayColor={'transparent'}
                 style={{
                   ...styles.slide
                 }}
@@ -96,35 +98,37 @@ export class Slider extends Component {
                   })
                 }}
               >
-                <Image
-                  source={slide.url}
-                  style={{
-                    ...styles.image
-                  }}
-                />
-                {this.props.value === slide.value ? (
-                  <View
-                    id="icon-view"
+                <View>
+                  <Image
+                    source={slide.url}
                     style={{
-                      ...styles.iconBig,
-                      backgroundColor: colors[slideColors[this.props.value]]
+                      ...styles.image
+                    }}
+                  />
+                  {this.props.value === slide.value ? (
+                    <View
+                      id="icon-view"
+                      style={{
+                        ...styles.iconBig,
+                        backgroundColor: colors[slideColors[this.props.value]]
+                      }}
+                    >
+                      <Icon name="done" size={56} color={colors.white} />
+                    </View>
+                  ) : (
+                    <View />
+                  )}
+                  <Text
+                    style={{
+                      ...globalStyles.p,
+                      ...styles.text,
+                      color: slide.value === 'YELLOW' ? '#000' : colors.white
                     }}
                   >
-                    <Icon name="done" size={56} color={colors.white} />
-                  </View>
-                ) : (
-                  <View />
-                )}
-                <Text
-                  style={{
-                    ...globalStyles.p,
-                    ...styles.text,
-                    color: slide.value === 'YELLOW' ? '#000' : colors.white
-                  }}
-                >
-                  {slide.description}
-                </Text>
-              </TouchableOpacity>
+                    {slide.description}
+                  </Text>
+                </View>
+              </TouchableHighlight>
             </View>
           ))}
         </ScrollView>

@@ -1,12 +1,13 @@
 import React from 'react'
 import { shallow } from 'enzyme'
-import { TouchableOpacity, Text, Modal } from 'react-native'
+import { Text, Modal } from 'react-native'
 import Popup from '../Popup'
 
 const createTestProps = props => ({
   isOpen: false,
   children: <Text>Modal</Text>,
-  onClose: jest.fn()
+  onClose: jest.fn(),
+  ...props
 })
 
 describe('Popup', () => {

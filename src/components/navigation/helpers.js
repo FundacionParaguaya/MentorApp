@@ -1,18 +1,12 @@
 import React from 'react'
-import {
-  TouchableOpacity,
-  StyleSheet,
-  View,
-  Text,
-  Platform
-} from 'react-native'
+import { StyleSheet, View, Text, Platform } from 'react-native'
 import { AndroidBackHandler } from 'react-navigation-backhandler'
 import { deleteDraft } from '../../redux/actions'
-import Icon from 'react-native-vector-icons/MaterialIcons'
 import store from '../../redux/store'
 import colors from '../../theme.json'
 import Popup from '../Popup'
 import Button from '../Button'
+import IconButton from '../IconButton'
 import globalStyles from '../../globalStyles'
 import i18n from '../../i18n'
 
@@ -46,12 +40,12 @@ export const generateNavOptions = ({ navigation, burgerMenu = true }) => ({
   headerRight:
     navigation.state.routeName !== 'Final' && !burgerMenu ? (
       <View>
-        <TouchableOpacity
+        <IconButton
           style={styles.touchable}
           onPress={() => navigation.setParams({ modalOpen: true })}
-        >
-          <Icon name="close" size={25} color={colors.palegreen} />
-        </TouchableOpacity>
+          icon="close"
+          size={25}
+        />
         <Popup
           isOpen={navigation.getParam('modalOpen')}
           onClose={() => navigation.setParams({ modalOpen: false })}
@@ -107,12 +101,12 @@ export const generateNavOptions = ({ navigation, burgerMenu = true }) => ({
       <View />
     ),
   headerLeft: burgerMenu ? (
-    <TouchableOpacity
+    <IconButton
       style={styles.touchable}
       onPress={() => navigation.toggleDrawer()}
-    >
-      <Icon name="menu" size={30} color={colors.palegreen} />
-    </TouchableOpacity>
+      icon="menu"
+      size={30}
+    />
   ) : (
     <AndroidBackHandler
       onBackPress={() => {
@@ -123,7 +117,7 @@ export const generateNavOptions = ({ navigation, burgerMenu = true }) => ({
       }}
     >
       <View>
-        <TouchableOpacity
+        <IconButton
           style={styles.touchable}
           onPress={() => {
             if (navigation.getParam('deleteOnExit')) {
@@ -135,9 +129,9 @@ export const generateNavOptions = ({ navigation, burgerMenu = true }) => ({
                 : navigation.goBack()
             }
           }}
-        >
-          <Icon name="arrow-back" size={25} color={colors.palegreen} />
-        </TouchableOpacity>
+          icon="arrow-back"
+          size={25}
+        />
         <Popup
           isOpen={navigation.getParam('backModalOpen')}
           onClose={() => navigation.setParams({ backModalOpen: false })}
