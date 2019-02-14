@@ -147,7 +147,7 @@ describe('drafts reducer', () => {
     },
     {
       draftId: 2,
-      status: 'In progress',
+      status: 'Draft',
       priorities: [
         { indicator: 'phoneNumber', action: 'Action', reason: 'reason' }
       ],
@@ -167,7 +167,7 @@ describe('drafts reducer', () => {
         type: action.CREATE_DRAFT,
         payload
       })
-    ).toEqual([...initialStore, { ...payload, status: 'In progress' }])
+    ).toEqual([...initialStore, { ...payload, status: 'Draft' }])
   })
 
   it('should handle ADD_DRAFT_PROGRESS', () => {
@@ -179,7 +179,7 @@ describe('drafts reducer', () => {
       },
       {
         draftId: 2,
-        status: 'In progress',
+        status: 'Draft',
         priorities: [
           { indicator: 'phoneNumber', action: 'Action', reason: 'reason' }
         ],
@@ -208,7 +208,7 @@ describe('drafts reducer', () => {
       },
       {
         draftId: 2,
-        status: 'In progress',
+        status: 'Draft',
         priorities: [
           { indicator: 'phoneNumber', action: 'Action', reason: 'reason' }
         ],
@@ -283,7 +283,7 @@ describe('drafts reducer', () => {
       {
         draftId: 2,
         personal_survey_data: { name: 'Name' },
-        status: 'In progress',
+        status: 'Draft',
         priorities: [
           { indicator: 'phoneNumber', action: 'Action', reason: 'reason' }
         ],
@@ -309,7 +309,7 @@ describe('drafts reducer', () => {
       },
       {
         draftId: 2,
-        status: 'In progress',
+        status: 'Draft',
         priorities: [
           { indicator: 'phoneNumber', action: 'Action', reason: 'reason' }
         ],
@@ -334,7 +334,7 @@ describe('drafts reducer', () => {
       },
       {
         draftId: 2,
-        status: 'In progress',
+        status: 'Draft',
         priorities: [
           { indicator: 'phoneNumber', action: 'Action', reason: 'reason' },
           { indicator: 'Income', action: 'Some action' }
@@ -361,7 +361,7 @@ describe('drafts reducer', () => {
       },
       {
         draftId: 2,
-        status: 'In progress',
+        status: 'Draft',
         priorities: [],
         familyData: {
           familyMembersList: [({ name: 'Joan' }, { name: 'Jane' })]
@@ -385,7 +385,7 @@ describe('drafts reducer', () => {
       },
       {
         draftId: 2,
-        status: 'In progress',
+        status: 'Draft',
         priorities: [
           {
             indicator: 'phoneNumber',
@@ -420,7 +420,7 @@ describe('drafts reducer', () => {
         priorities: [
           { action: 'Action', indicator: 'phoneNumber', reason: 'reason' }
         ],
-        status: 'In progress'
+        status: 'Draft'
       }
     ]
 
@@ -448,7 +448,7 @@ describe('drafts reducer', () => {
         priorities: [
           { action: 'Action', indicator: 'phoneNumber', reason: 'reason' }
         ],
-        status: 'In progress'
+        status: 'Draft'
       }
     ]
 
@@ -481,7 +481,7 @@ describe('drafts reducer', () => {
         priorities: [
           { action: 'Action', indicator: 'phoneNumber', reason: 'reason' }
         ],
-        status: 'In progress'
+        status: 'Draft'
       }
     ]
 

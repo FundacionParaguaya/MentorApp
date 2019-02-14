@@ -97,7 +97,7 @@ export const families = (state = [], action) => {
 export const drafts = (state = [], action) => {
   switch (action.type) {
     case CREATE_DRAFT:
-      return [...state, { ...action.payload, status: 'In progress' }]
+      return [...state, { ...action.payload, status: 'Draft' }]
 
     case ADD_SURVEY_PRIORITY_ACHEIVEMENT_DATA:
       return state.map(draft => {
