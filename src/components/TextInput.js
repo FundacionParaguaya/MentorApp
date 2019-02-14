@@ -160,11 +160,13 @@ class TextInput extends Component {
             editable={!readonly}
             multiline={multiline}
           >
-            <Text style={styles.inputText}>
-              {showPlaceholder
-                ? `${placeholder} ${required && !label ? '*' : ''}`
-                : text}
-            </Text>
+            {showPlaceholder ? (
+              <Text style={styles.inputText}>
+                {placeholder} {required && !label ? '*' : ''}
+              </Text>
+            ) : (
+              <Text style={styles.inputText}>{text}</Text>
+            )}
           </FormInput>
         </View>
         {status === 'error' && errorMsg ? (
