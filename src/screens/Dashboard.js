@@ -70,17 +70,6 @@ export class Dashboard extends Component {
         navigation.getParam('firstTimeVisitor') ? null : (
           <View>
             <View style={globalStyles.container}>
-              <View>
-                <Text
-                  style={{
-                    ...globalStyles.h3,
-                    marginBottom: 33,
-                    alignSelf: 'center'
-                  }}
-                >
-                  {t('general.welcome')}
-                </Text>
-              </View>
               <Decoration>
                 <RoundImage source="family" />
               </Decoration>
