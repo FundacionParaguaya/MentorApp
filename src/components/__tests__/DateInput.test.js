@@ -1,7 +1,6 @@
 import React from 'react'
 import { shallow } from 'enzyme'
 import { Text } from 'react-native'
-import TextInput from '../TextInput'
 import Select from '../Select'
 import { DateInput } from '../DateInput'
 

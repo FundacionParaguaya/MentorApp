@@ -94,7 +94,7 @@ export class Dashboard extends Component {
               </View>
             ) : null}
             <FlatList
-              style={{ ...styles.background, paddingLeft: 25 }}
+              style={{ ...styles.background }}
               data={list}
               keyExtractor={(item, index) => index.toString()}
               renderItem={({ item }) => (
