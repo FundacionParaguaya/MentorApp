@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
-import { TouchableOpacity, StyleSheet } from 'react-native'
+import { TouchableHighlight, StyleSheet } from 'react-native'
 import { CheckBox } from 'react-native-elements'
 import colors from '../theme.json'
 import globalStyles from '../globalStyles'
@@ -18,7 +18,11 @@ class Checkbox extends Component {
     const { containerStyle, textStyle, checkboxColor, showErrors } = this.props
 
     return (
-      <TouchableOpacity style={styles.touchable} onPress={this.onIconPress}>
+      <TouchableHighlight
+        underlayColor={'transparent'}
+        style={styles.touchable}
+        onPress={this.onIconPress}
+      >
         <CheckBox
           disabled
           title={`${this.props.title}${showErrors && !checked ? ' *' : ''}`}
@@ -33,7 +37,7 @@ class Checkbox extends Component {
             showErrors && !checked ? styles.error : {}
           ]}
         />
-      </TouchableOpacity>
+      </TouchableHighlight>
     )
   }
 }

@@ -1,9 +1,10 @@
 import React from 'react'
 
 import { shallow } from 'enzyme'
-import { TouchableOpacity, Text } from 'react-native'
+import { Text } from 'react-native'
 import Icon from 'react-native-vector-icons/MaterialIcons'
 import SkippedListItem from '../SkippedListItem'
+import ListItem from '../ListItem'
 
 const createTestProps = props => ({
   handleClick: jest.fn(),
@@ -20,8 +21,8 @@ describe('SkippedListItem Component', () => {
   })
 
   describe('rendering', () => {
-    it('renders TouchableOpacity', () => {
-      expect(wrapper.find(TouchableOpacity)).toHaveLength(1)
+    it('renders ListItem', () => {
+      expect(wrapper.find(ListItem)).toHaveLength(1)
     })
     it('renders Text', () => {
       expect(wrapper.find(Text)).toHaveLength(1)
@@ -41,7 +42,7 @@ describe('SkippedListItem Component', () => {
     describe('functionality', () => {
       it('should call handleClick onPress', () => {
         wrapper
-          .find(TouchableOpacity)
+          .find(ListItem)
           .props()
           .onPress()
         expect(wrapper.instance().props.handleClick).toHaveBeenCalledTimes(1)

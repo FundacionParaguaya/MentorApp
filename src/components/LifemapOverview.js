@@ -112,8 +112,11 @@ LifemapOverview.propTypes = {
 }
 
 const styles = StyleSheet.create({
-  container: { ...globalStyles.container, paddingTop: 0, paddingLeft: 25 },
-  dimension: { ...globalStyles.h4, marginVertical: 12 }
+  container: {
+    ...globalStyles.container,
+    padding: 0
+  },
+  dimension: { ...globalStyles.h4, marginHorizontal: 20, marginTop: -20 }
 })
 
 export default LifemapOverview

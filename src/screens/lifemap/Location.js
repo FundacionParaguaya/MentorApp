@@ -5,7 +5,7 @@ import {
   ActivityIndicator,
   Text,
   Image,
-  TouchableOpacity,
+  TouchableHighlight,
   NetInfo
 } from 'react-native'
 import { connect } from 'react-redux'
@@ -307,13 +307,15 @@ export class Location extends Component {
                   color={colors.palegreen}
                 />
               ) : (
-                <TouchableOpacity
+                <TouchableHighlight
                   id="centerMap"
+                  underlayColor={'transparent'}
+                  activeOpacity={1}
                   style={styles.center}
                   onPress={this.getDeviceLocation}
                 >
                   <Image source={center} style={{ width: 21, height: 21 }} />
-                </TouchableOpacity>
+                </TouchableHighlight>
               )}
             </View>
           ) : (

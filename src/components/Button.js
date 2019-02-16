@@ -66,7 +66,7 @@ class Button extends Component {
         onHideUnderlay={this.togglePressedState}
         onShowUnderlay={this.togglePressedState}
       >
-        <View>
+        <View style={{ flexDirection: 'row' }}>
           {icon ? (
             <Icon
               name={icon}

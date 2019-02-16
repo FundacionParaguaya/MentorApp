@@ -16,6 +16,7 @@ export default class BottomModal extends Component {
           onRequestClose={onRequestClose}
         >
           <TouchableOpacity
+            activeOpacity={1}
             style={[
               styles.overlay,
               {
@@ -32,6 +33,7 @@ export default class BottomModal extends Component {
           onRequestClose={onRequestClose}
         >
           <TouchableOpacity
+            activeOpacity={1}
             id="overlay"
             style={styles.overlay}
             onPress={onEmptyClose}

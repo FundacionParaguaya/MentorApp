@@ -1,10 +1,10 @@
 import React from 'react'
-
 import { shallow } from 'enzyme'
-import { Text, TouchableOpacity } from 'react-native'
+import { Text } from 'react-native'
 import Icon from 'react-native-vector-icons/MaterialIcons'
 import Icon2 from 'react-native-vector-icons/MaterialCommunityIcons'
 import colors from '../../theme.json'
+import ListItem from '../ListItem'
 import LifemapOverviewListItem from '../LifemapOverviewListItem'
 
 const createTestProps = props => ({
@@ -25,8 +25,8 @@ describe('LifemapOverviewListItem Component', () => {
   })
 
   describe('rendering', () => {
-    it('renders <TouchableOpacity />', () => {
-      expect(wrapper.find(TouchableOpacity)).toHaveLength(1)
+    it('renders <ListItem />', () => {
+      expect(wrapper.find(ListItem)).toHaveLength(1)
     })
 
     it('renders <Text />', () => {

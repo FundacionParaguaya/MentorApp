@@ -1,6 +1,6 @@
 import React from 'react'
 import { shallow } from 'enzyme'
-import { TouchableOpacity } from 'react-native'
+import { TouchableHighlight } from 'react-native'
 import { CheckBox } from 'react-native-elements'
 import Checkbox from '../Checkbox'
 
@@ -29,7 +29,7 @@ describe('Checkbox Component', () => {
 
     it('calls onPress when icon is pressed', () => {
       wrapper
-        .find(TouchableOpacity)
+        .find(TouchableHighlight)
         .props()
         .onPress()
 

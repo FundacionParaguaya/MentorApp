@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
-import { Text, TouchableOpacity, StyleSheet, View } from 'react-native'
-
+import { Text, StyleSheet, View } from 'react-native'
+import ListItem from './ListItem'
 import Icon from 'react-native-vector-icons/MaterialIcons'
 import Icon2 from 'react-native-vector-icons/MaterialCommunityIcons'
 
@@ -27,7 +27,7 @@ class LifemapOverviewListItem extends Component {
 
   render() {
     return (
-      <TouchableOpacity
+      <ListItem
         onPress={this.props.handleClick}
         style={styles.container}
         disabled={!this.props.color}
@@ -79,7 +79,7 @@ class LifemapOverviewListItem extends Component {
             <View />
           )}
         </View>
-      </TouchableOpacity>
+      </ListItem>
     )
   }
 }
@@ -96,7 +96,8 @@ const styles = StyleSheet.create({
   container: {
     alignItems: 'center',
     flexDirection: 'row',
-    flex: 1
+    flex: 1,
+    paddingHorizontal: 20
   },
   listItem: {
     height: 95,
