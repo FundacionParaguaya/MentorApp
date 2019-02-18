@@ -160,20 +160,20 @@ class TextInput extends Component {
             editable={!readonly}
             multiline={multiline}
           >
-            <Text style={styles.inputText}>
-              {showPlaceholder
-                ? `${placeholder} ${required && !label ? '*' : ''}`
-                : text}
-            </Text>
+            {showPlaceholder ? (
+              <Text style={styles.inputText}>
+                {placeholder} {required && !label ? '*' : ''}
+              </Text>
+            ) : (
+              <Text style={styles.inputText}>{text}</Text>
+            )}
           </FormInput>
         </View>
         {status === 'error' && errorMsg ? (
-          <Text style={{ paddingHorizontal: 15, color: colors.red }}>
-            {errorMsg}
-          </Text>
-        ) : (
-          <View />
-        )}
+          <View style={{ marginLeft: 30 }}>
+            <Text style={{ color: colors.red }}>{errorMsg}</Text>
+          </View>
+        ) : null}
       </View>
     )
   }
@@ -186,7 +186,9 @@ const styles = StyleSheet.create({
     borderBottomWidth: 1,
     marginHorizontal: 15,
     justifyContent: 'center',
-    minHeight: 60
+    minHeight: 60,
+    borderTopLeftRadius: 8,
+    borderTopRightRadius: 8
   },
   label: {
     paddingHorizontal: 15,
@@ -223,7 +225,7 @@ const styles = StyleSheet.create({
     borderBottomColor: colors.red
   },
   text: {
-    marginLeft: 20,
+    marginLeft: 15,
     zIndex: 100
   }
 })

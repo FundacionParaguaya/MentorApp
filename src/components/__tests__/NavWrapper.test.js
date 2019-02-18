@@ -4,8 +4,6 @@ import { StatusBar } from 'react-native'
 import { NavWrapper } from '../NavWrapper'
 import { LoginStack, AppStack, LoadingStack } from '../navigation'
 
-import colors from '../../theme.json'
-
 const createTestProps = props => ({
   user: { token: '' },
   setSyncedState: jest.fn(),

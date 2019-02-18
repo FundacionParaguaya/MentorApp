@@ -192,9 +192,9 @@ class Select extends Component {
           </View>
           {/* Error message */}
           {!!errorMsg && (
-            <Text style={{ paddingHorizontal: 15, color: colors.red }}>
-              {errorMsg}
-            </Text>
+            <View style={{ marginLeft: 30 }}>
+              <Text style={{ color: colors.red }}>{errorMsg}</Text>
+            </View>
           )}
         </View>
       </TouchableHighlight>
@@ -227,7 +227,9 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     minHeight: 60,
     paddingBottom: 6,
-    borderBottomColor: colors.grey
+    borderBottomColor: colors.grey,
+    borderTopLeftRadius: 8,
+    borderTopRightRadius: 8
   },
   placeholder: {
     paddingHorizontal: 15,

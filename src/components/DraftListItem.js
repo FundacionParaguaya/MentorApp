@@ -11,7 +11,7 @@ import globalStyles from '../globalStyles'
 class DraftListItem extends Component {
   getColor = status => {
     switch (status) {
-      case 'In progress':
+      case 'Draft':
         return colors.palegrey
       case 'Synced':
         return colors.palegreen
@@ -25,7 +25,7 @@ class DraftListItem extends Component {
   }
 
   render() {
-    const linkDisabled = this.props.item.status !== 'In progress'
+    const linkDisabled = this.props.item.status !== 'Draft'
     return (
       <ListItem
         style={{ ...styles.listItem, ...styles.borderBottom }}
