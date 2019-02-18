@@ -1,5 +1,60 @@
 # Change Log
 
+## [v1.4.2](https://github.com/FundacionParaguaya/MentorApp/tree/v1.4.2) (2019-02-18)
+[Full Changelog](https://github.com/FundacionParaguaya/MentorApp/compare/v1.4.1...v1.4.2)
+
+**Implemented enhancements:**
+
+- Mandatory priorities UI messages [\#322](https://github.com/FundacionParaguaya/MentorApp/issues/322)
+- Design Colour Changes [\#237](https://github.com/FundacionParaguaya/MentorApp/issues/237)
+
+**Fixed bugs:**
+
+- Ecuador survey: "Family Details" in wrong language [\#348](https://github.com/FundacionParaguaya/MentorApp/issues/348)
+- Birth date question needs asterisk [\#346](https://github.com/FundacionParaguaya/MentorApp/issues/346)
+- Bug in Family Member text [\#337](https://github.com/FundacionParaguaya/MentorApp/issues/337)
+- Sticky Continue button and the keyboard [\#335](https://github.com/FundacionParaguaya/MentorApp/issues/335)
+- In family member birthdate screen the continue button gets disabled if the date is invalid [\#311](https://github.com/FundacionParaguaya/MentorApp/issues/311)
+- Styling - Margins and Padding in Error message and GPS Message [\#301](https://github.com/FundacionParaguaya/MentorApp/issues/301)
+- Primary Navigation and the active state - Clicking on currently activated screen does not remove primary navigation tab [\#121](https://github.com/FundacionParaguaya/MentorApp/issues/121)
+
+**Closed issues:**
+
+- Node Tree Debugging [\#369](https://github.com/FundacionParaguaya/MentorApp/issues/369)
+- TalkBack developer settings [\#367](https://github.com/FundacionParaguaya/MentorApp/issues/367)
+- Add Terms and Conditions to "Replicas Hub" account [\#364](https://github.com/FundacionParaguaya/MentorApp/issues/364)
+- Curved Corners on top left and top right of form elements [\#356](https://github.com/FundacionParaguaya/MentorApp/issues/356)
+- OFFLINE Map [\#354](https://github.com/FundacionParaguaya/MentorApp/issues/354)
+- Message error when trying to continue [\#353](https://github.com/FundacionParaguaya/MentorApp/issues/353)
+- Ecuador survey: Family details should be removed [\#349](https://github.com/FundacionParaguaya/MentorApp/issues/349)
+- Link 2 questions [\#347](https://github.com/FundacionParaguaya/MentorApp/issues/347)
+- Editorial Text change for the tag of a life map [\#339](https://github.com/FundacionParaguaya/MentorApp/issues/339)
+- Transferring data of two UK families [\#336](https://github.com/FundacionParaguaya/MentorApp/issues/336)
+- Making the Poverty Stoplight Balls bigger [\#331](https://github.com/FundacionParaguaya/MentorApp/issues/331)
+- N. 1 default for number of family members [\#329](https://github.com/FundacionParaguaya/MentorApp/issues/329)
+- Date Validation Improvements [\#222](https://github.com/FundacionParaguaya/MentorApp/issues/222)
+- Translations Issues [\#162](https://github.com/FundacionParaguaya/MentorApp/issues/162)
+- Android Header elements styling [\#76](https://github.com/FundacionParaguaya/MentorApp/issues/76)
+- Got it! Functionality [\#74](https://github.com/FundacionParaguaya/MentorApp/issues/74)
+- Integrate Intercom [\#65](https://github.com/FundacionParaguaya/MentorApp/issues/65)
+- Create a reusable decoration component with basic animation \(Dashboard only\) [\#45](https://github.com/FundacionParaguaya/MentorApp/issues/45)
+
+**Merged pull requests:**
+
+- Rollover fixes all over the app [\#387](https://github.com/FundacionParaguaya/MentorApp/pull/387) ([Danman7](https://github.com/Danman7))
+- Dashboard animation [\#382](https://github.com/FundacionParaguaya/MentorApp/pull/382) ([Danman7](https://github.com/Danman7))
+- Bugs [\#374](https://github.com/FundacionParaguaya/MentorApp/pull/374) ([IvaKop](https://github.com/IvaKop))
+- Add curved corners [\#373](https://github.com/FundacionParaguaya/MentorApp/pull/373) ([IvaKop](https://github.com/IvaKop))
+- Edit tag [\#372](https://github.com/FundacionParaguaya/MentorApp/pull/372) ([IvaKop](https://github.com/IvaKop))
+- Tip changes [\#363](https://github.com/FundacionParaguaya/MentorApp/pull/363) ([IvaKop](https://github.com/IvaKop))
+- Hide continue button on keyboard being up [\#361](https://github.com/FundacionParaguaya/MentorApp/pull/361) ([Danman7](https://github.com/Danman7))
+- Drawer translation [\#360](https://github.com/FundacionParaguaya/MentorApp/pull/360) ([IvaKop](https://github.com/IvaKop))
+- Change colors in the whole app [\#357](https://github.com/FundacionParaguaya/MentorApp/pull/357) ([IvaKop](https://github.com/IvaKop))
+- Priorities messages [\#351](https://github.com/FundacionParaguaya/MentorApp/pull/351) ([Danman7](https://github.com/Danman7))
+- Date input [\#350](https://github.com/FundacionParaguaya/MentorApp/pull/350) ([IvaKop](https://github.com/IvaKop))
+- Make indicator orbs visually bigger [\#343](https://github.com/FundacionParaguaya/MentorApp/pull/343) ([Danman7](https://github.com/Danman7))
+- Set header style colors [\#342](https://github.com/FundacionParaguaya/MentorApp/pull/342) ([Danman7](https://github.com/Danman7))
+
 ## [v1.4.1](https://github.com/FundacionParaguaya/MentorApp/tree/v1.4.1) (2019-02-06)
 [Full Changelog](https://github.com/FundacionParaguaya/MentorApp/compare/v1.4.0...v1.4.1)
 
