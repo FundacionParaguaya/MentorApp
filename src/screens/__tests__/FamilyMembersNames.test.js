@@ -62,9 +62,6 @@ describe('FamilyMembersNames View', () => {
         continueLabel: 'general.continue'
       })
     })
-    it('renders Select', () => {
-      expect(wrapper.find(Select)).toHaveLength(1)
-    })
     it('renders TextInput', () => {
       expect(wrapper.find(TextInput)).toHaveLength(2)
     })
@@ -96,9 +93,7 @@ describe('FamilyMembersNames View', () => {
       expect(spy).toHaveBeenCalledTimes(1)
     })
   })
-  it('gives Select the proper value', () => {
-    expect(wrapper.find(Select).props().value).toBe(2)
-  })
+
   it('makes first TextInput is readonly', () => {
     expect(
       wrapper
@@ -135,35 +130,6 @@ describe('FamilyMembersNames View', () => {
     expect(spy).toHaveBeenCalledTimes(1)
   })
 
-  it('changes family members count', () => {
-    wrapper
-      .find('#familyMembersCount')
-      .props()
-      .onChange(4, 'familyMembersCount')
-
-    expect(wrapper.instance().props.addSurveyData).toHaveBeenCalledTimes(1)
-    expect(wrapper.instance().props.addSurveyData).toHaveBeenCalledWith(
-      4,
-      'familyData',
-      {
-        familyMembersCount: 4
-      }
-    )
-  })
-  it('remove excess family members when count is lowered', () => {
-    wrapper
-      .find('#familyMembersCount')
-      .props()
-      .onChange(1, 'familyMembersCount')
-
-    expect(wrapper.instance().props.removeFamilyMembers).toHaveBeenCalledTimes(
-      1
-    )
-    expect(wrapper.instance().props.removeFamilyMembers).toHaveBeenCalledWith(
-      4,
-      1
-    )
-  })
   it('shows and hides errors', () => {
     wrapper.instance().detectError(true, 'test')
 

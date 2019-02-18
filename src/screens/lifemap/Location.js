@@ -215,7 +215,7 @@ export class Location extends Component {
         survey: this.survey
       })
     } else
-      this.props.navigation.navigate('FamilyMembersNames', {
+      this.props.navigation.navigate('FamilyParticipant', {
         draftId: this.draftId,
         survey: this.survey
       })

@@ -13,6 +13,8 @@ const createTestProps = props => ({
   deleteDraft: jest.fn(),
   addSurveyFamilyMemberData: jest.fn(),
   addDraftProgress: jest.fn(),
+  addSurveyData: jest.fn(),
+  removeFamilyMembers: jest.fn(),
   navigation: {
     navigate: jest.fn(),
     getParam: param => (param === 'draftId' ? null : 1),
@@ -147,7 +149,7 @@ describe('Family Participant View', () => {
       expect(wrapper.find(TextInput)).toHaveLength(5)
     })
     it('renders Select', () => {
-      expect(wrapper.find(Select)).toHaveLength(3)
+      expect(wrapper.find(Select)).toHaveLength(4)
     })
     it('renders DateInput', () => {
       expect(wrapper.find(DateInputComponent)).toHaveLength(1)
@@ -232,6 +234,85 @@ describe('Family Participant View', () => {
       wrapper.instance().detectError(false, 'phoneNumber')
       expect(wrapper.instance().errorsDetected).toEqual([])
     })
+  })
+})
+
+describe('Family Member Count Functionality', () => {
+  let wrapper
+  let props
+  beforeEach(() => {
+    props = createTestProps({
+      navigation: {
+        navigate: jest.fn(),
+        getParam: param => (param === 'draftId' ? 4 : 1),
+        setParams: jest.fn(),
+        reset: jest.fn(),
+        isFocused: jest.fn()
+      },
+      drafts: [
+        {
+          draftId: 4,
+          surveyId: 1,
+          economicSurveyDataList: [
+            { key: 'educationPersonMostStudied', value: 'SCHOOL-COMPLETE' },
+            { key: 'receiveStateIncome', value: 'NO' },
+            { key: 'currency', value: 'GBP/Pound Sterling' },
+            { key: 'areaOfResidence', value: 'URBAN' }
+          ],
+
+          indicatorSurveyDataList: [
+            { key: 'insurance', value: 1 },
+            { key: 'entertainmentAndRecreation', value: 3 },
+            { key: 'stableHousing', value: 2 }
+          ],
+          familyData: {
+            countFamilyMembers: 2,
+            familyMembersList: [
+              {
+                firstName: 'Juan',
+                lastName: 'Perez'
+              },
+              {
+                firstName: 'Ana'
+              }
+            ]
+          }
+        }
+      ]
+    })
+    wrapper = shallow(<FamilyParticipant {...props} />)
+  })
+  it('gives Select the proper value', () => {
+    expect(wrapper.find('#familyMembersCount').props().value).toBe(2)
+  })
+  it('changes family members count', () => {
+    wrapper
+      .find('#familyMembersCount')
+      .props()
+      .onChange(4, 'familyMembersCount')
+
+    expect(wrapper.instance().props.addSurveyData).toHaveBeenCalledTimes(1)
+    expect(wrapper.instance().props.addSurveyData).toHaveBeenCalledWith(
+      4,
+      'familyData',
+      {
+        familyMembersCount: 4
+      }
+    )
+  })
+  it('remove excess family members when count is lowered', () => {
+    wrapper
+      .find('#familyMembersCount')
+      .props()
+      .onChange(1, 'familyMembersCount')
+
+    expect(wrapper.instance().props.removeFamilyMembers).toHaveBeenCalledTimes(
+      1
+    )
+    expect(wrapper.instance().props.removeFamilyMembers).toHaveBeenCalledWith(
+      4,
+      1
+    )
   })
 })
 
