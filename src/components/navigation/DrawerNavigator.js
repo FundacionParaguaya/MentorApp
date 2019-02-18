@@ -1,4 +1,3 @@
-import React from 'react'
 import { createDrawerNavigator } from 'react-navigation'
 import { Platform } from 'react-native'
 import DrawerContentComponent from './DrawerContent'

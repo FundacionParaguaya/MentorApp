@@ -1,9 +1,10 @@
 import React from 'react'
 
 import { shallow } from 'enzyme'
-import { TouchableOpacity, Text, View } from 'react-native'
+import { Text, View } from 'react-native'
 import Icon from 'react-native-vector-icons/MaterialIcons'
 import DraftListItem from '../DraftListItem'
+import ListItem from '../ListItem'
 
 const createTestProps = props => ({
   handleClick: jest.fn(),
@@ -32,8 +33,8 @@ describe('DraftListItem Component', () => {
   })
 
   describe('rendering', () => {
-    it('renders <TouchableOpacity />', () => {
-      expect(wrapper.find(TouchableOpacity)).toHaveLength(1)
+    it('renders <ListItem />', () => {
+      expect(wrapper.find(ListItem)).toHaveLength(1)
     })
     it('renders <View />', () => {
       expect(wrapper.find(View)).toHaveLength(1)
@@ -64,7 +65,7 @@ describe('DraftListItem Component', () => {
   describe('functionality', () => {
     it('should call handleClick onPress', () => {
       wrapper
-        .find(TouchableOpacity)
+        .find(ListItem)
         .props()
         .onPress()
       expect(wrapper.instance().props.handleClick).toHaveBeenCalledTimes(1)
@@ -84,7 +85,7 @@ describe('DraftListItem Component', () => {
         }
       })
       wrapper = shallow(<DraftListItem {...props} />)
-      expect(wrapper.find(TouchableOpacity).props().disabled).toBe(true)
+      expect(wrapper.find(ListItem).props().disabled).toBe(true)
       expect(wrapper.find(Icon)).toHaveLength(0)
     })
 
@@ -103,7 +104,7 @@ describe('DraftListItem Component', () => {
         }
       })
       wrapper = shallow(<DraftListItem {...props} />)
-      expect(wrapper.find(TouchableOpacity).props().disabled).toBe(true)
+      expect(wrapper.find(ListItem).props().disabled).toBe(true)
       expect(wrapper.find(Icon)).toHaveLength(0)
     })
     it('disables link when status is Error', () => {
@@ -122,7 +123,7 @@ describe('DraftListItem Component', () => {
       })
       wrapper = shallow(<DraftListItem {...props} />)
 
-      expect(wrapper.find(TouchableOpacity).props().disabled).toBe(true)
+      expect(wrapper.find(ListItem).props().disabled).toBe(true)
       expect(wrapper.find(Icon)).toHaveLength(0)
     })
   })

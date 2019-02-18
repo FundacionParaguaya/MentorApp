@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import {
-  TouchableOpacity,
+  TouchableHighlight,
   StyleSheet,
   View,
   Text,
@@ -9,6 +9,7 @@ import {
   ScrollView
 } from 'react-native'
 import BottomModal from './BottomModal'
+import ListItem from './ListItem'
 import countries from 'localized-countries'
 import arrow from '../../assets/images/selectArrow.png'
 import colors from '../theme.json'
@@ -103,7 +104,11 @@ class Select extends Component {
     }
 
     return (
-      <TouchableOpacity onPress={this.toggleDropdown}>
+      <TouchableHighlight
+        underlayColor={'transparent'}
+        activeOpacity={1}
+        onPress={this.toggleDropdown}
+      >
         <View style={styles.wrapper}>
           <View
             style={[
@@ -146,7 +151,7 @@ class Select extends Component {
                 {countrySelect ? (
                   <ScrollView>
                     {countries.map(item => (
-                      <TouchableOpacity
+                      <ListItem
                         key={item.code}
                         onPress={() => this.validateInput(item.code)}
                       >
@@ -158,13 +163,15 @@ class Select extends Component {
                         >
                           {item.label}
                         </Text>
-                      </TouchableOpacity>
+                      </ListItem>
                     ))}
                   </ScrollView>
                 ) : (
                   <ScrollView>
                     {options.map(item => (
-                      <TouchableOpacity
+                      <ListItem
+                        underlayColor={'transparent'}
+                        activeOpacity={1}
                         key={item.value}
                         onPress={() => this.validateInput(item.value)}
                       >
@@ -176,7 +183,7 @@ class Select extends Component {
                         >
                           {item.text}
                         </Text>
-                      </TouchableOpacity>
+                      </ListItem>
                     ))}
                   </ScrollView>
                 )}
@@ -190,7 +197,7 @@ class Select extends Component {
             </View>
           )}
         </View>
-      </TouchableOpacity>
+      </TouchableHighlight>
     )
   }
 }

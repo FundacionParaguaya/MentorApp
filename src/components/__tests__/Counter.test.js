@@ -1,6 +1,6 @@
 import React from 'react'
 import { shallow } from 'enzyme'
-import { TouchableOpacity, Text } from 'react-native'
+import { TouchableHighlight, Text } from 'react-native'
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons'
 
 import Counter from '../Counter'
@@ -20,8 +20,8 @@ describe('Counter Component', () => {
     wrapper = shallow(<Counter {...props} />)
   })
   describe('rendering', () => {
-    it('renders TouchableOpacity', () => {
-      expect(wrapper.find(TouchableOpacity)).toHaveLength(2)
+    it('renders TouchableHighlight', () => {
+      expect(wrapper.find(TouchableHighlight)).toHaveLength(2)
     })
     it('renders Icon', () => {
       expect(wrapper.find(Icon)).toHaveLength(2)
@@ -33,7 +33,7 @@ describe('Counter Component', () => {
   describe('functionality', () => {
     it('clicking first button calls edit counter with arg "minus"', () => {
       wrapper
-        .find(TouchableOpacity)
+        .find(TouchableHighlight)
         .first()
         .props()
         .onPress()
@@ -43,7 +43,7 @@ describe('Counter Component', () => {
 
     it('clicking second button calls edit counter with arg "plus"', () => {
       wrapper
-        .find(TouchableOpacity)
+        .find(TouchableHighlight)
         .last()
         .props()
         .onPress()

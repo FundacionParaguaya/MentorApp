@@ -1,6 +1,7 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import { Text, TouchableOpacity, StyleSheet, View, Image } from 'react-native'
+import ListItem from './ListItem'
 
 import colors from '../theme.json'
 import globalStyles from '../globalStyles'
@@ -8,17 +9,14 @@ import stoplight from '../../assets/images/stoplight.png'
 class LifemapListItem extends Component {
   render() {
     return (
-      <TouchableOpacity
-        style={{ ...styles.listItem }}
-        onPress={this.props.handleClick}
-      >
+      <ListItem style={{ ...styles.listItem }} onPress={this.props.handleClick}>
         <Image source={stoplight} style={styles.image} />
         <View style={styles.listItemContainer}>
           <Text style={{ ...globalStyles.p, ...styles.p }}>
             {this.props.name}
           </Text>
         </View>
-      </TouchableOpacity>
+      </ListItem>
     )
   }
 }

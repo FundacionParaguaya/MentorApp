@@ -1,8 +1,9 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import Icon from 'react-native-vector-icons/MaterialIcons'
-import { Text, TouchableOpacity, StyleSheet, View } from 'react-native'
+import { Text, StyleSheet, View } from 'react-native'
 import moment from 'moment'
+import ListItem from './ListItem'
 
 import colors from '../theme.json'
 import globalStyles from '../globalStyles'
@@ -26,7 +27,7 @@ class DraftListItem extends Component {
   render() {
     const linkDisabled = this.props.item.status !== 'Draft'
     return (
-      <TouchableOpacity
+      <ListItem
         style={{ ...styles.listItem, ...styles.borderBottom }}
         onPress={this.props.handleClick}
         disabled={linkDisabled}
@@ -53,7 +54,7 @@ class DraftListItem extends Component {
         ) : (
           <View />
         )}
-      </TouchableOpacity>
+      </ListItem>
     )
   }
 }
@@ -66,9 +67,7 @@ DraftListItem.propTypes = {
 const styles = StyleSheet.create({
   listItem: {
     height: 95,
-    paddingTop: 25,
-    paddingBottom: 25,
-    paddingRight: 25,
+    padding: 25,
     alignItems: 'center',
     flexDirection: 'row',
     flex: 1,

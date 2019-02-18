@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
-import { View, StyleSheet, Modal, TouchableOpacity } from 'react-native'
+import { View, StyleSheet, Modal, TouchableHighlight } from 'react-native'
 import colors from '../theme.json'
 
 export default class Popup extends Component {
@@ -14,7 +14,8 @@ export default class Popup extends Component {
         animationType="fade"
         presentationStyle="overFullScreen"
       >
-        <TouchableOpacity
+        <TouchableHighlight
+          underlayColor={'rgba(47,38,28, 0.2)'}
           style={styles.container}
           onPress={onClose}
           id="overlay"
@@ -22,7 +23,7 @@ export default class Popup extends Component {
           <View id="modal" style={styles.modal}>
             {children}
           </View>
-        </TouchableOpacity>
+        </TouchableHighlight>
       </Modal>
     )
   }

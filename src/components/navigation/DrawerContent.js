@@ -4,7 +4,6 @@ import {
   Image,
   Text,
   StyleSheet,
-  TouchableOpacity,
   View,
   AsyncStorage,
   Platform
@@ -12,10 +11,9 @@ import {
 import { withNamespaces } from 'react-i18next'
 import { connect } from 'react-redux'
 import PropTypes from 'prop-types'
-import CommunityIcon from 'react-native-vector-icons/MaterialCommunityIcons'
-import Icon from 'react-native-vector-icons/MaterialIcons'
 import { url } from '../../config'
 import globalStyles from '../../globalStyles'
+import IconButton from '../IconButton'
 import i18n from '../../i18n'
 import colors from '../../theme.json'
 import { switchLanguage, logout } from '../../redux/actions'
@@ -82,29 +80,27 @@ export class DrawerContent extends Component {
           />
           {/* Language Switcher */}
           <View style={styles.languageSwitch}>
-            <TouchableOpacity id="en" onPress={() => this.changeLanguage('en')}>
-              <Text
-                style={[
-                  globalStyles.h3,
-                  lng === 'en' ? styles.whiteText : styles.greyText
-                ]}
-              >
-                ENG
-              </Text>
-            </TouchableOpacity>
+            <IconButton
+              id="en"
+              onPress={() => this.changeLanguage('en')}
+              text="ENG"
+              textStyle={[
+                globalStyles.h3,
+                lng === 'en' ? styles.whiteText : styles.greyText
+              ]}
+            />
             <Text style={[globalStyles.h3, styles.whiteText]}>
               {'  '}|{'  '}
             </Text>
-            <TouchableOpacity id="es" onPress={() => this.changeLanguage('es')}>
-              <Text
-                style={[
-                  globalStyles.h3,
-                  lng === 'es' ? styles.whiteText : styles.greyText
-                ]}
-              >
-                ESP
-              </Text>
-            </TouchableOpacity>
+            <IconButton
+              id="es"
+              onPress={() => this.changeLanguage('es')}
+              text="ESP"
+              textStyle={[
+                globalStyles.h3,
+                lng === 'es' ? styles.whiteText : styles.greyText
+              ]}
+            />
           </View>
           <Text
             id="username"
@@ -116,7 +112,7 @@ export class DrawerContent extends Component {
         </View>
         <View style={styles.itemsContainer}>
           <View>
-            <TouchableOpacity
+            <IconButton
               id="dashboard"
               style={{
                 ...styles.navItem,
@@ -124,11 +120,11 @@ export class DrawerContent extends Component {
                   this.state.activeTab === 'Dashboard' ? colors.primary : null
               }}
               onPress={() => this.navigateToScreen('Dashboard')}
-            >
-              <Image source={dashboardIcon} />
-              <Text style={styles.label}>{i18n.t('views.dashboard')}</Text>
-            </TouchableOpacity>
-            <TouchableOpacity
+              imageSource={dashboardIcon}
+              text={i18n.t('views.dashboard')}
+              textStyle={styles.label}
+            />
+            <IconButton
               id="surveys"
               style={{
                 ...styles.navItem,
@@ -136,16 +132,12 @@ export class DrawerContent extends Component {
                   this.state.activeTab === 'Surveys' ? colors.primary : null
               }}
               onPress={() => this.navigateToScreen('Surveys')}
-            >
-              <Icon
-                name="swap-calls"
-                style={{ transform: [{ rotate: '90deg' }] }}
-                size={20}
-                color={colors.palegreen}
-              />
-              <Text style={styles.label}>{i18n.t('views.createLifemap')}</Text>
-            </TouchableOpacity>
-            <TouchableOpacity
+              icon="swap-calls"
+              size={20}
+              textStyle={styles.label}
+              text={i18n.t('views.createLifemap')}
+            />
+            <IconButton
               id="sync"
               style={{
                 ...styles.navItem,
@@ -153,28 +145,26 @@ export class DrawerContent extends Component {
                   this.state.activeTab === 'Sync' ? colors.primary : null
               }}
               onPress={() => this.navigateToScreen('Sync')}
-            >
-              <Icon name="sync" size={20} color={colors.palegreen} />
-              <Text style={styles.label}>{i18n.t('views.synced')}</Text>
-            </TouchableOpacity>
+              icon="sync"
+              size={20}
+              text={i18n.t('views.synced')}
+              textStyle={styles.label}
+            />
           </View>
         </View>
         {/* Logout button */}
-        <TouchableOpacity
+        <IconButton
           id="logout"
           style={styles.navItem}
           onPress={() => {
             this.props.navigation.toggleDrawer()
             navigation.setParams({ logoutModalOpen: true })
           }}
-        >
-          <CommunityIcon
-            name="login-variant"
-            size={20}
-            color={colors.palegreen}
-          />
-          <Text style={styles.label}>{i18n.t('views.logout.logout')}</Text>
-        </TouchableOpacity>
+          communityIcon="login-variant"
+          size={20}
+          textStyle={styles.label}
+          text={i18n.t('views.logout.logout')}
+        />
 
         {/* Logout popup */}
         <LogoutPopup
@@ -202,9 +192,11 @@ export class DrawerContent extends Component {
 DrawerContent.propTypes = {
   lng: PropTypes.string,
   switchLanguage: PropTypes.func.isRequired,
+  logout: PropTypes.func.isRequired,
   navigation: PropTypes.object.isRequired,
   user: PropTypes.object.isRequired,
-  drafts: PropTypes.array.isRequired
+  drafts: PropTypes.array.isRequired,
+  env: PropTypes.oneOf(['production', 'demo', 'testing', 'development'])
 }
 
 const mapStateToProps = ({ env, user, drafts }) => ({

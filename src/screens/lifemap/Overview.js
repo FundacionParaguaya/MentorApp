@@ -1,12 +1,5 @@
 import React, { Component } from 'react'
-import {
-  StyleSheet,
-  ScrollView,
-  View,
-  Text,
-  Image,
-  TouchableOpacity
-} from 'react-native'
+import { StyleSheet, View, Text, Image, TouchableHighlight } from 'react-native'
 import { connect } from 'react-redux'
 import PropTypes from 'prop-types'
 import { withNamespaces } from 'react-i18next'
@@ -14,6 +7,7 @@ import { addDraftProgress } from '../../redux/actions'
 import StickyFooter from '../../components/StickyFooter'
 import LifemapVisual from '../../components/LifemapVisual'
 import Button from '../../components/Button'
+import FilterListItem from '../../components/FilterListItem'
 import LifemapOverview from '../../components/LifemapOverview'
 import BottomModal from '../../components/BottomModal'
 import arrow from '../../../assets/images/selectArrow.png'
@@ -185,14 +179,19 @@ export class Overview extends Component {
             ) : null}
           </View>
           <View>
-            <TouchableOpacity id="filters" onPress={this.toggleFilterModal}>
+            <TouchableHighlight
+              id="filters"
+              underlayColor={'transparent'}
+              activeOpacity={1}
+              onPress={this.toggleFilterModal}
+            >
               <View style={styles.listTitle}>
                 <Text style={globalStyles.subline}>
                   {filterLabel || t('views.lifemap.allIndicators')}
                 </Text>
                 <Image source={arrow} style={styles.arrow} />
               </View>
-            </TouchableOpacity>
+            </TouchableHighlight>
             <LifemapOverview
               surveyData={this.survey.surveyStoplightQuestions}
               draftData={draft}
@@ -213,82 +212,53 @@ export class Overview extends Component {
               </Text>
 
               {/* All */}
-              <TouchableOpacity
+              <FilterListItem
                 id="all"
-                style={styles.row}
                 onPress={() => this.selectFilter(false)}
-              >
-                <View style={[styles.circle, { backgroundColor: '#EAD1AF' }]} />
-                <Text>
-                  {t('views.lifemap.allIndicators')} (
-                  {draft.indicatorSurveyDataList.length})
-                </Text>
-              </TouchableOpacity>
+                color={'#EAD1AF'}
+                text={t('views.lifemap.allIndicators')}
+                amount={draft.indicatorSurveyDataList.length}
+              />
 
               {/* Green */}
-              <TouchableOpacity
+              <FilterListItem
                 id="green"
-                style={styles.row}
                 onPress={() => this.selectFilter(3, t('views.lifemap.green'))}
-              >
-                <View
-                  style={[styles.circle, { backgroundColor: colors.green }]}
-                />
-                <Text>
-                  {t('views.lifemap.green')} (
-                  {
-                    draft.indicatorSurveyDataList.filter(
-                      item => item.value === 3
-                    ).length
-                  }
-                  )
-                </Text>
-              </TouchableOpacity>
+                color={colors.green}
+                text={t('views.lifemap.green')}
+                amount={
+                  draft.indicatorSurveyDataList.filter(item => item.value === 3)
+                    .length
+                }
+              />
 
               {/* Yellow */}
-              <TouchableOpacity
+              <FilterListItem
                 id="yellow"
-                style={styles.row}
                 onPress={() => this.selectFilter(2, t('views.lifemap.yellow'))}
-              >
-                <View
-                  style={[styles.circle, { backgroundColor: colors.gold }]}
-                />
-                <Text>
-                  {t('views.lifemap.yellow')} (
-                  {
-                    draft.indicatorSurveyDataList.filter(
-                      item => item.value === 2
-                    ).length
-                  }
-                  )
-                </Text>
-              </TouchableOpacity>
+                color={colors.gold}
+                text={t('views.lifemap.yellow')}
+                amount={
+                  draft.indicatorSurveyDataList.filter(item => item.value === 2)
+                    .length
+                }
+              />
 
               {/* Red */}
-              <TouchableOpacity
+              <FilterListItem
                 id="red"
-                style={styles.row}
                 onPress={() => this.selectFilter(1, t('views.lifemap.red'))}
-              >
-                <View
-                  style={[styles.circle, { backgroundColor: colors.red }]}
-                />
-                <Text>
-                  {t('views.lifemap.red')} (
-                  {
-                    draft.indicatorSurveyDataList.filter(
-                      item => item.value === 1
-                    ).length
-                  }
-                  )
-                </Text>
-              </TouchableOpacity>
+                color={colors.red}
+                text={t('views.lifemap.red')}
+                amount={
+                  draft.indicatorSurveyDataList.filter(item => item.value === 1)
+                    .length
+                }
+              />
 
               {/* Priorities/achievements */}
-              <TouchableOpacity
+              <FilterListItem
                 id="priorities"
-                style={styles.row}
                 onPress={() =>
                   this.selectFilter(
                     'priorities',
@@ -297,38 +267,26 @@ export class Overview extends Component {
                     )}`
                   )
                 }
-              >
-                <View
-                  style={[styles.circle, { backgroundColor: colors.blue }]}
-                />
-                <Text>
-                  {t('views.lifemap.priorities')} &{' '}
-                  {t('views.lifemap.achievements')} (
-                  {draft.priorities.length + draft.achievements.length})
-                </Text>
-              </TouchableOpacity>
+                color={colors.blue}
+                text={`${t('views.lifemap.priorities')} & ${t(
+                  'views.lifemap.achievements'
+                )}`}
+                amount={draft.priorities.length + draft.achievements.length}
+              />
 
               {/* Skipped */}
-              <TouchableOpacity
+              <FilterListItem
                 id="skipped"
-                style={styles.row}
                 onPress={() =>
                   this.selectFilter(0, t('views.skippedIndicators'))
                 }
-              >
-                <View
-                  style={[styles.circle, { backgroundColor: colors.palegrey }]}
-                />
-                <Text>
-                  {t('views.skippedIndicators')} (
-                  {
-                    draft.indicatorSurveyDataList.filter(
-                      item => item.value === 0
-                    ).length
-                  }
-                  )
-                </Text>
-              </TouchableOpacity>
+                color={colors.palegrey}
+                text={t('views.skippedIndicators')}
+                amount={
+                  draft.indicatorSurveyDataList.filter(item => item.value === 0)
+                    .length
+                }
+              />
             </View>
           </BottomModal>
         </View>
@@ -362,24 +320,18 @@ const styles = StyleSheet.create({
     height: 5
   },
   dropdown: {
-    padding: 16,
+    paddingVertical: 16,
     position: 'absolute',
     bottom: 0,
     left: 0,
     right: 0,
     backgroundColor: colors.white
   },
-  modalTitle: { color: colors.grey, fontWeight: '300', marginBottom: 25 },
-  circle: {
-    width: 25,
-    height: 25,
-    borderRadius: 50,
-    marginRight: 30
-  },
-  row: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginBottom: 23
+  modalTitle: {
+    color: colors.grey,
+    fontWeight: '300',
+    marginBottom: 15,
+    marginLeft: 16
   }
 })
 

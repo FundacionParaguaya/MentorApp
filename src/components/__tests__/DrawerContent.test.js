@@ -1,6 +1,5 @@
 import React from 'react'
 import { shallow } from 'enzyme'
-import { Text } from 'react-native'
 import { DrawerContent } from '../navigation/DrawerContent'
 
 const createTestProps = props => ({
@@ -29,20 +28,6 @@ describe('Drawer Content', () => {
     expect(wrapper.find('#username')).toHaveHTML(
       '<react-native-mock>Test</react-native-mock>'
     )
-  })
-
-  it('hilights proper language', () => {
-    expect(wrapper.find('#en').find(Text)).toHaveProp({
-      style: [
-        {
-          fontFamily: 'Poppins',
-          fontWeight: '500',
-          fontSize: 16,
-          lineHeight: 20
-        },
-        { color: '#FFFFFF' }
-      ]
-    })
   })
 
   it('switches language', () => {

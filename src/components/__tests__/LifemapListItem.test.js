@@ -1,9 +1,9 @@
 import React from 'react'
 
 import { shallow } from 'enzyme'
-import { TouchableOpacity, Text, View, Image } from 'react-native'
-
+import { Text, View, Image } from 'react-native'
 import LifemapListItem from '../LifemapListItem'
+import ListItem from '../ListItem'
 
 const createTestProps = props => ({
   handleClick: jest.fn(),
@@ -20,8 +20,8 @@ describe('LifemapListItem Component', () => {
   })
 
   describe('rendering', () => {
-    it('renders <TouchableOpacity />', () => {
-      expect(wrapper.find(TouchableOpacity)).toHaveLength(1)
+    it('renders <ListItem />', () => {
+      expect(wrapper.find(ListItem)).toHaveLength(1)
     })
     it('renders <View />', () => {
       expect(wrapper.find(View)).toHaveLength(1)
@@ -45,7 +45,7 @@ describe('LifemapListItem Component', () => {
   describe('functionality', () => {
     it('should call handleClick onPress', () => {
       wrapper
-        .find(TouchableOpacity)
+        .find(ListItem)
         .props()
         .onPress()
       expect(wrapper.instance().props.handleClick).toHaveBeenCalledTimes(1)
