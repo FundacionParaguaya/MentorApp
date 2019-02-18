@@ -52,11 +52,12 @@ class Button extends Component {
           pressed &&
             !colored &&
             !underlined && {
-              borderColor: !borderColor
-                ? colors.green
-                : borderColor === colors.palered
-                ? colors.red
-                : colors.lightdark
+              borderColor:
+                !borderColor || borderColor === colors.palegreen
+                  ? colors.green
+                  : borderColor === colors.palered
+                  ? colors.red
+                  : colors.lightdark
             }
         ]}
         underlayColor={colored ? colors.green : colors.white}
@@ -90,11 +91,12 @@ class Button extends Component {
               underlined ? styles.underlined : {},
               pressed &&
                 !colored && {
-                  color: !borderColor
-                    ? colors.green
-                    : borderColor === colors.palered
-                    ? colors.red
-                    : colors.lightdark
+                  color:
+                    !borderColor || borderColor === colors.palegreen
+                      ? colors.green
+                      : borderColor === colors.palered
+                      ? colors.red
+                      : colors.lightdark
                 }
             ]}
           >

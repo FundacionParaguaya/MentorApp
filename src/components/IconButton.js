@@ -45,7 +45,13 @@ export default class IconButton extends Component {
             <Text
               style={[
                 this.props.textStyle,
-                { color: this.state.pressed ? colors.green : colors.palegreen }
+                text && !icon && !communityIcon
+                  ? {}
+                  : {
+                      color: this.state.pressed
+                        ? colors.green
+                        : colors.palegreen
+                    }
               ]}
             >
               {text}
