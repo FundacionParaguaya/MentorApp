@@ -3,7 +3,7 @@ import PropTypes from 'prop-types'
 import Icon from 'react-native-vector-icons/MaterialIcons'
 import {
   Text,
-  TouchableOpacity,
+  TouchableHighlight,
   StyleSheet,
   Platform,
   View
@@ -11,66 +11,99 @@ import {
 import colors from '../theme.json'
 
 class Button extends Component {
-  defineButtonStyle() {
-    if (this.props.disabled) {
-      return styles.disabled
-    }
-    if (this.props.colored) {
-      return styles.colored
-    }
-    if (this.props.outlined) {
-      return styles.outlined
-    }
-    return styles.transparent
+  state = {
+    pressed: false
+  }
+
+  togglePressedState = () => {
+    this.setState({
+      pressed: !this.state.pressed
+    })
   }
 
   render() {
-    const { style, borderColor, disabled, colored, outlined } = this.props
+    const {
+      borderColor,
+      disabled,
+      colored,
+      outlined,
+      icon,
+      handleClick,
+      underlined,
+      text,
+      style
+    } = this.props
+
+    const { pressed } = this.state
+
     return (
-      <TouchableOpacity
+      <TouchableHighlight
         style={[
           styles.buttonStyle,
-          colored && styles.colored,
-          disabled && styles.disabled,
-          outlined && styles.outlined,
           !colored && !disabled && !outlined && styles.transparent,
           style,
-          outlined && borderColor
-            ? {
-                borderColor
-              }
-            : { borderColor: colors.palegreen }
+          ['colored', 'disabled', 'outlined'].map(item =>
+            this.props[item] ? styles[item] : {}
+          ),
+          {
+            borderColor:
+              outlined && borderColor ? borderColor : colors.palegreen
+          },
+          pressed &&
+            !colored &&
+            !underlined && {
+              borderColor:
+                !borderColor || borderColor === colors.palegreen
+                  ? colors.green
+                  : borderColor === colors.palered
+                  ? colors.red
+                  : colors.lightdark
+            }
         ]}
-        onPress={this.props.handleClick}
-        disabled={this.props.disabled}
+        underlayColor={colored ? colors.green : colors.white}
+        activeOpacity={1}
+        onPress={handleClick}
+        disabled={disabled}
+        onHideUnderlay={this.togglePressedState}
+        onShowUnderlay={this.togglePressedState}
       >
-        {this.props.icon ? (
-          <Icon
-            name={this.props.icon}
-            size={21}
-            color={colors.palegreen}
-            style={styles.icon}
-          />
-        ) : (
-          <View />
-        )}
-        <Text
-          style={[
-            styles.buttonText,
-            outlined && borderColor
-              ? {
-                  color: borderColor
-                }
-              : this.props.colored
+        <View style={{ flexDirection: 'row' }}>
+          {icon ? (
+            <Icon
+              name={icon}
+              size={21}
+              color={pressed ? colors.green : colors.palegreen}
+              style={styles.icon}
+            />
+          ) : (
+            <View />
+          )}
+          <Text
+            style={[
+              styles.buttonText,
+              outlined && borderColor
+                ? {
+                    color: borderColor
+                  }
+                : colored
                 ? styles.whiteText
                 : styles.greenText,
-
-            this.props.underlined ? styles.underlined : {}
-          ]}
-        >
-          {this.props.text}
-        </Text>
-      </TouchableOpacity>
+              underlined ? styles.underlined : {},
+              pressed &&
+                !colored && {
+                  color:
+                    !borderColor || borderColor === colors.palegreen
+                      ? colors.green
+                      : borderColor === colors.palered
+                      ? colors.red
+                      : colors.lightdark
+                }
+            ]}
+          >
+            {text}
+          </Text>
+        </View>
+      </TouchableHighlight>
     )
   }
 }
@@ -87,6 +120,7 @@ Button.propTypes = {
   style: PropTypes.object
 }
 
+/* eslint-disable react-native/no-unused-styles */
 const styles = StyleSheet.create({
   buttonText: {
     ...Platform.select({
@@ -117,7 +151,6 @@ const styles = StyleSheet.create({
   },
   outlined: {
     flex: 0,
-    fontSize: 14,
     borderRadius: 4,
     borderWidth: 1.5,
     padding: 15

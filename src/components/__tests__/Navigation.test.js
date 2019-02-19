@@ -40,8 +40,8 @@ describe('Navigation', () => {
       props = createTestProps()
       wrapper = shallow(<DrawerContent {...props} />)
     })
-    it('renders nav images', () => {
-      expect(wrapper.find(Image)).toHaveLength(3)
+    it('renders nav image', () => {
+      expect(wrapper.find(Image)).toHaveLength(1)
     })
     it('shows proper username', () => {
       expect(wrapper.find('#username')).toHaveHTML(

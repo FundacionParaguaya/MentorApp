@@ -5,7 +5,7 @@ import {
   ActivityIndicator,
   Text,
   Image,
-  TouchableOpacity,
+  TouchableHighlight,
   NetInfo
 } from 'react-native'
 import { connect } from 'react-redux'
@@ -215,7 +215,7 @@ export class Location extends Component {
         survey: this.survey
       })
     } else
-      this.props.navigation.navigate('FamilyMembersNames', {
+      this.props.navigation.navigate('FamilyParticipant', {
         draftId: this.draftId,
         survey: this.survey
       })
@@ -307,13 +307,15 @@ export class Location extends Component {
                   color={colors.palegreen}
                 />
               ) : (
-                <TouchableOpacity
+                <TouchableHighlight
                   id="centerMap"
+                  underlayColor={'transparent'}
+                  activeOpacity={1}
                   style={styles.center}
                   onPress={this.getDeviceLocation}
                 >
                   <Image source={center} style={{ width: 21, height: 21 }} />
-                </TouchableOpacity>
+                </TouchableHighlight>
               )}
             </View>
           ) : (
@@ -364,7 +366,7 @@ export class Location extends Component {
         </View>
 
         <View>
-          <Text id="accuracy" style={styles.container}>
+          <Text id="accuracy" style={styles.accuracy}>
             {accuracy
               ? `${t('views.family.gpsAccurate').replace(
                   '%n',
@@ -448,6 +450,7 @@ const styles = StyleSheet.create({
   container: {
     paddingHorizontal: 16
   },
+  accuracy: { marginLeft: 30 },
   fakeMarker: {
     zIndex: 2,
     position: 'absolute',

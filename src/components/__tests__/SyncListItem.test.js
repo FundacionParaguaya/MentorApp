@@ -1,7 +1,7 @@
 import React from 'react'
 
 import { shallow } from 'enzyme'
-import { TouchableOpacity, Text, View } from 'react-native'
+import { Text, View } from 'react-native'
 import Icon from 'react-native-vector-icons/MaterialIcons'
 import SyncListItem from '../sync/SyncListItem'
 

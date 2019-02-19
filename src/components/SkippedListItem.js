@@ -1,7 +1,8 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import Icon from 'react-native-vector-icons/MaterialIcons'
-import { Text, TouchableOpacity, StyleSheet } from 'react-native'
+import { Text, StyleSheet } from 'react-native'
+import ListItem from './ListItem'
 
 import colors from '../theme.json'
 import globalStyles from '../globalStyles'
@@ -9,7 +10,7 @@ import globalStyles from '../globalStyles'
 class SkippedListItem extends Component {
   render() {
     return (
-      <TouchableOpacity
+      <ListItem
         style={{ ...styles.listItem, ...styles.borderBottom }}
         onPress={this.props.handleClick}
       >
@@ -17,7 +18,7 @@ class SkippedListItem extends Component {
           {this.props.item}
         </Text>
         <Icon name="navigate-next" size={23} color={colors.lightdark} />
-      </TouchableOpacity>
+      </ListItem>
     )
   }
 }
@@ -29,9 +30,8 @@ SkippedListItem.propTypes = {
 
 const styles = StyleSheet.create({
   listItem: {
-    paddingTop: 15,
-    paddingBottom: 15,
-    paddingRight: 25,
+    paddingVertical: 15,
+    paddingHorizontal: 25,
     alignItems: 'center',
     flexDirection: 'row',
     flex: 1,

@@ -4,9 +4,9 @@ import {
   ScrollView,
   Text,
   ProgressBarAndroid,
-  View,
-  TouchableOpacity
+  View
 } from 'react-native'
+import IconButton from '../../components/IconButton'
 
 import { connect } from 'react-redux'
 import PropTypes from 'prop-types'
@@ -164,11 +164,11 @@ export class Question extends Component {
           {this.indicator.required ? (
             <Text>{t('views.lifemap.responseRequired')}</Text>
           ) : (
-            <TouchableOpacity onPress={() => this.selectAnswer(0)}>
-              <Text style={styles.link}>
-                {t('views.lifemap.skipThisQuestion')}
-              </Text>
-            </TouchableOpacity>
+            <IconButton
+              text={t('views.lifemap.skipThisQuestion')}
+              textStyle={styles.link}
+              onPress={() => this.selectAnswer(0)}
+            />
           )}
         </View>
       </ScrollView>

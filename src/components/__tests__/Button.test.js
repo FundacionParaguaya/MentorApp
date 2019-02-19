@@ -1,10 +1,9 @@
 import React from 'react'
 
 import { shallow } from 'enzyme'
-import { TouchableOpacity, Text } from 'react-native'
+import { TouchableHighlight, Text } from 'react-native'
 import Icon from 'react-native-vector-icons/MaterialIcons'
 import Button from '../Button'
-import colors from '../../theme.json'
 
 const createTestProps = props => ({
   ...props,
@@ -20,8 +19,8 @@ describe('Button Component', () => {
     wrapper = shallow(<Button {...props} />)
   })
   describe('rendering', () => {
-    it('renders <TouchableOpacity />', () => {
-      expect(wrapper.find(TouchableOpacity)).toHaveLength(1)
+    it('renders <TouchableHighlight />', () => {
+      expect(wrapper.find(TouchableHighlight)).toHaveLength(1)
     })
 
     it('renders <Text />', () => {
@@ -35,23 +34,11 @@ describe('Button Component', () => {
     it('does not render <Icon /> when icon property is not defined', () => {
       expect(wrapper.find(Icon)).toHaveLength(0)
     })
-    it('has proper backgroundColor and text color when passed colored = true', () => {
-      props = createTestProps({
-        colored: true
-      })
-      wrapper = shallow(<Button {...props} />)
-
-      expect(
-        wrapper.find(TouchableOpacity).props().style[1].backgroundColor
-      ).toBe(colors.palegreen)
-
-      expect(wrapper.find(Text).props().style[1].color).toBe(colors.white)
-    })
   })
   describe('functionality', () => {
     it('should call handleClick onPress', () => {
       wrapper
-        .find(TouchableOpacity)
+        .find(TouchableHighlight)
         .props()
         .onPress()
 

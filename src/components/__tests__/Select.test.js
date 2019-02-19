@@ -1,7 +1,8 @@
 import React from 'react'
 import { shallow } from 'enzyme'
-import { TouchableOpacity, Text } from 'react-native'
+import { TouchableHighlight, Text } from 'react-native'
 import Select from '../Select'
+import ListItem from '../ListItem'
 import BottomModal from '../BottomModal'
 
 const createTestProps = props => ({
@@ -35,7 +36,7 @@ describe('Select dropdown', () => {
 
   it('opens a modal when pressed', () => {
     wrapper
-      .find(TouchableOpacity)
+      .find(TouchableHighlight)
       .first()
       .props()
       .onPress()
@@ -49,7 +50,7 @@ describe('Select dropdown', () => {
 
     wrapper
       .find(BottomModal)
-      .find(TouchableOpacity)
+      .find(ListItem)
       .at(1)
       .props()
       .onPress()
@@ -77,7 +78,7 @@ describe('Select dropdown', () => {
     const spy = jest.spyOn(wrapper.instance(), 'validateInput')
 
     wrapper
-      .find(TouchableOpacity)
+      .find(ListItem)
       .first()
       .props()
       .onPress()
@@ -86,18 +87,18 @@ describe('Select dropdown', () => {
       wrapper
         .find(BottomModal)
         .last()
-        .find(TouchableOpacity)
+        .find(ListItem)
     ).toHaveLength(2)
 
     wrapper
       .find(BottomModal)
       .last()
-      .find(TouchableOpacity)
+      .find(ListItem)
       .last()
       .props()
       .onPress()
 
-    expect(spy).toHaveBeenCalledTimes(1)
+    expect(spy).toHaveBeenCalledTimes(2)
     expect(spy).toHaveBeenCalledWith(2)
   })
 

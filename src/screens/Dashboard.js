@@ -3,6 +3,7 @@ import { ScrollView, Text, View, StyleSheet, FlatList } from 'react-native'
 import { withNamespaces } from 'react-i18next'
 import PropTypes from 'prop-types'
 import Button from '../components/Button'
+import Decoration from '../components/decoration/Decoration'
 import RoundImage from '../components/RoundImage'
 import DraftListItem from '../components/DraftListItem'
 import globalStyles from '../globalStyles'
@@ -66,18 +67,9 @@ export class Dashboard extends Component {
         navigation.getParam('firstTimeVisitor') ? null : (
           <View>
             <View style={globalStyles.container}>
-              <View>
-                <Text
-                  style={{
-                    ...globalStyles.h3,
-                    marginBottom: 33,
-                    alignSelf: 'center'
-                  }}
-                >
-                  {t('general.welcome')}
-                </Text>
-              </View>
-              <RoundImage source="family" />
+              <Decoration>
+                <RoundImage source="family" />
+              </Decoration>
               <Button
                 text={t('views.createLifemap')}
                 colored
@@ -92,7 +84,7 @@ export class Dashboard extends Component {
               </View>
             ) : null}
             <FlatList
-              style={{ ...styles.background, paddingLeft: 25 }}
+              style={{ ...styles.background }}
               data={list}
               keyExtractor={(item, index) => index.toString()}
               renderItem={({ item }) => (
