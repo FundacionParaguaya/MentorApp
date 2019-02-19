@@ -6,7 +6,9 @@ import uuid from 'uuid/v1'
 import {
   createDraft,
   addSurveyFamilyMemberData,
-  addDraftProgress
+  addDraftProgress,
+  addSurveyData,
+  removeFamilyMembers
 } from '../../redux/actions'
 import { withNamespaces } from 'react-i18next'
 import Icon from 'react-native-vector-icons/MaterialIcons'
@@ -78,23 +80,75 @@ export class FamilyParticipant extends Component {
   }
 
   handleClick = () => {
+    const draft = this.props.drafts.find(
+      draft => draft.draftId === this.draftId
+    )
     if (this.errorsDetected.length) {
       this.setState({
         showErrors: true
       })
     } else {
-      this.props.navigation.navigate('FamilyMembersNames', {
-        draftId: this.draftId,
-        survey: this.survey
-      })
+      this.getFamilyCount(draft) > 1
+        ? this.props.navigation.navigate('FamilyMembersNames', {
+            draftId: this.draftId,
+            survey: this.survey
+          })
+        : this.props.navigation.navigate('Location', {
+            draftId: this.draftId,
+            survey: this.survey
+          })
     }
   }
+
+  addFamilyCount = (text, field) => {
+    const draft = this.props.drafts.find(
+      draft => draft.draftId === this.draftId
+    )
+
+    // if reducing the number of family members remove the rest
+    if (text && this.getFamilyCount(draft) > text) {
+      const index = text === -1 ? 1 : text
+      this.props.removeFamilyMembers(this.draftId, index)
+
+      this.setState({
+        errorsDetected: this.errorsDetected
+      })
+    }
+
+    this.setState({
+      showErrors: false
+    })
+
+    this.props.addSurveyData(this.draftId, 'familyData', {
+      [field]: text
+    })
+  }
+
+  getFamilyMembersCountArray = t => [
+    { text: t('views.family.onlyPerson'), value: 1 },
+    ...Array.from(new Array(24), (val, index) => ({
+      value: index + 2,
+      text: `${index + 2}`
+    })),
+
+    {
+      text: t('views.family.preferNotToSay'),
+      value: -1
+    }
+  ]
 
   getFieldValue = (draft, field) => {
     if (!draft) {
       return
     }
     return draft.familyData.familyMembersList[0][field]
+  }
+
+  getFamilyCount = draft => {
+    if (!draft) {
+      return
+    }
+    return draft.familyData.countFamilyMembers
   }
 
   addSurveyData = (text, field) => {
@@ -118,9 +172,9 @@ export class FamilyParticipant extends Component {
   render() {
     const { t } = this.props
     const { showErrors } = this.state
-    const draft = this.props.drafts.filter(
+    const draft = this.props.drafts.find(
       draft => draft.draftId === this.draftId
-    )[0]
+    )
 
     return (
       <StickyFooter
@@ -207,6 +261,18 @@ export class FamilyParticipant extends Component {
           detectError={this.detectError}
           showErrors={showErrors}
         />
+        <Select
+          id="familyMembersCount"
+          required
+          onChange={this.addFamilyCount}
+          label={t('views.family.peopleLivingInThisHousehold')}
+          placeholder={t('views.family.peopleLivingInThisHousehold')}
+          field="countFamilyMembers"
+          value={this.getFamilyCount(draft) || ''}
+          detectError={this.detectError}
+          showErrors={showErrors}
+          options={this.getFamilyMembersCountArray(t)}
+        />
         <TextInput
           onChangeText={this.addSurveyData}
           field="email"
@@ -242,13 +308,17 @@ FamilyParticipant.propTypes = {
   navigation: PropTypes.object.isRequired,
   createDraft: PropTypes.func.isRequired,
   addSurveyFamilyMemberData: PropTypes.func.isRequired,
-  addDraftProgress: PropTypes.func.isRequired
+  addDraftProgress: PropTypes.func.isRequired,
+  addSurveyData: PropTypes.func.isRequired,
+  removeFamilyMembers: PropTypes.func.isRequired
 }
 
 const mapDispatchToProps = {
   createDraft,
   addSurveyFamilyMemberData,
-  addDraftProgress
+  addDraftProgress,
+  addSurveyData,
+  removeFamilyMembers
 }
 
 const mapStateToProps = ({ surveys, drafts }) => ({
