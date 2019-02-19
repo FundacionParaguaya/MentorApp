@@ -4,6 +4,7 @@ import { shallow } from 'enzyme'
 import { TouchableOpacity, Text, View } from 'react-native'
 import Icon from 'react-native-vector-icons/MaterialIcons'
 import FamiliesListItem from '../FamiliesListItem'
+import ListItem from '../ListItem'
 
 const createTestProps = props => ({
   handleClick: jest.fn(),
@@ -37,8 +38,8 @@ describe('FamiliesListItem Component', () => {
   })
 
   describe('rendering', () => {
-    it('renders <TouchableOpacity />', () => {
-      expect(wrapper.find(TouchableOpacity)).toHaveLength(1)
+    it('renders <ListItem />', () => {
+      expect(wrapper.find(ListItem)).toHaveLength(1)
     })
     it('renders <View />', () => {
       expect(wrapper.find(View)).toHaveLength(1)
@@ -69,10 +70,20 @@ describe('FamiliesListItem Component', () => {
   describe('functionality', () => {
     it('should call handleClick onPress', () => {
       wrapper
-        .find(TouchableOpacity)
+        .find(ListItem)
         .props()
         .onPress()
       expect(wrapper.instance().props.handleClick).toHaveBeenCalledTimes(1)
+    })
+    it('ListItem is disabled if there is no snapshot list in family', () => {
+      props = createTestProps({
+        family: {
+          name: 'Juan Perez',
+          snapshotList: []
+        }
+      })
+      wrapper = shallow(<FamiliesListItem {...props} />)
+      expect(wrapper.find(ListItem).props().disabled).toBe(true)
     })
   })
 })

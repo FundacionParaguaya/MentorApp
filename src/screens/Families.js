@@ -8,7 +8,7 @@ import {
 } from 'react-native'
 import { connect } from 'react-redux'
 import PropTypes from 'prop-types'
-
+import { withNamespaces } from 'react-i18next'
 import { loadFamilies } from '../redux/actions'
 import { url } from '../config'
 import colors from '../theme.json'
@@ -34,7 +34,7 @@ export class Families extends Component {
         family.name.includes(this.state.search) ||
         family.code.includes(this.state.search)
     )
-
+    const { t } = this.props
     return (
       <ScrollView
         style={globalStyles.background}
@@ -59,6 +59,7 @@ export class Families extends Component {
           keyExtractor={(item, index) => index.toString()}
           renderItem={({ item }) => (
             <FamiliesListItem
+              error={t('views.family.error')}
               handleClick={() =>
                 this.props.navigation.navigate('Overview', {
                   familyLifemap: item.snapshotList[0],
@@ -108,7 +109,9 @@ const mapDispatchToProps = {
   loadFamilies
 }
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(Families)
+export default withNamespaces()(
+  connect(
+    mapStateToProps,
+    mapDispatchToProps
+  )(Families)
+)

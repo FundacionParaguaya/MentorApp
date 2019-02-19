@@ -6,6 +6,7 @@ import moment from 'moment'
 
 import colors from '../theme.json'
 import globalStyles from '../globalStyles'
+import ListItem from './ListItem'
 
 class FamiliesListItem extends Component {
   render() {
@@ -16,27 +17,41 @@ class FamiliesListItem extends Component {
         )
       : null
     const birthDate = firstParticipant ? firstParticipant.birthDate : ''
-
+    console.log(this.props.error)
     return (
-      <TouchableOpacity
+      <ListItem
         style={{ ...styles.listItem }}
         onPress={this.props.handleClick}
+        disabled={!family.snapshotList.length}
       >
         <Icon name="face" color={colors.grey} size={40} style={styles.icon} />
         <View style={styles.listItemContainer}>
           <Text style={{ ...globalStyles.p, ...styles.p }}>{family.name}</Text>
-          <Text style={{ ...globalStyles.subline, ...styles.p }}>
-            {`DOB: ${moment(birthDate).format('MMM, DD YYYY')}`}
-          </Text>
+          {family.snapshotList.length ? (
+            <Text style={{ ...globalStyles.subline, ...styles.p }}>
+              {`DOB: ${moment(birthDate).format('MMM, DD YYYY')}`}
+            </Text>
+          ) : (
+            <Text
+              style={{
+                ...globalStyles.subline,
+                ...styles.p,
+                color: colors.palered
+              }}
+            >
+              {this.props.error}
+            </Text>
+          )}
         </View>
-      </TouchableOpacity>
+      </ListItem>
     )
   }
 }
 
 FamiliesListItem.propTypes = {
   family: PropTypes.object.isRequired,
-  handleClick: PropTypes.func.isRequired
+  handleClick: PropTypes.func.isRequired,
+  error: PropTypes.string
 }
 
 const styles = StyleSheet.create({
