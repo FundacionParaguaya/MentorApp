@@ -50,5 +50,23 @@ describe('Counter Component', () => {
       expect(wrapper.instance().props.editCounter).toHaveBeenCalledTimes(1)
       expect(wrapper.instance().props.editCounter).toHaveBeenCalledWith('plus')
     })
+    it('disables editCounter  when readonly prop is true', () => {
+      props = createTestProps({ readonly: true })
+      wrapper = shallow(<Counter {...props} />)
+
+      expect(
+        wrapper
+          .find(TouchableHighlight)
+          .first()
+          .props().disabled
+      ).toBe(true)
+
+      expect(
+        wrapper
+          .find(TouchableHighlight)
+          .last()
+          .props().disabled
+      ).toBe(true)
+    })
   })
 })

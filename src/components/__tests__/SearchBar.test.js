@@ -8,6 +8,7 @@ const createTestProps = props => ({
   style: { width: 50, height: 50 },
   onChangeText: jest.fn(),
   onSubmit: jest.fn(),
+  placeholder: 'placeholder',
   value: ''
 })
 
@@ -25,6 +26,10 @@ describe('Search bar', () => {
   })
   it('renders a native TextInput', () => {
     expect(wrapper.find(TextInput)).toHaveLength(1)
+  })
+
+  it('displays placeholder', () => {
+    expect(wrapper.find(TextInput).props().placeholder).toBe('placeholder')
   })
   it('calls onChangeText prop when editing the search bar', () => {
     wrapper

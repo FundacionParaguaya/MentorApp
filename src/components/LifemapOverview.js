@@ -75,24 +75,23 @@ class LifemapOverview extends Component {
             {this.filterByDimension(item).length ? (
               <Text style={styles.dimension}>{item.toUpperCase()}</Text>
             ) : null}
-            {this.filterByDimension(item).map(indicator => {
-              return (
-                <LifemapOverviewListItem
-                  key={indicator.questionText}
-                  name={indicator.questionText}
-                  color={this.getColor(indicator.codeName)}
-                  priority={priorities.includes(indicator.codeName)}
-                  achievement={achievements.includes(indicator.codeName)}
-                  handleClick={() =>
-                    this.handleClick(
-                      this.getColor(indicator.codeName),
-                      indicator.codeName,
-                      indicator.questionText
-                    )
-                  }
-                />
-              )
-            })}
+            {this.filterByDimension(item).map(indicator => (
+              <LifemapOverviewListItem
+                key={indicator.questionText}
+                name={indicator.questionText}
+                color={this.getColor(indicator.codeName)}
+                draftOverview={this.props.draftOverview}
+                priority={priorities.includes(indicator.codeName)}
+                achievement={achievements.includes(indicator.codeName)}
+                handleClick={() =>
+                  this.handleClick(
+                    this.getColor(indicator.codeName),
+                    indicator.codeName,
+                    indicator.questionText
+                  )
+                }
+              />
+            ))}
           </View>
         ))}
       </View>
@@ -104,6 +103,7 @@ LifemapOverview.propTypes = {
   surveyData: PropTypes.array.isRequired,
   draftData: PropTypes.object.isRequired,
   navigateToScreen: PropTypes.func.isRequired,
+  draftOverview: PropTypes.bool,
   selectedFilter: PropTypes.oneOfType([
     PropTypes.bool,
     PropTypes.number,
@@ -116,7 +116,7 @@ const styles = StyleSheet.create({
     ...globalStyles.container,
     padding: 0
   },
-  dimension: { ...globalStyles.h4, marginHorizontal: 20, marginTop: -20 }
+  dimension: { ...globalStyles.h4, marginHorizontal: 20, marginVertical: 10 }
 })
 
 export default LifemapOverview

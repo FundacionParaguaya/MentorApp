@@ -50,6 +50,7 @@
   "views": {
     "synced": "Sync",
     "dashboard": "Dashboard",
+    "families": "Families",
     "createLifemap": "Create a life map",
     "latestDrafts": "Latest life maps",
     "noDrafts": "No drafts to display",
@@ -101,7 +102,8 @@
       "mapUnavailavleOffline": "Unfortunately we cannot load the map because you are offline.",
       "weHaveLocation": "However we were able to get your device location.",
       "neitherMapNorLocation": "Unfortunately we cannot load the map nor can we get your device location.",
-      "describeLocation": "Could you describe your location as accurate as possible below?"
+      "describeLocation": "Could you describe your location as accurate as possible below?",
+      "error": "Error: Cannot display family profile"
     },
     "lifemap": {
       "thisLifeMapHas": "This life map has %n questions. It will take approximately 35 minutes to complete!",

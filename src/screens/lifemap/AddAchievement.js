@@ -20,7 +20,7 @@ export class AddAchievement extends Component {
     showErrors: false,
     indicator: this.props.navigation.getParam('indicator')
   }
-
+  draftId = this.props.navigation.getParam('draftId')
   detectError = (error, field) => {
     if (error && !this.errorsDetected.includes(field)) {
       this.errorsDetected.push(field)
@@ -34,19 +34,23 @@ export class AddAchievement extends Component {
   }
 
   componentDidMount() {
-    const draft = this.getDraft()
-    const achievement = this.getAchievementValue(draft)
+    const data = this.getData()
+    const achievement = this.getAchievementValue(data)
     this.setState(achievement)
+
+    this.props.navigation.setParams({
+      withoutCloseButton: this.draftId ? false : true
+    })
   }
 
   shouldComponentUpdate() {
     return this.props.navigation.isFocused()
   }
 
-  getDraft = () =>
-    this.props.drafts.filter(
-      draft => draft.draftId === this.props.navigation.getParam('draftId')
-    )[0]
+  getData = () =>
+    this.draftId
+      ? this.props.drafts.filter(draft => draft.draftId === this.draftId)[0]
+      : this.props.navigation.getParam('familyLifemap')
 
   addAchievement = () => {
     if (this.errorsDetected.length) {
@@ -56,7 +60,7 @@ export class AddAchievement extends Component {
     } else {
       const { action, roadmap, indicator } = this.state
       this.props.addSurveyPriorityAcheivementData({
-        id: this.props.navigation.getParam('draftId'),
+        id: this.draftId,
         category: 'achievements',
         payload: { action, roadmap, indicator }
       })
@@ -64,8 +68,8 @@ export class AddAchievement extends Component {
     }
   }
 
-  getAchievementValue = draft => {
-    const achievement = draft.achievements.filter(
+  getAchievementValue = data => {
+    const achievement = data.achievements.filter(
       achievement =>
         achievement.indicator === this.props.navigation.getParam('indicator')
     )
@@ -75,13 +79,14 @@ export class AddAchievement extends Component {
   render() {
     const { t } = this.props
     const { showErrors } = this.state
-    const draft = this.getDraft()
-    const achievement = this.getAchievementValue(draft)
+    const data = this.getData()
+    const achievement = this.getAchievementValue(data)
 
     return (
       <StickyFooter
         continueLabel={t('general.save')}
         handleClick={this.addAchievement}
+        hidden={!this.draftId}
       >
         <View style={globalStyles.container}>
           <Text style={globalStyles.h2}>
@@ -109,6 +114,7 @@ export class AddAchievement extends Component {
         <TextInput
           field="action"
           required
+          readonly={!this.draftId}
           showErrors={showErrors}
           detectError={this.detectError}
           onChangeText={text => this.setState({ action: text })}
@@ -125,6 +131,7 @@ export class AddAchievement extends Component {
           placeholder={
             this.state.roadmap ? '' : t('views.lifemap.writeYourAnswerHere')
           }
+          readonly={!this.draftId}
           value={achievement ? achievement.roadmap : ''}
           multiline
         />

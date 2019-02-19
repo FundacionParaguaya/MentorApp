@@ -13,6 +13,7 @@ const createTestProps = props => ({
   achievement: false,
   priority: true,
   handleClick: jest.fn(),
+  draftOverview: true,
   ...props
 })
 
@@ -61,6 +62,16 @@ describe('LifemapOverviewListItem Component', () => {
           .first()
           .props().color
       ).toEqual(colors.gold)
+    })
+    it('disables button when indicator is grey', () => {
+      props = createTestProps({ color: 0 })
+      wrapper = shallow(<LifemapOverviewListItem {...props} />)
+      expect(wrapper.find(ListItem).props().disabled).toBe(true)
+    })
+    it('disables button when indicator is not grey but there is no priority or achievement and it is not a draft overview', () => {
+      props = createTestProps({ draftOverview: false, priority: false })
+      wrapper = shallow(<LifemapOverviewListItem {...props} />)
+      expect(wrapper.find(ListItem).props().disabled).toBe(true)
     })
   })
 })

@@ -2,7 +2,7 @@ import { createDrawerNavigator } from 'react-navigation'
 import { Platform } from 'react-native'
 import DrawerContentComponent from './DrawerContent'
 import SyncStack from './SyncStack'
-// import FamiliesStack from './FamiliesStack'
+import FamiliesStack from './FamiliesStack'
 import LifemapStack from './LifemapStack'
 import DashboardStack from './DashboardStack'
 
@@ -15,9 +15,9 @@ export default createDrawerNavigator(
     Surveys: {
       screen: LifemapStack
     },
-    // Families: {
-    //   screen: FamiliesStack,
-    // },
+    Families: {
+      screen: FamiliesStack
+    },
     Sync: {
       screen: SyncStack
     }

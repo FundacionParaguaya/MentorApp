@@ -12,14 +12,25 @@ const createTestProps = props => ({
     navigate: jest.fn(),
     goBack: jest.fn(),
     isFocused: jest.fn(),
-    getParam: jest.fn(param => (param === 'indicator' ? 'income' : 2))
+    setParams: jest.fn(),
+    getParam: jest.fn(param => {
+      if (param === 'indicator') {
+        return 'income'
+      }
+      if (param === 'draftId') {
+        return 2
+      }
+      if (param === 'familyLifemap') {
+        return
+      }
+    })
   },
   addSurveyPriorityAcheivementData: jest.fn(),
   drafts: [
     {
       draftId: 2,
       surveyId: 1,
-      achievements: []
+      achievements: [{ indicator: 'income' }]
     }
   ],
   ...props
@@ -27,8 +38,9 @@ const createTestProps = props => ({
 
 describe('AddAchievement View', () => {
   let wrapper
+  let props
   beforeEach(() => {
-    const props = createTestProps()
+    props = createTestProps()
     wrapper = shallow(<AddAchievement {...props} />)
   })
   describe('rendering', () => {
@@ -118,5 +130,39 @@ describe('Render optimization', () => {
     expect(
       wrapper.instance().props.addSurveyPriorityAcheivementData
     ).toHaveBeenCalledTimes(1)
+  })
+  it('fields are read only when there is no draft id', () => {
+    props = createTestProps({
+      navigation: {
+        navigate: jest.fn(),
+        goBack: jest.fn(),
+        isFocused: jest.fn(),
+        setParams: jest.fn(),
+        getParam: jest.fn(param => {
+          if (param === 'indicator') {
+            return 'income'
+          } else if (param === 'draftId') {
+            return undefined
+          } else if (param === 'familyLifemap') {
+            return { surveyId: 1, achievements: [{ indicator: 'income' }] }
+          }
+        })
+      }
+    })
+    wrapper = shallow(<AddAchievement {...props} />)
+
+    expect(
+      wrapper
+        .find(TextInput)
+        .first()
+        .props().readonly
+    ).toBe(true)
+
+    expect(
+      wrapper
+        .find(TextInput)
+        .last()
+        .props().readonly
+    ).toBe(true)
   })
 })

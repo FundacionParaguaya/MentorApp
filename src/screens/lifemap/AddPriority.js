@@ -20,7 +20,7 @@ export class AddPriority extends Component {
     validationError: false,
     indicator: this.props.navigation.getParam('indicator')
   }
-
+  draftId = this.props.navigation.getParam('draftId')
   shouldComponentUpdate() {
     return this.props.navigation.isFocused()
   }
@@ -37,16 +37,20 @@ export class AddPriority extends Component {
   }
 
   componentDidMount() {
-    const draft = this.getDraft()
+    const draft = this.getData()
     const priority = this.getPriorityValue(draft)
 
     this.setState(priority)
+
+    this.props.navigation.setParams({
+      withoutCloseButton: this.draftId ? false : true
+    })
   }
 
-  getDraft = () =>
-    this.props.drafts.filter(
-      draft => draft.draftId === this.props.navigation.getParam('draftId')
-    )[0]
+  getData = () =>
+    this.draftId
+      ? this.props.drafts.filter(draft => draft.draftId === this.draftId)[0]
+      : this.props.navigation.getParam('familyLifemap')
 
   addPriority = () => {
     if (!this.state.estimatedDate) {
@@ -56,7 +60,7 @@ export class AddPriority extends Component {
     } else {
       const { reason, action, estimatedDate, indicator } = this.state
       this.props.addSurveyPriorityAcheivementData({
-        id: this.props.navigation.getParam('draftId'),
+        id: this.draftId,
         category: 'priorities',
         payload: { reason, action, estimatedDate, indicator }
       })
@@ -64,8 +68,8 @@ export class AddPriority extends Component {
     }
   }
 
-  getPriorityValue = draft => {
-    const priority = draft.priorities.filter(
+  getPriorityValue = data => {
+    const priority = data.priorities.filter(
       priority =>
         priority.indicator === this.props.navigation.getParam('indicator')
     )
@@ -75,13 +79,14 @@ export class AddPriority extends Component {
   render() {
     const { t } = this.props
     const { validationError, reason, action, estimatedDate } = this.state
-    const draft = this.getDraft()
-    const priority = this.getPriorityValue(draft)
+    const data = this.getData()
+    const priority = this.getPriorityValue(data)
 
     return (
       <StickyFooter
         continueLabel={t('general.save')}
         handleClick={this.addPriority}
+        hidden={!this.draftId}
       >
         <View style={globalStyles.container}>
           <Text style={globalStyles.h2}>
@@ -110,6 +115,7 @@ export class AddPriority extends Component {
           label={t('views.lifemap.whyDontYouHaveIt')}
           value={priority ? priority.reason : ''}
           multiline
+          readonly={!this.draftId}
         />
         <TextInput
           label={t('views.lifemap.whatWillYouDoToGetIt')}
@@ -117,12 +123,14 @@ export class AddPriority extends Component {
           placeholder={action ? '' : t('views.lifemap.writeYourAnswerHere')}
           value={priority ? priority.action : ''}
           multiline
+          readonly={!this.draftId}
         />
         <View style={{ padding: 15 }}>
           <Counter
             editCounter={this.editCounter}
             count={estimatedDate}
             text={t('views.lifemap.howManyMonthsWillItTake')}
+            readonly={!this.draftId}
           />
         </View>
         {/* Error message */}

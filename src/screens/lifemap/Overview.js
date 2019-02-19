@@ -22,6 +22,7 @@ export class Overview extends Component {
     tipIsVisible: true
   }
   draftId = this.props.navigation.getParam('draftId')
+  familyLifemap = this.props.navigation.getParam('familyLifemap')
   survey = this.props.navigation.getParam('survey')
 
   componentDidMount() {
@@ -29,33 +30,44 @@ export class Overview extends Component {
       this.props.addDraftProgress(this.draftId, {
         screen: 'Overview'
       })
+
       this.props.navigation.setParams({
-        onPressBack: this.onPressBack
+        onPressBack: this.onPressBack,
+        withoutCloseButton: this.draftId ? false : true
       })
     }
   }
 
   onPressBack = () => {
-    const draft = this.props.drafts.find(item => item.draftId === this.draftId)
-    const skippedQuestions = draft.indicatorSurveyDataList.filter(
-      question => question.value === 0
-    )
-    if (skippedQuestions.length > 0) {
-      this.props.navigation.navigate('Skipped', {
-        draftId: this.draftId,
-        survey: this.survey
-      })
-    } else
-      this.props.navigation.navigate('Question', {
-        draftId: this.draftId,
-        survey: this.survey,
-        step: this.survey.surveyStoplightQuestions.length - 1
-      })
+    //If we do not arrive to this screen from the families screen
+    if (!this.familyLifemap) {
+      const draft = this.props.drafts.find(
+        item => item.draftId === this.draftId
+      )
+      const skippedQuestions = draft.indicatorSurveyDataList.filter(
+        question => question.value === 0
+      )
+      // If there are no skipped questions
+      if (skippedQuestions.length > 0) {
+        this.props.navigation.navigate('Skipped', {
+          draftId: this.draftId,
+          survey: this.survey
+        })
+      } else
+        this.props.navigation.navigate('Question', {
+          draftId: this.draftId,
+          survey: this.survey,
+          step: this.survey.surveyStoplightQuestions.length - 1
+        })
+    }
+    // If we arrive to this screen from the families screen
+    else this.props.navigation.navigate('Families')
   }
 
   navigateToScreen = (screen, indicator, indicatorText) =>
     this.props.navigation.navigate(screen, {
       draftId: this.draftId,
+      familyLifemap: this.familyLifemap,
       survey: this.survey,
       indicator,
       indicatorText
@@ -112,9 +124,11 @@ export class Overview extends Component {
   render() {
     const { t } = this.props
     const { filterModalIsOpen, selectedFilter, filterLabel } = this.state
+    const data = this.familyLifemap
+      ? this.familyLifemap
+      : this.props.drafts.find(item => item.draftId === this.draftId)
 
-    const draft = this.props.drafts.find(item => item.draftId === this.draftId)
-    const mandatoryPrioritiesCount = this.getMandatoryPrioritiesCount(draft)
+    const mandatoryPrioritiesCount = this.getMandatoryPrioritiesCount(data)
     const resumeDraft = this.props.navigation.getParam('resumeDraft')
     const tipIsVisible = !resumeDraft && this.state.tipIsVisible
 
@@ -122,19 +136,19 @@ export class Overview extends Component {
       //no mandatory priotities
       if (
         !mandatoryPrioritiesCount ||
-        mandatoryPrioritiesCount - draft.priorities.length <= 0
+        mandatoryPrioritiesCount - data.priorities.length <= 0
       ) {
         return `${t('general.create')} ${t(
           'views.lifemap.priorities'
         ).toLowerCase()}!`
         //only one mandatory priority
-      } else if (mandatoryPrioritiesCount - draft.priorities.length === 1) {
+      } else if (mandatoryPrioritiesCount - data.priorities.length === 1) {
         return t('views.lifemap.youNeedToAddPriotity')
       }
       //more than one mandatory priority
       else {
         return `${t('general.create')} ${mandatoryPrioritiesCount -
-          draft.priorities.length} ${t(
+          data.priorities.length} ${t(
           'views.lifemap.priorities'
         ).toLowerCase()}!`
       }
@@ -143,8 +157,8 @@ export class Overview extends Component {
     return (
       <StickyFooter
         continueLabel={t('general.continue')}
-        handleClick={() => this.handleContinue(mandatoryPrioritiesCount, draft)}
-        visible={!resumeDraft}
+        handleClick={() => this.handleContinue(mandatoryPrioritiesCount, data)}
+        visible={!resumeDraft && !this.familyLifemap}
         type={tipIsVisible ? 'tip' : 'button'}
         tipTitle={t('views.lifemap.toComplete')}
         onTipClose={this.onTipClose}
@@ -154,9 +168,9 @@ export class Overview extends Component {
           <View style={styles.indicatorsContainer}>
             <LifemapVisual
               large
-              questions={draft.indicatorSurveyDataList}
-              priorities={draft.priorities}
-              achievements={draft.achievements}
+              questions={data.indicatorSurveyDataList}
+              priorities={data.priorities}
+              achievements={data.achievements}
               questionsLength={this.survey.surveyStoplightQuestions.length}
             />
             {resumeDraft ? (
@@ -168,11 +182,11 @@ export class Overview extends Component {
                 colored
                 text={t('general.resumeDraft')}
                 handleClick={() => {
-                  this.props.navigation.replace(draft.progress.screen, {
+                  this.props.navigation.replace(data.progress.screen, {
                     draftId: this.draftId,
                     survey: this.survey,
-                    step: draft.progress.step,
-                    socioEconomics: draft.progress.socioEconomics
+                    step: data.progress.step,
+                    socioEconomics: data.progress.socioEconomics
                   })
                 }}
               />
@@ -194,8 +208,9 @@ export class Overview extends Component {
             </TouchableHighlight>
             <LifemapOverview
               surveyData={this.survey.surveyStoplightQuestions}
-              draftData={draft}
+              draftData={data}
               navigateToScreen={this.navigateToScreen}
+              draftOverview={!!this.draftId}
               selectedFilter={selectedFilter}
             />
           </View>
@@ -217,7 +232,7 @@ export class Overview extends Component {
                 onPress={() => this.selectFilter(false)}
                 color={'#EAD1AF'}
                 text={t('views.lifemap.allIndicators')}
-                amount={draft.indicatorSurveyDataList.length}
+                amount={data.indicatorSurveyDataList.length}
               />
 
               {/* Green */}
@@ -227,7 +242,7 @@ export class Overview extends Component {
                 color={colors.green}
                 text={t('views.lifemap.green')}
                 amount={
-                  draft.indicatorSurveyDataList.filter(item => item.value === 3)
+                  data.indicatorSurveyDataList.filter(item => item.value === 3)
                     .length
                 }
               />
@@ -239,7 +254,7 @@ export class Overview extends Component {
                 color={colors.gold}
                 text={t('views.lifemap.yellow')}
                 amount={
-                  draft.indicatorSurveyDataList.filter(item => item.value === 2)
+                  data.indicatorSurveyDataList.filter(item => item.value === 2)
                     .length
                 }
               />
@@ -251,7 +266,7 @@ export class Overview extends Component {
                 color={colors.red}
                 text={t('views.lifemap.red')}
                 amount={
-                  draft.indicatorSurveyDataList.filter(item => item.value === 1)
+                  data.indicatorSurveyDataList.filter(item => item.value === 1)
                     .length
                 }
               />
@@ -271,7 +286,7 @@ export class Overview extends Component {
                 text={`${t('views.lifemap.priorities')} & ${t(
                   'views.lifemap.achievements'
                 )}`}
-                amount={draft.priorities.length + draft.achievements.length}
+                amount={data.priorities.length + data.achievements.length}
               />
 
               {/* Skipped */}
@@ -283,7 +298,7 @@ export class Overview extends Component {
                 color={colors.palegrey}
                 text={t('views.skippedIndicators')}
                 amount={
-                  draft.indicatorSurveyDataList.filter(item => item.value === 0)
+                  data.indicatorSurveyDataList.filter(item => item.value === 0)
                     .length
                 }
               />

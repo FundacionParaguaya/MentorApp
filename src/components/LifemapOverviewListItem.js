@@ -26,14 +26,18 @@ class LifemapOverviewListItem extends Component {
   }
 
   render() {
+    const disabledButton = this.props.draftOverview
+      ? !this.props.color
+      : !this.props.achievement && !this.props.priority
+
     return (
       <ListItem
         onPress={this.props.handleClick}
         style={styles.container}
-        disabled={!this.props.color}
+        disabled={disabledButton}
       >
         <View>
-          {this.props.achievement && this.props.color === 3 ? (
+          {this.props.achievement ? (
             <Icon
               name="stars"
               color={colors.blue}
@@ -47,8 +51,7 @@ class LifemapOverviewListItem extends Component {
           ) : (
             <View />
           )}
-          {this.props.priority &&
-          (this.props.color === 1 || this.props.color === 2) ? (
+          {this.props.priority ? (
             <View
               style={{
                 ...styles.blueIcon,
@@ -73,7 +76,7 @@ class LifemapOverviewListItem extends Component {
         </View>
         <View style={[styles.listItem, styles.borderBottom]}>
           <Text style={{ ...globalStyles.p }}>{this.props.name}</Text>
-          {this.props.color ? (
+          {!disabledButton ? (
             <Icon name="navigate-next" size={23} color={colors.lightdark} />
           ) : (
             <View />
@@ -89,7 +92,8 @@ LifemapOverviewListItem.propTypes = {
   achievement: PropTypes.bool,
   priority: PropTypes.bool,
   color: PropTypes.number.isRequired,
-  handleClick: PropTypes.func.isRequired
+  handleClick: PropTypes.func.isRequired,
+  draftOverview: PropTypes.bool
 }
 
 const styles = StyleSheet.create({

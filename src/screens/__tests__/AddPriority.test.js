@@ -13,7 +13,16 @@ const createTestProps = props => ({
     navigate: jest.fn(),
     goBack: jest.fn(),
     isFocused: jest.fn(),
-    getParam: jest.fn(param => (param === 'indicator' ? 'income' : 2))
+    setParams: jest.fn(),
+    getParam: jest.fn(param => {
+      if (param === 'indicator') {
+        return 'income'
+      } else if (param === 'draftId') {
+        return 2
+      } else if (param === 'familyLifemap') {
+        return
+      }
+    })
   },
   addSurveyPriorityAcheivementData: jest.fn(),
   drafts: [
@@ -153,5 +162,46 @@ describe('Render optimization', () => {
     })
     wrapper = shallow(<AddPriority {...props} />)
     expect(wrapper.instance().props.drafts[1]).toBeFalsy()
+  })
+  it('fields are read only when there is no draft id', () => {
+    props = createTestProps({
+      navigation: {
+        navigate: jest.fn(),
+        goBack: jest.fn(),
+        isFocused: jest.fn(),
+        setParams: jest.fn(),
+        getParam: jest.fn(param => {
+          if (param === 'indicator') {
+            return 'income'
+          } else if (param === 'draftId') {
+            return undefined
+          } else if (param === 'familyLifemap') {
+            return { surveyId: 1, priorities: [{ indicator: 'income' }] }
+          }
+        })
+      }
+    })
+    wrapper = shallow(<AddPriority {...props} />)
+
+    expect(
+      wrapper
+        .find(TextInput)
+        .first()
+        .props().readonly
+    ).toBe(true)
+
+    expect(
+      wrapper
+        .find(TextInput)
+        .last()
+        .props().readonly
+    ).toBe(true)
+
+    expect(
+      wrapper
+        .find(Counter)
+        .last()
+        .props().readonly
+    ).toBe(true)
   })
 })
