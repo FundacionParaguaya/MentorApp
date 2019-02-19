@@ -116,7 +116,7 @@ const styles = StyleSheet.create({
     ...globalStyles.container,
     padding: 0
   },
-  dimension: { ...globalStyles.h4, marginHorizontal: 20, marginTop: -20 }
+  dimension: { ...globalStyles.h4, marginHorizontal: 20, marginVertical: 10 }
 })
 
 export default LifemapOverview
