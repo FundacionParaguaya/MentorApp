@@ -63,8 +63,10 @@ export default class Orb extends Component {
         toValue: 0,
         duration: 1
       })
-    ]).start(() => {
-      this.cycleAnimation()
+    ]).start(done => {
+      if (done.finished) {
+        this.cycleAnimation()
+      }
     })
   }
   componentDidMount() {
