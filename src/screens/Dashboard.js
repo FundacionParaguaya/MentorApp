@@ -60,6 +60,7 @@ export class Dashboard extends Component {
 
   render() {
     const { t, navigation, drafts } = this.props
+
     const list = drafts.slice().reverse()
     return (
       <ScrollView style={globalStyles.background}>
