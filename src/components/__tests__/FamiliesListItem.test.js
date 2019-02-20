@@ -1,7 +1,7 @@
 import React from 'react'
 
 import { shallow } from 'enzyme'
-import { TouchableOpacity, Text, View } from 'react-native'
+import { Text, View } from 'react-native'
 import Icon from 'react-native-vector-icons/MaterialIcons'
 import FamiliesListItem from '../FamiliesListItem'
 import ListItem from '../ListItem'
@@ -65,6 +65,21 @@ describe('FamiliesListItem Component', () => {
           .first()
           .props().children
       ).toEqual('Juan Perez')
+    })
+    it('renders a not sunced family', () => {
+      props = createTestProps({
+        family: {
+          name: 'San Migel'
+        }
+      })
+      wrapper = shallow(<FamiliesListItem {...props} />)
+
+      expect(
+        wrapper
+          .find(Text)
+          .first()
+          .props().children
+      ).toEqual('San Migel')
     })
   })
   describe('functionality', () => {

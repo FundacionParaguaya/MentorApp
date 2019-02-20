@@ -1,12 +1,6 @@
 import React from 'react'
 import { shallow } from 'enzyme'
-import {
-  ScrollView,
-  View,
-  Button,
-  ActivityIndicator,
-  FlatList
-} from 'react-native'
+import { ScrollView, ActivityIndicator, FlatList } from 'react-native'
 import { Families } from '../Families'
 import SearchBar from '../../components/SearchBar'
 
@@ -31,6 +25,18 @@ const createTestProps = props => ({
       familyId: 33,
       name: 'The Jetsons',
       code: '456'
+    }
+  ],
+  drafts: [
+    {
+      familyData: {
+        familyMembersList: [
+          {
+            firstName: 'Test',
+            lastName: 'User'
+          }
+        ]
+      }
     }
   ],
   user: { token: '' },
@@ -78,8 +84,8 @@ describe('Families View', () => {
     })
   })
 
-  it('passes the correct number of families to FlatList', () => {
-    expect(wrapper.find(FlatList).props().data).toHaveLength(3)
+  it('passes the correct number of synced and non synced families to FlatList', () => {
+    expect(wrapper.find(FlatList).props().data).toHaveLength(4)
   })
 
   describe('functionality', () => {
@@ -102,11 +108,11 @@ describe('Families View', () => {
       expect(wrapper.instance().state.search).toEqual('Adams')
     })
   })
-  it('filters family when search bar value changes', () => {
+  it('filters families list when search bar value changes, search is case insensitive', () => {
     wrapper
       .find(SearchBar)
       .props()
-      .onChangeText('Adams')
+      .onChangeText('adams')
     expect(wrapper.find(FlatList).props().data).toHaveLength(1)
   })
 })
