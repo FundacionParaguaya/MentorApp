@@ -1,5 +1,25 @@
 # Change Log
 
+## [v1.4.3](https://github.com/FundacionParaguaya/MentorApp/tree/v1.4.3) (2019-02-20)
+[Full Changelog](https://github.com/FundacionParaguaya/MentorApp/compare/v1.4.2...v1.4.3)
+
+**Closed issues:**
+
+- FP Admin Root Account [\#401](https://github.com/FundacionParaguaya/MentorApp/issues/401)
+- Argentina Irradia Survey: Wrong currency [\#396](https://github.com/FundacionParaguaya/MentorApp/issues/396)
+- "Other" option confusing [\#395](https://github.com/FundacionParaguaya/MentorApp/issues/395)
+- Number of indicators in title [\#391](https://github.com/FundacionParaguaya/MentorApp/issues/391)
+- Paraguay survey: Typo [\#389](https://github.com/FundacionParaguaya/MentorApp/issues/389)
+- Paraguay survey: Typo [\#388](https://github.com/FundacionParaguaya/MentorApp/issues/388)
+- Indicators' text should be bigger [\#386](https://github.com/FundacionParaguaya/MentorApp/issues/386)
+- Amendments to the Primary Participant & Family Members Screen [\#377](https://github.com/FundacionParaguaya/MentorApp/issues/377)
+- Inconsistent Rollover behaviour - Globally throughout App [\#95](https://github.com/FundacionParaguaya/MentorApp/issues/95)
+
+**Merged pull requests:**
+
+- Move family count to family participant screen [\#399](https://github.com/FundacionParaguaya/MentorApp/pull/399) ([IvaKop](https://github.com/IvaKop))
+- Families screen [\#328](https://github.com/FundacionParaguaya/MentorApp/pull/328) ([IvaKop](https://github.com/IvaKop))
+
 ## [v1.4.2](https://github.com/FundacionParaguaya/MentorApp/tree/v1.4.2) (2019-02-18)
 [Full Changelog](https://github.com/FundacionParaguaya/MentorApp/compare/v1.4.1...v1.4.2)
 
