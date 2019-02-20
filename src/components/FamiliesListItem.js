@@ -16,7 +16,8 @@ class FamiliesListItem extends Component {
           item => item.firstParticipant
         )
       : null
-    const birthDate = firstParticipant ? firstParticipant.birthDate : ''
+    const birthDate = firstParticipant ? firstParticipant.birthDate : null
+
     return (
       <ListItem
         style={{ ...styles.listItem }}
@@ -28,7 +29,12 @@ class FamiliesListItem extends Component {
           <Text style={{ ...globalStyles.p, ...styles.p }}>{family.name}</Text>
           {family.snapshotList.length ? (
             <Text style={{ ...globalStyles.subline, ...styles.p }}>
-              {`DOB: ${moment(birthDate).format('MMM, DD YYYY')}`}
+              {birthDate
+                ? `DOB: ${moment
+                    .unix(birthDate)
+                    .utc()
+                    .format('MMM, DD YYYY')}`
+                : ''}
             </Text>
           ) : (
             <Text

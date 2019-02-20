@@ -1,7 +1,7 @@
 import { createStackNavigator } from 'react-navigation'
 import FamiliesView from '../../screens/Families'
-import FamilyView from '../../screens/Family'
 import LifemapScreens from './LifemapScreens'
+import FamilyView from '../../screens/Family'
 import { generateNavOptions } from './helpers'
 import i18n from '../../i18n'
 
