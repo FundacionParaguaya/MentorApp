@@ -4,6 +4,7 @@ import { ScrollView, View } from 'react-native'
 import { Family } from '../Family'
 
 const createTestProps = props => ({
+  t: value => value,
   ...props
 })
 

@@ -9,6 +9,7 @@ import {
 } from 'react-native'
 import { Families } from '../Families'
 import SearchBar from '../../components/SearchBar'
+import FamilyTab from '../../components/FamilyTab'
 
 const createTestProps = props => ({
   loadFamilies: jest.fn(),

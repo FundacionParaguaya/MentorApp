@@ -2,6 +2,8 @@ import React, { Component } from 'react'
 import { View, StyleSheet, Text, ScrollView } from 'react-native'
 import { connect } from 'react-redux'
 import PropTypes from 'prop-types'
+import { withNamespaces } from 'react-i18next'
+
 import colors from '../theme.json'
 import globalStyles from '../globalStyles'
 import FamilyTab from '../components/FamilyTab'
@@ -21,6 +23,7 @@ export class Family extends Component {
   state = { activeTab: 'Details' }
   render() {
     const { activeTab } = this.state
+    const { t } = this.props
     return (
       <ScrollView
         style={globalStyles.background}
@@ -28,12 +31,12 @@ export class Family extends Component {
       >
         <View style={styles.tabs}>
           <FamilyTab
-            title="Details"
+            title={t('views.family.details')}
             onPress={() => this.setState({ activeTab: 'Details' })}
             active={activeTab === 'Details'}
           />
           <FamilyTab
-            title="Life Map"
+            title={t('views.family.lifemap')}
             onPress={() => this.setState({ activeTab: 'LifeMap' })}
             active={activeTab === 'LifeMap'}
           />
@@ -67,4 +70,4 @@ const mapStateToProps = ({ snapshots }) => ({
   snapshots
 })
 
-export default connect(mapStateToProps)(Family)
+export default withNamespaces()(connect(mapStateToProps)(Family))

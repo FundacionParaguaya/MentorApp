@@ -103,7 +103,9 @@
       "weHaveLocation": "However we were able to get your device location.",
       "neitherMapNorLocation": "Unfortunately we cannot load the map nor can we get your device location.",
       "describeLocation": "Could you describe your location as accurate as possible below?",
-      "error": "Error: Cannot display family profile"
+      "error": "Error: Cannot display family profile",
+      "details": "Details",
+      "lifemap": "Life map"
     },
     "lifemap": {
       "thisLifeMapHas": "This life map has %n questions. It will take approximately 35 minutes to complete!",
