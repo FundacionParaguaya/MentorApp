@@ -85,7 +85,9 @@ describe('Families View', () => {
   })
 
   describe('functionality', () => {
-    it('makes a call to fetch families when user is online', () => {
+    it('makes a call to fetch families when user is online and no other call is in the queue', () => {
+      props = createTestProps({ offline: { online: true, outbox: [] } })
+      wrapper = shallow(<Families {...props} />)
       expect(wrapper.instance().props.loadFamilies).toHaveBeenCalledTimes(1)
     })
 

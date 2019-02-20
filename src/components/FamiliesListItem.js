@@ -17,7 +17,6 @@ class FamiliesListItem extends Component {
         )
       : null
     const birthDate = firstParticipant ? firstParticipant.birthDate : ''
-    console.log(this.props.error)
     return (
       <ListItem
         style={{ ...styles.listItem }}

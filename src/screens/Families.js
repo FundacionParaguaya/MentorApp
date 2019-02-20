@@ -33,7 +33,11 @@ export class Families extends Component {
 
   componentDidMount() {
     this.updateTitle()
-    if (this.props.offline.online) {
+    if (
+      this.props.offline.online &&
+      !this.props.offline.outbox.filter(item => item.type === 'LOAD_FAMILIES')
+        .length
+    ) {
       this.props.loadFamilies(url[this.props.env], this.props.user.token)
     }
   }
