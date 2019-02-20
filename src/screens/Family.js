@@ -21,6 +21,11 @@ export class Family extends Component {
     }
   }
   state = { activeTab: 'Details' }
+  componentDidMount() {
+    this.props.navigation.setParams({
+      withoutCloseButton: true
+    })
+  }
   render() {
     const { activeTab } = this.state
     const { t } = this.props
@@ -53,8 +58,7 @@ export class Family extends Component {
 }
 
 Family.propTypes = {
-  navigation: PropTypes.object.isRequired,
-  snapshots: PropTypes.array
+  navigation: PropTypes.object.isRequired
 }
 
 const styles = StyleSheet.create({
@@ -70,8 +74,6 @@ const styles = StyleSheet.create({
   }
 })
 
-const mapStateToProps = ({ snapshots }) => ({
-  snapshots
-})
+const mapStateToProps = ({}) => ({})
 
 export default withNamespaces()(connect(mapStateToProps)(Family))

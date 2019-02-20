@@ -6,6 +6,9 @@ import FamilyTab from '../../components/FamilyTab'
 
 const createTestProps = props => ({
   t: value => value,
+  navigation: {
+    setParams: jest.fn()
+  },
   ...props
 })
 
