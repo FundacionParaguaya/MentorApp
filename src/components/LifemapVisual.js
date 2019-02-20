@@ -32,8 +32,6 @@ class LifemapVisual extends Component {
       ...this.props.achievements.map(priority => priority.indicator)
     ]
 
-    console.log(this.props.questionsLength)
-    console.log(this.props.questions.length)
     return (
       <View style={styles.container}>
         {this.getColors.map((item, i) => (
