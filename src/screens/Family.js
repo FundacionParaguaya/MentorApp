@@ -1,7 +1,15 @@
 import React, { Component } from 'react'
-import { View, StyleSheet, Text, ScrollView } from 'react-native'
+import {
+  View,
+  StyleSheet,
+  Text,
+  ScrollView,
+  TouchableHighlight
+} from 'react-native'
 import { connect } from 'react-redux'
 import PropTypes from 'prop-types'
+import colors from '../theme.json'
+import globalStyles from '../globalStyles'
 
 export class Family extends Component {
   static navigationOptions = ({ navigation }) => {
@@ -17,8 +25,18 @@ export class Family extends Component {
   }
   render() {
     return (
-      <ScrollView style={styles.container}>
-        <Text>Families</Text>
+      <ScrollView
+        style={globalStyles.background}
+        contentContainerStyle={styles.container}
+      >
+        <View style={styles.tabs}>
+          <TouchableHighlight style={styles.tab}>
+            <Text style={globalStyles.h3}>Details</Text>
+          </TouchableHighlight>
+          <TouchableHighlight style={{ ...styles.tab, ...styles.activeTab }}>
+            <Text style={globalStyles.h3}>Life map</Text>
+          </TouchableHighlight>
+        </View>
       </ScrollView>
     )
   }
@@ -31,9 +49,22 @@ Family.propTypes = {
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
-    backgroundColor: '#fff'
-  }
+    flex: 1
+  },
+  tabs: {
+    display: 'flex',
+    flexDirection: 'row',
+    height: 55,
+    borderBottomColor: colors.lightgrey,
+    borderBottomWidth: 1
+  },
+  tab: {
+    width: '50%',
+    height: '100%',
+    alignItems: 'center',
+    justifyContent: 'center'
+  },
+  activeTab: { borderBottomColor: colors.grey, borderBottomWidth: 3 }
 })
 
 const mapStateToProps = ({ snapshots }) => ({
