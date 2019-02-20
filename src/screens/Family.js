@@ -1,15 +1,10 @@
 import React, { Component } from 'react'
-import {
-  View,
-  StyleSheet,
-  Text,
-  ScrollView,
-  TouchableHighlight
-} from 'react-native'
+import { View, StyleSheet, Text, ScrollView } from 'react-native'
 import { connect } from 'react-redux'
 import PropTypes from 'prop-types'
 import colors from '../theme.json'
 import globalStyles from '../globalStyles'
+import FamilyTab from '../components/FamilyTab'
 
 export class Family extends Component {
   static navigationOptions = ({ navigation }) => {
@@ -23,20 +18,28 @@ export class Family extends Component {
       }`
     }
   }
+  state = { activeTab: 'Details' }
   render() {
+    const { activeTab } = this.state
     return (
       <ScrollView
         style={globalStyles.background}
         contentContainerStyle={styles.container}
       >
         <View style={styles.tabs}>
-          <TouchableHighlight style={styles.tab}>
-            <Text style={globalStyles.h3}>Details</Text>
-          </TouchableHighlight>
-          <TouchableHighlight style={{ ...styles.tab, ...styles.activeTab }}>
-            <Text style={globalStyles.h3}>Life map</Text>
-          </TouchableHighlight>
+          <FamilyTab
+            title="Details"
+            onPress={() => this.setState({ activeTab: 'Details' })}
+            active={activeTab === 'Details'}
+          />
+          <FamilyTab
+            title="Life Map"
+            onPress={() => this.setState({ activeTab: 'LifeMap' })}
+            active={activeTab === 'LifeMap'}
+          />
         </View>
+        {activeTab === 'Details' ? <Text>Details here</Text> : null}
+        {activeTab === 'LifeMap' ? <Text>LifeMap here</Text> : null}
       </ScrollView>
     )
   }
@@ -57,14 +60,7 @@ const styles = StyleSheet.create({
     height: 55,
     borderBottomColor: colors.lightgrey,
     borderBottomWidth: 1
-  },
-  tab: {
-    width: '50%',
-    height: '100%',
-    alignItems: 'center',
-    justifyContent: 'center'
-  },
-  activeTab: { borderBottomColor: colors.grey, borderBottomWidth: 3 }
+  }
 })
 
 const mapStateToProps = ({ snapshots }) => ({
