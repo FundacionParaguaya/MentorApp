@@ -5,5 +5,6 @@ import 'jest-enzyme'
 Enzyme.configure({ adapter: new Adapter() })
 
 jest.mock('react-native', () => require('react-native-mock-render'), {
-  virtual: true
+  virtual: true,
+  timers: 'fake'
 })

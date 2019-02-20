@@ -22,7 +22,7 @@ describe('Navigation Wrapper', () => {
   it('triggers animation cycle on mount', () => {
     const spy = jest.spyOn(wrapper.instance(), 'cycleAnimation')
     wrapper.instance().componentDidMount()
-    expect(spy).toHaveBeenCalledTimes(2)
+    expect(spy).toHaveBeenCalledTimes(1)
     wrapper.unmount()
   })
   it('has proper initial color', () => {
