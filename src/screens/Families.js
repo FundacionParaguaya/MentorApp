@@ -86,6 +86,7 @@ export class Families extends Component {
               error={t('views.family.error')}
               handleClick={() =>
                 this.props.navigation.navigate('Family', {
+                  familyName: item.name,
                   familyLifemap: item.snapshotList[0],
                   survey: this.props.surveys.find(
                     survey => survey.id === item.snapshotList[0].surveyId

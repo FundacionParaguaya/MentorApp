@@ -4,6 +4,17 @@ import { connect } from 'react-redux'
 import PropTypes from 'prop-types'
 
 export class Family extends Component {
+  static navigationOptions = ({ navigation }) => {
+    return {
+      title: `${navigation.getParam('familyName', 'Families')}  ${
+        navigation.getParam('familyLifemap', 'Families').familyData
+          .countFamilyMembers > 1
+          ? `+ ${navigation.getParam('familyLifemap', 'Families').familyData
+              .countFamilyMembers - 1}`
+          : ''
+      }`
+    }
+  }
   render() {
     return (
       <ScrollView style={styles.container}>
