@@ -41,8 +41,12 @@ export class Family extends Component {
             active={activeTab === 'LifeMap'}
           />
         </View>
-        {activeTab === 'Details' ? <Text>Details here</Text> : null}
-        {activeTab === 'LifeMap' ? <Text>LifeMap here</Text> : null}
+        {activeTab === 'Details' ? (
+          <Text id="details">Details here</Text>
+        ) : null}
+        {activeTab === 'LifeMap' ? (
+          <Text id="lifemap">LifeMap here</Text>
+        ) : null}
       </ScrollView>
     )
   }
