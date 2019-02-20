@@ -20,9 +20,10 @@ class LifemapVisual extends Component {
     }
   })
 
-  getUnansweredQuestions = Array(
-    this.props.questionsLength - this.props.questions.length
-  ).fill()
+  getUnansweredQuestions =
+    this.props.questionsLength - this.props.questions.length > 0
+      ? Array(this.props.questionsLength - this.props.questions.length).fill()
+      : []
 
   render() {
     const { large, bigMargin } = this.props
@@ -30,6 +31,9 @@ class LifemapVisual extends Component {
       ...this.props.priorities.map(priority => priority.indicator),
       ...this.props.achievements.map(priority => priority.indicator)
     ]
+
+    console.log(this.props.questionsLength)
+    console.log(this.props.questions.length)
     return (
       <View style={styles.container}>
         {this.getColors.map((item, i) => (
