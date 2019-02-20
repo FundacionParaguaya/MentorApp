@@ -18,12 +18,32 @@ import SearchBar from '../components/SearchBar'
 import FamiliesListItem from '../components/FamiliesListItem'
 
 export class Families extends Component {
+  static navigationOptions = ({ navigation }) => {
+    return {
+      title: navigation.getParam('title', 'Families')
+    }
+  }
+
   state = { search: '' }
+
+  updateTitle = () =>
+    this.props.navigation.setParams({
+      title: this.props.t('views.families')
+    })
+
   componentDidMount() {
+    this.updateTitle()
     if (this.props.offline.online) {
       this.props.loadFamilies(url[this.props.env], this.props.user.token)
     }
   }
+
+  componentDidUpdate(prevProps) {
+    if (prevProps.lng !== this.props.lng) {
+      this.updateTitle()
+    }
+  }
+
   render() {
     const familiesToSync =
       this.props.offline.online &&
@@ -61,7 +81,7 @@ export class Families extends Component {
             <FamiliesListItem
               error={t('views.family.error')}
               handleClick={() =>
-                this.props.navigation.navigate('Overview', {
+                this.props.navigation.navigate('Family', {
                   familyLifemap: item.snapshotList[0],
                   survey: this.props.surveys.find(
                     survey => survey.id === item.snapshotList[0].surveyId

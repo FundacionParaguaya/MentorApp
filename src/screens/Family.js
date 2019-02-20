@@ -7,17 +7,7 @@ export class Family extends Component {
   render() {
     return (
       <ScrollView style={styles.container}>
-        {this.props.snapshots
-          .filter(
-            snapshot =>
-              snapshot.family.familyId ===
-              this.props.navigation.getParam('family')
-          )
-          .map(item => (
-            <View key={item.created_at}>
-              <Text>{item.created_at}</Text>
-            </View>
-          ))}
+        <Text>Families</Text>
       </ScrollView>
     )
   }
