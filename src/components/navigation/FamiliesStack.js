@@ -8,15 +8,11 @@ import i18n from '../../i18n'
 export default createStackNavigator({
   Families: {
     screen: FamiliesView,
-    navigationOptions: ({ navigation }) => ({
-      title: i18n.t('views.families'),
-      ...generateNavOptions({ navigation })
-    })
+    navigationOptions: ({ navigation }) => generateNavOptions({ navigation })
   },
   Family: {
     screen: FamilyView,
     navigationOptions: ({ navigation }) => ({
-      title: `Family ${navigation.state.params.family}`,
       ...generateNavOptions({ navigation, burgerMenu: false })
     })
   },
