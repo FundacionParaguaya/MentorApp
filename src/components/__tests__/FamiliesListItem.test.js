@@ -17,7 +17,7 @@ const createTestProps = props => ({
             {
               firstName: 'Juan',
               lastName: 'Perez',
-              birthDate: 1539971763946,
+              birthDate: 1538352000,
               firstParticipant: true
             }
           ]
@@ -56,7 +56,7 @@ describe('FamiliesListItem Component', () => {
           .find(Text)
           .last()
           .props().children
-      ).toEqual('DOB: Oct, 19 2018')
+      ).toEqual('DOB: Oct, 01 2018')
     })
     it('renders the correct name in last Text component', () => {
       expect(
