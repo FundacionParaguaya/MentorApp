@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
-import { Text, TouchableOpacity, StyleSheet, View, Image } from 'react-native'
+import { Text, StyleSheet, View } from 'react-native'
 import Icon from 'react-native-vector-icons/MaterialIcons'
 import moment from 'moment'
 
@@ -11,23 +11,27 @@ import ListItem from './ListItem'
 class FamiliesListItem extends Component {
   render() {
     const { family } = this.props
-    const firstParticipant = family.snapshotList.length
-      ? family.snapshotList[0].familyData.familyMembersList.find(
-          item => item.firstParticipant
-        )
-      : null
-    const birthDate = firstParticipant ? firstParticipant.birthDate : null
+    const firstParticipant =
+      family.snapshotList && family.snapshotList.length
+        ? family.snapshotList[0].familyData.familyMembersList.find(
+            item => item.firstParticipant
+          )
+        : null
+    const birthDate = firstParticipant
+      ? firstParticipant.birthDate
+      : family.birthDate
 
     return (
       <ListItem
         style={{ ...styles.listItem }}
         onPress={this.props.handleClick}
-        disabled={!family.snapshotList.length}
+        disabled={family.snapshotList && !family.snapshotList.length}
       >
         <Icon name="face" color={colors.grey} size={40} style={styles.icon} />
         <View style={styles.listItemContainer}>
           <Text style={{ ...globalStyles.p, ...styles.p }}>{family.name}</Text>
-          {family.snapshotList.length ? (
+          {!family.snapshotList ||
+          (family.snapshotList && family.snapshotList.length) ? (
             <Text style={{ ...globalStyles.subline, ...styles.p }}>
               {birthDate
                 ? `DOB: ${moment
@@ -56,7 +60,8 @@ class FamiliesListItem extends Component {
 FamiliesListItem.propTypes = {
   family: PropTypes.object.isRequired,
   handleClick: PropTypes.func.isRequired,
-  error: PropTypes.string
+  error: PropTypes.string,
+  birthDate: PropTypes.number
 }
 
 const styles = StyleSheet.create({
