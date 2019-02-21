@@ -54,12 +54,19 @@ export class Families extends Component {
       this.props.offline.online &&
       this.props.offline.outbox.find(item => item.type === 'LOAD_FAMILIES')
 
-    const draftFamilies = this.props.drafts.map(draft => {
-      const primaryParticipant = draft.familyData.familyMembersList[0]
-      return {
-        name: `${primaryParticipant.firstName} ${primaryParticipant.lastName}`
-      }
-    })
+    // show not synced families from drafts
+    const draftFamilies = this.props.drafts
+      .filter(draft => draft.status !== 'Synced')
+      .map(draft => {
+        const primaryParticipant = draft.familyData.familyMembersList[0]
+        return {
+          name: `${primaryParticipant.firstName} ${
+            primaryParticipant.lastName
+          }`,
+          birthDate: primaryParticipant.birthDate,
+          draft
+        }
+      })
 
     const allFamilies = [...draftFamilies, ...this.props.families]
 
@@ -97,9 +104,13 @@ export class Families extends Component {
               handleClick={() =>
                 this.props.navigation.navigate('Family', {
                   familyName: item.name,
-                  familyLifemap: item.snapshotList[0],
-                  survey: this.props.surveys.find(
-                    survey => survey.id === item.snapshotList[0].surveyId
+                  familyLifemap: item.snapshotList
+                    ? item.snapshotList[0]
+                    : item.draft,
+                  survey: this.props.surveys.find(survey =>
+                    item.snapshotList
+                      ? survey.id === item.snapshotList[0].surveyId
+                      : survey.id === item.draft.surveyId
                   )
                 })
               }
@@ -121,7 +132,8 @@ Families.propTypes = {
   env: PropTypes.oneOf(['production', 'demo', 'testing', 'development']),
   user: PropTypes.object.isRequired,
   offline: PropTypes.object,
-  t: PropTypes.func
+  t: PropTypes.func,
+  lng: PropTypes.string
 }
 
 const styles = StyleSheet.create({

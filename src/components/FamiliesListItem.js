@@ -17,7 +17,9 @@ class FamiliesListItem extends Component {
             item => item.firstParticipant
           )
         : null
-    const birthDate = firstParticipant ? firstParticipant.birthDate : null
+    const birthDate = firstParticipant
+      ? firstParticipant.birthDate
+      : family.birthDate
 
     return (
       <ListItem
@@ -28,7 +30,8 @@ class FamiliesListItem extends Component {
         <Icon name="face" color={colors.grey} size={40} style={styles.icon} />
         <View style={styles.listItemContainer}>
           <Text style={{ ...globalStyles.p, ...styles.p }}>{family.name}</Text>
-          {family.snapshotList && family.snapshotList.length ? (
+          {!family.snapshotList ||
+          (family.snapshotList && family.snapshotList.length) ? (
             <Text style={{ ...globalStyles.subline, ...styles.p }}>
               {birthDate
                 ? `DOB: ${moment
@@ -57,7 +60,8 @@ class FamiliesListItem extends Component {
 FamiliesListItem.propTypes = {
   family: PropTypes.object.isRequired,
   handleClick: PropTypes.func.isRequired,
-  error: PropTypes.string
+  error: PropTypes.string,
+  birthDate: PropTypes.number
 }
 
 const styles = StyleSheet.create({

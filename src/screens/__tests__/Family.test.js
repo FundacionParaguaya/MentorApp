@@ -1,6 +1,6 @@
 import React from 'react'
 import { shallow } from 'enzyme'
-import { ScrollView, View } from 'react-native'
+import { ScrollView } from 'react-native'
 import { Family } from '../Family'
 import FamilyTab from '../../components/FamilyTab'
 
@@ -30,7 +30,7 @@ describe('Single Family View', () => {
       expect(wrapper.find('#lifemap')).toHaveLength(0)
     })
   })
-  describe('rendering', () => {
+  describe('functionality', () => {
     it('has the correct initial state', () => {
       expect(wrapper.instance().state.activeTab).toBe('Details')
     })
