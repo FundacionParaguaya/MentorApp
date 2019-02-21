@@ -103,7 +103,9 @@
       "weHaveLocation": "Sin embargo, pudimos obtener la ubicación de su dispositivo.",
       "neitherMapNorLocation": "Desafortunadamente, no podemos cargar el mapa ni obtener la ubicación de su dispositivo.",
       "describeLocation": "¿Podría describir su ubicación de la forma más precisa posible a continuación?",
-      "error": "Error: No se puede visualizar el perfil de familia"
+      "error": "Error: No se puede visualizar el perfil de familia",
+      "details": "Detalles",
+      "lifemap": "Mapa de vida"
     },
     "lifemap": {
       "thisLifeMapHas": "Este Mapa de Vida tiene %n preguntas. ¡Tardará aproximadamente 35 minutos en completarse!",

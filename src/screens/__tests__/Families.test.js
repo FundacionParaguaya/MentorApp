@@ -3,12 +3,15 @@ import { shallow } from 'enzyme'
 import { ScrollView, ActivityIndicator, FlatList } from 'react-native'
 import { Families } from '../Families'
 import SearchBar from '../../components/SearchBar'
+import FamilyTab from '../../components/FamilyTab'
 
 const createTestProps = props => ({
   loadFamilies: jest.fn(),
   env: 'development',
+  t: value => value,
   navigation: {
-    navigate: jest.fn()
+    navigate: jest.fn(),
+    setParams: jest.fn()
   },
   families: [
     {
@@ -89,7 +92,9 @@ describe('Families View', () => {
   })
 
   describe('functionality', () => {
-    it('makes a call to fetch families when user is online', () => {
+    it('makes a call to fetch families when user is online and no other call is in the queue', () => {
+      props = createTestProps({ offline: { online: true, outbox: [] } })
+      wrapper = shallow(<Families {...props} />)
       expect(wrapper.instance().props.loadFamilies).toHaveBeenCalledTimes(1)
     })
 
@@ -114,5 +119,19 @@ describe('Families View', () => {
       .props()
       .onChangeText('adams')
     expect(wrapper.find(FlatList).props().data).toHaveLength(1)
+  })
+  it('calls sets the screen title on mount', () => {
+    expect(wrapper.instance().props.navigation.setParams).toHaveBeenCalledTimes(
+      1
+    )
+  })
+  it('updates screen title when lng prop changes', () => {
+    wrapper.setProps({ lng: 'es' })
+    expect(wrapper.instance().props.navigation.setParams).toHaveBeenCalledTimes(
+      2
+    )
+    expect(wrapper.instance().props.navigation.setParams).toHaveBeenCalledWith({
+      title: 'views.families'
+    })
   })
 })
