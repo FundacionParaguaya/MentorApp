@@ -24,9 +24,9 @@ export class Overview extends Component {
   draftId = this.props.navigation.getParam('draftId')
   familyLifemap = this.props.familyLifemap
   survey = this.props.navigation.getParam('survey')
-
+  resumeDraft = this.props.navigation.getParam('resumeDraft')
   componentDidMount() {
-    if (!this.props.navigation.getParam('resumeDraft')) {
+    if (!this.resumeDraft && !this.familyLifemap) {
       this.props.addDraftProgress(this.draftId, {
         screen: 'Overview'
       })
@@ -129,8 +129,8 @@ export class Overview extends Component {
       : this.props.drafts.find(item => item.draftId === this.draftId)
 
     const mandatoryPrioritiesCount = this.getMandatoryPrioritiesCount(data)
-    const resumeDraft = this.props.navigation.getParam('resumeDraft')
-    const tipIsVisible = !resumeDraft && this.state.tipIsVisible
+
+    const tipIsVisible = !this.resumeDraft && this.state.tipIsVisible
     const getTipDescription = () => {
       //no mandatory priotities
       if (
@@ -157,7 +157,7 @@ export class Overview extends Component {
       <StickyFooter
         continueLabel={t('general.continue')}
         handleClick={() => this.handleContinue(mandatoryPrioritiesCount, data)}
-        visible={!resumeDraft && !this.familyLifemap}
+        visible={!this.resumeDraft && !this.familyLifemap}
         type={tipIsVisible ? 'tip' : 'button'}
         tipTitle={t('views.lifemap.toComplete')}
         onTipClose={this.onTipClose}
@@ -172,7 +172,7 @@ export class Overview extends Component {
               achievements={data.achievements}
               questionsLength={this.survey.surveyStoplightQuestions.length}
             />
-            {resumeDraft ? (
+            {this.resumeDraft ? (
               <Button
                 id="resume-draft"
                 style={{
