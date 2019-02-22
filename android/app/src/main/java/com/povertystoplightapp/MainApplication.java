@@ -3,6 +3,7 @@ package com.povertystoplightapp;
 import android.app.Application;
 import com.jamesisaac.rnbackgroundtask.BackgroundTaskPackage;
 import com.facebook.react.ReactApplication;
+import com.mapbox.rctmgl.RCTMGLPackage;
 import io.sentry.RNSentryPackage;
 import com.airbnb.android.react.maps.MapsPackage;
 import com.transistorsoft.rnbackgroundfetch.RNBackgroundFetchPackage;
@@ -16,6 +17,7 @@ import com.facebook.react.ReactPackage;
 import com.facebook.react.shell.MainReactPackage;
 import com.facebook.soloader.SoLoader;
 import com.facebook.react.modules.storage.ReactDatabaseSupplier;
+import com.mapbox.rctmgl.RCTMGLPackage;
 
 import java.util.Arrays;
 import java.util.List;
@@ -32,6 +34,7 @@ public class MainApplication extends Application implements ReactApplication {
     protected List<ReactPackage> getPackages() {
       return Arrays.<ReactPackage>asList(
           new MainReactPackage(),
+            new RCTMGLPackage(),
             new RNSentryPackage(),
             new MapsPackage(),
             new RNBackgroundFetchPackage(),
@@ -39,7 +42,8 @@ public class MainApplication extends Application implements ReactApplication {
             new SplashScreenReactPackage(),
             new VectorIconsPackage(),
             new RNLanguagesPackage(),
-            new RNFetchBlobPackage()
+            new RNFetchBlobPackage(),
+            new RCTMGLPackage()
       );
     }
 
