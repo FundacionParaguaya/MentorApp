@@ -22,7 +22,7 @@ export class Overview extends Component {
     tipIsVisible: true
   }
   draftId = this.props.navigation.getParam('draftId')
-  familyLifemap = this.props.navigation.getParam('familyLifemap')
+  familyLifemap = this.props.familyLifemap
   survey = this.props.navigation.getParam('survey')
 
   componentDidMount() {
@@ -131,7 +131,6 @@ export class Overview extends Component {
     const mandatoryPrioritiesCount = this.getMandatoryPrioritiesCount(data)
     const resumeDraft = this.props.navigation.getParam('resumeDraft')
     const tipIsVisible = !resumeDraft && this.state.tipIsVisible
-
     const getTipDescription = () => {
       //no mandatory priotities
       if (

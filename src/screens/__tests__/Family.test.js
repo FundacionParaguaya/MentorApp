@@ -2,12 +2,14 @@ import React from 'react'
 import { shallow } from 'enzyme'
 import { ScrollView } from 'react-native'
 import { Family } from '../Family'
+import { Overview } from '../lifemap/Overview'
 import FamilyTab from '../../components/FamilyTab'
 
 const createTestProps = props => ({
   t: value => value,
   navigation: {
-    setParams: jest.fn()
+    setParams: jest.fn(),
+    getParam: jest.fn()
   },
   ...props
 })
@@ -45,6 +47,7 @@ describe('Single Family View', () => {
     it('changing the active tab changes the view', () => {
       wrapper.setState({ activeTab: 'LifeMap' })
       expect(wrapper.find('#lifemap')).toHaveLength(1)
+
       expect(wrapper.find('#details')).toHaveLength(0)
     })
   })

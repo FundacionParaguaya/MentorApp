@@ -7,6 +7,7 @@ import { withNamespaces } from 'react-i18next'
 import colors from '../theme.json'
 import globalStyles from '../globalStyles'
 import FamilyTab from '../components/FamilyTab'
+import Overview from './lifemap/Overview'
 
 export class Family extends Component {
   static navigationOptions = ({ navigation }) => {
@@ -50,7 +51,12 @@ export class Family extends Component {
           <Text id="details">Details here</Text>
         ) : null}
         {activeTab === 'LifeMap' ? (
-          <Text id="lifemap">LifeMap here</Text>
+          <ScrollView id="lifemap">
+            <Overview
+              navigation={this.props.navigation}
+              familyLifemap={this.props.navigation.getParam('familyLifemap')}
+            />
+          </ScrollView>
         ) : null}
       </ScrollView>
     )
