@@ -21,12 +21,16 @@ export class Family extends Component {
       }`
     }
   }
+
   state = { activeTab: 'Details' }
+  familyLifemap = this.props.navigation.getParam('familyLifemap')
+
   componentDidMount() {
     this.props.navigation.setParams({
       withoutCloseButton: true
     })
   }
+
   render() {
     const { activeTab } = this.state
     const { t } = this.props
@@ -54,7 +58,7 @@ export class Family extends Component {
           <ScrollView id="lifemap">
             <Overview
               navigation={this.props.navigation}
-              familyLifemap={this.props.navigation.getParam('familyLifemap')}
+              familyLifemap={this.familyLifemap}
             />
           </ScrollView>
         ) : null}
