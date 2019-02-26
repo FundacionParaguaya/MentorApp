@@ -9,7 +9,7 @@ const createTestProps = props => ({
   t: value => value,
   navigation: {
     setParams: jest.fn(),
-    getParam: jest.fn()
+    getParam: jest.fn(param => ({ createdAt: 1 }))
   },
   surveys: [],
   ...props
