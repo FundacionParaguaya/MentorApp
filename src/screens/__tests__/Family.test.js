@@ -1,25 +1,28 @@
 import React from 'react'
 import { shallow } from 'enzyme'
-import { ScrollView } from 'react-native'
 import { Family } from '../Family'
 import FamilyTab from '../../components/FamilyTab'
+import data from '../__mocks__/fake-socio-economic-data.json'
 
 const createTestProps = props => ({
   t: value => value,
   navigation: {
     setParams: jest.fn(),
-    getParam: () => ({
-      draftId: 1,
-      status: 'Draft',
-      familyData: {
-        familyMembersList: [
-          {
-            firstName: 'Juan',
-            lastName: 'Perez'
+    getParam: param =>
+      param === 'survey'
+        ? data
+        : {
+            draftId: 1,
+            status: 'Draft',
+            familyData: {
+              familyMembersList: [
+                {
+                  firstName: 'Juan',
+                  lastName: 'Perez'
+                }
+              ]
+            }
           }
-        ]
-      }
-    })
   },
   ...props
 })
@@ -29,9 +32,6 @@ describe('Single Family View', () => {
   const props = createTestProps()
   wrapper = shallow(<Family {...props} />)
   describe('rendering', () => {
-    it('renders base ScrollView element', () => {
-      expect(wrapper.find(ScrollView)).toHaveLength(1)
-    })
     it('renders familyTab', () => {
       expect(wrapper.find(FamilyTab)).toHaveLength(2)
     })

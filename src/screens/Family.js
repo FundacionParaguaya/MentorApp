@@ -23,6 +23,18 @@ export class Family extends Component {
   }
   state = { activeTab: 'Details' }
 
+  constructor(props) {
+    super(props)
+
+    this.familyLifemap = props.navigation.getParam('familyLifemap')
+    this.socioEconomicCategories = [
+      ...new Set(
+        props.navigation
+          .getParam('survey')
+          .surveyEconomicQuestions.map(question => question.topic)
+      )
+    ]
+  }
   componentDidMount() {
     this.props.navigation.setParams({
       withoutCloseButton: true
@@ -31,10 +43,9 @@ export class Family extends Component {
   render() {
     const { activeTab } = this.state
     const { t, navigation } = this.props
-    const familyLifemap = navigation.getParam('familyLifemap')
-    const { familyData } = familyLifemap
+    const { familyData } = this.familyLifemap
 
-    console.log(familyLifemap)
+    console.log(this.socioEconomicCategories)
 
     return (
       <ScrollView
@@ -54,7 +65,7 @@ export class Family extends Component {
           />
         </View>
         {activeTab === 'Details' ? (
-          <View>
+          <ScrollView>
             <View style={styles.icon}>
               {familyData.countFamilyMembers > 1 && (
                 <View style={styles.countCircleWrapper}>
@@ -112,9 +123,16 @@ export class Family extends Component {
                   text={t('views.location')}
                   handleClick={() => console.log('clicked')}
                 />
+                {this.socioEconomicCategories.map(item => (
+                  <FamilyListItem
+                    key={item}
+                    text={item}
+                    handleClick={() => console.log('clicked')}
+                  />
+                ))}
               </View>
             </View>
-          </View>
+          </ScrollView>
         ) : null}
         {activeTab === 'LifeMap' ? (
           <Text id="lifemap">LifeMap here</Text>
