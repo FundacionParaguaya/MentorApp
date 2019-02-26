@@ -7,7 +7,19 @@ import FamilyTab from '../../components/FamilyTab'
 const createTestProps = props => ({
   t: value => value,
   navigation: {
-    setParams: jest.fn()
+    setParams: jest.fn(),
+    getParam: () => ({
+      draftId: 1,
+      status: 'Draft',
+      familyData: {
+        familyMembersList: [
+          {
+            firstName: 'Juan',
+            lastName: 'Perez'
+          }
+        ]
+      }
+    })
   },
   ...props
 })
@@ -22,9 +34,6 @@ describe('Single Family View', () => {
     })
     it('renders familyTab', () => {
       expect(wrapper.find(FamilyTab)).toHaveLength(2)
-    })
-    it('renders details', () => {
-      expect(wrapper.find('#details')).toHaveLength(1)
     })
     it('does not render life map', () => {
       expect(wrapper.find('#lifemap')).toHaveLength(0)

@@ -20,6 +20,7 @@
     "resumeDraft": "Continuar borrador",
     "lifeMaps": "Mapas de Vida",
     "familyInfo": "Información de la familia",
+    "family": "Familia",
     "cachedData": "Datos almacenados",
     "chooseView": "Elegir vista",
     "create": "Crear"
@@ -82,6 +83,7 @@
       "selectValidDate": "Favor ingrese una fecha válida",
       "name": "Nombre",
       "peopleLivingInThisHousehold": "Número de personas viviendo en esta casa. ",
+      "household": "casa",
       "onlyPerson": "1 - Soy la única persona",
       "preferNotToSay": "Prefiero no responder",
       "familyMember": "Miembro de la familia",
