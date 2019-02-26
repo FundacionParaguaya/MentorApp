@@ -38,7 +38,6 @@ export class Family extends Component {
     item => item.id === this.familyLifemap.surveyId
   )
   render() {
-    console.log(this.isDraft)
     const { activeTab } = this.state
     const { t } = this.props
     return (

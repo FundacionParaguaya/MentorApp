@@ -2,23 +2,34 @@ import React from 'react'
 import { shallow } from 'enzyme'
 import { ScrollView } from 'react-native'
 import { Family } from '../Family'
-import { Overview } from '../lifemap/Overview'
 import FamilyTab from '../../components/FamilyTab'
+import RoundImage from '../../components/RoundImage'
+import Button from '../../components/Button'
 
 const createTestProps = props => ({
   t: value => value,
   navigation: {
     setParams: jest.fn(),
-    getParam: jest.fn(param => ({ createdAt: 1 }))
+    replace: jest.fn(),
+    getParam: jest.fn(param => ({
+      createdAt: 1,
+      draftId: 123,
+      surveyId: 1,
+      progress: { screen: 'FamilyMembersNames' }
+    }))
   },
-  surveys: [],
+  surveys: [{ id: 1 }],
   ...props
 })
 
 describe('Single Family View', () => {
   let wrapper
-  const props = createTestProps()
-  wrapper = shallow(<Family {...props} />)
+  let props
+  beforeEach(() => {
+    props = createTestProps()
+    wrapper = shallow(<Family {...props} />)
+  })
+
   describe('rendering', () => {
     it('renders base ScrollView element', () => {
       expect(wrapper.find(ScrollView)).toHaveLength(1)
@@ -48,8 +59,31 @@ describe('Single Family View', () => {
     it('changing the active tab changes the view', () => {
       wrapper.setState({ activeTab: 'LifeMap' })
       expect(wrapper.find('#lifemap')).toHaveLength(1)
-
       expect(wrapper.find('#details')).toHaveLength(0)
+    })
+    it('renders round image and button when the family is a draft', () => {
+      wrapper.setState({ activeTab: 'LifeMap' })
+      expect(wrapper.find(RoundImage)).toHaveLength(1)
+      expect(wrapper.find(Button)).toHaveLength(1)
+    })
+    it('navigates to correct screen when clicking on the resume draft button', () => {
+      wrapper.setState({ activeTab: 'LifeMap' })
+      wrapper
+        .find(Button)
+        .props()
+        .handleClick()
+      expect(wrapper.instance().props.navigation.replace).toHaveBeenCalledTimes(
+        1
+      )
+      expect(wrapper.instance().props.navigation.replace).toHaveBeenCalledWith(
+        'FamilyMembersNames',
+        {
+          draftId: 123,
+          socioEconomics: undefined,
+          step: undefined,
+          survey: { id: 1 }
+        }
+      )
     })
   })
 })
