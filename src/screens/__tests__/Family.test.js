@@ -11,6 +11,7 @@ const createTestProps = props => ({
     setParams: jest.fn(),
     getParam: jest.fn()
   },
+  surveys: [],
   ...props
 })
 
