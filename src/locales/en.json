@@ -106,7 +106,7 @@
       "error": "Error: Cannot display family profile",
       "details": "Details",
       "lifemap": "Life map",
-      "lifeMapCreatedOn": "Life Map created on",
+      "lifeMapCreatedOn": "Life Map draft created on",
       "created": "Created on"
     },
     "lifemap": {
