@@ -1,7 +1,7 @@
 import React from 'react'
 import { shallow } from 'enzyme'
 import { Text } from 'react-native'
-import { FamilyMembersGender } from '../lifemap/FamilyMembersGender'
+import { FamilyGendersBirthdates } from '../lifemap/FamilyGendersBirthdates'
 import Select from '../../components/Select'
 import StickyFooter from '../../components/StickyFooter'
 import DateInput from '../../components/DateInput'
@@ -62,11 +62,11 @@ const createTestProps = props => ({
   ...props
 })
 
-describe('FamilyMembersGender View', () => {
+describe('FamilyGendersBirthdates View', () => {
   let wrapper
   beforeEach(() => {
     const props = createTestProps()
-    wrapper = shallow(<FamilyMembersGender {...props} />)
+    wrapper = shallow(<FamilyGendersBirthdates {...props} />)
   })
   describe('rendering', () => {
     it('renders the continue button with proper label', () => {
@@ -145,7 +145,7 @@ describe('FamilyMembersGender View', () => {
     let props
     beforeEach(() => {
       props = createTestProps()
-      wrapper = shallow(<FamilyMembersGender {...props} />)
+      wrapper = shallow(<FamilyGendersBirthdates {...props} />)
     })
     it('checks if screen is focused before updating', () => {
       wrapper.setProps({
@@ -168,7 +168,7 @@ describe('FamilyMembersGender View', () => {
       props = createTestProps({
         navigation: { ...props.navigation, isFocused: jest.fn(() => false) }
       })
-      wrapper = shallow(<FamilyMembersGender {...props} />)
+      wrapper = shallow(<FamilyGendersBirthdates {...props} />)
       expect(wrapper.instance().props.drafts[1]).toBeFalsy()
     })
   })

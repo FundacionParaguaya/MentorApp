@@ -14,7 +14,7 @@ import globalStyles from '../../globalStyles'
 import Select from '../../components/Select'
 import DateInput from '../../components/DateInput'
 
-export class FamilyMembersGender extends Component {
+export class FamilyGendersBirthdates extends Component {
   draftId = this.props.navigation.getParam('draftId')
   survey = this.props.navigation.getParam('survey')
 
@@ -24,7 +24,7 @@ export class FamilyMembersGender extends Component {
 
   componentDidMount() {
     this.props.addDraftProgress(this.draftId, {
-      screen: 'FamilyMembersGender'
+      screen: 'FamilyGendersBirthdates'
     })
     this.props.navigation.setParams({
       onPressBack: this.onPressBack
@@ -112,8 +112,9 @@ export class FamilyMembersGender extends Component {
               style={{
                 display: 'flex',
                 flexDirection: 'row',
-                paddingHorizontal: 10,
-                marginTop: 15
+                paddingHorizontal: 20,
+                marginTop: 15,
+                marginBottom: 5
               }}
             >
               <Icon name="face" color={colors.grey} size={22} />
@@ -157,7 +158,7 @@ export class FamilyMembersGender extends Component {
   }
 }
 
-FamilyMembersGender.propTypes = {
+FamilyGendersBirthdates.propTypes = {
   t: PropTypes.func.isRequired,
   drafts: PropTypes.array,
   navigation: PropTypes.object.isRequired,
@@ -178,5 +179,5 @@ export default withNamespaces()(
   connect(
     mapStateToProps,
     mapDispatchToProps
-  )(FamilyMembersGender)
+  )(FamilyGendersBirthdates)
 )
