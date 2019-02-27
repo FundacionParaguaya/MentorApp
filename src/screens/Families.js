@@ -107,6 +107,7 @@ export class Families extends Component {
                   familyLifemap: item.snapshotList
                     ? item.snapshotList[0]
                     : item.draft,
+                  isDraft: !item.snapshotList,
                   survey: this.props.surveys.find(survey =>
                     item.snapshotList
                       ? survey.id === item.snapshotList[0].surveyId

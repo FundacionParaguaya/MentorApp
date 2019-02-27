@@ -7,7 +7,8 @@ const images = {
   surveys: require('../../assets/images/surveys.png'),
   stoplight: require('../../assets/images/stoplight.png'),
   partner: require('../../assets/images/partner.png'),
-  check: require('../../assets/images/check.png')
+  check: require('../../assets/images/check.png'),
+  lifemap: require('../../assets/images/lifemap.png')
 }
 
 class RoundImage extends Component {
@@ -22,7 +23,8 @@ RoundImage.propTypes = {
     'surveys',
     'stoplight',
     'partner',
-    'check'
+    'check',
+    'lifemap'
   ])
 }
 

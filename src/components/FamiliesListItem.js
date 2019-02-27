@@ -20,7 +20,6 @@ class FamiliesListItem extends Component {
     const birthDate = firstParticipant
       ? firstParticipant.birthDate
       : family.birthDate
-
     return (
       <ListItem
         style={{ ...styles.listItem }}

@@ -86,7 +86,7 @@ export class AddAchievement extends Component {
       <StickyFooter
         continueLabel={t('general.save')}
         handleClick={this.addAchievement}
-        hidden={!this.draftId}
+        visible={!!this.draftId}
       >
         <View style={globalStyles.container}>
           <Text style={globalStyles.h2}>
