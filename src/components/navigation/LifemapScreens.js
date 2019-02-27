@@ -110,7 +110,7 @@ export default {
   FamilyMembersGender: {
     screen: FamilyMembersGenderView,
     navigationOptions: ({ navigation }) => ({
-      title: i18n.t('views.gender'),
+      title: i18n.t('views.gendersBirthDates'),
       ...generateNavOptions({ navigation, burgerMenu: false })
     })
   },

@@ -3,6 +3,8 @@ import { View, Text } from 'react-native'
 import { connect } from 'react-redux'
 import PropTypes from 'prop-types'
 import { withNamespaces } from 'react-i18next'
+import Icon from 'react-native-vector-icons/MaterialIcons'
+import colors from '../../theme.json'
 import StickyFooter from '../../components/StickyFooter'
 import {
   addSurveyFamilyMemberData,
@@ -89,15 +91,26 @@ export class FamilyMembersGender extends Component {
       >
         {draft.familyData.familyMembersList.slice(1).map((item, i) => (
           <View key={i}>
-            <Text
+            <View
               style={{
-                ...globalStyles.h3,
-                paddingHorizontal: 20,
+                display: 'flex',
+                flexDirection: 'row',
+                paddingHorizontal: 10,
                 marginTop: 15
               }}
             >
-              {item.firstName}
-            </Text>
+              <Icon name="face" color={colors.grey} size={20} />
+              <Text
+                style={{
+                  ...globalStyles.h2Bold,
+                  color: colors.grey,
+                  marginLeft: 5
+                }}
+              >
+                {item.firstName}
+              </Text>
+            </View>
+
             <Select
               field={i.toString()}
               onChange={text => this.addFamilyMemberGender(text, i + 1)}
