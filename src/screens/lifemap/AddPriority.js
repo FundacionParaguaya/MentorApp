@@ -86,7 +86,7 @@ export class AddPriority extends Component {
       <StickyFooter
         continueLabel={t('general.save')}
         handleClick={this.addPriority}
-        hidden={!this.draftId}
+        visible={!!this.draftId}
       >
         <View style={globalStyles.container}>
           <Text style={globalStyles.h2}>

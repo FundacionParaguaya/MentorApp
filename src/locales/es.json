@@ -107,7 +107,9 @@
       "describeLocation": "¿Podría describir su ubicación de la forma más precisa posible a continuación?",
       "error": "Error: No se puede visualizar el perfil de familia",
       "details": "Detalles",
-      "lifemap": "Mapa de vida"
+      "lifemap": "Mapa de vida",
+      "lifeMapCreatedOn": "Borrador del Mapa de Vida creado",
+      "created": "Creado"
     },
     "lifemap": {
       "thisLifeMapHas": "Este Mapa de Vida tiene %n preguntas. ¡Tardará aproximadamente 35 minutos en completarse!",

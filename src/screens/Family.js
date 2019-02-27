@@ -3,11 +3,15 @@ import { View, StyleSheet, Text, ScrollView, FlatList } from 'react-native'
 import { connect } from 'react-redux'
 import PropTypes from 'prop-types'
 import { withNamespaces } from 'react-i18next'
+import moment from 'moment'
 import Icon from 'react-native-vector-icons/MaterialIcons'
-import colors from '../theme.json'
 import globalStyles from '../globalStyles'
-import FamilyTab from '../components/FamilyTab'
 import FamilyListItem from '../components/FamilyListItem'
+import colors from '../theme.json'
+import FamilyTab from '../components/FamilyTab'
+import OverviewComponent from './lifemap/Overview'
+import RoundImage from '../components/RoundImage'
+import Button from '../components/Button'
 
 export class Family extends Component {
   static navigationOptions = ({ navigation }) => {
@@ -21,25 +25,25 @@ export class Family extends Component {
       }`
     }
   }
+
   state = { activeTab: 'Details' }
-
-  constructor(props) {
-    super(props)
-
-    this.familyLifemap = props.navigation.getParam('familyLifemap')
-    this.socioEconomicCategories = [
-      ...new Set(
-        props.navigation
-          .getParam('survey')
-          .surveyEconomicQuestions.map(question => question.topic)
-      )
-    ]
-  }
+  familyLifemap = this.props.navigation.getParam('familyLifemap')
+  isDraft = this.props.navigation.getParam('isDraft')
+  socioEconomicCategories = [
+    ...new Set(
+      this.props.navigation
+        .getParam('survey')
+        .surveyEconomicQuestions.map(question => question.topic)
+    )
+  ]
   componentDidMount() {
     this.props.navigation.setParams({
       withoutCloseButton: true
     })
   }
+  survey = this.props.surveys.find(
+    item => item.id === this.familyLifemap.surveyId
+  )
   render() {
     const { activeTab } = this.state
     const { t, navigation } = this.props
@@ -135,7 +139,58 @@ export class Family extends Component {
           </ScrollView>
         ) : null}
         {activeTab === 'LifeMap' ? (
-          <Text id="lifemap">LifeMap here</Text>
+          <ScrollView id="lifemap">
+            {this.isDraft ? (
+              <View>
+                <Text
+                  style={{
+                    ...styles.lifemapCreated,
+                    ...globalStyles.h2Bold,
+                    fontSize: 16,
+                    color: '#000000'
+                  }}
+                >{`${t('views.family.lifeMapCreatedOn')}: \n${moment(
+                  this.familyLifemap.created
+                ).format('MMM, DD YYYY')}`}</Text>
+                <View style={styles.draftContainer}>
+                  <RoundImage source="lifemap" />
+                  <Button
+                    id="resume-draft"
+                    style={{
+                      marginTop: 20
+                    }}
+                    colored
+                    text={t('general.resumeDraft')}
+                    handleClick={() => {
+                      this.props.navigation.replace(
+                        this.familyLifemap.progress.screen,
+                        {
+                          draftId: this.familyLifemap.draftId,
+                          survey: this.survey,
+                          step: this.familyLifemap.progress.step,
+                          socioEconomics: this.familyLifemap.progress
+                            .socioEconomics
+                        }
+                      )
+                    }}
+                  />
+                </View>
+              </View>
+            ) : (
+              <ScrollView>
+                <Text
+                  style={{ ...styles.lifemapCreated, ...globalStyles.h3 }}
+                >{`${t('views.family.created')}:  ${moment
+                  .unix(this.familyLifemap.createdAt)
+                  .utc()
+                  .format('MMM, DD YYYY')}`}</Text>
+                <OverviewComponent
+                  navigation={this.props.navigation}
+                  familyLifemap={this.familyLifemap}
+                />
+              </ScrollView>
+            )}
+          </ScrollView>
         ) : null}
       </ScrollView>
     )
@@ -143,6 +198,7 @@ export class Family extends Component {
 }
 
 Family.propTypes = {
+  surveys: PropTypes.array,
   navigation: PropTypes.object.isRequired,
   t: PropTypes.func
 }
@@ -190,9 +246,19 @@ const styles = StyleSheet.create({
     width: '100%',
     paddingHorizontal: 25,
     marginTop: 30
+  },
+  draftContainer: {
+    paddingHorizontal: 25,
+    marginTop: 70
+  },
+  lifemapCreated: {
+    marginHorizontal: 25,
+    marginTop: 15,
+    marginBottom: -10,
+    zIndex: 10
   }
 })
 
-const mapStateToProps = () => ({})
+const mapStateToProps = ({ surveys }) => ({ surveys })
 
 export default withNamespaces()(connect(mapStateToProps)(Family))
