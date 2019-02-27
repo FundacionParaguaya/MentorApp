@@ -4,6 +4,7 @@ import { Text } from 'react-native'
 import { FamilyMembersGender } from '../lifemap/FamilyMembersGender'
 import Select from '../../components/Select'
 import StickyFooter from '../../components/StickyFooter'
+import DateInput from '../../components/DateInput'
 
 const createTestProps = props => ({
   t: value => value,
@@ -49,7 +50,8 @@ const createTestProps = props => ({
           },
           {
             firstName: 'Ana',
-            gender: 'F'
+            gender: 'F',
+            birthDate: 1515708000
           }
         ]
       }
@@ -77,6 +79,9 @@ describe('FamilyMembersGender View', () => {
     })
     it('renders Text', () => {
       expect(wrapper.find(Text)).toHaveLength(1)
+    })
+    it('renders DateInput', () => {
+      expect(wrapper.find(DateInput)).toHaveLength(1)
     })
   })
 
@@ -118,6 +123,19 @@ describe('FamilyMembersGender View', () => {
       const spy = jest.spyOn(wrapper.instance(), 'onPressBack')
 
       wrapper.instance().onPressBack()
+      expect(spy).toHaveBeenCalledTimes(1)
+    })
+    it('gives DateInput the proper value', () => {
+      expect(wrapper.find(DateInput).props().value).toBe(1515708000)
+    })
+    it('calls addFamilyMemberBirthdate on valid date', () => {
+      const spy = jest.spyOn(wrapper.instance(), 'addFamilyMemberBirthdate')
+
+      wrapper
+        .find(DateInput)
+        .last()
+        .props()
+        .onValidDate()
       expect(spy).toHaveBeenCalledTimes(1)
     })
   })

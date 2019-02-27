@@ -12,6 +12,7 @@ import {
 } from '../../redux/actions'
 import globalStyles from '../../globalStyles'
 import Select from '../../components/Select'
+import DateInput from '../../components/DateInput'
 
 export class FamilyMembersGender extends Component {
   draftId = this.props.navigation.getParam('draftId')
@@ -54,10 +55,16 @@ export class FamilyMembersGender extends Component {
   }
 
   handleClick = () => {
-    this.props.navigation.navigate('FamilyMembersBirthdates', {
-      draftId: this.draftId,
-      survey: this.survey
-    })
+    if (this.errorsDetected.length) {
+      this.setState({
+        showErrors: true
+      })
+    } else {
+      this.props.navigation.navigate('Location', {
+        draftId: this.draftId,
+        survey: this.survey
+      })
+    }
   }
 
   getFieldValue = (draft, field) => {
@@ -73,6 +80,16 @@ export class FamilyMembersGender extends Component {
       index,
       payload: {
         gender
+      }
+    })
+  }
+
+  addFamilyMemberBirthdate(birthDate, index) {
+    this.props.addSurveyFamilyMemberData({
+      id: this.draftId,
+      index,
+      payload: {
+        birthDate
       }
     })
   }
@@ -99,7 +116,7 @@ export class FamilyMembersGender extends Component {
                 marginTop: 15
               }}
             >
-              <Icon name="face" color={colors.grey} size={20} />
+              <Icon name="face" color={colors.grey} size={22} />
               <Text
                 style={{
                   ...globalStyles.h2Bold,
@@ -110,7 +127,6 @@ export class FamilyMembersGender extends Component {
                 {item.firstName}
               </Text>
             </View>
-
             <Select
               field={i.toString()}
               onChange={text => this.addFamilyMemberGender(text, i + 1)}
@@ -122,6 +138,17 @@ export class FamilyMembersGender extends Component {
               }
               detectError={this.detectError}
               options={this.gender}
+            />
+
+            <DateInput
+              field={i.toString()}
+              detectError={this.detectError}
+              showErrors={this.state.showErrors}
+              onValidDate={date => this.addFamilyMemberBirthdate(date, i + 1)}
+              value={
+                (this.getFieldValue(draft, 'familyMembersList')[i + 1] || {})
+                  .birthDate
+              }
             />
           </View>
         ))}

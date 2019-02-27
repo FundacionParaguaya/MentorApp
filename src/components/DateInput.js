@@ -112,7 +112,9 @@ export class DateInput extends React.Component {
 
     return (
       <View>
-        <Text style={styles.text}>{this.props.label}</Text>
+        {this.props.label ? (
+          <Text style={styles.text}>{this.props.label}</Text>
+        ) : null}
         <View style={styles.container}>
           <View style={styles.month}>
             <Select
