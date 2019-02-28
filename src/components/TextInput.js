@@ -127,7 +127,7 @@ class TextInput extends Component {
 
     let showPlaceholder = status === 'blur' && !text
 
-    return (
+    return readonly && !text ? null : (
       <View style={{ marginBottom: 15 }}>
         {label && (
           <Text style={styles.label}>{`${label}${required ? ' *' : ''}`}</Text>

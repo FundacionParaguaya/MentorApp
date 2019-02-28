@@ -3,7 +3,6 @@ import FamiliesView from '../../screens/Families'
 import LifemapScreens from './LifemapScreens'
 import FamilyView from '../../screens/Family'
 import { generateNavOptions } from './helpers'
-import i18n from '../../i18n'
 
 export default createStackNavigator({
   Families: {

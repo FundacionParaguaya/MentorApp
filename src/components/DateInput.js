@@ -4,7 +4,6 @@ import moment from 'moment'
 import { View, StyleSheet, Text } from 'react-native'
 import { withNamespaces } from 'react-i18next'
 import colors from '../theme.json'
-import TextInput from './TextInput'
 import Select from './Select'
 
 export class DateInput extends React.Component {
@@ -93,7 +92,7 @@ export class DateInput extends React.Component {
   }
 
   render() {
-    const { t, value } = this.props
+    const { t, readonly } = this.props
     const { day, month, year } = this.state
     const months = [
       { text: t('months.january'), value: 'January' },
@@ -120,6 +119,7 @@ export class DateInput extends React.Component {
               label={t('general.month')}
               placeholder={t('views.family.selectMonth')}
               field=""
+              readonly={readonly}
               value={month}
               options={months}
             />
@@ -128,8 +128,8 @@ export class DateInput extends React.Component {
             <Select
               onChange={day => this.setDay(day)}
               placeholder={t('general.day')}
-              placeholder={t('general.day')}
               field=""
+              readonly={readonly}
               value={Number(day)}
               options={this.days}
             />
@@ -138,8 +138,8 @@ export class DateInput extends React.Component {
             <Select
               onChange={year => this.setYear(year)}
               placeholder={t('general.year')}
-              placeholder={t('general.year')}
               field=""
+              readonly={readonly}
               value={Number(year)}
               options={this.years}
             />
@@ -178,6 +178,7 @@ DateInput.propTypes = {
   field: PropTypes.string,
   required: PropTypes.bool,
   showErrors: PropTypes.bool,
+  readonly: PropTypes.bool,
   detectError: PropTypes.func,
   onValidDate: PropTypes.func
 }

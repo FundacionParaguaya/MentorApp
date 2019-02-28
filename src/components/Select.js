@@ -25,9 +25,11 @@ class Select extends Component {
   }
 
   toggleDropdown = () => {
-    this.setState({
-      isOpen: !this.state.isOpen
-    })
+    if (!this.props.readonly) {
+      this.setState({
+        isOpen: !this.state.isOpen
+      })
+    }
   }
 
   handleError(errorMsg) {
@@ -78,7 +80,14 @@ class Select extends Component {
 
   render() {
     const { errorMsg, isOpen } = this.state
-    const { value, placeholder, required, options, countrySelect } = this.props
+    const {
+      value,
+      placeholder,
+      required,
+      options,
+      countrySelect,
+      readonly
+    } = this.props
     const defaultCountry = this.props.country
       ? countryList.filter(item => item.code === this.props.country)[0]
       : ''
@@ -137,7 +146,7 @@ class Select extends Component {
             >
               {value ? text : `${placeholder}${required ? ' *' : ''}`}
             </Text>
-            <Image source={arrow} style={styles.arrow} />
+            {!readonly ? <Image source={arrow} style={styles.arrow} /> : null}
 
             <BottomModal
               isOpen={isOpen}
@@ -210,6 +219,7 @@ Select.propTypes = {
   field: PropTypes.string,
   country: PropTypes.string,
   countrySelect: PropTypes.bool,
+  readonly: PropTypes.bool,
   showErrors: PropTypes.bool,
   required: PropTypes.bool,
   detectError: PropTypes.func

@@ -40,8 +40,8 @@ export class Location extends Component {
 
   mapIsDraggable = false
   survey = this.props.navigation.getParam('survey')
-  draftId = this.props.navigation.getParam('draftId')
-
+  draftId = this.props.navigation.getParam('draftId') || null
+  readonly = !!this.props.navigation.getParam('family')
   errorsDetected = []
   locationCheckTimer
   constructor(props) {
@@ -182,18 +182,18 @@ export class Location extends Component {
     }
   }
   getDraft = () =>
+    this.props.navigation.getParam('family') ||
     this.props.drafts.find(draft => draft.draftId === this.draftId)
 
   componentDidMount() {
     const draft = this.getDraft()
-
     if (!this.getFieldValue(draft, 'latitude')) {
       this.getDeviceLocation()
     } else {
       this.setState({
-        latitude: this.getFieldValue(draft, 'latitude'),
-        longitude: this.getFieldValue(draft, 'longitude'),
-        accuracy: this.getFieldValue(draft, 'accuracy'),
+        latitude: parseFloat(this.getFieldValue(draft, 'latitude')),
+        longitude: parseFloat(this.getFieldValue(draft, 'longitude')),
+        accuracy: parseFloat(this.getFieldValue(draft, 'accuracy')),
         showMap: true
       })
     }
@@ -202,9 +202,11 @@ export class Location extends Component {
       screen: 'Location'
     })
 
-    this.props.navigation.setParams({
-      onPressBack: this.onPressBack
-    })
+    if (!this.readonly) {
+      this.props.navigation.setParams({
+        onPressBack: this.onPressBack
+      })
+    }
   }
 
   onPressBack = () => {
@@ -273,14 +275,18 @@ export class Location extends Component {
               <View pointerEvents="none" style={styles.fakeMarker}>
                 <Image source={marker} />
               </View>
-              <SearchBar
-                id="searchAddress"
-                style={styles.search}
-                placeholder={t('views.family.searchByStreetOrPostalCode')}
-                onChangeText={searchAddress => this.setState({ searchAddress })}
-                onSubmit={this.searcForAddress}
-                value={searchAddress}
-              />
+              {!this.readonly && (
+                <SearchBar
+                  id="searchAddress"
+                  style={styles.search}
+                  placeholder={t('views.family.searchByStreetOrPostalCode')}
+                  onChangeText={searchAddress =>
+                    this.setState({ searchAddress })
+                  }
+                  onSubmit={this.searcForAddress}
+                  value={searchAddress}
+                />
+              )}
               <MapView
                 ref={ref => {
                   this.map = ref
@@ -299,23 +305,33 @@ export class Location extends Component {
                   longitudeDelta
                 }}
                 onRegionChangeComplete={this.onDragMap}
+                zoomEnabled={!this.readonly}
+                rotateEnabled={!this.readonly}
+                scrollEnabled={!this.readonly}
               />
-              {centeringMap ? (
-                <ActivityIndicator
-                  style={styles.center}
-                  size={54}
-                  color={colors.palegreen}
-                />
-              ) : (
-                <TouchableHighlight
-                  id="centerMap"
-                  underlayColor={'transparent'}
-                  activeOpacity={1}
-                  style={styles.center}
-                  onPress={this.getDeviceLocation}
-                >
-                  <Image source={center} style={{ width: 21, height: 21 }} />
-                </TouchableHighlight>
+              {!this.readonly && (
+                <View>
+                  {centeringMap ? (
+                    <ActivityIndicator
+                      style={styles.center}
+                      size={54}
+                      color={colors.palegreen}
+                    />
+                  ) : (
+                    <TouchableHighlight
+                      id="centerMap"
+                      underlayColor={'transparent'}
+                      activeOpacity={1}
+                      style={styles.center}
+                      onPress={this.getDeviceLocation}
+                    >
+                      <Image
+                        source={center}
+                        style={{ width: 21, height: 21 }}
+                      />
+                    </TouchableHighlight>
+                  )}
+                </View>
               )}
             </View>
           ) : (
@@ -389,6 +405,7 @@ export class Location extends Component {
             }
             detectError={this.detectError}
             country={this.survey.surveyConfig.surveyLocation.country}
+            readonly={this.readonly}
           />
           <TextInput
             id="postCode"
@@ -397,6 +414,7 @@ export class Location extends Component {
             value={this.getFieldValue(draft, 'postCode') || ''}
             placeholder={t('views.family.postcode')}
             detectError={this.detectError}
+            readonly={this.readonly}
           />
           <TextInput
             id="address"
@@ -406,6 +424,7 @@ export class Location extends Component {
             placeholder={t('views.family.streetOrHouseDescription')}
             validation="long-string"
             detectError={this.detectError}
+            readonly={this.readonly}
             multiline
           />
         </View>
@@ -446,9 +465,6 @@ const styles = StyleSheet.create({
   placeholder: {
     alignItems: 'center',
     justifyContent: 'center'
-  },
-  container: {
-    paddingHorizontal: 16
   },
   accuracy: { marginLeft: 30 },
   fakeMarker: {

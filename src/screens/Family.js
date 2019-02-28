@@ -49,8 +49,6 @@ export class Family extends Component {
     const { t, navigation } = this.props
     const { familyData } = this.familyLifemap
 
-    console.log(this.socioEconomicCategories)
-
     return (
       <ScrollView
         style={globalStyles.background}
@@ -104,11 +102,18 @@ export class Family extends Component {
                 <FlatList
                   data={familyData.familyMembersList}
                   keyExtractor={(item, index) => index.toString()}
-                  renderItem={({ item }) => (
+                  renderItem={({ item, index }) => (
                     <FamilyListItem
                       icon
                       text={`${item.firstName} ${item.lastName}`}
-                      handleClick={() => console.log('clicked')}
+                      handleClick={() => {
+                        if (!index) {
+                          navigation.navigate('FamilyParticipant', {
+                            survey: this.familyLifemap.surveyId,
+                            family: this.familyLifemap
+                          })
+                        }
+                      }}
                     />
                   )}
                 />
@@ -120,20 +125,23 @@ export class Family extends Component {
                   {t('views.family.household').toUpperCase()}
                 </Text>
                 <FamilyListItem
-                  text={t('general.family')}
-                  handleClick={() => console.log('clicked')}
-                />
-                <FamilyListItem
                   text={t('views.location')}
-                  handleClick={() => console.log('clicked')}
+                  handleClick={() => {
+                    navigation.navigate('Location', {
+                      survey: navigation.getParam('survey'),
+                      family: this.familyLifemap
+                    })
+                  }}
                 />
-                {this.socioEconomicCategories.map(item => (
-                  <FamilyListItem
-                    key={item}
-                    text={item}
-                    handleClick={() => console.log('clicked')}
-                  />
-                ))}
+                {!this.isDraft
+                  ? this.socioEconomicCategories.map(item => (
+                      <FamilyListItem
+                        key={item}
+                        text={item}
+                        handleClick={() => console.log('clicked')}
+                      />
+                    ))
+                  : null}
               </View>
             </View>
           </ScrollView>
@@ -162,16 +170,13 @@ export class Family extends Component {
                     colored
                     text={t('general.resumeDraft')}
                     handleClick={() => {
-                      this.props.navigation.replace(
-                        this.familyLifemap.progress.screen,
-                        {
-                          draftId: this.familyLifemap.draftId,
-                          survey: this.survey,
-                          step: this.familyLifemap.progress.step,
-                          socioEconomics: this.familyLifemap.progress
-                            .socioEconomics
-                        }
-                      )
+                      navigation.replace(this.familyLifemap.progress.screen, {
+                        draftId: this.familyLifemap.draftId,
+                        survey: this.survey,
+                        step: this.familyLifemap.progress.step,
+                        socioEconomics: this.familyLifemap.progress
+                          .socioEconomics
+                      })
                     }}
                   />
                 </View>
@@ -185,7 +190,7 @@ export class Family extends Component {
                   .utc()
                   .format('MMM, DD YYYY')}`}</Text>
                 <OverviewComponent
-                  navigation={this.props.navigation}
+                  navigation={navigation}
                   familyLifemap={this.familyLifemap}
                 />
               </ScrollView>
