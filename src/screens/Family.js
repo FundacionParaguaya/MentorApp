@@ -105,12 +105,16 @@ export class Family extends Component {
                   renderItem={({ item, index }) => (
                     <FamilyListItem
                       icon
-                      text={`${item.firstName} ${item.lastName}`}
+                      text={`${item.firstName} ${!index ? item.lastName : ''}`}
                       handleClick={() => {
                         if (!index) {
                           navigation.navigate('FamilyParticipant', {
                             survey: this.familyLifemap.surveyId,
                             family: this.familyLifemap
+                          })
+                        } else {
+                          navigation.navigate('FamilyMember', {
+                            member: item
                           })
                         }
                       }}

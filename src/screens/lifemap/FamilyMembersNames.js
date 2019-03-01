@@ -7,7 +7,6 @@ import {
   addDraftProgress
 } from '../../redux/actions'
 import StickyFooter from '../../components/StickyFooter'
-import Select from '../../components/Select'
 import TextInput from '../../components/TextInput'
 
 export class FamilyMembersNames extends Component {

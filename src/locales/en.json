@@ -76,7 +76,7 @@
       "email": "Email",
       "phone": "Phone",
       "gender": "Gender",
-      "dateOfBirth": "Date of birth *",
+      "dateOfBirth": "Date of birth",
       "documentType": "Document type",
       "countryOfBirth": "Country of birth",
       "selectMonth": "Select month",

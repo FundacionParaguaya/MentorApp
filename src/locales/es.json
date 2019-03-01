@@ -76,7 +76,7 @@
       "email": "Correo electrónico",
       "phone": "Teléfono",
       "gender": "Género",
-      "dateOfBirth": "Fecha de nacimiento *",
+      "dateOfBirth": "Fecha de nacimiento",
       "documentType": "Tipo de documento",
       "countryOfBirth": "País de nacimiento",
       "selectMonth": "Seleccione mes",

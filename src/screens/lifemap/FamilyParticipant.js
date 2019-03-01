@@ -19,6 +19,12 @@ import DateInputComponent from '../../components/DateInput'
 import colors from '../../theme.json'
 
 export class FamilyParticipant extends Component {
+  static navigationOptions = ({ navigation }) => {
+    return {
+      title: navigation.getParam('title', 'Primary Participant')
+    }
+  }
+
   //Get draft id from Redux store if it exists else create new draft id
   draftId = this.props.navigation.getParam('draftId') || uuid()
 
@@ -76,7 +82,18 @@ export class FamilyParticipant extends Component {
     }
   }
 
+  setTitle() {
+    this.props.navigation.setParams({
+      title: this.props.navigation.getParam('family').familyData
+        .familyMembersList[0].firstName
+    })
+  }
+
   componentDidMount() {
+    if (this.props.navigation.getParam('family')) {
+      this.setTitle()
+    }
+
     this.getDraft()
     this.props.addDraftProgress(this.draftId, {
       screen: 'FamilyParticipant'
@@ -179,6 +196,7 @@ export class FamilyParticipant extends Component {
   render() {
     const { t } = this.props
     const { showErrors } = this.state
+
     const draft =
       this.props.navigation.getParam('family') ||
       this.props.drafts.find(draft => draft.draftId === this.draftId)
