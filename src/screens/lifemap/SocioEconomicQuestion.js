@@ -20,7 +20,7 @@ export class SocioEconomicQuestion extends Component {
   }
 
   errorsDetected = []
-
+  readonly = !!this.props.navigation.getParam('family')
   state = { errorsDetected: [], showErrors: false }
   draftId = this.props.navigation.getParam('draftId')
   survey = this.props.navigation.getParam('survey')
@@ -74,7 +74,9 @@ export class SocioEconomicQuestion extends Component {
       } else
         props.navigation.setParams({
           socioEconomics: {
-            currentScreen: 1,
+            currentScreen: this.props.navigation.getParam('page')
+              ? this.props.navigation.getParam('page') + 1
+              : 1,
             questionsPerScreen,
             totalScreens
           },
@@ -97,13 +99,16 @@ export class SocioEconomicQuestion extends Component {
   }
 
   componentDidMount() {
-    this.props.addDraftProgress(this.draftId, {
-      screen: 'SocioEconomicQuestion',
-      socioEconomics: this.props.navigation.getParam('socioEconomics')
-    })
-    this.props.navigation.setParams({
-      onPressBack: this.onPressBack
-    })
+    if (!this.readonly) {
+      this.props.addDraftProgress(this.draftId, {
+        screen: 'SocioEconomicQuestion',
+        socioEconomics: this.props.navigation.getParam('socioEconomics')
+      })
+
+      this.props.navigation.setParams({
+        onPressBack: this.onPressBack
+      })
+    }
   }
 
   onPressBack = () => {
@@ -146,6 +151,7 @@ export class SocioEconomicQuestion extends Component {
   getFieldValue = (draft, field) => {
     if (
       !draft ||
+      !draft.economicSurveyDataList ||
       !draft.economicSurveyDataList.filter(item => item.key === field)[0]
     ) {
       return
@@ -207,9 +213,10 @@ export class SocioEconomicQuestion extends Component {
   render() {
     const { t } = this.props
     const { showErrors } = this.state
-    const draft = this.props.drafts.find(
-      draft => draft.draftId === this.draftId
-    )
+
+    const draft =
+      this.props.navigation.getParam('family') ||
+      this.props.drafts.find(draft => draft.draftId === this.draftId)
 
     const socioEconomics = this.props.navigation.getParam('socioEconomics')
     const questionsForThisScreen = socioEconomics
@@ -235,6 +242,7 @@ export class SocioEconomicQuestion extends Component {
                 field={question.codeName}
                 value={this.getFieldValue(draft, question.codeName) || ''}
                 detectError={this.detectError}
+                readonly={this.readonly}
                 options={question.options}
               />
             ) : question.answerType === 'number' ? (
@@ -248,6 +256,7 @@ export class SocioEconomicQuestion extends Component {
                 field={question.codeName}
                 value={this.getFieldValue(draft, question.codeName) || ''}
                 detectError={this.detectError}
+                readonly={this.readonly}
                 validation="number"
                 keyboardType="numeric"
               />
@@ -262,6 +271,7 @@ export class SocioEconomicQuestion extends Component {
                 field={question.codeName}
                 value={this.getFieldValue(draft, question.codeName) || ''}
                 detectError={this.detectError}
+                readonly={this.readonly}
               />
             )
           )
@@ -295,6 +305,7 @@ export class SocioEconomicQuestion extends Component {
                         ) || ''
                       }
                       detectError={this.detectError}
+                      readonly={this.readonly}
                       options={question.options}
                     />
                   ) : (
@@ -316,6 +327,7 @@ export class SocioEconomicQuestion extends Component {
                         ) || ''
                       }
                       detectError={this.detectError}
+                      readonly={this.readonly}
                     />
                   )
                 )}

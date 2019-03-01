@@ -269,117 +269,122 @@ export class Location extends Component {
         handleClick={this.handleClick}
         continueLabel={t('general.continue')}
       >
-        <View>
-          {showMap && isOnline ? (
-            <View>
-              <View pointerEvents="none" style={styles.fakeMarker}>
-                <Image source={marker} />
-              </View>
-              {!this.readonly && (
-                <SearchBar
-                  id="searchAddress"
-                  style={styles.search}
-                  placeholder={t('views.family.searchByStreetOrPostalCode')}
-                  onChangeText={searchAddress =>
-                    this.setState({ searchAddress })
-                  }
-                  onSubmit={this.searcForAddress}
-                  value={searchAddress}
+        {(!this.readonly || (this.readonly && latitude)) && (
+          <View>
+            {showMap && isOnline ? (
+              <View>
+                <View pointerEvents="none" style={styles.fakeMarker}>
+                  <Image source={marker} />
+                </View>
+                {!this.readonly && (
+                  <SearchBar
+                    id="searchAddress"
+                    style={styles.search}
+                    placeholder={t('views.family.searchByStreetOrPostalCode')}
+                    onChangeText={searchAddress =>
+                      this.setState({ searchAddress })
+                    }
+                    onSubmit={this.searcForAddress}
+                    value={searchAddress}
+                  />
+                )}
+                <MapView
+                  ref={ref => {
+                    this.map = ref
+                  }}
+                  style={styles.map}
+                  initialRegion={{
+                    latitude,
+                    longitude,
+                    latitudeDelta,
+                    longitudeDelta
+                  }}
+                  region={{
+                    latitude,
+                    longitude,
+                    latitudeDelta,
+                    longitudeDelta
+                  }}
+                  onRegionChangeComplete={this.onDragMap}
+                  zoomEnabled={!this.readonly}
+                  rotateEnabled={!this.readonly}
+                  scrollEnabled={!this.readonly}
                 />
-              )}
-              <MapView
-                ref={ref => {
-                  this.map = ref
-                }}
-                style={styles.map}
-                initialRegion={{
-                  latitude,
-                  longitude,
-                  latitudeDelta,
-                  longitudeDelta
-                }}
-                region={{
-                  latitude,
-                  longitude,
-                  latitudeDelta,
-                  longitudeDelta
-                }}
-                onRegionChangeComplete={this.onDragMap}
-                zoomEnabled={!this.readonly}
-                rotateEnabled={!this.readonly}
-                scrollEnabled={!this.readonly}
-              />
-              {!this.readonly && (
-                <View>
-                  {centeringMap ? (
-                    <ActivityIndicator
-                      style={styles.center}
-                      size={54}
-                      color={colors.palegreen}
-                    />
-                  ) : (
-                    <TouchableHighlight
-                      id="centerMap"
-                      underlayColor={'transparent'}
-                      activeOpacity={1}
-                      style={styles.center}
-                      onPress={this.getDeviceLocation}
-                    >
-                      <Image
-                        source={center}
-                        style={{ width: 21, height: 21 }}
+                {!this.readonly && (
+                  <View>
+                    {centeringMap ? (
+                      <ActivityIndicator
+                        style={styles.center}
+                        size={54}
+                        color={colors.palegreen}
                       />
-                    </TouchableHighlight>
-                  )}
-                </View>
-              )}
-            </View>
-          ) : (
-            <View style={[styles.placeholder, styles.map]}>
-              {mapsError !== 3 && !latitude && (
-                <ActivityIndicator
-                  style={styles.spinner}
-                  size={80}
-                  color={colors.palered}
-                />
-              )}
-              {!mapsError && !latitude ? (
-                <Text style={globalStyles.h2}>
-                  {t('views.family.gettingYourLocation')}
-                </Text>
-              ) : (
-                <View>
-                  <Text style={[globalStyles.h2, styles.centerText]}>
-                    Hmmm!
+                    ) : (
+                      <TouchableHighlight
+                        id="centerMap"
+                        underlayColor={'transparent'}
+                        activeOpacity={1}
+                        style={styles.center}
+                        onPress={this.getDeviceLocation}
+                      >
+                        <Image
+                          source={center}
+                          style={{ width: 21, height: 21 }}
+                        />
+                      </TouchableHighlight>
+                    )}
+                  </View>
+                )}
+              </View>
+            ) : (
+              <View style={[styles.placeholder, styles.map]}>
+                {mapsError !== 3 && !latitude && (
+                  <ActivityIndicator
+                    style={styles.spinner}
+                    size={80}
+                    color={colors.palered}
+                  />
+                )}
+                {!mapsError && !latitude ? (
+                  <Text style={globalStyles.h2}>
+                    {t('views.family.gettingYourLocation')}
                   </Text>
-                  <Text style={[styles.errorMsg, styles.centerText]}>
-                    {mapsError === 2 && t('views.family.somethingIsNotWorking')}
+                ) : (
+                  <View>
+                    <Text style={[globalStyles.h2, styles.centerText]}>
+                      Hmmm!
+                    </Text>
+                    <Text style={[styles.errorMsg, styles.centerText]}>
+                      {mapsError === 2 &&
+                        t('views.family.somethingIsNotWorking')}
 
-                    {!isOnline &&
-                      latitude &&
-                      t('views.family.mapUnavailavleOffline')}
+                      {!isOnline &&
+                        latitude &&
+                        t('views.family.mapUnavailavleOffline')}
 
-                    {!isOnline &&
-                      mapsError === 3 &&
-                      !latitude &&
-                      t('views.family.neitherMapNorLocation')}
-                  </Text>
-                  <Text style={[styles.errorSubMsg, styles.centerText]}>
-                    {mapsError === 2 &&
-                      t('views.family.checkLocationServicesTurnedOn')}
+                      {!isOnline &&
+                        mapsError === 3 &&
+                        !latitude &&
+                        t('views.family.neitherMapNorLocation')}
+                    </Text>
+                    <Text style={[styles.errorSubMsg, styles.centerText]}>
+                      {mapsError === 2 &&
+                        t('views.family.checkLocationServicesTurnedOn')}
 
-                    {!isOnline && latitude && t('views.family.weHaveLocation')}
+                      {!isOnline &&
+                        latitude &&
+                        t('views.family.weHaveLocation')}
 
-                    {!isOnline &&
-                      mapsError === 3 &&
-                      !latitude &&
-                      t('views.family.describeLocation')}
-                  </Text>
-                </View>
-              )}
-            </View>
-          )}
-        </View>
+                      {!isOnline &&
+                        mapsError === 3 &&
+                        !latitude &&
+                        t('views.family.describeLocation')}
+                    </Text>
+                  </View>
+                )}
+              </View>
+            )}
+          </View>
+        )}
 
         <View>
           <Text id="accuracy" style={styles.accuracy}>
@@ -397,7 +402,11 @@ export class Location extends Component {
             onChange={this.addSurveyData}
             label={t('views.family.country')}
             countrySelect
-            placeholder={t('views.family.selectACountry')}
+            placeholder={
+              this.readonly
+                ? t('views.family.country')
+                : t('views.family.selectACountry')
+            }
             field="country"
             value={
               this.getFieldValue(draft, 'country') ||

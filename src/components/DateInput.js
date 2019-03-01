@@ -112,7 +112,7 @@ export class DateInput extends React.Component {
     return (
       <View>
         <Text style={[styles.text, { marginBottom: readonly ? -15 : 15 }]}>
-          {this.props.label} {required ? '*' : ''}
+          {this.props.label} {required && !readonly ? '*' : ''}
         </Text>
         <View style={styles.container}>
           <View style={styles.month}>

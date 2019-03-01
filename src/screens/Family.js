@@ -138,11 +138,17 @@ export class Family extends Component {
                   }}
                 />
                 {!this.isDraft
-                  ? this.socioEconomicCategories.map(item => (
+                  ? this.socioEconomicCategories.map((item, index) => (
                       <FamilyListItem
                         key={item}
                         text={item}
-                        handleClick={() => console.log('clicked')}
+                        handleClick={() => {
+                          navigation.navigate('SocioEconomicQuestion', {
+                            survey: navigation.getParam('survey'),
+                            family: this.familyLifemap,
+                            page: index
+                          })
+                        }}
                       />
                     ))
                   : null}

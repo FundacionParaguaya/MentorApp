@@ -136,7 +136,7 @@ class Select extends Component {
                       color: colors.green
                     }
                 ]}
-              >{`${placeholder}${required ? ' *' : ''}`}</Text>
+              >{`${placeholder}${required && !readonly ? ' *' : ''}`}</Text>
             )}
             <Text
               style={[
