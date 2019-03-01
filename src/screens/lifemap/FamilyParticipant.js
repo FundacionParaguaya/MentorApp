@@ -19,6 +19,12 @@ import DateInputComponent from '../../components/DateInput'
 import colors from '../../theme.json'
 
 export class FamilyParticipant extends Component {
+  static navigationOptions = ({ navigation }) => {
+    return {
+      title: navigation.getParam('title', 'Primary Participant')
+    }
+  }
+
   //Get draft id from Redux store if it exists else create new draft id
   draftId = this.props.navigation.getParam('draftId') || uuid()
 
@@ -31,6 +37,8 @@ export class FamilyParticipant extends Component {
   survey = this.props.surveys.filter(survey => survey.id === this.surveyId)[0]
 
   errorsDetected = []
+
+  readonly = !!this.props.navigation.getParam('family')
 
   state = { errorsDetected: [], showErrors: false }
 
@@ -47,8 +55,12 @@ export class FamilyParticipant extends Component {
   }
 
   getDraft() {
-    //Get draft  from Redux store if it exists else create new draft
-    if (!this.props.navigation.getParam('draftId')) {
+    //Get data from Redux store if it's a draft or from
+    // navigation if it's an excisting family else create new draft
+    if (
+      !this.props.navigation.getParam('draftId') &&
+      !this.props.navigation.getParam('family')
+    ) {
       this.props.createDraft({
         surveyId: this.survey.id,
         surveyVersionId: this.survey['surveyVersionId'],
@@ -70,7 +82,18 @@ export class FamilyParticipant extends Component {
     }
   }
 
+  setTitle() {
+    this.props.navigation.setParams({
+      title: this.props.navigation.getParam('family').familyData
+        .familyMembersList[0].firstName
+    })
+  }
+
   componentDidMount() {
+    if (this.props.navigation.getParam('family')) {
+      this.setTitle()
+    }
+
     this.getDraft()
     this.props.addDraftProgress(this.draftId, {
       screen: 'FamilyParticipant'
@@ -141,6 +164,7 @@ export class FamilyParticipant extends Component {
     if (!draft) {
       return
     }
+
     return draft.familyData.familyMembersList[0][field]
   }
 
@@ -172,19 +196,22 @@ export class FamilyParticipant extends Component {
   render() {
     const { t } = this.props
     const { showErrors } = this.state
-    const draft = this.props.drafts.find(
-      draft => draft.draftId === this.draftId
-    )
+
+    const draft =
+      this.props.navigation.getParam('family') ||
+      this.props.drafts.find(draft => draft.draftId === this.draftId)
 
     return (
       <StickyFooter
         handleClick={this.handleClick}
         continueLabel={t('general.continue')}
+        readonly={this.readonly}
       >
         <Icon name="face" color={colors.grey} size={55} style={styles.icon} />
         <TextInput
           validation="string"
           field="firstName"
+          readonly={this.readonly}
           onChangeText={this.addSurveyData}
           placeholder={t('views.family.firstName')}
           value={this.getFieldValue(draft, 'firstName') || ''}
@@ -196,6 +223,7 @@ export class FamilyParticipant extends Component {
           field="lastName"
           validation="string"
           onChangeText={this.addSurveyData}
+          readonly={this.readonly}
           placeholder={t('views.family.lastName')}
           value={this.getFieldValue(draft, 'lastName') || ''}
           required
@@ -206,6 +234,7 @@ export class FamilyParticipant extends Component {
           id="gender"
           required
           onChange={this.addSurveyData}
+          readonly={this.readonly}
           label={t('views.family.gender')}
           placeholder={t('views.family.selectGender')}
           field="gender"
@@ -223,11 +252,13 @@ export class FamilyParticipant extends Component {
           showErrors={showErrors}
           onValidDate={this.addSurveyData}
           value={this.getFieldValue(draft, 'birthDate')}
+          readonly={this.readonly}
         />
 
         <Select
           required
           onChange={this.addSurveyData}
+          readonly={this.readonly}
           label={t('views.family.documentType')}
           placeholder={t('views.family.documentType')}
           field="documentType"
@@ -238,6 +269,7 @@ export class FamilyParticipant extends Component {
         />
         <TextInput
           onChangeText={this.addSurveyData}
+          readonly={this.readonly}
           field="documentNumber"
           required
           value={this.getFieldValue(draft, 'documentNumber')}
@@ -249,6 +281,7 @@ export class FamilyParticipant extends Component {
           id="country"
           required
           onChange={this.addSurveyData}
+          readonly={this.readonly}
           label={t('views.family.countryOfBirth')}
           countrySelect
           country={this.survey.surveyConfig.surveyLocation.country}
@@ -265,6 +298,7 @@ export class FamilyParticipant extends Component {
           id="familyMembersCount"
           required
           onChange={this.addFamilyCount}
+          readonly={this.readonly}
           label={t('views.family.peopleLivingInThisHousehold')}
           placeholder={t('views.family.peopleLivingInThisHousehold')}
           field="countFamilyMembers"
@@ -275,6 +309,7 @@ export class FamilyParticipant extends Component {
         />
         <TextInput
           onChangeText={this.addSurveyData}
+          readonly={this.readonly}
           field="email"
           value={this.getFieldValue(draft, 'email')}
           placeholder={t('views.family.email')}
@@ -284,6 +319,7 @@ export class FamilyParticipant extends Component {
         />
         <TextInput
           onChangeText={this.addSurveyData}
+          readonly={this.readonly}
           field="phoneNumber"
           value={this.getFieldValue(draft, 'phoneNumber')}
           placeholder={t('views.family.phone')}

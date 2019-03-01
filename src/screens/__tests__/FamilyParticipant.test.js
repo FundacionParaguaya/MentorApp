@@ -17,7 +17,13 @@ const createTestProps = props => ({
   removeFamilyMembers: jest.fn(),
   navigation: {
     navigate: jest.fn(),
-    getParam: param => (param === 'draftId' ? null : 1),
+    getParam: jest.fn(param => {
+      if (param === 'draftId' || param === 'family') {
+        return null
+      } else {
+        return 1
+      }
+    }),
     setParams: jest.fn(),
     reset: jest.fn(),
     isFocused: jest.fn()
@@ -116,7 +122,13 @@ describe('Family Participant View', () => {
         const props = createTestProps({
           navigation: {
             navigate: jest.fn(),
-            getParam: param => (param === 'draftId' ? 4 : 1),
+            getParam: jest.fn(param => {
+              if (param === 'draftId') {
+                return 4
+              } else {
+                return null
+              }
+            }),
             setParams: jest.fn(),
             reset: jest.fn()
           },
@@ -163,7 +175,13 @@ describe('Family Participant View', () => {
       const props = createTestProps({
         navigation: {
           navigate: jest.fn(),
-          getParam: param => (param === 'draftId' ? 4 : 1),
+          getParam: jest.fn(param => {
+            if (param === 'draftId') {
+              return 4
+            } else {
+              return null
+            }
+          }),
           setParams: jest.fn(),
           reset: jest.fn()
         },
@@ -244,7 +262,13 @@ describe('Family Member Count Functionality', () => {
     props = createTestProps({
       navigation: {
         navigate: jest.fn(),
-        getParam: param => (param === 'draftId' ? 4 : 1),
+        getParam: jest.fn(param => {
+          if (param === 'draftId') {
+            return 4
+          } else {
+            return null
+          }
+        }),
         setParams: jest.fn(),
         reset: jest.fn(),
         isFocused: jest.fn()

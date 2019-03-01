@@ -32,7 +32,8 @@ export default class StickyFooter extends Component {
     return (
       <View style={[globalStyles.background, styles.contentContainer]}>
         <ScrollView>{this.props.children}</ScrollView>
-        {this.props.visible && this.state.continueVisible ? (
+        {!this.props.readonly &&
+        (this.props.visible && this.state.continueVisible) ? (
           <View>
             {this.props.type === 'button' ? (
               <View style={{ height: 50 }}>
@@ -65,8 +66,10 @@ StickyFooter.propTypes = {
   continueLabel: PropTypes.string,
   type: PropTypes.oneOf(['button', 'tip']),
   tipTitle: PropTypes.string,
+  tipIsVisible: PropTypes.bool,
   tipDescription: PropTypes.string,
-  onTipClose: PropTypes.func
+  onTipClose: PropTypes.func,
+  readonly: PropTypes.bool
 }
 
 StickyFooter.defaultProps = {

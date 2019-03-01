@@ -38,6 +38,8 @@ export const generateNavOptions = ({ navigation, burgerMenu = true }) => ({
     marginRight: -16
   },
   headerRight:
+    !navigation.getParam('family') &&
+    !navigation.getParam('member') &&
     navigation.state.routeName !== 'Final' &&
     !burgerMenu &&
     !navigation.getParam('withoutCloseButton') ? (

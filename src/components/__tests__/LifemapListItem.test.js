@@ -1,36 +1,31 @@
 import React from 'react'
-
 import { shallow } from 'enzyme'
-import { Text, View, Image } from 'react-native'
-import LifemapListItem from '../LifemapListItem'
+import { Text } from 'react-native'
+import FamilyListItem from '../FamilyListItem'
 import ListItem from '../ListItem'
+import Icon from 'react-native-vector-icons/MaterialIcons'
 
 const createTestProps = props => ({
   handleClick: jest.fn(),
-  name: 'Survey title',
+  text: 'Socio Economic title',
+  icon: true,
   ...props
 })
 
-describe('LifemapListItem Component', () => {
+describe('FamilyListItem Component', () => {
   let wrapper
   let props
   beforeEach(() => {
     props = createTestProps()
-    wrapper = shallow(<LifemapListItem {...props} />)
+    wrapper = shallow(<FamilyListItem {...props} />)
   })
 
   describe('rendering', () => {
     it('renders <ListItem />', () => {
       expect(wrapper.find(ListItem)).toHaveLength(1)
     })
-    it('renders <View />', () => {
-      expect(wrapper.find(View)).toHaveLength(1)
-    })
-    it('renders <Text />', () => {
-      expect(wrapper.find(Text)).toHaveLength(1)
-    })
-    it('renders <Image />', () => {
-      expect(wrapper.find(Image)).toHaveLength(1)
+    it('renders the face icon <Icon />', () => {
+      expect(wrapper.find(Icon)).toHaveLength(2)
     })
 
     it('renders the correct name in Text component', () => {
@@ -39,7 +34,7 @@ describe('LifemapListItem Component', () => {
           .find(Text)
           .first()
           .props().children
-      ).toEqual('Survey title')
+      ).toEqual('Socio Economic title')
     })
   })
   describe('functionality', () => {

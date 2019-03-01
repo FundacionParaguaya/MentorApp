@@ -1,56 +1,61 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
-import { Text, StyleSheet, View, Image } from 'react-native'
+import { Text, StyleSheet, View } from 'react-native'
 import ListItem from './ListItem'
-
+import Icon from 'react-native-vector-icons/MaterialIcons'
 import colors from '../theme.json'
 import globalStyles from '../globalStyles'
-import stoplight from '../../assets/images/stoplight.png'
-class LifemapListItem extends Component {
+
+class FamilyListItem extends Component {
   render() {
     return (
       <ListItem style={{ ...styles.listItem }} onPress={this.props.handleClick}>
-        <Image source={stoplight} style={styles.image} />
+        {this.props.icon ? (
+          <Icon
+            name="face"
+            style={styles.faceIcon}
+            color={colors.grey}
+            size={25}
+          />
+        ) : null}
         <View style={styles.listItemContainer}>
           <Text style={{ ...globalStyles.p, ...styles.p }}>
-            {this.props.name}
+            {this.props.text}
           </Text>
         </View>
+        <Icon name="navigate-next" size={23} color={colors.grey} />
       </ListItem>
     )
   }
 }
 
-LifemapListItem.propTypes = {
-  name: PropTypes.string.isRequired,
+FamilyListItem.propTypes = {
+  icon: PropTypes.bool,
+  text: PropTypes.string.isRequired,
   handleClick: PropTypes.func.isRequired
 }
 
 const styles = StyleSheet.create({
   listItem: {
-    height: 95,
-    paddingLeft: 25,
+    height: 70,
     flexDirection: 'row',
     alignItems: 'center',
-    flex: 1
+    borderBottomColor: colors.palegrey,
+    borderBottomWidth: 1
+  },
+  faceIcon: {
+    marginRight: 10
   },
   listItemContainer: {
-    height: 95,
-    borderBottomColor: colors.lightgrey,
-    borderBottomWidth: 1,
-    marginLeft: 25,
     flexDirection: 'row',
     flexWrap: 'wrap',
     flex: 1
   },
-  image: {
-    height: 65,
-    width: 65
-  },
+
   p: {
     paddingRight: 20,
     alignSelf: 'center'
   }
 })
 
-export default LifemapListItem
+export default FamilyListItem
