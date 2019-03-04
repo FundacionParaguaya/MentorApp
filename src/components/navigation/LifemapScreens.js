@@ -11,6 +11,7 @@ import SkippedView from '../../screens/lifemap/Skipped'
 import OverviewView from '../../screens/lifemap/Overview'
 import AddPriorityView from '../../screens/lifemap/AddPriority'
 import AddAchievementView from '../../screens/lifemap/AddAchievement'
+import FamilyMemberView from '../../screens/lifemap/FamilyMember'
 import i18n from '../../i18n'
 import { generateNavOptions } from './helpers'
 
@@ -95,7 +96,6 @@ export default {
   FamilyParticipant: {
     screen: FamilyParticipantView,
     navigationOptions: ({ navigation }) => ({
-      title: i18n.t('views.primaryParticipant'),
       ...generateNavOptions({ navigation, burgerMenu: false })
     })
   },
@@ -110,6 +110,12 @@ export default {
     screen: FamilyGendersBirthdatesView,
     navigationOptions: ({ navigation }) => ({
       title: i18n.t('views.gendersBirthDates'),
+      ...generateNavOptions({ navigation, burgerMenu: false })
+    })
+  },
+  FamilyMember: {
+    screen: FamilyMemberView,
+    navigationOptions: ({ navigation }) => ({
       ...generateNavOptions({ navigation, burgerMenu: false })
     })
   }

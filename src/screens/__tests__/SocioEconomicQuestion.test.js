@@ -11,7 +11,13 @@ const createTestProps = props => ({
   navigation: {
     navigate: jest.fn(),
     push: jest.fn(),
-    getParam: param => (param === 'survey' ? data : null),
+    getParam: jest.fn(param => {
+      if (param === 'survey') {
+        return data
+      } else {
+        return null
+      }
+    }),
     setParams: jest.fn(),
     isFocused: jest.fn(() => true)
   },
@@ -72,38 +78,44 @@ describe('SocioEconomicQuestion screens', () => {
         navigation: {
           push: jest.fn(),
           navigate: jest.fn(),
-          getParam: () => ({
-            currentScreen: 1,
-            totalScreens: 3,
-            questionsPerScreen: [
-              {
-                forFamily: [
+          getParam: jest.fn(param => {
+            if (param === 'socioEconomics') {
+              return {
+                currentScreen: 1,
+                totalScreens: 3,
+                questionsPerScreen: [
                   {
-                    questionText:
-                      'Is there any member with disabilities in your household? Please indicate the disability type',
-                    answerType: 'select',
-                    required: true,
-                    codeName: '1',
-                    options: [
-                      { value: 'PHYSICAL', text: 'Phisical' },
-                      { value: 'MENTAL', text: 'Mental' },
-                      { value: 'LEARNING', text: 'Learning' },
+                    forFamily: [
                       {
-                        value: 'NO-MEMBER-DISABILITIES',
-                        text: 'No member with disabilities'
+                        questionText:
+                          'Is there any member with disabilities in your household? Please indicate the disability type',
+                        answerType: 'select',
+                        required: true,
+                        codeName: '1',
+                        options: [
+                          { value: 'PHYSICAL', text: 'Phisical' },
+                          { value: 'MENTAL', text: 'Mental' },
+                          { value: 'LEARNING', text: 'Learning' },
+                          {
+                            value: 'NO-MEMBER-DISABILITIES',
+                            text: 'No member with disabilities'
+                          }
+                        ]
+                      },
+                      {
+                        questionText:
+                          'What is the property title situation of your household?',
+                        answerType: 'select',
+                        codeName: '2'
                       }
-                    ]
-                  },
-                  {
-                    questionText:
-                      'What is the property title situation of your household?',
-                    answerType: 'select',
-                    codeName: '2'
+                    ],
+                    forFamilyMember: []
                   }
-                ],
-                forFamilyMember: []
+                ]
               }
-            ]
+            } else {
+              return null
+            }
           }),
           setParams: jest.fn()
         }
@@ -169,43 +181,51 @@ describe('SocioEconomicQuestion screens', () => {
       props = createTestProps({
         navigation: {
           navigate: jest.fn(),
-          getParam: param =>
-            param === 'socioEconomics'
-              ? {
-                  currentScreen: 3,
-                  totalScreens: 3,
-                  questionsPerScreen: [
-                    {},
-                    {},
-                    {
-                      forFamilyMember: [
-                        {
-                          questionText:
-                            'Please estimate your gross monthly household income (i.e, before taxes National Insurance contributions or other deductions)',
-                          answerType: 'text',
-                          dimension: 'Income',
-                          required: true,
-                          codeName: '3',
-                          forFamilyMember: true,
-                          options: []
-                        }
-                      ],
-                      forFamily: [
-                        {
-                          questionText:
-                            'Please estimate your gross monthly household income (i.e, before taxes National Insurance contributions or other deductions)',
-                          answerType: 'text',
-                          dimension: 'Income',
-                          required: true,
-                          codeName: '3',
-                          forFamilyMember: false,
-                          options: []
-                        }
-                      ]
-                    }
-                  ]
-                }
-              : 2,
+          getParam: jest.fn(param => {
+            if (param === 'survey') {
+              return data
+            } else if (param === 'socioEconomics') {
+              return {
+                currentScreen: 3,
+                totalScreens: 3,
+                questionsPerScreen: [
+                  {},
+                  {},
+                  {
+                    forFamilyMember: [
+                      {
+                        questionText:
+                          'Please estimate your gross monthly household income (i.e, before taxes National Insurance contributions or other deductions)',
+                        answerType: 'text',
+                        dimension: 'Income',
+                        required: true,
+                        codeName: '3',
+                        forFamilyMember: true,
+                        options: []
+                      }
+                    ],
+                    forFamily: [
+                      {
+                        questionText:
+                          'Please estimate your gross monthly household income (i.e, before taxes National Insurance contributions or other deductions)',
+                        answerType: 'text',
+                        dimension: 'Income',
+                        required: true,
+                        codeName: '3',
+                        forFamilyMember: false,
+                        options: []
+                      }
+                    ]
+                  }
+                ]
+              }
+            } else if (param === 'draftId') {
+              return 2
+            }
+
+            return null
+          }),
+
           setParams: jest.fn()
         }
       })

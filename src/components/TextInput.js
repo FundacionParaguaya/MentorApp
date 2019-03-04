@@ -127,10 +127,12 @@ class TextInput extends Component {
 
     let showPlaceholder = status === 'blur' && !text
 
-    return (
+    return readonly && !text ? null : (
       <View style={{ marginBottom: 15 }}>
         {label && (
-          <Text style={styles.label}>{`${label}${required ? ' *' : ''}`}</Text>
+          <Text style={styles.label}>{`${label}${
+            required && !readonly ? ' *' : ''
+          }`}</Text>
         )}
         <View style={[styles.container, styles[status]]}>
           {!showPlaceholder && !label ? (
@@ -140,7 +142,7 @@ class TextInput extends Component {
                 color: this.defineTextColor(status)
               }}
             >
-              {`${placeholder} ${required && !label ? '*' : ''}`}
+              {`${placeholder} ${required && !label && !readonly ? '*' : ''}`}
               {'\n'}
             </Text>
           ) : (

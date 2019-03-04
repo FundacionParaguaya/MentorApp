@@ -4,7 +4,6 @@ import moment from 'moment'
 import { View, StyleSheet, Text } from 'react-native'
 import { withNamespaces } from 'react-i18next'
 import colors from '../theme.json'
-import TextInput from './TextInput'
 import Select from './Select'
 
 export class DateInput extends React.Component {
@@ -93,7 +92,7 @@ export class DateInput extends React.Component {
   }
 
   render() {
-    const { t, value } = this.props
+    const { t, readonly, required } = this.props
     const { day, month, year } = this.state
     const months = [
       { text: t('months.january'), value: 'January' },
@@ -112,16 +111,17 @@ export class DateInput extends React.Component {
 
     return (
       <View>
-        {this.props.label ? (
-          <Text style={styles.text}>{this.props.label}</Text>
-        ) : null}
+        <Text style={[styles.text, { marginBottom: readonly ? -15 : 15 }]}>
+          {this.props.label} {required && !readonly ? '*' : ''}
+        </Text>
         <View style={styles.container}>
           <View style={styles.month}>
             <Select
               onChange={month => this.setMonth(month)}
               label={t('general.month')}
-              placeholder={t('views.family.selectMonth')}
+              placeholder={readonly ? '' : t('views.family.selectMonth')}
               field=""
+              readonly={readonly}
               value={month}
               options={months}
             />
@@ -129,9 +129,9 @@ export class DateInput extends React.Component {
           <View style={styles.day}>
             <Select
               onChange={day => this.setDay(day)}
-              placeholder={t('general.day')}
-              placeholder={t('general.day')}
+              placeholder={readonly ? '' : t('general.day')}
               field=""
+              readonly={readonly}
               value={Number(day)}
               options={this.days}
             />
@@ -139,9 +139,9 @@ export class DateInput extends React.Component {
           <View style={styles.year}>
             <Select
               onChange={year => this.setYear(year)}
-              placeholder={t('general.year')}
-              placeholder={t('general.year')}
+              placeholder={readonly ? '' : t('general.year')}
               field=""
+              readonly={readonly}
               value={Number(year)}
               options={this.years}
             />
@@ -170,7 +170,7 @@ const styles = StyleSheet.create({
   },
   year: { width: '36%', marginLeft: '-3%' },
   month: { width: '45%' },
-  text: { marginLeft: 30, marginBottom: 15 }
+  text: { marginLeft: 30 }
 })
 
 DateInput.propTypes = {
@@ -180,6 +180,7 @@ DateInput.propTypes = {
   field: PropTypes.string,
   required: PropTypes.bool,
   showErrors: PropTypes.bool,
+  readonly: PropTypes.bool,
   detectError: PropTypes.func,
   onValidDate: PropTypes.func
 }

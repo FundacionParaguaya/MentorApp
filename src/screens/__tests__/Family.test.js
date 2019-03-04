@@ -1,22 +1,33 @@
 import React from 'react'
 import { shallow } from 'enzyme'
-import { ScrollView } from 'react-native'
 import { Family } from '../Family'
 import FamilyTab from '../../components/FamilyTab'
+import data from '../__mocks__/fake-socio-economic-data.json'
 import RoundImage from '../../components/RoundImage'
 import Button from '../../components/Button'
-
 const createTestProps = props => ({
   t: value => value,
   navigation: {
     setParams: jest.fn(),
     replace: jest.fn(),
-    getParam: jest.fn(param => ({
-      createdAt: 1,
-      draftId: 123,
-      surveyId: 1,
-      progress: { screen: 'FamilyMembersNames' }
-    }))
+    getParam: param =>
+      param === 'survey'
+        ? data
+        : {
+            draftId: 1,
+            surveyId: 1,
+            progress: { screen: 'FamilyMembersNames' },
+            createdAt: 1,
+            status: 'Draft',
+            familyData: {
+              familyMembersList: [
+                {
+                  firstName: 'Juan',
+                  lastName: 'Perez'
+                }
+              ]
+            }
+          }
   },
   surveys: [{ id: 1 }],
   ...props
@@ -31,14 +42,8 @@ describe('Single Family View', () => {
   })
 
   describe('rendering', () => {
-    it('renders base ScrollView element', () => {
-      expect(wrapper.find(ScrollView)).toHaveLength(1)
-    })
     it('renders familyTab', () => {
       expect(wrapper.find(FamilyTab)).toHaveLength(2)
-    })
-    it('renders details', () => {
-      expect(wrapper.find('#details')).toHaveLength(1)
     })
     it('does not render life map', () => {
       expect(wrapper.find('#lifemap')).toHaveLength(0)
@@ -78,7 +83,7 @@ describe('Single Family View', () => {
       expect(wrapper.instance().props.navigation.replace).toHaveBeenCalledWith(
         'FamilyMembersNames',
         {
-          draftId: 123,
+          draftId: 1,
           socioEconomics: undefined,
           step: undefined,
           survey: { id: 1 }
