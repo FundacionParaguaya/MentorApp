@@ -212,7 +212,7 @@ export class Location extends Component {
   onPressBack = () => {
     const draft = this.getDraft()
     if (draft.familyData.familyMembersList.length > 1) {
-      this.props.navigation.navigate('FamilyMembersBirthdates', {
+      this.props.navigation.navigate('FamilyGendersBirthdates', {
         draftId: this.draftId,
         survey: this.survey
       })

@@ -3,8 +3,7 @@ import SocioEconomicQuestionView from '../../screens/lifemap/SocioEconomicQuesti
 import FinalView from '../../screens/lifemap/Final'
 import FamilyParticipantView from '../../screens/lifemap/FamilyParticipant'
 import FamilyMembersNamesView from '../../screens/lifemap/FamilyMembersNames'
-import FamilyMembersGenderView from '../../screens/lifemap/FamilyMembersGender'
-import FamilyMembersBirthdatesView from '../../screens/lifemap/FamilyMembersBirthdates'
+import FamilyGendersBirthdatesView from '../../screens/lifemap/FamilyGendersBirthdates'
 import QuestionView from '../../screens/lifemap/Question'
 import BeginLifemapView from '../../screens/lifemap/BeginLifemap'
 import LocationView from '../../screens/lifemap/Location'
@@ -107,17 +106,10 @@ export default {
       ...generateNavOptions({ navigation, burgerMenu: false })
     })
   },
-  FamilyMembersGender: {
-    screen: FamilyMembersGenderView,
+  FamilyGendersBirthdates: {
+    screen: FamilyGendersBirthdatesView,
     navigationOptions: ({ navigation }) => ({
-      title: i18n.t('views.gender'),
-      ...generateNavOptions({ navigation, burgerMenu: false })
-    })
-  },
-  FamilyMembersBirthdates: {
-    screen: FamilyMembersBirthdatesView,
-    navigationOptions: ({ navigation }) => ({
-      title: i18n.t('views.birthDates'),
+      title: i18n.t('views.gendersBirthDates'),
       ...generateNavOptions({ navigation, burgerMenu: false })
     })
   },

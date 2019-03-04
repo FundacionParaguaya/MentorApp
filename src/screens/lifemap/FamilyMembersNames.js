@@ -54,7 +54,7 @@ export class FamilyMembersNames extends Component {
         showErrors: true
       })
     } else {
-      this.props.navigation.navigate('FamilyMembersGender', {
+      this.props.navigation.navigate('FamilyGendersBirthdates', {
         draftId: this.draftId,
         survey: this.survey
       })
