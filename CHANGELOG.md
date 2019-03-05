@@ -1,5 +1,17 @@
 # Change Log
 
+## [v1.5.1](https://github.com/FundacionParaguaya/MentorApp/tree/v1.5.1) (2019-03-05)
+[Full Changelog](https://github.com/FundacionParaguaya/MentorApp/compare/v1.5.0...v1.5.1)
+
+**Closed issues:**
+
+- USA Nelixia survey [\#413](https://github.com/FundacionParaguaya/MentorApp/issues/413)
+- Amend Paraguay Survey [\#393](https://github.com/FundacionParaguaya/MentorApp/issues/393)
+
+**Merged pull requests:**
+
+- Families bugs [\#417](https://github.com/FundacionParaguaya/MentorApp/pull/417) ([Danman7](https://github.com/Danman7))
+
 ## [v1.5.0](https://github.com/FundacionParaguaya/MentorApp/tree/v1.5.0) (2019-03-04)
 [Full Changelog](https://github.com/FundacionParaguaya/MentorApp/compare/v1.4.3...v1.5.0)
 
