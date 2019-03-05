@@ -105,9 +105,11 @@ export class SocioEconomicQuestion extends Component {
         socioEconomics: this.props.navigation.getParam('socioEconomics')
       })
 
-      this.props.navigation.setParams({
-        onPressBack: this.onPressBack
-      })
+      if (!this.readonly) {
+        this.props.navigation.setParams({
+          onPressBack: this.onPressBack
+        })
+      }
     }
   }
 
