@@ -267,6 +267,7 @@ export class Location extends Component {
     return (
       <StickyFooter
         handleClick={this.handleClick}
+        readonly={this.readonly}
         continueLabel={t('general.continue')}
       >
         {(!this.readonly || (this.readonly && latitude)) && (

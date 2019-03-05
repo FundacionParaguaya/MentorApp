@@ -7,7 +7,7 @@ import globalStyles from '../../globalStyles'
 import Select from '../../components/Select'
 import DateInputComponent from '../../components/DateInput'
 
-class FamilyMember extends Component {
+export class FamilyMember extends Component {
   static navigationOptions = ({ navigation }) => {
     return {
       title: navigation.getParam('title', 'Family Member')
@@ -61,7 +61,6 @@ class FamilyMember extends Component {
 }
 
 FamilyMember.propTypes = {
-  member: PropTypes.object,
   t: PropTypes.func.isRequired,
   navigation: PropTypes.object.isRequired
 }

@@ -105,9 +105,11 @@ export class SocioEconomicQuestion extends Component {
         socioEconomics: this.props.navigation.getParam('socioEconomics')
       })
 
-      this.props.navigation.setParams({
-        onPressBack: this.onPressBack
-      })
+      if (!this.readonly) {
+        this.props.navigation.setParams({
+          onPressBack: this.onPressBack
+        })
+      }
     }
   }
 
@@ -227,6 +229,7 @@ export class SocioEconomicQuestion extends Component {
       <StickyFooter
         handleClick={this.submitForm}
         continueLabel={t('general.continue')}
+        readonly={this.readonly}
       >
         {/* questions for entire family */}
         {socioEconomics ? (

@@ -1,0 +1,48 @@
+import React from 'react'
+import { shallow } from 'enzyme'
+import { FamilyMember } from '../lifemap/FamilyMember'
+import TextInput from '../../components/TextInput'
+import Select from '../../components/Select'
+import DateInputComponent from '../../components/DateInput'
+
+const createTestProps = props => ({
+  t: value => value,
+  navigation: {
+    setParams: jest.fn(),
+    getParam: jest.fn(() => ({
+      firstName: 'Neil',
+      gender: 'M',
+      birthDate: 1551791821053
+    }))
+  },
+  ...props
+})
+
+describe('FamilyGendersBirthdates View', () => {
+  let wrapper
+  let props
+  beforeEach(() => {
+    props = createTestProps()
+    wrapper = shallow(<FamilyMember {...props} />)
+  })
+  it('sets nav header to first name', () => {
+    expect(wrapper.instance().props.navigation.setParams).toHaveBeenCalledWith({
+      title: 'Neil'
+    })
+  })
+  it('doesn\'t allow interaction with form elements', () => {
+    expect(
+      wrapper
+        .find(TextInput)
+        .props()
+        .onChangeText()
+    ).toBe(undefined)
+
+    expect(
+      wrapper
+        .find(Select)
+        .props()
+        .onChange()
+    ).toBe(undefined)
+  })
+})
