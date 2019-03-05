@@ -227,6 +227,7 @@ export class SocioEconomicQuestion extends Component {
       <StickyFooter
         handleClick={this.submitForm}
         continueLabel={t('general.continue')}
+        readonly={this.readonly}
       >
         {/* questions for entire family */}
         {socioEconomics ? (
