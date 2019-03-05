@@ -4,7 +4,7 @@ import { Text } from 'react-native'
 import { FamilyGendersBirthdates } from '../lifemap/FamilyGendersBirthdates'
 import Select from '../../components/Select'
 import StickyFooter from '../../components/StickyFooter'
-import DateInput from '../../components/DateInput'
+import DateInputComponent from '../../components/DateInput'
 
 const createTestProps = props => ({
   t: value => value,
@@ -81,7 +81,7 @@ describe('FamilyGendersBirthdates View', () => {
       expect(wrapper.find(Text)).toHaveLength(1)
     })
     it('renders DateInput', () => {
-      expect(wrapper.find(DateInput)).toHaveLength(1)
+      expect(wrapper.find(DateInputComponent)).toHaveLength(1)
     })
   })
 
@@ -126,13 +126,13 @@ describe('FamilyGendersBirthdates View', () => {
       expect(spy).toHaveBeenCalledTimes(1)
     })
     it('gives DateInput the proper value', () => {
-      expect(wrapper.find(DateInput).props().value).toBe(1515708000)
+      expect(wrapper.find(DateInputComponent).props().value).toBe(1515708000)
     })
     it('calls addFamilyMemberBirthdate on valid date', () => {
       const spy = jest.spyOn(wrapper.instance(), 'addFamilyMemberBirthdate')
 
       wrapper
-        .find(DateInput)
+        .find(DateInputComponent)
         .last()
         .props()
         .onValidDate()

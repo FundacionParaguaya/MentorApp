@@ -2,7 +2,6 @@ import React from 'react'
 import { shallow } from 'enzyme'
 import { FamilyMembersNames } from '../lifemap/FamilyMembersNames'
 import TextInput from '../../components/TextInput'
-import Select from '../../components/Select'
 import StickyFooter from '../../components/StickyFooter'
 
 const createTestProps = props => ({
