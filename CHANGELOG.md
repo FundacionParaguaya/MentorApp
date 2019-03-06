@@ -1,5 +1,49 @@
 # Change Log
 
+## [v1.5.1](https://github.com/FundacionParaguaya/MentorApp/tree/v1.5.1) (2019-03-05)
+[Full Changelog](https://github.com/FundacionParaguaya/MentorApp/compare/v1.5.0...v1.5.1)
+
+**Closed issues:**
+
+- USA Nelixia survey [\#413](https://github.com/FundacionParaguaya/MentorApp/issues/413)
+- Amend Paraguay Survey [\#393](https://github.com/FundacionParaguaya/MentorApp/issues/393)
+
+**Merged pull requests:**
+
+- Families bugs [\#417](https://github.com/FundacionParaguaya/MentorApp/pull/417) ([Danman7](https://github.com/Danman7))
+
+## [v1.5.0](https://github.com/FundacionParaguaya/MentorApp/tree/v1.5.0) (2019-03-04)
+[Full Changelog](https://github.com/FundacionParaguaya/MentorApp/compare/v1.4.3...v1.5.0)
+
+**Implemented enhancements:**
+
+- Create the tabs for family details and lifemap on the family screen [\#404](https://github.com/FundacionParaguaya/MentorApp/issues/404)
+- Show non synced family in family list [\#292](https://github.com/FundacionParaguaya/MentorApp/issues/292)
+
+**Fixed bugs:**
+
+- Dashboard animation slows down app because it fails to unmount [\#402](https://github.com/FundacionParaguaya/MentorApp/issues/402)
+
+**Closed issues:**
+
+- Amend Irradia Argentina Survey [\#398](https://github.com/FundacionParaguaya/MentorApp/issues/398)
+- Argentina Irradia Survey: Skipped questions bug [\#397](https://github.com/FundacionParaguaya/MentorApp/issues/397)
+- Merge Genders and Birthdates Screens and Improve Design [\#383](https://github.com/FundacionParaguaya/MentorApp/issues/383)
+- Accessibility [\#368](https://github.com/FundacionParaguaya/MentorApp/issues/368)
+- Allowing families to have no content/life map [\#359](https://github.com/FundacionParaguaya/MentorApp/issues/359)
+- Generic Life Map Resume Draft Screen + Finalised Life Map Screen [\#320](https://github.com/FundacionParaguaya/MentorApp/issues/320)
+- Families Profile Screens - Read Only [\#304](https://github.com/FundacionParaguaya/MentorApp/issues/304)
+- Families Screen [\#234](https://github.com/FundacionParaguaya/MentorApp/issues/234)
+
+**Merged pull requests:**
+
+- Family profile [\#415](https://github.com/FundacionParaguaya/MentorApp/pull/415) ([Danman7](https://github.com/Danman7))
+- Merge screens [\#412](https://github.com/FundacionParaguaya/MentorApp/pull/412) ([IvaKop](https://github.com/IvaKop))
+- Lifemap tab [\#411](https://github.com/FundacionParaguaya/MentorApp/pull/411) ([IvaKop](https://github.com/IvaKop))
+- Show not synced families in family list [\#407](https://github.com/FundacionParaguaya/MentorApp/pull/407) ([Danman7](https://github.com/Danman7))
+- Family tabs [\#406](https://github.com/FundacionParaguaya/MentorApp/pull/406) ([IvaKop](https://github.com/IvaKop))
+- Fix birthdate [\#405](https://github.com/FundacionParaguaya/MentorApp/pull/405) ([IvaKop](https://github.com/IvaKop))
+
 ## [v1.4.3](https://github.com/FundacionParaguaya/MentorApp/tree/v1.4.3) (2019-02-20)
 [Full Changelog](https://github.com/FundacionParaguaya/MentorApp/compare/v1.4.2...v1.4.3)
 

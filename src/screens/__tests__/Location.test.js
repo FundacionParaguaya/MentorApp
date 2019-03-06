@@ -29,13 +29,18 @@ const createTestProps = props => ({
     navigate: jest.fn(),
     replace: jest.fn(),
     setParams: jest.fn(),
-    getParam: param =>
-      param === 'draftId'
-        ? 2
-        : {
-            surveyId: 100,
-            surveyConfig: { surveyLocation: { country: 'BG' } }
-          },
+    getParam: jest.fn(param => {
+      if (param === 'draftId') {
+        return 2
+      } else if (param === 'survey') {
+        return {
+          surveyId: 100,
+          surveyConfig: { surveyLocation: { country: 'BG' } }
+        }
+      }
+
+      return null
+    }),
     isFocused: jest.fn(() => true)
   },
   addSurveyData: jest.fn(),

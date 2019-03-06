@@ -39,7 +39,7 @@ describe('DateInput Component', () => {
           .find(Text)
           .render()
           .text()
-      ).toBe('Some label')
+      ).toBe('Some label ')
     })
 
     it('has correct initial state', () => {

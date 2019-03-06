@@ -6,12 +6,42 @@ import TextInput from '../../components/TextInput'
 import data from '../__mocks__/fake-socio-economic-data.json'
 import StickyFooter from '../../components/StickyFooter'
 
+const draft = {
+  draftId: 2,
+  surveyId: 1,
+  economicSurveyDataList: [
+    { key: 'educationPersonMostStudied', value: 'SCHOOL-COMPLETE' }
+  ],
+  indicatorSurveyDataList: [],
+  familyData: {
+    countFamilyMembers: 2,
+    familyMembersList: [
+      {
+        firstName: 'Juan',
+        lastName: 'Perez',
+        socioEconomicAnswers: [{ key: '1', value: 'MENTAL' }]
+      },
+      {
+        firstName: 'Ana',
+        gender: 'F',
+        birthDate: 1515708000
+      }
+    ]
+  }
+}
+
 const createTestProps = props => ({
   t: value => value,
   navigation: {
     navigate: jest.fn(),
     push: jest.fn(),
-    getParam: param => (param === 'survey' ? data : null),
+    getParam: jest.fn(param => {
+      if (param === 'survey') {
+        return data
+      } else {
+        return null
+      }
+    }),
     setParams: jest.fn(),
     isFocused: jest.fn(() => true)
   },
@@ -22,26 +52,7 @@ const createTestProps = props => ({
     {
       draftId: 1
     },
-    {
-      draftId: 2,
-      surveyId: 1,
-      economicSurveyDataList: [],
-      indicatorSurveyDataList: [],
-      familyData: {
-        countFamilyMembers: 2,
-        familyMembersList: [
-          {
-            firstName: 'Juan',
-            lastName: 'Perez'
-          },
-          {
-            firstName: 'Ana',
-            gender: 'F',
-            birthDate: 1515708000
-          }
-        ]
-      }
-    }
+    draft
   ],
   ...props
 })
@@ -72,38 +83,47 @@ describe('SocioEconomicQuestion screens', () => {
         navigation: {
           push: jest.fn(),
           navigate: jest.fn(),
-          getParam: () => ({
-            currentScreen: 1,
-            totalScreens: 3,
-            questionsPerScreen: [
-              {
-                forFamily: [
+          isFocused: jest.fn(() => true),
+          getParam: jest.fn(param => {
+            if (param === 'socioEconomics') {
+              return {
+                currentScreen: 1,
+                totalScreens: 3,
+                questionsPerScreen: [
                   {
-                    questionText:
-                      'Is there any member with disabilities in your household? Please indicate the disability type',
-                    answerType: 'select',
-                    required: true,
-                    codeName: '1',
-                    options: [
-                      { value: 'PHYSICAL', text: 'Phisical' },
-                      { value: 'MENTAL', text: 'Mental' },
-                      { value: 'LEARNING', text: 'Learning' },
+                    forFamily: [
                       {
-                        value: 'NO-MEMBER-DISABILITIES',
-                        text: 'No member with disabilities'
+                        questionText:
+                          'Is there any member with disabilities in your household? Please indicate the disability type',
+                        answerType: 'select',
+                        required: true,
+                        codeName: '1',
+                        options: [
+                          { value: 'PHYSICAL', text: 'Phisical' },
+                          { value: 'MENTAL', text: 'Mental' },
+                          { value: 'LEARNING', text: 'Learning' },
+                          {
+                            value: 'NO-MEMBER-DISABILITIES',
+                            text: 'No member with disabilities'
+                          }
+                        ]
+                      },
+                      {
+                        questionText:
+                          'What is the property title situation of your household?',
+                        answerType: 'select',
+                        codeName: '2'
                       }
-                    ]
-                  },
-                  {
-                    questionText:
-                      'What is the property title situation of your household?',
-                    answerType: 'select',
-                    codeName: '2'
+                    ],
+                    forFamilyMember: []
                   }
-                ],
-                forFamilyMember: []
+                ]
               }
-            ]
+            } else if (param === 'draftId') {
+              return 2
+            } else {
+              return null
+            }
           }),
           setParams: jest.fn()
         }
@@ -162,6 +182,67 @@ describe('SocioEconomicQuestion screens', () => {
       wrapper.instance().onPressBack()
       expect(spy).toHaveBeenCalledTimes(1)
     })
+
+    it('gets family member field value', () => {
+      expect(
+        wrapper.instance().getFieldValue(draft, 'educationPersonMostStudied')
+      ).toEqual('SCHOOL-COMPLETE')
+
+      expect(wrapper.instance().getFieldValue(draft, '3')).toEqual(undefined)
+    })
+
+    it('gets non family member field value', () => {
+      expect(
+        wrapper.instance().getFamilyMemberFieldValue(draft, '1', 0)
+      ).toEqual('MENTAL')
+
+      expect(
+        wrapper.instance().getFamilyMemberFieldValue(draft, '3', 0)
+      ).toEqual(undefined)
+    })
+
+    it('adds survey data on field change', () => {
+      wrapper
+        .find(Select)
+        .first()
+        .props()
+        .onChange('PHYSICAL', 'health')
+
+      expect(wrapper.instance().props.addSurveyData).toHaveBeenCalledWith(
+        2,
+        'economicSurveyDataList',
+        { health: 'PHYSICAL' }
+      )
+    })
+
+    it('displays errors on submit', () => {
+      wrapper
+        .find(Select)
+        .first()
+        .props()
+        .detectError(true, 'field')
+
+      wrapper.instance().submitForm()
+      expect(wrapper).toHaveState({ showErrors: true })
+    })
+
+    it('removes fixed error messages', () => {
+      wrapper
+        .find(Select)
+        .first()
+        .props()
+        .detectError(true, 'field')
+
+      wrapper.instance().submitForm()
+
+      wrapper
+        .find(Select)
+        .first()
+        .props()
+        .detectError(false, 'field')
+
+      expect(wrapper.instance().errorsDetected).toEqual([])
+    })
   })
 
   describe('non-initial screen', () => {
@@ -169,43 +250,68 @@ describe('SocioEconomicQuestion screens', () => {
       props = createTestProps({
         navigation: {
           navigate: jest.fn(),
-          getParam: param =>
-            param === 'socioEconomics'
-              ? {
-                  currentScreen: 3,
-                  totalScreens: 3,
-                  questionsPerScreen: [
-                    {},
-                    {},
-                    {
-                      forFamilyMember: [
-                        {
-                          questionText:
-                            'Please estimate your gross monthly household income (i.e, before taxes National Insurance contributions or other deductions)',
-                          answerType: 'text',
-                          dimension: 'Income',
-                          required: true,
-                          codeName: '3',
-                          forFamilyMember: true,
-                          options: []
-                        }
-                      ],
-                      forFamily: [
-                        {
-                          questionText:
-                            'Please estimate your gross monthly household income (i.e, before taxes National Insurance contributions or other deductions)',
-                          answerType: 'text',
-                          dimension: 'Income',
-                          required: true,
-                          codeName: '3',
-                          forFamilyMember: false,
-                          options: []
-                        }
-                      ]
-                    }
-                  ]
-                }
-              : 2,
+          getParam: jest.fn(param => {
+            if (param === 'survey') {
+              return data
+            } else if (param === 'socioEconomics') {
+              return {
+                currentScreen: 3,
+                totalScreens: 3,
+                questionsPerScreen: [
+                  {},
+                  {},
+                  {
+                    forFamilyMember: [
+                      {
+                        questionText:
+                          'Is there any member with disabilities in your household? Please indicate the disability type',
+                        answerType: 'select',
+                        dimension: 'Family details',
+                        required: false,
+                        forFamilyMember: false,
+                        codeName: '1',
+                        options: [
+                          { value: 'PHYSICAL', text: 'Phisical' },
+                          { value: 'MENTAL', text: 'Mental' },
+                          { value: 'LEARNING', text: 'Learning' },
+                          {
+                            value: 'NO-MEMBER-DISABILITIES',
+                            text: 'No member with disabilities'
+                          }
+                        ]
+                      },
+                      {
+                        questionText:
+                          'Please estimate your gross monthly household income (i.e, before taxes National Insurance contributions or other deductions)',
+                        answerType: 'text',
+                        dimension: 'Income',
+                        required: true,
+                        codeName: '3',
+                        forFamilyMember: true,
+                        options: []
+                      }
+                    ],
+                    forFamily: [
+                      {
+                        questionText: 'Please state household income',
+                        answerType: 'text',
+                        dimension: 'Income',
+                        required: false,
+                        codeName: '4',
+                        forFamilyMember: false,
+                        options: []
+                      }
+                    ]
+                  }
+                ]
+              }
+            } else if (param === 'draftId') {
+              return 2
+            }
+
+            return null
+          }),
+
           setParams: jest.fn()
         }
       })
@@ -218,10 +324,36 @@ describe('SocioEconomicQuestion screens', () => {
 
     it('sets the correct TextInput props', () => {
       expect(wrapper.find(TextInput).first()).toHaveProp({
+        required: false,
+        placeholder: 'Please state household income'
+      })
+    })
+
+    it('handles per family member questions value change', () => {
+      const input = wrapper.find(TextInput).last()
+      const select = wrapper.find(Select).first()
+
+      expect(input).toHaveProp({
         required: true,
         placeholder:
           'Please estimate your gross monthly household income (i.e, before taxes National Insurance contributions or other deductions)'
       })
+
+      expect(select).toHaveProp({
+        required: false,
+        placeholder:
+          'Is there any member with disabilities in your household? Please indicate the disability type'
+      })
+
+      const spy = jest.spyOn(wrapper.instance(), 'addSurveyFamilyMemberData')
+
+      input.props().onChangeText('test', 'familyIncome')
+
+      expect(spy).toHaveBeenCalledWith('test', 'familyIncome', 1)
+
+      select.props().onChange('PHYSICAL', 'health')
+
+      expect(spy).toHaveBeenCalledWith('PHYSICAL', 'health', 0)
     })
 
     it('navigates to next non-socio-economic screen after done with all questions', () => {

@@ -3,8 +3,7 @@ import SocioEconomicQuestionView from '../../screens/lifemap/SocioEconomicQuesti
 import FinalView from '../../screens/lifemap/Final'
 import FamilyParticipantView from '../../screens/lifemap/FamilyParticipant'
 import FamilyMembersNamesView from '../../screens/lifemap/FamilyMembersNames'
-import FamilyMembersGenderView from '../../screens/lifemap/FamilyMembersGender'
-import FamilyMembersBirthdatesView from '../../screens/lifemap/FamilyMembersBirthdates'
+import FamilyGendersBirthdatesView from '../../screens/lifemap/FamilyGendersBirthdates'
 import QuestionView from '../../screens/lifemap/Question'
 import BeginLifemapView from '../../screens/lifemap/BeginLifemap'
 import LocationView from '../../screens/lifemap/Location'
@@ -12,6 +11,7 @@ import SkippedView from '../../screens/lifemap/Skipped'
 import OverviewView from '../../screens/lifemap/Overview'
 import AddPriorityView from '../../screens/lifemap/AddPriority'
 import AddAchievementView from '../../screens/lifemap/AddAchievement'
+import FamilyMemberView from '../../screens/lifemap/FamilyMember'
 import i18n from '../../i18n'
 import { generateNavOptions } from './helpers'
 
@@ -96,7 +96,6 @@ export default {
   FamilyParticipant: {
     screen: FamilyParticipantView,
     navigationOptions: ({ navigation }) => ({
-      title: i18n.t('views.primaryParticipant'),
       ...generateNavOptions({ navigation, burgerMenu: false })
     })
   },
@@ -107,17 +106,16 @@ export default {
       ...generateNavOptions({ navigation, burgerMenu: false })
     })
   },
-  FamilyMembersGender: {
-    screen: FamilyMembersGenderView,
+  FamilyGendersBirthdates: {
+    screen: FamilyGendersBirthdatesView,
     navigationOptions: ({ navigation }) => ({
-      title: i18n.t('views.gender'),
+      title: i18n.t('views.gendersBirthDates'),
       ...generateNavOptions({ navigation, burgerMenu: false })
     })
   },
-  FamilyMembersBirthdates: {
-    screen: FamilyMembersBirthdatesView,
+  FamilyMember: {
+    screen: FamilyMemberView,
     navigationOptions: ({ navigation }) => ({
-      title: i18n.t('views.birthDates'),
       ...generateNavOptions({ navigation, burgerMenu: false })
     })
   }

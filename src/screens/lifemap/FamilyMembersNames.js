@@ -7,7 +7,6 @@ import {
   addDraftProgress
 } from '../../redux/actions'
 import StickyFooter from '../../components/StickyFooter'
-import Select from '../../components/Select'
 import TextInput from '../../components/TextInput'
 
 export class FamilyMembersNames extends Component {
@@ -55,7 +54,7 @@ export class FamilyMembersNames extends Component {
         showErrors: true
       })
     } else {
-      this.props.navigation.navigate('FamilyMembersGender', {
+      this.props.navigation.navigate('FamilyGendersBirthdates', {
         draftId: this.draftId,
         survey: this.survey
       })

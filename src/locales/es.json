@@ -20,6 +20,7 @@
     "resumeDraft": "Continuar borrador",
     "lifeMaps": "Mapas de Vida",
     "familyInfo": "Información de la familia",
+    "family": "Familia",
     "cachedData": "Datos almacenados",
     "chooseView": "Elegir vista",
     "create": "Crear"
@@ -61,8 +62,7 @@
     "yourLifeMap": "Tu Mapa de Vida",
     "primaryParticipant": "Participante de la familia",
     "familyMembers": "Miembros de la familia",
-    "gender": "Género",
-    "birthDates": "Fechas de nacimiento",
+    "gendersBirthDates": "Géneros & fechas de nacimiento",
     "skippedIndicators": "Preguntas omitidas",
     "readCarefully": "Favor lea atentamente antes de crear el Mapa de Vida",
     "family": {
@@ -75,13 +75,14 @@
       "email": "Correo electrónico",
       "phone": "Teléfono",
       "gender": "Género",
-      "dateOfBirth": "Fecha de nacimiento *",
+      "dateOfBirth": "Fecha de nacimiento",
       "documentType": "Tipo de documento",
       "countryOfBirth": "País de nacimiento",
       "selectMonth": "Seleccione mes",
       "selectValidDate": "Favor ingrese una fecha válida",
       "name": "Nombre",
       "peopleLivingInThisHousehold": "Número de personas viviendo en esta casa. ",
+      "household": "familia",
       "onlyPerson": "1 - Soy la única persona",
       "preferNotToSay": "Prefiero no responder",
       "familyMember": "Miembro de la familia",
@@ -105,7 +106,9 @@
       "describeLocation": "¿Podría describir su ubicación de la forma más precisa posible a continuación?",
       "error": "Error: No se puede visualizar el perfil de familia",
       "details": "Detalles",
-      "lifemap": "Mapa de vida"
+      "lifemap": "Mapa de vida",
+      "lifeMapCreatedOn": "Borrador del Mapa de Vida creado",
+      "created": "Creado"
     },
     "lifemap": {
       "thisLifeMapHas": "Este Mapa de Vida tiene %n preguntas. ¡Tardará aproximadamente 35 minutos en completarse!",

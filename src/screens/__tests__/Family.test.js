@@ -1,36 +1,55 @@
 import React from 'react'
 import { shallow } from 'enzyme'
-import { ScrollView, View } from 'react-native'
 import { Family } from '../Family'
 import FamilyTab from '../../components/FamilyTab'
-
+import data from '../__mocks__/fake-socio-economic-data.json'
+import RoundImage from '../../components/RoundImage'
+import Button from '../../components/Button'
 const createTestProps = props => ({
   t: value => value,
   navigation: {
-    setParams: jest.fn()
+    setParams: jest.fn(),
+    replace: jest.fn(),
+    getParam: param =>
+      param === 'survey'
+        ? data
+        : {
+            draftId: 1,
+            surveyId: 1,
+            progress: { screen: 'FamilyMembersNames' },
+            createdAt: 1,
+            status: 'Draft',
+            familyData: {
+              familyMembersList: [
+                {
+                  firstName: 'Juan',
+                  lastName: 'Perez'
+                }
+              ]
+            }
+          }
   },
+  surveys: [{ id: 1 }],
   ...props
 })
 
 describe('Single Family View', () => {
   let wrapper
-  const props = createTestProps()
-  wrapper = shallow(<Family {...props} />)
+  let props
+  beforeEach(() => {
+    props = createTestProps()
+    wrapper = shallow(<Family {...props} />)
+  })
+
   describe('rendering', () => {
-    it('renders base ScrollView element', () => {
-      expect(wrapper.find(ScrollView)).toHaveLength(1)
-    })
     it('renders familyTab', () => {
       expect(wrapper.find(FamilyTab)).toHaveLength(2)
-    })
-    it('renders details', () => {
-      expect(wrapper.find('#details')).toHaveLength(1)
     })
     it('does not render life map', () => {
       expect(wrapper.find('#lifemap')).toHaveLength(0)
     })
   })
-  describe('rendering', () => {
+  describe('functionality', () => {
     it('has the correct initial state', () => {
       expect(wrapper.instance().state.activeTab).toBe('Details')
     })
@@ -46,6 +65,30 @@ describe('Single Family View', () => {
       wrapper.setState({ activeTab: 'LifeMap' })
       expect(wrapper.find('#lifemap')).toHaveLength(1)
       expect(wrapper.find('#details')).toHaveLength(0)
+    })
+    it('renders round image and button when the family is a draft', () => {
+      wrapper.setState({ activeTab: 'LifeMap' })
+      expect(wrapper.find(RoundImage)).toHaveLength(1)
+      expect(wrapper.find(Button)).toHaveLength(1)
+    })
+    it('navigates to correct screen when clicking on the resume draft button', () => {
+      wrapper.setState({ activeTab: 'LifeMap' })
+      wrapper
+        .find(Button)
+        .props()
+        .handleClick()
+      expect(wrapper.instance().props.navigation.replace).toHaveBeenCalledTimes(
+        1
+      )
+      expect(wrapper.instance().props.navigation.replace).toHaveBeenCalledWith(
+        'FamilyMembersNames',
+        {
+          draftId: 1,
+          socioEconomics: undefined,
+          step: undefined,
+          survey: { id: 1 }
+        }
+      )
     })
   })
 })

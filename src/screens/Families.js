@@ -1,6 +1,5 @@
 import React, { Component } from 'react'
 import {
-  View,
   StyleSheet,
   ScrollView,
   ActivityIndicator,
@@ -49,16 +48,34 @@ export class Families extends Component {
   }
 
   render() {
+    const { t } = this.props
+
     const familiesToSync =
       this.props.offline.online &&
       this.props.offline.outbox.find(item => item.type === 'LOAD_FAMILIES')
 
-    const filteredFamilies = this.props.families.filter(
+    // show not synced families from drafts
+    const draftFamilies = this.props.drafts
+      .filter(draft => draft.status !== 'Synced')
+      .map(draft => {
+        const primaryParticipant = draft.familyData.familyMembersList[0]
+        return {
+          name: `${primaryParticipant.firstName} ${
+            primaryParticipant.lastName
+          }`,
+          birthDate: primaryParticipant.birthDate,
+          draft
+        }
+      })
+
+    const allFamilies = [...draftFamilies, ...this.props.families]
+
+    const filteredFamilies = allFamilies.filter(
       family =>
-        family.name.includes(this.state.search) ||
-        family.code.includes(this.state.search)
+        family.name.toLowerCase().includes(this.state.search.toLowerCase()) ||
+        (family.code && family.code.includes(this.state.search))
     )
-    const { t } = this.props
+
     return (
       <ScrollView
         style={globalStyles.background}
@@ -87,9 +104,14 @@ export class Families extends Component {
               handleClick={() =>
                 this.props.navigation.navigate('Family', {
                   familyName: item.name,
-                  familyLifemap: item.snapshotList[0],
-                  survey: this.props.surveys.find(
-                    survey => survey.id === item.snapshotList[0].surveyId
+                  familyLifemap: item.snapshotList
+                    ? item.snapshotList[0]
+                    : item.draft,
+                  isDraft: !item.snapshotList,
+                  survey: this.props.surveys.find(survey =>
+                    item.snapshotList
+                      ? survey.id === item.snapshotList[0].surveyId
+                      : survey.id === item.draft.surveyId
                   )
                 })
               }
@@ -105,11 +127,14 @@ export class Families extends Component {
 Families.propTypes = {
   families: PropTypes.array,
   surveys: PropTypes.array,
+  drafts: PropTypes.array,
   navigation: PropTypes.object.isRequired,
   loadFamilies: PropTypes.func.isRequired,
   env: PropTypes.oneOf(['production', 'demo', 'testing', 'development']),
   user: PropTypes.object.isRequired,
-  offline: PropTypes.object
+  offline: PropTypes.object,
+  t: PropTypes.func,
+  lng: PropTypes.string
 }
 
 const styles = StyleSheet.create({
@@ -122,12 +147,20 @@ const styles = StyleSheet.create({
   search: { margin: 10 }
 })
 
-const mapStateToProps = ({ families, user, offline, env, surveys }) => ({
+const mapStateToProps = ({
   families,
   user,
   offline,
   env,
-  surveys
+  surveys,
+  drafts
+}) => ({
+  families,
+  user,
+  offline,
+  env,
+  surveys,
+  drafts
 })
 
 const mapDispatchToProps = {

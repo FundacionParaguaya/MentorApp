@@ -3,25 +3,28 @@ import { View, Text } from 'react-native'
 import { connect } from 'react-redux'
 import PropTypes from 'prop-types'
 import { withNamespaces } from 'react-i18next'
+import Icon from 'react-native-vector-icons/MaterialIcons'
+import colors from '../../theme.json'
 import StickyFooter from '../../components/StickyFooter'
 import {
   addSurveyFamilyMemberData,
   addDraftProgress
 } from '../../redux/actions'
 import globalStyles from '../../globalStyles'
-import DateInputComponent from '../../components/DateInput'
+import Select from '../../components/Select'
+import DateInput from '../../components/DateInput'
 
-export class FamilyMembersBirthdates extends Component {
+export class FamilyGendersBirthdates extends Component {
   draftId = this.props.navigation.getParam('draftId')
   survey = this.props.navigation.getParam('survey')
 
   errorsDetected = []
 
-  state = { errorsDetected: [], showErrors: false }
+  state = { errorsDetected: [] }
 
   componentDidMount() {
     this.props.addDraftProgress(this.draftId, {
-      screen: 'FamilyMembersBirthdates'
+      screen: 'FamilyGendersBirthdates'
     })
     this.props.navigation.setParams({
       onPressBack: this.onPressBack
@@ -29,7 +32,7 @@ export class FamilyMembersBirthdates extends Component {
   }
 
   onPressBack = () => {
-    this.props.navigation.navigate('FamilyMembersGender', {
+    this.props.navigation.navigate('FamilyMembersNames', {
       draftId: this.draftId,
       survey: this.survey
     })
@@ -63,11 +66,22 @@ export class FamilyMembersBirthdates extends Component {
       })
     }
   }
+
   getFieldValue = (draft, field) => {
     if (!draft) {
       return
     }
     return draft.familyData[field]
+  }
+
+  addFamilyMemberGender(gender, index) {
+    this.props.addSurveyFamilyMemberData({
+      id: this.draftId,
+      index,
+      payload: {
+        gender
+      }
+    })
   }
 
   addFamilyMemberBirthdate(birthDate, index) {
@@ -80,6 +94,7 @@ export class FamilyMembersBirthdates extends Component {
     })
   }
 
+  gender = this.survey.surveyConfig.gender
   render() {
     const { t } = this.props
     const draft = this.props.drafts.filter(
@@ -93,17 +108,40 @@ export class FamilyMembersBirthdates extends Component {
       >
         {draft.familyData.familyMembersList.slice(1).map((item, i) => (
           <View key={i}>
-            <Text
+            <View
               style={{
-                ...globalStyles.h3,
+                display: 'flex',
+                flexDirection: 'row',
                 paddingHorizontal: 20,
                 marginTop: 15,
-                marginBottom: -30
+                marginBottom: 5
               }}
             >
-              {item.firstName}
-            </Text>
-            <DateInputComponent
+              <Icon name="face" color={colors.grey} size={22} />
+              <Text
+                style={{
+                  ...globalStyles.h2Bold,
+                  color: colors.grey,
+                  marginLeft: 5
+                }}
+              >
+                {item.firstName}
+              </Text>
+            </View>
+            <Select
+              field={i.toString()}
+              onChange={text => this.addFamilyMemberGender(text, i + 1)}
+              label={t('views.family.gender')}
+              placeholder={t('views.family.selectGender')}
+              value={
+                (this.getFieldValue(draft, 'familyMembersList')[i + 1] || {})
+                  .gender || ''
+              }
+              detectError={this.detectError}
+              options={this.gender}
+            />
+
+            <DateInput
               field={i.toString()}
               detectError={this.detectError}
               showErrors={this.state.showErrors}
@@ -120,7 +158,7 @@ export class FamilyMembersBirthdates extends Component {
   }
 }
 
-FamilyMembersBirthdates.propTypes = {
+FamilyGendersBirthdates.propTypes = {
   t: PropTypes.func.isRequired,
   drafts: PropTypes.array,
   navigation: PropTypes.object.isRequired,
@@ -141,5 +179,5 @@ export default withNamespaces()(
   connect(
     mapStateToProps,
     mapDispatchToProps
-  )(FamilyMembersBirthdates)
+  )(FamilyGendersBirthdates)
 )
