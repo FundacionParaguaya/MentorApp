@@ -7,6 +7,7 @@ import { withNamespaces } from 'react-i18next'
 import globalStyles from '../globalStyles'
 import RoundImage from '../components/RoundImage'
 import LifemapListItem from '../components/LifemapListItem'
+import Decoration from '../components/decoration/Decoration'
 import colors from '../theme.json'
 
 export class Surveys extends Component {
@@ -33,7 +34,9 @@ export class Surveys extends Component {
   render() {
     return (
       <ScrollView style={{ ...globalStyles.container, padding: 0 }}>
-        <RoundImage source="surveys" />
+        <Decoration variation="lifemap">
+          <RoundImage source="surveys" />
+        </Decoration>
         <FlatList
           style={styles.list}
           data={this.props.surveys}
@@ -65,7 +68,8 @@ const styles = StyleSheet.create({
 Surveys.propTypes = {
   surveys: PropTypes.array,
   navigation: PropTypes.object.isRequired,
-  lng: PropTypes.string.isRequired
+  lng: PropTypes.string,
+  t: PropTypes.func
 }
 
 const mapStateToProps = ({ surveys }) => ({

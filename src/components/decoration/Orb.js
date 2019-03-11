@@ -70,11 +70,13 @@ export default class Orb extends Component {
     })
   }
   componentDidMount() {
-    this.cycleAnimation()
+    if (this.props.animated) {
+      this.cycleAnimation()
+    }
   }
   render() {
     const { animateX, animateY, animateColor, animateScale } = this.state
-    const { size, color } = this.props
+    const { size, color, animated } = this.props
 
     const backgroundColor = animateColor.interpolate({
       inputRange: [0, 1],
@@ -88,10 +90,10 @@ export default class Orb extends Component {
           this.props.style,
           {
             transform: [
-              { translateX: animateX },
-              { translateY: animateY },
-              { scaleX: animateScale },
-              { scaleY: animateScale }
+              { translateX: animated ? animateX : this.props.position.x },
+              { translateY: animated ? animateY : this.props.position.y },
+              { scaleX: animated ? animateScale : 1 },
+              { scaleY: animated ? animateScale : 1 }
             ],
             width: size || 35,
             height: size || 35,
@@ -107,7 +109,8 @@ Orb.propTypes = {
   style: PropTypes.oneOfType([PropTypes.object, PropTypes.array]),
   position: PropTypes.object.isRequired,
   size: PropTypes.number,
-  color: PropTypes.string
+  color: PropTypes.string,
+  animated: PropTypes.bool
 }
 
 const styles = StyleSheet.create({
