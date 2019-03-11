@@ -19,7 +19,7 @@
     "prop-types": "^15.6.2",
     "react": "16.5.0",
     "react-i18next": "^8.3.8",
-    "react-native": "^0.57.7",
+    "react-native": "^0.58.6",
     "react-native-background-fetch": "^2.4.4",
     "react-native-background-task": "^0.2.1",
     "react-native-elements": "^0.19.1",

@@ -149,7 +149,6 @@ android {
 }
 
 dependencies {
-    compile project(':@mapbox_react-native-mapbox-gl')
     compile project(':react-native-sentry')
     compile project(':react-native-maps')
     compile project(':react-native-background-fetch')
@@ -158,7 +157,11 @@ dependencies {
     compile project(':react-native-vector-icons')
     compile project(':react-native-languages')
     compile project(':rn-fetch-blob')
-    compile project(':mapbox-react-native-mapbox-gl')
+    compile (project(':mapbox-react-native-mapbox-gl')) {
+        compile ('com.squareup.okhttp3:okhttp:3.6.0') {
+            force = true
+        }
+    }
     compile 'com.google.android.gms:play-services-base:+'
     compile 'com.google.android.gms:play-services-location:+'
     compile 'com.google.android.gms:play-services-maps:+'

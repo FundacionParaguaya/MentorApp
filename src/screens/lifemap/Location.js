@@ -10,8 +10,8 @@ import {
 } from 'react-native'
 import { connect } from 'react-redux'
 import PropTypes from 'prop-types'
-import MapView from 'react-native-maps'
 import { withNamespaces } from 'react-i18next'
+import MapboxGL from '@mapbox/react-native-mapbox-gl'
 import StickyFooter from '../../components/StickyFooter'
 import { addSurveyData, addDraftProgress } from '../../redux/actions'
 import TextInput from '../../components/TextInput'
@@ -21,6 +21,10 @@ import SearchBar from '../../components/SearchBar'
 import Select from '../../components/Select'
 import marker from '../../../assets/images/marker.png'
 import center from '../../../assets/images/centerMap.png'
+
+MapboxGL.setAccessToken(
+  'pk.eyJ1IjoiZGFubWFuNyIsImEiOiJjanQwNjYxMjMwdHN1NDhwYXBnOWFjeHplIn0.ytytuM8i3iFda5qKr4xoLQ'
+)
 
 export class Location extends Component {
   state = {
@@ -289,28 +293,7 @@ export class Location extends Component {
                     value={searchAddress}
                   />
                 )}
-                <MapView
-                  ref={ref => {
-                    this.map = ref
-                  }}
-                  style={styles.map}
-                  initialRegion={{
-                    latitude,
-                    longitude,
-                    latitudeDelta,
-                    longitudeDelta
-                  }}
-                  region={{
-                    latitude,
-                    longitude,
-                    latitudeDelta,
-                    longitudeDelta
-                  }}
-                  onRegionChangeComplete={this.onDragMap}
-                  zoomEnabled={!this.readonly}
-                  rotateEnabled={!this.readonly}
-                  scrollEnabled={!this.readonly}
-                />
+                <MapboxGL.MapView zoomLevel={12} style={styles.map} />
                 {!this.readonly && (
                   <View>
                     {centeringMap ? (
