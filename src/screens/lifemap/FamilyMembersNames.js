@@ -1,6 +1,9 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import PropTypes from 'prop-types'
+import { StyleSheet, View, Text } from 'react-native'
+import Icon from 'react-native-vector-icons/MaterialIcons'
+import colors from '../../theme.json'
 import { withNamespaces } from 'react-i18next'
 import {
   addSurveyFamilyMemberData,
@@ -101,6 +104,11 @@ export class FamilyMembersNames extends Component {
         handleClick={() => this.handleClick(draft)}
         continueLabel={t('general.continue')}
       >
+        <View style={styles.circleContainer}>
+          <Text style={styles.circle}>+{familyMembersCount.length}</Text>
+          <Icon name="face" color={colors.grey} size={61} style={styles.icon} />
+        </View>
+
         <TextInput
           validation="string"
           field=""
@@ -114,6 +122,7 @@ export class FamilyMembersNames extends Component {
           detectError={this.detectError}
           showErrors={showErrors}
         />
+        
         {familyMembersCount.map((item, i) => (
           <TextInput
             key={i}
@@ -142,6 +151,30 @@ FamilyMembersNames.propTypes = {
   addSurveyFamilyMemberData: PropTypes.func.isRequired,
   addDraftProgress: PropTypes.func.isRequired
 }
+
+const styles = StyleSheet.create({
+  icon: {
+    alignSelf: 'center'
+  },
+  circleContainer: {
+    marginBottom: 10,
+    marginTop: 20,
+    position: 'relative'
+  },
+  circle: {
+    position: 'absolute',
+    width: 22,
+    height: 22,
+    lineHeight: 22,
+    left: '50%',
+    textAlign: 'center',
+    fontSize: 10,
+    transform:[{ translateX: 3 },{ translateY: -3 }],
+    borderRadius: 50,
+    backgroundColor: colors.lightgrey,
+    zIndex: 1
+  }
+}) 
 
 const mapDispatchToProps = {
   addSurveyFamilyMemberData,
