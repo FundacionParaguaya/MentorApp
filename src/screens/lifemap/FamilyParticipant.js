@@ -16,6 +16,7 @@ import StickyFooter from '../../components/StickyFooter'
 import Select from '../../components/Select'
 import TextInput from '../../components/TextInput'
 import DateInputComponent from '../../components/DateInput'
+import Decoration from '../../components/decoration/Decoration'
 import colors from '../../theme.json'
 
 export class FamilyParticipant extends Component {
@@ -207,7 +208,9 @@ export class FamilyParticipant extends Component {
         continueLabel={t('general.continue')}
         readonly={this.readonly}
       >
-        <Icon name="face" color={colors.grey} size={55} style={styles.icon} />
+        <Decoration variation="primaryParticipant">
+          <Icon name="face" color={colors.grey} size={55} style={styles.icon} />
+        </Decoration>
         <TextInput
           validation="string"
           field="firstName"

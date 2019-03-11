@@ -11,6 +11,7 @@ import {
 } from '../../redux/actions'
 import StickyFooter from '../../components/StickyFooter'
 import TextInput from '../../components/TextInput'
+import Decoration from '../../components/decoration/Decoration'
 
 export class FamilyMembersNames extends Component {
   draftId = this.props.navigation.getParam('draftId')
@@ -104,10 +105,12 @@ export class FamilyMembersNames extends Component {
         handleClick={() => this.handleClick(draft)}
         continueLabel={t('general.continue')}
       >
-        <View style={styles.circleContainer}>
-          <Text style={styles.circle}>+{familyMembersCount.length}</Text>
-          <Icon name="face" color={colors.grey} size={61} style={styles.icon} />
-        </View>
+        <Decoration variation="familyMemberNames">
+          <View style={styles.circleContainer}>
+            <Text style={styles.circle}>+{familyMembersCount.length}</Text>
+            <Icon name="face" color={colors.grey} size={61} style={styles.icon} />
+          </View>
+        </Decoration>
 
         <TextInput
           validation="string"
