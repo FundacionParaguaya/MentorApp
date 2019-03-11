@@ -3,7 +3,7 @@ import { StyleSheet, ScrollView, View, Text } from 'react-native'
 import { connect } from 'react-redux'
 import PropTypes from 'prop-types'
 import { withNamespaces } from 'react-i18next'
-
+import Decoration from '../../components/decoration/Decoration'
 import globalStyles from '../../globalStyles'
 import RoundImage from '../../components/RoundImage'
 import Button from '../../components/Button'
@@ -48,7 +48,9 @@ export class BeginLifemap extends Component {
               this.numberOfQuestions
             )}
           </Text>
-          <RoundImage source="stoplight" />
+          <Decoration variation="terms">
+            <RoundImage source="stoplight" />
+          </Decoration>
         </View>
         <View style={{ height: 50 }}>
           <Button

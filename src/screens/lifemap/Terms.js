@@ -7,6 +7,7 @@ import globalStyles from '../../globalStyles'
 import colors from '../../theme.json'
 import RoundImage from '../../components/RoundImage'
 import Button from '../../components/Button'
+import Decoration from '../../components/decoration/Decoration'
 
 const navigationRules = {
   terms: {
@@ -34,7 +35,9 @@ export class Terms extends Component {
         contentContainerStyle={styles.contentContainer}
       >
         <View style={globalStyles.container}>
-          <RoundImage source="check" />
+          <Decoration variation="terms">
+            <RoundImage source="check" />
+          </Decoration>
           <Text style={[globalStyles.h2Bold, styles.heading]}>
             {page === 'terms'
               ? this.survey.termsConditions.title
@@ -64,7 +67,7 @@ export class Terms extends Component {
                   survey: this.survey.id,
                   page: navigationRules[navigation.getParam('page')].param,
                   deleteOnExit:
-                  navigationRules[navigation.getParam('page')].deleteOnExit
+                    navigationRules[navigation.getParam('page')].deleteOnExit
                 }
               )
             }

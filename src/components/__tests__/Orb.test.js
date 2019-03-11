@@ -20,6 +20,8 @@ describe('Navigation Wrapper', () => {
     wrapper = shallow(<Orb {...props} />)
   })
   it('triggers animation cycle on mount', () => {
+    props = createTestProps({ animated: true })
+    wrapper = shallow(<Orb {...props} />)
     const spy = jest.spyOn(wrapper.instance(), 'cycleAnimation')
     wrapper.instance().componentDidMount()
     expect(spy).toHaveBeenCalledTimes(1)

@@ -14,9 +14,10 @@ This is the source repository for the Poverty Stoplight native mobile app. If yo
 
 ## To install
 
-1.  `git clone git@github.com:penguin-digital/povertystoplightapp.git` to clone the repo
+1.  `git clone git@github.com:FundacionParaguaya/MentorApp.git` to clone the repo
 2.  `cd povertystoplightapp` to go into repo folder
 3.  `npm i` from repo folder to install all dependencies
+4. `react-native link` to link all native packages. If `react-native` command is not defined run `npm install -g react-native-cli` first.
 
 ## To run
 
