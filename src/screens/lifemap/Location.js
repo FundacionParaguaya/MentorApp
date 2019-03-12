@@ -31,8 +31,6 @@ export class Location extends Component {
     showErrors: false,
     latitude: null,
     longitude: null,
-    latitudeDelta: 0.005,
-    longitudeDelta: 0.005,
     accuracy: null,
     searchAddress: '',
     errorsDetected: [],
@@ -116,17 +114,13 @@ export class Location extends Component {
               this.setState({
                 showMap: true,
                 latitude: this.survey.surveyConfig.surveyLocation.latitude,
-                longitude: this.survey.surveyConfig.surveyLocation.longitude,
-                latitudeDelta: 1,
-                longitudeDelta: 1
+                longitude: this.survey.surveyConfig.surveyLocation.longitude
               })
             } else {
               this.setState({
                 showMap: true,
                 latitude: 0,
-                longitude: 0,
-                latitudeDelta: 100,
-                longitudeDelta: 100
+                longitude: 0
               })
             }
           }
@@ -255,8 +249,6 @@ export class Location extends Component {
     const {
       mapsError,
       latitude,
-      longitudeDelta,
-      latitudeDelta,
       longitude,
       accuracy,
       searchAddress,
@@ -298,6 +290,11 @@ export class Location extends Component {
                   zoomLevel={15}
                   style={styles.map}
                   logoEnabled={false}
+                  zoomEnabled={!this.readonly}
+                  rotateEnabled={!this.readonly}
+                  scrollEnabled={!this.readonly}
+                  pitchEnabled={!this.readonly}
+                  onRegionDidChange={() => console.log('')}
                 />
                 {!this.readonly && (
                   <View>
