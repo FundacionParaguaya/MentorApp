@@ -294,9 +294,10 @@ export class Location extends Component {
                   />
                 )}
                 <MapboxGL.MapView
-                  zoomLevel={12}
+                  centerCoordinate={[longitude, latitude]}
+                  zoomLevel={15}
                   style={styles.map}
-                  centerCoordinate={[latitude, longitude]}
+                  logoEnabled={false}
                 />
                 {!this.readonly && (
                   <View>
