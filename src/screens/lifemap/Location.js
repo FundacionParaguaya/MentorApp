@@ -293,7 +293,11 @@ export class Location extends Component {
                     value={searchAddress}
                   />
                 )}
-                <MapboxGL.MapView zoomLevel={12} style={styles.map} />
+                <MapboxGL.MapView
+                  zoomLevel={12}
+                  style={styles.map}
+                  centerCoordinate={[latitude, longitude]}
+                />
                 {!this.readonly && (
                   <View>
                     {centeringMap ? (
