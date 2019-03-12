@@ -40,7 +40,6 @@ export class Location extends Component {
     showMap: false // show map even when no location is returned
   }
 
-  mapIsDraggable = false
   survey = this.props.navigation.getParam('survey')
   draftId = this.props.navigation.getParam('draftId') || null
   readonly = !!this.props.navigation.getParam('family')
@@ -157,26 +156,24 @@ export class Location extends Component {
       .catch()
   }
   onDragMap = region => {
-    if (!this.mapIsDraggable) {
-      this.mapIsDraggable = true
-    } else {
-      const { latitude, longitude } = region
+    console.log(region)
+    const { coordinates } = region.geometry
+    const longitude = coordinates[0]
+    const latitude = coordinates[1]
 
-      // prevent jumping of the marker
-      if (
-        this.state.latitude !== latitude ||
-        this.state.longitude !== longitude
-      ) {
-        this.mapIsDraggable = false
-        this.setState({
-          latitude,
-          longitude,
-          accuracy: 0
-        })
-        this.addSurveyData(latitude, 'latitude')
-        this.addSurveyData(longitude, 'longitude')
-        this.addSurveyData(0, 'accuracy')
-      }
+    // prevent jumping of the marker
+    if (
+      this.state.latitude !== latitude ||
+      this.state.longitude !== longitude
+    ) {
+      this.setState({
+        latitude,
+        longitude,
+        accuracy: 0
+      })
+      this.addSurveyData(latitude, 'latitude')
+      this.addSurveyData(longitude, 'longitude')
+      this.addSurveyData(0, 'accuracy')
     }
   }
   getDraft = () =>
@@ -294,7 +291,7 @@ export class Location extends Component {
                   rotateEnabled={!this.readonly}
                   scrollEnabled={!this.readonly}
                   pitchEnabled={!this.readonly}
-                  onRegionDidChange={() => console.log('')}
+                  onRegionDidChange={this.onDragMap}
                 />
                 {!this.readonly && (
                   <View>
