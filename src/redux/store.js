@@ -23,6 +23,7 @@ export default createStore(
           persistOptions: {
             blacklist: ['sync']
           },
+          // this fires after store hydration is done
           persistCallback: () => {
             setLanguage()
             rehydrated = true

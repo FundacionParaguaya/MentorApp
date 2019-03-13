@@ -5,8 +5,7 @@ import {
   ActivityIndicator,
   Text,
   Image,
-  TouchableHighlight,
-  NetInfo
+  TouchableHighlight
 } from 'react-native'
 import { connect } from 'react-redux'
 import PropTypes from 'prop-types'
@@ -36,7 +35,6 @@ export class Location extends Component {
     errorsDetected: [],
     mapsError: false, // error code (2 for location off, 3 for timeout)
     centeringMap: false, // while map is centering we show a different spinner
-    isOnline: true,
     showMap: false // show map even when no location is returned
   }
 
@@ -45,14 +43,6 @@ export class Location extends Component {
   readonly = !!this.props.navigation.getParam('family')
   errorsDetected = []
   locationCheckTimer
-  constructor(props) {
-    super(props)
-    NetInfo.isConnected.fetch().then(isConnected =>
-      this.setState({
-        isOnline: isConnected
-      })
-    )
-  }
 
   detectError = (error, field) => {
     if (error && !this.errorsDetected.includes(field)) {
@@ -105,7 +95,7 @@ export class Location extends Component {
           this.locationCheckTimer = setTimeout(() => {
             this.getDeviceLocation()
           }, 5000)
-        } else if (this.state.isOnline) {
+        } else {
           const draft = this.getDraft()
 
           if (!this.getFieldValue(draft, 'latitude')) {
@@ -156,7 +146,6 @@ export class Location extends Component {
       .catch()
   }
   onDragMap = region => {
-    console.log(region)
     const { coordinates } = region.geometry
     const longitude = coordinates[0]
     const latitude = coordinates[1]
@@ -180,8 +169,26 @@ export class Location extends Component {
     this.props.navigation.getParam('family') ||
     this.props.drafts.find(draft => draft.draftId === this.draftId)
 
-  componentDidMount() {
+  componentDidMount = async () => {
     const draft = this.getDraft()
+
+    const progressListener = (offlineRegion, status) =>
+      console.log('listener', offlineRegion, status)
+    const errorListener = (offlineRegion, err) =>
+      console.log('error', offlineRegion, err)
+
+    MapboxGL.offlineManager.createPack(
+      {
+        name: 'offlinePack',
+        styleURL: 'mapbox://...',
+        minZoom: 14,
+        maxZoom: 17,
+        bounds: [[42.7159553, 23.2769621], [42.6754659, 23.3447338]]
+      },
+      progressListener,
+      errorListener
+    )
+
     if (!this.getFieldValue(draft, 'latitude')) {
       this.getDeviceLocation()
     } else {
@@ -250,7 +257,6 @@ export class Location extends Component {
       accuracy,
       searchAddress,
       centeringMap,
-      isOnline,
       showMap,
       showErrors
     } = this.state
@@ -265,7 +271,7 @@ export class Location extends Component {
       >
         {(!this.readonly || (this.readonly && latitude)) && (
           <View>
-            {showMap && isOnline ? (
+            {showMap ? (
               <View>
                 <View pointerEvents="none" style={styles.fakeMarker}>
                   <Image source={marker} />
@@ -292,6 +298,8 @@ export class Location extends Component {
                   scrollEnabled={!this.readonly}
                   pitchEnabled={!this.readonly}
                   onRegionDidChange={this.onDragMap}
+                  minZoomLevel={14}
+                  maxZoomLevel={17}
                 />
                 {!this.readonly && (
                   <View>
@@ -339,28 +347,10 @@ export class Location extends Component {
                     <Text style={[styles.errorMsg, styles.centerText]}>
                       {mapsError === 2 &&
                         t('views.family.somethingIsNotWorking')}
-
-                      {!isOnline &&
-                        latitude &&
-                        t('views.family.mapUnavailavleOffline')}
-
-                      {!isOnline &&
-                        mapsError === 3 &&
-                        !latitude &&
-                        t('views.family.neitherMapNorLocation')}
                     </Text>
                     <Text style={[styles.errorSubMsg, styles.centerText]}>
                       {mapsError === 2 &&
                         t('views.family.checkLocationServicesTurnedOn')}
-
-                      {!isOnline &&
-                        latitude &&
-                        t('views.family.weHaveLocation')}
-
-                      {!isOnline &&
-                        mapsError === 3 &&
-                        !latitude &&
-                        t('views.family.describeLocation')}
                     </Text>
                   </View>
                 )}

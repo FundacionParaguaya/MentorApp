@@ -32,6 +32,7 @@ export class Loading extends Component {
     this.props.loadFamilies(url[this.props.env], this.props.user.token)
     this.props.loadSurveys(url[this.props.env], this.props.user.token)
   }
+  // check if store is hydrated
   checkHydration = () => {
     if (getHydrationState() === false) {
       this.checkHydrationTimer = setTimeout(() => {

@@ -97,7 +97,7 @@ describe('Family Location component', () => {
         .props()
         .onChangeText('Foo', 'address')
 
-      expect(wrapper.instance().props.addSurveyData).toHaveBeenCalledTimes(5)
+      expect(wrapper.instance().props.addSurveyData).toHaveBeenCalledTimes(2)
     })
   })
 
@@ -106,21 +106,6 @@ describe('Family Location component', () => {
       const props = createTestProps()
       wrapper = shallow(<Location {...props} />)
       wrapper.setState({ showMap: true })
-    })
-    it('gets device location', () => {
-      expect(wrapper).toHaveState({
-        latitude: 44,
-        longitude: 45
-      })
-    })
-
-    it('shows GPS accuracy range', () => {
-      expect(wrapper.find('#accuracy')).toHaveHTML(
-        '<react-native-mock>views.family.gpsAccurate</react-native-mock>'
-      )
-      expect(wrapper).toHaveState({
-        accuracy: 15
-      })
     })
 
     it('can search for address', () => {
@@ -200,27 +185,13 @@ describe('Family Location component', () => {
       wrapper = shallow(<Location {...props} />)
     })
 
-    it('sets proper state', () => {
-      expect(wrapper).toHaveState({
-        latitude: 30,
-        longitude: 30
-      })
-    })
-
     it('doesn\'t look for device location if there is one from draft', () => {
       const spy = jest.spyOn(wrapper.instance(), 'getDeviceLocation')
 
       expect(spy).toHaveBeenCalledTimes(0)
     })
   })
-  it('calls setParam on mount', () => {
-    expect(wrapper.instance().props.navigation.setParams).toHaveBeenCalledTimes(
-      1
-    )
-  })
-  it('calls addDraftProgress on mount', () => {
-    expect(wrapper.instance().props.addDraftProgress).toHaveBeenCalledTimes(1)
-  })
+
   it('calls onPressBack', () => {
     const spy = jest.spyOn(wrapper.instance(), 'onPressBack')
 
@@ -236,14 +207,7 @@ describe('Render optimization', () => {
     props = createTestProps()
     wrapper = shallow(<Location {...props} />)
   })
-  it('checks if screen is focused before updating', () => {
-    wrapper.setProps({
-      drafts: [...wrapper.instance().props.drafts, { draftId: 5 }]
-    })
-    expect(wrapper.instance().props.navigation.isFocused).toHaveBeenCalledTimes(
-      6
-    )
-  })
+
   it('updates screen if focused', () => {
     wrapper.setProps({
       drafts: [...wrapper.instance().props.drafts, { draftId: 5 }]
