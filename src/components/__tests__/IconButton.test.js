@@ -3,13 +3,15 @@ import { shallow } from 'enzyme'
 import { TouchableHighlight, Text, Image } from 'react-native'
 import Icon from 'react-native-vector-icons/MaterialIcons'
 import CommunityIcon from 'react-native-vector-icons/MaterialCommunityIcons'
-import IconButton from '../IconButton'
+import {IconButton} from '../IconButton'
 
 const createTestProps = props => ({
   icon: 'menu',
   size: 35,
   onPress: jest.fn(),
   text: 'Press',
+  drafts: [],
+  offline: {outbox: []},
   ...props
 })
 

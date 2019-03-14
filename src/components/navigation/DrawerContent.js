@@ -18,6 +18,7 @@ import i18n from '../../i18n'
 import colors from '../../theme.json'
 import { switchLanguage, logout } from '../../redux/actions'
 import LogoutPopup from './LogoutPopup'
+import ExitDraftPopup from './ExitDraftPopup'
 import dashboardIcon from '../../../assets/images/icon_dashboard.png'
 import familyNavIcon from '../../../assets/images/icon_family_nav.png'
 
@@ -30,6 +31,7 @@ export class DrawerContent extends Component {
     showErrors: false,
     activeTab: 'Dashboard'
   }
+
   changeLanguage = lng => {
     i18n.changeLanguage(lng) // change the currently uses i18n language
     this.props.switchLanguage(lng) // set the redux language for next app use
@@ -71,6 +73,26 @@ export class DrawerContent extends Component {
     const unsyncedDrafts = this.props.drafts.filter(
       draft => draft.status !== 'Synced'
     ).length
+
+    const {state} = navigation
+    const currentStack = state.routes[state.index]
+    const stackParams  = currentStack.routes[currentStack.index].params
+
+    // console.log('params', stackParams.draftId)
+    // console.log('params', stackParams.deleteOnExit)
+
+    let draftId = false
+    let deleteOnExit = false
+    if (stackParams && stackParams !== null) {
+      if (stackParams.draftId !== undefined) {
+        draftId = stackParams.draftId
+      }
+      if (stackParams.deleteOnExit !== undefined) {
+        deleteOnExit = stackParams.deleteOnExit
+      }
+    }
+    console.log(stackParams)
+    // console.log(stackParams.member)
 
     return (
       <ScrollView contentContainerStyle={styles.container}>
@@ -120,7 +142,17 @@ export class DrawerContent extends Component {
                 backgroundColor:
                   this.state.activeTab === 'Dashboard' ? colors.primary : null
               }}
-              onPress={() => this.navigateToScreen('Dashboard')}
+              onPress={() => {
+                if (currentStack.key === 'Surveys' && currentStack.index) {
+                  navigation.toggleDrawer()
+                  navigation.setParams({ modalOpen: true })
+                  // if (currentStack.routes[currentStack.index].routeName === 'Terms') {
+                  //  navigation.setParams({ deleteOnExit: true }) 
+                  // }
+                } else {
+                  this.navigateToScreen('Dashboard')
+                }
+              }}
               imageSource={dashboardIcon}
               text={i18n.t('views.dashboard')}
               textStyle={styles.label}
@@ -163,6 +195,7 @@ export class DrawerContent extends Component {
               size={20}
               text={i18n.t('views.synced')}
               textStyle={styles.label}
+              badge
             />
           </View>
         </View>
@@ -197,6 +230,15 @@ export class DrawerContent extends Component {
             })
             navigation.setParams({ logoutModalOpen: false })
           }}
+        />
+        {/* Exit Popup */}
+        <ExitDraftPopup
+          navigation={navigation}
+          isOpen={navigation.getParam('modalOpen')}
+          onClose={() => navigation.setParams({ modalOpen: false })}
+          routeName={currentStack.routes[currentStack.index].routeName}
+          deleteOnExit={deleteOnExit}
+          draftId={draftId}
         />
       </ScrollView>
     )
