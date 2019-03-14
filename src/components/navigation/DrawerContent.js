@@ -62,10 +62,15 @@ export class DrawerContent extends Component {
       ckeckedBoxes: state ? ckeckedBoxes + 1 : ckeckedBoxes - 1
     })
   }
-  navigateToScreen = screen => {
-    this.setState({ activeTab: screen })
-    this.props.navigation.toggleDrawer()
-    this.props.navigation.navigate(screen)
+  navigateToScreen = (screen, currentStack) => {
+    const { navigation } = this.props
+    navigation.toggleDrawer()
+    if (currentStack.key === 'Surveys' && currentStack.index) {
+      navigation.setParams({ modalOpen: true })
+    } else {
+      this.setState({ activeTab: screen })
+      navigation.navigate(screen)
+    }
   }
   render() {
     const { lng, user, navigation } = this.props
@@ -73,27 +78,16 @@ export class DrawerContent extends Component {
     const unsyncedDrafts = this.props.drafts.filter(
       draft => draft.status !== 'Synced'
     ).length
-
     const {state} = navigation
     const currentStack = state.routes[state.index]
     const stackParams  = currentStack.routes[currentStack.index].params
 
-    // console.log('params', stackParams.draftId)
-    // console.log('params', stackParams.deleteOnExit)
-
-    let draftId = false
-    let deleteOnExit = false
+    let draftId, deleteOnExit
     if (stackParams && stackParams !== null) {
-      if (stackParams.draftId !== undefined) {
-        draftId = stackParams.draftId
-      }
-      if (stackParams.deleteOnExit !== undefined) {
-        deleteOnExit = stackParams.deleteOnExit
-      }
+      draftId = stackParams.draftId !== undefined ? stackParams.draftId : false
+      deleteOnExit = stackParams.deleteOnExit !== undefined ? stackParams.deleteOnExit : false
     }
-    console.log(stackParams)
-    // console.log(stackParams.member)
-
+    
     return (
       <ScrollView contentContainerStyle={styles.container}>
         <View>
@@ -142,17 +136,7 @@ export class DrawerContent extends Component {
                 backgroundColor:
                   this.state.activeTab === 'Dashboard' ? colors.primary : null
               }}
-              onPress={() => {
-                if (currentStack.key === 'Surveys' && currentStack.index) {
-                  navigation.toggleDrawer()
-                  navigation.setParams({ modalOpen: true })
-                  // if (currentStack.routes[currentStack.index].routeName === 'Terms') {
-                  //  navigation.setParams({ deleteOnExit: true }) 
-                  // }
-                } else {
-                  this.navigateToScreen('Dashboard')
-                }
-              }}
+              onPress={() => this.navigateToScreen('Dashboard', currentStack)}
               imageSource={dashboardIcon}
               text={i18n.t('views.dashboard')}
               textStyle={styles.label}
@@ -164,7 +148,7 @@ export class DrawerContent extends Component {
                 backgroundColor:
                   this.state.activeTab === 'Surveys' ? colors.primary : null
               }}
-              onPress={() => this.navigateToScreen('Surveys')}
+              onPress={() => this.navigateToScreen('Surveys', currentStack)}
               icon="swap-calls"
               size={20}
               textStyle={styles.label}
@@ -177,7 +161,7 @@ export class DrawerContent extends Component {
                 backgroundColor:
                   this.state.activeTab === 'Families' ? colors.primary : null
               }}
-              onPress={() => this.navigateToScreen('Families')}
+              onPress={() => this.navigateToScreen('Families', currentStack)}
               imageSource={familyNavIcon}
               size={20}
               text={i18n.t('views.families')}
@@ -190,7 +174,7 @@ export class DrawerContent extends Component {
                 backgroundColor:
                   this.state.activeTab === 'Sync' ? colors.primary : null
               }}
-              onPress={() => this.navigateToScreen('Sync')}
+              onPress={() => this.navigateToScreen('Sync', currentStack)}
               icon="sync"
               size={20}
               text={i18n.t('views.synced')}

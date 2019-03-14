@@ -2,7 +2,7 @@ import React from 'react'
 import { StyleSheet, View, Platform } from 'react-native'
 import { AndroidBackHandler } from 'react-navigation-backhandler'
 import ExitDraftPopup from './ExitDraftPopup'
-import DefaultPopup from './DefaultPopup'
+import BackDraftPopup from './BackDraftPopup'
 import colors from '../../theme.json'
 import IconButton from '../IconButton'
 
@@ -91,7 +91,7 @@ export const generateNavOptions = ({ navigation, burgerMenu = true }) => ({
           icon="arrow-back"
           size={25}
         />
-        <DefaultPopup 
+        <BackDraftPopup 
           navigation={navigation}
           isOpen={navigation.getParam('backModalOpen')}
           onClose={() => navigation.setParams({ backModalOpen: false })}

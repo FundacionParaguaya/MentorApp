@@ -9,7 +9,7 @@ import i18n from '../../i18n'
 import globalStyles from '../../globalStyles'
 import colors from '../../theme.json'
 
-export default class DefaultPopup extends Component {
+export default class BackDraftPopup extends Component {
   render() {
     let { navigation, isOpen, onClose, routeName } = this.props
     return(
@@ -49,7 +49,7 @@ export default class DefaultPopup extends Component {
   }
 }
 
-DefaultPopup.propTypes = {
+BackDraftPopup.propTypes = {
   navigation: PropTypes.object,
   isOpen: PropTypes.bool,
   onClose: PropTypes.func,

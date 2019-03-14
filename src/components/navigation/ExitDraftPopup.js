@@ -11,9 +11,7 @@ import colors from '../../theme.json'
 
 export default class ExitDraftPopup extends Component {
   render() {
-    let { navigation } = this.props
-    const {isOpen, onClose, routeName, deleteOnExit, draftId} = this.props
-    // console.log(deleteOnExit, draftId, routeName, isOpen)
+    const { navigation, isOpen, onClose, routeName, deleteOnExit, draftId} = this.props
 
     return(
       <Popup
