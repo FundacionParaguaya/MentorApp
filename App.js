@@ -11,7 +11,7 @@ import store from './src/redux/store'
 import { initImageCaching } from './src/cache'
 
 MapboxGL.setAccessToken(
-  'sk.eyJ1IjoiZGFubWFuNyIsImEiOiJjanQ3NndhdmQwbXl5NGFtc3pwMHJ5cXRnIn0.-1m3s3-n-oXIL2v-q-GZ1A'
+  'pk.eyJ1IjoiZGFubWFuNyIsImEiOiJjanQ4bTU0cjIwMmdkNDRtbnppdWoyNm81In0.SO7wd6FjGH2qtwXp7MGNRg'
 )
 
 // schedule a background task to check the images cache

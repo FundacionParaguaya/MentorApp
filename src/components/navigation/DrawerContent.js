@@ -11,6 +11,7 @@ import {
 import { withNamespaces } from 'react-i18next'
 import { connect } from 'react-redux'
 import PropTypes from 'prop-types'
+import MapboxGL from '@mapbox/react-native-mapbox-gl'
 import { url } from '../../config'
 import globalStyles from '../../globalStyles'
 import IconButton from '../IconButton'
@@ -37,10 +38,18 @@ export class DrawerContent extends Component {
   }
   logUserOut = () => {
     const { checkboxesVisible, ckeckedBoxes } = this.state
+
+    // allow the user to logout only if he checks all boxes
     if (!checkboxesVisible || (checkboxesVisible && ckeckedBoxes === 4)) {
       this.setState({
         showErrors: false
       })
+
+      // on logout clear the storage and delete offline map packs
+      if (MapboxGL.offlineManager) {
+        MapboxGL.offlineManager.deletePack('Sofia')
+      }
+
       AsyncStorage.clear()
       this.props.logout(url[this.props.env], this.props.user.token)
     } else {

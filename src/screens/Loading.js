@@ -19,13 +19,34 @@ export class Loading extends Component {
   state = {
     loadingData: false, // know when to show that data is synced
     cachingImages: false, // know when image caching is running
-    offlineRegionStatus: null
+    offlineRegionStatus: null,
+    mapDownloadError: null
   }
 
   loadData = () => {
     // mark that loading has stated to show the progress
     this.setState({
       loadingData: true
+    })
+
+    MapboxGL.offlineManager.getPack('Sofia').then(pack => {
+      if (!pack) {
+        MapboxGL.offlineManager.createPack(
+          {
+            name: 'Sofia',
+            styleURL: MapboxGL.StyleURL.Street,
+            minZoom: 14,
+            maxZoom: 18,
+            bounds: [[42.7159553, 23.2769621], [42.6754659, 23.3447338]]
+          },
+          this.onMapDownloadProgress,
+          this.onMapDownloadError
+        )
+      } else {
+        this.setState({
+          offlineRegionStatus: { percentage: 100 }
+        })
+      }
     })
 
     // get the data from the database and store it in redux
@@ -44,50 +65,58 @@ export class Loading extends Component {
     }
   }
 
-  onMapDownloadProgress(offlineRegionStatus) {
-    console.log('sasdfas')
+  onMapDownloadProgress = (offlineRegion, offlineRegionStatus) => {
     this.setState({
       offlineRegionStatus
     })
   }
 
-  async componentDidUpdate(prevProps) {
+  onMapDownloadError = (offlineRegion, mapDownloadError) => {
+    this.setState({
+      mapDownloadError
+    })
+  }
+
+  handleImageCaching() {
+    const { total, synced } = this.props.sync.images
+
+    this.setState({
+      cachingImages: true
+    })
+    if (!total || !synced) {
+      initImageCaching()
+    } else {
+      console.log(total, synced)
+    }
+  }
+
+  componentDidMount() {
+    if (this.props.hydration) {
+      this.setSyncedState()
+    }
+  }
+
+  componentDidUpdate(prevProps) {
     // if store is hydrated
     if (!prevProps.hydration && this.props.hydration) {
       this.setSyncedState()
     }
 
-    if (this.state.loadingData) {
-      const options = {
-        name: 'Sofia',
-        styleURL: 'mapbox://...',
-        minZoom: 14,
-        maxZoom: 17,
-        bounds: [[42.7159553, 23.2769621], [42.6754659, 23.3447338]]
-      }
-
-      // start download
-      MapboxGL.offlineManager.createPack(options, this.onMapDownloadProgress)
+    // if all data is loaded, start image caching
+    if (
+      this.state.offlineRegionStatus &&
+      this.state.offlineRegionStatus.percentage === 100 &&
+      !this.state.cachingImages
+    ) {
+      this.handleImageCaching()
     }
 
-    const { total, synced } = this.props.sync.images
-
-    // if all data is loaded, start image caching
-    // if (
-    //   this.props.surveys.length &&
-    //   !this.props.offline.outbox.lenght &&
-    //   !this.state.cachingImages
-    // ) {
-    //   this.setState({
-    //     cachingImages: true
-    //   })
-    //   setTimeout(() => {
-    //     initImageCaching()
-    //   }, 1000)
-    // }
-
-    // after all images are cached redirect to dashboard
-    if (this.state.cachingImages && total && total === synced) {
+    // if images are synced move to Dashboard
+    if (
+      this.state.cachingImages &&
+      this.props.sync.images.total &&
+      this.props.sync.images.total === this.props.sync.images.synced
+    ) {
       this.props.setSyncedState('yes')
     }
   }
@@ -95,8 +124,6 @@ export class Loading extends Component {
   render() {
     const { sync, surveys, families } = this.props
     const { offlineRegionStatus } = this.state
-
-    console.log(surveys)
 
     return (
       <View style={[globalStyles.container, styles.view]}>
@@ -118,15 +145,16 @@ export class Loading extends Component {
               <Text>
                 Syncing surveys: {surveys.length} / {surveys.length}
               </Text>
+              {offlineRegionStatus && (
+                <Text>
+                  Downloading offline maps{' '}
+                  {offlineRegionStatus.percentage.toFixed(0)}%
+                </Text>
+              )}
               <Text>
                 Syncing survey images: {sync.images.synced} /{' '}
                 {sync.images.total}
               </Text>
-              {offlineRegionStatus && (
-                <Text>
-                  Downloading offline maps {offlineRegionStatus.percentage}
-                </Text>
-              )}
             </View>
           ) : (
             <View />

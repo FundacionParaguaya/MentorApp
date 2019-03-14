@@ -106,6 +106,9 @@ jest.mock('@mapbox/react-native-mapbox-gl', () => {
         metadata: JSON.stringify({ name: packOptions.name })
       })
     },
+    offlineManager: {
+      deletePack: jest.fn()
+    },
     getPacks: () => Promise.resolve([]),
     deletePack: () => Promise.resolve(),
     getPackStatus: () => Promise.resolve({}),

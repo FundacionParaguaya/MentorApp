@@ -24,7 +24,7 @@ const store = createStore(
         offline({
           ...offlineConfig,
           persistOptions: {
-            blacklist: ['sync', 'hydration']
+            blacklist: ['hydration']
           },
           // this fires after store hydration is done
           persistCallback: () => setHydratedState()

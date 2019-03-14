@@ -165,7 +165,7 @@ export class Location extends Component {
     this.props.navigation.getParam('family') ||
     this.props.drafts.find(draft => draft.draftId === this.draftId)
 
-  componentDidMount = async () => {
+  componentDidMount() {
     const draft = this.getDraft()
 
     if (!this.getFieldValue(draft, 'latitude')) {
@@ -273,12 +273,12 @@ export class Location extends Component {
                   style={styles.map}
                   logoEnabled={false}
                   zoomEnabled={!this.readonly}
-                  rotateEnabled={!this.readonly}
+                  rotateEnabled={false}
                   scrollEnabled={!this.readonly}
-                  pitchEnabled={!this.readonly}
+                  pitchEnabled={false}
                   onRegionDidChange={this.onDragMap}
                   minZoomLevel={14}
-                  maxZoomLevel={17}
+                  maxZoomLevel={18}
                 />
                 {!this.readonly && (
                   <View>
