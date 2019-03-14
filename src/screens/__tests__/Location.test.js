@@ -97,7 +97,7 @@ describe('Family Location component', () => {
         .props()
         .onChangeText('Foo', 'address')
 
-      expect(wrapper.instance().props.addSurveyData).toHaveBeenCalledTimes(2)
+      expect(wrapper.instance().props.addSurveyData).toHaveBeenCalledTimes(5)
     })
   })
 

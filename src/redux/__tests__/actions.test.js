@@ -311,6 +311,15 @@ describe('drafts actions', () => {
     })
   })
 
+  describe('hydration actions', () => {
+    it('should create an action to set the rehydrated state', () => {
+      const expectedAction = {
+        type: action.SET_HYDRATED
+      }
+      expect(action.setHydrated()).toEqual(expectedAction)
+    })
+  })
+
   describe('sync actions', () => {
     it('should create an action to set a synced item total amount to be synced', () => {
       const item = 'drafts'

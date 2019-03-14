@@ -8,77 +8,95 @@ import {
   Platform
 } from 'react-native'
 import { connect } from 'react-redux'
+import MapboxGL from '@mapbox/react-native-mapbox-gl'
 import { loadFamilies, loadSurveys, setSyncedState } from '../redux/actions'
-import { getHydrationState } from '../redux/store'
 import colors from '../theme.json'
 import globalStyles from '../globalStyles'
 import { url } from '../config'
 import { initImageCaching } from '../cache'
 
 export class Loading extends Component {
-  checkHydrationTimer
   state = {
     loadingData: false, // know when to show that data is synced
-    cachingImages: false
+    cachingImages: false, // know when image caching is running
+    offlineRegionStatus: null
   }
-  clearTimers = () => {
-    clearTimeout(this.checkHydrationTimer)
-    this.checkHydrationTimer = null
-  }
+
   loadData = () => {
+    // mark that loading has stated to show the progress
     this.setState({
       loadingData: true
     })
+
+    // get the data from the database and store it in redux
     this.props.loadFamilies(url[this.props.env], this.props.user.token)
     this.props.loadSurveys(url[this.props.env], this.props.user.token)
   }
-  // check if store is hydrated
-  checkHydration = () => {
-    if (getHydrationState() === false) {
-      this.checkHydrationTimer = setTimeout(() => {
-        this.checkHydration()
-      }, 1000)
+
+  setSyncedState = () => {
+    // if the user has no token redirect to the login page
+    if (!this.props.user.token) {
+      this.props.setSyncedState('login')
     } else {
-      this.clearTimers()
-      if (!this.props.user.token) {
-        this.props.setSyncedState('login')
-      } else {
-        this.props.setSyncedState('no')
-        this.loadData()
-      }
+      // otherwise sync the data
+      this.props.setSyncedState('no')
+      this.loadData()
     }
   }
-  componentDidMount() {
-    this.checkHydration()
+
+  onMapDownloadProgress(offlineRegionStatus) {
+    console.log('sasdfas')
+    this.setState({
+      offlineRegionStatus
+    })
   }
 
-  componentDidUpdate() {
+  async componentDidUpdate(prevProps) {
+    // if store is hydrated
+    if (!prevProps.hydration && this.props.hydration) {
+      this.setSyncedState()
+    }
+
+    if (this.state.loadingData) {
+      const options = {
+        name: 'Sofia',
+        styleURL: 'mapbox://...',
+        minZoom: 14,
+        maxZoom: 17,
+        bounds: [[42.7159553, 23.2769621], [42.6754659, 23.3447338]]
+      }
+
+      // start download
+      MapboxGL.offlineManager.createPack(options, this.onMapDownloadProgress)
+    }
+
     const { total, synced } = this.props.sync.images
 
-    if (
-      this.props.surveys.length &&
-      !this.props.offline.outbox.lenght &&
-      !this.state.cachingImages
-    ) {
-      this.setState({
-        cachingImages: true
-      })
-      setTimeout(() => {
-        initImageCaching()
-      }, 1000)
-    }
+    // if all data is loaded, start image caching
+    // if (
+    //   this.props.surveys.length &&
+    //   !this.props.offline.outbox.lenght &&
+    //   !this.state.cachingImages
+    // ) {
+    //   this.setState({
+    //     cachingImages: true
+    //   })
+    //   setTimeout(() => {
+    //     initImageCaching()
+    //   }, 1000)
+    // }
 
+    // after all images are cached redirect to dashboard
     if (this.state.cachingImages && total && total === synced) {
       this.props.setSyncedState('yes')
     }
   }
 
-  componentWillUnmount = () => {
-    this.clearTimers()
-  }
-
   render() {
     const { sync, surveys, families } = this.props
+    const { offlineRegionStatus } = this.state
+
+    console.log(surveys)
 
     return (
       <View style={[globalStyles.container, styles.view]}>
@@ -104,6 +122,11 @@ export class Loading extends Component {
                 Syncing survey images: {sync.images.synced} /{' '}
                 {sync.images.total}
               </Text>
+              {offlineRegionStatus && (
+                <Text>
+                  Downloading offline maps {offlineRegionStatus.percentage}
+                </Text>
+              )}
             </View>
           ) : (
             <View />
@@ -123,39 +146,49 @@ Loading.propTypes = {
   sync: PropTypes.object.isRequired,
   surveys: PropTypes.array.isRequired,
   families: PropTypes.array.isRequired,
-  offline: PropTypes.object
+  offline: PropTypes.object.isRequired,
+  hydration: PropTypes.bool.isRequired
 }
 
 const styles = StyleSheet.create({
-  view: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center'
-  },
-  loadingContainer: {
-    justifyContent: 'center',
-    alignItems: 'center'
-  },
   indicator: {
     backgroundColor: colors.white,
     borderRadius: 85,
-    padding: 55,
+    marginBottom: 45,
     marginTop: 22,
-    marginBottom: 45
+    padding: 55
+  },
+  loadingContainer: {
+    alignItems: 'center',
+    justifyContent: 'center'
   },
   sync: {
-    marginTop: 10,
-    alignItems: 'center'
+    alignItems: 'center',
+    marginTop: 10
+  },
+  view: {
+    alignItems: 'center',
+    flex: 1,
+    justifyContent: 'center'
   }
 })
 
-const mapStateToProps = ({ sync, surveys, env, user, offline, families }) => ({
+const mapStateToProps = ({
   sync,
   surveys,
   env,
   user,
   offline,
-  families
+  families,
+  hydration
+}) => ({
+  sync,
+  surveys,
+  env,
+  user,
+  offline,
+  families,
+  hydration
 })
 
 const mapDispatchToProps = {

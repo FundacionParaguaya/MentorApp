@@ -21,10 +21,6 @@ import Select from '../../components/Select'
 import marker from '../../../assets/images/marker.png'
 import center from '../../../assets/images/centerMap.png'
 
-MapboxGL.setAccessToken(
-  'pk.eyJ1IjoiZGFubWFuNyIsImEiOiJjanQwNjYxMjMwdHN1NDhwYXBnOWFjeHplIn0.ytytuM8i3iFda5qKr4xoLQ'
-)
-
 export class Location extends Component {
   state = {
     showErrors: false,
@@ -171,23 +167,6 @@ export class Location extends Component {
 
   componentDidMount = async () => {
     const draft = this.getDraft()
-
-    const progressListener = (offlineRegion, status) =>
-      console.log('listener', offlineRegion, status)
-    const errorListener = (offlineRegion, err) =>
-      console.log('error', offlineRegion, err)
-
-    MapboxGL.offlineManager.createPack(
-      {
-        name: 'offlinePack',
-        styleURL: 'mapbox://...',
-        minZoom: 14,
-        maxZoom: 17,
-        bounds: [[42.7159553, 23.2769621], [42.6754659, 23.3447338]]
-      },
-      progressListener,
-      errorListener
-    )
 
     if (!this.getFieldValue(draft, 'latitude')) {
       this.getDeviceLocation()

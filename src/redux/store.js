@@ -3,15 +3,18 @@ import thunk from 'redux-thunk'
 import offlineConfig from '@redux-offline/redux-offline/lib/defaults'
 import { offline } from '@redux-offline/redux-offline'
 import { rootReducer } from './reducer'
+import { setHydrated } from './actions'
 import { setLanguage } from '../i18n'
 let rehydrated = false
 
 export const getHydrationState = () => rehydrated
 
+const setHydratedState = () => store.dispatch(setHydrated())
+
 // __REDUX_DEVTOOLS_EXTENSION_COMPOSE__ enables seeing the redux store in the
 // debugger. atob !== 'undefined' checks if remote debugging is enabled on the
 // device
-export default createStore(
+const store = createStore(
   rootReducer,
   typeof window !== 'undefined' &&
     typeof window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ !== 'undefined' &&
@@ -21,23 +24,19 @@ export default createStore(
         offline({
           ...offlineConfig,
           persistOptions: {
-            blacklist: ['sync']
+            blacklist: ['sync', 'hydration']
           },
           // this fires after store hydration is done
-          persistCallback: () => {
-            setLanguage()
-            rehydrated = true
-          }
+          persistCallback: () => setHydratedState()
         })
       )
     : compose(
         applyMiddleware(thunk),
         offline({
           ...offlineConfig,
-          persistCallback: () => {
-            setLanguage()
-            rehydrated = true
-          }
+          persistCallback: () => setHydratedState()
         })
       )
 )
+
+export default store
