@@ -11,59 +11,63 @@ import colors from '../../theme.json'
 
 export default class ExitDraftPopup extends Component {
   render() {
-    const { navigation, isOpen, onClose, routeName, deleteOnExit, draftId} = this.props
+    const {
+      navigation,
+      isOpen,
+      onClose,
+      routeName,
+      deleteOnExit,
+      draftId
+    } = this.props
 
-    return(
-      <Popup
-          isOpen={isOpen}
-          onClose={onClose}
-        >
-          {deleteOnExit|| 
-          routeName === 'Terms' || 
-          routeName === 'Privacy' ? (
-            <View>
-              <Text style={[globalStyles.centerText, globalStyles.h3]}>
-                {routeName === 'FamilyParticipant'
-                  ? i18n.t('views.modals.lifeMapWillNotBeSaved')
-                  : i18n.t('views.modals.weCannotContinueToCreateTheLifeMap')}
-              </Text>
-              <Text style={[globalStyles.centerText, styles.subline]}>
-                {i18n.t('views.modals.areYouSureYouWantToExit')}
-              </Text>
-            </View>
-          ) : (
-            <View>
-              <Text style={[globalStyles.centerText, globalStyles.h3]}>
-                {i18n.t('views.modals.yourLifemapIsNotComplete')}
-              </Text>
-              <Text style={[globalStyles.centerText, styles.subline]}>
-                {i18n.t('views.modals.thisWillBeSavedAsADraft')}
-              </Text>
-            </View>
-          )}
-
-          <View style={styles.buttonBar}>
-            <Button
-              outlined
-              text={i18n.t('general.yes')}
-              style={{ width: 107 }}
-              handleClick={() => {
-                if (deleteOnExit) {
-                  store.dispatch(deleteDraft(draftId))
-                }
-                isOpen === true ? navigation.setParams({ modalOpen: false }) : false
-                navigation.popToTop()
-                navigation.navigate('Dashboard')
-              }}
-            />
-            <Button
-              outlined
-              text={i18n.t('general.no')}
-              style={{ width: 107 }}
-              handleClick={() => navigation.setParams({ modalOpen: false })}
-            />
+    return (
+      <Popup isOpen={isOpen} onClose={onClose}>
+        {deleteOnExit || routeName === 'Terms' || routeName === 'Privacy' ? (
+          <View>
+            <Text style={[globalStyles.centerText, globalStyles.h3]}>
+              {routeName === 'FamilyParticipant'
+                ? i18n.t('views.modals.lifeMapWillNotBeSaved')
+                : i18n.t('views.modals.weCannotContinueToCreateTheLifeMap')}
+            </Text>
+            <Text style={[globalStyles.centerText, styles.subline]}>
+              {i18n.t('views.modals.areYouSureYouWantToExit')}
+            </Text>
           </View>
-        </Popup>
+        ) : (
+          <View>
+            <Text style={[globalStyles.centerText, globalStyles.h3]}>
+              {i18n.t('views.modals.yourLifemapIsNotComplete')}
+            </Text>
+            <Text style={[globalStyles.centerText, styles.subline]}>
+              {i18n.t('views.modals.thisWillBeSavedAsADraft')}
+            </Text>
+          </View>
+        )}
+
+        <View style={styles.buttonBar}>
+          <Button
+            outlined
+            text={i18n.t('general.yes')}
+            style={{ width: 107 }}
+            handleClick={() => {
+              if (deleteOnExit) {
+                store.dispatch(deleteDraft(draftId))
+              }
+              isOpen === true
+                ? navigation.setParams({ modalOpen: false })
+                : false
+              navigation.popToTop()
+              navigation.navigate('Dashboard')
+            }}
+          />
+          <Button
+            outlined
+            text={i18n.t('general.no')}
+            style={{ width: 107 }}
+            handleClick={() => navigation.setParams({ modalOpen: false })}
+          />
+        </View>
+      </Popup>
     )
   }
 }

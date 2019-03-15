@@ -16,9 +16,21 @@ export class IconButton extends Component {
     })
   }
   render() {
-    const { icon, communityIcon, text, imageSource, badge, offline, drafts } = this.props
-    const syncErrors = drafts ? drafts.some(draft => draft.status === 'Sync error') : null
-    const syncAvailable = offline.outbox.filter(item => item.type === 'SUBMIT_DRAFT')
+    const {
+      icon,
+      communityIcon,
+      text,
+      imageSource,
+      badge,
+      offline,
+      drafts
+    } = this.props
+    const syncErrors = drafts
+      ? drafts.some(draft => draft.status === 'Sync error')
+      : null
+    const syncAvailable = offline.outbox.filter(
+      item => item.type === 'SUBMIT_DRAFT'
+    )
 
     return (
       <TouchableHighlight
@@ -29,16 +41,21 @@ export class IconButton extends Component {
       >
         <View style={this.props.style}>
           <View style={{ position: 'relative' }}>
-            {icon && (<Icon
-              name={icon}
-              style={this.props.iconStyle || {}}
-              size={this.props.size || 30}
-              color={this.state.pressed ? colors.green : colors.palegreen}/>)
-            }
-            {icon && !text && badge && (syncAvailable.length > 0 || syncErrors) 
-              ? (<View style={styles.badgePoint}></View>) 
-              : null}
-          </View> 
+            {icon && (
+              <Icon
+                name={icon}
+                style={this.props.iconStyle || {}}
+                size={this.props.size || 30}
+                color={this.state.pressed ? colors.green : colors.palegreen}
+              />
+            )}
+            {icon &&
+            !text &&
+            badge &&
+            (syncAvailable.length > 0 || syncErrors) ? (
+              <View style={styles.badgePoint} />
+            ) : null}
+          </View>
 
           {communityIcon && (
             <CommunityIcon
@@ -65,11 +82,11 @@ export class IconButton extends Component {
               {text}
             </Text>
           )}
-          {icon && text && badge && (syncAvailable.length > 0 || syncErrors) 
-            ? (<Text style={styles.badge}>
-                { !syncErrors ? syncAvailable.length : '!' }
-              </Text>) 
-            : null}
+          {icon && text && badge && (syncAvailable.length > 0 || syncErrors) ? (
+            <Text style={styles.badge}>
+              {!syncErrors ? syncAvailable.length : '!'}
+            </Text>
+          ) : null}
         </View>
       </TouchableHighlight>
     )
@@ -92,25 +109,25 @@ IconButton.propTypes = {
 }
 
 const styles = StyleSheet.create({
-  badge: { 
-    width: 32, 
-    height: 32, 
+  badge: {
+    width: 32,
+    height: 32,
     lineHeight: 32,
-    borderRadius: 32/2,
-    marginLeft: 20, 
+    borderRadius: 32 / 2,
+    marginLeft: 20,
     marginTop: -5,
-    backgroundColor: colors.palered, 
+    backgroundColor: colors.palered,
     textAlign: 'center',
-    color: '#ffffff' 
+    color: '#ffffff'
   },
-  badgePoint: { 
-    width: 8, 
-    height: 8, 
-    borderRadius: 8/2, 
+  badgePoint: {
+    width: 8,
+    height: 8,
+    borderRadius: 8 / 2,
     backgroundColor: colors.palered,
     position: 'absolute',
     top: 2,
-    right: '50%' 
+    right: '50%'
   }
 })
 

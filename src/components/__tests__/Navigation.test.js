@@ -10,7 +10,7 @@ const createTestProps = props => ({
     getParam: () => false,
     navigate: jest.fn(),
     setParams: jest.fn(),
-    state: {index: 0, routes: [{index:0, routes: [{routeName: 'Test'}]}]}
+    state: { index: 0, routes: [{ index: 0, routes: [{ routeName: 'Test' }] }] }
   },
   switchLanguage: jest.fn(),
   user: { username: 'test' },

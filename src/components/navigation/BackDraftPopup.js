@@ -12,39 +12,36 @@ import colors from '../../theme.json'
 export default class BackDraftPopup extends Component {
   render() {
     let { navigation, isOpen, onClose, routeName } = this.props
-    return(
-      <Popup
-          isOpen={isOpen}
-          onClose={onClose}
-        >
-          <Text style={[globalStyles.centerText, globalStyles.h3]}>
-            {routeName === 'FamilyParticipant'
-              ? i18n.t('views.modals.lifeMapWillNotBeSaved')
-              : i18n.t('views.modals.weCannotContinueToCreateTheLifeMap')}
-          </Text>
-          <Text style={[globalStyles.centerText, styles.subline]}>
-            Are you sure you want to go back?
-          </Text>
-          <View style={styles.buttonBar}>
-            <Button
-              outlined
-              text={i18n.t('general.yes')}
-              style={{ width: 107 }}
-              handleClick={() => {
-                store.dispatch(deleteDraft(navigation.getParam('draftId')))
-                navigation.getParam('onPressBack')
-                  ? navigation.getParam('onPressBack')()
-                  : navigation.goBack()
-              }}
-            />
-            <Button
-              outlined
-              text={i18n.t('general.no')}
-              style={{ width: 107 }}
-              handleClick={() => navigation.setParams({ backModalOpen: false })}
-            />
-          </View>
-        </Popup>
+    return (
+      <Popup isOpen={isOpen} onClose={onClose}>
+        <Text style={[globalStyles.centerText, globalStyles.h3]}>
+          {routeName === 'FamilyParticipant'
+            ? i18n.t('views.modals.lifeMapWillNotBeSaved')
+            : i18n.t('views.modals.weCannotContinueToCreateTheLifeMap')}
+        </Text>
+        <Text style={[globalStyles.centerText, styles.subline]}>
+          Are you sure you want to go back?
+        </Text>
+        <View style={styles.buttonBar}>
+          <Button
+            outlined
+            text={i18n.t('general.yes')}
+            style={{ width: 107 }}
+            handleClick={() => {
+              store.dispatch(deleteDraft(navigation.getParam('draftId')))
+              navigation.getParam('onPressBack')
+                ? navigation.getParam('onPressBack')()
+                : navigation.goBack()
+            }}
+          />
+          <Button
+            outlined
+            text={i18n.t('general.no')}
+            style={{ width: 107 }}
+            handleClick={() => navigation.setParams({ backModalOpen: false })}
+          />
+        </View>
+      </Popup>
     )
   }
 }

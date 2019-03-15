@@ -91,7 +91,7 @@ export const generateNavOptions = ({ navigation, burgerMenu = true }) => ({
           icon="arrow-back"
           size={25}
         />
-        <BackDraftPopup 
+        <BackDraftPopup
           navigation={navigation}
           isOpen={navigation.getParam('backModalOpen')}
           onClose={() => navigation.setParams({ backModalOpen: false })}

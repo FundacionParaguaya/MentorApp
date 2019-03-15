@@ -5,7 +5,7 @@
   "status": "Draft",
   "achievements": [],
   "priorities": [],
-  "progress": {"screen": "Overview"},
+  "progress": { "screen": "Overview" },
   "economicSurveyDataList": [
     { "key": "educationPersonMostStudied", "value": "SCHOOL-COMPLETE" },
     { "key": "receiveStateIncome", "value": "NO" },
