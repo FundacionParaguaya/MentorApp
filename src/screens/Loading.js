@@ -5,7 +5,8 @@ import {
   StyleSheet,
   View,
   ActivityIndicator,
-  Platform
+  Platform,
+  AsyncStorage
 } from 'react-native'
 import { connect } from 'react-redux'
 import MapboxGL from '@mapbox/react-native-mapbox-gl'
@@ -78,22 +79,19 @@ export class Loading extends Component {
   }
 
   handleImageCaching() {
-    const { total, synced } = this.props.sync.images
-
     this.setState({
       cachingImages: true
     })
-    if (!total || !synced) {
-      initImageCaching()
-    } else {
-      console.log(total, synced)
-    }
+
+    initImageCaching()
   }
 
   componentDidMount() {
-    if (this.props.hydration) {
-      this.setSyncedState()
-    }
+    AsyncStorage.getAllKeys((err, keys) => {
+      if (!keys.lenght || this.props.hydration) {
+        this.setSyncedState()
+      }
+    })
   }
 
   componentDidUpdate(prevProps) {
