@@ -60,7 +60,7 @@ export class Login extends Component {
   }
 
   componentDidUpdate() {
-    if (this.state.username === 'demo') {
+    if (this.state.username.trim() === 'demo') {
       this.props.setEnv('demo')
     } else this.props.setEnv('production')
   }
@@ -71,7 +71,7 @@ export class Login extends Component {
     })
 
     this.props
-      .login(this.state.username, this.state.password, url[this.props.env])
+      .login(this.state.username.trim(), this.state.password, url[this.props.env])
       .then(() => {
         if (this.props.user.status === 200) {
           this.props.setSyncedState('no')
