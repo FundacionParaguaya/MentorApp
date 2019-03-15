@@ -17,7 +17,8 @@ export default class ExitDraftPopup extends Component {
       onClose,
       routeName,
       deleteOnExit,
-      draftId
+      draftId,
+      navigateTo
     } = this.props
 
     return (
@@ -57,7 +58,9 @@ export default class ExitDraftPopup extends Component {
                 ? navigation.setParams({ modalOpen: false })
                 : false
               navigation.popToTop()
-              navigation.navigate('Dashboard')
+              navigateTo
+                ? navigation.navigate(navigateTo)
+                : navigation.navigate('Dashboard')
             }}
           />
           <Button
@@ -78,7 +81,8 @@ ExitDraftPopup.propTypes = {
   onClose: PropTypes.func,
   routeName: PropTypes.string,
   draftId: PropTypes.oneOfType([PropTypes.bool, PropTypes.string]),
-  deleteOnExit: PropTypes.bool
+  deleteOnExit: PropTypes.bool,
+  navigateTo: PropTypes.oneOfType([PropTypes.bool, PropTypes.string])
 }
 
 const styles = StyleSheet.create({

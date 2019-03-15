@@ -64,11 +64,11 @@ export class DrawerContent extends Component {
   }
   navigateToScreen = (screen, currentStack) => {
     const { navigation } = this.props
+    this.setState({ activeTab: screen })
     navigation.toggleDrawer()
     if (currentStack.key === 'Surveys' && currentStack.index) {
       navigation.setParams({ modalOpen: true })
     } else {
-      this.setState({ activeTab: screen })
       navigation.navigate(screen)
     }
   }
@@ -223,6 +223,7 @@ export class DrawerContent extends Component {
           routeName={currentStack.routes[currentStack.index].routeName}
           deleteOnExit={deleteOnExit}
           draftId={draftId}
+          navigateTo={this.state.activeTab}
         />
       </ScrollView>
     )
