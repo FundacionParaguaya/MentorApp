@@ -10,6 +10,7 @@ import {
 } from 'react-native'
 import { connect } from 'react-redux'
 import MapboxGL from '@mapbox/react-native-mapbox-gl'
+import Icon from 'react-native-vector-icons/MaterialIcons'
 import { loadFamilies, loadSurveys, setSyncedState } from '../redux/actions'
 import colors from '../theme.json'
 import globalStyles from '../globalStyles'
@@ -20,16 +21,15 @@ export class Loading extends Component {
   state = {
     loadingData: false, // know when to show that data is synced
     cachingImages: false, // know when image caching is running
+    dataCached: false,
     offlineRegionStatus: null,
     mapDownloadError: null
   }
 
-  loadData = () => {
-    // mark that loading has stated to show the progress
+  downloadMapData = () => {
     this.setState({
-      loadingData: true
+      dataCached: true
     })
-
     MapboxGL.offlineManager.getPack('Sofia').then(pack => {
       if (!pack) {
         MapboxGL.offlineManager.createPack(
@@ -49,10 +49,21 @@ export class Loading extends Component {
         })
       }
     })
+  }
 
-    // get the data from the database and store it in redux
-    this.props.loadFamilies(url[this.props.env], this.props.user.token)
-    this.props.loadSurveys(url[this.props.env], this.props.user.token)
+  loadData = () => {
+    // mark that loading has stated to show the progress
+    this.setState({
+      loadingData: true
+    })
+
+    if (this.props.surveys.length) {
+      this.downloadMapData()
+    } else {
+      // get the data from the database and store it in redux
+      this.props.loadFamilies(url[this.props.env], this.props.user.token)
+      this.props.loadSurveys(url[this.props.env], this.props.user.token)
+    }
   }
 
   setSyncedState = () => {
@@ -100,7 +111,17 @@ export class Loading extends Component {
       this.setSyncedState()
     }
 
-    // if all data is loaded, start image caching
+    // if surveys and families are synced, start map download
+    if (
+      !prevProps.surveys.length &&
+      this.props.surveys.length &&
+      !this.props.offline.outbox.lenght &&
+      !this.state.cachingImages
+    ) {
+      this.downloadMapData()
+    }
+
+    // if map is cached start image caching
     if (
       this.state.offlineRegionStatus &&
       this.state.offlineRegionStatus.percentage === 100 &&
@@ -121,7 +142,12 @@ export class Loading extends Component {
 
   render() {
     const { sync, surveys, families } = this.props
-    const { offlineRegionStatus } = this.state
+    const {
+      loadingData,
+      offlineRegionStatus,
+      cachingImages,
+      dataCached
+    } = this.state
 
     return (
       <View style={[globalStyles.container, styles.view]}>
@@ -135,27 +161,47 @@ export class Loading extends Component {
 
           <Text style={globalStyles.h3}>Yes!</Text>
           <Text style={globalStyles.subline}>We will be ready soon.</Text>
-          {this.state.loadingData ? (
+          {loadingData && (
             <View style={styles.sync}>
-              <Text>
-                Syncing families: {families.length} / {families.length}
-              </Text>
-              <Text>
-                Syncing surveys: {surveys.length} / {surveys.length}
-              </Text>
-              {offlineRegionStatus && (
-                <Text>
-                  Downloading offline maps{' '}
-                  {offlineRegionStatus.percentage.toFixed(0)}%
+              <View style={{ flexDirection: 'row' }}>
+                {dataCached && (
+                  <Icon name="check" color={colors.palegreen} size={18} />
+                )}
+                <Text style={dataCached ? { color: colors.palegreen } : {}}>
+                  {dataCached
+                    ? ` ${families.length} Families Synced`
+                    : 'Syncing families...'}
                 </Text>
+              </View>
+
+              <View style={{ flexDirection: 'row' }}>
+                {dataCached && (
+                  <Icon name="check" color={colors.palegreen} size={18} />
+                )}
+                <Text style={dataCached ? { color: colors.palegreen } : {}}>
+                  {dataCached
+                    ? ` ${surveys.length} Surveys Synced`
+                    : 'Syncing surveys...'}
+                </Text>
+              </View>
+            </View>
+          )}
+          {offlineRegionStatus && (
+            <View style={{ flexDirection: 'row' }}>
+              {cachingImages && (
+                <Icon name="check" color={colors.palegreen} size={18} />
               )}
-              <Text>
-                Syncing survey images: {sync.images.synced} /{' '}
-                {sync.images.total}
+              <Text style={cachingImages ? { color: colors.palegreen } : {}}>
+                {' '}
+                Downloading offline maps{' '}
+                {offlineRegionStatus.percentage.toFixed(0)}%
               </Text>
             </View>
-          ) : (
-            <View />
+          )}
+          {cachingImages && (
+            <Text>
+              Syncing survey images: {sync.images.synced} / {sync.images.total}
+            </Text>
           )}
         </View>
       </View>
