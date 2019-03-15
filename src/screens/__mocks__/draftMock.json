@@ -1,6 +1,11 @@
 {
   "draftId": 4,
+  "created": "1652378237774",
   "surveyId": 1,
+  "status": "Draft",
+  "achievements": [],
+  "priorities": [],
+  "progress": { "screen": "Overview" },
   "economicSurveyDataList": [
     { "key": "educationPersonMostStudied", "value": "SCHOOL-COMPLETE" },
     { "key": "receiveStateIncome", "value": "NO" },

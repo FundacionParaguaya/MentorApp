@@ -1,14 +1,10 @@
 import React from 'react'
-import { StyleSheet, View, Text, Platform } from 'react-native'
+import { StyleSheet, View, Platform } from 'react-native'
 import { AndroidBackHandler } from 'react-navigation-backhandler'
-import { deleteDraft } from '../../redux/actions'
-import store from '../../redux/store'
+import ExitDraftPopup from './ExitDraftPopup'
+import BackDraftPopup from './BackDraftPopup'
 import colors from '../../theme.json'
-import Popup from '../Popup'
-import Button from '../Button'
 import IconButton from '../IconButton'
-import globalStyles from '../../globalStyles'
-import i18n from '../../i18n'
 
 // Each of the major views has a stack that needs the same nav options.
 // These options handle the header styles and menu icon.
@@ -50,56 +46,14 @@ export const generateNavOptions = ({ navigation, burgerMenu = true }) => ({
           icon="close"
           size={25}
         />
-        <Popup
+        <ExitDraftPopup
           isOpen={navigation.getParam('modalOpen')}
           onClose={() => navigation.setParams({ modalOpen: false })}
-        >
-          {navigation.getParam('deleteOnExit') ||
-          navigation.state.routeName === 'Terms' ||
-          navigation.state.routeName === 'Privacy' ? (
-            <View>
-              <Text style={[globalStyles.centerText, globalStyles.h3]}>
-                {navigation.state.routeName === 'FamilyParticipant'
-                  ? i18n.t('views.modals.lifeMapWillNotBeSaved')
-                  : i18n.t('views.modals.weCannotContinueToCreateTheLifeMap')}
-              </Text>
-              <Text style={[globalStyles.centerText, styles.subline]}>
-                {i18n.t('views.modals.areYouSureYouWantToExit')}
-              </Text>
-            </View>
-          ) : (
-            <View>
-              <Text style={[globalStyles.centerText, globalStyles.h3]}>
-                {i18n.t('views.modals.yourLifemapIsNotComplete')}
-              </Text>
-              <Text style={[globalStyles.centerText, styles.subline]}>
-                {i18n.t('views.modals.thisWillBeSavedAsADraft')}
-              </Text>
-            </View>
-          )}
-
-          <View style={styles.buttonBar}>
-            <Button
-              outlined
-              text={i18n.t('general.yes')}
-              style={{ width: 107 }}
-              handleClick={() => {
-                if (navigation.getParam('deleteOnExit')) {
-                  store.dispatch(deleteDraft(navigation.getParam('draftId')))
-                }
-
-                navigation.popToTop()
-                navigation.navigate('Dashboard')
-              }}
-            />
-            <Button
-              outlined
-              text={i18n.t('general.no')}
-              style={{ width: 107 }}
-              handleClick={() => navigation.setParams({ modalOpen: false })}
-            />
-          </View>
-        </Popup>
+          navigation={navigation}
+          routeName={navigation.state.routeName}
+          deleteOnExit={navigation.getParam('deleteOnExit')}
+          draftId={navigation.getParam('draftId')}
+        />
       </View>
     ) : (
       <View />
@@ -110,6 +64,7 @@ export const generateNavOptions = ({ navigation, burgerMenu = true }) => ({
       onPress={() => navigation.toggleDrawer()}
       icon="menu"
       size={30}
+      badge
     />
   ) : (
     <AndroidBackHandler
@@ -136,38 +91,12 @@ export const generateNavOptions = ({ navigation, burgerMenu = true }) => ({
           icon="arrow-back"
           size={25}
         />
-        <Popup
+        <BackDraftPopup
+          navigation={navigation}
           isOpen={navigation.getParam('backModalOpen')}
           onClose={() => navigation.setParams({ backModalOpen: false })}
-        >
-          <Text style={[globalStyles.centerText, globalStyles.h3]}>
-            {navigation.state.routeName === 'FamilyParticipant'
-              ? i18n.t('views.modals.lifeMapWillNotBeSaved')
-              : i18n.t('views.modals.weCannotContinueToCreateTheLifeMap')}
-          </Text>
-          <Text style={[globalStyles.centerText, styles.subline]}>
-            Are you sure you want to go back?
-          </Text>
-          <View style={styles.buttonBar}>
-            <Button
-              outlined
-              text={i18n.t('general.yes')}
-              style={{ width: 107 }}
-              handleClick={() => {
-                store.dispatch(deleteDraft(navigation.getParam('draftId')))
-                navigation.getParam('onPressBack')
-                  ? navigation.getParam('onPressBack')()
-                  : navigation.goBack()
-              }}
-            />
-            <Button
-              outlined
-              text={i18n.t('general.no')}
-              style={{ width: 107 }}
-              handleClick={() => navigation.setParams({ backModalOpen: false })}
-            />
-          </View>
-        </Popup>
+          routeName={navigation.state.routeName}
+        />
       </View>
     </AndroidBackHandler>
   )
@@ -178,25 +107,5 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     width: 60,
     height: 60
-  },
-  subline: {
-    marginTop: 15,
-    ...Platform.select({
-      ios: {
-        fontFamily: 'Poppins',
-        fontWeight: '500'
-      },
-      android: {
-        fontFamily: 'Poppins Medium'
-      }
-    }),
-    fontSize: 16,
-    lineHeight: 20,
-    color: colors.grey
-  },
-  buttonBar: {
-    flexDirection: 'row',
-    marginTop: 33,
-    justifyContent: 'space-between'
   }
 })
