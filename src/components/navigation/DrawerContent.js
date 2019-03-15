@@ -18,6 +18,7 @@ import i18n from '../../i18n'
 import colors from '../../theme.json'
 import { switchLanguage, logout } from '../../redux/actions'
 import LogoutPopup from './LogoutPopup'
+import ExitDraftPopup from './ExitDraftPopup'
 import dashboardIcon from '../../../assets/images/icon_dashboard.png'
 import familyNavIcon from '../../../assets/images/icon_family_nav.png'
 
@@ -30,6 +31,7 @@ export class DrawerContent extends Component {
     showErrors: false,
     activeTab: 'Dashboard'
   }
+
   changeLanguage = lng => {
     i18n.changeLanguage(lng) // change the currently uses i18n language
     this.props.switchLanguage(lng) // set the redux language for next app use
@@ -60,10 +62,15 @@ export class DrawerContent extends Component {
       ckeckedBoxes: state ? ckeckedBoxes + 1 : ckeckedBoxes - 1
     })
   }
-  navigateToScreen = screen => {
+  navigateToScreen = (screen, currentStack) => {
+    const { navigation } = this.props
     this.setState({ activeTab: screen })
-    this.props.navigation.toggleDrawer()
-    this.props.navigation.navigate(screen)
+    navigation.toggleDrawer()
+    if (currentStack.key === 'Surveys' && currentStack.index) {
+      navigation.setParams({ modalOpen: true })
+    } else {
+      navigation.navigate(screen)
+    }
   }
   render() {
     const { lng, user, navigation } = this.props
@@ -71,7 +78,16 @@ export class DrawerContent extends Component {
     const unsyncedDrafts = this.props.drafts.filter(
       draft => draft.status !== 'Synced'
     ).length
+    const {state} = navigation
+    const currentStack = state.routes[state.index]
+    const stackParams  = currentStack.routes[currentStack.index].params
 
+    let draftId, deleteOnExit
+    if (stackParams && stackParams !== null) {
+      draftId = stackParams.draftId !== undefined ? stackParams.draftId : false
+      deleteOnExit = stackParams.deleteOnExit !== undefined ? stackParams.deleteOnExit : false
+    }
+    
     return (
       <ScrollView contentContainerStyle={styles.container}>
         <View>
@@ -120,7 +136,7 @@ export class DrawerContent extends Component {
                 backgroundColor:
                   this.state.activeTab === 'Dashboard' ? colors.primary : null
               }}
-              onPress={() => this.navigateToScreen('Dashboard')}
+              onPress={() => this.navigateToScreen('Dashboard', currentStack)}
               imageSource={dashboardIcon}
               text={i18n.t('views.dashboard')}
               textStyle={styles.label}
@@ -132,7 +148,7 @@ export class DrawerContent extends Component {
                 backgroundColor:
                   this.state.activeTab === 'Surveys' ? colors.primary : null
               }}
-              onPress={() => this.navigateToScreen('Surveys')}
+              onPress={() => this.navigateToScreen('Surveys', currentStack)}
               icon="swap-calls"
               size={20}
               textStyle={styles.label}
@@ -145,7 +161,7 @@ export class DrawerContent extends Component {
                 backgroundColor:
                   this.state.activeTab === 'Families' ? colors.primary : null
               }}
-              onPress={() => this.navigateToScreen('Families')}
+              onPress={() => this.navigateToScreen('Families', currentStack)}
               imageSource={familyNavIcon}
               size={20}
               text={i18n.t('views.families')}
@@ -158,11 +174,12 @@ export class DrawerContent extends Component {
                 backgroundColor:
                   this.state.activeTab === 'Sync' ? colors.primary : null
               }}
-              onPress={() => this.navigateToScreen('Sync')}
+              onPress={() => this.navigateToScreen('Sync', currentStack)}
               icon="sync"
               size={20}
               text={i18n.t('views.synced')}
               textStyle={styles.label}
+              badge
             />
           </View>
         </View>
@@ -197,6 +214,16 @@ export class DrawerContent extends Component {
             })
             navigation.setParams({ logoutModalOpen: false })
           }}
+        />
+        {/* Exit Popup */}
+        <ExitDraftPopup
+          navigation={navigation}
+          isOpen={navigation.getParam('modalOpen')}
+          onClose={() => navigation.setParams({ modalOpen: false })}
+          routeName={currentStack.routes[currentStack.index].routeName}
+          deleteOnExit={deleteOnExit}
+          draftId={draftId}
+          navigateTo={this.state.activeTab}
         />
       </ScrollView>
     )
