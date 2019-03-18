@@ -5,79 +5,168 @@ import {
   StyleSheet,
   View,
   ActivityIndicator,
-  Platform
+  Platform,
+  AsyncStorage
 } from 'react-native'
 import { connect } from 'react-redux'
+import MapboxGL from '@mapbox/react-native-mapbox-gl'
+import Icon from 'react-native-vector-icons/MaterialIcons'
 import { loadFamilies, loadSurveys, setSyncedState } from '../redux/actions'
-import { getHydrationState } from '../redux/store'
 import colors from '../theme.json'
 import globalStyles from '../globalStyles'
 import { url } from '../config'
 import { initImageCaching } from '../cache'
 
 export class Loading extends Component {
-  checkHydrationTimer
   state = {
     loadingData: false, // know when to show that data is synced
-    cachingImages: false
+    cachingImages: false, // know when image caching is running
+    dataCached: false,
+    offlineRegionStatus: null,
+    mapDownloadError: null
   }
-  clearTimers = () => {
-    clearTimeout(this.checkHydrationTimer)
-    this.checkHydrationTimer = null
+
+  downloadMapData = () => {
+    this.setState({
+      dataCached: true
+    })
+    MapboxGL.offlineManager.getPack('Sofia').then(pack => {
+      if (!pack) {
+        MapboxGL.offlineManager.createPack(
+          {
+            name: 'Sofia',
+            styleURL: MapboxGL.StyleURL.Street,
+            minZoom: 14,
+            maxZoom: 18,
+            bounds: [[23.2769621, 42.7159553], [23.3447338, 42.6754659]]
+          },
+          this.onMapDownloadProgress,
+          this.onMapDownloadError
+        )
+      } else {
+        this.setState({
+          offlineRegionStatus: { percentage: 100 }
+        })
+      }
+    })
+    MapboxGL.offlineManager.getPack('Cerrito').then(pack => {
+      if (!pack) {
+        MapboxGL.offlineManager.createPack(
+          {
+            name: 'Cerrito',
+            styleURL: MapboxGL.StyleURL.Street,
+            minZoom: 14,
+            maxZoom: 18,
+            bounds: [[-57.606658, -24.92751], [-57.48788, -24.997528]]
+          },
+          this.onMapDownloadProgress,
+          this.onMapDownloadError
+        )
+      } else {
+        this.setState({
+          offlineRegionStatus: { percentage: 100 }
+        })
+      }
+    })
   }
+
   loadData = () => {
+    // mark that loading has stated to show the progress
     this.setState({
       loadingData: true
     })
-    this.props.loadFamilies(url[this.props.env], this.props.user.token)
-    this.props.loadSurveys(url[this.props.env], this.props.user.token)
-  }
-  checkHydration = () => {
-    if (getHydrationState() === false) {
-      this.checkHydrationTimer = setTimeout(() => {
-        this.checkHydration()
-      }, 1000)
+
+    if (this.props.surveys.length) {
+      this.downloadMapData()
     } else {
-      this.clearTimers()
-      if (!this.props.user.token) {
-        this.props.setSyncedState('login')
-      } else {
-        this.props.setSyncedState('no')
-        this.loadData()
-      }
+      // get the data from the database and store it in redux
+      this.props.loadFamilies(url[this.props.env], this.props.user.token)
+      this.props.loadSurveys(url[this.props.env], this.props.user.token)
     }
   }
-  componentDidMount() {
-    this.checkHydration()
+
+  setSyncedState = () => {
+    // if the user has no token redirect to the login page
+    if (!this.props.user.token) {
+      this.props.setSyncedState('login')
+    } else {
+      // otherwise sync the data
+      this.props.setSyncedState('no')
+      this.loadData()
+    }
   }
 
-  componentDidUpdate() {
-    const { total, synced } = this.props.sync.images
+  onMapDownloadProgress = (offlineRegion, offlineRegionStatus) => {
+    this.setState({
+      offlineRegionStatus
+    })
+  }
 
+  onMapDownloadError = (offlineRegion, mapDownloadError) => {
+    this.setState({
+      mapDownloadError
+    })
+  }
+
+  handleImageCaching() {
+    this.setState({
+      cachingImages: true
+    })
+
+    initImageCaching()
+  }
+
+  componentDidMount() {
+    AsyncStorage.getAllKeys((err, keys) => {
+      if (!keys.lenght || this.props.hydration) {
+        this.setSyncedState()
+      }
+    })
+  }
+
+  componentDidUpdate(prevProps) {
+    // if store is hydrated
+    if (!prevProps.hydration && this.props.hydration) {
+      this.setSyncedState()
+    }
+
+    // if surveys and families are synced, start map download
     if (
+      !prevProps.surveys.length &&
       this.props.surveys.length &&
       !this.props.offline.outbox.lenght &&
       !this.state.cachingImages
     ) {
-      this.setState({
-        cachingImages: true
-      })
-      setTimeout(() => {
-        initImageCaching()
-      }, 1000)
+      this.downloadMapData()
     }
 
-    if (this.state.cachingImages && total && total === synced) {
+    // if map is cached start image caching
+    if (
+      this.state.offlineRegionStatus &&
+      this.state.offlineRegionStatus.percentage === 100 &&
+      !this.state.cachingImages
+    ) {
+      this.handleImageCaching()
+    }
+
+    // if images are synced move to Dashboard
+    if (
+      this.state.cachingImages &&
+      this.props.sync.images.total &&
+      this.props.sync.images.total === this.props.sync.images.synced
+    ) {
       this.props.setSyncedState('yes')
     }
   }
 
-  componentWillUnmount = () => {
-    this.clearTimers()
-  }
-
   render() {
     const { sync, surveys, families } = this.props
+    const {
+      loadingData,
+      offlineRegionStatus,
+      cachingImages,
+      dataCached
+    } = this.state
 
     return (
       <View style={[globalStyles.container, styles.view]}>
@@ -91,21 +180,47 @@ export class Loading extends Component {
 
           <Text style={globalStyles.h3}>Yes!</Text>
           <Text style={globalStyles.subline}>We will be ready soon.</Text>
-          {this.state.loadingData ? (
+          {loadingData && (
             <View style={styles.sync}>
-              <Text>
-                Syncing families: {families.length} / {families.length}
-              </Text>
-              <Text>
-                Syncing surveys: {surveys.length} / {surveys.length}
-              </Text>
-              <Text>
-                Syncing survey images: {sync.images.synced} /{' '}
-                {sync.images.total}
+              <View style={{ flexDirection: 'row' }}>
+                {dataCached && (
+                  <Icon name="check" color={colors.palegreen} size={18} />
+                )}
+                <Text style={dataCached ? { color: colors.palegreen } : {}}>
+                  {dataCached
+                    ? ` ${families.length} Families Synced`
+                    : 'Syncing families...'}
+                </Text>
+              </View>
+
+              <View style={{ flexDirection: 'row' }}>
+                {dataCached && (
+                  <Icon name="check" color={colors.palegreen} size={18} />
+                )}
+                <Text style={dataCached ? { color: colors.palegreen } : {}}>
+                  {dataCached
+                    ? ` ${surveys.length} Surveys Synced`
+                    : 'Syncing surveys...'}
+                </Text>
+              </View>
+            </View>
+          )}
+          {offlineRegionStatus && (
+            <View style={{ flexDirection: 'row' }}>
+              {cachingImages && (
+                <Icon name="check" color={colors.palegreen} size={18} />
+              )}
+              <Text style={cachingImages ? { color: colors.palegreen } : {}}>
+                {' '}
+                Downloading offline maps{' '}
+                {offlineRegionStatus.percentage.toFixed(0)}%
               </Text>
             </View>
-          ) : (
-            <View />
+          )}
+          {cachingImages && (
+            <Text>
+              Syncing survey images: {sync.images.synced} / {sync.images.total}
+            </Text>
           )}
         </View>
       </View>
@@ -122,39 +237,49 @@ Loading.propTypes = {
   sync: PropTypes.object.isRequired,
   surveys: PropTypes.array.isRequired,
   families: PropTypes.array.isRequired,
-  offline: PropTypes.object
+  offline: PropTypes.object.isRequired,
+  hydration: PropTypes.bool.isRequired
 }
 
 const styles = StyleSheet.create({
-  view: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center'
-  },
-  loadingContainer: {
-    justifyContent: 'center',
-    alignItems: 'center'
-  },
   indicator: {
     backgroundColor: colors.white,
     borderRadius: 85,
-    padding: 55,
+    marginBottom: 45,
     marginTop: 22,
-    marginBottom: 45
+    padding: 55
+  },
+  loadingContainer: {
+    alignItems: 'center',
+    justifyContent: 'center'
   },
   sync: {
-    marginTop: 10,
-    alignItems: 'center'
+    alignItems: 'center',
+    marginTop: 10
+  },
+  view: {
+    alignItems: 'center',
+    flex: 1,
+    justifyContent: 'center'
   }
 })
 
-const mapStateToProps = ({ sync, surveys, env, user, offline, families }) => ({
+const mapStateToProps = ({
   sync,
   surveys,
   env,
   user,
   offline,
-  families
+  families,
+  hydration
+}) => ({
+  sync,
+  surveys,
+  env,
+  user,
+  offline,
+  families,
+  hydration
 })
 
 const mapDispatchToProps = {

@@ -95,13 +95,13 @@ def enableSeparateBuildPerCPUArchitecture = false
 def enableProguardInReleaseBuilds = false
 
 android {
-    compileSdkVersion rootProject.ext.compileSdkVersion
-    buildToolsVersion rootProject.ext.buildToolsVersion
+    compileSdkVersion 28
+    buildToolsVersion "28.0.1"
 
     defaultConfig {
         applicationId "com.povertystoplightapp"
         minSdkVersion rootProject.ext.minSdkVersion
-        targetSdkVersion rootProject.ext.targetSdkVersion
+        targetSdkVersion 28
         versionCode 22
         versionName "1.5.1"
         ndk {
@@ -157,6 +157,14 @@ dependencies {
     compile project(':react-native-vector-icons')
     compile project(':react-native-languages')
     compile project(':rn-fetch-blob')
+    compile (project(':mapbox-react-native-mapbox-gl')) {
+        compile ('com.squareup.okhttp3:okhttp:3.6.0') {
+            force = true
+        }
+    }
+    compile 'com.google.android.gms:play-services-base:+'
+    compile 'com.google.android.gms:play-services-location:+'
+    compile 'com.google.android.gms:play-services-maps:+'
     implementation fileTree(dir: "libs", include: ["*.jar"])
     implementation "com.android.support:appcompat-v7:${rootProject.ext.supportLibVersion}"
     implementation "com.facebook.react:react-native:+"  // From node_modules

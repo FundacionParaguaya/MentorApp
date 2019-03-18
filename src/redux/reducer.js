@@ -18,6 +18,7 @@ import {
   SUBMIT_DRAFT_COMMIT,
   SUBMIT_DRAFT_ROLLBACK,
   SWITCH_LANGUAGE,
+  SET_HYDRATED,
   SET_SYNCED_ITEM_TOTAL,
   SET_SYNCED_ITEM_AMOUNT,
   SET_SYNCED_STATE,
@@ -417,6 +418,16 @@ export const language = (state = false, action) => {
   }
 }
 
+// Store Hydration, false by default, not persistent, marks when store is ready
+export const hydration = (state = false, action) => {
+  switch (action.type) {
+    case SET_HYDRATED:
+      return true
+    default:
+      return state
+  }
+}
+
 // Sync
 export const sync = (
   state = {
@@ -462,6 +473,7 @@ const appReducer = combineReducers({
   families,
   drafts,
   language,
+  hydration,
   sync,
   dimensions
 })

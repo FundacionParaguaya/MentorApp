@@ -5,13 +5,12 @@ import {
   ActivityIndicator,
   Text,
   Image,
-  TouchableHighlight,
-  NetInfo
+  TouchableHighlight
 } from 'react-native'
 import { connect } from 'react-redux'
 import PropTypes from 'prop-types'
-import MapView from 'react-native-maps'
 import { withNamespaces } from 'react-i18next'
+import MapboxGL from '@mapbox/react-native-mapbox-gl'
 import StickyFooter from '../../components/StickyFooter'
 import { addSurveyData, addDraftProgress } from '../../redux/actions'
 import TextInput from '../../components/TextInput'
@@ -27,31 +26,19 @@ export class Location extends Component {
     showErrors: false,
     latitude: null,
     longitude: null,
-    latitudeDelta: 0.005,
-    longitudeDelta: 0.005,
     accuracy: null,
     searchAddress: '',
     errorsDetected: [],
     mapsError: false, // error code (2 for location off, 3 for timeout)
     centeringMap: false, // while map is centering we show a different spinner
-    isOnline: true,
     showMap: false // show map even when no location is returned
   }
 
-  mapIsDraggable = false
   survey = this.props.navigation.getParam('survey')
   draftId = this.props.navigation.getParam('draftId') || null
   readonly = !!this.props.navigation.getParam('family')
   errorsDetected = []
   locationCheckTimer
-  constructor(props) {
-    super(props)
-    NetInfo.isConnected.fetch().then(isConnected =>
-      this.setState({
-        isOnline: isConnected
-      })
-    )
-  }
 
   detectError = (error, field) => {
     if (error && !this.errorsDetected.includes(field)) {
@@ -104,7 +91,7 @@ export class Location extends Component {
           this.locationCheckTimer = setTimeout(() => {
             this.getDeviceLocation()
           }, 5000)
-        } else if (this.state.isOnline) {
+        } else {
           const draft = this.getDraft()
 
           if (!this.getFieldValue(draft, 'latitude')) {
@@ -112,17 +99,13 @@ export class Location extends Component {
               this.setState({
                 showMap: true,
                 latitude: this.survey.surveyConfig.surveyLocation.latitude,
-                longitude: this.survey.surveyConfig.surveyLocation.longitude,
-                latitudeDelta: 1,
-                longitudeDelta: 1
+                longitude: this.survey.surveyConfig.surveyLocation.longitude
               })
             } else {
               this.setState({
                 showMap: true,
                 latitude: 0,
-                longitude: 0,
-                latitudeDelta: 100,
-                longitudeDelta: 100
+                longitude: 0
               })
             }
           }
@@ -159,26 +142,23 @@ export class Location extends Component {
       .catch()
   }
   onDragMap = region => {
-    if (!this.mapIsDraggable) {
-      this.mapIsDraggable = true
-    } else {
-      const { latitude, longitude } = region
+    const { coordinates } = region.geometry
+    const longitude = coordinates[0]
+    const latitude = coordinates[1]
 
-      // prevent jumping of the marker
-      if (
-        this.state.latitude !== latitude ||
-        this.state.longitude !== longitude
-      ) {
-        this.mapIsDraggable = false
-        this.setState({
-          latitude,
-          longitude,
-          accuracy: 0
-        })
-        this.addSurveyData(latitude, 'latitude')
-        this.addSurveyData(longitude, 'longitude')
-        this.addSurveyData(0, 'accuracy')
-      }
+    // prevent jumping of the marker
+    if (
+      this.state.latitude !== latitude ||
+      this.state.longitude !== longitude
+    ) {
+      this.setState({
+        latitude,
+        longitude,
+        accuracy: 0
+      })
+      this.addSurveyData(latitude, 'latitude')
+      this.addSurveyData(longitude, 'longitude')
+      this.addSurveyData(0, 'accuracy')
     }
   }
   getDraft = () =>
@@ -187,6 +167,7 @@ export class Location extends Component {
 
   componentDidMount() {
     const draft = this.getDraft()
+
     if (!this.getFieldValue(draft, 'latitude')) {
       this.getDeviceLocation()
     } else {
@@ -251,13 +232,10 @@ export class Location extends Component {
     const {
       mapsError,
       latitude,
-      longitudeDelta,
-      latitudeDelta,
       longitude,
       accuracy,
       searchAddress,
       centeringMap,
-      isOnline,
       showMap,
       showErrors
     } = this.state
@@ -272,7 +250,7 @@ export class Location extends Component {
       >
         {(!this.readonly || (this.readonly && latitude)) && (
           <View>
-            {showMap && isOnline ? (
+            {showMap ? (
               <View>
                 <View pointerEvents="none" style={styles.fakeMarker}>
                   <Image source={marker} />
@@ -289,27 +267,18 @@ export class Location extends Component {
                     value={searchAddress}
                   />
                 )}
-                <MapView
-                  ref={ref => {
-                    this.map = ref
-                  }}
+                <MapboxGL.MapView
+                  centerCoordinate={[longitude, latitude]}
+                  zoomLevel={15}
                   style={styles.map}
-                  initialRegion={{
-                    latitude,
-                    longitude,
-                    latitudeDelta,
-                    longitudeDelta
-                  }}
-                  region={{
-                    latitude,
-                    longitude,
-                    latitudeDelta,
-                    longitudeDelta
-                  }}
-                  onRegionChangeComplete={this.onDragMap}
+                  logoEnabled={false}
                   zoomEnabled={!this.readonly}
-                  rotateEnabled={!this.readonly}
+                  rotateEnabled={false}
                   scrollEnabled={!this.readonly}
+                  pitchEnabled={false}
+                  onRegionDidChange={this.onDragMap}
+                  minZoomLevel={14}
+                  maxZoomLevel={18}
                 />
                 {!this.readonly && (
                   <View>
@@ -357,28 +326,10 @@ export class Location extends Component {
                     <Text style={[styles.errorMsg, styles.centerText]}>
                       {mapsError === 2 &&
                         t('views.family.somethingIsNotWorking')}
-
-                      {!isOnline &&
-                        latitude &&
-                        t('views.family.mapUnavailavleOffline')}
-
-                      {!isOnline &&
-                        mapsError === 3 &&
-                        !latitude &&
-                        t('views.family.neitherMapNorLocation')}
                     </Text>
                     <Text style={[styles.errorSubMsg, styles.centerText]}>
                       {mapsError === 2 &&
                         t('views.family.checkLocationServicesTurnedOn')}
-
-                      {!isOnline &&
-                        latitude &&
-                        t('views.family.weHaveLocation')}
-
-                      {!isOnline &&
-                        mapsError === 3 &&
-                        !latitude &&
-                        t('views.family.describeLocation')}
                     </Text>
                   </View>
                 )}

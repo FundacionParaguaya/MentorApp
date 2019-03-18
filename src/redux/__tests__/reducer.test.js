@@ -79,14 +79,15 @@ describe('login reducer', () => {
         }
       )
     ).toEqual({
+      dimensions: { height: null, width: null },
       drafts: [],
       env: 'production',
       families: [],
+      hydration: false,
       language: false,
       surveys: [],
       sync: { images: { synced: 0, total: 0 }, synced: 'no' },
-      user: { status: null, token: null, username: null },
-      dimensions: { width: null, height: null }
+      user: { status: null, token: null, username: null }
     })
   })
 })
@@ -522,6 +523,16 @@ describe('language reducer', () => {
         language: 'es'
       })
     ).toEqual('es')
+  })
+})
+
+describe('hydration reducer', () => {
+  it('should handle SET_HYDRATED', () => {
+    expect(
+      reducer.hydration(false, {
+        type: action.SET_HYDRATED
+      })
+    ).toEqual(true)
   })
 })
 

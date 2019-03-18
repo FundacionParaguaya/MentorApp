@@ -39,6 +39,8 @@ export const cacheImages = async imageURLs => {
     }
   }
 
+  store.dispatch(setSyncedItemAmount('images', 0))
+
   await asyncForEach(imageURLs, async source => {
     RNFetchBlob.fs
       .exists(`${dirs.DocumentDir}/${source.replace(/https?:\/\//, '')}`)

@@ -229,6 +229,13 @@ export const switchLanguage = language => ({
   language
 })
 
+// Store Hydration
+export const SET_HYDRATED = 'SET_HYDRATED'
+
+export const setHydrated = () => ({
+  type: SET_HYDRATED
+})
+
 // Sync
 export const SET_SYNCED_ITEM_TOTAL = 'SET_SYNCED_ITEM_TOTAL'
 export const SET_SYNCED_ITEM_AMOUNT = 'SET_SYNCED_ITEM_AMOUNT'
