@@ -34,7 +34,7 @@ class DraftListItem extends Component {
       >
         <View>
           <Text style={globalStyles.tag}>
-            {moment(this.props.item.created).format('MMM, DD YYYY')}
+            {moment(this.props.item.created).format('MMM DD, YYYY')}
           </Text>
           <Text style={globalStyles.p}>
             {this.props.item.familyData.familyMembersList[0].firstName}{' '}

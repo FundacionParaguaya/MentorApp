@@ -91,7 +91,7 @@ export class Families extends Component {
         <SearchBar
           id="searchAddress"
           style={styles.search}
-          placeholder={'Search by name or ID number'}
+          placeholder={'Search by name'}
           onChangeText={search => this.setState({ search })}
           value={this.state.search}
         />

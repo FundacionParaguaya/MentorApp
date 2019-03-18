@@ -51,7 +51,7 @@ describe('DraftListItem Component', () => {
           .find(Text)
           .first()
           .props().children
-      ).toEqual('Oct, 19 2018')
+      ).toEqual('Oct 19, 2018')
     })
     it('renders the correct name in last Text component', () => {
       expect(
