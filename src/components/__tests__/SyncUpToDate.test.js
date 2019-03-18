@@ -30,7 +30,7 @@ describe('SyncUpToDate Component', () => {
           .find(Text)
           .last()
           .props().children
-      ).toBe('Last sync: Jan, 01 1970')
+      ).toBe('Last sync: Jan 01, 1970')
     })
   })
 })
