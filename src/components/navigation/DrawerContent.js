@@ -50,6 +50,7 @@ export class DrawerContent extends Component {
       // on logout clear the storage and delete offline map packs
       if (MapboxGL.offlineManager) {
         MapboxGL.offlineManager.deletePack('Sofia')
+        MapboxGL.offlineManager.deletePack('Cerrito')
       }
 
       AsyncStorage.clear()
@@ -87,16 +88,19 @@ export class DrawerContent extends Component {
     const unsyncedDrafts = this.props.drafts.filter(
       draft => draft.status !== 'Synced'
     ).length
-    const {state} = navigation
+    const { state } = navigation
     const currentStack = state.routes[state.index]
-    const stackParams  = currentStack.routes[currentStack.index].params
+    const stackParams = currentStack.routes[currentStack.index].params
 
     let draftId, deleteOnExit
     if (stackParams && stackParams !== null) {
       draftId = stackParams.draftId !== undefined ? stackParams.draftId : false
-      deleteOnExit = stackParams.deleteOnExit !== undefined ? stackParams.deleteOnExit : false
+      deleteOnExit =
+        stackParams.deleteOnExit !== undefined
+          ? stackParams.deleteOnExit
+          : false
     }
-    
+
     return (
       <ScrollView contentContainerStyle={styles.container}>
         <View>

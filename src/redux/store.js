@@ -27,14 +27,20 @@ const store = createStore(
             blacklist: ['hydration']
           },
           // this fires after store hydration is done
-          persistCallback: () => setHydratedState()
+          persistCallback: () => {
+            setLanguage()
+            setHydratedState()
+          }
         })
       )
     : compose(
         applyMiddleware(thunk),
         offline({
           ...offlineConfig,
-          persistCallback: () => setHydratedState()
+          persistCallback: () => {
+            setLanguage()
+            setHydratedState()
+          }
         })
       )
 )

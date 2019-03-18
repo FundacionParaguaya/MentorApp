@@ -38,7 +38,26 @@ export class Loading extends Component {
             styleURL: MapboxGL.StyleURL.Street,
             minZoom: 14,
             maxZoom: 18,
-            bounds: [[42.7159553, 23.2769621], [42.6754659, 23.3447338]]
+            bounds: [[23.2769621, 42.7159553], [23.3447338, 42.6754659]]
+          },
+          this.onMapDownloadProgress,
+          this.onMapDownloadError
+        )
+      } else {
+        this.setState({
+          offlineRegionStatus: { percentage: 100 }
+        })
+      }
+    })
+    MapboxGL.offlineManager.getPack('Cerrito').then(pack => {
+      if (!pack) {
+        MapboxGL.offlineManager.createPack(
+          {
+            name: 'Cerrito',
+            styleURL: MapboxGL.StyleURL.Street,
+            minZoom: 14,
+            maxZoom: 18,
+            bounds: [[-57.606658, -24.92751], [-57.48788, -24.997528]]
           },
           this.onMapDownloadProgress,
           this.onMapDownloadError
