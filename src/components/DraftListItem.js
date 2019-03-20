@@ -12,25 +12,23 @@ class DraftListItem extends Component {
   getColor = status => {
     switch (status) {
       case 'Draft':
-        return colors.palegrey
+        return colors.palegold
       case 'Synced':
-        return colors.palegreen
+        return colors.lightgrey
       case 'Pending sync':
-        return colors.gold
-      case 'Sync error':
         return colors.palered
+      case 'Sync error':
+        return colors.error
       default:
         return colors.palegrey
     }
   }
 
   render() {
-    const linkDisabled = this.props.item.status !== 'Draft'
     return (
       <ListItem
         style={{ ...styles.listItem, ...styles.borderBottom }}
         onPress={this.props.handleClick}
-        disabled={linkDisabled}
       >
         <View>
           <Text style={globalStyles.tag}>
@@ -46,14 +44,10 @@ class DraftListItem extends Component {
               backgroundColor: this.getColor(this.props.item.status)
             }}
           >
-            {this.props.item.status}
+            {this.props.item.status === 'Synced' ? 'Complete' : this.props.item.status}
           </Text>
         </View>
-        {!linkDisabled ? (
-          <Icon name="navigate-next" size={23} color={colors.lightdark} />
-        ) : (
-          <View />
-        )}
+        <Icon name="navigate-next" size={23} color={colors.lightdark} />
       </ListItem>
     )
   }
