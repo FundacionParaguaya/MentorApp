@@ -41,6 +41,7 @@
   "devDependencies": {
     "babel-eslint": "^10.0.1",
     "babel-jest": "23.6.0",
+    "babel-plugin-transform-inline-environment-variables": "^0.4.3",
     "babel-plugin-transform-remove-console": "^6.9.4",
     "enzyme": "^3.9.0",
     "enzyme-adapter-react-16": "^1.11.0",

@@ -117,16 +117,20 @@ export class Loading extends Component {
   }
 
   componentDidMount() {
-    AsyncStorage.getAllKeys((err, keys) => {
-      if (!keys.lenght || this.props.hydration) {
-        this.setSyncedState()
-      }
-    })
+    if (this.props.hydration) {
+      this.setSyncedState()
+    }
+
+    if (this.props.sync.synced === 'logout') {
+      AsyncStorage.clear()
+      this.setSyncedState()
+    }
   }
 
   componentDidUpdate(prevProps) {
     // if store is hydrated
     if (!prevProps.hydration && this.props.hydration) {
+      console.log('hydration happens')
       this.setSyncedState()
     }
 

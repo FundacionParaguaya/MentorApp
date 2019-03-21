@@ -5,7 +5,6 @@ import {
   Text,
   StyleSheet,
   View,
-  AsyncStorage,
   Platform
 } from 'react-native'
 import { withNamespaces } from 'react-i18next'
@@ -17,7 +16,7 @@ import globalStyles from '../../globalStyles'
 import IconButton from '../IconButton'
 import i18n from '../../i18n'
 import colors from '../../theme.json'
-import { switchLanguage, logout } from '../../redux/actions'
+import { switchLanguage, logout, setSyncedState } from '../../redux/actions'
 import LogoutPopup from './LogoutPopup'
 import ExitDraftPopup from './ExitDraftPopup'
 import dashboardIcon from '../../../assets/images/icon_dashboard.png'
@@ -53,8 +52,8 @@ export class DrawerContent extends Component {
         MapboxGL.offlineManager.deletePack('Cerrito')
       }
 
-      AsyncStorage.clear()
       this.props.logout(url[this.props.env], this.props.user.token)
+      this.props.setSyncedState('logout')
     } else {
       this.setState({
         showErrors: true
@@ -247,6 +246,7 @@ DrawerContent.propTypes = {
   lng: PropTypes.string,
   switchLanguage: PropTypes.func.isRequired,
   logout: PropTypes.func.isRequired,
+  setSyncedState: PropTypes.func.isRequired,
   navigation: PropTypes.object.isRequired,
   user: PropTypes.object.isRequired,
   drafts: PropTypes.array.isRequired,
@@ -261,7 +261,8 @@ const mapStateToProps = ({ env, user, drafts }) => ({
 
 const mapDispatchToProps = {
   switchLanguage,
-  logout
+  logout,
+  setSyncedState
 }
 
 export default withNamespaces()(

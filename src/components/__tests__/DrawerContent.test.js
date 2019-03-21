@@ -12,6 +12,7 @@ const createTestProps = props => ({
   lng: 'en',
   switchLanguage: jest.fn(),
   logout: jest.fn(),
+  setSyncedState: jest.fn(),
   user: { username: 'Test' },
   drafts: [{ id: 1 }],
   ...props

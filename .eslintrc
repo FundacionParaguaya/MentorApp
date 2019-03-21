@@ -19,6 +19,9 @@
     "plugin:react-native/all",
     "plugin:jest/recommended"
   ],
+  "globals": {
+    "process": "readonly"
+  },
   "rules": {
     "no-console": 0,
     "quotes": ["error", "single"],

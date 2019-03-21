@@ -22,7 +22,12 @@ export class NavWrapper extends Component {
     return (
       <View style={styles.container}>
         <StatusBar barStyle="light-content" />
-        {this.props.sync.synced === 'no' ? <LoadingStack /> : <View />}
+        {this.props.sync.synced === 'no' ||
+        this.props.sync.synced === 'logout' ? (
+          <LoadingStack />
+        ) : (
+          <View />
+        )}
         {this.props.sync.synced === 'login' ? <LoginStack /> : <View />}
         {this.props.sync.synced === 'yes' ? <AppStack /> : <View />}
       </View>

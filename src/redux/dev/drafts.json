@@ -1,0 +1,74 @@
+[
+  {
+    "surveyId": 12,
+    "created": 1553161339308,
+    "draftId": "9df48260-4bbd-11e9-a726-912329d941cb",
+    "economicSurveyDataList": [],
+    "achievements": [],
+    "status": "Draft",
+    "familyData": {
+      "familyMembersList": [
+        {
+          "firstParticipant": true,
+          "socioEconomicAnswers": [],
+          "birthCountry": "PY",
+          "firstName": "Penguin",
+          "lastName": "Man",
+          "gender": "M",
+          "birthDate": 1546300800,
+          "documentType": "0",
+          "documentNumber": "111"
+        }
+      ],
+      "countFamilyMembers": 1,
+      "country": "PY",
+      "latitude": 42.6941965,
+      "longitude": 23.3224639,
+      "accuracy": 18.878000259399414
+    },
+    "priorities": [],
+    "indicatorSurveyDataList": [
+      { "key": "familySavings", "value": 3 },
+      { "key": "garbageDisposal", "value": 3 },
+      { "key": "dentalCare", "value": 3 },
+      { "key": "eyesight", "value": 3 },
+      { "key": "separateBedrooms", "value": 3 },
+      { "key": "properKitchen", "value": 3 },
+      { "key": "safeBathroom", "value": 3 },
+      { "key": "electricityAccess", "value": 3 },
+      { "key": "road", "value": 3 },
+      { "key": "capacityToPlanAndBudget", "value": 3 }
+    ],
+    "progress": { "screen": "Final" }
+  },
+  {
+    "surveyId": 12,
+    "created": 1553162106424,
+    "draftId": "67c17840-4bbf-11e9-9c31-0700e84fc0b6",
+    "economicSurveyDataList": [],
+    "indicatorSurveyDataList": [],
+    "priorities": [],
+    "achievements": [],
+    "familyData": {
+      "familyMembersList": [
+        {
+          "firstParticipant": true,
+          "socioEconomicAnswers": [],
+          "birthCountry": "PY",
+          "firstName": "Location",
+          "lastName": "Gal",
+          "gender": "F",
+          "birthDate": 1175644800,
+          "documentType": "0",
+          "documentNumber": "1"
+        }
+      ],
+      "countFamilyMembers": 1,
+      "latitude": 42.6942009,
+      "longitude": 23.3224792,
+      "accuracy": 18.98900032043457
+    },
+    "status": "Draft",
+    "progress": { "screen": "Location" }
+  }
+]

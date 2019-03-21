@@ -1,5 +1,6 @@
 import { combineReducers } from 'redux'
 import { Sentry } from 'react-native-sentry'
+import devDrafts from './dev/drafts.json'
 import {
   SET_LOGIN_STATE,
   USER_LOGOUT,
@@ -94,8 +95,11 @@ export const families = (state = [], action) => {
 }
 
 //Drafts
-
-export const drafts = (state = [], action) => {
+const nodeEnv = process.env
+export const drafts = (
+  state = nodeEnv.NODE_ENV === 'development' ? devDrafts : [],
+  action
+) => {
   switch (action.type) {
     case CREATE_DRAFT:
       return [...state, { ...action.payload, status: 'Draft' }]
@@ -479,9 +483,5 @@ const appReducer = combineReducers({
 })
 
 export const rootReducer = (state, action) => {
-  if (action.type === USER_LOGOUT) {
-    state = undefined
-  }
-
   return appReducer(state, action)
 }

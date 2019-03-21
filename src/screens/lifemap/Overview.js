@@ -357,6 +357,7 @@ Overview.propTypes = {
   t: PropTypes.func.isRequired,
   drafts: PropTypes.array.isRequired,
   navigation: PropTypes.object.isRequired,
+  familyLifemap: PropTypes.object,
   addDraftProgress: PropTypes.func.isRequired
 }
 
