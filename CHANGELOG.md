@@ -1,5 +1,13 @@
 # Change Log
 
+## [v1.6.1](https://github.com/FundacionParaguaya/MentorApp/tree/v1.6.1) (2019-03-21)
+[Full Changelog](https://github.com/FundacionParaguaya/MentorApp/compare/v1.6.0...v1.6.1)
+
+**Closed issues:**
+
+- Roots of Renewal - Pittsburgh survey [\#445](https://github.com/FundacionParaguaya/MentorApp/issues/445)
+- Offline Maps and Localised Surveys [\#400](https://github.com/FundacionParaguaya/MentorApp/issues/400)
+
 ## [v1.6.0](https://github.com/FundacionParaguaya/MentorApp/tree/v1.6.0) (2019-03-18)
 [Full Changelog](https://github.com/FundacionParaguaya/MentorApp/compare/v1.5.1...v1.6.0)
 
