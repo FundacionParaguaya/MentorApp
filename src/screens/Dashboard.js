@@ -58,25 +58,27 @@ export class Dashboard extends Component {
       })
   }
 
-  navigateToSynced = item => {
+  navigateToSynced = draft => {
     const {
       firstName,
       lastName,
       documentNumber,
       birthDate
-    } = item.familyData.familyMembersList[0]
+    } = draft.familyData.familyMembersList[0]
     const fullName = firstName + lastName
     const filteredFamily = this.props.families.filter(
       family => {
         let familyMemberBirthDate, familyMemberDocumentNumber
-        if (family.snapshotList && family.snapshotList.length > 0) {
-          const { familyData } = family.snapshotList[0]
-          if (familyData.familyMembersList.length > 0) {
-            const { birthDate, documentNumber } = familyData.familyMembersList[0]
+        if (
+          family.snapshotList && 
+          family.snapshotList.length &&
+          family.snapshotList[0].familyMembersList.length
+        ) {
+            const { birthDate, documentNumber } = family.snapshotList[0].familyMembersList[0]
             familyMemberBirthDate = birthDate
             familyMemberDocumentNumber = documentNumber
-          }
         }
+      
         return family.name.toLowerCase().trim().replace(/\s/g, "")
           .includes(`${fullName.trim().replace(/\s/g, "").toLowerCase()}`) &&
           familyMemberBirthDate === birthDate &&

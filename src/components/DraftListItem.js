@@ -25,10 +25,12 @@ class DraftListItem extends Component {
   }
 
   render() {
+    const linkDisabled = this.props.item.status === 'Pending sync'
     return (
       <ListItem
         style={{ ...styles.listItem, ...styles.borderBottom }}
         onPress={this.props.handleClick}
+        disabled={linkDisabled}
       >
         <View>
           <Text style={globalStyles.tag}>
@@ -44,10 +46,14 @@ class DraftListItem extends Component {
               backgroundColor: this.getColor(this.props.item.status)
             }}
           >
-            {this.props.item.status === 'Synced' ? 'Complete' : this.props.item.status}
+            {this.props.item.status}
           </Text>
         </View>
-        <Icon name="navigate-next" size={23} color={colors.lightdark} />
+        {!linkDisabled ? (
+          <Icon name="navigate-next" size={23} color={colors.lightdark} />
+        ) : (
+          <View />
+        )}
       </ListItem>
     )
   }
