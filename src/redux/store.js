@@ -30,17 +30,22 @@ const store = createStore(
           persistCallback: () => {
             setLanguage()
             setHydratedState()
-          }
+          },
+          retry: () => 600000 // retry every 10 minutes
         })
       )
     : compose(
         applyMiddleware(thunk),
         offline({
           ...offlineConfig,
+          persistOptions: {
+            blacklist: ['hydration']
+          },
           persistCallback: () => {
             setLanguage()
             setHydratedState()
-          }
+          },
+          retry: () => 600000 // retry every 10 minutes
         })
       )
 )
