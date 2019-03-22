@@ -386,13 +386,21 @@ export const drafts = (
           : draft
       )
     case SUBMIT_DRAFT_ROLLBACK: {
+      Sentry.setExtraContext({
+        payload: action.meta.payload,
+        errors: action.payload.response.errors
+      })
+
+      Sentry.setTagsContext({
+        environment: nodeEnv.NODE_ENV
+      })
+
       Sentry.captureBreadcrumb({
         message: 'Sync error',
         category: 'action',
         data: {
-          meta: JSON.stringify(action.meta),
-          payload: JSON.stringify(action.payload),
-          type: action.type
+          error: action.payload.response.errors[0].message,
+          description: action.payload.response.errors[0].description
         }
       })
       Sentry.captureException('Sync error')

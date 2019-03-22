@@ -121,16 +121,15 @@ export class Loading extends Component {
       this.setSyncedState()
     }
 
+    // only when user is loging out clear async storage
     if (this.props.sync.synced === 'logout') {
-      AsyncStorage.clear()
-      this.setSyncedState()
+      AsyncStorage.clear(() => this.setSyncedState())
     }
   }
 
   componentDidUpdate(prevProps) {
     // if store is hydrated
     if (!prevProps.hydration && this.props.hydration) {
-      console.log('hydration happens')
       this.setSyncedState()
     }
 

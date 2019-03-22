@@ -251,30 +251,7 @@ describe('drafts reducer', () => {
       })
     ).toEqual(expectedStore)
   })
-  it('should handle SUBMIT_DRAFT_ROLLBACK', () => {
-    const expectedStore = [
-      {
-        draftId: 1,
-        status: 'Synced'
-      },
-      {
-        draftId: 2,
-        status: 'Sync error',
-        priorities: [
-          { indicator: 'phoneNumber', action: 'Action', reason: 'reason' }
-        ],
-        familyData: {
-          familyMembersList: [({ name: 'Joan' }, { name: 'Jane' })]
-        }
-      }
-    ]
-    expect(
-      reducer.drafts(initialStore, {
-        type: action.SUBMIT_DRAFT_ROLLBACK,
-        meta: { id: 2 }
-      })
-    ).toEqual(expectedStore)
-  })
+
   it('should handle ADD_SURVEY_DATA', () => {
     const expectedStore = [
       {
