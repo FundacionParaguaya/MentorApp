@@ -89,24 +89,24 @@ describe('DraftListItem Component', () => {
     //   expect(wrapper.find(Icon)).toHaveLength(0)
     // })
 
-    // it('disables link when status is Pending', () => {
-    //   props = createTestProps({
-    //     item: {
-    //       status: 'Pending sync',
-    //       familyData: {
-    //         familyMembersList: [
-    //           {
-    //             firstName: 'Juan', //mandatory
-    //             lastName: 'Perez' //mandatory
-    //           }
-    //         ]
-    //       }
-    //     }
-    //   })
-    //   wrapper = shallow(<DraftListItem {...props} />)
-    //   expect(wrapper.find(ListItem).props().disabled).toBe(true)
-    //   expect(wrapper.find(Icon)).toHaveLength(0)
-    // })
+    it('disables link when status is Pending', () => {
+      props = createTestProps({
+        item: {
+          status: 'Pending sync',
+          familyData: {
+            familyMembersList: [
+              {
+                firstName: 'Juan', //mandatory
+                lastName: 'Perez' //mandatory
+              }
+            ]
+          }
+        }
+      })
+      wrapper = shallow(<DraftListItem {...props} />)
+      expect(wrapper.find(ListItem).props().disabled).toBe(true)
+      expect(wrapper.find(Icon)).toHaveLength(0)
+    })
     // it('disables link when status is Error', () => {
     //   props = createTestProps({
     //     item: {
