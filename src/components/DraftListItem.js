@@ -12,20 +12,20 @@ class DraftListItem extends Component {
   getColor = status => {
     switch (status) {
       case 'Draft':
-        return colors.palegrey
+        return colors.palegold
       case 'Synced':
-        return colors.palegreen
+        return colors.lightgrey
       case 'Pending sync':
-        return colors.gold
-      case 'Sync error':
         return colors.palered
+      case 'Sync error':
+        return colors.error
       default:
         return colors.palegrey
     }
   }
 
   render() {
-    const linkDisabled = this.props.item.status !== 'Draft'
+    const linkDisabled = this.props.item.status === 'Pending sync'
     return (
       <ListItem
         style={{ ...styles.listItem, ...styles.borderBottom }}

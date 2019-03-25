@@ -28,15 +28,7 @@ describe('SyncListItem Component', () => {
   })
 
   describe('rendering', () => {
-    it('renders <View />', () => {
-      expect(wrapper.find(View)).toHaveLength(2)
-    })
-    it('renders <Text />', () => {
-      expect(wrapper.find(Text)).toHaveLength(2)
-    })
-    it('renders <Icon />', () => {
-      expect(wrapper.find(Icon)).toHaveLength(1)
-    })
+
     it('renders the correct number of family members in first Text component', () => {
       expect(
         wrapper

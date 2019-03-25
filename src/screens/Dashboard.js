@@ -58,6 +58,49 @@ export class Dashboard extends Component {
       })
   }
 
+  navigateToSynced = draft => {
+    const {
+      firstName,
+      lastName,
+      documentNumber,
+      birthDate
+    } = draft.familyData.familyMembersList[0]
+    const fullName = firstName + lastName
+    const filteredFamily = this.props.families.filter(
+      family => {
+        let familyMemberBirthDate, familyMemberDocumentNumber
+        if (
+          family.snapshotList && 
+          family.snapshotList.length &&
+          family.snapshotList[0].familyMembersList.length
+        ) {
+            const { birthDate, documentNumber } = family.snapshotList[0].familyMembersList[0]
+            familyMemberBirthDate = birthDate
+            familyMemberDocumentNumber = documentNumber
+        }
+      
+        return family.name.toLowerCase().trim().replace(/\s/g, "")
+          .includes(`${fullName.trim().replace(/\s/g, "").toLowerCase()}`) &&
+          familyMemberBirthDate === birthDate &&
+          familyMemberDocumentNumber === documentNumber
+      }
+    )
+
+    this.props.navigation.navigate('Family', {
+      familyName: filteredFamily[0].name,
+      familyLifemap: filteredFamily[0].snapshotList
+        ? filteredFamily[0].snapshotList[0]
+        : filteredFamily[0].draft,
+      isDraft: !filteredFamily[0].snapshotList,
+      survey: this.props.surveys.find(survey =>
+        filteredFamily[0].snapshotList
+          ? survey.id === filteredFamily[0].snapshotList[0].surveyId
+          : survey.id === filteredFamily[0].draft.surveyId
+      ),
+      activeTab: 'LifeMap'
+    })
+  }
+
   render() {
     const { t, navigation, drafts } = this.props
 
@@ -91,7 +134,11 @@ export class Dashboard extends Component {
               renderItem={({ item }) => (
                 <DraftListItem
                   item={item}
-                  handleClick={() => this.navigateToDraft(item)}
+                  handleClick={() => {
+                    item.status === 'Synced' 
+                      ? this.navigateToSynced(item) 
+                      : this.navigateToDraft(item)
+                  }}
                 />
               )}
             />
@@ -124,16 +171,18 @@ Dashboard.propTypes = {
   user: PropTypes.object.isRequired,
   offline: PropTypes.object,
   lng: PropTypes.string.isRequired,
-  surveys: PropTypes.array
+  surveys: PropTypes.array,
+  families: PropTypes.array
 }
 
-const mapStateToProps = ({ env, user, drafts, offline, string, surveys }) => ({
+const mapStateToProps = ({ env, user, drafts, offline, string, surveys, families }) => ({
   env,
   user,
   drafts,
   offline,
   string,
-  surveys
+  surveys,
+  families
 })
 
 export default withNamespaces()(connect(mapStateToProps)(Dashboard))

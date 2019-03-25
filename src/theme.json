@@ -12,5 +12,6 @@
   "grey": "#9F9A94",
   "palegrey": "#C6C2BF",
   "lightgrey": "#E6E4E2",
-  "white": "#FFFFFF"
+  "white": "#FFFFFF",
+  "error": "#E0504C"
 }

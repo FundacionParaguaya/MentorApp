@@ -97,7 +97,10 @@ class Button extends Component {
                       : borderColor === colors.palered
                       ? colors.red
                       : colors.lightdark
-                }
+                },
+                this.props.style && this.props.style['backgroundColor'] 
+                  ? styles.whiteText 
+                  : null 
             ]}
           >
             {text}
