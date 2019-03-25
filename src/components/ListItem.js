@@ -22,6 +22,6 @@ export default class ListItem extends Component {
 ListItem.propTypes = {
   children: PropTypes.oneOfType([PropTypes.object, PropTypes.array]),
   onPress: PropTypes.func.isRequired,
-  style: PropTypes.object,
-  disabled: PropTypes.bool
+  disabled: PropTypes.bool,
+  style: PropTypes.object
 }
