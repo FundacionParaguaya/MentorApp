@@ -298,29 +298,7 @@ describe('drafts actions', () => {
         }
       }
     }
-    expect(action.submitDraft(env, token, id, payload)).toEqual({
-      env: 'https://mock/env',
-      id: 1,
-      meta: {
-        offline: {
-          commit: { meta: { id: 1, payload: {} }, type: 'SUBMIT_DRAFT_COMMIT' },
-          effect: {
-            body:
-              '{"query":"mutation addSnapshot($newSnapshot: NewSnapshotDTsOInput) {addSnapshots(newSnapshot: $newSnapshot)  { surveyId surveyVersionId snapshotStoplightAchievements { action indicator roadmap } snapshotStoplightPriorities { reason action indicator estimatedDate } family { familyId } user { userId  username } indicatorSurveyDataList {key value} economicSurveyDataList {key value} familyDataDTO { latitude longitude accuracy familyMemberDTOList { firstName lastName socioEconomicAnswers {key value} } } } }","variables":{"newSnapshot":{}}}',
-            headers: { Authorization: 'Bearer token' },
-            method: 'POST',
-            url: 'https://mock/env/graphql'
-          },
-          rollback: {
-            meta: { id: 1, payload: {} },
-            type: 'SUBMIT_DRAFT_ROLLBACK'
-          }
-        }
-      },
-      payload: {},
-      token: 'token',
-      type: 'SUBMIT_DRAFT'
-    })
+    expect(action.submitDraft(env, token, id, payload)).toEqual(expectedAction)
   })
   describe('language actions', () => {
     it('should create an action to switch the app language', () => {
