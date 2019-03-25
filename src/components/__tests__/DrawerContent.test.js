@@ -51,9 +51,4 @@ describe('Drawer Content', () => {
     wrapper.instance().logUserOut()
     expect(wrapper).toHaveState({ showErrors: false })
   })
-  it('logs out if user has confirmed', () => {
-    wrapper.setState({ ckeckedBoxes: 4 })
-    wrapper.instance().logUserOut()
-    expect(props.logout).toHaveBeenCalledTimes(1)
-  })
 })

@@ -11,7 +11,12 @@ import {
 import { connect } from 'react-redux'
 import MapboxGL from '@mapbox/react-native-mapbox-gl'
 import Icon from 'react-native-vector-icons/MaterialIcons'
-import { loadFamilies, loadSurveys, setSyncedState } from '../redux/actions'
+import {
+  loadFamilies,
+  loadSurveys,
+  setSyncedState,
+  logout
+} from '../redux/actions'
 import colors from '../theme.json'
 import globalStyles from '../globalStyles'
 import { url } from '../config'
@@ -117,13 +122,14 @@ export class Loading extends Component {
   }
 
   componentDidMount() {
-    if (this.props.hydration) {
-      this.setSyncedState()
-    }
-
     // only when user is loging out clear async storage
     if (this.props.sync.synced === 'logout') {
-      AsyncStorage.clear(() => this.setSyncedState())
+      AsyncStorage.clear(() => {
+        this.props.logout()
+        this.props.setSyncedState('login')
+      })
+    } else if (this.props.user.token) {
+      this.setSyncedState()
     }
   }
 
@@ -140,7 +146,13 @@ export class Loading extends Component {
       !this.props.offline.outbox.lenght &&
       !this.state.cachingImages
     ) {
-      this.downloadMapData()
+      const nodeEnv = process.env
+      // cache only families and surveys if in dev env
+      if (nodeEnv.NODE_ENV === 'development') {
+        this.props.setSyncedState('yes')
+      } else {
+        this.downloadMapData()
+      }
     }
 
     // if map is cached start image caching
@@ -158,7 +170,9 @@ export class Loading extends Component {
       this.props.sync.images.total &&
       this.props.sync.images.total === this.props.sync.images.synced
     ) {
-      this.props.setSyncedState('yes')
+      setTimeout(() => {
+        this.props.setSyncedState('yes')
+      }, 200)
     }
   }
 
@@ -234,6 +248,7 @@ export class Loading extends Component {
 Loading.propTypes = {
   loadFamilies: PropTypes.func.isRequired,
   loadSurveys: PropTypes.func.isRequired,
+  logout: PropTypes.func,
   setSyncedState: PropTypes.func.isRequired,
   env: PropTypes.oneOf(['production', 'demo', 'testing', 'development']),
   user: PropTypes.object.isRequired,
@@ -288,7 +303,8 @@ const mapStateToProps = ({
 const mapDispatchToProps = {
   loadFamilies,
   loadSurveys,
-  setSyncedState
+  setSyncedState,
+  logout
 }
 
 export default connect(
