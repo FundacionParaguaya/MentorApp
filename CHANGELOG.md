@@ -1,5 +1,28 @@
 # Change Log
 
+## [v1.6.2](https://github.com/FundacionParaguaya/MentorApp/tree/v1.6.2) (2019-03-25)
+[Full Changelog](https://github.com/FundacionParaguaya/MentorApp/compare/v1.6.1...v1.6.2)
+
+**Implemented enhancements:**
+
+- Life Map tagging [\#442](https://github.com/FundacionParaguaya/MentorApp/issues/442)
+
+**Fixed bugs:**
+
+- Sync screen shows "You are up to date" while having "Sync error" [\#454](https://github.com/FundacionParaguaya/MentorApp/issues/454)
+
+**Closed issues:**
+
+- Linkable Life Maps in the Sync Screen [\#453](https://github.com/FundacionParaguaya/MentorApp/issues/453)
+- Addition of Retry/ Sync button in Sync screen [\#452](https://github.com/FundacionParaguaya/MentorApp/issues/452)
+- Roots of Renewal - New Orleans survey [\#446](https://github.com/FundacionParaguaya/MentorApp/issues/446)
+- Linkable Drafts and Life Maps [\#441](https://github.com/FundacionParaguaya/MentorApp/issues/441)
+
+**Merged pull requests:**
+
+- Sync retry implementation and linkable links in Sync screen [\#460](https://github.com/FundacionParaguaya/MentorApp/pull/460) ([vasildimitroffhristoff](https://github.com/vasildimitroffhristoff))
+- 1.Complete goes to lifemap in family profile page 2.Life map tagging [\#449](https://github.com/FundacionParaguaya/MentorApp/pull/449) ([vasildimitroffhristoff](https://github.com/vasildimitroffhristoff))
+
 ## [v1.6.1](https://github.com/FundacionParaguaya/MentorApp/tree/v1.6.1) (2019-03-21)
 [Full Changelog](https://github.com/FundacionParaguaya/MentorApp/compare/v1.6.0...v1.6.1)
 
