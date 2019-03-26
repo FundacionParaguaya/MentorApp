@@ -102,9 +102,17 @@ export class Loading extends Component {
   }
 
   onMapDownloadProgress = (offlineRegion, offlineRegionStatus) => {
-    this.setState({
-      offlineRegionStatus
-    })
+    if (!this.state.offlineRegionStatus) {
+      this.setState({
+        offlineRegionStatus: { percentage: 0 }
+      })
+    } else if (
+      offlineRegionStatus.percentage > this.state.offlineRegionStatus.percentage
+    ) {
+      this.setState({
+        offlineRegionStatus
+      })
+    }
   }
 
   onMapDownloadError = (offlineRegion, mapDownloadError) => {
@@ -146,13 +154,15 @@ export class Loading extends Component {
       !this.props.offline.outbox.lenght &&
       !this.state.cachingImages
     ) {
-      const nodeEnv = process.env
-      // cache only families and surveys if in dev env
-      if (nodeEnv.NODE_ENV === 'development') {
-        this.props.setSyncedState('yes')
-      } else {
-        this.downloadMapData()
-      }
+      this.downloadMapData()
+
+      // // cache only families and surveys if in dev env
+      // const nodeEnv = process.env
+      // if (nodeEnv.NODE_ENV === 'development') {
+      //   this.props.setSyncedState('yes')
+      // } else {
+      //   this.downloadMapData()
+      // }
     }
 
     // if map is cached start image caching
