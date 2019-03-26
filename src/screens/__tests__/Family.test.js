@@ -10,10 +10,18 @@ const createTestProps = props => ({
   navigation: {
     setParams: jest.fn(),
     replace: jest.fn(),
-    getParam: param =>
-      param === 'survey'
-        ? data
-        : {
+    getParam: param => {
+      switch (param) {
+        case 'survey':
+          return data
+          break
+
+        case 'activeTab':
+          return 'Details'
+          break
+
+        default:
+          return {
             draftId: 1,
             surveyId: 1,
             progress: { screen: 'FamilyMembersNames' },
@@ -28,6 +36,9 @@ const createTestProps = props => ({
               ]
             }
           }
+          break
+      }
+    }
   },
   surveys: [{ id: 1 }],
   ...props
@@ -51,7 +62,43 @@ describe('Single Family View', () => {
   })
   describe('functionality', () => {
     it('has the correct initial state', () => {
-      expect(wrapper.instance().state.activeTab).toBe('Details')
+      props = createTestProps({
+        navigation: {
+          setParams: jest.fn(),
+          replace: jest.fn(),
+          getParam: param => {
+            switch (param) {
+              case 'survey':
+                return data
+                break
+
+              case 'activeTab':
+                return 'LifeMap'
+                break
+
+              default:
+                return {
+                  draftId: 1,
+                  surveyId: 1,
+                  progress: { screen: 'FamilyMembersNames' },
+                  createdAt: 1,
+                  status: 'Draft',
+                  familyData: {
+                    familyMembersList: [
+                      {
+                        firstName: 'Juan',
+                        lastName: 'Perez'
+                      }
+                    ]
+                  }
+                }
+                break
+            }
+          }
+        }
+      })
+      wrapper = shallow(<Family {...props} />)
+      expect(wrapper).toHaveState({ activeTab: 'LifeMap' })
     })
     it('changes active tab when other tab is clicked', () => {
       wrapper
@@ -77,18 +124,13 @@ describe('Single Family View', () => {
         .find(Button)
         .props()
         .handleClick()
-      expect(wrapper.instance().props.navigation.replace).toHaveBeenCalledTimes(
-        1
-      )
-      expect(wrapper.instance().props.navigation.replace).toHaveBeenCalledWith(
-        'FamilyMembersNames',
-        {
-          draftId: 1,
-          socioEconomics: undefined,
-          step: undefined,
-          survey: { id: 1 }
-        }
-      )
+      expect(wrapper.instance().props.navigation.replace).toHaveBeenCalledTimes(1)
+      expect(wrapper.instance().props.navigation.replace).toHaveBeenCalledWith('FamilyMembersNames', {
+        draftId: 1,
+        socioEconomics: undefined,
+        step: undefined,
+        survey: { id: 1 }
+      })
     })
   })
 })

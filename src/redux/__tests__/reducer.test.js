@@ -226,7 +226,6 @@ describe('drafts reducer', () => {
     ).toEqual(expectedStore)
   })
   it('should handle SUBMIT_DRAFT_COMMIT', () => {
-    const syncedAt = Date.now()
     const expectedStore = [
       {
         draftId: 1,
@@ -235,7 +234,6 @@ describe('drafts reducer', () => {
       {
         draftId: 2,
         status: 'Synced',
-        syncedAt,
         priorities: [
           { indicator: 'phoneNumber', action: 'Action', reason: 'reason' }
         ],
@@ -244,12 +242,17 @@ describe('drafts reducer', () => {
         }
       }
     ]
-    expect(
-      reducer.drafts(initialStore, {
-        type: action.SUBMIT_DRAFT_COMMIT,
-        meta: { id: 2 }
-      })
-    ).toEqual(expectedStore)
+    expect(reducer.drafts(initialStore, {
+      type: action.SUBMIT_DRAFT_COMMIT,
+      meta: { id: 2 }
+    })[0]).toEqual(expect.objectContaining(expectedStore[0]));
+
+    expect(reducer.drafts(initialStore, {
+      type: action.SUBMIT_DRAFT_COMMIT,
+      meta: { id: 2 }
+    })[1]).toEqual(expect.objectContaining(expectedStore[1]));
+
+  
   })
 
   it('should handle ADD_SURVEY_DATA', () => {

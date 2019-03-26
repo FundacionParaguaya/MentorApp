@@ -26,7 +26,7 @@ export class Family extends Component {
     }
   }
 
-  state = { activeTab: 'Details' }
+  state = { activeTab: this.props.navigation.getParam('activeTab') || 'Details' }
   familyLifemap = this.props.navigation.getParam('familyLifemap')
   isDraft = this.props.navigation.getParam('isDraft')
   socioEconomicCategories = [
@@ -58,12 +58,12 @@ export class Family extends Component {
           <FamilyTab
             title={t('views.family.details')}
             onPress={() => this.setState({ activeTab: 'Details' })}
-            active={activeTab === 'Details' && navigation.getParam('activeTab') !== 'LifeMap'}
+            active={activeTab === 'Details'}
           />
           <FamilyTab
             title={t('views.family.lifemap')}
             onPress={() => this.setState({ activeTab: 'LifeMap' })}
-            active={activeTab === 'LifeMap' || navigation.getParam('activeTab') === 'LifeMap'}
+            active={activeTab === 'LifeMap'}
           />
         </View>
         {activeTab === 'Details' ? (
@@ -156,7 +156,7 @@ export class Family extends Component {
             </View>
           </ScrollView>
         ) : null}
-        {activeTab === 'LifeMap' || navigation.getParam('activeTab') === 'LifeMap' ? (
+        {activeTab === 'LifeMap' ? (
           <ScrollView id="lifemap">
             {this.isDraft ? (
               <View>

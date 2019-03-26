@@ -43,10 +43,11 @@ class DraftListItem extends Component {
           <Text
             style={{
               ...styles.label,
-              backgroundColor: this.getColor(this.props.item.status)
+              backgroundColor: this.getColor(this.props.item.status),
+              color: this.props.item.status === 'Synced' ? colors.grey : colors.white
             }}
           >
-            {this.props.item.status}
+            {this.props.item.status === 'Synced' ? 'Completed' : this.props.item.status}
           </Text>
         </View>
         {!linkDisabled ? (
@@ -78,7 +79,6 @@ const styles = StyleSheet.create({
     borderBottomWidth: 1
   },
   label: {
-    color: colors.white,
     borderRadius: 5,
     width: 100,
     height: 25,

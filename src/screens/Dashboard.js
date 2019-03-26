@@ -59,43 +59,27 @@ export class Dashboard extends Component {
   }
 
   navigateToSynced = draft => {
-    const {
-      firstName,
-      lastName,
-      documentNumber,
-      birthDate
-    } = draft.familyData.familyMembersList[0]
-    const fullName = firstName + lastName
-    const filteredFamily = this.props.families.filter(
-      family => {
-        let familyMemberBirthDate, familyMemberDocumentNumber
-        if (
-          family.snapshotList && 
-          family.snapshotList.length &&
-          family.snapshotList[0].familyMembersList.length
-        ) {
-            const { birthDate, documentNumber } = family.snapshotList[0].familyMembersList[0]
-            familyMemberBirthDate = birthDate
-            familyMemberDocumentNumber = documentNumber
-        }
-      
-        return family.name.toLowerCase().trim().replace(/\s/g, "")
-          .includes(`${fullName.trim().replace(/\s/g, "").toLowerCase()}`) &&
-          familyMemberBirthDate === birthDate &&
-          familyMemberDocumentNumber === documentNumber
-      }
-    )
+    const { firstName, lastName } = draft.familyData.familyMembersList[0]
+
+    const filteredFamily = this.props.families.find(family => {
+      return (
+        family.name.toLowerCase() === `${firstName} ${lastName}`.toLowerCase() &&
+        family.snapshotList &&
+        family.snapshotList.length &&
+        family.snapshotList.some(snapshot => snapshot.surveyId === draft.surveyId && JSON.stringify(snapshot.familyData) === JSON.stringify(snapshot.familyData)
+        )
+      )
+    })
 
     this.props.navigation.navigate('Family', {
-      familyName: filteredFamily[0].name,
-      familyLifemap: filteredFamily[0].snapshotList
-        ? filteredFamily[0].snapshotList[0]
-        : filteredFamily[0].draft,
-      isDraft: !filteredFamily[0].snapshotList,
-      survey: this.props.surveys.find(survey =>
-        filteredFamily[0].snapshotList
-          ? survey.id === filteredFamily[0].snapshotList[0].surveyId
-          : survey.id === filteredFamily[0].draft.surveyId
+      familyName: filteredFamily.name,
+      familyLifemap: filteredFamily.snapshotList ? filteredFamily.snapshotList[0] : filteredFamily.draft,
+      isDraft: !filteredFamily.snapshotList,
+      survey: this.props.surveys.find(
+        survey =>
+          filteredFamily.snapshotList
+            ? survey.id === filteredFamily.snapshotList[0].surveyId
+            : survey.id === filteredFamily.draft.surveyId
       ),
       activeTab: 'LifeMap'
     })
@@ -107,8 +91,7 @@ export class Dashboard extends Component {
     const list = drafts.slice().reverse()
     return (
       <ScrollView style={globalStyles.background}>
-        {this.props.offline.outbox.length &&
-        navigation.getParam('firstTimeVisitor') ? null : (
+        {this.props.offline.outbox.length && navigation.getParam('firstTimeVisitor') ? null : (
           <View>
             <View style={globalStyles.container}>
               <Decoration>
@@ -122,9 +105,7 @@ export class Dashboard extends Component {
             </View>
             {drafts.length ? (
               <View style={styles.borderBottom}>
-                <Text style={{ ...globalStyles.subline, ...styles.listTitle }}>
-                  {t('views.latestDrafts')}
-                </Text>
+                <Text style={{ ...globalStyles.subline, ...styles.listTitle }}>{t('views.latestDrafts')}</Text>
               </View>
             ) : null}
             <FlatList
@@ -135,9 +116,7 @@ export class Dashboard extends Component {
                 <DraftListItem
                   item={item}
                   handleClick={() => {
-                    item.status === 'Synced' 
-                      ? this.navigateToSynced(item) 
-                      : this.navigateToDraft(item)
+                    item.status === 'Synced' ? this.navigateToSynced(item) : this.navigateToDraft(item)
                   }}
                 />
               )}

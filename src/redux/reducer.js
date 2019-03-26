@@ -376,14 +376,18 @@ export const drafts = (
           : draft
       )
     case SUBMIT_DRAFT_COMMIT:
-      return state.map(draft =>
-        draft.draftId === action.meta.id
-          ? {
-              ...draft,
-              status: 'Synced',
-              syncedAt: Date.now()
-            }
-          : draft
+      return state.map(draft => {
+        console.log(action);
+        
+        return  draft.draftId === action.meta.id
+        ? {
+            ...draft,
+            status: 'Synced',
+            syncedAt: Date.now()
+          }
+        : draft
+      }
+       
       )
     case SUBMIT_DRAFT_ROLLBACK: {
       return state.map(draft =>
