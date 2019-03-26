@@ -1,5 +1,12 @@
 # Change Log
 
+## [v1.6.3](https://github.com/FundacionParaguaya/MentorApp/tree/v1.6.3) (2019-03-26)
+[Full Changelog](https://github.com/FundacionParaguaya/MentorApp/compare/v1.6.2...v1.6.3)
+
+**Closed issues:**
+
+- Remove the mandatory required on Family Member Names [\#380](https://github.com/FundacionParaguaya/MentorApp/issues/380)
+
 ## [v1.6.2](https://github.com/FundacionParaguaya/MentorApp/tree/v1.6.2) (2019-03-25)
 [Full Changelog](https://github.com/FundacionParaguaya/MentorApp/compare/v1.6.1...v1.6.2)
 
