@@ -10,9 +10,8 @@ import {
 import { withNamespaces } from 'react-i18next'
 import { connect } from 'react-redux'
 import PropTypes from 'prop-types'
-import MapboxGL from '@mapbox/react-native-mapbox-gl'
 import globalStyles from '../../globalStyles'
-import IconButton from '../IconButton'
+import IconButtonComponent from '../IconButton'
 import i18n from '../../i18n'
 import colors from '../../theme.json'
 import { switchLanguage, setSyncedState } from '../../redux/actions'
@@ -44,12 +43,6 @@ export class DrawerContent extends Component {
       this.setState({
         showErrors: false
       })
-
-      // on logout clear the storage and delete offline map packs
-      if (MapboxGL.offlineManager) {
-        MapboxGL.offlineManager.deletePack('Sofia')
-        MapboxGL.offlineManager.deletePack('Cerrito')
-      }
 
       this.props.setSyncedState('logout')
     } else {
@@ -107,7 +100,7 @@ export class DrawerContent extends Component {
           />
           {/* Language Switcher */}
           <View style={styles.languageSwitch}>
-            <IconButton
+            <IconButtonComponent
               id="en"
               onPress={() => this.changeLanguage('en')}
               text="ENG"
@@ -119,7 +112,7 @@ export class DrawerContent extends Component {
             <Text style={[globalStyles.h3, styles.whiteText]}>
               {'  '}|{'  '}
             </Text>
-            <IconButton
+            <IconButtonComponent
               id="es"
               onPress={() => this.changeLanguage('es')}
               text="ESP"
@@ -139,7 +132,7 @@ export class DrawerContent extends Component {
         </View>
         <View style={styles.itemsContainer}>
           <View>
-            <IconButton
+            <IconButtonComponent
               id="dashboard"
               style={{
                 ...styles.navItem,
@@ -151,7 +144,7 @@ export class DrawerContent extends Component {
               text={i18n.t('views.dashboard')}
               textStyle={styles.label}
             />
-            <IconButton
+            <IconButtonComponent
               id="surveys"
               style={{
                 ...styles.navItem,
@@ -164,7 +157,7 @@ export class DrawerContent extends Component {
               textStyle={styles.label}
               text={i18n.t('views.createLifemap')}
             />
-            <IconButton
+            <IconButtonComponent
               id="families"
               style={{
                 ...styles.navItem,
@@ -177,7 +170,7 @@ export class DrawerContent extends Component {
               text={i18n.t('views.families')}
               textStyle={styles.label}
             />
-            <IconButton
+            <IconButtonComponent
               id="sync"
               style={{
                 ...styles.navItem,
@@ -194,7 +187,7 @@ export class DrawerContent extends Component {
           </View>
         </View>
         {/* Logout button */}
-        <IconButton
+        <IconButtonComponent
           id="logout"
           style={styles.navItem}
           onPress={() => {

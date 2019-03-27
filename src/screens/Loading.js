@@ -9,7 +9,6 @@ import {
   AsyncStorage
 } from 'react-native'
 import { connect } from 'react-redux'
-import MapboxGL from '@mapbox/react-native-mapbox-gl'
 import Icon from 'react-native-vector-icons/MaterialIcons'
 import {
   loadFamilies,
@@ -26,53 +25,7 @@ export class Loading extends Component {
   state = {
     loadingData: false, // know when to show that data is synced
     cachingImages: false, // know when image caching is running
-    dataCached: false,
-    offlineRegionStatus: null,
-    mapDownloadError: null
-  }
-
-  downloadMapData = () => {
-    this.setState({
-      dataCached: true
-    })
-    MapboxGL.offlineManager.getPack('Sofia').then(pack => {
-      if (!pack) {
-        MapboxGL.offlineManager.createPack(
-          {
-            name: 'Sofia',
-            styleURL: MapboxGL.StyleURL.Street,
-            minZoom: 14,
-            maxZoom: 18,
-            bounds: [[23.2769621, 42.7159553], [23.3447338, 42.6754659]]
-          },
-          this.onMapDownloadProgress,
-          this.onMapDownloadError
-        )
-      } else {
-        this.setState({
-          offlineRegionStatus: { percentage: 100 }
-        })
-      }
-    })
-    MapboxGL.offlineManager.getPack('Cerrito').then(pack => {
-      if (!pack) {
-        MapboxGL.offlineManager.createPack(
-          {
-            name: 'Cerrito',
-            styleURL: MapboxGL.StyleURL.Street,
-            minZoom: 14,
-            maxZoom: 18,
-            bounds: [[-57.606658, -24.92751], [-57.48788, -24.997528]]
-          },
-          this.onMapDownloadProgress,
-          this.onMapDownloadError
-        )
-      } else {
-        this.setState({
-          offlineRegionStatus: { percentage: 100 }
-        })
-      }
-    })
+    dataCached: false
   }
 
   loadData = () => {
@@ -82,7 +35,9 @@ export class Loading extends Component {
     })
 
     if (this.props.surveys.length) {
-      this.downloadMapData()
+      this.setState({
+        dataCached: true
+      })
     } else {
       // get the data from the database and store it in redux
       this.props.loadFamilies(url[this.props.env], this.props.user.token)
@@ -99,26 +54,6 @@ export class Loading extends Component {
       this.props.setSyncedState('no')
       this.loadData()
     }
-  }
-
-  onMapDownloadProgress = (offlineRegion, offlineRegionStatus) => {
-    if (!this.state.offlineRegionStatus) {
-      this.setState({
-        offlineRegionStatus: { percentage: 0 }
-      })
-    } else if (
-      offlineRegionStatus.percentage > this.state.offlineRegionStatus.percentage
-    ) {
-      this.setState({
-        offlineRegionStatus
-      })
-    }
-  }
-
-  onMapDownloadError = (offlineRegion, mapDownloadError) => {
-    this.setState({
-      mapDownloadError
-    })
   }
 
   handleImageCaching() {
@@ -147,28 +82,11 @@ export class Loading extends Component {
       this.setSyncedState()
     }
 
-    // if surveys and families are synced, start map download
+    // if surveys and families are synced, start image caching
     if (
       !prevProps.surveys.length &&
       this.props.surveys.length &&
       !this.props.offline.outbox.lenght &&
-      !this.state.cachingImages
-    ) {
-      this.downloadMapData()
-
-      // // cache only families and surveys if in dev env
-      // const nodeEnv = process.env
-      // if (nodeEnv.NODE_ENV === 'development') {
-      //   this.props.setSyncedState('yes')
-      // } else {
-      //   this.downloadMapData()
-      // }
-    }
-
-    // if map is cached start image caching
-    if (
-      this.state.offlineRegionStatus &&
-      this.state.offlineRegionStatus.percentage === 100 &&
       !this.state.cachingImages
     ) {
       this.handleImageCaching()
@@ -188,12 +106,7 @@ export class Loading extends Component {
 
   render() {
     const { sync, surveys, families } = this.props
-    const {
-      loadingData,
-      offlineRegionStatus,
-      cachingImages,
-      dataCached
-    } = this.state
+    const { loadingData, cachingImages, dataCached } = this.state
 
     return (
       <View style={[globalStyles.container, styles.view]}>
@@ -207,6 +120,7 @@ export class Loading extends Component {
 
           <Text style={globalStyles.h3}>Yes!</Text>
           <Text style={globalStyles.subline}>We will be ready soon.</Text>
+
           {loadingData && (
             <View style={styles.sync}>
               <View style={{ flexDirection: 'row' }}>
@@ -232,18 +146,7 @@ export class Loading extends Component {
               </View>
             </View>
           )}
-          {offlineRegionStatus && (
-            <View style={{ flexDirection: 'row' }}>
-              {cachingImages && (
-                <Icon name="check" color={colors.palegreen} size={18} />
-              )}
-              <Text style={cachingImages ? { color: colors.palegreen } : {}}>
-                {' '}
-                Downloading offline maps{' '}
-                {offlineRegionStatus.percentage.toFixed(0)}%
-              </Text>
-            </View>
-          )}
+
           {cachingImages && (
             <Text>
               Syncing survey images: {sync.images.synced} / {sync.images.total}
