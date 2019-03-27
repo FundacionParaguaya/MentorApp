@@ -1,5 +1,15 @@
 # Change Log
 
+## [v1.6.5](https://github.com/FundacionParaguaya/MentorApp/tree/v1.6.5) (2019-03-27)
+[Full Changelog](https://github.com/FundacionParaguaya/MentorApp/compare/v1.6.4...v1.6.5)
+
+**Fixed bugs:**
+
+- Undo map [\#468](https://github.com/FundacionParaguaya/MentorApp/pull/468) ([Danman7](https://github.com/Danman7))
+
+## [v1.6.4](https://github.com/FundacionParaguaya/MentorApp/tree/v1.6.4) (2019-03-27)
+[Full Changelog](https://github.com/FundacionParaguaya/MentorApp/compare/v1.6.3...v1.6.4)
+
 ## [v1.6.3](https://github.com/FundacionParaguaya/MentorApp/tree/v1.6.3) (2019-03-26)
 [Full Changelog](https://github.com/FundacionParaguaya/MentorApp/compare/v1.6.2...v1.6.3)
 
