@@ -376,18 +376,14 @@ export const drafts = (
           : draft
       )
     case SUBMIT_DRAFT_COMMIT:
-      return state.map(draft => {
-        console.log(action);
-        
-        return  draft.draftId === action.meta.id
-        ? {
-            ...draft,
-            status: 'Synced',
-            syncedAt: Date.now()
-          }
-        : draft
-      }
-       
+      return state.map(draft =>
+        draft.draftId === action.meta.id
+          ? {
+              ...draft,
+              status: 'Synced',
+              syncedAt: Date.now()
+            }
+          : draft
       )
     case SUBMIT_DRAFT_ROLLBACK: {
       return state.map(draft =>
@@ -484,6 +480,7 @@ export const rootReducer = (state, action) => {
   if (action.type === SUBMIT_DRAFT_ROLLBACK) {
     Sentry.setExtraContext({
       payload: action.meta.payload,
+      familyMembersList: action.meta.payload.familyData.familyMembersList,
       errors: action.payload.response.errors
     })
 

@@ -1,5 +1,4 @@
 import React from 'react'
-import * as store from '../../redux/store'
 import { shallow } from 'enzyme'
 import { Text, ActivityIndicator } from 'react-native'
 import { Loading } from '../Loading'
