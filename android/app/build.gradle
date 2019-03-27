@@ -95,13 +95,13 @@ def enableSeparateBuildPerCPUArchitecture = false
 def enableProguardInReleaseBuilds = false
 
 android {
-    compileSdkVersion 28
-    buildToolsVersion "28.0.1"
+  compileSdkVersion rootProject.ext.compileSdkVersion
+  buildToolsVersion rootProject.ext.buildToolsVersion
 
     defaultConfig {
         applicationId "com.povertystoplightapp"
         minSdkVersion rootProject.ext.minSdkVersion
-        targetSdkVersion 28
+        targetSdkVersion rootProject.ext.targetSdkVersion
         versionCode 26
         versionName "1.6.3"
         ndk {
