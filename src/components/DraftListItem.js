@@ -25,7 +25,9 @@ class DraftListItem extends Component {
   }
 
   render() {
-    const linkDisabled = this.props.item.status === 'Pending sync'
+    const linkDisabled =
+      this.props.item.status === 'Pending sync' ||
+      this.props.item.status === 'Synced'
     return (
       <ListItem
         style={{ ...styles.listItem, ...styles.borderBottom }}
@@ -44,10 +46,13 @@ class DraftListItem extends Component {
             style={{
               ...styles.label,
               backgroundColor: this.getColor(this.props.item.status),
-              color: this.props.item.status === 'Synced' ? colors.grey : colors.white
+              color:
+                this.props.item.status === 'Synced' ? colors.grey : colors.white
             }}
           >
-            {this.props.item.status === 'Synced' ? 'Completed' : this.props.item.status}
+            {this.props.item.status === 'Synced'
+              ? 'Completed'
+              : this.props.item.status}
           </Text>
         </View>
         {!linkDisabled ? (

@@ -1,6 +1,6 @@
 import { combineReducers } from 'redux'
 import { Sentry } from 'react-native-sentry'
-import devDrafts from './dev/drafts.json'
+// import devDrafts from './dev/drafts.json'
 import {
   SET_LOGIN_STATE,
   USER_LOGOUT,
@@ -96,10 +96,7 @@ export const families = (state = [], action) => {
 
 //Drafts
 const nodeEnv = process.env
-export const drafts = (
-  state = nodeEnv.NODE_ENV === 'development' ? devDrafts : [],
-  action
-) => {
+export const drafts = (state = [], action) => {
   switch (action.type) {
     case CREATE_DRAFT:
       return [...state, { ...action.payload, status: 'Draft' }]
