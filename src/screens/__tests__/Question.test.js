@@ -1,7 +1,6 @@
 import React from 'react'
 import { shallow } from 'enzyme'
 import {
-  ScrollView,
   Text,
   ProgressBarAndroid,
   TouchableHighlight
@@ -9,6 +8,7 @@ import {
 import { Question } from '../lifemap/Question'
 import SliderComponent from '../../components/Slider'
 import IconButton from '../../components/IconButton'
+import StickyFooter from '../../components/StickyFooter'
 
 const createTestProps = props => ({
   t: value => value,
@@ -35,7 +35,8 @@ const createTestProps = props => ({
       indicatorSurveyDataList: [
         { key: 'phoneNumber', value: 3 },
         { key: 'education', value: 1 }
-      ]
+      ],
+      progress: { "screen": "Question" , "current": 3}      
     }
   ],
   ...props
@@ -49,15 +50,10 @@ describe('Question View', () => {
     survey.surveyStoplightQuestions[0].required = false
   })
   describe('rendering', () => {
-    it('renders ScrollView', () => {
-      expect(wrapper.find(ScrollView)).toHaveLength(1)
+    it('renders StickyFooter', () => {
+      expect(wrapper.find(StickyFooter)).toHaveLength(1)
     })
-    it('renders Text', () => {
-      expect(wrapper.find(Text)).toHaveLength(2)
-    })
-    it('renders ProgressBarAndroid', () => {
-      expect(wrapper.find(ProgressBarAndroid)).toHaveLength(1)
-    })
+
     it('renders Slider', () => {
       expect(wrapper.find(SliderComponent)).toHaveLength(1)
     })

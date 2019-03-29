@@ -371,7 +371,7 @@ export const drafts = (
         draft.draftId === action.id
           ? {
               ...draft,
-              progress: action.progress
+              progress: {...draft.progress, ...action.progress}
             }
           : draft
       )

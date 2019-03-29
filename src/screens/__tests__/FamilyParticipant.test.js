@@ -34,6 +34,7 @@ const createTestProps = props => ({
       id: 1,
       title: 'Dev Demo',
       survey_version_id: 2,
+      surveyStoplightQuestions: [],
       surveyConfig: {
         surveyLocation: { country: 'BG' },
         gender: [
@@ -199,15 +200,6 @@ describe('Family Participant View', () => {
   })
 
   describe('functionality', () => {
-    it('calls navigator function on pressing Continue button', () => {
-      wrapper
-        .find(StickyFooter)
-        .props()
-        .handleClick()
-      expect(
-        wrapper.instance().props.navigation.navigate
-      ).toHaveBeenCalledTimes(1)
-    })
 
     it('calls addSurveyFamilyMemberData on input change', () => {
       wrapper
@@ -277,6 +269,10 @@ describe('Family Member Count Functionality', () => {
         {
           draftId: 4,
           surveyId: 1,
+          progress: {
+            current: 2,
+            total: 40
+          },
           economicSurveyDataList: [
             { key: 'educationPersonMostStudied', value: 'SCHOOL-COMPLETE' },
             { key: 'receiveStateIncome', value: 'NO' },

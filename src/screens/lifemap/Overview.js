@@ -41,12 +41,13 @@ export class Overview extends Component {
   onPressBack = () => {
     //If we do not arrive to this screen from the families screen
     if (!this.familyLifemap) {
-      const draft = this.props.drafts.find(
-        item => item.draftId === this.draftId
-      )
+      const draft = this.getDraft()
       const skippedQuestions = draft.indicatorSurveyDataList.filter(
         question => question.value === 0
       )
+      this.props.addDraftProgress(this.draftId, {
+        current: draft.progress.current - 1
+      })
       // If there are no skipped questions
       if (skippedQuestions.length > 0) {
         this.props.navigation.navigate('Skipped', {
@@ -120,6 +121,8 @@ export class Overview extends Component {
       this.navigateToScreen('Final')
     }
   }
+
+  getDraft = () => this.props.drafts.find(item => item.draftId === this.draftId)
 
   render() {
     const { t } = this.props

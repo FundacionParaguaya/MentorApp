@@ -8,7 +8,7 @@ import IconButton from '../IconButton'
 
 // Each of the major views has a stack that needs the same nav options.
 // These options handle the header styles and menu icon.
-export const generateNavOptions = ({ navigation, burgerMenu = true }) => ({
+export const generateNavOptions = ({ navigation, burgerMenu = true, shadowHeader = true }) => ({
   headerTitleStyle: {
     ...Platform.select({
       ios: {
@@ -25,7 +25,8 @@ export const generateNavOptions = ({ navigation, burgerMenu = true }) => ({
   },
   headerStyle: {
     height: 66,
-    backgroundColor: colors.white
+    backgroundColor: colors.white,
+    elevation: shadowHeader ? 3 : 0
   },
   headerLeftContainerStyle: {
     marginLeft: 19

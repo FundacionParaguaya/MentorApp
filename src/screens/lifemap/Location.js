@@ -187,6 +187,11 @@ export class Location extends Component {
 
   componentDidMount() {
     const draft = this.getDraft()
+
+    this.props.addDraftProgress(this.draftId, {
+      screen: "Location"
+    });
+
     if (!this.getFieldValue(draft, 'latitude')) {
       this.getDeviceLocation()
     } else {
@@ -198,10 +203,6 @@ export class Location extends Component {
       })
     }
 
-    this.props.addDraftProgress(draft.draftId, {
-      screen: 'Location'
-    })
-
     if (!this.readonly) {
       this.props.navigation.setParams({
         onPressBack: this.onPressBack
@@ -211,6 +212,11 @@ export class Location extends Component {
 
   onPressBack = () => {
     const draft = this.getDraft()
+
+    this.props.addDraftProgress(this.draftId, {
+      current: draft.progress.current - 1
+    });
+
     if (draft.familyData.familyMembersList.length > 1) {
       this.props.navigation.navigate('FamilyGendersBirthdates', {
         draftId: this.draftId,
@@ -232,11 +238,16 @@ export class Location extends Component {
   }
 
   handleClick = () => {
+    const draft = this.getDraft()
+
     if (this.errorsDetected.length) {
       this.setState({
         showErrors: true
       })
     } else {
+      this.props.addDraftProgress(this.draftId, {
+        current: draft.progress.current + 1
+      });
       this.addSurveyData(this.state.accuracy, 'accuracy')
       this.addSurveyData(this.state.latitude, 'latitude')
       this.addSurveyData(this.state.longitude, 'longitude')
@@ -269,6 +280,7 @@ export class Location extends Component {
         handleClick={this.handleClick}
         readonly={this.readonly}
         continueLabel={t('general.continue')}
+        progress={draft ? draft.progress.current / draft.progress.total : 0}
       >
         {(!this.readonly || (this.readonly && latitude)) && (
           <View>

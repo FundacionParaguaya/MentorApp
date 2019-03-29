@@ -1,6 +1,7 @@
 import React, { Component } from 'react'
 import { View, ScrollView, StyleSheet, Keyboard } from 'react-native'
 import Button from './Button'
+import ProgressBar from "./ProgressBar";
 import Tip from './Tip'
 import PropTypes from 'prop-types'
 import globalStyles from '../globalStyles'
@@ -31,6 +32,11 @@ export default class StickyFooter extends Component {
   render() {
     return (
       <View style={[globalStyles.background, styles.contentContainer]}>
+        {!!this.props.progress && (
+          <ProgressBar
+            progress={this.props.progress}
+          />
+        )}
         <ScrollView>{this.props.children}</ScrollView>
         {!this.props.readonly &&
         (this.props.visible && this.state.continueVisible) ? (
@@ -69,7 +75,8 @@ StickyFooter.propTypes = {
   tipIsVisible: PropTypes.bool,
   tipDescription: PropTypes.string,
   onTipClose: PropTypes.func,
-  readonly: PropTypes.bool
+  readonly: PropTypes.bool,
+  progress: PropTypes.number
 }
 
 StickyFooter.defaultProps = {
