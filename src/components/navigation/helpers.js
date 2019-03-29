@@ -45,6 +45,8 @@ export const generateNavOptions = ({ navigation, burgerMenu = true }) => ({
           onPress={() => navigation.setParams({ modalOpen: true })}
           icon="close"
           size={25}
+          accessible={true}
+          accessibilityLabel={'Exit'}
         />
         <ExitDraftPopup
           isOpen={navigation.getParam('modalOpen')}
@@ -65,6 +67,8 @@ export const generateNavOptions = ({ navigation, burgerMenu = true }) => ({
       icon="menu"
       size={30}
       badge
+      accessible={true}
+      accessibilityLabel={'Navigation'}
     />
   ) : (
     <AndroidBackHandler
@@ -90,6 +94,8 @@ export const generateNavOptions = ({ navigation, burgerMenu = true }) => ({
           }}
           icon="arrow-back"
           size={25}
+          accessible={true}
+          accessibilityLabel={'Go back'}
         />
         <BackDraftPopup
           navigation={navigation}

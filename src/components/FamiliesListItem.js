@@ -31,7 +31,14 @@ class FamiliesListItem extends Component {
           <Text style={{ ...globalStyles.p, ...styles.p }}>{family.name}</Text>
           {!family.snapshotList ||
           (family.snapshotList && family.snapshotList.length) ? (
-            <Text style={{ ...globalStyles.subline, ...styles.p }}>
+            <Text style={{ ...globalStyles.subline, ...styles.p }}
+              accessibilityLabel={birthDate
+                ? `Date Of Birth: ${moment
+                    .unix(birthDate)
+                    .utc()
+                    .format('MMMM, DD YYYY')}`
+                : ''}
+            >
               {birthDate
                 ? `DOB: ${moment
                     .unix(birthDate)

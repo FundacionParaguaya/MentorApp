@@ -130,7 +130,9 @@ class TextInput extends Component {
     return readonly && !text ? null : (
       <View style={{ marginBottom: 15 }}>
         {label && (
-          <Text style={styles.label}>{`${label}${
+          <Text style={styles.label}
+            accessibilityLabel={`${label} ${ required && !readonly ? 'required' : ''}`}
+          >{`${label}${
             required && !readonly ? ' *' : ''
           }`}</Text>
         )}
@@ -141,6 +143,7 @@ class TextInput extends Component {
                 ...styles.text,
                 color: this.defineTextColor(status)
               }}
+              accessibilityLabel={`${placeholder} ${required && !label && !readonly ? 'required' : ''}`}
             >
               {`${placeholder} ${required && !label && !readonly ? '*' : ''}`}
               {'\n'}
@@ -163,7 +166,9 @@ class TextInput extends Component {
             multiline={multiline}
           >
             {showPlaceholder ? (
-              <Text style={styles.inputText}>
+              <Text style={styles.inputText}
+                accessibilityLabel={`${placeholder} ${ required && !label ? 'required' : ''}`}
+              >
                 {placeholder} {required && !label ? '*' : ''}
               </Text>
             ) : (

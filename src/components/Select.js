@@ -136,6 +136,7 @@ class Select extends Component {
                       color: colors.green
                     }
                 ]}
+                accessibilityLabel={`${placeholder} ${ required && !readonly ? 'required' : ''}`}
               >{`${placeholder}${required && !readonly ? ' *' : ''}`}</Text>
             )}
             <Text
@@ -143,6 +144,7 @@ class Select extends Component {
                 styles.placeholder,
                 errorMsg ? { color: colors.red } : {}
               ]}
+              accessibilityLabel={value ? text : `${placeholder}${required ? ' required' : ''}`}
             >
               {value ? text : `${placeholder}${required ? ' *' : ''}`}
             </Text>
