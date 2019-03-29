@@ -242,7 +242,7 @@ export class SocioEconomicQuestion extends Component {
       <StickyFooter
         handleClick={this.submitForm}
         continueLabel={t('general.continue')}
-        progress={draft ? draft.progress.current / draft.progress.total : 0}
+        progress={!this.readonly && draft ? draft.progress.current / draft.progress.total : 0}
       >
         {/* questions for entire family */}
         {socioEconomics ? (

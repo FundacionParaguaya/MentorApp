@@ -166,21 +166,6 @@ export class Question extends Component {
         readonly={true}
         progress={draft ? draft.progress.current / draft.progress.total : 0}
       >
-        {/* <View style={{ ...globalStyles.container, paddingTop: 15 }}>
-          <Text style={{ ...globalStyles.h5 }}>
-            {this.indicator.dimension.toUpperCase()}
-          </Text>
-          <Text style={{ ...globalStyles.h3, marginTop: 5 }}>{`${
-            this.indicator.questionText
-          }`}</Text>
-          <ProgressBarAndroid
-            styleAttr="Horizontal"
-            color={colors.green}
-            indeterminate={false}
-            progress={(this.step + 1) / this.indicators.length}
-            style={{ marginTop: 5, marginBottom: -15 }}
-          />
-        </View> */}
         <SliderComponent
           slides={this.slides}
           value={this.getFieldValue(draft, this.indicator.codeName)}

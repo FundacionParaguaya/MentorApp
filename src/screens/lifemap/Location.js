@@ -280,7 +280,7 @@ export class Location extends Component {
         handleClick={this.handleClick}
         readonly={this.readonly}
         continueLabel={t('general.continue')}
-        progress={draft ? draft.progress.current / draft.progress.total : 0}
+        progress={!this.readonly && draft ? draft.progress.current / draft.progress.total : 0}
       >
         {(!this.readonly || (this.readonly && latitude)) && (
           <View>

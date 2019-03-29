@@ -96,12 +96,15 @@ export class FamilyParticipant extends Component {
     }
 
     this.getDraft();
-
-    this.props.addDraftProgress(this.draftId, {
-      screen: "FamilyParticipant",
-      current: 1,
-      total: 5 + this.survey.surveyStoplightQuestions.length
-    });
+    
+    if (!this.readonly) {
+      this.props.addDraftProgress(this.draftId, {
+        screen: "FamilyParticipant",
+        current: 1,
+        total: 5 + this.survey.surveyStoplightQuestions.length
+      });
+    }
+    
 
     this.props.navigation.setParams({ draftId: this.draftId });
   }
@@ -225,7 +228,7 @@ export class FamilyParticipant extends Component {
         handleClick={this.handleClick}
         continueLabel={t("general.continue")}
         readonly={this.readonly}
-        progress={draft ? draft.progress.current / draft.progress.total : 0}
+        progress={!this.readonly && draft ? draft.progress.current / draft.progress.total : 0}
       >
         <Decoration variation="primaryParticipant">
           <Icon name="face" color={colors.grey} size={55} style={styles.icon} />
