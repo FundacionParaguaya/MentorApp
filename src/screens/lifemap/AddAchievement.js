@@ -112,7 +112,7 @@ export class AddAchievement extends Component {
           </View>
         </View>
         <TextInput
-          field="action"
+           field="action"
           required
           readonly={!this.draftId}
           showErrors={showErrors}
