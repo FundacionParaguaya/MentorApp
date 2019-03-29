@@ -19,6 +19,7 @@ export default class Popup extends Component {
           style={styles.container}
           onPress={onClose}
           id="overlay"
+          accessible={true}
         >
           <View id="modal" style={styles.modal}>
             {children}

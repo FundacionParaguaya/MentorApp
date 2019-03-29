@@ -20,22 +20,6 @@ class LifemapVisual extends Component {
     }
   })
 
-  getAccessibilityLabel = item => {
-    switch (item.value) {
-      case 1:
-        return 'Red'
-      case 2:
-        return 'Yellow'
-      case 3:
-        return 'Green'
-      case 0:
-        return 'Grey'
-
-      default:
-        return 'Grey'
-    }
-  }
-
   getUnansweredQuestions =
     this.props.questionsLength - this.props.questions.length > 0
       ? Array(this.props.questionsLength - this.props.questions.length).fill()
@@ -51,11 +35,14 @@ class LifemapVisual extends Component {
     return (
       <View style={styles.container}>
         {this.getColors.map((item, i) => (
-          <View key={i}>
+          <View key={i}
+            accessible={true}
+            accessibilityLabel={Object.keys(colors).find(key => colors[key] === item)}
+          >
             {prioritiesAndAchievements.includes(this.props.questions[i].key) &&
             this.props.questions[i].value ? (
               <Icon
-                name='brightness-1'
+                name="brightness-1"
                 color={colors.blue}
                 size={large ? 12 : 10}
                 style={{
@@ -68,22 +55,20 @@ class LifemapVisual extends Component {
               />
             ) : null}
             <Icon
-              name='brightness-1'
+              name="brightness-1"
               color={item}
               size={large ? 25 : 17}
               style={{
                 marginHorizontal: bigMargin ? 8 : 4,
                 marginVertical: bigMargin ? 4 : 2
               }}
-              accessible={true}
-              accessibilityLabel={this.getAccessibilityLabel(item)}
             />
           </View>
         ))}
         {this.getUnansweredQuestions.map((item, i) => (
           <View key={i}>
             <Icon
-              name='brightness-1'
+              name="brightness-1"
               color={colors.palegrey}
               size={large ? 25 : 17}
               style={{

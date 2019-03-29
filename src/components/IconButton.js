@@ -49,8 +49,8 @@ export class IconButton extends Component {
                 style={this.props.iconStyle || {}}
                 size={this.props.size || 30}
                 color={this.state.pressed ? colors.green : colors.palegreen}
-                accessible={accessible || ''}
-                accessibilityLabel={accessibilityLabel || ''}
+                accessible={accessible}
+                accessibilityLabel={accessibilityLabel}
               />
             )}
             {icon &&
@@ -82,8 +82,8 @@ export class IconButton extends Component {
                         : colors.palegreen
                     }
               ]}
-              accessible={accessible || ''}
-              accessibilityLabel={accessibilityLabel || ''}
+              accessible={accessible}
+              accessibilityLabel={accessibilityLabel}
             >
               {text}
             </Text>
@@ -113,7 +113,7 @@ IconButton.propTypes = {
   drafts: PropTypes.array,
   offline: PropTypes.object.isRequired,
   accessible: PropTypes.bool,
-  accessibilityLabel: PropTypes.string
+  accessibilityLabel: PropTypes.oneOfType([PropTypes.bool, PropTypes.string]),
 }
 
 const styles = StyleSheet.create({
