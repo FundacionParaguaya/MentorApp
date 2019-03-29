@@ -9,7 +9,8 @@ import {
   StyleSheet,
   View,
   NetInfo,
-  Dimensions
+  Dimensions,
+  AsyncStorage
 } from 'react-native'
 import { connect } from 'react-redux'
 import { setEnv, login, setSyncedState, setDimensions } from '../redux/actions'
@@ -28,6 +29,7 @@ export class Login extends Component {
     loading: false
   }
   componentDidMount() {
+    AsyncStorage.clear()
     this.setDimensions()
     this.checkConnectivity().then(isConnected =>
       this.setConnectivityState(isConnected)
@@ -71,7 +73,11 @@ export class Login extends Component {
     })
 
     this.props
-      .login(this.state.username.trim(), this.state.password, url[this.props.env])
+      .login(
+        this.state.username.trim(),
+        this.state.password,
+        url[this.props.env]
+      )
       .then(() => {
         if (this.props.user.status === 200) {
           this.props.setSyncedState('no')
