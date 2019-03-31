@@ -1,5 +1,17 @@
 # Change Log
 
+## [v1.6.6](https://github.com/FundacionParaguaya/MentorApp/tree/v1.6.6) (2019-03-29)
+[Full Changelog](https://github.com/FundacionParaguaya/MentorApp/compare/v1.6.5...v1.6.6)
+
+**Fixed bugs:**
+
+- Rollover on Skipped Indicators BUG [\#403](https://github.com/FundacionParaguaya/MentorApp/issues/403)
+- Elmira survey - dashboard has a couple words that don't match [\#258](https://github.com/FundacionParaguaya/MentorApp/issues/258)
+
+**Merged pull requests:**
+
+- Disable clicking on synced draft [\#471](https://github.com/FundacionParaguaya/MentorApp/pull/471) ([Danman7](https://github.com/Danman7))
+
 ## [v1.6.5](https://github.com/FundacionParaguaya/MentorApp/tree/v1.6.5) (2019-03-27)
 [Full Changelog](https://github.com/FundacionParaguaya/MentorApp/compare/v1.6.4...v1.6.5)
 

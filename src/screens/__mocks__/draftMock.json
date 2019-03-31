@@ -20,17 +20,18 @@
   ],
   "familyData": {
     "countFamilyMembers": 1,
+    "country": "PY",
     "longitude": -25.8976,
     "latitude": -22.2521,
-    "familyIdentifier": "ASD323",
-    "address": "SOME ADDRESS",
-    "code": "1000",
+    "postCode": "1505",
+    "streetOrHouseDescription": "some big red house",
     "accuracy": 100,
     "familyMembersList": [
       {
         "firstName": "Juan",
         "lastName": "Perez",
         "documentNumber": "123456",
+        "documentType": "0",
         "email": "juan@gmail.com",
         "birthCountry": "Paraguay",
         "gender": "F",

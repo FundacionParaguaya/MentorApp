@@ -24,8 +24,7 @@ import { initImageCaching } from '../cache'
 export class Loading extends Component {
   state = {
     loadingData: false, // know when to show that data is synced
-    cachingImages: false, // know when image caching is running
-    dataCached: false
+    cachingImages: false // know when image caching is running
   }
 
   loadData = () => {
@@ -34,12 +33,7 @@ export class Loading extends Component {
       loadingData: true
     })
 
-    if (this.props.surveys.length) {
-      this.setState({
-        dataCached: true
-      })
-    } else {
-      // get the data from the database and store it in redux
+    if (!this.props.surveys.length) {
       this.props.loadFamilies(url[this.props.env], this.props.user.token)
       this.props.loadSurveys(url[this.props.env], this.props.user.token)
     }
@@ -82,31 +76,31 @@ export class Loading extends Component {
       this.setSyncedState()
     }
 
-    // if surveys and families are synced, start image caching
     if (
-      !prevProps.surveys.length &&
       this.props.surveys.length &&
       !this.props.offline.outbox.lenght &&
       !this.state.cachingImages
     ) {
-      this.handleImageCaching()
+      this.setState({
+        cachingImages: true
+      })
+      setTimeout(() => {
+        this.handleImageCaching()
+      }, 1000)
     }
 
-    // if images are synced move to Dashboard
     if (
       this.state.cachingImages &&
-      this.props.sync.images.total &&
+      !!this.props.sync.images.total &&
       this.props.sync.images.total === this.props.sync.images.synced
     ) {
-      setTimeout(() => {
-        this.props.setSyncedState('yes')
-      }, 200)
+      this.props.setSyncedState('yes')
     }
   }
 
   render() {
     const { sync, surveys, families } = this.props
-    const { loadingData, cachingImages, dataCached } = this.state
+    const { loadingData, cachingImages } = this.state
 
     return (
       <View style={[globalStyles.container, styles.view]}>
@@ -124,22 +118,22 @@ export class Loading extends Component {
           {loadingData && (
             <View style={styles.sync}>
               <View style={{ flexDirection: 'row' }}>
-                {dataCached && (
+                {cachingImages && (
                   <Icon name="check" color={colors.palegreen} size={18} />
                 )}
-                <Text style={dataCached ? { color: colors.palegreen } : {}}>
-                  {dataCached
+                <Text style={cachingImages ? { color: colors.palegreen } : {}}>
+                  {cachingImages
                     ? ` ${families.length} Families Synced`
                     : 'Syncing families...'}
                 </Text>
               </View>
 
               <View style={{ flexDirection: 'row' }}>
-                {dataCached && (
+                {cachingImages && (
                   <Icon name="check" color={colors.palegreen} size={18} />
                 )}
-                <Text style={dataCached ? { color: colors.palegreen } : {}}>
-                  {dataCached
+                <Text style={cachingImages ? { color: colors.palegreen } : {}}>
+                  {cachingImages
                     ? ` ${surveys.length} Surveys Synced`
                     : 'Syncing surveys...'}
                 </Text>
