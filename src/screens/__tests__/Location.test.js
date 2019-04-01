@@ -215,6 +215,10 @@ describe('Family Location component', () => {
           {
             draftId: 2,
             surveyId: 1,
+            progress: {
+              current: 2,
+              total: 40
+            },
             economicSurveyDataList: [],
             indicatorSurveyDataList: [],
             familyData: {

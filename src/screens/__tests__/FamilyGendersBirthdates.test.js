@@ -54,7 +54,8 @@ const createTestProps = props => ({
             birthDate: 1515708000
           }
         ]
-      }
+      },
+      progress: { "screen": "FamilyGendersBirthDates" }
     }
   ],
   addSurveyFamilyMemberData: jest.fn(),

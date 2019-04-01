@@ -23,15 +23,24 @@ export class FamilyGendersBirthdates extends Component {
   state = { errorsDetected: [] }
 
   componentDidMount() {
+    const draft = this.getDraft() 
+
     this.props.addDraftProgress(this.draftId, {
       screen: 'FamilyGendersBirthdates'
     })
+
     this.props.navigation.setParams({
       onPressBack: this.onPressBack
     })
   }
 
   onPressBack = () => {
+    const draft = this.getDraft()
+    
+    this.props.addDraftProgress(this.draftId, {
+      current: draft.progress.current - 1
+    });
+
     this.props.navigation.navigate('FamilyMembersNames', {
       draftId: this.draftId,
       survey: this.survey
@@ -55,11 +64,17 @@ export class FamilyGendersBirthdates extends Component {
   }
 
   handleClick = () => {
+    const draft = this.getDraft()
+    
     if (this.errorsDetected.length) {
       this.setState({
         showErrors: true
       })
     } else {
+      this.props.addDraftProgress(this.draftId, {
+        current: draft.progress.current + 1
+      });
+
       this.props.navigation.navigate('Location', {
         draftId: this.draftId,
         survey: this.survey
@@ -94,17 +109,20 @@ export class FamilyGendersBirthdates extends Component {
     })
   }
 
+  getDraft = () => this.props.drafts.find(
+    draft => draft.draftId === this.draftId
+  )
+
   gender = this.survey.surveyConfig.gender
   render() {
     const { t } = this.props
-    const draft = this.props.drafts.filter(
-      draft => draft.draftId === this.draftId
-    )[0]
+    const draft = this.getDraft() 
 
     return (
       <StickyFooter
         handleClick={this.handleClick}
         continueLabel={t('general.continue')}
+        progress={draft ? draft.progress.current / draft.progress.total : 0}
       >
         {draft.familyData.familyMembersList.slice(1).map((item, i) => (
           <View key={i}>

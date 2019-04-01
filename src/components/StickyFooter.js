@@ -1,6 +1,7 @@
 import React, { Component } from 'react'
 import { View, ScrollView, StyleSheet, Keyboard } from 'react-native'
 import Button from './Button'
+import ProgressBar from './ProgressBar'
 import Tip from './Tip'
 import PropTypes from 'prop-types'
 import globalStyles from '../globalStyles'
@@ -28,9 +29,38 @@ export default class StickyFooter extends Component {
     this.keyboardDidHideListener.remove()
   }
 
+  setMarginTop = () => {
+    let marginTop
+    if (!!this.props.progress && this.props.currentScreen !== 'Question') {
+      marginTop = -20
+    } else if (
+      !!this.props.progress &&
+      this.props.currentScreen === 'Question'
+    ) {
+      marginTop = -5
+    } else {
+      marginTop = 0
+    }
+    return marginTop
+  }
+
   render() {
     return (
-      <View style={[globalStyles.background, styles.contentContainer]}>
+      <View
+        style={[
+          globalStyles.background,
+          styles.contentContainer,
+          { marginTop: this.setMarginTop() }
+        ]}
+      >
+        {!!this.props.progress && (
+          <ProgressBar
+            progress={this.props.progress}
+            currentScreen={
+              this.props.currentScreen ? this.props.currentScreen : ''
+            }
+          />
+        )}
         <ScrollView>{this.props.children}</ScrollView>
         {!this.props.readonly &&
         (this.props.visible && this.state.continueVisible) ? (
@@ -38,7 +68,7 @@ export default class StickyFooter extends Component {
             {this.props.type === 'button' ? (
               <View style={{ height: 50 }}>
                 <Button
-                  id="continue"
+                  id='continue'
                   colored
                   text={this.props.continueLabel}
                   handleClick={this.props.handleClick}
@@ -69,7 +99,9 @@ StickyFooter.propTypes = {
   tipIsVisible: PropTypes.bool,
   tipDescription: PropTypes.string,
   onTipClose: PropTypes.func,
-  readonly: PropTypes.bool
+  readonly: PropTypes.bool,
+  progress: PropTypes.number,
+  currentScreen: PropTypes.string
 }
 
 StickyFooter.defaultProps = {
