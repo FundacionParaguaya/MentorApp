@@ -23,7 +23,7 @@ export class SyncUpToDate extends Component {
               ).format('MMMM, DD YYYY')}`}
           >{`${i18n.t('views.sync.lastSync')}${moment(
             this.props.date
-          ).format('MMM, DD YYYY')}`}</Text>
+          ).format('MMM DD, YYYY')}`}</Text>
         ) : null}
       </View>
     )

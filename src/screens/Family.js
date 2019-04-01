@@ -169,7 +169,7 @@ export class Family extends Component {
                   }}
                 >{`${t('views.family.lifeMapCreatedOn')}: \n${moment(
                   this.familyLifemap.created
-                ).format('MMM, DD YYYY')}`}</Text>
+                ).format('MMM DD, YYYY')}`}</Text>
                 <View style={styles.draftContainer}>
                   <RoundImage source="lifemap" />
                   <Button
@@ -198,7 +198,7 @@ export class Family extends Component {
                 >{`${t('views.family.created')}:  ${moment
                   .unix(this.familyLifemap.createdAt)
                   .utc()
-                  .format('MMM, DD YYYY')}`}</Text>
+                  .format('MMM DD, YYYY')}`}</Text>
                 <OverviewComponent
                   navigation={navigation}
                   familyLifemap={this.familyLifemap}

@@ -66,11 +66,9 @@ export class DrawerContent extends Component {
     const { navigation } = this.props
     this.setState({ activeTab: screen })
     navigation.toggleDrawer()
-    if (currentStack.key === 'Surveys' && currentStack.index) {
-      navigation.setParams({ modalOpen: true })
-    } else {
-      navigation.navigate(screen)
-    }
+    currentStack.key === 'Surveys' && currentStack.index
+      ? navigation.setParams({ modalOpen: true })
+      : navigation.navigate(screen)
   }
   render() {
     const { lng, user, navigation } = this.props
@@ -145,7 +143,7 @@ export class DrawerContent extends Component {
               }}
               onPress={() => this.navigateToScreen('Dashboard', currentStack)}
               imageSource={dashboardIcon}
-              text={i18n.t('views.dashboard')}
+              text={i18n.t('views.home')}
               textStyle={styles.label}
             />
             <IconButtonComponent

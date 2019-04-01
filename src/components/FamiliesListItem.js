@@ -43,7 +43,7 @@ class FamiliesListItem extends Component {
                 ? `DOB: ${moment
                     .unix(birthDate)
                     .utc()
-                    .format('MMM, DD YYYY')}`
+                    .format('MMM DD, YYYY')}`
                 : ''}
             </Text>
           ) : (
