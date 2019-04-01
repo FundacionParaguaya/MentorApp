@@ -39,7 +39,8 @@ export default {
       title: i18n.t("views.location"),
       ...generateNavOptions({
         navigation,
-        burgerMenu: false
+        burgerMenu: false,
+        shadowHeader: false
       })
     })
   },
@@ -48,7 +49,8 @@ export default {
     navigationOptions: ({ navigation }) => ({
       ...generateNavOptions({
         navigation,
-        burgerMenu: false
+        burgerMenu: false,
+        shadowHeader: false
       })
     })
   },
@@ -58,7 +60,8 @@ export default {
       title: i18n.t("views.yourLifeMap"),
       ...generateNavOptions({
         navigation,
-        burgerMenu: false
+        burgerMenu: false,
+        shadowHeader: false
       })
     })
   },
@@ -86,7 +89,8 @@ export default {
       title: i18n.t("views.skippedIndicators"),
       ...generateNavOptions({
         navigation,
-        burgerMenu: false
+        burgerMenu: false,
+        shadowHeader: false
       })
     })
   },
@@ -129,7 +133,8 @@ export default {
     navigationOptions: ({ navigation }) => ({
       ...generateNavOptions({
         navigation,
-        burgerMenu: false
+        burgerMenu: false,
+        shadowHeader: false
       })
     })
   },
@@ -139,7 +144,8 @@ export default {
       title: i18n.t("views.familyMembers"),
       ...generateNavOptions({
         navigation,
-        burgerMenu: false
+        burgerMenu: false,
+        shadowHeader: false
       })
     })
   },
@@ -149,7 +155,8 @@ export default {
       title: i18n.t("views.gendersBirthDates"),
       ...generateNavOptions({
         navigation,
-        burgerMenu: false
+        burgerMenu: false,
+        shadowHeader: false
       })
     })
   },
@@ -158,7 +165,8 @@ export default {
     navigationOptions: ({ navigation }) => ({
       ...generateNavOptions({
         navigation,
-        burgerMenu: false
+        burgerMenu: false,
+        shadowHeader: false
       })
     })
   }

@@ -26,7 +26,9 @@ export const generateNavOptions = ({ navigation, burgerMenu = true, shadowHeader
   headerStyle: {
     height: 66,
     backgroundColor: colors.white,
-    elevation: shadowHeader ? 3 : 0
+    elevation: shadowHeader ? 1 : 0,
+    paddingTop: shadowHeader ? 0 : 12,
+    marginTop: shadowHeader ? 0 : -12
   },
   headerLeftContainerStyle: {
     marginLeft: 19

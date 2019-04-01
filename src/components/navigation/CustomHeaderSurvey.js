@@ -23,7 +23,7 @@ CustomHeaderSurvey.propTypes = {
 
 const styles = StyleSheet.create({
   headerQuestions: {
-    paddingTop: 15,
+    paddingTop: 10,
     paddingBottom: 20,
     marginRight: "auto",
     marginLeft: "auto"

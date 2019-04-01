@@ -27,7 +27,7 @@ export class Skipped extends Component {
   onPressBack = () => {
     const draft = this.getDraft()
     this.props.addDraftProgress(this.draftId, {
-      current: draft.progress.current - 1
+      current: draft.progress.total - 2
     })
 
     this.props.navigation.navigate('Question', {
@@ -41,17 +41,12 @@ export class Skipped extends Component {
     return this.props.navigation.isFocused()
   }
   handleClick = () => {
-    const draft = this.getDraft()
-    this.props.addDraftProgress(this.draftId, {
-      current: draft.progress.current + 1
-    })
-
     this.props.navigation.replace('Overview', {
       draftId: this.draftId,
       survey: this.survey,
       resumeDraft: false
     })
-  }  
+  }
 
   onTipClose = () => {
     this.setState({
@@ -59,8 +54,7 @@ export class Skipped extends Component {
     })
   }
 
-  getDraft = () => 
-    this.props.drafts.find(item => item.draftId === this.draftId)
+  getDraft = () => this.props.drafts.find(item => item.draftId === this.draftId)
 
   render() {
     const { t } = this.props
@@ -77,7 +71,7 @@ export class Skipped extends Component {
         tipTitle={t('views.lifemap.youSkipped')}
         tipDescription={t('views.lifemap.whyNotTryAgain')}
         onTipClose={this.onTipClose}
-        progress={draft ? draft.progress.current / draft.progress.total : 0}
+        progress={draft ? (draft.progress.total - 1) / draft.progress.total : 0}
       >
         <Image
           style={styles.image}
