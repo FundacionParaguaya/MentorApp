@@ -7,7 +7,14 @@ export class ProgressBar extends Component {
   render() {
     const { progress } = this.props
     return (
-      <View style={styles.container}>
+      <View
+        style={[
+          styles.container,
+          {
+            borderBottomWidth: this.props.currentScreen === 'Question' ? 0 : 1
+          }
+        ]}
+      >
         <View style={styles.progressBarContainer}>
           <View style={styles.progressBar}>
             <View
@@ -24,13 +31,13 @@ export class ProgressBar extends Component {
 }
 
 ProgressBar.propTypes = {
-  progress: PropTypes.number
+  progress: PropTypes.number,
+  currentScreen: PropTypes.string
 }
 
 const styles = StyleSheet.create({
   container: {
     borderBottomColor: colors.headerBorder,
-    borderBottomWidth: 1,
     paddingBottom: 10,
     marginBottom: 15
   },

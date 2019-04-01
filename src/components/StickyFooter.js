@@ -54,7 +54,12 @@ export default class StickyFooter extends Component {
         ]}
       >
         {!!this.props.progress && (
-          <ProgressBar progress={this.props.progress} />
+          <ProgressBar
+            progress={this.props.progress}
+            currentScreen={
+              this.props.currentScreen ? this.props.currentScreen : ''
+            }
+          />
         )}
         <ScrollView>{this.props.children}</ScrollView>
         {!this.props.readonly &&
