@@ -1,5 +1,29 @@
 # Change Log
 
+## [v1.6.7](https://github.com/FundacionParaguaya/MentorApp/tree/v1.6.7) (2019-04-01)
+[Full Changelog](https://github.com/FundacionParaguaya/MentorApp/compare/v1.6.6...v1.6.7)
+
+**Implemented enhancements:**
+
+- Improvements to Responsive Indicators [\#333](https://github.com/FundacionParaguaya/MentorApp/issues/333)
+- Progress Bar in Life Map Creation to be within all Screens [\#325](https://github.com/FundacionParaguaya/MentorApp/issues/325)
+
+**Fixed bugs:**
+
+- Clicking on synced draft crashes the app [\#469](https://github.com/FundacionParaguaya/MentorApp/issues/469)
+
+**Closed issues:**
+
+- Comma is incorrectly placed in the date  [\#439](https://github.com/FundacionParaguaya/MentorApp/issues/439)
+- Editorial Amends [\#437](https://github.com/FundacionParaguaya/MentorApp/issues/437)
+- Technical Review and Implementation of Talk Back report Part 1 [\#432](https://github.com/FundacionParaguaya/MentorApp/issues/432)
+
+**Merged pull requests:**
+
+- 432 accessibility [\#473](https://github.com/FundacionParaguaya/MentorApp/pull/473) ([vasildimitroffhristoff](https://github.com/vasildimitroffhristoff))
+- 325 progress lifemap [\#472](https://github.com/FundacionParaguaya/MentorApp/pull/472) ([vasildimitroffhristoff](https://github.com/vasildimitroffhristoff))
+- 1\) Issue \#437 Editorial amends 2\) Issue \#439 Comma is incorrectly pla… [\#440](https://github.com/FundacionParaguaya/MentorApp/pull/440) ([vasildimitroffhristoff](https://github.com/vasildimitroffhristoff))
+
 ## [v1.6.6](https://github.com/FundacionParaguaya/MentorApp/tree/v1.6.6) (2019-03-29)
 [Full Changelog](https://github.com/FundacionParaguaya/MentorApp/compare/v1.6.5...v1.6.6)
 
