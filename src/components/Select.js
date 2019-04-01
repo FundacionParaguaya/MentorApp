@@ -144,7 +144,7 @@ class Select extends Component {
                 styles.placeholder,
                 errorMsg ? { color: colors.red } : {}
               ]}
-              accessibilityLabel={value ? text : `${placeholder}${required ? ' This is a mandatory field.' : ''}`}
+              accessibilityLabel={`${placeholder}${required ? ' This is a mandatory field.' : ''}`}
             >
               {value ? text : `${placeholder}${required ? ' *' : ''}`}
             </Text>
