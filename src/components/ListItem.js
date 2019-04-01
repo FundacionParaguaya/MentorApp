@@ -12,6 +12,7 @@ export default class ListItem extends Component {
         activeOpacity={1}
         underlayColor={colors.primary}
         disabled={this.props.disabled}
+        accessible={true}
       >
         <View style={this.props.style || {}}>{this.props.children}</View>
       </TouchableHighlight>

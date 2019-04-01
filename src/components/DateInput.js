@@ -111,7 +111,10 @@ export class DateInput extends React.Component {
 
     return (
       <View>
-        <Text style={[styles.text, { marginBottom: readonly ? -15 : 15 }]}>
+        <Text 
+          style={[styles.text, { marginBottom: readonly ? -15 : 15 }]}
+          accessibilityLabel={`${this.props.label} ${required && !readonly ? ' This is a mandatory field.' : ''}`}
+        >
           {this.props.label} {required && !readonly ? '*' : ''}
         </Text>
         <View style={styles.container}>

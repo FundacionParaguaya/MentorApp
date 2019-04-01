@@ -130,7 +130,9 @@ class TextInput extends Component {
     return readonly && !text ? null : (
       <View style={{ marginBottom: 15 }}>
         {label && (
-          <Text style={styles.label}>{`${label}${
+          <Text style={styles.label}
+            accessibilityLabel={`${label} ${ required && !readonly ? ' This is a mandatory field.' : ''}`}
+          >{`${label}${
             required && !readonly ? ' *' : ''
           }`}</Text>
         )}
@@ -141,6 +143,7 @@ class TextInput extends Component {
                 ...styles.text,
                 color: this.defineTextColor(status)
               }}
+              accessibilityLabel={`${placeholder} ${required && !label && !readonly ? ' This is a mandatory field.' : ''}`}
             >
               {`${placeholder} ${required && !label && !readonly ? '*' : ''}`}
               {'\n'}
@@ -163,7 +166,10 @@ class TextInput extends Component {
             multiline={multiline}
           >
             {showPlaceholder ? (
-              <Text style={styles.inputText}>
+              <Text 
+                style={styles.inputText}
+                accessibilityLabel={`${placeholder} ${ required && !label ? ' This is a mandatory field.' : ''}`}
+              >
                 {placeholder} {required && !label ? '*' : ''}
               </Text>
             ) : (
@@ -204,10 +210,10 @@ const styles = StyleSheet.create({
     fontSize: 14
   },
   inputText: {
-    fontSize: 14
+    fontSize: 14,
   },
   activeInput: {
-    marginTop: -25,
+    marginTop: -10,
     paddingBottom: 0
   },
   blur: {
@@ -228,6 +234,8 @@ const styles = StyleSheet.create({
   },
   text: {
     marginLeft: 15,
+    position: 'relative',
+    top: 10,
     zIndex: 100
   }
 })

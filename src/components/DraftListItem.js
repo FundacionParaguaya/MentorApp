@@ -35,7 +35,7 @@ class DraftListItem extends Component {
         disabled={linkDisabled}
       >
         <View>
-          <Text style={globalStyles.tag}>
+          <Text style={globalStyles.tag} accessibilityLabel={moment(this.props.item.created).format('MMMM, DD YYYY')}>
             {moment(this.props.item.created).format('MMM, DD YYYY')}
           </Text>
           <Text style={globalStyles.p}>

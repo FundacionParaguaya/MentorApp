@@ -35,7 +35,11 @@ class LifemapVisual extends Component {
     return (
       <View style={styles.container}>
         {this.getColors.map((item, i) => (
-          <View key={i}>
+          <View key={i}
+            accessible={true}
+            accessibilityLabel={this.props.questions[i].key}
+            accessibilityHint={Object.keys(colors).find(key => colors[key] === item)}
+          >
             {prioritiesAndAchievements.includes(this.props.questions[i].key) &&
             this.props.questions[i].value ? (
               <Icon

@@ -108,6 +108,8 @@ export class DrawerContent extends Component {
                 globalStyles.h3,
                 lng === 'en' ? styles.whiteText : styles.greyText
               ]}
+              accessible={true}
+              accessibilityLabel={'change to English'}
             />
             <Text style={[globalStyles.h3, styles.whiteText]}>
               {'  '}|{'  '}
@@ -120,6 +122,8 @@ export class DrawerContent extends Component {
                 globalStyles.h3,
                 lng === 'es' ? styles.whiteText : styles.greyText
               ]}
+              accessible={true}
+              accessibilityLabel={'change to Spanish'}
             />
           </View>
           <Text
