@@ -215,6 +215,10 @@ describe('Family Location component', () => {
           {
             draftId: 2,
             surveyId: 1,
+            progress: {
+              current: 2,
+              total: 40
+            },
             economicSurveyDataList: [],
             indicatorSurveyDataList: [],
             familyData: {
@@ -236,7 +240,7 @@ describe('Family Location component', () => {
       })
     })
 
-    it('doesn\'t look for device location if there is one from draft', () => {
+    it("doesn't look for device location if there is one from draft", () => {
       const spy = jest.spyOn(wrapper.instance(), 'getDeviceLocation')
 
       expect(spy).toHaveBeenCalledTimes(0)

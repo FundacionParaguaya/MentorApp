@@ -12,5 +12,8 @@
   "grey": "#9F9A94",
   "palegrey": "#C6C2BF",
   "lightgrey": "#E6E4E2",
-  "white": "#FFFFFF"
+  "white": "#FFFFFF",
+  "error": "#E0504C",
+  "progressBarBg": "#D8D8D8",
+  "headerBorder": "rgba(0,0,0,.18)"
 }

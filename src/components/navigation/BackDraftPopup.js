@@ -19,7 +19,10 @@ export default class BackDraftPopup extends Component {
             ? i18n.t('views.modals.lifeMapWillNotBeSaved')
             : i18n.t('views.modals.weCannotContinueToCreateTheLifeMap')}
         </Text>
-        <Text style={[globalStyles.centerText, styles.subline]}>
+        <Text 
+          style={[globalStyles.centerText, styles.subline]}
+          accessibilityLabel={'Are you sure you want to go back?'}
+        >
           Are you sure you want to go back?
         </Text>
         <View style={styles.buttonBar}>

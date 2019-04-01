@@ -31,7 +31,8 @@ export default class LogoutPopup extends Component {
           <Icon name="close" size={20} />
         </View>
 
-        <View style={styles.modalContainer}>
+        <View style={styles.modalContainer} 
+        accessibilityLiveRegion='polite'>
           <View style={{ alignItems: 'center' }}>
             {!checkboxesVisible ? (
               <Icon

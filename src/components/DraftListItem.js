@@ -12,20 +12,22 @@ class DraftListItem extends Component {
   getColor = status => {
     switch (status) {
       case 'Draft':
-        return colors.palegrey
+        return colors.palegold
       case 'Synced':
-        return colors.palegreen
+        return colors.lightgrey
       case 'Pending sync':
-        return colors.gold
-      case 'Sync error':
         return colors.palered
+      case 'Sync error':
+        return colors.error
       default:
         return colors.palegrey
     }
   }
 
   render() {
-    const linkDisabled = this.props.item.status !== 'Draft'
+    const linkDisabled =
+      this.props.item.status === 'Pending sync' ||
+      this.props.item.status === 'Synced'
     return (
       <ListItem
         style={{ ...styles.listItem, ...styles.borderBottom }}
@@ -33,8 +35,13 @@ class DraftListItem extends Component {
         disabled={linkDisabled}
       >
         <View>
-          <Text style={globalStyles.tag}>
-            {moment(this.props.item.created).format('MMM DD, YYYY')}
+          <Text
+            style={globalStyles.tag}
+            accessibilityLabel={moment(this.props.item.created).format(
+              'MMMM, DD YYYY'
+            )}
+          >
+            {moment(this.props.item.created).format('MMM, DD YYYY')}
           </Text>
           <Text style={globalStyles.p}>
             {this.props.item.familyData.familyMembersList[0].firstName}{' '}
@@ -43,10 +50,14 @@ class DraftListItem extends Component {
           <Text
             style={{
               ...styles.label,
-              backgroundColor: this.getColor(this.props.item.status)
+              backgroundColor: this.getColor(this.props.item.status),
+              color:
+                this.props.item.status === 'Synced' ? colors.grey : colors.white
             }}
           >
-            {this.props.item.status}
+            {this.props.item.status === 'Synced'
+              ? 'Completed'
+              : this.props.item.status}
           </Text>
         </View>
         {!linkDisabled ? (
@@ -78,7 +89,6 @@ const styles = StyleSheet.create({
     borderBottomWidth: 1
   },
   label: {
-    color: colors.white,
     borderRadius: 5,
     width: 100,
     height: 25,

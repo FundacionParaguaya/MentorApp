@@ -16,6 +16,7 @@ const createTestProps = props => ({
     {
       draftId: 4,
       surveyId: 1,
+      progress: { "screen": "FamilyMembersNames" },
       economicSurveyDataList: [
         { key: 'educationPersonMostStudied', value: 'SCHOOL-COMPLETE' },
         { key: 'receiveStateIncome', value: 'NO' },

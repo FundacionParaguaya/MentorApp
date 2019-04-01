@@ -1,12 +1,111 @@
 # Change Log
 
+## [v1.6.6](https://github.com/FundacionParaguaya/MentorApp/tree/v1.6.6) (2019-03-29)
+[Full Changelog](https://github.com/FundacionParaguaya/MentorApp/compare/v1.6.5...v1.6.6)
+
+**Fixed bugs:**
+
+- Rollover on Skipped Indicators BUG [\#403](https://github.com/FundacionParaguaya/MentorApp/issues/403)
+- Elmira survey - dashboard has a couple words that don't match [\#258](https://github.com/FundacionParaguaya/MentorApp/issues/258)
+
+**Merged pull requests:**
+
+- Disable clicking on synced draft [\#471](https://github.com/FundacionParaguaya/MentorApp/pull/471) ([Danman7](https://github.com/Danman7))
+
+## [v1.6.5](https://github.com/FundacionParaguaya/MentorApp/tree/v1.6.5) (2019-03-27)
+[Full Changelog](https://github.com/FundacionParaguaya/MentorApp/compare/v1.6.4...v1.6.5)
+
+**Fixed bugs:**
+
+- Undo map [\#468](https://github.com/FundacionParaguaya/MentorApp/pull/468) ([Danman7](https://github.com/Danman7))
+
+## [v1.6.4](https://github.com/FundacionParaguaya/MentorApp/tree/v1.6.4) (2019-03-27)
+[Full Changelog](https://github.com/FundacionParaguaya/MentorApp/compare/v1.6.3...v1.6.4)
+
+## [v1.6.3](https://github.com/FundacionParaguaya/MentorApp/tree/v1.6.3) (2019-03-26)
+[Full Changelog](https://github.com/FundacionParaguaya/MentorApp/compare/v1.6.2...v1.6.3)
+
+**Closed issues:**
+
+- Remove the mandatory required on Family Member Names [\#380](https://github.com/FundacionParaguaya/MentorApp/issues/380)
+
+## [v1.6.2](https://github.com/FundacionParaguaya/MentorApp/tree/v1.6.2) (2019-03-25)
+[Full Changelog](https://github.com/FundacionParaguaya/MentorApp/compare/v1.6.1...v1.6.2)
+
+**Implemented enhancements:**
+
+- Life Map tagging [\#442](https://github.com/FundacionParaguaya/MentorApp/issues/442)
+
+**Fixed bugs:**
+
+- Sync screen shows "You are up to date" while having "Sync error" [\#454](https://github.com/FundacionParaguaya/MentorApp/issues/454)
+
+**Closed issues:**
+
+- Linkable Life Maps in the Sync Screen [\#453](https://github.com/FundacionParaguaya/MentorApp/issues/453)
+- Addition of Retry/ Sync button in Sync screen [\#452](https://github.com/FundacionParaguaya/MentorApp/issues/452)
+- Roots of Renewal - New Orleans survey [\#446](https://github.com/FundacionParaguaya/MentorApp/issues/446)
+- Linkable Drafts and Life Maps [\#441](https://github.com/FundacionParaguaya/MentorApp/issues/441)
+
+**Merged pull requests:**
+
+- Sync retry implementation and linkable links in Sync screen [\#460](https://github.com/FundacionParaguaya/MentorApp/pull/460) ([vasildimitroffhristoff](https://github.com/vasildimitroffhristoff))
+- 1.Complete goes to lifemap in family profile page 2.Life map tagging [\#449](https://github.com/FundacionParaguaya/MentorApp/pull/449) ([vasildimitroffhristoff](https://github.com/vasildimitroffhristoff))
+
+## [v1.6.1](https://github.com/FundacionParaguaya/MentorApp/tree/v1.6.1) (2019-03-21)
+[Full Changelog](https://github.com/FundacionParaguaya/MentorApp/compare/v1.6.0...v1.6.1)
+
+**Closed issues:**
+
+- Roots of Renewal - Pittsburgh survey [\#445](https://github.com/FundacionParaguaya/MentorApp/issues/445)
+- Offline Maps and Localised Surveys [\#400](https://github.com/FundacionParaguaya/MentorApp/issues/400)
+
+## [v1.6.0](https://github.com/FundacionParaguaya/MentorApp/tree/v1.6.0) (2019-03-18)
+[Full Changelog](https://github.com/FundacionParaguaya/MentorApp/compare/v1.5.1...v1.6.0)
+
+**Implemented enhancements:**
+
+- New titles for the surveys [\#378](https://github.com/FundacionParaguaya/MentorApp/issues/378)
+- Refactor navigation helpers and modals [\#362](https://github.com/FundacionParaguaya/MentorApp/issues/362)
+- Sync - Highlights in Navigation [\#296](https://github.com/FundacionParaguaya/MentorApp/issues/296)
+- Login: Username field should trim whitespace [\#253](https://github.com/FundacionParaguaya/MentorApp/issues/253)
+
+**Fixed bugs:**
+
+- App instability in families screens [\#416](https://github.com/FundacionParaguaya/MentorApp/issues/416)
+- Dashboard button doesn't work when on a survey [\#352](https://github.com/FundacionParaguaya/MentorApp/issues/352)
+
+**Closed issues:**
+
+- Lost surveys in Elmira survey [\#433](https://github.com/FundacionParaguaya/MentorApp/issues/433)
+- BIG BUG: Education section missing Activate survey [\#427](https://github.com/FundacionParaguaya/MentorApp/issues/427)
+- Delete USEM User [\#426](https://github.com/FundacionParaguaya/MentorApp/issues/426)
+- Small changes in Paraguay survey \(Activate\) [\#420](https://github.com/FundacionParaguaya/MentorApp/issues/420)
+- Reports: family address not downloading [\#414](https://github.com/FundacionParaguaya/MentorApp/issues/414)
+- Create new survey: Nelixia - Guatemala [\#409](https://github.com/FundacionParaguaya/MentorApp/issues/409)
+- IRRADIA Argentina Survey: Change text in some indicators. [\#408](https://github.com/FundacionParaguaya/MentorApp/issues/408)
+- Amend Paraguay Survey [\#393](https://github.com/FundacionParaguaya/MentorApp/issues/393)
+- Paraguay survey: Typo [\#390](https://github.com/FundacionParaguaya/MentorApp/issues/390)
+- Design Amendements to the Family Member Pages [\#379](https://github.com/FundacionParaguaya/MentorApp/issues/379)
+- Static Decoration Element [\#371](https://github.com/FundacionParaguaya/MentorApp/issues/371)
+- Manual testing with Talkback [\#366](https://github.com/FundacionParaguaya/MentorApp/issues/366)
+- Map zoom not working  [\#302](https://github.com/FundacionParaguaya/MentorApp/issues/302)
+- Client Support Requests [\#215](https://github.com/FundacionParaguaya/MentorApp/issues/215)
+
+**Merged pull requests:**
+
+- Added trim method in Login to clearn the white spaces on the user input [\#438](https://github.com/FundacionParaguaya/MentorApp/pull/438) ([vasildimitroffhristoff](https://github.com/vasildimitroffhristoff))
+- Sync highlights [\#431](https://github.com/FundacionParaguaya/MentorApp/pull/431) ([vasildimitroffhristoff](https://github.com/vasildimitroffhristoff))
+- Offline map [\#425](https://github.com/FundacionParaguaya/MentorApp/pull/425) ([Danman7](https://github.com/Danman7))
+- Decorationstates [\#422](https://github.com/FundacionParaguaya/MentorApp/pull/422) ([vasildimitroffhristoff](https://github.com/vasildimitroffhristoff))
+- Added face icon on Family members screen [\#418](https://github.com/FundacionParaguaya/MentorApp/pull/418) ([vasildimitroffhristoff](https://github.com/vasildimitroffhristoff))
+
 ## [v1.5.1](https://github.com/FundacionParaguaya/MentorApp/tree/v1.5.1) (2019-03-05)
 [Full Changelog](https://github.com/FundacionParaguaya/MentorApp/compare/v1.5.0...v1.5.1)
 
 **Closed issues:**
 
 - USA Nelixia survey [\#413](https://github.com/FundacionParaguaya/MentorApp/issues/413)
-- Amend Paraguay Survey [\#393](https://github.com/FundacionParaguaya/MentorApp/issues/393)
 
 **Merged pull requests:**
 

@@ -1,9 +1,11 @@
 import React from 'react'
 import { shallow } from 'enzyme'
-import { ScrollView, Text } from 'react-native'
+import { Text } from 'react-native'
 import { BeginLifemap } from '../lifemap/BeginLifemap'
 import RoundImage from '../../components/RoundImage'
 import Button from '../../components/Button'
+import StickyFooter from '../../components/StickyFooter'
+import draft from '../__mocks__/draftMock.json'
 
 const createTestProps = props => ({
   t: value => value,
@@ -11,12 +13,19 @@ const createTestProps = props => ({
     navigate: jest.fn(),
     replace: jest.fn(),
     setParams: jest.fn(),
-    getParam: jest.fn(() => ({
-      id: 2,
-      title: 'Other survey',
-      surveyStoplightQuestions: [{ a: 'a' }, { b: 'b' }, { c: 'c' }]
-    }))
+    getParam: jest.fn((param) => {
+      if (param === 'survey') {
+        return {
+          id: 2,
+          title: 'Other survey',
+          surveyStoplightQuestions: [{ a: 'a' }, { b: 'b' }, { c: 'c' }]
+        }
+      }
+
+      return 4
+    })
   },
+  drafts: [draft],
   addDraftProgress: jest.fn(),
   ...props
 })
@@ -28,17 +37,14 @@ describe('BeginLifemap View', () => {
     wrapper = shallow(<BeginLifemap {...props} />)
   })
   describe('rendering', () => {
-    it('renders ScrollView', () => {
-      expect(wrapper.find(ScrollView)).toHaveLength(1)
+    it('renders StickyFooter', () => {
+      expect(wrapper.find(StickyFooter)).toHaveLength(1)
     })
     it('renders RoundImage', () => {
       expect(wrapper.find(RoundImage)).toHaveLength(1)
     })
     it('renders Text', () => {
       expect(wrapper.find(Text)).toHaveLength(1)
-    })
-    it('renders Button', () => {
-      expect(wrapper.find(Button)).toHaveLength(1)
     })
   })
 

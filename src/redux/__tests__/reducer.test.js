@@ -79,14 +79,15 @@ describe('login reducer', () => {
         }
       )
     ).toEqual({
+      dimensions: { height: null, width: null },
       drafts: [],
       env: 'production',
       families: [],
+      hydration: false,
       language: false,
       surveys: [],
       sync: { images: { synced: 0, total: 0 }, synced: 'no' },
-      user: { status: null, token: null, username: null },
-      dimensions: { width: null, height: null }
+      user: { status: null, token: null, username: null }
     })
   })
 })
@@ -225,7 +226,6 @@ describe('drafts reducer', () => {
     ).toEqual(expectedStore)
   })
   it('should handle SUBMIT_DRAFT_COMMIT', () => {
-    const syncedAt = Date.now()
     const expectedStore = [
       {
         draftId: 1,
@@ -234,7 +234,6 @@ describe('drafts reducer', () => {
       {
         draftId: 2,
         status: 'Synced',
-        syncedAt,
         priorities: [
           { indicator: 'phoneNumber', action: 'Action', reason: 'reason' }
         ],
@@ -243,37 +242,19 @@ describe('drafts reducer', () => {
         }
       }
     ]
-    expect(
-      reducer.drafts(initialStore, {
-        type: action.SUBMIT_DRAFT_COMMIT,
-        meta: { id: 2 }
-      })
-    ).toEqual(expectedStore)
+    expect(reducer.drafts(initialStore, {
+      type: action.SUBMIT_DRAFT_COMMIT,
+      meta: { id: 2 }
+    })[0]).toEqual(expect.objectContaining(expectedStore[0]));
+
+    expect(reducer.drafts(initialStore, {
+      type: action.SUBMIT_DRAFT_COMMIT,
+      meta: { id: 2 }
+    })[1]).toEqual(expect.objectContaining(expectedStore[1]));
+
+  
   })
-  it('should handle SUBMIT_DRAFT_ROLLBACK', () => {
-    const expectedStore = [
-      {
-        draftId: 1,
-        status: 'Synced'
-      },
-      {
-        draftId: 2,
-        status: 'Sync error',
-        priorities: [
-          { indicator: 'phoneNumber', action: 'Action', reason: 'reason' }
-        ],
-        familyData: {
-          familyMembersList: [({ name: 'Joan' }, { name: 'Jane' })]
-        }
-      }
-    ]
-    expect(
-      reducer.drafts(initialStore, {
-        type: action.SUBMIT_DRAFT_ROLLBACK,
-        meta: { id: 2 }
-      })
-    ).toEqual(expectedStore)
-  })
+
   it('should handle ADD_SURVEY_DATA', () => {
     const expectedStore = [
       {
@@ -522,6 +503,16 @@ describe('language reducer', () => {
         language: 'es'
       })
     ).toEqual('es')
+  })
+})
+
+describe('hydration reducer', () => {
+  it('should handle SET_HYDRATED', () => {
+    expect(
+      reducer.hydration(false, {
+        type: action.SET_HYDRATED
+      })
+    ).toEqual(true)
   })
 })
 

@@ -114,7 +114,12 @@ export class SocioEconomicQuestion extends Component {
   }
 
   onPressBack = () => {
+    const draft = this.getDraft()
     const socioEconomics = this.props.navigation.getParam('socioEconomics')
+
+    this.props.addDraftProgress(this.draftId, {
+      current: draft.progress.current - 1
+    });
 
     socioEconomics.currentScreen === 1
       ? this.props.navigation.navigate('Location', {
@@ -189,12 +194,18 @@ export class SocioEconomicQuestion extends Component {
     })
   }
   submitForm = () => {
+    const draft = this.getDraft()
+
     if (this.errorsDetected.length) {
       this.setState({
         showErrors: true
       })
     } else {
       const socioEconomics = this.props.navigation.getParam('socioEconomics')
+
+      this.props.addDraftProgress(this.draftId, {
+        current: draft.progress.current + 1
+      });
 
       socioEconomics.currentScreen === socioEconomics.totalScreens
         ? this.props.navigation.navigate('BeginLifemap', {
@@ -212,13 +223,15 @@ export class SocioEconomicQuestion extends Component {
           })
     }
   }
+
+  getDraft = () => this.props.navigation.getParam('family') ||
+    this.props.drafts.find(draft => draft.draftId === this.draftId)
+
   render() {
     const { t } = this.props
     const { showErrors } = this.state
 
-    const draft =
-      this.props.navigation.getParam('family') ||
-      this.props.drafts.find(draft => draft.draftId === this.draftId)
+    const draft = this.getDraft()
 
     const socioEconomics = this.props.navigation.getParam('socioEconomics')
     const questionsForThisScreen = socioEconomics
@@ -229,7 +242,7 @@ export class SocioEconomicQuestion extends Component {
       <StickyFooter
         handleClick={this.submitForm}
         continueLabel={t('general.continue')}
-        readonly={this.readonly}
+        progress={!this.readonly && draft ? draft.progress.current / draft.progress.total : 0}
       >
         {/* questions for entire family */}
         {socioEconomics ? (

@@ -58,14 +58,40 @@ export class Dashboard extends Component {
       })
   }
 
+  navigateToSynced = draft => {
+    const { firstName, lastName } = draft.familyData.familyMembersList[0]
+
+    const filteredFamily = this.props.families.find(family => {
+      return (
+        family.name.toLowerCase() === `${firstName} ${lastName}`.toLowerCase() &&
+        family.snapshotList &&
+        family.snapshotList.length &&
+        family.snapshotList.some(snapshot => snapshot.surveyId === draft.surveyId && JSON.stringify(snapshot.familyData) === JSON.stringify(snapshot.familyData)
+        )
+      )
+    })
+
+    this.props.navigation.navigate('Family', {
+      familyName: filteredFamily.name,
+      familyLifemap: filteredFamily.snapshotList ? filteredFamily.snapshotList[0] : filteredFamily.draft,
+      isDraft: !filteredFamily.snapshotList,
+      survey: this.props.surveys.find(
+        survey =>
+          filteredFamily.snapshotList
+            ? survey.id === filteredFamily.snapshotList[0].surveyId
+            : survey.id === filteredFamily.draft.surveyId
+      ),
+      activeTab: 'LifeMap'
+    })
+  }
+
   render() {
     const { t, navigation, drafts } = this.props
 
     const list = drafts.slice().reverse()
     return (
       <ScrollView style={globalStyles.background}>
-        {this.props.offline.outbox.length &&
-        navigation.getParam('firstTimeVisitor') ? null : (
+        {this.props.offline.outbox.length && navigation.getParam('firstTimeVisitor') ? null : (
           <View>
             <View style={globalStyles.container}>
               <Decoration>
@@ -79,9 +105,7 @@ export class Dashboard extends Component {
             </View>
             {drafts.length ? (
               <View style={styles.borderBottom}>
-                <Text style={{ ...globalStyles.subline, ...styles.listTitle }}>
-                  {t('views.latestDrafts')}
-                </Text>
+                <Text style={{ ...globalStyles.subline, ...styles.listTitle }}>{t('views.latestDrafts')}</Text>
               </View>
             ) : null}
             <FlatList
@@ -91,7 +115,9 @@ export class Dashboard extends Component {
               renderItem={({ item }) => (
                 <DraftListItem
                   item={item}
-                  handleClick={() => this.navigateToDraft(item)}
+                  handleClick={() => {
+                    item.status === 'Synced' ? this.navigateToSynced(item) : this.navigateToDraft(item)
+                  }}
                 />
               )}
             />
@@ -124,16 +150,18 @@ Dashboard.propTypes = {
   user: PropTypes.object.isRequired,
   offline: PropTypes.object,
   lng: PropTypes.string.isRequired,
-  surveys: PropTypes.array
+  surveys: PropTypes.array,
+  families: PropTypes.array
 }
 
-const mapStateToProps = ({ env, user, drafts, offline, string, surveys }) => ({
+const mapStateToProps = ({ env, user, drafts, offline, string, surveys, families }) => ({
   env,
   user,
   drafts,
   offline,
   string,
-  surveys
+  surveys,
+  families
 })
 
 export default withNamespaces()(connect(mapStateToProps)(Dashboard))

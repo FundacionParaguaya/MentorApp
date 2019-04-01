@@ -27,7 +27,8 @@ const draft = {
         birthDate: 1515708000
       }
     ]
-  }
+  },
+  progress: { "screen": "Question" , "current": 3}
 }
 
 const createTestProps = props => ({

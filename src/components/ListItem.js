@@ -12,6 +12,7 @@ export default class ListItem extends Component {
         activeOpacity={1}
         underlayColor={colors.primary}
         disabled={this.props.disabled}
+        accessible={true}
       >
         <View style={this.props.style || {}}>{this.props.children}</View>
       </TouchableHighlight>
@@ -22,6 +23,6 @@ export default class ListItem extends Component {
 ListItem.propTypes = {
   children: PropTypes.oneOfType([PropTypes.object, PropTypes.array]),
   onPress: PropTypes.func.isRequired,
-  style: PropTypes.object,
-  disabled: PropTypes.bool
+  disabled: PropTypes.bool,
+  style: PropTypes.object
 }

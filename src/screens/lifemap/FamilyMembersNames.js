@@ -22,15 +22,25 @@ export class FamilyMembersNames extends Component {
   state = { errorsDetected: [], showErrors: false }
 
   componentDidMount() {
+    const draft = this.getDraft()
+
     this.props.addDraftProgress(this.draftId, {
       screen: 'FamilyMembersNames'
     })
+    
     this.props.navigation.setParams({
       onPressBack: this.onPressBack
     })
   }
 
   onPressBack = () => {
+    const draft = this.getDraft()
+
+    this.props.addDraftProgress(this.draftId, {
+      current: draft.progress.current - 1,
+      total: draft.progress.total - 2
+    });
+
     this.props.navigation.navigate('FamilyParticipant', {
       draftId: this.draftId,
       survey: this.survey
@@ -53,11 +63,17 @@ export class FamilyMembersNames extends Component {
   }
 
   handleClick = () => {
+    const draft = this.getDraft()
+    
     if (this.state.errorsDetected.length) {
       this.setState({
         showErrors: true
       })
     } else {
+      this.props.addDraftProgress(this.draftId, {
+        current: draft.progress.current + 1
+      });
+
       this.props.navigation.navigate('FamilyGendersBirthdates', {
         draftId: this.draftId,
         survey: this.survey
@@ -104,6 +120,7 @@ export class FamilyMembersNames extends Component {
       <StickyFooter
         handleClick={() => this.handleClick(draft)}
         continueLabel={t('general.continue')}
+        progress={draft ? draft.progress.current / draft.progress.total : 0}
       >
         <Decoration variation="familyMemberNames">
           <View style={styles.circleContainer}>

@@ -1,5 +1,6 @@
 import { combineReducers } from 'redux'
 import { Sentry } from 'react-native-sentry'
+// import devDrafts from './dev/drafts.json'
 import {
   SET_LOGIN_STATE,
   USER_LOGOUT,
@@ -18,6 +19,7 @@ import {
   SUBMIT_DRAFT_COMMIT,
   SUBMIT_DRAFT_ROLLBACK,
   SWITCH_LANGUAGE,
+  SET_HYDRATED,
   SET_SYNCED_ITEM_TOTAL,
   SET_SYNCED_ITEM_AMOUNT,
   SET_SYNCED_STATE,
@@ -93,7 +95,7 @@ export const families = (state = [], action) => {
 }
 
 //Drafts
-
+const nodeEnv = process.env
 export const drafts = (state = [], action) => {
   switch (action.type) {
     case CREATE_DRAFT:
@@ -366,7 +368,7 @@ export const drafts = (state = [], action) => {
         draft.draftId === action.id
           ? {
               ...draft,
-              progress: action.progress
+              progress: {...draft.progress, ...action.progress}
             }
           : draft
       )
@@ -381,16 +383,6 @@ export const drafts = (state = [], action) => {
           : draft
       )
     case SUBMIT_DRAFT_ROLLBACK: {
-      Sentry.captureBreadcrumb({
-        message: 'Sync error',
-        category: 'action',
-        data: {
-          meta: JSON.stringify(action.meta),
-          payload: JSON.stringify(action.payload),
-          type: action.type
-        }
-      })
-      Sentry.captureException('Sync error')
       return state.map(draft =>
         draft.draftId === action.meta.id
           ? {
@@ -412,6 +404,16 @@ export const language = (state = false, action) => {
   switch (action.type) {
     case SWITCH_LANGUAGE:
       return action.language
+    default:
+      return state
+  }
+}
+
+// Store Hydration, false by default, not persistent, marks when store is ready
+export const hydration = (state = false, action) => {
+  switch (action.type) {
+    case SET_HYDRATED:
+      return true
     default:
       return state
   }
@@ -462,6 +464,7 @@ const appReducer = combineReducers({
   families,
   drafts,
   language,
+  hydration,
   sync,
   dimensions
 })
@@ -469,6 +472,35 @@ const appReducer = combineReducers({
 export const rootReducer = (state, action) => {
   if (action.type === USER_LOGOUT) {
     state = undefined
+  }
+
+  if (action.type === SUBMIT_DRAFT_ROLLBACK) {
+    Sentry.setExtraContext({
+      payload: action.meta.payload,
+      familyMembersList: action.meta.payload.familyData.familyMembersList,
+      errors: action.payload.response.errors
+    })
+
+    Sentry.setTagsContext({
+      environment: nodeEnv.NODE_ENV
+    })
+
+    Sentry.setUserContext({
+      username: state.user.username,
+      extra: {
+        env: state.env
+      }
+    })
+
+    Sentry.captureBreadcrumb({
+      message: 'Sync error',
+      category: 'action',
+      data: {
+        error: action.payload.response.errors[0].message,
+        description: action.payload.response.errors[0].description
+      }
+    })
+    Sentry.captureException('Sync error')
   }
 
   return appReducer(state, action)

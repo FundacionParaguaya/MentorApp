@@ -35,7 +35,8 @@ const createTestProps = props => ({
       indicatorSurveyDataList: [
         { key: 'phoneNumber', value: 0 },
         { key: 'education', value: 3 }
-      ]
+      ],
+      progress: { "screen": "Skipped" , "current": 3},
     }
   ],
   ...props

@@ -1,5 +1,4 @@
 import React from 'react'
-import * as store from '../../redux/store'
 import { shallow } from 'enzyme'
 import { Text, ActivityIndicator } from 'react-native'
 import { Loading } from '../Loading'
@@ -39,31 +38,5 @@ describe('Loading Component', () => {
   })
   it('renders <ActivityIndicator />', () => {
     expect(wrapper.find(ActivityIndicator)).toHaveLength(1)
-  })
-  it('checks for store hydration on mount', () => {
-    const spy = jest.spyOn(wrapper.instance(), 'checkHydration')
-    wrapper.instance().componentDidMount()
-    expect(spy).toHaveBeenCalledTimes(1)
-  })
-  describe('after rehydration', () => {
-    beforeEach(() => {
-      /* eslint-disable import/namespace */
-      store.getHydrationState = () => true
-      /* eslint-enable import/namespace */
-      props = createTestProps()
-      wrapper = shallow(<Loading {...props} />)
-    })
-
-    it('clears timers', () => {
-      const spy = jest.spyOn(wrapper.instance(), 'clearTimers')
-      wrapper.instance().checkHydration()
-      expect(spy).toHaveBeenCalledTimes(1)
-    })
-
-    it('hides immediately if no API token is detected', () => {
-      expect(wrapper.instance().props.setSyncedState).toHaveBeenCalledWith(
-        'login'
-      )
-    })
   })
 })

@@ -32,14 +32,14 @@ public class MainApplication extends Application implements ReactApplication {
     protected List<ReactPackage> getPackages() {
       return Arrays.<ReactPackage>asList(
           new MainReactPackage(),
-            new RNSentryPackage(),
-            new MapsPackage(),
-            new RNBackgroundFetchPackage(),
-            new BackgroundTaskPackage(),
-            new SplashScreenReactPackage(),
-            new VectorIconsPackage(),
-            new RNLanguagesPackage(),
-            new RNFetchBlobPackage()
+          new RNSentryPackage(),
+          new MapsPackage(),
+          new RNBackgroundFetchPackage(),
+          new BackgroundTaskPackage(),
+          new SplashScreenReactPackage(),
+          new VectorIconsPackage(),
+          new RNLanguagesPackage(),
+          new RNFetchBlobPackage()
       );
     }
 

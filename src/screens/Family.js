@@ -26,7 +26,7 @@ export class Family extends Component {
     }
   }
 
-  state = { activeTab: 'Details' }
+  state = { activeTab: this.props.navigation.getParam('activeTab') || 'Details' }
   familyLifemap = this.props.navigation.getParam('familyLifemap')
   isDraft = this.props.navigation.getParam('isDraft')
   socioEconomicCategories = [

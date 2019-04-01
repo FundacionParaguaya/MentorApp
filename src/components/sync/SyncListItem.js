@@ -2,6 +2,7 @@ import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import Icon from 'react-native-vector-icons/MaterialIcons'
 import { Text, StyleSheet, View } from 'react-native'
+import ListItem from '../../components/ListItem'
 
 import colors from '../../theme.json'
 import globalStyles from '../../globalStyles'
@@ -9,36 +10,51 @@ import globalStyles from '../../globalStyles'
 class SyncListItem extends Component {
   render() {
     const { item, status } = this.props
+    const linkDisabled = status !== 'Sync error'
     return (
-      <View style={[styles.view, styles.borderBottom]}>
-        <View style={styles.container}>
-          <Icon
-            name="swap-calls"
-            style={styles.icon}
-            size={30}
-            color={colors.lightdark}
-          />
-          <Text style={globalStyles.p}>{`${
-            item.familyMembersList[0].firstName
-          } ${item.familyMembersList[0].lastName} ${
-            item.countFamilyMembers > 1
+      <ListItem
+        style={{ ...styles.listItem, ...styles.borderBottom }}
+        onPress={this.props.handleClick}
+        disabled={linkDisabled}
+      >
+        <View style={styles.view}>
+          <View style={styles.container}>
+            <Icon
+              name="swap-calls"
+              style={styles.icon}
+              size={30}
+              color={colors.lightdark}
+            />
+          </View>
+          <View>
+            <Text style={globalStyles.p}>{`${
+              item.familyMembersList[0].firstName
+            } ${item.familyMembersList[0].lastName} ${
+              item.countFamilyMembers > 1
               ? `+ ${item.countFamilyMembers - 1}`
               : ''
-          }`}</Text>
+            }`}</Text>
+            {status === 'Pending sync' ? (
+              <Text style={styles.label}>Pending</Text>
+            ) : (
+              <Text style={[styles.label, styles.error]}>Sync error</Text>
+            )}
+          </View>
         </View>
-        {status === 'Pending sync' ? (
-          <Text style={styles.label}>Pending</Text>
+        {!linkDisabled ? (
+          <Icon name="navigate-next" size={23} color={colors.lightdark} />
         ) : (
-          <Text style={[styles.label, styles.error]}>Sync error</Text>
+          <View />
         )}
-      </View>
+      </ListItem>
     )
   }
 }
 
 SyncListItem.propTypes = {
   item: PropTypes.object.isRequired,
-  status: PropTypes.string.isRequired
+  status: PropTypes.string.isRequired,
+  handleClick: PropTypes.func.isRequired
 }
 
 const styles = StyleSheet.create({
@@ -47,6 +63,13 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     flexDirection: 'row',
     paddingVertical: 20
+  },
+  listItem: {
+    height: 80,
+    alignItems: 'center',
+    flexDirection: 'row',
+    flex: 1,
+    justifyContent: 'space-between'
   },
   container: { flexDirection: 'row', alignItems: 'center' },
   borderBottom: {

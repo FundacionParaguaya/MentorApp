@@ -1,12 +1,7 @@
 import React, { Component } from 'react'
-import {
-  StyleSheet,
-  ScrollView,
-  Text,
-  ProgressBarAndroid,
-  View
-} from 'react-native'
+import { StyleSheet, Text, View } from 'react-native'
 import IconButton from '../../components/IconButton'
+import StickyFooter from '../../components/StickyFooter'
 
 import { connect } from 'react-redux'
 import PropTypes from 'prop-types'
@@ -17,7 +12,6 @@ import {
   addDraftProgress,
   deleteSurveyPriorityAcheivementData
 } from '../../redux/actions'
-import globalStyles from '../../globalStyles'
 import colors from '../../theme.json'
 import SliderComponent from '../../components/Slider'
 
@@ -54,8 +48,7 @@ export class Question extends Component {
   }
 
   selectAnswer = answer => {
-    const draft = this.props.drafts.find(item => item.draftId === this.draftId)
-
+    const draft = this.getDraft()
     const skippedQuestions = draft.indicatorSurveyDataList.filter(
       question => question.value === 0
     )
@@ -92,12 +85,19 @@ export class Question extends Component {
       this.step + 1 < this.indicators.length &&
       !this.props.navigation.getParam('skipped')
     ) {
+      this.props.addDraftProgress(this.draftId, {
+        current: draft.progress.current + 1
+      })
       return this.props.navigation.replace('Question', {
         draftId: this.draftId,
         survey: this.survey,
         step: this.step + 1
       })
     } else if (this.step + 1 >= this.indicators.length && answer === 0) {
+      this.props.addDraftProgress(this.draftId, {
+        current: draft.progress.current + 1,
+        total: draft.progress.total + 1
+      })
       return this.props.navigation.navigate('Skipped', {
         draftId: this.draftId,
         survey: this.survey
@@ -108,12 +108,19 @@ export class Question extends Component {
         answer !== 0) ||
       skippedQuestions.length === 0
     ) {
+      this.props.addDraftProgress(this.draftId, {
+        current: draft.progress.current + 1
+      })
       return this.props.navigation.navigate('Overview', {
         draftId: this.draftId,
         survey: this.survey,
         resumeDraft: false
       })
     } else {
+      this.props.addDraftProgress(this.draftId, {
+        current: draft.progress.current + 1,
+        total: draft.progress.total + 1
+      })
       return this.props.navigation.replace('Skipped', {
         draftId: this.draftId,
         survey: this.survey
@@ -122,6 +129,11 @@ export class Question extends Component {
   }
 
   onPressBack = () => {
+    const draft = this.getDraft()
+    this.props.addDraftProgress(this.draftId, {
+      current: draft.progress.current - 1
+    })
+
     if (this.step > 0) {
       this.props.navigation.replace('Question', {
         draftId: this.draftId,
@@ -135,26 +147,18 @@ export class Question extends Component {
       })
   }
 
+  getDraft = () => this.props.drafts.find(item => item.draftId === this.draftId)
+
   render() {
-    const draft = this.props.drafts.find(item => item.draftId === this.draftId)
+    const draft = this.getDraft()
     const { t } = this.props
     return (
-      <ScrollView style={globalStyles.background}>
-        <View style={{ ...globalStyles.container, paddingTop: 15 }}>
-          <Text style={{ ...globalStyles.h5 }}>
-            {this.indicator.dimension.toUpperCase()}
-          </Text>
-          <Text style={{ ...globalStyles.h3, marginTop: 5 }}>{`${
-            this.indicator.questionText
-          }`}</Text>
-          <ProgressBarAndroid
-            styleAttr="Horizontal"
-            color={colors.green}
-            indeterminate={false}
-            progress={(this.step + 1) / this.indicators.length}
-            style={{ marginTop: 5, marginBottom: -15 }}
-          />
-        </View>
+      <StickyFooter
+        handleClick={this.handleClick}
+        readonly={true}
+        progress={draft ? draft.progress.current / draft.progress.total : 0}
+        currentScreen='Question'
+      >
         <SliderComponent
           slides={this.slides}
           value={this.getFieldValue(draft, this.indicator.codeName)}
@@ -171,7 +175,7 @@ export class Question extends Component {
             />
           )}
         </View>
-      </ScrollView>
+      </StickyFooter>
     )
   }
 }

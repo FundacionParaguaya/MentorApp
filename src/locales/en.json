@@ -164,7 +164,10 @@
       "updatePending": "1 update pending",
       "inProgress": "Sync in progress",
       "of": "of",
-      "updates": "updates"
+      "updates": "updates",
+      "syncErrProblem": "Looks like we have a problem!",
+      "itemHasError": "%n item has a sync error",
+      "itemsHaveError": "%n items have a sync error"
     }
   }
 }

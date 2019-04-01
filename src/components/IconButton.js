@@ -23,7 +23,9 @@ export class IconButton extends Component {
       imageSource,
       badge,
       offline,
-      drafts
+      drafts,
+      accessible,
+      accessibilityLabel
     } = this.props
     const syncErrors = drafts
       ? drafts.some(draft => draft.status === 'Sync error')
@@ -47,6 +49,8 @@ export class IconButton extends Component {
                 style={this.props.iconStyle || {}}
                 size={this.props.size || 30}
                 color={this.state.pressed ? colors.green : colors.palegreen}
+                accessible={accessible}
+                accessibilityLabel={accessibilityLabel}
               />
             )}
             {icon &&
@@ -78,6 +82,8 @@ export class IconButton extends Component {
                         : colors.palegreen
                     }
               ]}
+              accessible={accessible}
+              accessibilityLabel={accessibilityLabel}
             >
               {text}
             </Text>
@@ -105,7 +111,9 @@ IconButton.propTypes = {
   imageSource: PropTypes.number,
   badge: PropTypes.bool,
   drafts: PropTypes.array,
-  offline: PropTypes.object.isRequired
+  offline: PropTypes.object.isRequired,
+  accessible: PropTypes.bool,
+  accessibilityLabel: PropTypes.oneOfType([PropTypes.bool, PropTypes.string]),
 }
 
 const styles = StyleSheet.create({

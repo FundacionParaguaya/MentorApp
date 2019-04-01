@@ -5,18 +5,16 @@ import {
   Text,
   StyleSheet,
   View,
-  AsyncStorage,
   Platform
 } from 'react-native'
 import { withNamespaces } from 'react-i18next'
 import { connect } from 'react-redux'
 import PropTypes from 'prop-types'
-import { url } from '../../config'
 import globalStyles from '../../globalStyles'
-import IconButton from '../IconButton'
+import IconButtonComponent from '../IconButton'
 import i18n from '../../i18n'
 import colors from '../../theme.json'
-import { switchLanguage, logout } from '../../redux/actions'
+import { switchLanguage, setSyncedState } from '../../redux/actions'
 import LogoutPopup from './LogoutPopup'
 import ExitDraftPopup from './ExitDraftPopup'
 import dashboardIcon from '../../../assets/images/icon_dashboard.png'
@@ -39,12 +37,14 @@ export class DrawerContent extends Component {
   }
   logUserOut = () => {
     const { checkboxesVisible, ckeckedBoxes } = this.state
+
+    // allow the user to logout only if he checks all boxes
     if (!checkboxesVisible || (checkboxesVisible && ckeckedBoxes === 4)) {
       this.setState({
         showErrors: false
       })
-      AsyncStorage.clear()
-      this.props.logout(url[this.props.env], this.props.user.token)
+
+      this.props.setSyncedState('logout')
     } else {
       this.setState({
         showErrors: true
@@ -76,16 +76,19 @@ export class DrawerContent extends Component {
     const unsyncedDrafts = this.props.drafts.filter(
       draft => draft.status !== 'Synced'
     ).length
-    const {state} = navigation
+    const { state } = navigation
     const currentStack = state.routes[state.index]
-    const stackParams  = currentStack.routes[currentStack.index].params
+    const stackParams = currentStack.routes[currentStack.index].params
 
     let draftId, deleteOnExit
     if (stackParams && stackParams !== null) {
       draftId = stackParams.draftId !== undefined ? stackParams.draftId : false
-      deleteOnExit = stackParams.deleteOnExit !== undefined ? stackParams.deleteOnExit : false
+      deleteOnExit =
+        stackParams.deleteOnExit !== undefined
+          ? stackParams.deleteOnExit
+          : false
     }
-    
+
     return (
       <ScrollView contentContainerStyle={styles.container}>
         <View>
@@ -95,7 +98,7 @@ export class DrawerContent extends Component {
           />
           {/* Language Switcher */}
           <View style={styles.languageSwitch}>
-            <IconButton
+            <IconButtonComponent
               id="en"
               onPress={() => this.changeLanguage('en')}
               text="ENG"
@@ -103,11 +106,13 @@ export class DrawerContent extends Component {
                 globalStyles.h3,
                 lng === 'en' ? styles.whiteText : styles.greyText
               ]}
+              accessible={true}
+              accessibilityLabel={'change to English'}
             />
             <Text style={[globalStyles.h3, styles.whiteText]}>
               {'  '}|{'  '}
             </Text>
-            <IconButton
+            <IconButtonComponent
               id="es"
               onPress={() => this.changeLanguage('es')}
               text="ESP"
@@ -115,6 +120,8 @@ export class DrawerContent extends Component {
                 globalStyles.h3,
                 lng === 'es' ? styles.whiteText : styles.greyText
               ]}
+              accessible={true}
+              accessibilityLabel={'change to Spanish'}
             />
           </View>
           <Text
@@ -127,7 +134,7 @@ export class DrawerContent extends Component {
         </View>
         <View style={styles.itemsContainer}>
           <View>
-            <IconButton
+            <IconButtonComponent
               id="dashboard"
               style={{
                 ...styles.navItem,
@@ -139,7 +146,7 @@ export class DrawerContent extends Component {
               text={i18n.t('views.home')}
               textStyle={styles.label}
             />
-            <IconButton
+            <IconButtonComponent
               id="surveys"
               style={{
                 ...styles.navItem,
@@ -152,7 +159,7 @@ export class DrawerContent extends Component {
               textStyle={styles.label}
               text={i18n.t('views.createLifemap')}
             />
-            <IconButton
+            <IconButtonComponent
               id="families"
               style={{
                 ...styles.navItem,
@@ -165,7 +172,7 @@ export class DrawerContent extends Component {
               text={i18n.t('views.families')}
               textStyle={styles.label}
             />
-            <IconButton
+            <IconButtonComponent
               id="sync"
               style={{
                 ...styles.navItem,
@@ -182,7 +189,7 @@ export class DrawerContent extends Component {
           </View>
         </View>
         {/* Logout button */}
-        <IconButton
+        <IconButtonComponent
           id="logout"
           style={styles.navItem}
           onPress={() => {
@@ -231,7 +238,7 @@ export class DrawerContent extends Component {
 DrawerContent.propTypes = {
   lng: PropTypes.string,
   switchLanguage: PropTypes.func.isRequired,
-  logout: PropTypes.func.isRequired,
+  setSyncedState: PropTypes.func.isRequired,
   navigation: PropTypes.object.isRequired,
   user: PropTypes.object.isRequired,
   drafts: PropTypes.array.isRequired,
@@ -246,7 +253,7 @@ const mapStateToProps = ({ env, user, drafts }) => ({
 
 const mapDispatchToProps = {
   switchLanguage,
-  logout
+  setSyncedState
 }
 
 export default withNamespaces()(

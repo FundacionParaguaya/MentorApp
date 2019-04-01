@@ -12,6 +12,7 @@ const createTestProps = props => ({
   lng: 'en',
   switchLanguage: jest.fn(),
   logout: jest.fn(),
+  setSyncedState: jest.fn(),
   user: { username: 'Test' },
   drafts: [{ id: 1 }],
   ...props
@@ -49,10 +50,5 @@ describe('Drawer Content', () => {
   it('resets error state on loging out', () => {
     wrapper.instance().logUserOut()
     expect(wrapper).toHaveState({ showErrors: false })
-  })
-  it('logs out if user has confirmed', () => {
-    wrapper.setState({ ckeckedBoxes: 4 })
-    wrapper.instance().logUserOut()
-    expect(props.logout).toHaveBeenCalledTimes(1)
   })
 })

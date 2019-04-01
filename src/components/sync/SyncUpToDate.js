@@ -16,7 +16,12 @@ export class SyncUpToDate extends Component {
         <Text style={globalStyles.h3}>{i18n.t('views.sync.upToDate')}</Text>
         <Icon style={styles.icon} name="done" size={60} color={colors.green} />
         {this.props.date ? (
-          <Text>{`${i18n.t('views.sync.lastSync')}${moment(
+          <Text
+            accessibilityLabel={
+              `${i18n.t('views.sync.lastSync')}${moment(
+                this.props.date
+              ).format('MMMM, DD YYYY')}`}
+          >{`${i18n.t('views.sync.lastSync')}${moment(
             this.props.date
           ).format('MMM DD, YYYY')}`}</Text>
         ) : null}
