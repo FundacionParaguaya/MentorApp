@@ -2,13 +2,19 @@ import React, { Component } from "react"
 import { Text, View, StyleSheet } from "react-native"
 import globalStyles from "../../globalStyles"
 import PropTypes from "prop-types"
-import colors from '../../theme.json'
+import colors from "../../theme.json"
 
 export default class CustomHeaderSurvey extends Component {
   render() {
-    const { title, dimension } = this.props
+    const { title, dimension, navigation } = this.props
     return (
-      <View style={styles.headerQuestions}>
+      <View
+        style={styles.headerQuestions}
+        onLayout={event => {
+          const { height } = event.nativeEvent.layout
+          navigation.setParams({ height: height })
+        }}
+      >
         <Text style={styles.dimension}>{dimension.toUpperCase()}</Text>
         <Text style={styles.title}>{title}</Text>
       </View>
@@ -18,7 +24,8 @@ export default class CustomHeaderSurvey extends Component {
 
 CustomHeaderSurvey.propTypes = {
   title: PropTypes.string.isRequired,
-  dimension: PropTypes.string.isRequired
+  dimension: PropTypes.string.isRequired,
+  navigation: PropTypes.object.isRequired
 }
 
 const styles = StyleSheet.create({

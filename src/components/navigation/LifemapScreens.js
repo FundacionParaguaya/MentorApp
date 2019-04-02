@@ -74,7 +74,7 @@ export default {
       const dimension = activeQuestion.dimension;
 
       return {
-        headerTitle: (<CustomHeaderSurvey title={title} dimension={dimension} />),
+        headerTitle: (<CustomHeaderSurvey navigation={navigation} title={title} dimension={dimension} />),
         ...generateNavOptions({
           navigation,
           burgerMenu: false,

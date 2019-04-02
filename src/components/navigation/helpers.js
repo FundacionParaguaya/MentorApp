@@ -24,7 +24,7 @@ export const generateNavOptions = ({ navigation, burgerMenu = true, shadowHeader
     marginLeft: 35
   },
   headerStyle: {
-    height: 66,
+    height: navigation.state.params && !!navigation.state.params.height ? navigation.state.params.height : 66,
     backgroundColor: colors.white,
     elevation: shadowHeader ? 1 : 0,
     paddingTop: shadowHeader ? 0 : 12,
