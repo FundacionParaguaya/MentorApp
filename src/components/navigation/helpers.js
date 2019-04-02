@@ -21,8 +21,8 @@ export const generateNavOptions = ({ navigation, burgerMenu = true, shadowHeader
     fontSize: 18,
     fontWeight: '200',
     lineHeight: 26,
-    marginLeft: 'auto',
-    marginRight: 'auto'
+    marginLeft: shadowHeader ? 20 : 'auto',
+    marginRight: shadowHeader ? 0 : 'auto' 
   },
   headerStyle: {
     height: 66,
