@@ -3,8 +3,21 @@
   "created": "1652378237774",
   "surveyId": 1,
   "status": "Draft",
-  "achievements": [],
-  "priorities": [],
+  "achievements": [
+    {
+      "action": "This is what did it take",
+      "roadmap": "This is how did you get it",
+      "indicator": "familySavings"
+    }
+  ],
+  "priorities": [
+    {
+      "reason": "This is why don't you have it",
+      "action": "This is what will you do",
+      "estimatedDate": 2,
+      "indicator": "capacityToPlanAndBudget"
+    }
+  ],
   "progress": { "screen": "Overview" },
   "economicSurveyDataList": [
     { "key": "educationPersonMostStudied", "value": "SCHOOL-COMPLETE" },
@@ -44,7 +57,6 @@
       },
       {
         "firstName": "Ana",
-        "lastName": "Perez",
         "documentNumber": "123456",
         "email": "juan@gmail.com",
         "birthCountry": "Paraguay",
