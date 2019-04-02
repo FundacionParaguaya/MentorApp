@@ -21,14 +21,14 @@ export const generateNavOptions = ({ navigation, burgerMenu = true, shadowHeader
     fontSize: 18,
     fontWeight: '200',
     lineHeight: 26,
-    marginLeft: 35
+    marginLeft: 'auto',
+    marginRight: 'auto'
   },
   headerStyle: {
     height: 66,
     backgroundColor: colors.white,
     elevation: shadowHeader ? 1 : 0,
-    paddingTop: shadowHeader ? 0 : 12,
-    marginTop: shadowHeader ? 0 : -12
+    paddingTop: shadowHeader ? 0 : 10 
   },
   headerLeftContainerStyle: {
     marginLeft: 19
