@@ -47,6 +47,8 @@ export class Families extends Component {
     }
   }
 
+  sortByName = families => families.sort((a, b) => a.name.localeCompare(b.name))
+
   render() {
     const { t } = this.props
 
@@ -95,7 +97,7 @@ export class Families extends Component {
           value={this.state.search}
         />
         <FlatList
-          data={filteredFamilies}
+          data={this.sortByName(filteredFamilies)}
           keyExtractor={(item, index) => index.toString()}
           renderItem={({ item }) => (
             <FamiliesListItem
