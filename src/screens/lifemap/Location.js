@@ -218,7 +218,7 @@ export class Location extends Component {
     });
 
     if (draft.familyData.familyMembersList.length > 1) {
-      this.props.navigation.navigate('FamilyGendersBirthdates', {
+      this.props.navigation.navigate('FamilyMembersNames', {
         draftId: this.draftId,
         survey: this.survey
       })

@@ -131,7 +131,7 @@ export class FamilyGendersBirthdates extends Component {
                 display: 'flex',
                 flexDirection: 'row',
                 paddingHorizontal: 20,
-                marginTop: 15,
+                marginTop: 5,
                 marginBottom: 5
               }}
             >
