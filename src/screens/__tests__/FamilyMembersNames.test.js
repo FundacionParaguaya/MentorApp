@@ -3,6 +3,9 @@ import { shallow } from "enzyme"
 import { FamilyMembersNames } from "../lifemap/FamilyMembersNames"
 import TextInput from "../../components/TextInput"
 import StickyFooter from "../../components/StickyFooter"
+import Select from "../../components/Select"
+import DateInput from "../../components/DateInput"
+import { Text } from "react-native"
 
 const createTestProps = props => ({
   t: value => value,
@@ -58,7 +61,9 @@ const createTestProps = props => ({
             lastName: "Perez"
           },
           {
-            firstName: "Ana"
+            firstName: "Ana",
+            gender: "F",
+            birthDate: 1515708000
           }
         ]
       }
@@ -86,6 +91,16 @@ describe("FamilyMembersNames View", () => {
     it("renders TextInput", () => {
       expect(wrapper.find(TextInput)).toHaveLength(1)
     })
+
+    it("renders Select", () => {
+      expect(wrapper.find(Select)).toHaveLength(1)
+    })
+    it("renders Text", () => {
+      expect(wrapper.find(Text)).toHaveLength(2)
+    })
+    it("renders DateInput", () => {
+      expect(wrapper.find(DateInput)).toHaveLength(1)
+    })
   })
 
   describe("functionality", () => {
@@ -111,6 +126,36 @@ describe("FamilyMembersNames View", () => {
       const spy = jest.spyOn(wrapper.instance(), "onPressBack")
 
       wrapper.instance().onPressBack()
+      expect(spy).toHaveBeenCalledTimes(1)
+    })
+
+    it("gives DateInput the proper value", () => {
+      expect(wrapper.find(DateInput).props().value).toBe(1515708000)
+    })
+
+    it("gives Select the proper value", () => {
+      expect(wrapper.find(Select).props().value).toBe("F")
+    })
+
+    it("calls addFamilyMemberGender on change", () => {
+      const spy = jest.spyOn(wrapper.instance(), "addFamilyMemberGender")
+
+      wrapper
+        .find(Select)
+        .last()
+        .props()
+        .onChange()
+      expect(spy).toHaveBeenCalledTimes(1)
+    })
+
+    it("calls addFamilyMemberBirthdate on valid date", () => {
+      const spy = jest.spyOn(wrapper.instance(), "addFamilyMemberBirthdate")
+
+      wrapper
+        .find(DateInput)
+        .last()
+        .props()
+        .onValidDate()
       expect(spy).toHaveBeenCalledTimes(1)
     })
   })
