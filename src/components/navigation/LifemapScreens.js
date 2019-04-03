@@ -4,7 +4,7 @@ import SocioEconomicQuestionView from "../../screens/lifemap/SocioEconomicQuesti
 import FinalView from "../../screens/lifemap/Final";
 import FamilyParticipantView from "../../screens/lifemap/FamilyParticipant";
 import FamilyMembersNamesView from "../../screens/lifemap/FamilyMembersNames";
-import FamilyGendersBirthdatesView from "../../screens/lifemap/FamilyGendersBirthdates";
+// import FamilyGendersBirthdatesView from "../../screens/lifemap/FamilyGendersBirthdates";
 import QuestionView from "../../screens/lifemap/Question";
 import BeginLifemapView from "../../screens/lifemap/BeginLifemap";
 import LocationView from "../../screens/lifemap/Location";
@@ -149,17 +149,17 @@ export default {
       })
     })
   },
-  FamilyGendersBirthdates: {
-    screen: FamilyGendersBirthdatesView,
-    navigationOptions: ({ navigation }) => ({
-      title: i18n.t("views.gendersBirthDates"),
-      ...generateNavOptions({
-        navigation,
-        burgerMenu: false,
-        shadowHeader: false
-      })
-    })
-  },
+  // FamilyGendersBirthdates: {
+  //   screen: FamilyGendersBirthdatesView,
+  //   navigationOptions: ({ navigation }) => ({
+  //     title: i18n.t("views.gendersBirthDates"),
+  //     ...generateNavOptions({
+  //       navigation,
+  //       burgerMenu: false,
+  //       shadowHeader: false
+  //     })
+  //   })
+  // },
   FamilyMember: {
     screen: FamilyMemberView,
     navigationOptions: ({ navigation }) => ({

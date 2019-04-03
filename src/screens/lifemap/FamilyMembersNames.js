@@ -142,7 +142,7 @@ export class FamilyMembersNames extends Component {
         continueLabel={t("general.continue")}
         progress={draft ? draft.progress.current / draft.progress.total : 0}
       >
-        <Decoration variation="familyMemberNames">
+        <Decoration variation="familyMemberNamesHeader">
           <View style={styles.circleContainer}>
             <Text style={styles.circle}>+{familyMembersCount.length}</Text>
             <Icon
