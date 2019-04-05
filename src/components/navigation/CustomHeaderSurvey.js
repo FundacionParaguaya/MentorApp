@@ -12,7 +12,7 @@ export default class CustomHeaderSurvey extends Component {
         style={styles.headerQuestions}
         onLayout={event => {
           const { height } = event.nativeEvent.layout
-          navigation.setParams({ height: height })
+          navigation.setParams({ navigationHeight: height })
         }}
       >
         <Text style={styles.dimension}>{dimension.toUpperCase()}</Text>

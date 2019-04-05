@@ -78,8 +78,8 @@ export default {
           navigation,
           burgerMenu: false,
           shadowHeader: false,
-          headerHeight: !!navigation.getParam('height')
-            ? navigation.getParam('height') - 20
+          headerHeight: !!navigation.getParam('navigationHeight')
+            ? navigation.getParam('navigationHeight') - 20
             : 66
         })
       };
