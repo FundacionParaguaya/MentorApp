@@ -156,6 +156,7 @@ export class FamilyMembersNames extends Component {
 
         {familyMembersCount.map((item, i) => (
           <View key={i} style={{ marginBottom: 20 }}>
+            {i % 2 ? <Decoration variation="familyMemberNamesBody" /> : null}
             <View
               style={{
                 display: "flex",
