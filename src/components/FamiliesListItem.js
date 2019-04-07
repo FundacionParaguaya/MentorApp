@@ -3,6 +3,7 @@ import PropTypes from 'prop-types'
 import { Text, StyleSheet, View } from 'react-native'
 import Icon from 'react-native-vector-icons/MaterialIcons'
 import moment from 'moment'
+import 'moment/locale/es'
 
 import colors from '../theme.json'
 import globalStyles from '../globalStyles'
@@ -10,7 +11,7 @@ import ListItem from './ListItem'
 
 class FamiliesListItem extends Component {
   render() {
-    const { family } = this.props
+    const { family, lng } = this.props
     const firstParticipant =
       family.snapshotList && family.snapshotList.length
         ? family.snapshotList[0].familyData.familyMembersList.find(
@@ -20,6 +21,11 @@ class FamiliesListItem extends Component {
     const birthDate = firstParticipant
       ? firstParticipant.birthDate
       : family.birthDate
+    
+      
+    const birthDateWithLocale = moment.unix(birthDate)
+    birthDateWithLocale.locale(lng)
+
     return (
       <ListItem
         style={{ ...styles.listItem }}
@@ -33,15 +39,13 @@ class FamiliesListItem extends Component {
           (family.snapshotList && family.snapshotList.length) ? (
             <Text style={{ ...globalStyles.subline, ...styles.p }}
               accessibilityLabel={birthDate
-                ? `Date Of Birth: ${moment
-                    .unix(birthDate)
+                ? `Date Of Birth: ${birthDateWithLocale
                     .utc()
-                    .format('MMMM, DD YYYY')}`
+                    .format('MMMM DD, YYYY')}`
                 : ''}
             >
               {birthDate
-                ? `DOB: ${moment
-                    .unix(birthDate)
+                ? `DOB: ${birthDateWithLocale
                     .utc()
                     .format('MMM DD, YYYY')}`
                 : ''}
@@ -67,7 +71,8 @@ FamiliesListItem.propTypes = {
   family: PropTypes.object.isRequired,
   handleClick: PropTypes.func.isRequired,
   error: PropTypes.string,
-  birthDate: PropTypes.number
+  birthDate: PropTypes.number,
+  lng: PropTypes.string.isRequired
 }
 
 const styles = StyleSheet.create({
