@@ -3,7 +3,6 @@ import { shallow } from 'enzyme'
 import { FamilyMember } from '../lifemap/FamilyMember'
 import TextInput from '../../components/TextInput'
 import Select from '../../components/Select'
-import DateInputComponent from '../../components/DateInput'
 
 const createTestProps = props => ({
   t: value => value,
@@ -30,7 +29,7 @@ describe('FamilyGendersBirthdates View', () => {
       title: 'Neil'
     })
   })
-  it('doesn\'t allow interaction with form elements', () => {
+  it('does not allow interaction with form elements', () => {
     expect(
       wrapper
         .find(TextInput)

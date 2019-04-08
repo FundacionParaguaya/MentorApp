@@ -1,31 +1,31 @@
-import React, { Component } from "react"
-import { connect } from "react-redux"
-import PropTypes from "prop-types"
-import { StyleSheet, View, Text } from "react-native"
-import Icon from "react-native-vector-icons/MaterialIcons"
-import colors from "../../theme.json"
-import { withNamespaces } from "react-i18next"
+import React, { Component } from 'react'
+import { connect } from 'react-redux'
+import PropTypes from 'prop-types'
+import { StyleSheet, View, Text } from 'react-native'
+import Icon from 'react-native-vector-icons/MaterialIcons'
+import colors from '../../theme.json'
+import { withNamespaces } from 'react-i18next'
 import {
   addSurveyFamilyMemberData,
   addDraftProgress
-} from "../../redux/actions"
-import StickyFooter from "../../components/StickyFooter"
-import TextInput from "../../components/TextInput"
-import Decoration from "../../components/decoration/Decoration"
-import globalStyles from "../../globalStyles"
-import Select from "../../components/Select"
-import DateInput from "../../components/DateInput"
+} from '../../redux/actions'
+import StickyFooter from '../../components/StickyFooter'
+import TextInput from '../../components/TextInput'
+import Decoration from '../../components/decoration/Decoration'
+import globalStyles from '../../globalStyles'
+import Select from '../../components/Select'
+import DateInput from '../../components/DateInput'
 
 export class FamilyMembersNames extends Component {
-  draftId = this.props.navigation.getParam("draftId")
-  survey = this.props.navigation.getParam("survey")
+  draftId = this.props.navigation.getParam('draftId')
+  survey = this.props.navigation.getParam('survey')
   gender = this.survey.surveyConfig.gender
   errorsDetected = []
   state = { errorsDetected: [], showErrors: false }
 
   componentDidMount() {
     this.props.addDraftProgress(this.draftId, {
-      screen: "FamilyMembersNames"
+      screen: 'FamilyMembersNames'
     })
 
     this.props.navigation.setParams({
@@ -41,7 +41,7 @@ export class FamilyMembersNames extends Component {
       total: draft.progress.total - 1
     })
 
-    this.props.navigation.navigate("FamilyParticipant", {
+    this.props.navigation.navigate('FamilyParticipant', {
       draftId: this.draftId,
       survey: this.survey
     })
@@ -74,7 +74,7 @@ export class FamilyMembersNames extends Component {
         current: draft.progress.current + 1
       })
 
-      this.props.navigation.navigate("Location", {
+      this.props.navigation.navigate('Location', {
         draftId: this.draftId,
         survey: this.survey
       })
@@ -139,7 +139,7 @@ export class FamilyMembersNames extends Component {
     return (
       <StickyFooter
         handleClick={() => this.handleClick(draft)}
-        continueLabel={t("general.continue")}
+        continueLabel={t('general.continue')}
         progress={draft ? draft.progress.current / draft.progress.total : 0}
       >
         <Decoration variation="familyMemberNamesHeader">
@@ -159,8 +159,8 @@ export class FamilyMembersNames extends Component {
             {i % 2 ? <Decoration variation="familyMemberNamesBody" /> : null}
             <View
               style={{
-                display: "flex",
-                flexDirection: "row",
+                display: 'flex',
+                flexDirection: 'row',
                 paddingHorizontal: 20,
                 marginBottom: 15
               }}
@@ -173,7 +173,7 @@ export class FamilyMembersNames extends Component {
                   marginLeft: 5
                 }}
               >
-                {`${t("views.family.familyMember")} ${i + 1}`}
+                {`${t('views.family.familyMember')} ${i + 1}`}
               </Text>
             </View>
             <TextInput
@@ -181,10 +181,10 @@ export class FamilyMembersNames extends Component {
               validation="string"
               field={i.toString()}
               onChangeText={text => this.addFamilyMemberName(text, i + 1)}
-              placeholder={`${t("views.family.firstName")}`}
+              placeholder={`${t('views.family.firstName')}`}
               value={
-                (this.getFieldValue("familyMembersList")[i + 1] || {})
-                  .firstName || ""
+                (this.getFieldValue('familyMembersList')[i + 1] || {})
+                  .firstName || ''
               }
               required
               detectError={this.detectError}
@@ -193,11 +193,11 @@ export class FamilyMembersNames extends Component {
             <Select
               field={i.toString()}
               onChange={text => this.addFamilyMemberGender(text, i + 1)}
-              label={t("views.family.gender")}
-              placeholder={t("views.family.selectGender")}
+              label={t('views.family.gender')}
+              placeholder={t('views.family.selectGender')}
               value={
-                (this.getFieldValue("familyMembersList")[i + 1] || {}).gender ||
-                ""
+                (this.getFieldValue('familyMembersList')[i + 1] || {}).gender ||
+                ''
               }
               detectError={this.detectError}
               options={this.gender}
@@ -205,13 +205,13 @@ export class FamilyMembersNames extends Component {
 
             <DateInput
               field={i.toString()}
-              label={t("views.family.dateOfBirth")}
+              label={t('views.family.dateOfBirth')}
               detectError={this.detectError}
               showErrors={this.state.showErrors}
               required
               onValidDate={date => this.addFamilyMemberBirthdate(date, i + 1)}
               value={
-                (this.getFieldValue("familyMembersList")[i + 1] || {}).birthDate
+                (this.getFieldValue('familyMembersList')[i + 1] || {}).birthDate
               }
             />
           </View>
@@ -231,20 +231,20 @@ FamilyMembersNames.propTypes = {
 
 const styles = StyleSheet.create({
   icon: {
-    alignSelf: "center"
+    alignSelf: 'center'
   },
   circleContainer: {
     marginBottom: 10,
     marginTop: 20,
-    position: "relative"
+    position: 'relative'
   },
   circle: {
-    position: "absolute",
+    position: 'absolute',
     width: 22,
     height: 22,
     lineHeight: 22,
-    left: "50%",
-    textAlign: "center",
+    left: '50%',
+    textAlign: 'center',
     fontSize: 10,
     transform: [{ translateX: 3 }, { translateY: -3 }],
     borderRadius: 50,

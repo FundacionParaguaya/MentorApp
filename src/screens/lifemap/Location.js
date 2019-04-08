@@ -189,8 +189,8 @@ export class Location extends Component {
     const draft = this.getDraft()
 
     this.props.addDraftProgress(this.draftId, {
-      screen: "Location"
-    });
+      screen: 'Location'
+    })
 
     if (!this.getFieldValue(draft, 'latitude')) {
       this.getDeviceLocation()
@@ -215,7 +215,7 @@ export class Location extends Component {
 
     this.props.addDraftProgress(this.draftId, {
       current: draft.progress.current - 1
-    });
+    })
 
     if (draft.familyData.familyMembersList.length > 1) {
       this.props.navigation.navigate('FamilyMembersNames', {
@@ -247,7 +247,7 @@ export class Location extends Component {
     } else {
       this.props.addDraftProgress(this.draftId, {
         current: draft.progress.current + 1
-      });
+      })
       this.addSurveyData(this.state.accuracy, 'accuracy')
       this.addSurveyData(this.state.latitude, 'latitude')
       this.addSurveyData(this.state.longitude, 'longitude')
@@ -280,7 +280,11 @@ export class Location extends Component {
         handleClick={this.handleClick}
         readonly={this.readonly}
         continueLabel={t('general.continue')}
-        progress={!this.readonly && draft ? draft.progress.current / draft.progress.total : 0}
+        progress={
+          !this.readonly && draft
+            ? draft.progress.current / draft.progress.total
+            : 0
+        }
       >
         {(!this.readonly || (this.readonly && latitude)) && (
           <View>

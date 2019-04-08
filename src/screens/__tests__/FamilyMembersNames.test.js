@@ -1,33 +1,33 @@
-import React from "react"
-import { shallow } from "enzyme"
-import { FamilyMembersNames } from "../lifemap/FamilyMembersNames"
-import TextInput from "../../components/TextInput"
-import StickyFooter from "../../components/StickyFooter"
-import Select from "../../components/Select"
-import DateInput from "../../components/DateInput"
-import { Text } from "react-native"
+import React from 'react'
+import { shallow } from 'enzyme'
+import { FamilyMembersNames } from '../lifemap/FamilyMembersNames'
+import TextInput from '../../components/TextInput'
+import StickyFooter from '../../components/StickyFooter'
+import Select from '../../components/Select'
+import DateInput from '../../components/DateInput'
+import { Text } from 'react-native'
 
 const createTestProps = props => ({
   t: value => value,
   navigation: {
     setParams: jest.fn(),
     getParam: jest.fn(param =>
-      param === "draftId"
+      param === 'draftId'
         ? 4
         : {
             surveyConfig: {
               gender: [
                 {
-                  text: "Female",
-                  value: "F"
+                  text: 'Female',
+                  value: 'F'
                 },
                 {
-                  text: "Male",
-                  value: "M"
+                  text: 'Male',
+                  value: 'M'
                 },
                 {
-                  text: "Prefer not to disclose",
-                  value: "O"
+                  text: 'Prefer not to disclose',
+                  value: 'O'
                 }
               ]
             }
@@ -40,29 +40,29 @@ const createTestProps = props => ({
     {
       draftId: 4,
       surveyId: 1,
-      progress: { screen: "FamilyMembersNames" },
+      progress: { screen: 'FamilyMembersNames' },
       economicSurveyDataList: [
-        { key: "educationPersonMostStudied", value: "SCHOOL-COMPLETE" },
-        { key: "receiveStateIncome", value: "NO" },
-        { key: "currency", value: "GBP/Pound Sterling" },
-        { key: "areaOfResidence", value: "URBAN" }
+        { key: 'educationPersonMostStudied', value: 'SCHOOL-COMPLETE' },
+        { key: 'receiveStateIncome', value: 'NO' },
+        { key: 'currency', value: 'GBP/Pound Sterling' },
+        { key: 'areaOfResidence', value: 'URBAN' }
       ],
 
       indicatorSurveyDataList: [
-        { key: "insurance", value: 1 },
-        { key: "entertainmentAndRecreation", value: 3 },
-        { key: "stableHousing", value: 2 }
+        { key: 'insurance', value: 1 },
+        { key: 'entertainmentAndRecreation', value: 3 },
+        { key: 'stableHousing', value: 2 }
       ],
       familyData: {
         countFamilyMembers: 2,
         familyMembersList: [
           {
-            firstName: "Juan",
-            lastName: "Perez"
+            firstName: 'Juan',
+            lastName: 'Perez'
           },
           {
-            firstName: "Ana",
-            gender: "F",
+            firstName: 'Ana',
+            gender: 'F',
             birthDate: 1515708000
           }
         ]
@@ -76,35 +76,35 @@ const createTestProps = props => ({
   ...props
 })
 
-describe("FamilyMembersNames View", () => {
+describe('FamilyMembersNames View', () => {
   let wrapper
   beforeEach(() => {
     const props = createTestProps()
     wrapper = shallow(<FamilyMembersNames {...props} />)
   })
-  describe("rendering", () => {
-    it("renders the continue button with proper label", () => {
+  describe('rendering', () => {
+    it('renders the continue button with proper label', () => {
       expect(wrapper.find(StickyFooter)).toHaveProp({
-        continueLabel: "general.continue"
+        continueLabel: 'general.continue'
       })
     })
-    it("renders TextInput", () => {
+    it('renders TextInput', () => {
       expect(wrapper.find(TextInput)).toHaveLength(1)
     })
 
-    it("renders Select", () => {
+    it('renders Select', () => {
       expect(wrapper.find(Select)).toHaveLength(1)
     })
-    it("renders Text", () => {
+    it('renders Text', () => {
       expect(wrapper.find(Text)).toHaveLength(2)
     })
-    it("renders DateInput", () => {
+    it('renders DateInput', () => {
       expect(wrapper.find(DateInput)).toHaveLength(1)
     })
   })
 
-  describe("functionality", () => {
-    it("calls navigate function when button is pressed", () => {
+  describe('functionality', () => {
+    it('calls navigate function when button is pressed', () => {
       wrapper
         .find(StickyFooter)
         .props()
@@ -114,31 +114,31 @@ describe("FamilyMembersNames View", () => {
         wrapper.instance().props.navigation.navigate
       ).toHaveBeenCalledTimes(1)
     })
-    it("calls setParam on mount", () => {
+    it('calls setParam on mount', () => {
       expect(
         wrapper.instance().props.navigation.setParams
       ).toHaveBeenCalledTimes(1)
     })
-    it("calls addDraftProgress on mount", () => {
+    it('calls addDraftProgress on mount', () => {
       expect(wrapper.instance().props.addDraftProgress).toHaveBeenCalledTimes(1)
     })
-    it("calls onPressBack", () => {
-      const spy = jest.spyOn(wrapper.instance(), "onPressBack")
+    it('calls onPressBack', () => {
+      const spy = jest.spyOn(wrapper.instance(), 'onPressBack')
 
       wrapper.instance().onPressBack()
       expect(spy).toHaveBeenCalledTimes(1)
     })
 
-    it("gives DateInput the proper value", () => {
+    it('gives DateInput the proper value', () => {
       expect(wrapper.find(DateInput).props().value).toBe(1515708000)
     })
 
-    it("gives Select the proper value", () => {
-      expect(wrapper.find(Select).props().value).toBe("F")
+    it('gives Select the proper value', () => {
+      expect(wrapper.find(Select).props().value).toBe('F')
     })
 
-    it("calls addFamilyMemberGender on change", () => {
-      const spy = jest.spyOn(wrapper.instance(), "addFamilyMemberGender")
+    it('calls addFamilyMemberGender on change', () => {
+      const spy = jest.spyOn(wrapper.instance(), 'addFamilyMemberGender')
 
       wrapper
         .find(Select)
@@ -148,8 +148,8 @@ describe("FamilyMembersNames View", () => {
       expect(spy).toHaveBeenCalledTimes(1)
     })
 
-    it("calls addFamilyMemberBirthdate on valid date", () => {
-      const spy = jest.spyOn(wrapper.instance(), "addFamilyMemberBirthdate")
+    it('calls addFamilyMemberBirthdate on valid date', () => {
+      const spy = jest.spyOn(wrapper.instance(), 'addFamilyMemberBirthdate')
 
       wrapper
         .find(DateInput)
@@ -177,40 +177,40 @@ describe("FamilyMembersNames View", () => {
   //   ).toBe("Ana")
   // })
 
-  it("calls addFamilyMemberName on input change", () => {
-    const spy = jest.spyOn(wrapper.instance(), "addFamilyMemberName")
+  it('calls addFamilyMemberName on input change', () => {
+    const spy = jest.spyOn(wrapper.instance(), 'addFamilyMemberName')
 
     wrapper
       .find(TextInput)
       .last()
       .props()
-      .onChangeText("hi")
+      .onChangeText('hi')
     expect(spy).toHaveBeenCalledTimes(1)
   })
 
-  it("shows and hides errors", () => {
-    wrapper.instance().detectError(true, "test")
+  it('shows and hides errors', () => {
+    wrapper.instance().detectError(true, 'test')
 
-    expect(wrapper).toHaveState({ errorsDetected: ["test"] })
+    expect(wrapper).toHaveState({ errorsDetected: ['test'] })
 
-    wrapper.instance().detectError(true, "anotherError")
+    wrapper.instance().detectError(true, 'anotherError')
 
-    expect(wrapper).toHaveState({ errorsDetected: ["test", "anotherError"] })
+    expect(wrapper).toHaveState({ errorsDetected: ['test', 'anotherError'] })
 
-    wrapper.instance().detectError(false, "test")
+    wrapper.instance().detectError(false, 'test')
 
-    expect(wrapper).toHaveState({ errorsDetected: ["anotherError"] })
+    expect(wrapper).toHaveState({ errorsDetected: ['anotherError'] })
   })
 })
 
-describe("Render optimization", () => {
+describe('Render optimization', () => {
   let wrapper
   let props
   beforeEach(() => {
     props = createTestProps()
     wrapper = shallow(<FamilyMembersNames {...props} />)
   })
-  it("checks if screen is focused before updating", () => {
+  it('checks if screen is focused before updating', () => {
     wrapper.setProps({
       drafts: [...wrapper.instance().props.drafts, { draftId: 5 }]
     })
@@ -218,13 +218,13 @@ describe("Render optimization", () => {
       1
     )
   })
-  it("updates screen if focused", () => {
+  it('updates screen if focused', () => {
     wrapper.setProps({
       drafts: [...wrapper.instance().props.drafts, { draftId: 5 }]
     })
     expect(wrapper.instance().props.drafts[1]).toEqual({ draftId: 5 })
   })
-  it("does not update screen if not focused", () => {
+  it('does not update screen if not focused', () => {
     wrapper.setProps({
       drafts: [...wrapper.instance().props.drafts, { draftId: 5 }]
     })

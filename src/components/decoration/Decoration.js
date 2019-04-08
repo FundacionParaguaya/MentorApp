@@ -86,7 +86,7 @@ export default class Decoration extends Component {
             <View style={styles.childContainer}>{this.props.children}</View>
           </View>
         )}
-        {variation === "familyMemberNamesBody" && (
+        {variation === 'familyMemberNamesBody' && (
           <View style={{ zIndex: -1 }}>
             <View style={[styles.ballsContainer, { zIndex: -1 }]}>
               <View>
