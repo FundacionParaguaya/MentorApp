@@ -3,12 +3,36 @@ import { shallow } from 'enzyme'
 import { FamilyMembersNames } from '../lifemap/FamilyMembersNames'
 import TextInput from '../../components/TextInput'
 import StickyFooter from '../../components/StickyFooter'
+import Select from '../../components/Select'
+import DateInput from '../../components/DateInput'
+import { Text } from 'react-native'
 
 const createTestProps = props => ({
   t: value => value,
   navigation: {
     setParams: jest.fn(),
-    getParam: jest.fn(param => (param === 'draftId' ? 4 : null)),
+    getParam: jest.fn(param =>
+      param === 'draftId'
+        ? 4
+        : {
+            surveyConfig: {
+              gender: [
+                {
+                  text: 'Female',
+                  value: 'F'
+                },
+                {
+                  text: 'Male',
+                  value: 'M'
+                },
+                {
+                  text: 'Prefer not to disclose',
+                  value: 'O'
+                }
+              ]
+            }
+          }
+    ),
     navigate: jest.fn(),
     isFocused: jest.fn(() => true)
   },
@@ -16,7 +40,7 @@ const createTestProps = props => ({
     {
       draftId: 4,
       surveyId: 1,
-      progress: { "screen": "FamilyMembersNames" },
+      progress: { screen: 'FamilyMembersNames' },
       economicSurveyDataList: [
         { key: 'educationPersonMostStudied', value: 'SCHOOL-COMPLETE' },
         { key: 'receiveStateIncome', value: 'NO' },
@@ -37,7 +61,9 @@ const createTestProps = props => ({
             lastName: 'Perez'
           },
           {
-            firstName: 'Ana'
+            firstName: 'Ana',
+            gender: 'F',
+            birthDate: 1515708000
           }
         ]
       }
@@ -63,7 +89,17 @@ describe('FamilyMembersNames View', () => {
       })
     })
     it('renders TextInput', () => {
-      expect(wrapper.find(TextInput)).toHaveLength(2)
+      expect(wrapper.find(TextInput)).toHaveLength(1)
+    })
+
+    it('renders Select', () => {
+      expect(wrapper.find(Select)).toHaveLength(1)
+    })
+    it('renders Text', () => {
+      expect(wrapper.find(Text)).toHaveLength(2)
+    })
+    it('renders DateInput', () => {
+      expect(wrapper.find(DateInput)).toHaveLength(1)
     })
   })
 
@@ -92,32 +128,54 @@ describe('FamilyMembersNames View', () => {
       wrapper.instance().onPressBack()
       expect(spy).toHaveBeenCalledTimes(1)
     })
+
+    it('gives DateInput the proper value', () => {
+      expect(wrapper.find(DateInput).props().value).toBe(1515708000)
+    })
+
+    it('gives Select the proper value', () => {
+      expect(wrapper.find(Select).props().value).toBe('F')
+    })
+
+    it('calls addFamilyMemberGender on change', () => {
+      const spy = jest.spyOn(wrapper.instance(), 'addFamilyMemberGender')
+
+      wrapper
+        .find(Select)
+        .last()
+        .props()
+        .onChange()
+      expect(spy).toHaveBeenCalledTimes(1)
+    })
+
+    it('calls addFamilyMemberBirthdate on valid date', () => {
+      const spy = jest.spyOn(wrapper.instance(), 'addFamilyMemberBirthdate')
+
+      wrapper
+        .find(DateInput)
+        .last()
+        .props()
+        .onValidDate()
+      expect(spy).toHaveBeenCalledTimes(1)
+    })
   })
 
-  it('makes first TextInput is readonly', () => {
-    expect(
-      wrapper
-        .find(TextInput)
-        .first()
-        .props().readonly
-    ).toBe(true)
-  })
-  it('gets first Input value from draft', () => {
-    expect(
-      wrapper
-        .find(TextInput)
-        .first()
-        .props().value
-    ).toBe('Juan')
-  })
-  it('gets second Input value from draft', () => {
-    expect(
-      wrapper
-        .find(TextInput)
-        .last()
-        .props().value
-    ).toBe('Ana')
-  })
+  // it("gets first Input value from draft", () => {
+  //   expect(
+  //     wrapper
+  //       .find(TextInput)
+  //       .first()
+  //       .props().value
+  //   ).toBe("Juan")
+  // })
+  // it("gets second Input value from draft", () => {
+  //   expect(
+  //     wrapper
+  //       .find(TextInput)
+  //       .last()
+  //       .props().value
+  //   ).toBe("Ana")
+  // })
 
   it('calls addFamilyMemberName on input change', () => {
     const spy = jest.spyOn(wrapper.instance(), 'addFamilyMemberName')

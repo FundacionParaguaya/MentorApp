@@ -87,7 +87,7 @@ describe('Families View', () => {
   })
 
   it('passes the correct number of synced and non synced families to FlatList', () => {
-    expect(wrapper.find(FlatList).props().data).toHaveLength(4)
+    expect(wrapper.find(FlatList).props().data).toHaveLength(3)
   })
 
   describe('functionality', () => {

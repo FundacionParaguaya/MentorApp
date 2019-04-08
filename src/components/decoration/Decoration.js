@@ -52,12 +52,12 @@ export default class Decoration extends Component {
             <View style={styles.childContainer}>{this.props.children}</View>
           </View>
         )}
-        {variation === 'familyMemberNames' && (
+        {variation === 'familyMemberNamesHeader' && (
           <View style={{ zIndex: -1 }}>
             <View style={[styles.ballsContainer, { zIndex: 1 }]}>
               <View>
                 <Orb
-                  size={25}
+                  size={30}
                   color={colors.palered}
                   position={{ x: -110, y: -10 }}
                 />
@@ -69,12 +69,12 @@ export default class Decoration extends Component {
                 <Orb
                   size={45}
                   color={colors.palegreen}
-                  position={{ x: 155, y: -40 }}
+                  position={{ x: 155, y: -38 }}
                 />
                 <Orb
-                  size={45}
-                  color={colors.palegreen}
-                  position={{ x: -50, y: 90 }}
+                  size={20}
+                  color={colors.palered}
+                  position={{ x: 130, y: 68 }}
                 />
                 <Orb
                   size={35}
@@ -84,6 +84,39 @@ export default class Decoration extends Component {
               </View>
             </View>
             <View style={styles.childContainer}>{this.props.children}</View>
+          </View>
+        )}
+        {variation === 'familyMemberNamesBody' && (
+          <View style={{ zIndex: -1 }}>
+            <View style={[styles.ballsContainer, { zIndex: -1 }]}>
+              <View>
+                <Orb
+                  size={35}
+                  color={colors.palegold}
+                  position={{ x: -200, y: 210 }}
+                />
+                <Orb
+                  size={45}
+                  color={colors.palegreen}
+                  position={{ x: 155, y: 100 }}
+                />
+                <Orb
+                  size={45}
+                  color={colors.palegreen}
+                  position={{ x: -60, y: 255 }}
+                />
+                <Orb
+                  size={35}
+                  color={colors.palegold}
+                  position={{ x: 50, y: 110 }}
+                />
+                <Orb
+                  size={15}
+                  color={colors.palered}
+                  position={{ x: 125, y: 220 }}
+                />
+              </View>
+            </View>
           </View>
         )}
         {variation === 'primaryParticipant' && (
