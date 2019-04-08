@@ -69,15 +69,23 @@ export default {
     navigationOptions: ({ navigation }) => {
       const { survey, step } = navigation.state.params
       const activeQuestion = survey.surveyStoplightQuestions[step]
-      const title = activeQuestion.questionText
-      const dimension = activeQuestion.dimension
+      const { questionText, dimension } = activeQuestion
 
       return {
-        headerTitle: <CustomHeaderSurvey title={title} dimension={dimension} />,
+        headerTitle: (
+          <CustomHeaderSurvey
+            navigation={navigation}
+            title={questionText}
+            dimension={dimension}
+          />
+        ),
         ...generateNavOptions({
           navigation,
           burgerMenu: false,
-          shadowHeader: false
+          shadowHeader: false,
+          headerHeight: navigation.getParam('navigationHeight')
+            ? navigation.getParam('navigationHeight') - 20
+            : 66
         })
       }
     }
