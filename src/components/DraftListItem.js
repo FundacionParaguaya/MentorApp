@@ -27,6 +27,12 @@ class DraftListItem extends Component {
     }
   }
 
+  capitalize = (s) => {
+    if (typeof s !== 'string') return ''
+    const string = s.split('.').join("")
+    return string.charAt(0).toUpperCase() + string.slice(1)
+  }
+
   render() {
     const { item, lng } = this.props
     const itemCreateDateWithLocale = moment(item.created)
@@ -44,9 +50,9 @@ class DraftListItem extends Component {
         <View>
           <Text
             style={globalStyles.tag}
-            accessibilityLabel={itemCreateDateWithLocale.format('MMM DD, YYYY')}
+            accessibilityLabel={itemCreateDateWithLocale.format('MMMM DD, YYYY')}
           >
-            {itemCreateDateWithLocale.format('MMM DD, YYYY')}
+            {this.capitalize(itemCreateDateWithLocale.format('MMM DD, YYYY'))}
           </Text>
           <Text style={globalStyles.p}>
             {this.props.item.familyData.familyMembersList[0].firstName}{' '}

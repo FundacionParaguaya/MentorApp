@@ -4,12 +4,19 @@ import { Text, StyleSheet, View } from 'react-native'
 import Icon from 'react-native-vector-icons/MaterialIcons'
 import moment from 'moment'
 import 'moment/locale/es'
-
 import colors from '../theme.json'
 import globalStyles from '../globalStyles'
 import ListItem from './ListItem'
 
+moment.locale('en')
+
 class FamiliesListItem extends Component {
+  capitalize = (s) => {
+    if (typeof s !== 'string') return ''
+    const string = s.split('.').join("")
+    return string.charAt(0).toUpperCase() + string.slice(1)
+  }
+
   render() {
     const { family, lng } = this.props
     const firstParticipant =
@@ -45,9 +52,9 @@ class FamiliesListItem extends Component {
                 : ''}
             >
               {birthDate
-                ? `DOB: ${birthDateWithLocale
-                    .utc()
-                    .format('MMM DD, YYYY')}`
+                ? `DOB: ${this.capitalize(birthDateWithLocale
+                  .utc()
+                  .format('MMM DD, YYYY'))}`
                 : ''}
             </Text>
           ) : (
