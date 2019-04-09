@@ -130,20 +130,31 @@ class TextInput extends Component {
     return readonly && !text ? null : (
       <View style={{ marginBottom: 15 }}>
         {label && (
-          <Text style={styles.label}
-            accessibilityLabel={`${label} ${ required && !readonly ? ' This is a mandatory field.' : ''}`}
-          >{`${label}${
-            required && !readonly ? ' *' : ''
-          }`}</Text>
+          <Text
+            style={styles.label}
+            accessibilityLabel={`${label} ${
+              required && !readonly ? ' This is a mandatory field.' : ''
+            }`}
+          >{`${label}${required && !readonly ? ' *' : ''}`}</Text>
         )}
-        <View style={[styles.container, styles[status]]}>
+        <View
+          style={[styles.container, styles[status]]}
+          accessible={true}
+          accessibilityLabel={`${placeholder} ${
+            required && !label && !readonly ? ' This is a mandatory field' : ''
+          }`}
+        >
           {!showPlaceholder && !label ? (
             <Text
               style={{
                 ...styles.text,
                 color: this.defineTextColor(status)
               }}
-              accessibilityLabel={`${placeholder} ${required && !label && !readonly ? ' This is a mandatory field.' : ''}`}
+              accessibilityLabel={`${placeholder} ${
+                required && !label && !readonly
+                  ? ' This is a mandatory field.'
+                  : ''
+              }`}
             >
               {`${placeholder} ${required && !label && !readonly ? '*' : ''}`}
               {'\n'}
@@ -164,12 +175,10 @@ class TextInput extends Component {
             ]}
             editable={!readonly}
             multiline={multiline}
+            importantForAccessibility="no-hide-descendants"
           >
             {showPlaceholder ? (
-              <Text 
-                style={styles.inputText}
-                accessibilityLabel={`${placeholder} ${ required && !label ? ' This is a mandatory field.' : ''}`}
-              >
+              <Text style={styles.inputText}>
                 {placeholder} {required && !label ? '*' : ''}
               </Text>
             ) : (
@@ -210,7 +219,7 @@ const styles = StyleSheet.create({
     fontSize: 14
   },
   inputText: {
-    fontSize: 14,
+    fontSize: 14
   },
   activeInput: {
     // marginTop: -10,
