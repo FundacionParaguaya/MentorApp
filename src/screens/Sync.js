@@ -78,7 +78,7 @@ export class Sync extends Component {
     return (
       <ScrollView contentContainerStyle={[globalStyles.container, styles.view]}>
         {offline.online && !pendingDrafts.length && !draftsWithError.length ? (
-          <SyncUpToDate date={lastSync} />
+          <SyncUpToDate date={lastSync} lng={this.props.lng} />
         ) : null}
         {offline.online && pendingDrafts.length ? (
           <SyncInProgress pendingDraftsLength={pendingDrafts.length} />

@@ -118,6 +118,7 @@ export class Dashboard extends Component {
                   handleClick={() => {
                     item.status === 'Synced' ? this.navigateToSynced(item) : this.navigateToDraft(item)
                   }}
+                  lng={this.props.lng}
                 />
               )}
             />

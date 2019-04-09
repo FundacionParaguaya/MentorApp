@@ -3,10 +3,13 @@ import PropTypes from 'prop-types'
 import Icon from 'react-native-vector-icons/MaterialIcons'
 import { Text, StyleSheet, View } from 'react-native'
 import moment from 'moment'
+import 'moment/locale/es'
 import ListItem from './ListItem'
 
 import colors from '../theme.json'
 import globalStyles from '../globalStyles'
+
+moment.locale('en')
 
 class DraftListItem extends Component {
   getColor = status => {
@@ -24,10 +27,20 @@ class DraftListItem extends Component {
     }
   }
 
+  capitalize = (s) => {
+    if (typeof s !== 'string') return ''
+    const string = s.split('.').join("")
+    return string.charAt(0).toUpperCase() + string.slice(1)
+  }
+
   render() {
+    const { item, lng } = this.props
+    const itemCreateDateWithLocale = moment(item.created)
+    itemCreateDateWithLocale.locale(lng)
+
     const linkDisabled =
-      this.props.item.status === 'Pending sync' ||
-      this.props.item.status === 'Synced'
+      item.status === 'Pending sync' ||
+      item.status === 'Synced'
     return (
       <ListItem
         style={{ ...styles.listItem, ...styles.borderBottom }}
@@ -37,11 +50,9 @@ class DraftListItem extends Component {
         <View>
           <Text
             style={globalStyles.tag}
-            accessibilityLabel={moment(this.props.item.created).format(
-              'MMMM, DD YYYY'
-            )}
+            accessibilityLabel={itemCreateDateWithLocale.format('MMMM DD, YYYY')}
           >
-            {moment(this.props.item.created).format('MMM, DD YYYY')}
+            {this.capitalize(itemCreateDateWithLocale.format('MMM DD, YYYY'))}
           </Text>
           <Text style={globalStyles.p}>
             {this.props.item.familyData.familyMembersList[0].firstName}{' '}
@@ -72,7 +83,8 @@ class DraftListItem extends Component {
 
 DraftListItem.propTypes = {
   item: PropTypes.object.isRequired,
-  handleClick: PropTypes.func.isRequired
+  handleClick: PropTypes.func.isRequired,
+  lng: PropTypes.string.isRequired
 }
 
 const styles = StyleSheet.create({

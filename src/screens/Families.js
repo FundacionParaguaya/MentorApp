@@ -103,6 +103,7 @@ export class Families extends Component {
           renderItem={({ item }) => (
             <FamiliesListItem
               error={t('views.family.error')}
+              lng={this.props.lng}
               handleClick={() =>
                 this.props.navigation.navigate('Family', {
                   familyName: item.name,

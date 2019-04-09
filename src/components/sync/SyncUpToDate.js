@@ -4,13 +4,26 @@ import { withNamespaces } from 'react-i18next'
 import PropTypes from 'prop-types'
 import Icon from 'react-native-vector-icons/MaterialIcons'
 import moment from 'moment'
+import 'moment/locale/es'
+
+moment.locale('en')
 
 import colors from '../../theme.json'
 import globalStyles from '../../globalStyles'
 import i18n from '../../i18n'
 
 export class SyncUpToDate extends Component {
+  capitalize = (s) => {
+    if (typeof s !== 'string') return ''
+    const string = s.split('.').join("")
+    return string.charAt(0).toUpperCase() + string.slice(1)
+  }
+
   render() {
+    const { date, lng } = this.props
+    const lastSyncDateWithLocale = moment(date)
+    lastSyncDateWithLocale.locale(lng)
+
     return (
       <View style={styles.view}>
         <Text style={globalStyles.h3}>{i18n.t('views.sync.upToDate')}</Text>
@@ -18,12 +31,8 @@ export class SyncUpToDate extends Component {
         {this.props.date ? (
           <Text
             accessibilityLabel={
-              `${i18n.t('views.sync.lastSync')}${moment(
-                this.props.date
-              ).format('MMMM, DD YYYY')}`}
-          >{`${i18n.t('views.sync.lastSync')}${moment(
-            this.props.date
-          ).format('MMM DD, YYYY')}`}</Text>
+              `${i18n.t('views.sync.lastSync')}${lastSyncDateWithLocale.format('MMMM DD, YYYY')}`}
+          >{`${i18n.t('views.sync.lastSync')}${this.capitalize(lastSyncDateWithLocale.format('MMM DD, YYYY'))}`}</Text>
         ) : null}
       </View>
     )
@@ -31,7 +40,8 @@ export class SyncUpToDate extends Component {
 }
 
 SyncUpToDate.propTypes = {
-  date: PropTypes.number
+  date: PropTypes.number,
+  lng: PropTypes.string.isRequired
 }
 const styles = StyleSheet.create({
   view: {
