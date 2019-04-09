@@ -31,3 +31,4 @@ This is the source repository for the Poverty Stoplight native mobile app. If yo
 - [Using debugging tools](docs/debugging.md)
 - [Deploying on Play Store](docs/deploying.md)
 - [Versioning](docs/versioning.md)
+- [General test plan](docs/test-plan.md)
