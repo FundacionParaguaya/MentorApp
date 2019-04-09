@@ -213,8 +213,9 @@ const styles = StyleSheet.create({
     fontSize: 14,
   },
   activeInput: {
-    marginTop: -10,
-    paddingBottom: 0
+    // marginTop: -10,
+    paddingBottom: 0,
+    height: 50
   },
   blur: {
     backgroundColor: colors.primary,
@@ -236,6 +237,7 @@ const styles = StyleSheet.create({
     marginLeft: 15,
     position: 'relative',
     top: 10,
+    height: 30,
     zIndex: 100
   }
 })
