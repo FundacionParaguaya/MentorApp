@@ -7,7 +7,7 @@ class LifemapVisual extends Component {
   getColors = this.props.questions.map(item => {
     switch (item.value) {
       case 1:
-        return colors.red
+        return colors.palered
       case 2:
         return colors.gold
       case 3:
