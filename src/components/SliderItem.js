@@ -55,7 +55,7 @@ export default class SliderItem extends Component {
             style={{
               ...globalStyles.p,
               ...styles.text,
-              color: slide.value === 'YELLOW' ? '#000' : colors.white
+              color: slide.value === 2 ? colors.black : colors.white
             }}
           >
             {slide.description}

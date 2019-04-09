@@ -171,6 +171,7 @@ class Select extends Component {
                             styles.option,
                             value === item.code && styles.selected
                           ]}
+                          accessibilityLabel={`${item.label}`}
                         >
                           {item.label}
                         </Text>
@@ -191,6 +192,7 @@ class Select extends Component {
                             styles.option,
                             value === item.value && styles.selected
                           ]}
+                          accessibilityLabel={`${item.text}`}
                         >
                           {item.text}
                         </Text>

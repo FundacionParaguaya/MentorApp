@@ -60,7 +60,7 @@ describe('LifemapVisual Component', () => {
           .find(Icon)
           .at(5)
           .props().color
-      ).toEqual(colors.red)
+      ).toEqual(colors.palered)
     })
   })
 })

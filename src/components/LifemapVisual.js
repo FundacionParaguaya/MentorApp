@@ -7,7 +7,7 @@ class LifemapVisual extends Component {
   getColors = this.props.questions.map(item => {
     switch (item.value) {
       case 1:
-        return colors.red
+        return colors.palered
       case 2:
         return colors.gold
       case 3:
@@ -35,13 +35,20 @@ class LifemapVisual extends Component {
     return (
       <View style={styles.container}>
         {this.getColors.map((item, i) => (
-          <View key={i}
+          <View
+            key={i}
             accessible={true}
             accessibilityLabel={this.props.questions[i].key}
-            accessibilityHint={Object.keys(colors).find(key => colors[key] === item)}
+            accessibilityHint={
+              Object.keys(colors).find(key => colors[key] === item) ===
+              "gold"
+                ? "yellow"
+                : Object.keys(colors).find(key => colors[key] === item)
+            }
           >
-            {prioritiesAndAchievements.includes(this.props.questions[i].key) &&
-            this.props.questions[i].value ? (
+            {prioritiesAndAchievements.includes(
+              this.props.questions[i].key
+            ) && this.props.questions[i].value ? (
               <Icon
                 name="brightness-1"
                 color={colors.blue}
