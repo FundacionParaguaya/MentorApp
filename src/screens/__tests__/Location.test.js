@@ -1,6 +1,5 @@
 import React from 'react'
 import { shallow } from 'enzyme'
-import MapView from 'react-native-maps'
 import { Location } from '../lifemap/Location'
 import SearchBar from '../../components/SearchBar'
 import StickyFooter from '../../components/StickyFooter'
@@ -112,34 +111,6 @@ describe('Family Location component', () => {
       expect(wrapper).toHaveState({
         latitude: 44,
         longitude: 45
-      })
-    })
-
-    it('renders MapView', () => {
-      expect(wrapper.find(MapView)).toHaveLength(1)
-    })
-
-    it('updates Marker state after draging has finished', () => {
-      // initial map load
-      wrapper
-        .find(MapView)
-        .first()
-        .props()
-        .onRegionChangeComplete()
-
-      // actual drag
-      wrapper
-        .find(MapView)
-        .first()
-        .props()
-        .onRegionChangeComplete({
-          latitude: 50,
-          longitude: 50
-        })
-
-      expect(wrapper).toHaveState({
-        latitude: 50,
-        longitude: 50
       })
     })
 

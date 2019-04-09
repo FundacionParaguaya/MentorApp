@@ -10,7 +10,6 @@ import {
 } from 'react-native'
 import { connect } from 'react-redux'
 import PropTypes from 'prop-types'
-import MapView from 'react-native-maps'
 import { withNamespaces } from 'react-i18next'
 import StickyFooter from '../../components/StickyFooter'
 import { addSurveyData, addDraftProgress } from '../../redux/actions'
@@ -305,28 +304,7 @@ export class Location extends Component {
                     value={searchAddress}
                   />
                 )}
-                <MapView
-                  ref={ref => {
-                    this.map = ref
-                  }}
-                  style={styles.map}
-                  initialRegion={{
-                    latitude,
-                    longitude,
-                    latitudeDelta,
-                    longitudeDelta
-                  }}
-                  region={{
-                    latitude,
-                    longitude,
-                    latitudeDelta,
-                    longitudeDelta
-                  }}
-                  onRegionChangeComplete={this.onDragMap}
-                  zoomEnabled={!this.readonly}
-                  rotateEnabled={!this.readonly}
-                  scrollEnabled={!this.readonly}
-                />
+
                 {!this.readonly && (
                   <View>
                     {centeringMap ? (
