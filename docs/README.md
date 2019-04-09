@@ -5,3 +5,4 @@
 - [Using debugging tools](debugging.md)
 - [Deploying on Play Store](deploying.md)
 - [Versioning](versioning.md)
+- [Regression test plan](test-plan.md)
