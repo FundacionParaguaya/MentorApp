@@ -46,10 +46,12 @@ export class Loading extends Component {
     // if the user has no token redirect to the login page
     if (!this.props.user.token) {
       this.props.setSyncedState('login')
-    } else {
-      // otherwise sync the data
+    } else if (this.props.user.token && !this.props.surveys.length) {
+      // if no surveys in store sync the data
       this.props.setSyncedState('no')
       this.loadData()
+    } else {
+      this.props.setSyncedState('yes')
     }
   }
 
