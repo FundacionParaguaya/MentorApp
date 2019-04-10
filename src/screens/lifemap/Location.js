@@ -28,6 +28,7 @@ export class Location extends Component {
     longitude: null,
     accuracy: null,
     searchAddress: '',
+    zoomLevel: 15,
     errorsDetected: [],
     mapsError: false, // error code (2 for location off, 3 for timeout)
     centeringMap: false, // while map is centering we show a different spinner
@@ -146,14 +147,16 @@ export class Location extends Component {
     const longitude = coordinates[0]
     const latitude = coordinates[1]
 
-    // prevent jumping of the marker
+    // prevent jumping of the marker by updating only when the region changes
     if (
       this.state.latitude !== latitude ||
-      this.state.longitude !== longitude
+      this.state.longitude !== longitude ||
+      region.properties.zoomLevel !== this.state.zoomLevel
     ) {
       this.setState({
         latitude,
         longitude,
+        zoomLevel: region.properties.zoomLevel,
         accuracy: 0
       })
       this.addSurveyData(latitude, 'latitude')
@@ -247,7 +250,8 @@ export class Location extends Component {
       searchAddress,
       centeringMap,
       showMap,
-      showErrors
+      showErrors,
+      zoomLevel
     } = this.state
 
     const draft = this.getDraft()
@@ -284,7 +288,7 @@ export class Location extends Component {
                 )}
                 <MapboxGL.MapView
                   centerCoordinate={[longitude, latitude]}
-                  zoomLevel={15}
+                  zoomLevel={zoomLevel}
                   style={styles.map}
                   logoEnabled={false}
                   zoomEnabled={!this.readonly}
