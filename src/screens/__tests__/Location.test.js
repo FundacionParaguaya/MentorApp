@@ -1,6 +1,5 @@
 import React from 'react'
 import { shallow } from 'enzyme'
-import MapView from 'react-native-maps'
 import { Location } from '../lifemap/Location'
 import SearchBar from '../../components/SearchBar'
 import StickyFooter from '../../components/StickyFooter'
@@ -115,34 +114,6 @@ describe('Family Location component', () => {
       })
     })
 
-    it('renders MapView', () => {
-      expect(wrapper.find(MapView)).toHaveLength(1)
-    })
-
-    it('updates Marker state after draging has finished', () => {
-      // initial map load
-      wrapper
-        .find(MapView)
-        .first()
-        .props()
-        .onRegionChangeComplete()
-
-      // actual drag
-      wrapper
-        .find(MapView)
-        .first()
-        .props()
-        .onRegionChangeComplete({
-          latitude: 50,
-          longitude: 50
-        })
-
-      expect(wrapper).toHaveState({
-        latitude: 50,
-        longitude: 50
-      })
-    })
-
     it('shows GPS accuracy range', () => {
       expect(wrapper.find('#accuracy')).toHaveHTML(
         '<react-native-mock>views.family.gpsAccurate</react-native-mock>'
@@ -240,7 +211,7 @@ describe('Family Location component', () => {
       })
     })
 
-    it("doesn't look for device location if there is one from draft", () => {
+    it('doesn not look for device location if there is one from draft', () => {
       const spy = jest.spyOn(wrapper.instance(), 'getDeviceLocation')
 
       expect(spy).toHaveBeenCalledTimes(0)

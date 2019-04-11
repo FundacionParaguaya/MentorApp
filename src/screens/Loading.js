@@ -9,6 +9,7 @@ import {
   AsyncStorage
 } from 'react-native'
 import { connect } from 'react-redux'
+import MapboxGL from '@mapbox/react-native-mapbox-gl'
 import Icon from 'react-native-vector-icons/MaterialIcons'
 import {
   loadFamilies,
@@ -24,7 +25,10 @@ import { initImageCaching } from '../cache'
 export class Loading extends Component {
   state = {
     loadingData: false, // know when to show that data is synced
-    cachingImages: false // know when image caching is running
+    cachingImages: false, // know when image caching is running
+    downloadingMap: false,
+    offlineRegionStatus: null,
+    mapDownloadError: null
   }
 
   loadData = () => {
@@ -43,8 +47,16 @@ export class Loading extends Component {
     // if the user has no token redirect to the login page
     if (!this.props.user.token) {
       this.props.setSyncedState('login')
+    } else if (
+      this.props.user.token &&
+      this.props.surveys.length &&
+      !!this.props.sync.images.total &&
+      this.props.sync.images.total === this.props.sync.images.synced
+    ) {
+      // if we have everything synced
+      this.props.setSyncedState('yes')
     } else {
-      // otherwise sync the data
+      // else sync the data
       this.props.setSyncedState('no')
       this.loadData()
     }
@@ -58,9 +70,87 @@ export class Loading extends Component {
     initImageCaching()
   }
 
-  componentDidMount() {
-    // only when user is loging out clear async storage
+  downloadMapData = () => {
+    this.setState({
+      dataCached: true,
+      downloadingMap: true
+    })
+
+    // check for the Sofia pack and download it if it doesn't exist
+    MapboxGL.offlineManager.getPack('Sofia').then(pack => {
+      if (!pack) {
+        MapboxGL.offlineManager.createPack(
+          {
+            name: 'Sofia',
+            styleURL: MapboxGL.StyleURL.Street,
+            minZoom: 14,
+            maxZoom: 18,
+            bounds: [[23.2769621, 42.7159553], [23.3447338, 42.6754659]]
+          },
+          this.onMapDownloadProgress,
+          this.onMapDownloadError
+        )
+      } else {
+        this.setState({
+          offlineRegionStatus: { percentage: 100 }
+        })
+      }
+    })
+
+    // check for the Cerrito pack
+    MapboxGL.offlineManager.getPack('Cerrito').then(pack => {
+      if (!pack) {
+        MapboxGL.offlineManager.createPack(
+          {
+            name: 'Cerrito',
+            styleURL: MapboxGL.StyleURL.Street,
+            minZoom: 14,
+            maxZoom: 18,
+            bounds: [[-57.606658, -24.92751], [-57.48788, -24.997528]]
+          },
+          this.onMapDownloadProgress,
+          this.onMapDownloadError
+        )
+      } else {
+        this.setState({
+          offlineRegionStatus: { percentage: 100 }
+        })
+      }
+    })
+  }
+
+  // update map download progress
+  onMapDownloadProgress = (offlineRegion, offlineRegionStatus) => {
+    // if there is no offlineRegionStatus in the state, reset the percentage
+    if (!this.state.offlineRegionStatus) {
+      this.setState({
+        offlineRegionStatus: { percentage: 0 }
+      })
+    } else if (
+      offlineRegionStatus.percentage > this.state.offlineRegionStatus.percentage
+    ) {
+      this.setState({
+        offlineRegionStatus
+      })
+    }
+  }
+
+  onMapDownloadError = (offlineRegion, mapDownloadError) => {
+    this.setState({
+      mapDownloadError
+    })
+  }
+
+  async componentDidMount() {
+    // only when user is loging out clear the data
     if (this.props.sync.synced === 'logout') {
+      // delete the cached map packs
+      if (MapboxGL.offlineManager) {
+        await MapboxGL.offlineManager.deletePack('Sofia')
+        await MapboxGL.offlineManager.deletePack('Cerrito')
+      }
+
+      // clear the async storage and reset the store
       AsyncStorage.clear(() => {
         this.props.logout()
         this.props.setSyncedState('login')
@@ -79,6 +169,20 @@ export class Loading extends Component {
     if (
       this.props.surveys.length &&
       !this.props.offline.outbox.lenght &&
+      !this.state.cachingImages &&
+      !this.state.downloadingMap
+    ) {
+      setTimeout(() => {
+        this.downloadMapData()
+      }, 1000)
+    }
+
+    // if map is cached start image caching
+    if (
+      this.props.surveys.length &&
+      !this.props.offline.outbox.lenght &&
+      this.state.offlineRegionStatus &&
+      this.state.offlineRegionStatus.percentage === 100 &&
       !this.state.cachingImages
     ) {
       this.setState({
@@ -90,17 +194,26 @@ export class Loading extends Component {
     }
 
     if (
+      this.state.offlineRegionStatus &&
+      this.state.offlineRegionStatus.percentage === 100 &&
       this.state.cachingImages &&
       !!this.props.sync.images.total &&
       this.props.sync.images.total === this.props.sync.images.synced
     ) {
-      this.props.setSyncedState('yes')
+      setTimeout(() => {
+        this.props.setSyncedState('yes')
+      }, 1000)
     }
   }
 
   render() {
     const { sync, surveys, families } = this.props
-    const { loadingData, cachingImages } = this.state
+    const {
+      loadingData,
+      cachingImages,
+      offlineRegionStatus,
+      dataCached
+    } = this.state
 
     return (
       <View style={[globalStyles.container, styles.view]}>
@@ -118,22 +231,22 @@ export class Loading extends Component {
           {loadingData && (
             <View style={styles.sync}>
               <View style={{ flexDirection: 'row' }}>
-                {cachingImages && (
+                {dataCached && (
                   <Icon name="check" color={colors.palegreen} size={18} />
                 )}
-                <Text style={cachingImages ? { color: colors.palegreen } : {}}>
-                  {cachingImages
+                <Text style={dataCached ? { color: colors.palegreen } : {}}>
+                  {dataCached
                     ? ` ${families.length} Families Synced`
                     : 'Syncing families...'}
                 </Text>
               </View>
 
               <View style={{ flexDirection: 'row' }}>
-                {cachingImages && (
+                {dataCached && (
                   <Icon name="check" color={colors.palegreen} size={18} />
                 )}
-                <Text style={cachingImages ? { color: colors.palegreen } : {}}>
-                  {cachingImages
+                <Text style={dataCached ? { color: colors.palegreen } : {}}>
+                  {dataCached
                     ? ` ${surveys.length} Surveys Synced`
                     : 'Syncing surveys...'}
                 </Text>
@@ -141,9 +254,26 @@ export class Loading extends Component {
             </View>
           )}
 
+          {offlineRegionStatus && (
+            <View style={{ flexDirection: 'row' }}>
+              {cachingImages && (
+                <Icon name="check" color={colors.palegreen} size={18} />
+              )}
+              <Text style={cachingImages ? { color: colors.palegreen } : {}}>
+                {' '}
+                Downloading offline maps{' '}
+                {offlineRegionStatus.percentage.toFixed(0)}%
+              </Text>
+            </View>
+          )}
+
           {cachingImages && (
             <Text>
-              Syncing survey images: {sync.images.synced} / {sync.images.total}
+              {sync.images.synced && sync.images.total
+                ? `Syncing survey images: ${sync.images.synced} / ${
+                    sync.images.total
+                  }`
+                : 'Calculating total images to cache...'}
             </Text>
           )}
         </View>
