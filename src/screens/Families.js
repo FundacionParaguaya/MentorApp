@@ -58,7 +58,9 @@ export class Families extends Component {
 
     // show not synced families from drafts
     const draftFamilies = this.props.drafts
-      .filter(draft => draft.status === 'Draft')
+      .filter(
+        draft => draft.status === 'Draft' || draft.status === 'Pending sync'
+      )
       .map(draft => {
         const primaryParticipant = draft.familyData.familyMembersList[0]
         return {

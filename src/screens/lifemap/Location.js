@@ -247,8 +247,6 @@ export class Location extends Component {
 
     const draft = this.getDraft()
 
-    console.log(latitude, longitude)
-
     return (
       <StickyFooter
         handleClick={this.handleClick}

@@ -46,6 +46,19 @@ export class Dashboard extends Component {
   componentWillUnmount() {
     this.clearTimers()
   }
+
+  navigateToPendingSync = draft => {
+    const { firstName, lastName } = draft.familyData.familyMembersList[0]
+
+    this.props.navigation.navigate('Family', {
+      familyName: `${firstName} ${lastName}`,
+      familyLifemap: draft,
+      isDraft: true,
+      survey: this.props.surveys.find(survey => survey.id === draft.surveyId),
+      activeTab: 'LifeMap'
+    })
+  }
+
   navigateToDraft = draft => {
     if (
       draft.progress.screen !== 'Question' &&
@@ -134,9 +147,16 @@ export class Dashboard extends Component {
                 <DraftListItem
                   item={item}
                   handleClick={() => {
-                    item.status === 'Synced'
-                      ? this.navigateToSynced(item)
-                      : this.navigateToDraft(item)
+                    switch (item.status) {
+                      case 'Synced':
+                        this.navigateToSynced(item)
+                        break
+                      case 'Pending sync':
+                        this.navigateToPendingSync(item)
+                        break
+                      default:
+                        this.navigateToDraft(item)
+                    }
                   }}
                   lng={this.props.lng}
                 />
