@@ -375,7 +375,7 @@ export class SocioEconomicQuestion extends Component {
                 ).length ? (
                   questionsForThisScreen.forFamilyMember.find(question =>
                     this.isConditionMet(question, member)
-                  ).length ? (
+                  ) ? (
                     <Text style={styles.memberName}>{member.firstName}</Text>
                   ) : null
                 ) : (
