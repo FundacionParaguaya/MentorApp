@@ -3,7 +3,9 @@ import {
   StyleSheet,
   ScrollView,
   ActivityIndicator,
-  FlatList
+  FlatList,
+  View,
+  Text
 } from 'react-native'
 import { connect } from 'react-redux'
 import PropTypes from 'prop-types'
@@ -12,7 +14,6 @@ import { loadFamilies } from '../redux/actions'
 import { url } from '../config'
 import colors from '../theme.json'
 import globalStyles from '../globalStyles'
-
 import SearchBar from '../components/SearchBar'
 import FamiliesListItem from '../components/FamiliesListItem'
 
@@ -99,6 +100,11 @@ export class Families extends Component {
           onChangeText={search => this.setState({ search })}
           value={this.state.search}
         />
+        <View style={styles.bar}>
+          <Text style={{ ...globalStyles.subline, ...styles.familiesCount }}>
+            {filteredFamilies.length} {t('views.families').toLowerCase()}
+          </Text>
+        </View>
         <FlatList
           data={this.sortByName(filteredFamilies)}
           keyExtractor={(item, index) => index.toString()}
@@ -149,7 +155,16 @@ const styles = StyleSheet.create({
   spinner: {
     marginVertical: 5
   },
-  search: { margin: 10 }
+  search: { margin: 10 },
+  bar: {
+    paddingLeft: 30,
+    justifyContent: 'center',
+    height: 48,
+    backgroundColor: colors.primary
+  },
+  familiesCount: {
+    fontWeight: '600'
+  }
 })
 
 const mapStateToProps = ({
