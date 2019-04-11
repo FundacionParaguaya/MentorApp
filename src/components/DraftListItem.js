@@ -27,9 +27,9 @@ class DraftListItem extends Component {
     }
   }
 
-  capitalize = (s) => {
+  capitalize = s => {
     if (typeof s !== 'string') return ''
-    const string = s.split('.').join("")
+    const string = s.split('.').join('')
     return string.charAt(0).toUpperCase() + string.slice(1)
   }
 
@@ -38,9 +38,7 @@ class DraftListItem extends Component {
     const itemCreateDateWithLocale = moment(item.created)
     itemCreateDateWithLocale.locale(lng)
 
-    const linkDisabled =
-      item.status === 'Pending sync' ||
-      item.status === 'Synced'
+    const linkDisabled = item.status === 'Synced'
     return (
       <ListItem
         style={{ ...styles.listItem, ...styles.borderBottom }}
@@ -50,7 +48,9 @@ class DraftListItem extends Component {
         <View>
           <Text
             style={globalStyles.tag}
-            accessibilityLabel={itemCreateDateWithLocale.format('MMMM DD, YYYY')}
+            accessibilityLabel={itemCreateDateWithLocale.format(
+              'MMMM DD, YYYY'
+            )}
           >
             {this.capitalize(itemCreateDateWithLocale.format('MMM DD, YYYY'))}
           </Text>

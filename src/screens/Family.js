@@ -26,7 +26,9 @@ export class Family extends Component {
     }
   }
 
-  state = { activeTab: this.props.navigation.getParam('activeTab') || 'Details' }
+  state = {
+    activeTab: this.props.navigation.getParam('activeTab') || 'Details'
+  }
   familyLifemap = this.props.navigation.getParam('familyLifemap')
   isDraft = this.props.navigation.getParam('isDraft')
   socioEconomicCategories = [
@@ -66,6 +68,8 @@ export class Family extends Component {
             active={activeTab === 'LifeMap'}
           />
         </View>
+
+        {/* Details tab */}
         {activeTab === 'Details' ? (
           <ScrollView>
             <View style={styles.icon}>
@@ -156,39 +160,57 @@ export class Family extends Component {
             </View>
           </ScrollView>
         ) : null}
+
+        {/* Lifemap tab */}
         {activeTab === 'LifeMap' ? (
           <ScrollView id="lifemap">
             {this.isDraft ? (
               <View>
-                <Text
-                  style={{
-                    ...styles.lifemapCreated,
-                    ...globalStyles.h2Bold,
-                    fontSize: 16,
-                    color: '#000000'
-                  }}
-                >{`${t('views.family.lifeMapCreatedOn')}: \n${moment(
-                  this.familyLifemap.created
-                ).format('MMM DD, YYYY')}`}</Text>
                 <View style={styles.draftContainer}>
-                  <RoundImage source="lifemap" />
-                  <Button
-                    id="resume-draft"
+                  <Text
                     style={{
-                      marginTop: 20
+                      ...styles.lifemapCreated,
+                      ...globalStyles.h2Bold,
+                      fontSize: 16,
+                      marginBottom: 10,
+                      textAlign: 'center',
+                      color: '#000000'
                     }}
-                    colored
-                    text={t('general.resumeDraft')}
-                    handleClick={() => {
-                      navigation.replace(this.familyLifemap.progress.screen, {
-                        draftId: this.familyLifemap.draftId,
-                        survey: this.survey,
-                        step: this.familyLifemap.progress.step,
-                        socioEconomics: this.familyLifemap.progress
-                          .socioEconomics
-                      })
-                    }}
-                  />
+                  >{`${t('views.family.lifeMapCreatedOn')}: \n${moment(
+                    this.familyLifemap.created
+                  ).format('MMM DD, YYYY')}`}</Text>
+                  <RoundImage source="lifemap" />
+
+                  {navigation.getParam('familyLifemap').status === 'Draft' ? (
+                    <Button
+                      id="resume-draft"
+                      style={{
+                        marginTop: 20
+                      }}
+                      colored
+                      text={t('general.resumeDraft')}
+                      handleClick={() => {
+                        navigation.replace(this.familyLifemap.progress.screen, {
+                          draftId: this.familyLifemap.draftId,
+                          survey: this.survey,
+                          step: this.familyLifemap.progress.step,
+                          socioEconomics: this.familyLifemap.progress
+                            .socioEconomics
+                        })
+                      }}
+                    />
+                  ) : (
+                    <Text
+                      style={{
+                        ...globalStyles.h2Bold,
+                        ...{
+                          textAlign: 'center'
+                        }
+                      }}
+                    >
+                      {t('views.family.lifeMapAfterSync')}
+                    </Text>
+                  )}
                 </View>
               </View>
             ) : (

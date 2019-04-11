@@ -47,12 +47,7 @@ export class Loading extends Component {
     // if the user has no token redirect to the login page
     if (!this.props.user.token) {
       this.props.setSyncedState('login')
-    } else if (
-      this.props.user.token &&
-      this.props.surveys.length &&
-      !!this.props.sync.images.total &&
-      this.props.sync.images.total === this.props.sync.images.synced
-    ) {
+    } else if (this.props.user.token && this.props.surveys.length) {
       // if we have everything synced
       this.props.setSyncedState('yes')
     } else {
