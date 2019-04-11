@@ -1,13 +1,14 @@
 import React from 'react'
 
 import { shallow } from 'enzyme'
-import { Text, View } from 'react-native'
+import { Text } from 'react-native'
 import Icon from 'react-native-vector-icons/MaterialIcons'
 import FamiliesListItem from '../FamiliesListItem'
 import ListItem from '../ListItem'
 
 const createTestProps = props => ({
   handleClick: jest.fn(),
+  lng: 'en',
   family: {
     name: 'Juan Perez',
     snapshotList: [
@@ -41,9 +42,6 @@ describe('FamiliesListItem Component', () => {
     it('renders <ListItem />', () => {
       expect(wrapper.find(ListItem)).toHaveLength(1)
     })
-    it('renders <View />', () => {
-      expect(wrapper.find(View)).toHaveLength(1)
-    })
     it('renders <Text />', () => {
       expect(wrapper.find(Text)).toHaveLength(2)
     })
@@ -69,7 +67,8 @@ describe('FamiliesListItem Component', () => {
     it('renders a not sunced family', () => {
       props = createTestProps({
         family: {
-          name: 'San Migel'
+          name: 'San Migel',
+          snapshotList: []
         }
       })
       wrapper = shallow(<FamiliesListItem {...props} />)
