@@ -248,7 +248,7 @@ export class SocioEconomicQuestion extends Component {
     this.props.navigation.getParam('family') ||
     this.props.drafts.find(draft => draft.draftId === this.draftId)
 
-  userAnsweredAsExpected = (selectedVal, conditionVal, operator) => {
+  checkCondition = (selectedVal, conditionVal, operator) => {
     switch (operator) {
       case 'above':
         return selectedVal > conditionVal
@@ -265,22 +265,19 @@ export class SocioEconomicQuestion extends Component {
     const { codeName, value, operator } = question.conditions[0]
     const draft = this.getDraft()
     if (codeName === 'birthdate' && familyMember) {
-      return this.userAnsweredAsExpected(
+      return this.checkCondition(
         this.calculateAge(familyMember.birthDate),
         value,
         operator
       )
-        ? true
-        : false
     } else {
       const answeredQuestions = draft.economicSurveyDataList || []
       const userAnswer = answeredQuestions.find(
         answer => answer.key === codeName
       )
-      return userAnswer &&
-        this.userAnsweredAsExpected(userAnswer.value, value, operator)
-        ? true
-        : false
+      return (
+        userAnswer && this.checkCondition(userAnswer.value, value, operator)
+      )
     }
   }
 
@@ -378,7 +375,7 @@ export class SocioEconomicQuestion extends Component {
                 ).length ? (
                   questionsForThisScreen.forFamilyMember.find(question =>
                     this.isConditionMet(question, member)
-                  ) ? (
+                  ).length ? (
                     <Text style={styles.memberName}>{member.firstName}</Text>
                   ) : null
                 ) : (
