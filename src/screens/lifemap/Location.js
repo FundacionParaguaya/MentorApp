@@ -28,7 +28,6 @@ export class Location extends Component {
     longitude: null,
     accuracy: null,
     searchAddress: '',
-    zoomLevel: 15,
     errorsDetected: [],
     mapsError: false, // error code (2 for location off, 3 for timeout)
     centeringMap: false, // while map is centering we show a different spinner
@@ -150,13 +149,9 @@ export class Location extends Component {
     // prevent jumping of the marker by updating only when the region changes
     if (
       this.state.latitude !== latitude ||
-      this.state.longitude !== longitude ||
-      region.properties.zoomLevel !== this.state.zoomLevel
+      this.state.longitude !== longitude
     ) {
       this.setState({
-        latitude,
-        longitude,
-        zoomLevel: region.properties.zoomLevel,
         accuracy: 0
       })
       this.addSurveyData(latitude, 'latitude')
@@ -231,9 +226,6 @@ export class Location extends Component {
         current: draft.progress.current + 1
       })
 
-      this.addSurveyData(this.state.accuracy, 'accuracy')
-      this.addSurveyData(this.state.latitude, 'latitude')
-      this.addSurveyData(this.state.longitude, 'longitude')
       this.props.navigation.replace('SocioEconomicQuestion', {
         draftId: this.draftId,
         survey: this.survey
@@ -250,11 +242,12 @@ export class Location extends Component {
       searchAddress,
       centeringMap,
       showMap,
-      showErrors,
-      zoomLevel
+      showErrors
     } = this.state
 
     const draft = this.getDraft()
+
+    console.log(latitude, longitude)
 
     return (
       <StickyFooter
@@ -288,7 +281,7 @@ export class Location extends Component {
                 )}
                 <MapboxGL.MapView
                   centerCoordinate={[longitude, latitude]}
-                  zoomLevel={zoomLevel}
+                  zoomLevel={15}
                   style={styles.map}
                   logoEnabled={false}
                   zoomEnabled={!this.readonly}

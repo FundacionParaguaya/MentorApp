@@ -26,6 +26,7 @@ export class Loading extends Component {
   state = {
     loadingData: false, // know when to show that data is synced
     cachingImages: false, // know when image caching is running
+    downloadingMap: false,
     offlineRegionStatus: null,
     mapDownloadError: null
   }
@@ -46,12 +47,18 @@ export class Loading extends Component {
     // if the user has no token redirect to the login page
     if (!this.props.user.token) {
       this.props.setSyncedState('login')
-    } else if (this.props.user.token && !this.props.surveys.length) {
-      // if no surveys in store sync the data
+    } else if (
+      this.props.user.token &&
+      this.props.surveys.length &&
+      !!this.props.sync.images.total &&
+      this.props.sync.images.total === this.props.sync.images.synced
+    ) {
+      // if we have everything synced
+      this.props.setSyncedState('yes')
+    } else {
+      // else sync the data
       this.props.setSyncedState('no')
       this.loadData()
-    } else {
-      this.props.setSyncedState('yes')
     }
   }
 
@@ -65,7 +72,8 @@ export class Loading extends Component {
 
   downloadMapData = () => {
     this.setState({
-      dataCached: true
+      dataCached: true,
+      downloadingMap: true
     })
 
     // check for the Sofia pack and download it if it doesn't exist
@@ -133,13 +141,13 @@ export class Loading extends Component {
     })
   }
 
-  componentDidMount() {
+  async componentDidMount() {
     // only when user is loging out clear the data
     if (this.props.sync.synced === 'logout') {
       // delete the cached map packs
       if (MapboxGL.offlineManager) {
-        MapboxGL.offlineManager.deletePack('Sofia')
-        MapboxGL.offlineManager.deletePack('Cerrito')
+        await MapboxGL.offlineManager.deletePack('Sofia')
+        await MapboxGL.offlineManager.deletePack('Cerrito')
       }
 
       // clear the async storage and reset the store
@@ -161,7 +169,8 @@ export class Loading extends Component {
     if (
       this.props.surveys.length &&
       !this.props.offline.outbox.lenght &&
-      !this.state.cachingImages
+      !this.state.cachingImages &&
+      !this.state.downloadingMap
     ) {
       setTimeout(() => {
         this.downloadMapData()
@@ -199,7 +208,12 @@ export class Loading extends Component {
 
   render() {
     const { sync, surveys, families } = this.props
-    const { loadingData, cachingImages, offlineRegionStatus } = this.state
+    const {
+      loadingData,
+      cachingImages,
+      offlineRegionStatus,
+      dataCached
+    } = this.state
 
     return (
       <View style={[globalStyles.container, styles.view]}>
@@ -217,22 +231,22 @@ export class Loading extends Component {
           {loadingData && (
             <View style={styles.sync}>
               <View style={{ flexDirection: 'row' }}>
-                {cachingImages && (
+                {dataCached && (
                   <Icon name="check" color={colors.palegreen} size={18} />
                 )}
-                <Text style={cachingImages ? { color: colors.palegreen } : {}}>
-                  {cachingImages
+                <Text style={dataCached ? { color: colors.palegreen } : {}}>
+                  {dataCached
                     ? ` ${families.length} Families Synced`
                     : 'Syncing families...'}
                 </Text>
               </View>
 
               <View style={{ flexDirection: 'row' }}>
-                {cachingImages && (
+                {dataCached && (
                   <Icon name="check" color={colors.palegreen} size={18} />
                 )}
-                <Text style={cachingImages ? { color: colors.palegreen } : {}}>
-                  {cachingImages
+                <Text style={dataCached ? { color: colors.palegreen } : {}}>
+                  {dataCached
                     ? ` ${surveys.length} Surveys Synced`
                     : 'Syncing surveys...'}
                 </Text>
@@ -255,7 +269,11 @@ export class Loading extends Component {
 
           {cachingImages && (
             <Text>
-              Syncing survey images: {sync.images.synced} / {sync.images.total}
+              {sync.images.synced && sync.images.total
+                ? `Syncing survey images: ${sync.images.synced} / ${
+                    sync.images.total
+                  }`
+                : 'Calculating total images to cache...'}
             </Text>
           )}
         </View>
