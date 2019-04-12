@@ -314,32 +314,20 @@ const styles = StyleSheet.create({
   }
 })
 
-const mapStateToProps = ({
-  sync,
-  surveys,
-  env,
-  user,
-  offline,
-  families,
-  hydration
-}) => ({
-  sync,
-  surveys,
-  env,
-  user,
-  offline,
-  families,
-  hydration
-})
-
-const mapDispatchToProps = {
-  loadFamilies,
-  loadSurveys,
-  setSyncedState,
-  logout
-}
-
 export default connect(
-  mapStateToProps,
-  mapDispatchToProps
+  ({ sync, surveys, env, user, offline, families, hydration }) => ({
+    sync,
+    surveys,
+    env,
+    user,
+    offline,
+    families,
+    hydration
+  }),
+  {
+    loadFamilies,
+    loadSurveys,
+    setSyncedState,
+    logout
+  }
 )(Loading)
