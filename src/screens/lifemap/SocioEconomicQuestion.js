@@ -37,28 +37,21 @@ export class SocioEconomicQuestion extends Component {
       let totalScreens = 0
 
       // go trough all questions and separate them by screen
-      // - filter method - filters all questions which conditions depend on user's age
+      // filter method - checks if family members meet the conditions based on age
       props.navigation
         .getParam('survey')
-        .surveyEconomicQuestions.filter(question => {
-          if (
-            question.conditions &&
-            question.conditions.length &&
-            question.forFamilyMember &&
-            question.conditions.find(
-              condition => condition.codeName === 'birthdate'
-            )
-          ) {
-            const isConditionTrueForAtLeasOneMember = draft.familyData.familyMembersList
-              .map(member =>
-                this.isConditionMet(question, member) ? true : false
-              )
-              .includes(true)
-            return isConditionTrueForAtLeasOneMember ? question : false
-          } else {
-            return question
-          }
-        })
+        .surveyEconomicQuestions.filter(question =>
+          !!question.conditions &&
+          question.conditions.length &&
+          !!question.forFamilyMember &&
+          question.conditions[0].codeName === 'birthdate'
+            ? draft.familyData.familyMembersList.filter(
+                member => !!this.isConditionMet(question, member)
+              ).length
+              ? question
+              : false
+            : question
+        )
         .forEach(question => {
           // if the dimention of the questions change, change the page
           if (question.topic !== currentDimension) {
@@ -296,6 +289,17 @@ export class SocioEconomicQuestion extends Component {
       ? socioEconomics.questionsPerScreen[socioEconomics.currentScreen - 1]
       : []
 
+    const showMemberName = (member, questionsForFamilyMember) => {
+      const questionsForThisMember = questionsForFamilyMember.filter(question =>
+        !!question.conditions && question.conditions.length
+          ? this.isConditionMet(question, member)
+          : true
+      )
+      return questionsForThisMember.length ? (
+        <Text style={styles.memberName}>{member.firstName}</Text>
+      ) : null
+    }
+
     return (
       <StickyFooter
         handleClick={this.submitForm}
@@ -370,18 +374,7 @@ export class SocioEconomicQuestion extends Component {
           questionsForThisScreen.forFamilyMember.length ? (
             draft.familyData.familyMembersList.map((member, i) => (
               <View key={member.firstName}>
-                {questionsForThisScreen.forFamilyMember.filter(
-                  q => !!q.conditions && q.conditions.length
-                ).length ? (
-                  questionsForThisScreen.forFamilyMember.find(question =>
-                    this.isConditionMet(question, member)
-                  ) ? (
-                    <Text style={styles.memberName}>{member.firstName}</Text>
-                  ) : null
-                ) : (
-                  <Text style={styles.memberName}>{member.firstName}</Text>
-                )}
-
+                {showMemberName(member, questionsForThisScreen.forFamilyMember)}
                 {questionsForThisScreen.forFamilyMember
                   .filter(question =>
                     question.conditions && question.conditions.length
