@@ -9,6 +9,12 @@ Sentry.config(
   'https://5c0325e3929542f5a8541a247df43c52@sentry.io/1332316'
 ).install()
 
+// set sentry environment to production or development
+const nodeEnv = process.env
+Sentry.setTagsContext({
+  environment: nodeEnv.NODE_ENV
+})
+
 // remove useless 'debugger in background tab' warning
 YellowBox.ignoreWarnings(['Remote debugger', 'unknown call: "relay:check"'])
 

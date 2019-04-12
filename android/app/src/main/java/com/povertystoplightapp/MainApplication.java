@@ -4,7 +4,6 @@ import android.app.Application;
 import com.jamesisaac.rnbackgroundtask.BackgroundTaskPackage;
 import com.facebook.react.ReactApplication;
 import io.sentry.RNSentryPackage;
-import com.airbnb.android.react.maps.MapsPackage;
 import com.transistorsoft.rnbackgroundfetch.RNBackgroundFetchPackage;
 import com.jamesisaac.rnbackgroundtask.BackgroundTaskPackage;
 import org.devio.rn.splashscreen.SplashScreenReactPackage;
@@ -16,6 +15,7 @@ import com.facebook.react.ReactPackage;
 import com.facebook.react.shell.MainReactPackage;
 import com.facebook.soloader.SoLoader;
 import com.facebook.react.modules.storage.ReactDatabaseSupplier;
+import com.mapbox.rctmgl.RCTMGLPackage;
 
 import java.util.Arrays;
 import java.util.List;
@@ -33,13 +33,13 @@ public class MainApplication extends Application implements ReactApplication {
       return Arrays.<ReactPackage>asList(
           new MainReactPackage(),
           new RNSentryPackage(),
-          new MapsPackage(),
           new RNBackgroundFetchPackage(),
           new BackgroundTaskPackage(),
           new SplashScreenReactPackage(),
           new VectorIconsPackage(),
           new RNLanguagesPackage(),
-          new RNFetchBlobPackage()
+          new RNFetchBlobPackage(),
+          new RCTMGLPackage()
       );
     }
 

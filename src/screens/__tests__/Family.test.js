@@ -14,11 +14,9 @@ const createTestProps = props => ({
       switch (param) {
         case 'survey':
           return data
-          break
 
         case 'activeTab':
           return 'Details'
-          break
 
         default:
           return {
@@ -36,7 +34,6 @@ const createTestProps = props => ({
               ]
             }
           }
-          break
       }
     }
   },
@@ -70,11 +67,9 @@ describe('Single Family View', () => {
             switch (param) {
               case 'survey':
                 return data
-                break
 
               case 'activeTab':
                 return 'LifeMap'
-                break
 
               default:
                 return {
@@ -92,7 +87,6 @@ describe('Single Family View', () => {
                     ]
                   }
                 }
-                break
             }
           }
         }
@@ -124,13 +118,18 @@ describe('Single Family View', () => {
         .find(Button)
         .props()
         .handleClick()
-      expect(wrapper.instance().props.navigation.replace).toHaveBeenCalledTimes(1)
-      expect(wrapper.instance().props.navigation.replace).toHaveBeenCalledWith('FamilyMembersNames', {
-        draftId: 1,
-        socioEconomics: undefined,
-        step: undefined,
-        survey: { id: 1 }
-      })
+      expect(wrapper.instance().props.navigation.replace).toHaveBeenCalledTimes(
+        1
+      )
+      expect(wrapper.instance().props.navigation.replace).toHaveBeenCalledWith(
+        'FamilyMembersNames',
+        {
+          draftId: 1,
+          socioEconomics: undefined,
+          step: undefined,
+          survey: { id: 1 }
+        }
+      )
     })
   })
 })

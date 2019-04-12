@@ -1,5 +1,6 @@
 import React, { Component } from 'react'
 import { ScrollView, Text, View, StyleSheet, FlatList } from 'react-native'
+import { Sentry } from 'react-native-sentry'
 import { withNamespaces } from 'react-i18next'
 import PropTypes from 'prop-types'
 import Button from '../components/Button'
@@ -26,6 +27,14 @@ export class Dashboard extends Component {
     })
   componentDidMount() {
     this.updateTitle()
+
+    // set sentry login details
+    Sentry.setUserContext({
+      username: this.props.user.username,
+      extra: {
+        env: this.props.env
+      }
+    })
   }
 
   componentDidUpdate(prevProps) {
@@ -37,6 +46,19 @@ export class Dashboard extends Component {
   componentWillUnmount() {
     this.clearTimers()
   }
+
+  navigateToPendingSync = draft => {
+    const { firstName, lastName } = draft.familyData.familyMembersList[0]
+
+    this.props.navigation.navigate('Family', {
+      familyName: `${firstName} ${lastName}`,
+      familyLifemap: draft,
+      isDraft: true,
+      survey: this.props.surveys.find(survey => survey.id === draft.surveyId),
+      activeTab: 'LifeMap'
+    })
+  }
+
   navigateToDraft = draft => {
     if (
       draft.progress.screen !== 'Question' &&
@@ -63,23 +85,29 @@ export class Dashboard extends Component {
 
     const filteredFamily = this.props.families.find(family => {
       return (
-        family.name.toLowerCase() === `${firstName} ${lastName}`.toLowerCase() &&
+        family.name.toLowerCase() ===
+          `${firstName} ${lastName}`.toLowerCase() &&
         family.snapshotList &&
         family.snapshotList.length &&
-        family.snapshotList.some(snapshot => snapshot.surveyId === draft.surveyId && JSON.stringify(snapshot.familyData) === JSON.stringify(snapshot.familyData)
+        family.snapshotList.some(
+          snapshot =>
+            snapshot.surveyId === draft.surveyId &&
+            JSON.stringify(snapshot.familyData) ===
+              JSON.stringify(snapshot.familyData)
         )
       )
     })
 
     this.props.navigation.navigate('Family', {
       familyName: filteredFamily.name,
-      familyLifemap: filteredFamily.snapshotList ? filteredFamily.snapshotList[0] : filteredFamily.draft,
+      familyLifemap: filteredFamily.snapshotList
+        ? filteredFamily.snapshotList[0]
+        : filteredFamily.draft,
       isDraft: !filteredFamily.snapshotList,
-      survey: this.props.surveys.find(
-        survey =>
-          filteredFamily.snapshotList
-            ? survey.id === filteredFamily.snapshotList[0].surveyId
-            : survey.id === filteredFamily.draft.surveyId
+      survey: this.props.surveys.find(survey =>
+        filteredFamily.snapshotList
+          ? survey.id === filteredFamily.snapshotList[0].surveyId
+          : survey.id === filteredFamily.draft.surveyId
       ),
       activeTab: 'LifeMap'
     })
@@ -91,7 +119,8 @@ export class Dashboard extends Component {
     const list = drafts.slice().reverse()
     return (
       <ScrollView style={globalStyles.background}>
-        {this.props.offline.outbox.length && navigation.getParam('firstTimeVisitor') ? null : (
+        {this.props.offline.outbox.length &&
+        navigation.getParam('firstTimeVisitor') ? null : (
           <View>
             <View style={globalStyles.container}>
               <Decoration>
@@ -105,7 +134,9 @@ export class Dashboard extends Component {
             </View>
             {drafts.length ? (
               <View style={styles.borderBottom}>
-                <Text style={{ ...globalStyles.subline, ...styles.listTitle }}>{t('views.latestDrafts')}</Text>
+                <Text style={{ ...globalStyles.subline, ...styles.listTitle }}>
+                  {t('views.latestDrafts')}
+                </Text>
               </View>
             ) : null}
             <FlatList
@@ -116,7 +147,16 @@ export class Dashboard extends Component {
                 <DraftListItem
                   item={item}
                   handleClick={() => {
-                    item.status === 'Synced' ? this.navigateToSynced(item) : this.navigateToDraft(item)
+                    switch (item.status) {
+                      case 'Synced':
+                        this.navigateToSynced(item)
+                        break
+                      case 'Pending sync':
+                        this.navigateToPendingSync(item)
+                        break
+                      default:
+                        this.navigateToDraft(item)
+                    }
                   }}
                   lng={this.props.lng}
                 />
@@ -155,7 +195,15 @@ Dashboard.propTypes = {
   families: PropTypes.array
 }
 
-const mapStateToProps = ({ env, user, drafts, offline, string, surveys, families }) => ({
+const mapStateToProps = ({
+  env,
+  user,
+  drafts,
+  offline,
+  string,
+  surveys,
+  families
+}) => ({
   env,
   user,
   drafts,

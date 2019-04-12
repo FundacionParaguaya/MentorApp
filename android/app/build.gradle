@@ -150,13 +150,13 @@ android {
 
 dependencies {
     compile project(':react-native-sentry')
-    compile project(':react-native-maps')
     compile project(':react-native-background-fetch')
     compile project(':react-native-background-task')
     compile project(':react-native-splash-screen')
     compile project(':react-native-vector-icons')
     compile project(':react-native-languages')
     compile project(':rn-fetch-blob')
+    implementation project(':mapbox-react-native-mapbox-gl')
     implementation fileTree(dir: "libs", include: ["*.jar"])
     implementation "com.android.support:appcompat-v7:${rootProject.ext.supportLibVersion}"
     implementation "com.facebook.react:react-native:+"  // From node_modules

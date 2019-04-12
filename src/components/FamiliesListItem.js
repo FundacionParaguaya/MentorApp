@@ -11,9 +11,9 @@ import ListItem from './ListItem'
 moment.locale('en')
 
 class FamiliesListItem extends Component {
-  capitalize = (s) => {
+  capitalize = s => {
     if (typeof s !== 'string') return ''
-    const string = s.split('.').join("")
+    const string = s.split('.').join('')
     return string.charAt(0).toUpperCase() + string.slice(1)
   }
 
@@ -28,8 +28,7 @@ class FamiliesListItem extends Component {
     const birthDate = firstParticipant
       ? firstParticipant.birthDate
       : family.birthDate
-    
-      
+
     const birthDateWithLocale = moment.unix(birthDate)
     birthDateWithLocale.locale(lng)
 
@@ -39,22 +38,39 @@ class FamiliesListItem extends Component {
         onPress={this.props.handleClick}
         disabled={family.snapshotList && !family.snapshotList.length}
       >
-        <Icon name="face" color={colors.grey} size={40} style={styles.icon} />
+        <View>
+          {family.snapshotList[0] &&
+            family.snapshotList[0].familyData.countFamilyMembers &&
+            family.snapshotList[0].familyData.countFamilyMembers > 1 && (
+              <View style={styles.countCircleWrapper}>
+                <View style={styles.countCircle}>
+                  <Text style={[globalStyles.h4, { color: colors.lightdark }]}>
+                    + {family.snapshotList[0].familyData.countFamilyMembers - 1}
+                  </Text>
+                </View>
+              </View>
+            )}
+
+          <Icon name="face" color={colors.grey} size={40} />
+        </View>
         <View style={styles.listItemContainer}>
           <Text style={{ ...globalStyles.p, ...styles.p }}>{family.name}</Text>
           {!family.snapshotList ||
           (family.snapshotList && family.snapshotList.length) ? (
-            <Text style={{ ...globalStyles.subline, ...styles.p }}
-              accessibilityLabel={birthDate
-                ? `Date Of Birth: ${birthDateWithLocale
-                    .utc()
-                    .format('MMMM DD, YYYY')}`
-                : ''}
+            <Text
+              style={{ ...globalStyles.subline, ...styles.p }}
+              accessibilityLabel={
+                birthDate
+                  ? `Date Of Birth: ${birthDateWithLocale
+                      .utc()
+                      .format('MMMM DD, YYYY')}`
+                  : ''
+              }
             >
               {birthDate
-                ? `DOB: ${this.capitalize(birthDateWithLocale
-                  .utc()
-                  .format('MMM DD, YYYY'))}`
+                ? `DOB: ${this.capitalize(
+                    birthDateWithLocale.utc().format('MMM DD, YYYY')
+                  )}`
                 : ''}
             </Text>
           ) : (
@@ -101,6 +117,25 @@ const styles = StyleSheet.create({
   },
   p: {
     paddingRight: 20
+  },
+  countCircleWrapper: {
+    zIndex: 2,
+    justifyContent: 'center',
+    alignItems: 'center',
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0
+  },
+  countCircle: {
+    width: 22,
+    height: 22,
+    borderRadius: 22,
+    backgroundColor: colors.primary,
+    justifyContent: 'center',
+    alignItems: 'center',
+    transform: [{ translateX: 13 }, { translateY: -13 }]
   }
 })
 
