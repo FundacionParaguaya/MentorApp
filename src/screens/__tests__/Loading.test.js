@@ -1,6 +1,6 @@
 import React from 'react'
 import { shallow } from 'enzyme'
-import { Loading } from '../Loading'
+import { Loading, mapStateToProps } from '../Loading'
 import { url } from '../../config'
 
 jest.useFakeTimers()
@@ -34,6 +34,10 @@ describe('Loading Component', () => {
   beforeEach(() => {
     props = createTestProps()
     wrapper = shallow(<Loading {...props} />)
+  })
+
+  it('maps proper state', () => {
+    expect(mapStateToProps({ sync: [] })).toEqual({ sync: [] })
   })
 
   it('show login if user has no token', () => {
@@ -74,9 +78,17 @@ describe('Loading Component', () => {
     })
 
     it('initiates image caching', () => {
-      wrapper.instance().handleImageCaching()
+      props = createTestProps({ surveys: [{ id: 1 }] })
+      wrapper = shallow(<Loading {...props} />)
+
+      const spy = jest.spyOn(wrapper.instance(), 'handleImageCaching')
+
+      wrapper.setState({ offlineRegionStatus: { percentage: 100 } })
 
       expect(wrapper).toHaveState({ cachingImages: true })
+
+      jest.advanceTimersByTime(1000)
+      expect(spy).toHaveBeenCalledTimes(1)
     })
 
     it('initiates offlime map pack download', () => {
@@ -102,6 +114,27 @@ describe('Loading Component', () => {
       wrapper.instance().onMapDownloadError({}, 'some error')
 
       expect(wrapper).toHaveState({ mapDownloadError: 'some error' })
+    })
+
+    it('enters app once all is synced', () => {
+      wrapper.setProps({
+        sync: {
+          synced: 'no',
+          images: {
+            total: 100,
+            synced: 100
+          }
+        }
+      })
+
+      wrapper.setState({
+        offlineRegionStatus: { percentage: 100 },
+        cachingImages: true
+      })
+
+      jest.advanceTimersByTime(1000)
+
+      expect(props.setSyncedState).toHaveBeenCalledWith('yes')
     })
   })
 

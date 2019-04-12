@@ -140,10 +140,8 @@ export class Loading extends Component {
     // only when user is loging out clear the data
     if (this.props.sync.synced === 'logout') {
       // delete the cached map packs
-      if (MapboxGL.offlineManager) {
-        await MapboxGL.offlineManager.deletePack('Sofia')
-        await MapboxGL.offlineManager.deletePack('Cerrito')
-      }
+      await MapboxGL.offlineManager.deletePack('Sofia')
+      await MapboxGL.offlineManager.deletePack('Cerrito')
 
       // clear the async storage and reset the store
       AsyncStorage.clear(() => {
@@ -314,20 +312,32 @@ const styles = StyleSheet.create({
   }
 })
 
+export const mapStateToProps = ({
+  sync,
+  surveys,
+  env,
+  user,
+  offline,
+  families,
+  hydration
+}) => ({
+  sync,
+  surveys,
+  env,
+  user,
+  offline,
+  families,
+  hydration
+})
+
+const mapDispatchToProps = {
+  loadFamilies,
+  loadSurveys,
+  setSyncedState,
+  logout
+}
+
 export default connect(
-  ({ sync, surveys, env, user, offline, families, hydration }) => ({
-    sync,
-    surveys,
-    env,
-    user,
-    offline,
-    families,
-    hydration
-  }),
-  {
-    loadFamilies,
-    loadSurveys,
-    setSyncedState,
-    logout
-  }
+  mapStateToProps,
+  mapDispatchToProps
 )(Loading)
