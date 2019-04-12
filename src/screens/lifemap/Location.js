@@ -194,16 +194,18 @@ export class Location extends Component {
     this.props.addDraftProgress(this.draftId, {
       current: draft.progress.current - 1
     })
+
     if (draft.familyData.familyMembersList.length > 1) {
-      this.props.navigation.navigate('FamilyGendersBirthdates', {
+      this.props.navigation.navigate('FamilyMembersNames', {
         draftId: this.draftId,
         survey: this.survey
       })
-    } else
+    } else {
       this.props.navigation.navigate('FamilyParticipant', {
         draftId: this.draftId,
         survey: this.survey
       })
+    }
   }
 
   shouldComponentUpdate() {
