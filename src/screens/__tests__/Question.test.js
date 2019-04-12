@@ -24,8 +24,10 @@ const createTestProps = props => ({
       } else if (param === 'draftId') {
         return 1
       }
-    })
+    }),
+    state: { params: { headerHeight: 100  } }
   },
+  dimensions: { height: 100 },
   addSurveyData: jest.fn(),
   addDraftProgress: jest.fn(),
   deleteSurveyPriorityAcheivementData: jest.fn(),

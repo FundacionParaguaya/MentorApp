@@ -86,6 +86,7 @@ export class Slider extends Component {
                   })
                 }}
                 value={this.props.value}
+                bodyHeight={this.props.bodyHeight}
               />
             </View>
           ))}

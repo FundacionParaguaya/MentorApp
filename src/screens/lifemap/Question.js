@@ -151,18 +151,23 @@ export class Question extends Component {
 
   render() {
     const draft = this.getDraft()
-    const { t } = this.props
+    const { t, dimensions, navigation } = this.props
+    const { navigationHeight } = this.props.navigation.state.params
+    const headerHeight = !!navigationHeight ? navigationHeight : 95
+    const bodyHeight = dimensions.height - headerHeight - 50
+
     return (
       <StickyFooter
         handleClick={this.handleClick}
         readonly={true}
         progress={draft ? draft.progress.current / draft.progress.total : 0}
-        currentScreen='Question'
+        currentScreen="Question"
       >
         <SliderComponent
           slides={this.slides}
           value={this.getFieldValue(draft, this.indicator.codeName)}
           selectAnswer={answer => this.selectAnswer(answer)}
+          bodyHeight={bodyHeight}
         />
         <View style={styles.skip}>
           {this.indicator.required ? (
@@ -182,10 +187,11 @@ export class Question extends Component {
 
 const styles = StyleSheet.create({
   skip: {
-    justifyContent: 'center',
-    alignItems: 'center',
-    paddingTop: 40,
-    paddingBottom: 30
+    // justifyContent: 'center',
+    // alignItems: 'flex-end',
+    alignItems: 'flex-end',
+    marginRight: 30,
+    marginTop: 10
   },
   link: {
     color: colors.green
@@ -201,8 +207,9 @@ Question.propTypes = {
   deleteSurveyPriorityAcheivementData: PropTypes.func.isRequired
 }
 
-const mapStateToProps = ({ drafts }) => ({
-  drafts
+const mapStateToProps = ({ drafts, dimensions }) => ({
+  drafts,
+  dimensions
 })
 
 const mapDispatchToProps = {

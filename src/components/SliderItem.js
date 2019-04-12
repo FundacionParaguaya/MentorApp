@@ -22,12 +22,12 @@ export default class SliderItem extends Component {
     })
   }
   render() {
-    const { slide, value } = this.props
+    const { slide, value, bodyHeight } = this.props
     return (
       <TouchableHighlight
         activeOpacity={1}
         underlayColor={'transparent'}
-        style={styles.slide}
+        style={[styles.slide, { height: bodyHeight - 50 }]}
         onPress={this.props.onPress}
         onHideUnderlay={() => this.togglePressedState(false)}
         onShowUnderlay={() => this.togglePressedState(true)}
@@ -36,7 +36,8 @@ export default class SliderItem extends Component {
           <Image
             source={slide.url}
             style={{
-              ...styles.image
+              ...styles.image,
+              height: bodyHeight / 2 - 100
             }}
           />
 
@@ -92,7 +93,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     alignSelf: 'center',
-    marginTop: -50,
+    marginTop: -40,
     marginBottom: -20
   }
 })
