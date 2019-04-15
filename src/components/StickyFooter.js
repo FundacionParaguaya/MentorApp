@@ -33,11 +33,6 @@ export default class StickyFooter extends Component {
     let marginTop
     if (!!this.props.progress && this.props.currentScreen !== 'Question') {
       marginTop = -20
-    } else if (
-      !!this.props.progress &&
-      this.props.currentScreen === 'Question'
-    ) {
-      marginTop = -5
     } else {
       marginTop = 0
     }
@@ -49,7 +44,7 @@ export default class StickyFooter extends Component {
       <View
         style={[
           globalStyles.background,
-          styles.contentContainer,
+          !!this.props.currentScreen && this.props.currentScreen === 'Question' ? {paddingTop: 15} : {...styles.contentContainer},
           { marginTop: this.setMarginTop() }
         ]}
       >

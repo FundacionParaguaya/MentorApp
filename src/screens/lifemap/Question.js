@@ -154,7 +154,8 @@ export class Question extends Component {
     const { t, dimensions, navigation } = this.props
     const { navigationHeight } = this.props.navigation.state.params
     const headerHeight = !!navigationHeight ? navigationHeight : 95
-    const bodyHeight = dimensions.height - headerHeight - 50
+    const paddingOfStickyFooter = 15
+    const bodyHeight = dimensions.height - headerHeight - paddingOfStickyFooter
 
     return (
       <StickyFooter
@@ -163,22 +164,24 @@ export class Question extends Component {
         progress={draft ? draft.progress.current / draft.progress.total : 0}
         currentScreen="Question"
       >
-        <SliderComponent
-          slides={this.slides}
-          value={this.getFieldValue(draft, this.indicator.codeName)}
-          selectAnswer={answer => this.selectAnswer(answer)}
-          bodyHeight={bodyHeight}
-        />
-        <View style={styles.skip}>
-          {this.indicator.required ? (
-            <Text>{t('views.lifemap.responseRequired')}</Text>
-          ) : (
-            <IconButton
-              text={t('views.lifemap.skipThisQuestion')}
-              textStyle={styles.link}
-              onPress={() => this.selectAnswer(0)}
-            />
-          )}
+        <View style={{ height: bodyHeight }}>
+          <SliderComponent
+            slides={this.slides}
+            value={this.getFieldValue(draft, this.indicator.codeName)}
+            selectAnswer={answer => this.selectAnswer(answer)}
+            bodyHeight={bodyHeight}
+          />
+          <View style={styles.skip}>
+            {this.indicator.required ? (
+              <Text>{t('views.lifemap.responseRequired')}</Text>
+            ) : (
+              <IconButton
+                text={t('views.lifemap.skipThisQuestion')}
+                textStyle={styles.link}
+                onPress={() => this.selectAnswer(0)}
+              />
+            )}
+          </View>
         </View>
       </StickyFooter>
     )
@@ -187,11 +190,9 @@ export class Question extends Component {
 
 const styles = StyleSheet.create({
   skip: {
-    // justifyContent: 'center',
-    // alignItems: 'flex-end',
     alignItems: 'flex-end',
     marginRight: 30,
-    marginTop: 10
+    marginTop: 15
   },
   link: {
     color: colors.green

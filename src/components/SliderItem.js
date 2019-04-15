@@ -27,7 +27,7 @@ export default class SliderItem extends Component {
       <TouchableHighlight
         activeOpacity={1}
         underlayColor={'transparent'}
-        style={[styles.slide, { height: bodyHeight - 50 }]}
+        style={[styles.slide, {height: bodyHeight - 90 }]}
         onPress={this.props.onPress}
         onHideUnderlay={() => this.togglePressedState(false)}
         onShowUnderlay={() => this.togglePressedState(true)}
@@ -37,9 +37,9 @@ export default class SliderItem extends Component {
             source={slide.url}
             style={{
               ...styles.image,
-              height: bodyHeight / 2 - 100
+              height: bodyHeight / 2
             }}
-          />
+            />
 
           <View
             id="icon-view"
@@ -49,7 +49,7 @@ export default class SliderItem extends Component {
               opacity: value === slide.value || this.state.pressed ? 1 : 0
             }}
           >
-            <Icon name="done" size={56} color={colors.white} />
+            <Icon name="done" size={47} color={colors.white} />
           </View>
 
           <Text
@@ -80,20 +80,25 @@ const styles = StyleSheet.create({
   text: {
     color: colors.white,
     textAlign: 'center',
-    padding: 15
+    paddingRight: 15,
+    paddingLeft: 15,
+    paddingTop: 5,
+    fontSize: 18,
+    lineHeight: 23,
+    fontFamily: 'Poppins'
   },
   image: {
     width: '100%',
     marginTop: 10
   },
   iconBig: {
-    borderRadius: 40,
+    borderRadius: 50,
     width: 80,
     height: 80,
     justifyContent: 'center',
     alignItems: 'center',
     alignSelf: 'center',
-    marginTop: -40,
+    marginTop: -30,
     marginBottom: -20
   }
 })
