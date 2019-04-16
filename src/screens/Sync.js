@@ -32,7 +32,7 @@ export class Sync extends Component {
         findNodeHandle(this.acessibleComponent.current),
         UIManager.AccessibilityEventTypes.typeViewFocused
       )
-    }, 10)
+    }, 1)
     this.updateTitle()
   }
 
