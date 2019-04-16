@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { StyleSheet } from 'react-native'
+import { StyleSheet, Text , Platform} from 'react-native'
 import { connect } from 'react-redux'
 import PropTypes from 'prop-types'
 import uuid from 'uuid/v1'
@@ -22,7 +22,14 @@ import colors from '../../theme.json'
 export class FamilyParticipant extends Component {
   static navigationOptions = ({ navigation }) => {
     return {
-      title: navigation.getParam('title', 'Primary Participant')
+      headerTitle: (
+        <Text
+          accessibilityLiveRegion="assertive"
+          style={styles.headerTitleStyle}
+        >
+          {navigation.getParam('title', 'Primary Participant')}
+        </Text>
+      )
     }
   }
 
@@ -362,6 +369,22 @@ export class FamilyParticipant extends Component {
 const styles = StyleSheet.create({
   icon: {
     alignSelf: 'center'
+  },
+  headerTitleStyle: {
+    ...Platform.select({
+      ios: {
+        fontFamily: 'Poppins'
+      },
+      android: {
+        fontFamily: 'Poppins SemiBold'
+      }
+    }),
+    fontSize: 18,
+    fontWeight: '200',
+    lineHeight: 26,
+    color: colors.black,
+    marginLeft: 'auto',
+    marginRight: 'auto'
   }
 })
 

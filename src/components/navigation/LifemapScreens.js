@@ -1,4 +1,5 @@
 import React from 'react'
+import { Text, StyleSheet, Platform } from 'react-native'
 import TermsView from '../../screens/lifemap/Terms'
 import SocioEconomicQuestionView from '../../screens/lifemap/SocioEconomicQuestion'
 import FinalView from '../../screens/lifemap/Final'
@@ -15,27 +16,52 @@ import FamilyMemberView from '../../screens/lifemap/FamilyMember'
 import i18n from '../../i18n'
 import { generateNavOptions } from './helpers'
 import CustomHeaderSurvey from './CustomHeaderSurvey'
+import colors from '../../theme.json'
 
 // Reusable object for all screens related to a draft
 export default {
   Terms: {
     screen: TermsView,
     navigationOptions: ({ navigation }) => ({
-      title: i18n.t('views.termsConditions'),
+      headerTitle: (
+        <Text
+          accessibilityLiveRegion="assertive"
+          style={[styles.headerTitleStyle, { marginLeft: 20 }]}
+        >
+          {i18n.t('views.termsConditions')}
+        </Text>
+      ),
       ...generateNavOptions({ navigation, burgerMenu: false })
     })
   },
   Privacy: {
     screen: TermsView,
     navigationOptions: ({ navigation }) => ({
-      title: i18n.t('views.privacyPolicy'),
+      headerTitle: (
+        <Text
+          accessibilityLiveRegion="assertive"
+          style={[styles.headerTitleStyle, { marginLeft: 20 }]}
+        >
+          {i18n.t('views.privacyPolicy')}
+        </Text>
+      ),
       ...generateNavOptions({ navigation, burgerMenu: false })
     })
   },
   Location: {
     screen: LocationView,
     navigationOptions: ({ navigation }) => ({
-      title: i18n.t('views.location'),
+      headerTitle: (
+        <Text
+          accessibilityLiveRegion="assertive"
+          style={[
+            styles.headerTitleStyle,
+            { marginLeft: 'auto', marginRight: 'auto' }
+          ]}
+        >
+          {i18n.t('views.location')}
+        </Text>
+      ),
       ...generateNavOptions({
         navigation,
         burgerMenu: false,
@@ -56,7 +82,17 @@ export default {
   BeginLifemap: {
     screen: BeginLifemapView,
     navigationOptions: ({ navigation }) => ({
-      title: i18n.t('views.yourLifeMap'),
+      headerTitle: (
+        <Text
+          accessibilityLiveRegion="assertive"
+          style={[
+            styles.headerTitleStyle,
+            { marginLeft: 'auto', marginRight: 'auto' }
+          ]}
+        >
+          {i18n.t('views.yourLifeMap')}
+        </Text>
+      ),
       ...generateNavOptions({
         navigation,
         burgerMenu: false,
@@ -93,7 +129,17 @@ export default {
   Skipped: {
     screen: SkippedView,
     navigationOptions: ({ navigation }) => ({
-      title: i18n.t('views.skippedIndicators'),
+      headerTitle: (
+        <Text
+          accessibilityLiveRegion="assertive"
+          style={[
+            styles.headerTitleStyle,
+            { marginLeft: 'auto', marginRight: 'auto' }
+          ]}
+        >
+          {i18n.t('views.skippedIndicators')}
+        </Text>
+      ),
       ...generateNavOptions({
         navigation,
         burgerMenu: false,
@@ -104,7 +150,14 @@ export default {
   Overview: {
     screen: OverviewView,
     navigationOptions: ({ navigation }) => ({
-      title: i18n.t('views.yourLifeMap'),
+      headerTitle: (
+        <Text
+          accessibilityLiveRegion="assertive"
+          style={[styles.headerTitleStyle, { marginLeft: 20 }]}
+        >
+          {i18n.t('views.yourLifeMap')}
+        </Text>
+      ),
       ...generateNavOptions({
         navigation,
         burgerMenu: false
@@ -114,21 +167,42 @@ export default {
   AddPriority: {
     screen: AddPriorityView,
     navigationOptions: ({ navigation }) => ({
-      title: i18n.t('views.yourLifeMap'),
+      headerTitle: (
+        <Text
+          accessibilityLiveRegion="assertive"
+          style={[styles.headerTitleStyle, { marginLeft: 20 }]}
+        >
+          {i18n.t('views.yourLifeMap')}
+        </Text>
+      ),
       ...generateNavOptions({ navigation, burgerMenu: false })
     })
   },
   AddAchievement: {
     screen: AddAchievementView,
     navigationOptions: ({ navigation }) => ({
-      title: i18n.t('views.yourLifeMap'),
+      headerTitle: (
+        <Text
+          accessibilityLiveRegion="assertive"
+          style={[styles.headerTitleStyle, { marginLeft: 20 }]}
+        >
+          {i18n.t('views.yourLifeMap')}
+        </Text>
+      ),
       ...generateNavOptions({ navigation, burgerMenu: false })
     })
   },
   Final: {
     screen: FinalView,
     navigationOptions: ({ navigation }) => ({
-      title: i18n.t('general.thankYou'),
+      headerTitle: (
+        <Text
+          accessibilityLiveRegion="assertive"
+          style={[styles.headerTitleStyle, { marginLeft: 20 }]}
+        >
+          {i18n.t('general.thankYou')}
+        </Text>
+      ),
       ...generateNavOptions({
         navigation,
         burgerMenu: false
@@ -148,7 +222,17 @@ export default {
   FamilyMembersNames: {
     screen: FamilyMembersNamesView,
     navigationOptions: ({ navigation }) => ({
-      title: i18n.t('views.familyMembers'),
+      headerTitle: (
+        <Text
+          accessibilityLiveRegion="assertive"
+          style={[
+            styles.headerTitleStyle,
+            { marginLeft: 'auto', marginRight: 'auto' }
+          ]}
+        >
+          {i18n.t('views.familyMembers')}
+        </Text>
+      ),
       ...generateNavOptions({
         navigation,
         burgerMenu: false,
@@ -167,3 +251,20 @@ export default {
     })
   }
 }
+
+const styles = StyleSheet.create({
+  headerTitleStyle: {
+    ...Platform.select({
+      ios: {
+        fontFamily: 'Poppins'
+      },
+      android: {
+        fontFamily: 'Poppins SemiBold'
+      }
+    }),
+    fontSize: 18,
+    fontWeight: '200',
+    lineHeight: 26,
+    color: colors.black
+  }
+})
