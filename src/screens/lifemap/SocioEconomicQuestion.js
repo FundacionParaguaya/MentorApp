@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
-import { View, StyleSheet, Text } from 'react-native'
+import { View, StyleSheet, Text, Platform } from 'react-native'
 import { connect } from 'react-redux'
 import { withNamespaces } from 'react-i18next'
 import StickyFooter from '../../components/StickyFooter'
@@ -11,11 +11,19 @@ import {
   addSurveyFamilyMemberData,
   addDraftProgress
 } from '../../redux/actions'
+import colors from '../../theme.json'
 
 export class SocioEconomicQuestion extends Component {
   static navigationOptions = ({ navigation }) => {
     return {
-      title: navigation.getParam('title')
+      headerTitle: (
+        <Text
+          accessibilityLiveRegion="assertive"
+          style={styles.headerTitleStyle}
+        >
+          {navigation.getParam('title')}
+        </Text>
+      )
     }
   }
 
@@ -459,6 +467,22 @@ const styles = StyleSheet.create({
     marginBottom: 10,
     fontSize: 16,
     lineHeight: 20
+  },
+  headerTitleStyle: {
+    ...Platform.select({
+      ios: {
+        fontFamily: 'Poppins'
+      },
+      android: {
+        fontFamily: 'Poppins SemiBold'
+      }
+    }),
+    fontSize: 18,
+    fontWeight: '200',
+    lineHeight: 26,
+    color: colors.black,
+    marginLeft: 'auto',
+    marginRight: 'auto'
   }
 })
 
