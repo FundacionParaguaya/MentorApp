@@ -14,6 +14,7 @@ export default class CustomHeaderSurvey extends Component {
           const { height } = event.nativeEvent.layout
           navigation.setParams({ navigationHeight: height })
         }}
+        accessibilityLiveRegion="assertive"
       >
         <Text style={styles.dimension}>{dimension.toUpperCase()}</Text>
         <Text style={styles.title}>{title}</Text>

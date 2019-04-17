@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { StyleSheet, ScrollView, FlatList } from 'react-native'
+import { StyleSheet, ScrollView, FlatList, View, UIManager, findNodeHandle } from 'react-native'
 import { connect } from 'react-redux'
 import PropTypes from 'prop-types'
 import { withNamespaces } from 'react-i18next'
@@ -17,12 +17,20 @@ export class Surveys extends Component {
     }
   }
 
+  acessibleComponent = React.createRef()
+
   updateTitle = () =>
     this.props.navigation.setParams({
       title: this.props.t('views.createLifemap')
     })
 
   componentDidMount() {
+    setTimeout(() => {
+      UIManager.sendAccessibilityEvent(
+        findNodeHandle(this.acessibleComponent.current),
+        UIManager.AccessibilityEventTypes.typeViewFocused
+      )
+    }, 1)
     this.updateTitle()
   }
 
@@ -33,7 +41,7 @@ export class Surveys extends Component {
   }
   render() {
     return (
-      <ScrollView style={{ ...globalStyles.container, padding: 0 }}>
+      <ScrollView ref={this.acessibleComponent} accessible={true} style={{ ...globalStyles.container, padding: 0 }}>
         <Decoration variation="lifemap">
           <RoundImage source="surveys" />
         </Decoration>
