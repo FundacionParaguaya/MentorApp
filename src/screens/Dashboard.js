@@ -17,10 +17,7 @@ export class Dashboard extends Component {
       title: navigation.getParam('title', 'Dashboard')
     }
   }
-  slowLoadingTimer
-  clearTimers = () => {
-    clearTimeout(this.slowLoadingTimer)
-  }
+
   updateTitle = () =>
     this.props.navigation.setParams({
       title: this.props.t('views.dashboard')
@@ -41,10 +38,6 @@ export class Dashboard extends Component {
     if (prevProps.lng !== this.props.lng) {
       this.updateTitle()
     }
-  }
-
-  componentWillUnmount() {
-    this.clearTimers()
   }
 
   navigateToPendingSync = draft => {
@@ -80,90 +73,54 @@ export class Dashboard extends Component {
       })
   }
 
-  navigateToSynced = draft => {
-    const { firstName, lastName } = draft.familyData.familyMembersList[0]
-
-    const filteredFamily = this.props.families.find(family => {
-      return (
-        family.name.toLowerCase() ===
-          `${firstName} ${lastName}`.toLowerCase() &&
-        family.snapshotList &&
-        family.snapshotList.length &&
-        family.snapshotList.some(
-          snapshot =>
-            snapshot.surveyId === draft.surveyId &&
-            JSON.stringify(snapshot.familyData) ===
-              JSON.stringify(snapshot.familyData)
-        )
-      )
-    })
-
-    this.props.navigation.navigate('Family', {
-      familyName: filteredFamily.name,
-      familyLifemap: filteredFamily.snapshotList
-        ? filteredFamily.snapshotList[0]
-        : filteredFamily.draft,
-      isDraft: !filteredFamily.snapshotList,
-      survey: this.props.surveys.find(survey =>
-        filteredFamily.snapshotList
-          ? survey.id === filteredFamily.snapshotList[0].surveyId
-          : survey.id === filteredFamily.draft.surveyId
-      ),
-      activeTab: 'LifeMap'
-    })
+  handleClickOnListItem = item => {
+    switch (item.status) {
+      case 'Pending sync':
+        this.navigateToPendingSync(item)
+        break
+      default:
+        this.navigateToDraft(item)
+    }
   }
 
   render() {
-    const { t, navigation, drafts } = this.props
+    const { t, drafts } = this.props
 
     const list = drafts.slice().reverse()
     return (
       <ScrollView style={globalStyles.background}>
-        {this.props.offline.outbox.length &&
-        navigation.getParam('firstTimeVisitor') ? null : (
-          <View>
-            <View style={globalStyles.container}>
-              <Decoration>
-                <RoundImage source="family" />
-              </Decoration>
-              <Button
-                text={t('views.createLifemap')}
-                colored
-                handleClick={() => this.props.navigation.navigate('Surveys')}
-              />
-            </View>
-            {drafts.length ? (
-              <View style={styles.borderBottom}>
-                <Text style={{ ...globalStyles.subline, ...styles.listTitle }}>
-                  {t('views.latestDrafts')}
-                </Text>
-              </View>
-            ) : null}
-            <FlatList
-              style={{ ...styles.background }}
-              data={list}
-              keyExtractor={(item, index) => index.toString()}
-              renderItem={({ item }) => (
-                <DraftListItem
-                  item={item}
-                  handleClick={() => {
-                    switch (item.status) {
-                      case 'Synced':
-                        this.navigateToSynced(item)
-                        break
-                      case 'Pending sync':
-                        this.navigateToPendingSync(item)
-                        break
-                      default:
-                        this.navigateToDraft(item)
-                    }
-                  }}
-                  lng={this.props.lng}
-                />
-              )}
+        <View>
+          <View style={globalStyles.container}>
+            <Decoration>
+              <RoundImage source="family" />
+            </Decoration>
+            <Button
+              id="create-lifemap"
+              text={t('views.createLifemap')}
+              colored
+              handleClick={() => this.props.navigation.navigate('Surveys')}
             />
           </View>
-        )}
+          {drafts.length ? (
+            <View id="latest-drafts" style={styles.borderBottom}>
+              <Text style={{ ...globalStyles.subline, ...styles.listTitle }}>
+                {t('views.latestDrafts')}
+              </Text>
+            </View>
+          ) : null}
+          <FlatList
+            style={{ ...styles.background }}
+            data={list}
+            keyExtractor={(item, index) => index.toString()}
+            renderItem={({ item }) => (
+              <DraftListItem
+                item={item}
+                handleClick={() => this.handleClickOnListItem(item)}
+                lng={this.props.lng}
+              />
+            )}
+          />
+        </View>
       </ScrollView>
     )
   }
@@ -195,7 +152,7 @@ Dashboard.propTypes = {
   families: PropTypes.array
 }
 
-const mapStateToProps = ({
+export const mapStateToProps = ({
   env,
   user,
   drafts,

@@ -4,6 +4,8 @@ import { Location } from '../lifemap/Location'
 import SearchBar from '../../components/SearchBar'
 import StickyFooter from '../../components/StickyFooter'
 
+jest.useFakeTimers()
+
 // navigator mock
 /* eslint-disable no-undef */
 global.navigator = {
@@ -76,8 +78,9 @@ const createTestProps = props => ({
 
 describe('Family Location component', () => {
   let wrapper
+  let props
   beforeEach(() => {
-    const props = createTestProps()
+    props = createTestProps()
     wrapper = shallow(<Location {...props} />)
   })
   it('renders the continue button with proper label', () => {
@@ -225,11 +228,68 @@ describe('Family Location component', () => {
   it('calls addDraftProgress on mount', () => {
     expect(wrapper.instance().props.addDraftProgress).toHaveBeenCalledTimes(1)
   })
-  it('calls onPressBack', () => {
-    const spy = jest.spyOn(wrapper.instance(), 'onPressBack')
+
+  it('sets correct data on map drag', () => {
+    const spy = jest.spyOn(wrapper.instance(), 'addSurveyData')
+
+    wrapper.instance().onDragMap({ geometry: { coordinates: [45, 46] } })
+
+    expect(spy).toHaveBeenCalledTimes(3)
+    expect(spy).toHaveBeenCalledWith(0, 'accuracy')
+  })
+
+  it('navigates back to correct page based on draft data', () => {
+    wrapper.instance().onPressBack()
+
+    expect(props.navigation.navigate).toHaveBeenCalledWith(
+      'FamilyMembersNames',
+      {
+        draftId: 2,
+        survey: {
+          surveyConfig: { surveyLocation: { country: 'BG' } },
+          surveyId: 100
+        }
+      }
+    )
+
+    props = createTestProps({
+      drafts: [
+        {
+          draftId: 1
+        },
+        {
+          draftId: 2,
+          surveyId: 1,
+          economicSurveyDataList: [],
+          indicatorSurveyDataList: [],
+          progress: { screen: 'Location' },
+          familyData: {
+            countFamilyMembers: 1,
+            familyMembersList: [
+              {
+                firstName: 'Juan',
+                lastName: 'Perez',
+                birthCountry: 'Brazil'
+              }
+            ]
+          }
+        }
+      ]
+    })
+    wrapper = shallow(<Location {...props} />)
 
     wrapper.instance().onPressBack()
-    expect(spy).toHaveBeenCalledTimes(1)
+
+    expect(props.navigation.navigate).toHaveBeenCalledWith(
+      'FamilyParticipant',
+      {
+        draftId: 2,
+        survey: {
+          surveyConfig: { surveyLocation: { country: 'BG' } },
+          surveyId: 100
+        }
+      }
+    )
   })
 })
 
@@ -269,7 +329,20 @@ describe('Render optimization', () => {
     expect(wrapper.find('#countrySelect')).toHaveProp({ value: 'BG' })
   })
 
-  it('navigates to SocioEconomicQuestion with proper params', () => {
+  it('shows errors if form is incorrect', () => {
+    wrapper.instance().errorsDetected = ['country']
+
+    wrapper
+      .find(StickyFooter)
+      .props()
+      .handleClick()
+
+    expect(wrapper).toHaveState({
+      showErrors: true
+    })
+  })
+
+  it('navigates to SocioEconomicQuestion with proper params if no errors', () => {
     wrapper
       .find(StickyFooter)
       .props()
