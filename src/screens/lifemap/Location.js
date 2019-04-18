@@ -297,7 +297,7 @@ export class Location extends Component {
                     {centeringMap ? (
                       <ActivityIndicator
                         style={styles.center}
-                        size={54}
+                        size="small"
                         color={colors.palegreen}
                       />
                     ) : (
@@ -322,7 +322,7 @@ export class Location extends Component {
                 {mapsError !== 3 && !latitude && (
                   <ActivityIndicator
                     style={styles.spinner}
-                    size={80}
+                    size="large"
                     color={colors.palered}
                   />
                 )}

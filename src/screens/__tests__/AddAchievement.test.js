@@ -49,11 +49,18 @@ describe('AddAchievement View', () => {
         continueLabel: 'general.save'
       })
     })
-    it('renders Icon', () => {
-      expect(wrapper.find(Icon)).toHaveLength(1)
-    })
-    it('renders Text', () => {
-      expect(wrapper.find(Text)).toHaveLength(2)
+
+    it('shows errors if form is incorrect', () => {
+      wrapper.instance().errorsDetected = ['country']
+
+      wrapper
+        .find(StickyFooter)
+        .props()
+        .handleClick()
+
+      expect(wrapper).toHaveState({
+        showErrors: true
+      })
     })
   })
 
