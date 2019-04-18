@@ -1,8 +1,8 @@
 import React from 'react'
 import { shallow } from 'enzyme'
 import { Image } from 'react-native'
-import { AppStack } from '../navigation'
-import { DrawerContent } from '../navigation/DrawerContent'
+import { AppStack } from '../stacks'
+import { DrawerContent } from '../DrawerContent'
 
 const createTestProps = props => ({
   navigation: {

@@ -1,8 +1,8 @@
 import React from 'react'
 import { shallow } from 'enzyme'
-import Popup from '../Popup'
-import LogoutPopup from '../navigation/LogoutPopup'
-import Checkbox from '../Checkbox'
+import Popup from '../../components/Popup'
+import LogoutPopup from '../LogoutPopup'
+import Checkbox from '../../components/Checkbox'
 import i18n from '../../i18n'
 import colors from '../../theme.json'
 
