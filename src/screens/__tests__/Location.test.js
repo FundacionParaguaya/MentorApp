@@ -122,26 +122,26 @@ describe('Family Location component', () => {
         accuracy: 15
       })
     })
+    ///commet out for now,because removed this component
+    // it('can search for address', () => {
+    //   const spy = jest.spyOn(wrapper.instance(), 'searcForAddress')
 
-    it('can search for address', () => {
-      const spy = jest.spyOn(wrapper.instance(), 'searcForAddress')
+    //   wrapper
+    //     .find(SearchBar)
+    //     .props()
+    //     .onChangeText('Sofia')
 
-      wrapper
-        .find(SearchBar)
-        .props()
-        .onChangeText('Sofia')
+    //   expect(wrapper).toHaveState({
+    //     searchAddress: 'Sofia'
+    //   })
 
-      expect(wrapper).toHaveState({
-        searchAddress: 'Sofia'
-      })
+    //   wrapper
+    //     .find(SearchBar)
+    //     .props()
+    //     .onSubmit()
 
-      wrapper
-        .find(SearchBar)
-        .props()
-        .onSubmit()
-
-      expect(spy).toHaveBeenCalledTimes(1)
-    })
+    //   expect(spy).toHaveBeenCalledTimes(1)
+    // })
 
     it('centers the map on device location', () => {
       wrapper

@@ -5,8 +5,10 @@ import {
   ActivityIndicator,
   Text,
   Image,
+  Keyboard,
   TouchableHighlight
 } from 'react-native'
+import { GooglePlacesAutocomplete } from 'react-native-google-places-autocomplete'
 import { connect } from 'react-redux'
 import PropTypes from 'prop-types'
 import { withNamespaces } from 'react-i18next'
@@ -23,6 +25,7 @@ import center from '../../../assets/images/centerMap.png'
 
 export class Location extends Component {
   state = {
+    showList: false,
     showErrors: false,
     latitude: null,
     longitude: null,
@@ -121,26 +124,26 @@ export class Location extends Component {
     )
   }
 
-  searcForAddress = () => {
-    fetch(
-      `https://maps.googleapis.com/maps/api/geocode/json?address=${this.state.searchAddress.replace(
-        ' ',
-        '+'
-      )}&key=AIzaSyBLGYYy86_7QPT-dKgUnFMIJyhUE6AGVwM`
-    )
-      .then(r =>
-        r
-          .json()
-          .then(res =>
-            this.setState({
-              latitude: res.results[0].geometry.location.lat,
-              longitude: res.results[0].geometry.location.lng
-            })
-          )
-          .catch()
-      )
-      .catch()
-  }
+  // searcForAddress = () => {
+  //   fetch(
+  //     `https://maps.googleapis.com/maps/api/geocode/json?address=${this.state.searchAddress.replace(
+  //       ' ',
+  //       '+'
+  //     )}&key=AIzaSyBLGYYy86_7QPT-dKgUnFMIJyhUE6AGVwM`
+  //   )
+  //     .then(r =>
+  //       r
+  //         .json()
+  //         .then(res =>
+  //           this.setState({
+  //             latitude: res.results[0].geometry.location.lat,
+  //             longitude: res.results[0].geometry.location.lng
+  //           })
+  //         )
+  //         .catch()
+  //     )
+  //     .catch()
+  // }
   onDragMap = region => {
     const { coordinates } = region.geometry
     const longitude = coordinates[0]
@@ -164,6 +167,14 @@ export class Location extends Component {
     this.props.drafts.find(draft => draft.draftId === this.draftId)
 
   componentDidMount() {
+    this.keyboardDidShowListener = Keyboard.addListener(
+      'keyboardDidShow',
+      this._keyboardDidShow
+    )
+    this.keyboardDidHideListener = Keyboard.addListener(
+      'keyboardDidHide',
+      this._keyboardDidHide
+    )
     const draft = this.getDraft()
 
     if (!this.getFieldValue(draft, 'latitude')) {
@@ -186,6 +197,16 @@ export class Location extends Component {
         onPressBack: this.onPressBack
       })
     }
+  }
+  componentWillUnmount() {
+    this.keyboardDidShowListener.remove()
+    this.keyboardDidHideListener.remove()
+  }
+  _keyboardDidHide = () => {
+    this.setState({ showList: false })
+  }
+  _keyboardDidShow = () => {
+    this.setState({ showList: true })
   }
 
   onPressBack = () => {
@@ -248,7 +269,12 @@ export class Location extends Component {
     } = this.state
 
     const draft = this.getDraft()
-
+    let showListItems
+    if (this.state.showList) {
+      showListItems = 'flex'
+    } else {
+      showListItems = 'none'
+    }
     return (
       <StickyFooter
         handleClick={this.handleClick}
@@ -268,15 +294,47 @@ export class Location extends Component {
                   <Image source={marker} />
                 </View>
                 {!this.readonly && (
-                  <SearchBar
-                    id="searchAddress"
-                    style={styles.search}
+                  <GooglePlacesAutocomplete
+                    // id="searchAddress"
+                    keyboardShouldPersistTaps={'handled'}
                     placeholder={t('views.family.searchByStreetOrPostalCode')}
-                    onChangeText={searchAddress =>
-                      this.setState({ searchAddress })
-                    }
-                    onSubmit={this.searcForAddress}
-                    value={searchAddress}
+                    autoFocus={false}
+                    returnKeyType={'default'}
+                    fetchDetails={true}
+                    onPress={(data, details = null) => {
+                      this.setState({
+                        latitude: details.geometry.location.lat,
+                        longitude: details.geometry.location.lng,
+                        showList: false
+                      })
+                    }}
+                    query={{
+                      key: 'AIzaSyBLGYYy86_7QPT-dKgUnFMIJyhUE6AGVwM',
+                      language: 'en', // language of the results
+                      types: '(cities)' // default: 'geocode'
+                    }}
+                    styles={{
+                      listView: {
+                        display: showListItems
+                      },
+                      textInputContainer: {
+                        width: '100%'
+                      },
+                      description: {
+                        fontWeight: 'bold'
+                      },
+                      predefinedPlacesDescription: {
+                        color: '#1faadb'
+                      },
+                      textInput: {
+                        marginTop: 10,
+                        fontFamily: 'Roboto',
+                        fontSize: 16,
+                        lineHeight: 21,
+                        color: colors.lightdark
+                      }
+                    }}
+                    currentLocation={false}
                   />
                 )}
                 <MapboxGL.MapView

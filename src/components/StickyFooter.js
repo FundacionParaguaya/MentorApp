@@ -61,14 +61,16 @@ export default class StickyFooter extends Component {
             }
           />
         )}
-        <ScrollView>{this.props.children}</ScrollView>
+        <ScrollView keyboardShouldPersistTaps={'handled'}>
+          {this.props.children}
+        </ScrollView>
         {!this.props.readonly &&
         (this.props.visible && this.state.continueVisible) ? (
           <View>
             {this.props.type === 'button' ? (
               <View style={{ height: 50 }}>
                 <Button
-                  id='continue'
+                  id="continue"
                   colored
                   text={this.props.continueLabel}
                   handleClick={this.props.handleClick}
