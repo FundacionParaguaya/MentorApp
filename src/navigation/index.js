@@ -1,14 +1,21 @@
 import React, { Component } from 'react'
 import { View, StyleSheet, StatusBar, Dimensions } from 'react-native'
 import PropTypes from 'prop-types'
+import SplashScreen from 'react-native-splash-screen'
 import { connect } from 'react-redux'
-import { setSyncedState, setDimensions } from '../redux/actions'
-import { LoginStack, AppStack, LoadingStack } from './stacks'
+import { setDimensions } from '../redux/actions'
+import RootStack from './stacks'
 
 export class NavWrapper extends Component {
   componentDidMount() {
     this.dimensionChange()
     Dimensions.addEventListener('change', this.dimensionChange)
+  }
+
+  componentDidUpdate(prevProps) {
+    if (!prevProps.hydration && this.props.hydration) {
+      SplashScreen.hide()
+    }
   }
 
   dimensionChange = () => {
@@ -21,18 +28,13 @@ export class NavWrapper extends Component {
 
   // determine which stack to show based on synced property
   render() {
-    return (
+    return this.props.hydration ? (
       <View style={styles.container}>
-        <StatusBar barStyle="light-content" />
-        {this.props.sync.synced === 'no' ||
-        this.props.sync.synced === 'logout' ? (
-          <LoadingStack />
-        ) : (
-          <View />
-        )}
-        {this.props.sync.synced === 'login' ? <LoginStack /> : <View />}
-        {this.props.sync.synced === 'yes' ? <AppStack /> : <View />}
+        <StatusBar />
+        <RootStack />
       </View>
+    ) : (
+      <View />
     )
   }
 }
@@ -46,18 +48,18 @@ const styles = StyleSheet.create({
 NavWrapper.propTypes = {
   user: PropTypes.object.isRequired,
   sync: PropTypes.object.isRequired,
-  setSyncedState: PropTypes.func.isRequired,
+  hydration: PropTypes.bool.isRequired,
   setDimensions: PropTypes.func.isRequired
 }
 
-const mapStateToProps = ({ user, sync, dimensions }) => ({
+const mapStateToProps = ({ user, sync, dimensions, hydration }) => ({
   user,
   sync,
-  dimensions
+  dimensions,
+  hydration
 })
 
 const mapDispatchToProps = {
-  setSyncedState,
   setDimensions
 }
 

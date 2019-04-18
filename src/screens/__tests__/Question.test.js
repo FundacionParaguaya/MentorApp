@@ -1,10 +1,6 @@
 import React from 'react'
 import { shallow } from 'enzyme'
-import {
-  Text,
-  ProgressBarAndroid,
-  TouchableHighlight
-} from 'react-native'
+import { TouchableHighlight } from 'react-native'
 import { Question } from '../lifemap/Question'
 import SliderComponent from '../../components/Slider'
 import IconButton from '../../components/IconButton'
@@ -36,7 +32,7 @@ const createTestProps = props => ({
         { key: 'phoneNumber', value: 3 },
         { key: 'education', value: 1 }
       ],
-      progress: { "screen": "Question" , "current": 3}      
+      progress: { screen: 'Question', current: 3 }
     }
   ],
   ...props

@@ -3,7 +3,6 @@ import { shallow } from 'enzyme'
 import { Text } from 'react-native'
 import { BeginLifemap } from '../lifemap/BeginLifemap'
 import RoundImage from '../../components/RoundImage'
-import Button from '../../components/Button'
 import StickyFooter from '../../components/StickyFooter'
 import draft from '../__mocks__/draftMock.json'
 
@@ -13,7 +12,7 @@ const createTestProps = props => ({
     navigate: jest.fn(),
     replace: jest.fn(),
     setParams: jest.fn(),
-    getParam: jest.fn((param) => {
+    getParam: jest.fn(param => {
       if (param === 'survey') {
         return {
           id: 2,

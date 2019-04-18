@@ -14,7 +14,7 @@ import globalStyles from '../globalStyles'
 import IconButtonComponent from '../components/IconButton'
 import i18n from '../i18n'
 import colors from '../theme.json'
-import { switchLanguage, setSyncedState } from '../redux/actions'
+import { switchLanguage } from '../redux/actions'
 import LogoutPopup from './LogoutPopup'
 import ExitDraftPopup from './ExitDraftPopup'
 import dashboardIcon from '../../assets/images/icon_dashboard.png'
@@ -43,8 +43,6 @@ export class DrawerContent extends Component {
       this.setState({
         showErrors: false
       })
-
-      this.props.setSyncedState('logout')
     } else {
       this.setState({
         showErrors: true
@@ -238,7 +236,6 @@ export class DrawerContent extends Component {
 DrawerContent.propTypes = {
   lng: PropTypes.string,
   switchLanguage: PropTypes.func.isRequired,
-  setSyncedState: PropTypes.func.isRequired,
   navigation: PropTypes.object.isRequired,
   user: PropTypes.object.isRequired,
   drafts: PropTypes.array.isRequired,
@@ -252,8 +249,7 @@ const mapStateToProps = ({ env, user, drafts }) => ({
 })
 
 const mapDispatchToProps = {
-  switchLanguage,
-  setSyncedState
+  switchLanguage
 }
 
 export default withNamespaces()(

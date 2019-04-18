@@ -10,6 +10,11 @@ const createTestProps = props => ({
   loadSurveys: jest.fn(),
   loadSnapshots: jest.fn(),
   setSyncedState: jest.fn(),
+  hydration: false,
+  navigation: {
+    setParams: jest.fn(),
+    navigate: jest.fn()
+  },
   env: 'testing',
   user: { token: '' },
   sync: {

@@ -9,11 +9,10 @@ import {
   StyleSheet,
   View,
   NetInfo,
-  Dimensions,
-  AsyncStorage
+  Dimensions
 } from 'react-native'
 import { connect } from 'react-redux'
-import { setEnv, login, setSyncedState, setDimensions } from '../redux/actions'
+import { setEnv, login, setDimensions } from '../redux/actions'
 import logo from '../../assets/images/logo.png'
 import { url } from '../config'
 import globalStyles from '../globalStyles'
@@ -29,12 +28,15 @@ export class Login extends Component {
     loading: false
   }
   componentDidMount() {
-    AsyncStorage.clear()
-    this.setDimensions()
-    this.checkConnectivity().then(isConnected =>
-      this.setConnectivityState(isConnected)
-    )
-    this.onConnectivityChange()
+    if (this.props.user.token) {
+      this.props.navigation.navigate('Loading')
+    } else {
+      this.setDimensions()
+      this.checkConnectivity().then(isConnected =>
+        this.setConnectivityState(isConnected)
+      )
+      this.onConnectivityChange()
+    }
   }
 
   checkConnectivity = () => NetInfo.isConnected.fetch()
@@ -61,13 +63,11 @@ export class Login extends Component {
     })
   }
 
-  componentDidUpdate() {
-    if (this.state.username.trim() === 'demo') {
-      this.props.setEnv('demo')
-    } else this.props.setEnv('production')
-  }
-
   onLogin = () => {
+    if (this.state.username.trim() === 'demo') {
+      this.props.setEnv('testing')
+    } else this.props.setEnv('production')
+
     this.setState({
       loading: true
     })
@@ -80,14 +80,12 @@ export class Login extends Component {
       )
       .then(() => {
         if (this.props.user.status === 200) {
-          this.props.setSyncedState('no')
-        } else if (this.props.user.status === 401) {
+          this.props.navigation.navigate('Loading')
+        } else {
           this.setState({
             loading: false
           })
           this.setState({ error: 'Wrong username or password' })
-        } else {
-          this.props.setSyncedState('no')
         }
       })
   }
@@ -159,7 +157,6 @@ export class Login extends Component {
 Login.propTypes = {
   setEnv: PropTypes.func.isRequired,
   login: PropTypes.func.isRequired,
-  setSyncedState: PropTypes.func.isRequired,
   setDimensions: PropTypes.func.isRequired,
   env: PropTypes.oneOf(['production', 'demo', 'testing', 'development']),
   navigation: PropTypes.object.isRequired,
@@ -190,7 +187,6 @@ const mapStateToProps = ({ env, user }) => ({
 const mapDispatchToProps = {
   setEnv,
   login,
-  setSyncedState,
   setDimensions
 }
 

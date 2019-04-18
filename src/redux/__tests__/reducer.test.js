@@ -1,6 +1,8 @@
 import * as reducer from '../reducer'
 import * as action from '../actions'
 
+jest.useFakeTimers()
+
 describe('environment reducer', () => {
   it('should handle SET_ENV', () => {
     expect(
@@ -86,7 +88,11 @@ describe('login reducer', () => {
       hydration: false,
       language: false,
       surveys: [],
-      sync: { images: { synced: 0, total: 0 }, synced: 'no' },
+      sync: {
+        families: false,
+        images: { synced: 0, total: 0 },
+        surveys: false
+      },
       user: { status: null, token: null, username: null }
     })
   })
@@ -95,10 +101,7 @@ describe('login reducer', () => {
 describe('surveys reducer', () => {
   const payload = {
     data: {
-      surveysByUser: [
-        { surveyId: 1, surveyContent: 'content' },
-        { surveyId: 2, surveyContent: 'content-2' }
-      ]
+      surveysByUser: []
     }
   }
   it('should handle LOAD_SURVEYS', () => {
@@ -119,10 +122,7 @@ describe('surveys reducer', () => {
 describe('families reducer', () => {
   const payload = {
     data: {
-      familiesNewStructure: [
-        { familyId: 1, familyContent: 'content' },
-        { familyId: 2, familyContent: 'content-2' }
-      ]
+      familiesNewStructure: []
     }
   }
   it('should handle LOAD_FAMILIES', () => {
@@ -242,17 +242,19 @@ describe('drafts reducer', () => {
         }
       }
     ]
-    expect(reducer.drafts(initialStore, {
-      type: action.SUBMIT_DRAFT_COMMIT,
-      meta: { id: 2 }
-    })[0]).toEqual(expect.objectContaining(expectedStore[0]));
+    expect(
+      reducer.drafts(initialStore, {
+        type: action.SUBMIT_DRAFT_COMMIT,
+        meta: { id: 2 }
+      })[0]
+    ).toEqual(expect.objectContaining(expectedStore[0]))
 
-    expect(reducer.drafts(initialStore, {
-      type: action.SUBMIT_DRAFT_COMMIT,
-      meta: { id: 2 }
-    })[1]).toEqual(expect.objectContaining(expectedStore[1]));
-
-  
+    expect(
+      reducer.drafts(initialStore, {
+        type: action.SUBMIT_DRAFT_COMMIT,
+        meta: { id: 2 }
+      })[1]
+    ).toEqual(expect.objectContaining(expectedStore[1]))
   })
 
   it('should handle ADD_SURVEY_DATA', () => {
@@ -576,22 +578,6 @@ describe('sync reducer', () => {
         total: 0,
         synced: 2
       }
-    })
-  })
-
-  it('should handle SET_SYNCED_STATE', () => {
-    expect(
-      reducer.sync(
-        {
-          synced: false
-        },
-        {
-          type: action.SET_SYNCED_STATE,
-          value: true
-        }
-      )
-    ).toEqual({
-      synced: true
     })
   })
 })

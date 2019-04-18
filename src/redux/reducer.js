@@ -5,8 +5,8 @@ import {
   SET_LOGIN_STATE,
   USER_LOGOUT,
   SET_ENV,
-  LOAD_SURVEYS,
-  LOAD_FAMILIES,
+  LOAD_SURVEYS_COMMIT,
+  LOAD_FAMILIES_COMMIT,
   CREATE_DRAFT,
   ADD_SURVEY_DATA,
   ADD_SURVEY_PRIORITY_ACHEIVEMENT_DATA,
@@ -73,22 +73,20 @@ export const dimensions = (state = { width: null, height: null }, action) => {
 }
 
 //Surveys
-
 export const surveys = (state = [], action) => {
   switch (action.type) {
-    case LOAD_SURVEYS:
-      return action.payload ? action.payload.data.surveysByUser : state
+    case LOAD_SURVEYS_COMMIT:
+      return action.payload.data.surveysByUser
     default:
       return state
   }
 }
 
 //Families
-
 export const families = (state = [], action) => {
   switch (action.type) {
-    case LOAD_FAMILIES:
-      return action.payload ? action.payload.data.familiesNewStructure : state
+    case LOAD_FAMILIES_COMMIT:
+      return action.payload.data.familiesNewStructure
     default:
       return state
   }
@@ -422,7 +420,8 @@ export const hydration = (state = false, action) => {
 // Sync
 export const sync = (
   state = {
-    synced: 'no',
+    surveys: false,
+    families: false,
     images: {
       total: 0,
       synced: 0
@@ -434,7 +433,7 @@ export const sync = (
     case SET_SYNCED_STATE:
       return {
         ...state,
-        synced: action.value
+        [action.item]: action.value
       }
     case SET_SYNCED_ITEM_TOTAL:
       return {
@@ -470,6 +469,42 @@ const appReducer = combineReducers({
 })
 
 export const rootReducer = (state, action) => {
+  // note that surveys are synced in the store
+  if (action.type === LOAD_SURVEYS_COMMIT) {
+    state = {
+      ...state,
+      sync: {
+        ...state.sync,
+        surveys: true
+      }
+    }
+  }
+
+  // note that families are synced in the store
+  if (action.type === LOAD_FAMILIES_COMMIT) {
+    state = {
+      ...state,
+      sync: {
+        ...state.sync,
+        families: true
+      }
+    }
+  }
+
+  // if there are no images to cache, make it so the loading screen can continue
+  if (action.type === SET_SYNCED_ITEM_TOTAL && !action.amount) {
+    state = {
+      ...state,
+      sync: {
+        ...state.sync,
+        images: {
+          total: 1,
+          synced: 1
+        }
+      }
+    }
+  }
+
   if (action.type === USER_LOGOUT) {
     state = undefined
   }

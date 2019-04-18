@@ -1,7 +1,6 @@
 import React, { Component } from 'react'
 import { Provider } from 'react-redux'
 import MapboxGL from '@mapbox/react-native-mapbox-gl'
-import SplashScreen from 'react-native-splash-screen'
 import Navigation from './src/navigation'
 import store from './src/redux/store'
 
@@ -11,10 +10,6 @@ MapboxGL.setAccessToken(
 )
 
 class App extends Component {
-  componentDidMount() {
-    // hide splash screen
-    SplashScreen.hide()
-  }
   render() {
     return (
       <Provider store={store}>

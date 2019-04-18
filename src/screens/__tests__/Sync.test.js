@@ -1,6 +1,6 @@
 import React from 'react'
 import { shallow } from 'enzyme'
-import { ScrollView, Text, FlatList } from 'react-native'
+import { ScrollView, FlatList } from 'react-native'
 import { Sync } from '../Sync'
 import SyncUpToDate from '../../components/sync/SyncUpToDate'
 import SyncOffline from '../../components/sync/SyncOffline'

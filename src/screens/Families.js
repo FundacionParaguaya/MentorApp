@@ -6,7 +6,7 @@ import {
   FlatList,
   View,
   Text,
-  UIManager, 
+  UIManager,
   findNodeHandle
 } from 'react-native'
 import { connect } from 'react-redux'
@@ -35,12 +35,15 @@ export class Families extends Component {
     })
 
   componentDidMount() {
-    setTimeout(() => {
-      UIManager.sendAccessibilityEvent(
-        findNodeHandle(this.acessibleComponent.current),
-        UIManager.AccessibilityEventTypes.typeViewFocused
-      )
-    }, 1)
+    if (UIManager.AccessibilityEventTypes) {
+      setTimeout(() => {
+        UIManager.sendAccessibilityEvent(
+          findNodeHandle(this.acessibleComponent.current),
+          UIManager.AccessibilityEventTypes.typeViewFocused
+        )
+      }, 1)
+    }
+
     this.updateTitle()
     if (
       this.props.offline.online &&
@@ -96,50 +99,50 @@ export class Families extends Component {
         contentContainerStyle={styles.container}
       >
         <View ref={this.acessibleComponent} accessible={true}>
-        {familiesToSync ? (
-          <ActivityIndicator
-            size={30}
-            color={colors.palered}
-            style={styles.spinner}
-          />
-        ) : null}
-        <SearchBar
-          id="searchAddress"
-          style={styles.search}
-          placeholder={'Search by name'}
-          onChangeText={search => this.setState({ search })}
-          value={this.state.search}
-        />
-        <View style={styles.bar}>
-          <Text style={{ ...globalStyles.subline, ...styles.familiesCount }}>
-            {filteredFamilies.length} {t('views.families').toLowerCase()}
-          </Text>
-        </View>
-        <FlatList
-          data={this.sortByName(filteredFamilies)}
-          keyExtractor={(item, index) => index.toString()}
-          renderItem={({ item }) => (
-            <FamiliesListItem
-              error={t('views.family.error')}
-              lng={this.props.lng}
-              handleClick={() =>
-                this.props.navigation.navigate('Family', {
-                  familyName: item.name,
-                  familyLifemap: item.snapshotList
-                    ? item.snapshotList[0]
-                    : item.draft,
-                  isDraft: !item.snapshotList,
-                  survey: this.props.surveys.find(survey =>
-                    item.snapshotList
-                      ? survey.id === item.snapshotList[0].surveyId
-                      : survey.id === item.draft.surveyId
-                  )
-                })
-              }
-              family={item}
+          {familiesToSync ? (
+            <ActivityIndicator
+              size={30}
+              color={colors.palered}
+              style={styles.spinner}
             />
-          )}
-        />
+          ) : null}
+          <SearchBar
+            id="searchAddress"
+            style={styles.search}
+            placeholder={'Search by name'}
+            onChangeText={search => this.setState({ search })}
+            value={this.state.search}
+          />
+          <View style={styles.bar}>
+            <Text style={{ ...globalStyles.subline, ...styles.familiesCount }}>
+              {filteredFamilies.length} {t('views.families').toLowerCase()}
+            </Text>
+          </View>
+          <FlatList
+            data={this.sortByName(filteredFamilies)}
+            keyExtractor={(item, index) => index.toString()}
+            renderItem={({ item }) => (
+              <FamiliesListItem
+                error={t('views.family.error')}
+                lng={this.props.lng}
+                handleClick={() =>
+                  this.props.navigation.navigate('Family', {
+                    familyName: item.name,
+                    familyLifemap: item.snapshotList
+                      ? item.snapshotList[0]
+                      : item.draft,
+                    isDraft: !item.snapshotList,
+                    survey: this.props.surveys.find(survey =>
+                      item.snapshotList
+                        ? survey.id === item.snapshotList[0].surveyId
+                        : survey.id === item.draft.surveyId
+                    )
+                  })
+                }
+                family={item}
+              />
+            )}
+          />
         </View>
       </ScrollView>
     )

@@ -3,7 +3,7 @@ import DrawerNavigator from './DrawerNavigator'
 import LoginView from '../screens/Login'
 import LoadingView from '../screens/Loading'
 
-export const LoginStack = createStackNavigator(
+const LoginStack = createStackNavigator(
   {
     Login: { screen: LoginView },
     Loading: { screen: LoadingView }
@@ -14,27 +14,23 @@ export const LoginStack = createStackNavigator(
   }
 )
 
-// The drawer nav doesn't have it's own way of showing a menu toggle icon,
-// so we put it as a part of the App stack. This is also where we control which
-// stack has a header bar, which stack to show if the user us not authenticated.
-export const AppStack = createStackNavigator(
+export const DrawerNavigation = createStackNavigator(
   {
-    Drawer: {
-      screen: DrawerNavigator
-    }
+    DrawerStack: { screen: DrawerNavigator }
   },
   {
-    initialRouteName: 'Drawer',
     headerMode: 'none'
   }
 )
 
-export const LoadingStack = createStackNavigator(
+export default createStackNavigator(
   {
-    Loading: { screen: LoadingView }
+    loginStack: { screen: LoginStack },
+    drawerStack: { screen: DrawerNavigation }
   },
   {
-    initialRouteName: 'Loading',
-    headerMode: 'none'
+    // Default config for all screens
+    headerMode: 'none',
+    initialRouteName: 'loginStack'
   }
 )

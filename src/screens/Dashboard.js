@@ -1,5 +1,13 @@
 import React, { Component } from 'react'
-import { ScrollView, Text, View, StyleSheet, FlatList, UIManager, findNodeHandle } from 'react-native'
+import {
+  ScrollView,
+  Text,
+  View,
+  StyleSheet,
+  FlatList,
+  UIManager,
+  findNodeHandle
+} from 'react-native'
 import { Sentry } from 'react-native-sentry'
 import { withNamespaces } from 'react-i18next'
 import PropTypes from 'prop-types'
@@ -29,12 +37,16 @@ export class Dashboard extends Component {
     })
   componentDidMount() {
     this.updateTitle()
-    setTimeout(() => {
-      UIManager.sendAccessibilityEvent(
-        findNodeHandle(this.acessibleComponent.current),
-        UIManager.AccessibilityEventTypes.typeViewFocused
-      )
-    }, 1)
+
+    if (UIManager.AccessibilityEventTypes) {
+      setTimeout(() => {
+        UIManager.sendAccessibilityEvent(
+          findNodeHandle(this.acessibleComponent.current),
+          UIManager.AccessibilityEventTypes.typeViewFocused
+        )
+      }, 1)
+    }
+
     // set sentry login details
     Sentry.setUserContext({
       username: this.props.user.username,
@@ -127,51 +139,53 @@ export class Dashboard extends Component {
     return (
       <ScrollView style={globalStyles.background}>
         <View ref={this.acessibleComponent} accessible={true}>
-        {this.props.offline.outbox.length &&
-        navigation.getParam('firstTimeVisitor') ? null : (
-          <View>
-            <View style={globalStyles.container}>
-              <Decoration>
-                <RoundImage source="family" />
-              </Decoration>
-              <Button
-                text={t('views.createLifemap')}
-                colored
-                handleClick={() => this.props.navigation.navigate('Surveys')}
+          {this.props.offline.outbox.length &&
+          navigation.getParam('firstTimeVisitor') ? null : (
+            <View>
+              <View style={globalStyles.container}>
+                <Decoration>
+                  <RoundImage source="family" />
+                </Decoration>
+                <Button
+                  text={t('views.createLifemap')}
+                  colored
+                  handleClick={() => this.props.navigation.navigate('Surveys')}
+                />
+              </View>
+              {drafts.length ? (
+                <View style={styles.borderBottom}>
+                  <Text
+                    style={{ ...globalStyles.subline, ...styles.listTitle }}
+                  >
+                    {t('views.latestDrafts')}
+                  </Text>
+                </View>
+              ) : null}
+              <FlatList
+                style={{ ...styles.background }}
+                data={list}
+                keyExtractor={(item, index) => index.toString()}
+                renderItem={({ item }) => (
+                  <DraftListItem
+                    item={item}
+                    handleClick={() => {
+                      switch (item.status) {
+                        case 'Synced':
+                          this.navigateToSynced(item)
+                          break
+                        case 'Pending sync':
+                          this.navigateToPendingSync(item)
+                          break
+                        default:
+                          this.navigateToDraft(item)
+                      }
+                    }}
+                    lng={this.props.lng}
+                  />
+                )}
               />
             </View>
-            {drafts.length ? (
-              <View style={styles.borderBottom}>
-                <Text style={{ ...globalStyles.subline, ...styles.listTitle }}>
-                  {t('views.latestDrafts')}
-                </Text>
-              </View>
-            ) : null}
-            <FlatList
-              style={{ ...styles.background }}
-              data={list}
-              keyExtractor={(item, index) => index.toString()}
-              renderItem={({ item }) => (
-                <DraftListItem
-                  item={item}
-                  handleClick={() => {
-                    switch (item.status) {
-                      case 'Synced':
-                        this.navigateToSynced(item)
-                        break
-                      case 'Pending sync':
-                        this.navigateToPendingSync(item)
-                        break
-                      default:
-                        this.navigateToDraft(item)
-                    }
-                  }}
-                  lng={this.props.lng}
-                />
-              )}
-            />
-          </View>
-        )}
+          )}
         </View>
       </ScrollView>
     )
