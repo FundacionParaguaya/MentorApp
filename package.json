@@ -20,8 +20,6 @@
     "react": "16.8.3",
     "react-i18next": "^8.3.8",
     "react-native": "^0.59.4",
-    "react-native-background-fetch": "^2.4.4",
-    "react-native-background-task": "^0.2.1",
     "react-native-elements": "^0.19.1",
     "react-native-fullwidth-image": "^0.1.2",
     "react-native-languages": "^3.0.1",

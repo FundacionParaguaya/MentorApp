@@ -18,6 +18,8 @@ export class NavWrapper extends Component {
       scale: Dimensions.get('window').scale
     })
   }
+
+  // determine which stack to show based on synced property
   render() {
     return (
       <View style={styles.container}>
