@@ -14,7 +14,7 @@ import AddPriorityView from '../screens/lifemap/AddPriority'
 import AddAchievementView from '../screens/lifemap/AddAchievement'
 import FamilyMemberView from '../screens/lifemap/FamilyMember'
 import i18n from '../i18n'
-import { generateNavOptions } from './helpers'
+import { generateNavStyles } from './helpers'
 import CustomHeaderSurvey from './CustomHeaderSurvey'
 import colors from '../theme.json'
 
@@ -31,7 +31,7 @@ export default {
           {i18n.t('views.termsConditions')}
         </Text>
       ),
-      ...generateNavOptions({ navigation, burgerMenu: false })
+      ...generateNavStyles({ navigation, burgerMenu: false })
     })
   },
   Privacy: {
@@ -45,7 +45,7 @@ export default {
           {i18n.t('views.privacyPolicy')}
         </Text>
       ),
-      ...generateNavOptions({ navigation, burgerMenu: false })
+      ...generateNavStyles({ navigation, burgerMenu: false })
     })
   },
   Location: {
@@ -62,7 +62,7 @@ export default {
           {i18n.t('views.location')}
         </Text>
       ),
-      ...generateNavOptions({
+      ...generateNavStyles({
         navigation,
         burgerMenu: false,
         shadowHeader: false
@@ -72,7 +72,7 @@ export default {
   SocioEconomicQuestion: {
     screen: SocioEconomicQuestionView,
     navigationOptions: ({ navigation }) => ({
-      ...generateNavOptions({
+      ...generateNavStyles({
         navigation,
         burgerMenu: false,
         shadowHeader: false
@@ -93,7 +93,7 @@ export default {
           {i18n.t('views.yourLifeMap')}
         </Text>
       ),
-      ...generateNavOptions({
+      ...generateNavStyles({
         navigation,
         burgerMenu: false,
         shadowHeader: false
@@ -115,7 +115,7 @@ export default {
             dimension={dimension}
           />
         ),
-        ...generateNavOptions({
+        ...generateNavStyles({
           navigation,
           burgerMenu: false,
           shadowHeader: false,
@@ -140,7 +140,7 @@ export default {
           {i18n.t('views.skippedIndicators')}
         </Text>
       ),
-      ...generateNavOptions({
+      ...generateNavStyles({
         navigation,
         burgerMenu: false,
         shadowHeader: false
@@ -158,7 +158,7 @@ export default {
           {i18n.t('views.yourLifeMap')}
         </Text>
       ),
-      ...generateNavOptions({
+      ...generateNavStyles({
         navigation,
         burgerMenu: false
       })
@@ -175,7 +175,7 @@ export default {
           {i18n.t('views.yourLifeMap')}
         </Text>
       ),
-      ...generateNavOptions({ navigation, burgerMenu: false })
+      ...generateNavStyles({ navigation, burgerMenu: false })
     })
   },
   AddAchievement: {
@@ -189,7 +189,7 @@ export default {
           {i18n.t('views.yourLifeMap')}
         </Text>
       ),
-      ...generateNavOptions({ navigation, burgerMenu: false })
+      ...generateNavStyles({ navigation, burgerMenu: false })
     })
   },
   Final: {
@@ -203,7 +203,7 @@ export default {
           {i18n.t('general.thankYou')}
         </Text>
       ),
-      ...generateNavOptions({
+      ...generateNavStyles({
         navigation,
         burgerMenu: false
       })
@@ -212,7 +212,7 @@ export default {
   FamilyParticipant: {
     screen: FamilyParticipantView,
     navigationOptions: ({ navigation }) => ({
-      ...generateNavOptions({
+      ...generateNavStyles({
         navigation,
         burgerMenu: false,
         shadowHeader: false
@@ -233,7 +233,7 @@ export default {
           {i18n.t('views.familyMembers')}
         </Text>
       ),
-      ...generateNavOptions({
+      ...generateNavStyles({
         navigation,
         burgerMenu: false,
         shadowHeader: false
@@ -243,7 +243,7 @@ export default {
   FamilyMember: {
     screen: FamilyMemberView,
     navigationOptions: ({ navigation }) => ({
-      ...generateNavOptions({
+      ...generateNavStyles({
         navigation,
         burgerMenu: false,
         shadowHeader: false

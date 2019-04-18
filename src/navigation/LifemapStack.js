@@ -3,7 +3,7 @@ import { Text, StyleSheet, Platform } from 'react-native'
 import { createStackNavigator } from 'react-navigation'
 import SurveysView from '../screens/Surveys'
 import LifemapScreens from './LifemapScreens'
-import { generateNavOptions } from './helpers'
+import { generateNavStyles, addMenuIcon } from './helpers'
 import i18n from '../i18n'
 import colors from '../theme.json'
 
@@ -11,6 +11,8 @@ export default createStackNavigator({
   Surveys: {
     screen: SurveysView,
     navigationOptions: ({ navigation }) => ({
+      ...generateNavStyles({ navigation }),
+      ...addMenuIcon(navigation),
       headerTitle: (
         <Text
           accessibilityLiveRegion="assertive"
@@ -18,8 +20,7 @@ export default createStackNavigator({
         >
           {i18n.t('views.createLifemap')}
         </Text>
-      ),
-      ...generateNavOptions({ navigation })
+      )
     })
   },
   ...LifemapScreens

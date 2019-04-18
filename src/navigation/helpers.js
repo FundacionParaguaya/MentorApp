@@ -8,9 +8,8 @@ import IconButton from '../components/IconButton'
 
 // Each of the major views has a stack that needs the same nav options.
 // These options handle the header styles and menu icon.
-export const generateNavOptions = ({
+export const generateNavStyles = ({
   navigation,
-  burgerMenu = true,
   shadowHeader = true,
   headerHeight = 66
 }) => ({
@@ -41,44 +40,7 @@ export const generateNavOptions = ({
   headerRightContainerStyle: {
     marginRight: -16
   },
-  headerRight:
-    !navigation.getParam('family') &&
-    !navigation.getParam('member') &&
-    navigation.state.routeName !== 'Final' &&
-    !burgerMenu &&
-    !navigation.getParam('withoutCloseButton') ? (
-      <View>
-        <IconButton
-          style={styles.touchable}
-          onPress={() => navigation.setParams({ modalOpen: true })}
-          icon="close"
-          size={25}
-          accessible={true}
-          accessibilityLabel={'Exit'}
-        />
-        <ExitDraftPopup
-          isOpen={navigation.getParam('modalOpen')}
-          onClose={() => navigation.setParams({ modalOpen: false })}
-          navigation={navigation}
-          routeName={navigation.state.routeName}
-          deleteOnExit={navigation.getParam('deleteOnExit')}
-          draftId={navigation.getParam('draftId')}
-        />
-      </View>
-    ) : (
-      <View />
-    ),
-  headerLeft: burgerMenu ? (
-    <IconButton
-      style={styles.touchable}
-      onPress={() => navigation.toggleDrawer()}
-      icon="menu"
-      size={30}
-      badge
-      accessible={true}
-      accessibilityLabel={'Navigation'}
-    />
-  ) : (
+  headerLeft: (
     <AndroidBackHandler
       onBackPress={() => {
         if (navigation.getParam('onPressBack')) {
@@ -113,6 +75,49 @@ export const generateNavOptions = ({
         />
       </View>
     </AndroidBackHandler>
+  )
+})
+
+export const addMenuIcon = navigation => ({
+  headerLeft: (
+    <IconButton
+      style={styles.touchable}
+      onPress={() => navigation.toggleDrawer()}
+      icon="menu"
+      size={30}
+      badge
+      accessible={true}
+      accessibilityLabel={'Navigation'}
+    />
+  )
+})
+
+// !navigation.getParam('family') &&
+// !navigation.getParam('member') &&
+// navigation.state.routeName !== 'Final' &&
+// !burgerMenu &&
+// !navigation.getParam('withoutCloseButton')
+
+export const addCloseIcon = navigation => ({
+  headerRight: (
+    <View>
+      <IconButton
+        style={styles.touchable}
+        onPress={() => navigation.setParams({ modalOpen: true })}
+        icon="close"
+        size={25}
+        accessible={true}
+        accessibilityLabel={'Exit'}
+      />
+      <ExitDraftPopup
+        isOpen={navigation.getParam('modalOpen')}
+        onClose={() => navigation.setParams({ modalOpen: false })}
+        navigation={navigation}
+        routeName={navigation.state.routeName}
+        deleteOnExit={navigation.getParam('deleteOnExit')}
+        draftId={navigation.getParam('draftId')}
+      />
+    </View>
   )
 })
 

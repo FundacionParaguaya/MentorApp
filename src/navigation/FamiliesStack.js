@@ -2,17 +2,20 @@ import { createStackNavigator } from 'react-navigation'
 import FamiliesView from '../screens/Families'
 import LifemapScreens from './LifemapScreens'
 import FamilyView from '../screens/Family'
-import { generateNavOptions } from './helpers'
+import { generateNavStyles, addMenuIcon } from './helpers'
 
 export default createStackNavigator({
   Families: {
     screen: FamiliesView,
-    navigationOptions: ({ navigation }) => generateNavOptions({ navigation })
+    navigationOptions: ({ navigation }) => ({
+      ...generateNavStyles({ navigation }),
+      ...addMenuIcon(navigation)
+    })
   },
   Family: {
     screen: FamilyView,
     navigationOptions: ({ navigation }) => ({
-      ...generateNavOptions({ navigation, burgerMenu: false })
+      ...generateNavStyles({ navigation })
     })
   },
   ...LifemapScreens

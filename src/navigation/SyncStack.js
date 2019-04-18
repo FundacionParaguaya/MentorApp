@@ -1,10 +1,13 @@
 import { createStackNavigator } from 'react-navigation'
 import SyncView from '../screens/Sync'
-import { generateNavOptions } from './helpers'
+import { generateNavStyles, addMenuIcon } from './helpers'
 
 export default createStackNavigator({
   Sync: {
     screen: SyncView,
-    navigationOptions: ({ navigation }) => generateNavOptions({ navigation })
+    navigationOptions: ({ navigation }) => ({
+      ...generateNavStyles({ navigation }),
+      ...addMenuIcon(navigation)
+    })
   }
 })
