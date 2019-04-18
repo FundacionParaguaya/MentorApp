@@ -1,6 +1,12 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
-import { Text, StyleSheet, View, Platform } from 'react-native'
+import {
+  Text,
+  StyleSheet,
+  View,
+  Platform,
+  ActivityIndicator
+} from 'react-native'
 import CommunityIcon from 'react-native-vector-icons/MaterialCommunityIcons'
 import Popup from '../components/Popup'
 import Checkbox from '../components/Checkbox'
@@ -20,9 +26,22 @@ export default class LogoutPopup extends Component {
       logUserOut,
       showCheckboxes,
       onPressCheckbox,
-      onModalClose
+      onModalClose,
+      logingOut
     } = this.props
-    return (
+    return logingOut ? (
+      <Popup
+        isOpen={navigation.getParam('logoutModalOpen')}
+        onClose={onModalClose}
+        style={{ paddingVertical: 100 }}
+      >
+        <ActivityIndicator
+          size="large"
+          color={colors.palered}
+          style={styles.indicator}
+        />
+      </Popup>
+    ) : (
       <Popup
         isOpen={navigation.getParam('logoutModalOpen')}
         onClose={onModalClose}
@@ -181,6 +200,7 @@ LogoutPopup.propTypes = {
   navigation: PropTypes.object.isRequired,
   showErrors: PropTypes.bool.isRequired,
   checkboxesVisible: PropTypes.bool.isRequired,
+  logingOut: PropTypes.bool.isRequired,
   unsyncedDrafts: PropTypes.number.isRequired,
   logUserOut: PropTypes.func.isRequired,
   showCheckboxes: PropTypes.func.isRequired,

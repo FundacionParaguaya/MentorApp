@@ -506,7 +506,22 @@ export const rootReducer = (state, action) => {
   }
 
   if (action.type === USER_LOGOUT) {
-    state = undefined
+    state = {
+      ...state,
+      user: { token: null, status: null, username: null },
+      drafts: [],
+      surveys: [],
+      families: [],
+      env: 'production',
+      sync: {
+        surveys: false,
+        families: false,
+        images: {
+          total: 0,
+          synced: 0
+        }
+      }
+    }
   }
 
   if (action.type === SUBMIT_DRAFT_ROLLBACK) {

@@ -79,13 +79,17 @@ export class Login extends Component {
         url[this.props.env]
       )
       .then(() => {
-        if (this.props.user.status === 200) {
-          this.props.navigation.navigate('Loading')
-        } else {
+        if (this.props.user.status === 401) {
           this.setState({
             loading: false
           })
           this.setState({ error: 'Wrong username or password' })
+        } else {
+          this.setState({
+            loading: false,
+            error: false
+          })
+          this.props.navigation.navigate('Loading')
         }
       })
   }

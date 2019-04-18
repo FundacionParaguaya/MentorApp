@@ -54,6 +54,7 @@ describe('Navigation', () => {
         activeTab: 'Dashboard',
         checkboxesVisible: false,
         ckeckedBoxes: 0,
+        logingOut: false,
         showErrors: false
       })
     })

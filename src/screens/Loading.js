@@ -164,7 +164,7 @@ export class Loading extends Component {
     }
 
     // start caching indicator images once families are synced
-    if (!prevProps.sync.surveys && this.props.sync.surveys) {
+    if (!prevProps.sync.families && this.props.sync.families) {
       this.handleImageCaching()
     }
 

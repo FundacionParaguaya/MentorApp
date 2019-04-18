@@ -5,8 +5,10 @@ import {
   Text,
   StyleSheet,
   View,
-  Platform
+  Platform,
+  AsyncStorage
 } from 'react-native'
+import MapboxGL from '@mapbox/react-native-mapbox-gl'
 import { withNamespaces } from 'react-i18next'
 import { connect } from 'react-redux'
 import PropTypes from 'prop-types'
@@ -14,7 +16,7 @@ import globalStyles from '../globalStyles'
 import IconButtonComponent from '../components/IconButton'
 import i18n from '../i18n'
 import colors from '../theme.json'
-import { switchLanguage } from '../redux/actions'
+import { switchLanguage, logout } from '../redux/actions'
 import LogoutPopup from './LogoutPopup'
 import ExitDraftPopup from './ExitDraftPopup'
 import dashboardIcon from '../../assets/images/icon_dashboard.png'
@@ -27,6 +29,7 @@ export class DrawerContent extends Component {
     checkboxesVisible: false,
     ckeckedBoxes: 0,
     showErrors: false,
+    logingOut: false,
     activeTab: 'Dashboard'
   }
 
@@ -35,13 +38,26 @@ export class DrawerContent extends Component {
     this.props.switchLanguage(lng) // set the redux language for next app use
     this.props.navigation.toggleDrawer() // close drawer
   }
-  logUserOut = () => {
+  logUserOut = async () => {
     const { checkboxesVisible, ckeckedBoxes } = this.state
 
     // allow the user to logout only if he checks all boxes
     if (!checkboxesVisible || (checkboxesVisible && ckeckedBoxes === 4)) {
       this.setState({
-        showErrors: false
+        showErrors: false,
+        logingOut: true
+      })
+
+      // delete the cached map packs
+      if (MapboxGL.offlineManager) {
+        await MapboxGL.offlineManager.deletePack('Sofia')
+        await MapboxGL.offlineManager.deletePack('Cerrito')
+      }
+
+      // clear the async storage and reset the store
+      AsyncStorage.clear(() => {
+        this.props.logout()
+        this.props.navigation.navigate('Login')
       })
     } else {
       this.setState({
@@ -70,7 +86,7 @@ export class DrawerContent extends Component {
   }
   render() {
     const { lng, user, navigation } = this.props
-    const { checkboxesVisible, showErrors } = this.state
+    const { checkboxesVisible, showErrors, logingOut } = this.state
     const unsyncedDrafts = this.props.drafts.filter(
       draft => draft.status !== 'Synced'
     ).length
@@ -209,6 +225,7 @@ export class DrawerContent extends Component {
           logUserOut={this.logUserOut}
           showCheckboxes={this.showCheckboxes}
           onPressCheckbox={this.onPressCheckbox}
+          logingOut={logingOut}
           onModalClose={() => {
             this.setState({
               checkboxesVisible: false,
@@ -236,6 +253,7 @@ export class DrawerContent extends Component {
 DrawerContent.propTypes = {
   lng: PropTypes.string,
   switchLanguage: PropTypes.func.isRequired,
+  logout: PropTypes.func.isRequired,
   navigation: PropTypes.object.isRequired,
   user: PropTypes.object.isRequired,
   drafts: PropTypes.array.isRequired,
@@ -249,7 +267,8 @@ const mapStateToProps = ({ env, user, drafts }) => ({
 })
 
 const mapDispatchToProps = {
-  switchLanguage
+  switchLanguage,
+  logout
 }
 
 export default withNamespaces()(
