@@ -1,7 +1,7 @@
 import { createStackNavigator } from 'react-navigation'
 import DrawerNavigator from './DrawerNavigator'
-import LoginView from '../../screens/Login'
-import LoadingView from '../../screens/Loading'
+import LoginView from '../screens/Login'
+import LoadingView from '../screens/Loading'
 
 export const LoginStack = createStackNavigator(
   {

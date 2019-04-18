@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import { Provider } from 'react-redux'
 import MapboxGL from '@mapbox/react-native-mapbox-gl'
 import SplashScreen from 'react-native-splash-screen'
-import NavigationWrapper from './src/components/NavWrapper'
+import Navigation from './src/navigation'
 import store from './src/redux/store'
 
 // setup Mapbox token
@@ -18,7 +18,7 @@ class App extends Component {
   render() {
     return (
       <Provider store={store}>
-        <NavigationWrapper />
+        <Navigation />
       </Provider>
     )
   }

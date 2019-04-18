@@ -1,8 +1,8 @@
-import React, { Component } from "react"
-import { Text, View, StyleSheet } from "react-native"
-import globalStyles from "../../globalStyles"
-import PropTypes from "prop-types"
-import colors from "../../theme.json"
+import React, { Component } from 'react'
+import { Text, View, StyleSheet } from 'react-native'
+import globalStyles from '../globalStyles'
+import PropTypes from 'prop-types'
+import colors from '../theme.json'
 
 export default class CustomHeaderSurvey extends Component {
   render() {
@@ -33,8 +33,8 @@ const styles = StyleSheet.create({
   headerQuestions: {
     paddingTop: 10,
     paddingBottom: 20,
-    marginRight: "auto",
-    marginLeft: "auto"
+    marginRight: 'auto',
+    marginLeft: 'auto'
   },
   dimension: {
     ...globalStyles.h5,

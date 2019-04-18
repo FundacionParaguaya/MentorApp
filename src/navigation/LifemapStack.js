@@ -1,11 +1,11 @@
 import React from 'react'
 import { Text, StyleSheet, Platform } from 'react-native'
 import { createStackNavigator } from 'react-navigation'
-import SurveysView from '../../screens/Surveys'
+import SurveysView from '../screens/Surveys'
 import LifemapScreens from './LifemapScreens'
 import { generateNavOptions } from './helpers'
-import i18n from '../../i18n'
-import colors from '../../theme.json'
+import i18n from '../i18n'
+import colors from '../theme.json'
 
 export default createStackNavigator({
   Surveys: {

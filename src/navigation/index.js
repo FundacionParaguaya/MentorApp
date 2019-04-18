@@ -3,7 +3,7 @@ import { View, StyleSheet, StatusBar, Dimensions } from 'react-native'
 import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 import { setSyncedState, setDimensions } from '../redux/actions'
-import { LoginStack, AppStack, LoadingStack } from './navigation'
+import { LoginStack, AppStack, LoadingStack } from './stacks'
 
 export class NavWrapper extends Component {
   componentDidMount() {

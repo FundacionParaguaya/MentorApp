@@ -10,15 +10,15 @@ import {
 import { withNamespaces } from 'react-i18next'
 import { connect } from 'react-redux'
 import PropTypes from 'prop-types'
-import globalStyles from '../../globalStyles'
-import IconButtonComponent from '../IconButton'
-import i18n from '../../i18n'
-import colors from '../../theme.json'
-import { switchLanguage, setSyncedState } from '../../redux/actions'
+import globalStyles from '../globalStyles'
+import IconButtonComponent from '../components/IconButton'
+import i18n from '../i18n'
+import colors from '../theme.json'
+import { switchLanguage, setSyncedState } from '../redux/actions'
 import LogoutPopup from './LogoutPopup'
 import ExitDraftPopup from './ExitDraftPopup'
-import dashboardIcon from '../../../assets/images/icon_dashboard.png'
-import familyNavIcon from '../../../assets/images/icon_family_nav.png'
+import dashboardIcon from '../../assets/images/icon_dashboard.png'
+import familyNavIcon from '../../assets/images/icon_family_nav.png'
 
 // Component that renders the drawer menu content. DrawerItems are the links to
 // the given views.
@@ -94,7 +94,7 @@ export class DrawerContent extends Component {
         <View>
           <Image
             style={{ height: 172, width: 304 }}
-            source={require('../../../assets/images/navigation_image.png')}
+            source={require('../../assets/images/navigation_image.png')}
           />
           {/* Language Switcher */}
           <View style={styles.languageSwitch}>

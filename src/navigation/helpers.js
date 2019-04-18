@@ -3,12 +3,17 @@ import { StyleSheet, View, Platform } from 'react-native'
 import { AndroidBackHandler } from 'react-navigation-backhandler'
 import ExitDraftPopup from './ExitDraftPopup'
 import BackDraftPopup from './BackDraftPopup'
-import colors from '../../theme.json'
-import IconButton from '../IconButton'
+import colors from '../theme.json'
+import IconButton from '../components/IconButton'
 
 // Each of the major views has a stack that needs the same nav options.
 // These options handle the header styles and menu icon.
-export const generateNavOptions = ({ navigation, burgerMenu = true, shadowHeader = true, headerHeight = 66 }) => ({
+export const generateNavOptions = ({
+  navigation,
+  burgerMenu = true,
+  shadowHeader = true,
+  headerHeight = 66
+}) => ({
   headerTitleStyle: {
     ...Platform.select({
       ios: {
@@ -22,13 +27,13 @@ export const generateNavOptions = ({ navigation, burgerMenu = true, shadowHeader
     fontWeight: '200',
     lineHeight: 26,
     marginLeft: shadowHeader ? 20 : 'auto',
-    marginRight: shadowHeader ? 0 : 'auto' 
+    marginRight: shadowHeader ? 0 : 'auto'
   },
   headerStyle: {
     height: headerHeight,
     backgroundColor: colors.white,
     elevation: shadowHeader ? 1 : 0,
-    paddingTop: shadowHeader ? 0 : 10 
+    paddingTop: shadowHeader ? 0 : 10
   },
   headerLeftContainerStyle: {
     marginLeft: 19
