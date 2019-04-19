@@ -20,24 +20,14 @@ import { connect } from 'react-redux'
 import colors from '../theme.json'
 
 export class Dashboard extends Component {
-  static navigationOptions = ({ navigation }) => {
-    return {
-      title: navigation.getParam('title', 'Dashboard')
-    }
-  }
   slowLoadingTimer
   acessibleComponent = React.createRef()
 
   clearTimers = () => {
     clearTimeout(this.slowLoadingTimer)
   }
-  updateTitle = () =>
-    this.props.navigation.setParams({
-      title: this.props.t('views.dashboard')
-    })
-  componentDidMount() {
-    this.updateTitle()
 
+  componentDidMount() {
     if (UIManager.AccessibilityEventTypes) {
       setTimeout(() => {
         UIManager.sendAccessibilityEvent(
@@ -54,12 +44,6 @@ export class Dashboard extends Component {
         env: this.props.env
       }
     })
-  }
-
-  componentDidUpdate(prevProps) {
-    if (prevProps.lng !== this.props.lng) {
-      this.updateTitle()
-    }
   }
 
   componentWillUnmount() {

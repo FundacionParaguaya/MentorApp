@@ -22,16 +22,6 @@ import SyncRetry from '../components/sync/SyncRetry'
 
 export class Sync extends Component {
   acessibleComponent = React.createRef()
-  static navigationOptions = ({ navigation }) => {
-    return {
-      title: navigation.getParam('title', 'Sync')
-    }
-  }
-
-  updateTitle = () =>
-    this.props.navigation.setParams({
-      title: this.props.t('views.synced')
-    })
 
   componentDidMount() {
     if (UIManager.AccessibilityEventTypes) {
@@ -41,13 +31,6 @@ export class Sync extends Component {
           UIManager.AccessibilityEventTypes.typeViewFocused
         )
       }, 1)
-    }
-    this.updateTitle()
-  }
-
-  componentDidUpdate(prevProps) {
-    if (prevProps.lng !== this.props.lng) {
-      this.updateTitle()
     }
   }
 
@@ -141,6 +124,7 @@ export class Sync extends Component {
 }
 
 Sync.propTypes = {
+  navigation: PropTypes.object.isRequired,
   drafts: PropTypes.array.isRequired,
   offline: PropTypes.object.isRequired,
   lng: PropTypes.string.isRequired,

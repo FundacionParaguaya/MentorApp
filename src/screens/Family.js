@@ -14,6 +14,7 @@ import RoundImage from '../components/RoundImage'
 import Button from '../components/Button'
 
 export class Family extends Component {
+  // set the title of the screen to the family name
   static navigationOptions = ({ navigation }) => {
     return {
       title: `${navigation.getParam('familyName', 'Families')}  ${
@@ -31,6 +32,8 @@ export class Family extends Component {
   }
   familyLifemap = this.props.navigation.getParam('familyLifemap')
   isDraft = this.props.navigation.getParam('isDraft')
+
+  // extract socio economic categories from snapshot
   socioEconomicCategories = [
     ...new Set(
       this.props.navigation

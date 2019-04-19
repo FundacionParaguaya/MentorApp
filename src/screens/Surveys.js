@@ -3,7 +3,6 @@ import {
   StyleSheet,
   ScrollView,
   FlatList,
-  View,
   UIManager,
   findNodeHandle
 } from 'react-native'
@@ -18,18 +17,7 @@ import Decoration from '../components/decoration/Decoration'
 import colors from '../theme.json'
 
 export class Surveys extends Component {
-  static navigationOptions = ({ navigation }) => {
-    return {
-      title: navigation.getParam('title', 'Create a life map')
-    }
-  }
-
   acessibleComponent = React.createRef()
-
-  updateTitle = () =>
-    this.props.navigation.setParams({
-      title: this.props.t('views.createLifemap')
-    })
 
   componentDidMount() {
     if (UIManager.AccessibilityEventTypes) {
@@ -40,14 +28,8 @@ export class Surveys extends Component {
         )
       }, 1)
     }
-    this.updateTitle()
   }
 
-  componentDidUpdate(prevProps) {
-    if (prevProps.lng !== this.props.lng) {
-      this.updateTitle()
-    }
-  }
   render() {
     return (
       <ScrollView

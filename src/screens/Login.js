@@ -65,7 +65,7 @@ export class Login extends Component {
 
   onLogin = () => {
     if (this.state.username.trim() === 'demo') {
-      this.props.setEnv('testing')
+      this.props.setEnv('demo')
     } else this.props.setEnv('production')
 
     this.setState({
