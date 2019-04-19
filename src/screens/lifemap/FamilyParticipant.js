@@ -16,7 +16,7 @@ import Icon from 'react-native-vector-icons/MaterialIcons'
 import StickyFooter from '../../components/StickyFooter'
 import Select from '../../components/Select'
 import TextInput from '../../components/TextInput'
-import DateInputComponent from '../../components/DateInput'
+import DateInput from '../../components/DateInput'
 import Decoration from '../../components/decoration/Decoration'
 import colors from '../../theme.json'
 
@@ -258,7 +258,7 @@ export class FamilyParticipant extends Component {
           options={this.gender}
         />
 
-        <DateInputComponent
+        <DateInput
           required
           label={t('views.family.dateOfBirth')}
           field="birthDate"

@@ -32,7 +32,7 @@
     { "key": "stableHousing", "value": 2 }
   ],
   "familyData": {
-    "countFamilyMembers": 1,
+    "countFamilyMembers": 2,
     "country": "PY",
     "longitude": -25.8976,
     "latitude": -22.2521,

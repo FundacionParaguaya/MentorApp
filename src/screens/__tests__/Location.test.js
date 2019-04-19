@@ -48,33 +48,6 @@ const createTestProps = props => ({
   },
   addSurveyData: jest.fn(),
   addDraftProgress: jest.fn(),
-  drafts: [
-    {
-      draftId: 1
-    },
-    {
-      draftId: 2,
-      surveyId: 1,
-      economicSurveyDataList: [],
-      indicatorSurveyDataList: [],
-      progress: { screen: 'Location' },
-      familyData: {
-        countFamilyMembers: 2,
-        familyMembersList: [
-          {
-            firstName: 'Juan',
-            lastName: 'Perez',
-            birthCountry: 'Brazil'
-          },
-          {
-            firstName: 'Ana',
-            gender: 'F',
-            birthDate: 1515708000
-          }
-        ]
-      }
-    }
-  ],
   ...props
 })
 
@@ -101,7 +74,7 @@ describe('Family Location component', () => {
         .props()
         .onChangeText('Foo', 'address')
 
-      expect(wrapper.instance().props.addSurveyData).toHaveBeenCalledTimes(5)
+      expect(wrapper.instance().props.addSurveyData).toHaveBeenCalledTimes(2)
     })
   })
 
@@ -113,8 +86,8 @@ describe('Family Location component', () => {
     })
     it('gets device location', () => {
       expect(wrapper).toHaveState({
-        latitude: 44,
-        longitude: 45
+        longitude: -25.8976,
+        latitude: -22.2521
       })
     })
 
@@ -123,7 +96,7 @@ describe('Family Location component', () => {
         '<react-native-mock>views.family.gpsAccurate</react-native-mock>'
       )
       expect(wrapper).toHaveState({
-        accuracy: 15
+        accuracy: 100
       })
     })
 
@@ -210,8 +183,8 @@ describe('Family Location component', () => {
 
     it('sets proper state', () => {
       expect(wrapper).toHaveState({
-        latitude: 30,
-        longitude: 30
+        longitude: -25.8976,
+        latitude: -22.2521
       })
     })
 
@@ -234,42 +207,5 @@ describe('Family Location component', () => {
 
     wrapper.instance().onPressBack()
     expect(spy).toHaveBeenCalledTimes(1)
-  })
-})
-
-describe('Render optimization', () => {
-  let wrapper
-  let props
-  beforeEach(() => {
-    props = createTestProps()
-    wrapper = shallow(<Location {...props} />)
-  })
-  it('checks if screen is focused before updating', () => {
-    wrapper.setProps({
-      drafts: [...wrapper.instance().props.drafts, { draftId: 5 }]
-    })
-    expect(wrapper.instance().props.navigation.isFocused).toHaveBeenCalledTimes(
-      6
-    )
-  })
-  it('updates screen if focused', () => {
-    wrapper.setProps({
-      drafts: [...wrapper.instance().props.drafts, { draftId: 5 }]
-    })
-    expect(wrapper.instance().props.drafts[2]).toEqual({ draftId: 5 })
-  })
-  it('does not update screen if not focused', () => {
-    wrapper.setProps({
-      drafts: [...wrapper.instance().props.drafts, { draftId: 5 }]
-    })
-    props = createTestProps({
-      navigation: { ...props.navigation, isFocused: jest.fn(() => false) }
-    })
-    wrapper = shallow(<Location {...props} />)
-    expect(wrapper.instance().props.drafts[2]).toBeFalsy()
-  })
-
-  it('country select has preselected default country', () => {
-    expect(wrapper.find('#countrySelect')).toHaveProp({ value: 'BG' })
   })
 })

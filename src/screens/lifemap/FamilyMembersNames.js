@@ -15,16 +15,15 @@ import Decoration from '../../components/decoration/Decoration'
 import globalStyles from '../../globalStyles'
 import Select from '../../components/Select'
 import DateInput from '../../components/DateInput'
+import { getDraft } from './helpers'
 
 export class FamilyMembersNames extends Component {
-  draftId = this.props.navigation.getParam('draftId')
-  survey = this.props.navigation.getParam('survey')
-  gender = this.survey.surveyConfig.gender
+  gender = this.props.nav.survey.surveyConfig.gender
   errorsDetected = []
   state = { errorsDetected: [], showErrors: false }
 
   componentDidMount() {
-    this.props.addDraftProgress(this.draftId, {
+    this.props.addDraftProgress(this.props.nav.draftId, {
       screen: 'FamilyMembersNames'
     })
 
@@ -34,16 +33,15 @@ export class FamilyMembersNames extends Component {
   }
 
   onPressBack = () => {
-    const draft = this.getDraft()
+    const draft = getDraft()
 
-    this.props.addDraftProgress(this.draftId, {
+    this.props.addDraftProgress(this.props.nav.draftId, {
       current: draft.progress.current - 1,
       total: draft.progress.total - 1
     })
 
     this.props.navigation.navigate('FamilyParticipant', {
-      draftId: this.draftId,
-      survey: this.survey
+      draftId: this.props.nav.draftId
     })
   }
   shouldComponentUpdate() {
@@ -63,28 +61,23 @@ export class FamilyMembersNames extends Component {
   }
 
   handleClick = () => {
-    const draft = this.getDraft()
+    const draft = getDraft()
 
     if (this.state.errorsDetected.length) {
       this.setState({
         showErrors: true
       })
     } else {
-      this.props.addDraftProgress(this.draftId, {
+      this.props.addDraftProgress(this.props.nav.draftId, {
         current: draft.progress.current + 1
       })
 
-      this.props.navigation.navigate('Location', {
-        draftId: this.draftId,
-        survey: this.survey
-      })
+      this.props.navigation.navigate('Location')
     }
   }
-  getDraft = () =>
-    this.props.drafts.find(draft => draft.draftId === this.draftId)
 
   getFieldValue = field => {
-    const draft = this.getDraft()
+    const draft = getDraft()
     if (!draft) {
       return
     }
@@ -94,7 +87,7 @@ export class FamilyMembersNames extends Component {
 
   addFamilyMemberName(name, index) {
     this.props.addSurveyFamilyMemberData({
-      id: this.draftId,
+      id: this.props.nav.draftId,
       index,
       payload: {
         firstName: name,
@@ -105,7 +98,7 @@ export class FamilyMembersNames extends Component {
 
   addFamilyMemberGender(gender, index) {
     this.props.addSurveyFamilyMemberData({
-      id: this.draftId,
+      id: this.props.nav.draftId,
       index,
       payload: {
         gender
@@ -115,7 +108,7 @@ export class FamilyMembersNames extends Component {
 
   addFamilyMemberBirthdate(birthDate, index) {
     this.props.addSurveyFamilyMemberData({
-      id: this.draftId,
+      id: this.props.nav.draftId,
       index,
       payload: {
         birthDate
@@ -126,7 +119,7 @@ export class FamilyMembersNames extends Component {
   render() {
     const { t } = this.props
     const { showErrors } = this.state
-    const draft = this.getDraft()
+    const draft = getDraft()
 
     const familyMembersCount =
       draft.familyData.countFamilyMembers &&
@@ -222,9 +215,9 @@ export class FamilyMembersNames extends Component {
 }
 
 FamilyMembersNames.propTypes = {
-  drafts: PropTypes.array,
   t: PropTypes.func.isRequired,
   navigation: PropTypes.object.isRequired,
+  nav: PropTypes.object.isRequired,
   addSurveyFamilyMemberData: PropTypes.func.isRequired,
   addDraftProgress: PropTypes.func.isRequired
 }
@@ -258,8 +251,8 @@ const mapDispatchToProps = {
   addDraftProgress
 }
 
-const mapStateToProps = ({ drafts }) => ({
-  drafts
+const mapStateToProps = ({ nav }) => ({
+  nav
 })
 
 export default withNamespaces()(

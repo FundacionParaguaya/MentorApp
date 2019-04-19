@@ -210,22 +210,14 @@ export default {
   FamilyMembersNames: {
     screen: FamilyMembersNamesView,
     navigationOptions: ({ navigation }) => ({
+      ...generateNavStyles({ navigation, hadowHeader: false }),
+      ...addCloseIcon(navigation),
       headerTitle: (
-        <Text
-          accessibilityLiveRegion="assertive"
-          style={[
-            styles.headerTitleStyle,
-            { marginLeft: 'auto', marginRight: 'auto' }
-          ]}
-        >
-          {i18n.t('views.familyMembers')}
-        </Text>
-      ),
-      ...generateNavStyles({
-        navigation,
-        burgerMenu: false,
-        shadowHeader: false
-      })
+        <Title
+          title="views.familyMembers"
+          style={{ marginLeft: 'auto', marginRight: 'auto' }}
+        />
+      )
     })
   },
   FamilyMember: {

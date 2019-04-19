@@ -20,6 +20,7 @@ import SearchBar from '../../components/SearchBar'
 import Select from '../../components/Select'
 import marker from '../../../assets/images/marker.png'
 import center from '../../../assets/images/centerMap.png'
+import { getDraft } from './helpers'
 
 export class Location extends Component {
   state = {
@@ -90,10 +91,8 @@ export class Location extends Component {
             this.getDeviceLocation()
           }, 5000)
         } else {
-          const { survey, draftId } = this.props.nav
-          const draft = this.props.drafts.find(
-            draft => draft.draftId === draftId
-          )
+          const { survey } = this.props.nav
+          const draft = getDraft()
 
           if (!this.getFieldValue(draft, 'latitude')) {
             if (survey.surveyConfig.surveyLocation.latitude) {
@@ -162,9 +161,7 @@ export class Location extends Component {
   }
 
   componentDidMount() {
-    const draft = this.props.drafts.find(
-      draft => draft.draftId === this.props.nav.draftId
-    )
+    const draft = getDraft()
 
     if (!this.getFieldValue(draft, 'latitude')) {
       this.getDeviceLocation()
@@ -190,7 +187,7 @@ export class Location extends Component {
 
   onPressBack = () => {
     const { draftId } = this.props.nav
-    const draft = this.props.drafts.find(draft => draft.draftId === draftId)
+    const draft = getDraft()
 
     this.props.addDraftProgress(draftId, {
       current: draft.progress.current - 1
@@ -200,7 +197,7 @@ export class Location extends Component {
       this.props.navigation.navigate('FamilyMembersNames')
     } else {
       this.props.navigation.navigate('FamilyParticipant', {
-        draftId: this.props.nav.draftId
+        draftId
       })
     }
   }
@@ -219,9 +216,7 @@ export class Location extends Component {
         showErrors: true
       })
     } else {
-      const draft = this.props.drafts.find(
-        draft => draft.draftId === this.props.nav.draftId
-      )
+      const draft = getDraft()
 
       this.props.addDraftProgress(this.props.nav.draftId, {
         current: draft.progress.current + 1
@@ -245,9 +240,7 @@ export class Location extends Component {
       showErrors
     } = this.state
 
-    const draft = this.props.drafts.find(
-      draft => draft.draftId === this.props.nav.draftId
-    )
+    const draft = getDraft()
 
     return (
       <StickyFooter
@@ -411,7 +404,6 @@ Location.propTypes = {
   navigation: PropTypes.object.isRequired,
   nav: PropTypes.object.isRequired,
   addSurveyData: PropTypes.func.isRequired,
-  drafts: PropTypes.array,
   addDraftProgress: PropTypes.func.isRequired
 }
 
@@ -420,8 +412,7 @@ const mapDispatchToProps = {
   addDraftProgress
 }
 
-const mapStateToProps = ({ drafts, nav }) => ({
-  drafts,
+const mapStateToProps = ({ nav }) => ({
   nav
 })
 

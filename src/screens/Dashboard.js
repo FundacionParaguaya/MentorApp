@@ -86,7 +86,6 @@ export class Dashboard extends Component {
       })
     } else
       this.props.navigation.navigate('Overview', {
-        draftId: draft.draftId,
         resumeDraft: true
       })
   }

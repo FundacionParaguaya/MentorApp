@@ -2,7 +2,7 @@ import React from 'react'
 import { shallow } from 'enzyme'
 import { Text } from 'react-native'
 import Select from '../Select'
-import { DateInput } from '../DateInput'
+import { DateInputComponent } from '../DateInput'
 
 const createTestProps = props => ({
   ...props,
@@ -18,7 +18,7 @@ describe('DateInput Component', () => {
   let props
   beforeEach(() => {
     props = createTestProps()
-    wrapper = shallow(<DateInput {...props} />)
+    wrapper = shallow(<DateInputComponent {...props} />)
   })
   describe('rendering', () => {
     it('renders Text', () => {
@@ -122,7 +122,7 @@ describe('DateInput Component', () => {
   describe('Get correct values for props.value', () => {
     it('Get correct year', () => {
       props = createTestProps({ value: 1515708000 })
-      wrapper = shallow(<DateInput {...props} />)
+      wrapper = shallow(<DateInputComponent {...props} />)
 
       expect(
         wrapper
@@ -134,7 +134,7 @@ describe('DateInput Component', () => {
 
     it('Get correct month', () => {
       props = createTestProps({ value: 1515708000 })
-      wrapper = shallow(<DateInput {...props} />)
+      wrapper = shallow(<DateInputComponent {...props} />)
 
       expect(
         wrapper
