@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { StyleSheet, Text , Platform} from 'react-native'
+import { StyleSheet, Text, Platform } from 'react-native'
 import { connect } from 'react-redux'
 import PropTypes from 'prop-types'
 import uuid from 'uuid/v1'
@@ -228,6 +228,12 @@ export class FamilyParticipant extends Component {
     const draft =
       this.props.navigation.getParam('family') ||
       this.props.drafts.find(draft => draft.draftId === this.draftId)
+    let autofocusFirstName
+    if (this.getFieldValue(draft, 'firstName')) {
+      autofocusFirstName = false
+    } else {
+      autofocusFirstName = true
+    }
 
     return (
       <StickyFooter
@@ -243,7 +249,9 @@ export class FamilyParticipant extends Component {
         <Decoration variation="primaryParticipant">
           <Icon name="face" color={colors.grey} size={55} style={styles.icon} />
         </Decoration>
+
         <TextInput
+          autoFocus={autofocusFirstName}
           validation="string"
           field="firstName"
           readonly={this.readonly}

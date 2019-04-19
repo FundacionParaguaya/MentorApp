@@ -127,7 +127,7 @@ export class FamilyMembersNames extends Component {
     const { t } = this.props
     const { showErrors } = this.state
     const draft = this.getDraft()
-
+    let onlyOneAutoFocusCheck = false
     const familyMembersCount =
       draft.familyData.countFamilyMembers &&
       draft.familyData.countFamilyMembers !== -1
@@ -154,68 +154,88 @@ export class FamilyMembersNames extends Component {
           </View>
         </Decoration>
 
-        {familyMembersCount.map((item, i) => (
-          <View key={i} style={{ marginBottom: 20 }}>
-            {i % 2 ? <Decoration variation="familyMemberNamesBody" /> : null}
-            <View
-              style={{
-                display: 'flex',
-                flexDirection: 'row',
-                paddingHorizontal: 20,
-                marginBottom: 15
-              }}
-            >
-              <Icon name="face" color={colors.grey} size={22} />
-              <Text
+        {familyMembersCount.map((item, i) => {
+          let firstNameAutoFocus
+          if (this.getFieldValue('familyMembersList')[i + 1]) {
+            if (this.getFieldValue('familyMembersList')[i + 1].firstName) {
+              firstNameAutoFocus = false
+            } else {
+              if (!onlyOneAutoFocusCheck) {
+                onlyOneAutoFocusCheck = true
+                firstNameAutoFocus = true
+              }
+            }
+          } else {
+            if (!onlyOneAutoFocusCheck) {
+              onlyOneAutoFocusCheck = true
+              firstNameAutoFocus = true
+            }
+          }
+          return (
+            <View key={i} style={{ marginBottom: 20 }}>
+              {i % 2 ? <Decoration variation="familyMemberNamesBody" /> : null}
+              <View
                 style={{
-                  ...globalStyles.h2Bold,
-                  color: colors.grey,
-                  marginLeft: 5
+                  display: 'flex',
+                  flexDirection: 'row',
+                  paddingHorizontal: 20,
+                  marginBottom: 15
                 }}
               >
-                {`${t('views.family.familyMember')} ${i + 1}`}
-              </Text>
-            </View>
-            <TextInput
-              key={i}
-              validation="string"
-              field={i.toString()}
-              onChangeText={text => this.addFamilyMemberName(text, i + 1)}
-              placeholder={`${t('views.family.firstName')}`}
-              value={
-                (this.getFieldValue('familyMembersList')[i + 1] || {})
-                  .firstName || ''
-              }
-              required
-              detectError={this.detectError}
-              showErrors={showErrors}
-            />
-            <Select
-              field={i.toString()}
-              onChange={text => this.addFamilyMemberGender(text, i + 1)}
-              label={t('views.family.gender')}
-              placeholder={t('views.family.selectGender')}
-              value={
-                (this.getFieldValue('familyMembersList')[i + 1] || {}).gender ||
-                ''
-              }
-              detectError={this.detectError}
-              options={this.gender}
-            />
+                <Icon name="face" color={colors.grey} size={22} />
+                <Text
+                  style={{
+                    ...globalStyles.h2Bold,
+                    color: colors.grey,
+                    marginLeft: 5
+                  }}
+                >
+                  {`${t('views.family.familyMember')} ${i + 1}`}
+                </Text>
+              </View>
+              <TextInput
+                autoFocus={firstNameAutoFocus}
+                key={i}
+                validation="string"
+                field={i.toString()}
+                onChangeText={text => this.addFamilyMemberName(text, i + 1)}
+                placeholder={`${t('views.family.firstName')}`}
+                value={
+                  (this.getFieldValue('familyMembersList')[i + 1] || {})
+                    .firstName || ''
+                }
+                required
+                detectError={this.detectError}
+                showErrors={showErrors}
+              />
+              <Select
+                field={i.toString()}
+                onChange={text => this.addFamilyMemberGender(text, i + 1)}
+                label={t('views.family.gender')}
+                placeholder={t('views.family.selectGender')}
+                value={
+                  (this.getFieldValue('familyMembersList')[i + 1] || {})
+                    .gender || ''
+                }
+                detectError={this.detectError}
+                options={this.gender}
+              />
 
-            <DateInput
-              field={i.toString()}
-              label={t('views.family.dateOfBirth')}
-              detectError={this.detectError}
-              showErrors={this.state.showErrors}
-              required
-              onValidDate={date => this.addFamilyMemberBirthdate(date, i + 1)}
-              value={
-                (this.getFieldValue('familyMembersList')[i + 1] || {}).birthDate
-              }
-            />
-          </View>
-        ))}
+              <DateInput
+                field={i.toString()}
+                label={t('views.family.dateOfBirth')}
+                detectError={this.detectError}
+                showErrors={this.state.showErrors}
+                required
+                onValidDate={date => this.addFamilyMemberBirthdate(date, i + 1)}
+                value={
+                  (this.getFieldValue('familyMembersList')[i + 1] || {})
+                    .birthDate
+                }
+              />
+            </View>
+          )
+        })}
       </StickyFooter>
     )
   }

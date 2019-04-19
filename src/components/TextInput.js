@@ -122,7 +122,14 @@ class TextInput extends Component {
 
   render() {
     const { text, errorMsg } = this.state
-    const { label, placeholder, required, readonly, multiline } = this.props
+    const {
+      label,
+      placeholder,
+      required,
+      readonly,
+      multiline,
+      autoFocus
+    } = this.props
     const status = this.props.status || this.state.status
 
     let showPlaceholder = status === 'blur' && !text
@@ -163,6 +170,7 @@ class TextInput extends Component {
             <View />
           )}
           <FormInput
+            autoFocus={autoFocus}
             keyboardType={showPlaceholder ? null : this.props.keyboardType}
             autoCapitalize="none"
             onFocus={() => this.onFocus()}
@@ -259,6 +267,7 @@ TextInput.propTypes = {
   required: PropTypes.bool,
   readonly: PropTypes.bool,
   onChangeText: PropTypes.func.isRequired,
+  autoFocus: PropTypes.bool,
   multiline: PropTypes.bool,
   showErrors: PropTypes.bool,
   keyboardType: PropTypes.string,
