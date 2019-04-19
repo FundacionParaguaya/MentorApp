@@ -34,8 +34,6 @@ export class Location extends Component {
     showMap: false // show map even when no location is returned
   }
 
-  survey = this.props.navigation.getParam('survey')
-  draftId = this.props.navigation.getParam('draftId') || null
   readonly = !!this.props.navigation.getParam('family')
   errorsDetected = []
   locationCheckTimer
@@ -53,7 +51,7 @@ export class Location extends Component {
   }
 
   addSurveyData = (text, field) => {
-    this.props.addSurveyData(this.draftId, 'familyData', {
+    this.props.addSurveyData(this.props.nav.draftId, 'familyData', {
       [field]: text
     })
   }
@@ -92,14 +90,17 @@ export class Location extends Component {
             this.getDeviceLocation()
           }, 5000)
         } else {
-          const draft = this.getDraft()
+          const { survey, draftId } = this.props.nav
+          const draft = this.props.drafts.find(
+            draft => draft.draftId === draftId
+          )
 
           if (!this.getFieldValue(draft, 'latitude')) {
-            if (this.survey.surveyConfig.surveyLocation.latitude) {
+            if (survey.surveyConfig.surveyLocation.latitude) {
               this.setState({
                 showMap: true,
-                latitude: this.survey.surveyConfig.surveyLocation.latitude,
-                longitude: this.survey.surveyConfig.surveyLocation.longitude
+                latitude: survey.surveyConfig.surveyLocation.latitude,
+                longitude: survey.surveyConfig.surveyLocation.longitude
               })
             } else {
               this.setState({
@@ -159,12 +160,11 @@ export class Location extends Component {
       this.addSurveyData(0, 'accuracy')
     }
   }
-  getDraft = () =>
-    this.props.navigation.getParam('family') ||
-    this.props.drafts.find(draft => draft.draftId === this.draftId)
 
   componentDidMount() {
-    const draft = this.getDraft()
+    const draft = this.props.drafts.find(
+      draft => draft.draftId === this.props.nav.draftId
+    )
 
     if (!this.getFieldValue(draft, 'latitude')) {
       this.getDeviceLocation()
@@ -189,21 +189,18 @@ export class Location extends Component {
   }
 
   onPressBack = () => {
-    const draft = this.getDraft()
+    const { draftId } = this.props.nav
+    const draft = this.props.drafts.find(draft => draft.draftId === draftId)
 
-    this.props.addDraftProgress(this.draftId, {
+    this.props.addDraftProgress(draftId, {
       current: draft.progress.current - 1
     })
 
     if (draft.familyData.familyMembersList.length > 1) {
-      this.props.navigation.navigate('FamilyMembersNames', {
-        draftId: this.draftId,
-        survey: this.survey
-      })
+      this.props.navigation.navigate('FamilyMembersNames')
     } else {
       this.props.navigation.navigate('FamilyParticipant', {
-        draftId: this.draftId,
-        survey: this.survey
+        draftId: this.props.nav.draftId
       })
     }
   }
@@ -222,20 +219,21 @@ export class Location extends Component {
         showErrors: true
       })
     } else {
-      const draft = this.getDraft()
+      const draft = this.props.drafts.find(
+        draft => draft.draftId === this.props.nav.draftId
+      )
 
-      this.props.addDraftProgress(this.draftId, {
+      this.props.addDraftProgress(this.props.nav.draftId, {
         current: draft.progress.current + 1
       })
 
-      this.props.navigation.replace('SocioEconomicQuestion', {
-        draftId: this.draftId,
-        survey: this.survey
-      })
+      this.props.navigation.replace('SocioEconomicQuestion')
     }
   }
   render() {
     const { t } = this.props
+    const { survey } = this.props.nav
+
     const {
       mapsError,
       latitude,
@@ -247,7 +245,9 @@ export class Location extends Component {
       showErrors
     } = this.state
 
-    const draft = this.getDraft()
+    const draft = this.props.drafts.find(
+      draft => draft.draftId === this.props.nav.draftId
+    )
 
     return (
       <StickyFooter
@@ -374,10 +374,10 @@ export class Location extends Component {
             field="country"
             value={
               this.getFieldValue(draft, 'country') ||
-              this.survey.surveyConfig.surveyLocation.country
+              survey.surveyConfig.surveyLocation.country
             }
             detectError={this.detectError}
-            country={this.survey.surveyConfig.surveyLocation.country}
+            country={survey.surveyConfig.surveyLocation.country}
             readonly={this.readonly}
           />
           <TextInput
@@ -409,6 +409,7 @@ export class Location extends Component {
 Location.propTypes = {
   t: PropTypes.func.isRequired,
   navigation: PropTypes.object.isRequired,
+  nav: PropTypes.object.isRequired,
   addSurveyData: PropTypes.func.isRequired,
   drafts: PropTypes.array,
   addDraftProgress: PropTypes.func.isRequired
@@ -419,8 +420,9 @@ const mapDispatchToProps = {
   addDraftProgress
 }
 
-const mapStateToProps = ({ drafts }) => ({
-  drafts
+const mapStateToProps = ({ drafts, nav }) => ({
+  drafts,
+  nav
 })
 
 export default withNamespaces()(

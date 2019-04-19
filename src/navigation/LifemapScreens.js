@@ -34,7 +34,7 @@ export default {
   Privacy: {
     screen: TermsView,
     navigationOptions: ({ navigation }) => ({
-      ...generateNavStyles({ navigation, burgerMenu: false }),
+      ...generateNavStyles({ navigation }),
       ...addCloseIcon(navigation),
       headerTitle: (
         <Title title="views.privacyPolicy" style={{ marginLeft: 20 }} />
@@ -44,22 +44,14 @@ export default {
   Location: {
     screen: LocationView,
     navigationOptions: ({ navigation }) => ({
+      ...generateNavStyles({ navigation, shadowHeader: false }),
+      ...addCloseIcon(navigation),
       headerTitle: (
-        <Text
-          accessibilityLiveRegion="assertive"
-          style={[
-            styles.headerTitleStyle,
-            { marginLeft: 'auto', marginRight: 'auto' }
-          ]}
-        >
-          {i18n.t('views.location')}
-        </Text>
-      ),
-      ...generateNavStyles({
-        navigation,
-        burgerMenu: false,
-        shadowHeader: false
-      })
+        <Title
+          title="views.location"
+          style={{ marginLeft: 'auto', marginRight: 'auto' }}
+        />
+      )
     })
   },
   SocioEconomicQuestion: {

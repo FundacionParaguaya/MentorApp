@@ -85,7 +85,7 @@ export class FamilyParticipant extends Component {
   }
 
   handleClick = () => {
-    const { survey, draftId } = this.props.nav
+    const { draftId } = this.props.nav
 
     const draft = this.props.drafts.find(draft => draft.draftId === draftId)
 
@@ -104,20 +104,14 @@ export class FamilyParticipant extends Component {
           total: draft.progress.total + 2
         })
 
-        this.props.navigation.navigate('FamilyMembersNames', {
-          draftId: this.draftId,
-          survey
-        })
+        this.props.navigation.navigate('FamilyMembersNames')
       } else {
         // if only one family member, navigate directly to location
         this.props.addDraftProgress(draft.draftId, {
           current: draft.progress.current + 1
         })
 
-        this.props.navigation.navigate('Location', {
-          draftId: this.draftId,
-          survey
-        })
+        this.props.navigation.navigate('Location')
       }
     }
   }
@@ -359,7 +353,6 @@ const styles = StyleSheet.create({
 
 FamilyParticipant.propTypes = {
   t: PropTypes.func.isRequired,
-  surveys: PropTypes.array.isRequired,
   drafts: PropTypes.array.isRequired,
   nav: PropTypes.object.isRequired,
   navigation: PropTypes.object.isRequired,

@@ -24,6 +24,13 @@ global.fetch = () => new Promise(() => {})
 
 const createTestProps = props => ({
   t: value => value,
+  nav: {
+    draftId: 2,
+    survey: {
+      surveyId: 100,
+      surveyConfig: { surveyLocation: { country: 'BG' } }
+    }
+  },
   navigation: {
     navigate: jest.fn(),
     replace: jest.fn(),
@@ -32,10 +39,7 @@ const createTestProps = props => ({
       if (param === 'draftId') {
         return 2
       } else if (param === 'survey') {
-        return {
-          surveyId: 100,
-          surveyConfig: { surveyLocation: { country: 'BG' } }
-        }
+        return
       }
 
       return null
@@ -267,23 +271,5 @@ describe('Render optimization', () => {
 
   it('country select has preselected default country', () => {
     expect(wrapper.find('#countrySelect')).toHaveProp({ value: 'BG' })
-  })
-
-  it('navigates to SocioEconomicQuestion with proper params', () => {
-    wrapper
-      .find(StickyFooter)
-      .props()
-      .handleClick()
-
-    expect(wrapper.instance().props.navigation.replace).toHaveBeenCalledWith(
-      'SocioEconomicQuestion',
-      {
-        draftId: 2,
-        survey: {
-          surveyId: 100,
-          surveyConfig: { surveyLocation: { country: 'BG' } }
-        }
-      }
-    )
   })
 })
