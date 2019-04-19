@@ -1,10 +1,10 @@
 import React from 'react'
 import { StyleSheet, View, Platform } from 'react-native'
 import { AndroidBackHandler } from 'react-navigation-backhandler'
-import ExitDraftPopup from './ExitDraftPopup'
 import BackDraftPopup from './BackDraftPopup'
 import colors from '../theme.json'
 import IconButton from '../components/IconButton'
+import CloseButton from './CloseButton'
 
 // Each of the major views has a stack that needs the same nav options.
 // These options handle the header styles and menu icon.
@@ -99,26 +99,7 @@ export const addMenuIcon = navigation => ({
 // !navigation.getParam('withoutCloseButton')
 
 export const addCloseIcon = navigation => ({
-  headerRight: (
-    <View>
-      <IconButton
-        style={styles.touchable}
-        onPress={() => navigation.setParams({ modalOpen: true })}
-        icon="close"
-        size={25}
-        accessible={true}
-        accessibilityLabel={'Exit'}
-      />
-      <ExitDraftPopup
-        isOpen={navigation.getParam('modalOpen')}
-        onClose={() => navigation.setParams({ modalOpen: false })}
-        navigation={navigation}
-        routeName={navigation.state.routeName}
-        deleteOnExit={navigation.getParam('deleteOnExit')}
-        draftId={navigation.getParam('draftId')}
-      />
-    </View>
-  )
+  headerRight: <CloseButton navigation={navigation} style={styles.touchable} />
 })
 
 const styles = StyleSheet.create({

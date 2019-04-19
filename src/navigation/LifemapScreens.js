@@ -14,7 +14,8 @@ import AddPriorityView from '../screens/lifemap/AddPriority'
 import AddAchievementView from '../screens/lifemap/AddAchievement'
 import FamilyMemberView from '../screens/lifemap/FamilyMember'
 import i18n from '../i18n'
-import { generateNavStyles } from './helpers'
+import Title from './Title'
+import { generateNavStyles, addCloseIcon } from './helpers'
 import CustomHeaderSurvey from './CustomHeaderSurvey'
 import colors from '../theme.json'
 
@@ -23,29 +24,21 @@ export default {
   Terms: {
     screen: TermsView,
     navigationOptions: ({ navigation }) => ({
+      ...generateNavStyles({ navigation }),
+      ...addCloseIcon(navigation),
       headerTitle: (
-        <Text
-          accessibilityLiveRegion="assertive"
-          style={[styles.headerTitleStyle, { marginLeft: 20 }]}
-        >
-          {i18n.t('views.termsConditions')}
-        </Text>
-      ),
-      ...generateNavStyles({ navigation, burgerMenu: false })
+        <Title title="views.termsConditions" style={{ marginLeft: 20 }} />
+      )
     })
   },
   Privacy: {
     screen: TermsView,
     navigationOptions: ({ navigation }) => ({
+      ...generateNavStyles({ navigation, burgerMenu: false }),
+      ...addCloseIcon(navigation),
       headerTitle: (
-        <Text
-          accessibilityLiveRegion="assertive"
-          style={[styles.headerTitleStyle, { marginLeft: 20 }]}
-        >
-          {i18n.t('views.privacyPolicy')}
-        </Text>
-      ),
-      ...generateNavStyles({ navigation, burgerMenu: false })
+        <Title title="views.privacyPolicy" style={{ marginLeft: 20 }} />
+      )
     })
   },
   Location: {

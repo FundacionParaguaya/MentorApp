@@ -260,3 +260,12 @@ export const syncDrafts = value => ({
   item: 'drafts',
   value
 })
+
+// NAV
+export const UPDATE_NAV = 'UPDATE_NAV'
+
+export const updateNav = (item, value) => ({
+  type: UPDATE_NAV,
+  item,
+  value
+})

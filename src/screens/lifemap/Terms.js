@@ -9,24 +9,22 @@ import RoundImage from '../../components/RoundImage'
 import Button from '../../components/Button'
 import Decoration from '../../components/decoration/Decoration'
 
+// which screen comes after which
 const navigationRules = {
   terms: {
     nextPage: 'Privacy',
     param: 'privacy'
   },
   privacy: {
-    nextPage: 'FamilyParticipant',
-    deleteOnExit: true // this is used for the exit modal - don't save the draft
+    nextPage: 'FamilyParticipant'
   }
 }
 
 export class Terms extends Component {
-  survey = this.props.surveys.filter(
-    survey => survey.id === this.props.navigation.getParam('survey')
-  )[0]
-
   render() {
     const { t, navigation } = this.props
+    const { survey } = this.props.nav
+
     const page = navigation.getParam('page')
 
     return (
@@ -40,17 +38,17 @@ export class Terms extends Component {
           </Decoration>
           <Text style={[globalStyles.h2Bold, styles.heading]}>
             {page === 'terms'
-              ? this.survey.termsConditions.title
-              : this.survey.privacyPolicy.title}
+              ? survey.termsConditions.title
+              : survey.privacyPolicy.title}
           </Text>
 
           <Text id="content" style={[globalStyles.subline, styles.content]}>
             {page === 'terms' &&
-              this.survey.termsConditions.text &&
-              this.survey.termsConditions.text.replace(/\\n/g, '\n')}
+              survey.termsConditions.text &&
+              survey.termsConditions.text.replace(/\\n/g, '\n')}
             {page !== 'terms' &&
-              this.survey.privacyPolicy.text &&
-              this.survey.privacyPolicy.text.replace(/\\n/g, '\n')}
+              survey.privacyPolicy.text &&
+              survey.privacyPolicy.text.replace(/\\n/g, '\n')}
           </Text>
         </View>
         <View style={styles.buttonsBar}>
@@ -68,10 +66,7 @@ export class Terms extends Component {
               navigation.navigate(
                 navigationRules[navigation.getParam('page')].nextPage,
                 {
-                  survey: this.survey.id,
-                  page: navigationRules[navigation.getParam('page')].param,
-                  deleteOnExit:
-                    navigationRules[navigation.getParam('page')].deleteOnExit
+                  page: navigationRules[navigation.getParam('page')].param
                 }
               )
             }
@@ -85,11 +80,11 @@ export class Terms extends Component {
 Terms.propTypes = {
   t: PropTypes.func.isRequired,
   navigation: PropTypes.object.isRequired,
-  surveys: PropTypes.array
+  nav: PropTypes.object.isRequired
 }
 
-const mapStateToProps = ({ surveys }) => ({
-  surveys
+const mapStateToProps = ({ nav }) => ({
+  nav
 })
 
 export default withNamespaces()(connect(mapStateToProps)(Terms))

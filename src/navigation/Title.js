@@ -8,7 +8,10 @@ import colors from '../theme.json'
 export class DynamicTitle extends React.Component {
   render() {
     return (
-      <Text accessibilityLiveRegion="assertive" style={styles.headerTitleStyle}>
+      <Text
+        accessibilityLiveRegion="assertive"
+        style={[styles.headerTitleStyle, this.props.style]}
+      >
         {this.props.t(this.props.title)}
       </Text>
     )
@@ -16,6 +19,7 @@ export class DynamicTitle extends React.Component {
 }
 
 DynamicTitle.propTypes = {
+  style: PropTypes.object,
   title: PropTypes.string,
   lng: PropTypes.string,
   t: PropTypes.func

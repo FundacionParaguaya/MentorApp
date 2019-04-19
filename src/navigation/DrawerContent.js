@@ -13,12 +13,11 @@ import { withNamespaces } from 'react-i18next'
 import { connect } from 'react-redux'
 import PropTypes from 'prop-types'
 import globalStyles from '../globalStyles'
-import IconButtonComponent from '../components/IconButton'
+import IconButton from '../components/IconButton'
 import i18n from '../i18n'
 import colors from '../theme.json'
-import { switchLanguage, logout } from '../redux/actions'
+import { switchLanguage, logout, updateNav } from '../redux/actions'
 import LogoutPopup from './LogoutPopup'
-import ExitDraftPopup from './ExitDraftPopup'
 import dashboardIcon from '../../assets/images/icon_dashboard.png'
 import familyNavIcon from '../../assets/images/icon_family_nav.png'
 
@@ -77,12 +76,33 @@ export class DrawerContent extends Component {
     })
   }
   navigateToScreen = (screen, currentStack) => {
-    const { navigation } = this.props
+    // navigation comes from react-navigation, nav comes from redux
+    const { navigation, nav } = this.props
+
     this.setState({ activeTab: screen })
     navigation.toggleDrawer()
-    currentStack.key === 'Surveys' && currentStack.index
-      ? navigation.setParams({ modalOpen: true })
-      : navigation.navigate(screen)
+
+    if (currentStack.key === 'Surveys' && currentStack.index) {
+      if (nav.deleteDraftOnExit) {
+        this.props.updateNav('openModal', 'deleteDraft')
+      } else if (
+        navigation.state.routeName === 'Terms' ||
+        navigation.state.routeName === 'Privacy'
+      ) {
+        this.props.updateNav('openModal', 'exitOnTerms')
+      } else {
+        this.props.updateNav('openModal', 'exitDraft')
+      }
+
+      this.props.updateNav('beforeCloseModal', () => {
+        // reset navigation
+        navigation.popToTop()
+        navigation.navigate(this.state.activeTab)
+        this.props.updateNav('beforeCloseModal', null)
+      })
+    } else {
+      navigation.navigate(screen)
+    }
   }
   render() {
     const { lng, user, navigation } = this.props
@@ -92,16 +112,6 @@ export class DrawerContent extends Component {
     ).length
     const { state } = navigation
     const currentStack = state.routes[state.index]
-    const stackParams = currentStack.routes[currentStack.index].params
-
-    let draftId, deleteOnExit
-    if (stackParams && stackParams !== null) {
-      draftId = stackParams.draftId !== undefined ? stackParams.draftId : false
-      deleteOnExit =
-        stackParams.deleteOnExit !== undefined
-          ? stackParams.deleteOnExit
-          : false
-    }
 
     return (
       <ScrollView contentContainerStyle={styles.container}>
@@ -112,7 +122,7 @@ export class DrawerContent extends Component {
           />
           {/* Language Switcher */}
           <View style={styles.languageSwitch}>
-            <IconButtonComponent
+            <IconButton
               id="en"
               onPress={() => this.changeLanguage('en')}
               text="ENG"
@@ -126,7 +136,7 @@ export class DrawerContent extends Component {
             <Text style={[globalStyles.h3, styles.whiteText]}>
               {'  '}|{'  '}
             </Text>
-            <IconButtonComponent
+            <IconButton
               id="es"
               onPress={() => this.changeLanguage('es')}
               text="ESP"
@@ -148,7 +158,7 @@ export class DrawerContent extends Component {
         </View>
         <View style={styles.itemsContainer}>
           <View>
-            <IconButtonComponent
+            <IconButton
               id="dashboard"
               style={{
                 ...styles.navItem,
@@ -160,7 +170,7 @@ export class DrawerContent extends Component {
               text={i18n.t('views.home')}
               textStyle={styles.label}
             />
-            <IconButtonComponent
+            <IconButton
               id="surveys"
               style={{
                 ...styles.navItem,
@@ -173,7 +183,7 @@ export class DrawerContent extends Component {
               textStyle={styles.label}
               text={i18n.t('views.createLifemap')}
             />
-            <IconButtonComponent
+            <IconButton
               id="families"
               style={{
                 ...styles.navItem,
@@ -186,7 +196,7 @@ export class DrawerContent extends Component {
               text={i18n.t('views.families')}
               textStyle={styles.label}
             />
-            <IconButtonComponent
+            <IconButton
               id="sync"
               style={{
                 ...styles.navItem,
@@ -203,7 +213,7 @@ export class DrawerContent extends Component {
           </View>
         </View>
         {/* Logout button */}
-        <IconButtonComponent
+        <IconButton
           id="logout"
           style={styles.navItem}
           onPress={() => {
@@ -235,24 +245,16 @@ export class DrawerContent extends Component {
             navigation.setParams({ logoutModalOpen: false })
           }}
         />
-        {/* Exit Popup */}
-        <ExitDraftPopup
-          navigation={navigation}
-          isOpen={navigation.getParam('modalOpen')}
-          onClose={() => navigation.setParams({ modalOpen: false })}
-          routeName={currentStack.routes[currentStack.index].routeName}
-          deleteOnExit={deleteOnExit}
-          draftId={draftId}
-          navigateTo={this.state.activeTab}
-        />
       </ScrollView>
     )
   }
 }
 
 DrawerContent.propTypes = {
+  nav: PropTypes.object.isRequired,
   lng: PropTypes.string,
   switchLanguage: PropTypes.func.isRequired,
+  updateNav: PropTypes.func.isRequired,
   logout: PropTypes.func.isRequired,
   navigation: PropTypes.object.isRequired,
   user: PropTypes.object.isRequired,
@@ -260,15 +262,17 @@ DrawerContent.propTypes = {
   env: PropTypes.oneOf(['production', 'demo', 'testing', 'development'])
 }
 
-const mapStateToProps = ({ env, user, drafts }) => ({
+const mapStateToProps = ({ env, user, drafts, nav }) => ({
   env,
   user,
-  drafts
+  drafts,
+  nav
 })
 
 const mapDispatchToProps = {
   switchLanguage,
-  logout
+  logout,
+  updateNav
 }
 
 export default withNamespaces()(

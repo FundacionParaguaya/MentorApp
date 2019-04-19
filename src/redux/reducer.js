@@ -23,7 +23,8 @@ import {
   SET_SYNCED_ITEM_TOTAL,
   SET_SYNCED_ITEM_AMOUNT,
   SET_SYNCED_STATE,
-  SET_DIMENSIONS
+  SET_DIMENSIONS,
+  UPDATE_NAV
 } from './actions'
 
 //Login
@@ -456,6 +457,29 @@ export const sync = (
   }
 }
 
+// Navigation
+export const nav = (
+  state = {
+    openModal: null,
+    beforeCloseModal: null,
+    readonly: false,
+    draft: null,
+    survey: null,
+    deleteDraftOnExit: false
+  },
+  action
+) => {
+  switch (action.type) {
+    case UPDATE_NAV:
+      return {
+        ...state,
+        [action.item]: action.value
+      }
+    default:
+      return state
+  }
+}
+
 const appReducer = combineReducers({
   env,
   user,
@@ -465,7 +489,8 @@ const appReducer = combineReducers({
   language,
   hydration,
   sync,
-  dimensions
+  dimensions,
+  nav
 })
 
 export const rootReducer = (state, action) => {
@@ -506,6 +531,7 @@ export const rootReducer = (state, action) => {
   }
 
   if (action.type === USER_LOGOUT) {
+    // reset store
     state = {
       ...state,
       user: { token: null, status: null, username: null },
@@ -520,6 +546,14 @@ export const rootReducer = (state, action) => {
           total: 0,
           synced: 0
         }
+      },
+      nav: {
+        openModal: null,
+        beforeCloseModal: null,
+        readonly: false,
+        draft: null,
+        survey: null,
+        deleteDraftOnExit: false
       }
     }
   }

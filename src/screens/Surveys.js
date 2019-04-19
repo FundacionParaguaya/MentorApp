@@ -9,7 +9,7 @@ import {
 import { connect } from 'react-redux'
 import PropTypes from 'prop-types'
 import { withNamespaces } from 'react-i18next'
-
+import { updateNav } from '../redux/actions'
 import globalStyles from '../globalStyles'
 import RoundImage from '../components/RoundImage'
 import LifemapListItem from '../components/LifemapListItem'
@@ -30,6 +30,13 @@ export class Surveys extends Component {
     }
   }
 
+  handleClickOnSurvey = survey => {
+    this.props.updateNav('survey', survey)
+    this.props.navigation.navigate('Terms', {
+      page: 'terms'
+    })
+  }
+
   render() {
     return (
       <ScrollView
@@ -47,12 +54,7 @@ export class Surveys extends Component {
           renderItem={({ item }) => (
             <LifemapListItem
               name={item.title}
-              handleClick={() =>
-                this.props.navigation.navigate('Terms', {
-                  survey: item.id,
-                  page: 'terms'
-                })
-              }
+              handleClick={() => this.handleClickOnSurvey(item)}
             />
           )}
         />
@@ -72,11 +74,21 @@ Surveys.propTypes = {
   surveys: PropTypes.array,
   navigation: PropTypes.object.isRequired,
   lng: PropTypes.string,
-  t: PropTypes.func
+  t: PropTypes.func,
+  updateNav: PropTypes.func.isRequired
 }
 
 const mapStateToProps = ({ surveys }) => ({
   surveys
 })
 
-export default withNamespaces()(connect(mapStateToProps)(Surveys))
+const mapDispatchToProps = {
+  updateNav
+}
+
+export default withNamespaces()(
+  connect(
+    mapStateToProps,
+    mapDispatchToProps
+  )(Surveys)
+)
