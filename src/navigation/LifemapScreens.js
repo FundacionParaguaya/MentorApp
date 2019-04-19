@@ -207,9 +207,12 @@ export default {
     navigationOptions: ({ navigation }) => ({
       ...generateNavStyles({
         navigation,
-        burgerMenu: false,
         shadowHeader: false
-      })
+      }),
+      ...addCloseIcon(navigation),
+      headerTitle: (
+        <Title title="views.primaryParticipant" style={{ marginLeft: 20 }} />
+      )
     })
   },
   FamilyMembersNames: {

@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { StyleSheet, Text , Platform} from 'react-native'
+import { StyleSheet } from 'react-native'
 import { connect } from 'react-redux'
 import PropTypes from 'prop-types'
 import uuid from 'uuid/v1'
@@ -8,7 +8,8 @@ import {
   addSurveyFamilyMemberData,
   addDraftProgress,
   addSurveyData,
-  removeFamilyMembers
+  removeFamilyMembers,
+  updateNav
 } from '../../redux/actions'
 import { withNamespaces } from 'react-i18next'
 import Icon from 'react-native-vector-icons/MaterialIcons'
@@ -20,29 +21,8 @@ import Decoration from '../../components/decoration/Decoration'
 import colors from '../../theme.json'
 
 export class FamilyParticipant extends Component {
-  static navigationOptions = ({ navigation }) => {
-    return {
-      headerTitle: (
-        <Text
-          accessibilityLiveRegion="assertive"
-          style={styles.headerTitleStyle}
-        >
-          {navigation.getParam('title', 'Primary Participant')}
-        </Text>
-      )
-    }
-  }
-
   //Get draft id from Redux store if it exists else create new draft id
   draftId = this.props.navigation.getParam('draftId') || uuid()
-
-  //Get survey if from draft if it exists else from navigation route
-  surveyId =
-    (this.props.drafts.filter(draft => draft.draftId === this.draftId)[0] || {})
-      .surveyId || this.props.navigation.getParam('survey')
-
-  //Get survey by id
-  survey = this.props.surveys.filter(survey => survey.id === this.surveyId)[0]
 
   errorsDetected = []
 
@@ -62,63 +42,52 @@ export class FamilyParticipant extends Component {
     })
   }
 
-  getDraft() {
-    //Get data from Redux store if it's a draft or from
-    // navigation if it's an excisting family else create new draft
-    if (
-      !this.props.navigation.getParam('draftId') &&
-      !this.props.navigation.getParam('family')
-    ) {
-      this.props.createDraft({
-        surveyId: this.survey.id,
-        surveyVersionId: this.survey['surveyVersionId'],
-        created: Date.now(),
-        draftId: this.draftId,
-        economicSurveyDataList: [],
-        indicatorSurveyDataList: [],
-        priorities: [],
-        achievements: [],
-        familyData: {
-          familyMembersList: [
-            {
-              firstParticipant: true,
-              socioEconomicAnswers: []
-            }
-          ]
-        }
-      })
-    }
-  }
-
-  setTitle() {
-    this.props.navigation.setParams({
-      title: this.props.navigation.getParam('family').familyData
-        .familyMembersList[0].firstName
+  createDraft() {
+    this.props.createDraft({
+      surveyId: this.props.nav.survey.id,
+      surveyVersionId: this.props.nav.survey['surveyVersionId'],
+      created: Date.now(),
+      draftId: this.draftId,
+      economicSurveyDataList: [],
+      indicatorSurveyDataList: [],
+      priorities: [],
+      achievements: [],
+      progress: {
+        screen: 'FamilyParticipant',
+        current: 1,
+        total: 5 + this.props.nav.survey.surveyStoplightQuestions.length
+      },
+      familyData: {
+        familyMembersList: [
+          {
+            firstParticipant: true,
+            socioEconomicAnswers: []
+          }
+        ]
+      }
     })
   }
 
   componentDidMount() {
-    if (this.props.navigation.getParam('family')) {
-      this.setTitle()
+    // create a new draft if not exising
+    if (!this.props.navigation.getParam('draftId')) {
+      this.props.updateNav('draftId', this.draftId)
+      this.createDraft()
     }
 
-    this.getDraft()
-
-    if (!this.readonly) {
+    if (!this.readonly && this.props.nav.draftId) {
       this.props.addDraftProgress(this.draftId, {
         screen: 'FamilyParticipant',
         current: 1,
-        total: 5 + this.survey.surveyStoplightQuestions.length
+        total: 5 + this.props.nav.survey.surveyStoplightQuestions.length
       })
     }
-
-    this.props.navigation.setParams({ draftId: this.draftId })
   }
 
   handleClick = () => {
-    const draft = this.props.drafts.find(
-      draft => draft.draftId === this.draftId
-    )
+    const { survey, draftId } = this.props.nav
+
+    const draft = this.props.drafts.find(draft => draft.draftId === draftId)
 
     // check if form is valid
     if (this.errorsDetected.length) {
@@ -126,6 +95,8 @@ export class FamilyParticipant extends Component {
         showErrors: true
       })
     } else {
+      // create drafts
+
       if (this.getFamilyCount(draft) > 1) {
         // if multiple family members navigate to members screens
         this.props.addDraftProgress(this.draftId, {
@@ -135,7 +106,7 @@ export class FamilyParticipant extends Component {
 
         this.props.navigation.navigate('FamilyMembersNames', {
           draftId: this.draftId,
-          survey: this.survey
+          survey
         })
       } else {
         // if only one family member, navigate directly to location
@@ -145,9 +116,18 @@ export class FamilyParticipant extends Component {
 
         this.props.navigation.navigate('Location', {
           draftId: this.draftId,
-          survey: this.survey
+          survey
         })
       }
+    }
+  }
+
+  componentDidUpdate(prevProps, prevState) {
+    if (prevState.errorsDetected.length !== this.state.errorsDetected.length) {
+      this.props.updateNav(
+        'deleteDraftOnExit',
+        !!this.state.errorsDetected.length
+      )
     }
   }
 
@@ -211,11 +191,15 @@ export class FamilyParticipant extends Component {
         [field]: text
       }
     })
+
+    if (this.errorsDetected.length) {
+      this.props.updateNav('deleteDraftOnExit', true)
+    }
   }
 
-  gender = this.survey.surveyConfig.gender
+  gender = this.props.nav.survey.surveyConfig.gender
 
-  documentType = this.survey.surveyConfig.documentType
+  documentType = this.props.nav.survey.surveyConfig.documentType
 
   shouldComponentUpdate() {
     return this.props.navigation.isFocused()
@@ -223,11 +207,12 @@ export class FamilyParticipant extends Component {
 
   render() {
     const { t } = this.props
+    const { survey } = this.props.nav
     const { showErrors } = this.state
 
-    const draft =
-      this.props.navigation.getParam('family') ||
-      this.props.drafts.find(draft => draft.draftId === this.draftId)
+    const draft = this.props.drafts.find(
+      draft => draft.draftId === this.draftId
+    )
 
     return (
       <StickyFooter
@@ -319,12 +304,12 @@ export class FamilyParticipant extends Component {
           readonly={this.readonly}
           label={t('views.family.countryOfBirth')}
           countrySelect
-          country={this.survey.surveyConfig.surveyLocation.country}
+          country={survey.surveyConfig.surveyLocation.country}
           placeholder={t('views.family.countryOfBirth')}
           field="birthCountry"
           value={
             this.getFieldValue(draft, 'birthCountry') ||
-            this.survey.surveyConfig.surveyLocation.country
+            survey.surveyConfig.surveyLocation.country
           }
           detectError={this.detectError}
           showErrors={showErrors}
@@ -369,22 +354,6 @@ export class FamilyParticipant extends Component {
 const styles = StyleSheet.create({
   icon: {
     alignSelf: 'center'
-  },
-  headerTitleStyle: {
-    ...Platform.select({
-      ios: {
-        fontFamily: 'Poppins'
-      },
-      android: {
-        fontFamily: 'Poppins SemiBold'
-      }
-    }),
-    fontSize: 18,
-    fontWeight: '200',
-    lineHeight: 26,
-    color: colors.black,
-    marginLeft: 'auto',
-    marginRight: 'auto'
   }
 })
 
@@ -392,12 +361,14 @@ FamilyParticipant.propTypes = {
   t: PropTypes.func.isRequired,
   surveys: PropTypes.array.isRequired,
   drafts: PropTypes.array.isRequired,
+  nav: PropTypes.object.isRequired,
   navigation: PropTypes.object.isRequired,
   createDraft: PropTypes.func.isRequired,
   addSurveyFamilyMemberData: PropTypes.func.isRequired,
   addDraftProgress: PropTypes.func.isRequired,
   addSurveyData: PropTypes.func.isRequired,
-  removeFamilyMembers: PropTypes.func.isRequired
+  removeFamilyMembers: PropTypes.func.isRequired,
+  updateNav: PropTypes.func.isRequired
 }
 
 const mapDispatchToProps = {
@@ -405,12 +376,13 @@ const mapDispatchToProps = {
   addSurveyFamilyMemberData,
   addDraftProgress,
   addSurveyData,
-  removeFamilyMembers
+  removeFamilyMembers,
+  updateNav
 }
 
-const mapStateToProps = ({ surveys, drafts }) => ({
-  surveys,
-  drafts
+const mapStateToProps = ({ drafts, nav }) => ({
+  drafts,
+  nav
 })
 
 export default withNamespaces()(

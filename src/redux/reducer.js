@@ -463,7 +463,7 @@ export const nav = (
     openModal: null,
     beforeCloseModal: null,
     readonly: false,
-    draft: null,
+    draftId: null,
     survey: null,
     deleteDraftOnExit: false
   },
@@ -558,6 +558,7 @@ export const rootReducer = (state, action) => {
     }
   }
 
+  // create detailed sentry report on sync error
   if (action.type === SUBMIT_DRAFT_ROLLBACK) {
     Sentry.setExtraContext({
       payload: action.meta.payload,

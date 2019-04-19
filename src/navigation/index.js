@@ -41,7 +41,7 @@ export class NavWrapper extends Component {
           isOpen={
             nav.openModal === 'exitDraft' ||
             nav.openModal === 'exitOnTerms' ||
-            nav.openModal === 'deleteDraftOnExit'
+            nav.openModal === 'deleteDraft'
           }
           onClose={() => updateNav('openModal', null)}
         />

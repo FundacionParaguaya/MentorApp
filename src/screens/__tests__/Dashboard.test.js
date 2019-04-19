@@ -16,6 +16,7 @@ const createTestProps = props => ({
   user: { status: '' },
   loadSurveys: jest.fn(),
   loadSnapshots: jest.fn(),
+  updateNav: jest.fn(),
   loadFamilies: jest.fn(),
   offline: { outbox: [] },
   drafts: [

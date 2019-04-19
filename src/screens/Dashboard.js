@@ -9,6 +9,7 @@ import {
   findNodeHandle
 } from 'react-native'
 import { Sentry } from 'react-native-sentry'
+import { updateNav } from '../redux/actions'
 import { withNamespaces } from 'react-i18next'
 import PropTypes from 'prop-types'
 import Button from '../components/Button'
@@ -28,6 +29,9 @@ export class Dashboard extends Component {
   }
 
   componentDidMount() {
+    this.props.updateNav('survey', null)
+    this.props.updateNav('draftId', null)
+    this.props.updateNav('deleteDraftOnExit', false)
     if (UIManager.AccessibilityEventTypes) {
       setTimeout(() => {
         UIManager.sendAccessibilityEvent(
@@ -63,6 +67,12 @@ export class Dashboard extends Component {
   }
 
   navigateToDraft = draft => {
+    this.props.updateNav('draftId', draft.draftId)
+    this.props.updateNav(
+      'survey',
+      this.props.surveys.find(survey => survey.id === draft.surveyId)
+    )
+
     if (
       draft.progress.screen !== 'Question' &&
       draft.progress.screen !== 'Skipped' &&
@@ -71,14 +81,12 @@ export class Dashboard extends Component {
     ) {
       this.props.navigation.navigate(draft.progress.screen, {
         draftId: draft.draftId,
-        survey: this.props.surveys.find(survey => survey.id === draft.surveyId),
         step: draft.progress.step,
         socioEconomics: draft.progress.socioEconomics
       })
     } else
       this.props.navigation.navigate('Overview', {
         draftId: draft.draftId,
-        survey: this.props.surveys.find(survey => survey.id === draft.surveyId),
         resumeDraft: true
       })
   }
@@ -193,6 +201,7 @@ const styles = StyleSheet.create({
 Dashboard.propTypes = {
   navigation: PropTypes.object.isRequired,
   t: PropTypes.func.isRequired,
+  updateNav: PropTypes.func.isRequired,
   drafts: PropTypes.array.isRequired,
   env: PropTypes.oneOf(['production', 'demo', 'testing', 'development']),
   user: PropTypes.object.isRequired,
@@ -220,4 +229,13 @@ const mapStateToProps = ({
   families
 })
 
-export default withNamespaces()(connect(mapStateToProps)(Dashboard))
+const mapDispatchToProps = {
+  updateNav
+}
+
+export default withNamespaces()(
+  connect(
+    mapStateToProps,
+    mapDispatchToProps
+  )(Dashboard)
+)

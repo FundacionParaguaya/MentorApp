@@ -12,15 +12,16 @@ import colors from '../theme.json'
 
 export class ExitDraftModal extends Component {
   render() {
-    const { isOpen, onClose, deleteOnExit, nav } = this.props
+    const { isOpen, onClose, nav } = this.props
 
     return (
       <Popup isOpen={isOpen} onClose={onClose}>
-        {nav.openModal === 'exitOnTerms' ||
+        {nav.deleteDraftOnExit ||
+        nav.openModal === 'exitOnTerms' ||
         nav.openModal === 'deleteDraftOnExit' ? (
           <View>
             <Text style={[globalStyles.centerText, globalStyles.h3]}>
-              {deleteOnExit
+              {nav.deleteDraftOnExit
                 ? i18n.t('views.modals.lifeMapWillNotBeSaved')
                 : i18n.t('views.modals.weCannotContinueToCreateTheLifeMap')}
             </Text>
@@ -46,8 +47,8 @@ export class ExitDraftModal extends Component {
             style={{ width: 107 }}
             handleClick={() => {
               // if not enough info for draft delete it
-              if (deleteOnExit) {
-                store.dispatch(deleteDraft(nav.draft ? nav.draft.id : null))
+              if (nav.deleteDraftOnExit) {
+                store.dispatch(deleteDraft(nav.draftId))
               }
 
               nav.beforeCloseModal()
@@ -73,8 +74,7 @@ ExitDraftModal.propTypes = {
   isOpen: PropTypes.bool,
   onClose: PropTypes.func,
   routeName: PropTypes.string,
-  draftId: PropTypes.oneOfType([PropTypes.bool, PropTypes.string]),
-  deleteOnExit: PropTypes.bool
+  draftId: PropTypes.oneOfType([PropTypes.bool, PropTypes.string])
 }
 
 const styles = StyleSheet.create({
