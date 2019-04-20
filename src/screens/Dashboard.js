@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { ScrollView, Text, View, StyleSheet, FlatList } from 'react-native'
+import { ScrollView, Text, View, StyleSheet, FlatList, UIManager, findNodeHandle } from 'react-native'
 import { Sentry } from 'react-native-sentry'
 import { withNamespaces } from 'react-i18next'
 import PropTypes from 'prop-types'
@@ -18,6 +18,8 @@ export class Dashboard extends Component {
     }
   }
   slowLoadingTimer
+  acessibleComponent = React.createRef()
+
   clearTimers = () => {
     clearTimeout(this.slowLoadingTimer)
   }
@@ -27,7 +29,12 @@ export class Dashboard extends Component {
     })
   componentDidMount() {
     this.updateTitle()
-
+    setTimeout(() => {
+      UIManager.sendAccessibilityEvent(
+        findNodeHandle(this.acessibleComponent.current),
+        UIManager.AccessibilityEventTypes.typeViewFocused
+      )
+    }, 1)
     // set sentry login details
     Sentry.setUserContext({
       username: this.props.user.username,
@@ -119,6 +126,7 @@ export class Dashboard extends Component {
     const list = drafts.slice().reverse()
     return (
       <ScrollView style={globalStyles.background}>
+        <View ref={this.acessibleComponent} accessible={true}>
         {this.props.offline.outbox.length &&
         navigation.getParam('firstTimeVisitor') ? null : (
           <View>
@@ -164,6 +172,7 @@ export class Dashboard extends Component {
             />
           </View>
         )}
+        </View>
       </ScrollView>
     )
   }

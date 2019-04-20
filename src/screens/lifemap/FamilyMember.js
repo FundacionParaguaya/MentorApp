@@ -1,16 +1,24 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
-import { View, StyleSheet } from 'react-native'
+import { View, Text, StyleSheet, Platform } from 'react-native'
 import { withNamespaces } from 'react-i18next'
 import TextInput from '../../components/TextInput'
 import globalStyles from '../../globalStyles'
 import Select from '../../components/Select'
 import DateInputComponent from '../../components/DateInput'
+import colors from '../../theme.json'
 
 export class FamilyMember extends Component {
   static navigationOptions = ({ navigation }) => {
     return {
-      title: navigation.getParam('title', 'Family Member')
+      headerTitle: (
+        <Text
+          accessibilityLiveRegion="assertive"
+          style={styles.headerTitleStyle}
+        >
+          {navigation.getParam('title', 'Family Member')}
+        </Text>
+      )
     }
   }
   setTitle() {
@@ -70,6 +78,22 @@ const styles = StyleSheet.create({
     paddingTop: 20,
     flex: 1,
     flexDirection: 'column'
+  },
+  headerTitleStyle: {
+    ...Platform.select({
+      ios: {
+        fontFamily: 'Poppins'
+      },
+      android: {
+        fontFamily: 'Poppins SemiBold'
+      }
+    }),
+    fontSize: 18,
+    fontWeight: '200',
+    lineHeight: 26,
+    color: colors.black,
+    marginLeft: 'auto',
+    marginRight: 'auto'
   }
 })
 

@@ -5,7 +5,9 @@ import {
   ActivityIndicator,
   FlatList,
   View,
-  Text
+  Text,
+  UIManager, 
+  findNodeHandle
 } from 'react-native'
 import { connect } from 'react-redux'
 import PropTypes from 'prop-types'
@@ -25,6 +27,7 @@ export class Families extends Component {
   }
 
   state = { search: '' }
+  acessibleComponent = React.createRef()
 
   updateTitle = () =>
     this.props.navigation.setParams({
@@ -32,6 +35,12 @@ export class Families extends Component {
     })
 
   componentDidMount() {
+    setTimeout(() => {
+      UIManager.sendAccessibilityEvent(
+        findNodeHandle(this.acessibleComponent.current),
+        UIManager.AccessibilityEventTypes.typeViewFocused
+      )
+    }, 1)
     this.updateTitle()
     if (
       this.props.offline.online &&
@@ -86,6 +95,7 @@ export class Families extends Component {
         style={globalStyles.background}
         contentContainerStyle={styles.container}
       >
+        <View ref={this.acessibleComponent} accessible={true}>
         {familiesToSync ? (
           <ActivityIndicator
             size={30}
@@ -130,6 +140,7 @@ export class Families extends Component {
             />
           )}
         />
+        </View>
       </ScrollView>
     )
   }

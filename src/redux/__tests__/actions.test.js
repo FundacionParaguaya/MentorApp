@@ -134,7 +134,7 @@ describe('surveys actions', () => {
             headers: { Authorization: `Bearer ${token}` },
             body: JSON.stringify({
               query:
-                'query { surveysByUser { title id minimumPriorities privacyPolicy { title  text } termsConditions{ title text }  surveyConfig { documentType {text value} gender { text value} surveyLocation { country latitude longitude} }  surveyEconomicQuestions { questionText codeName answerType topic required forFamilyMember options {text value} } surveyStoplightQuestions { questionText codeName dimension id stoplightColors { url value description } required } } }'
+                'query { surveysByUser { title id minimumPriorities privacyPolicy { title  text } termsConditions{ title text } surveyConfig { documentType {text value} gender { text value} surveyLocation { country latitude longitude} }  surveyEconomicQuestions { questionText codeName answerType topic required forFamilyMember options {text value} conditions{ codeName type value operator} } surveyStoplightQuestions { questionText codeName dimension id stoplightColors { url value description } required } } }'
             })
           },
           commit: { type: action.LOAD_SURVEYS }

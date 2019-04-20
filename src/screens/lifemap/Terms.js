@@ -43,10 +43,14 @@ export class Terms extends Component {
               ? this.survey.termsConditions.title
               : this.survey.privacyPolicy.title}
           </Text>
+
           <Text id="content" style={[globalStyles.subline, styles.content]}>
-            {page === 'terms'
-              ? this.survey.termsConditions.text.replace(/\\n/g, '\n')
-              : this.survey.privacyPolicy.text.replace(/\\n/g, '\n')}
+            {page === 'terms' &&
+              this.survey.termsConditions.text &&
+              this.survey.termsConditions.text.replace(/\\n/g, '\n')}
+            {page !== 'terms' &&
+              this.survey.privacyPolicy.text &&
+              this.survey.privacyPolicy.text.replace(/\\n/g, '\n')}
           </Text>
         </View>
         <View style={styles.buttonsBar}>
