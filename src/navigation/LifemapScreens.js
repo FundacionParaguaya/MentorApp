@@ -41,6 +41,32 @@ export default {
       )
     })
   },
+  FamilyParticipant: {
+    screen: FamilyParticipantView,
+    navigationOptions: ({ navigation }) => ({
+      ...generateNavStyles({
+        navigation,
+        shadowHeader: false
+      }),
+      ...addCloseIcon(navigation),
+      headerTitle: (
+        <Title title="views.primaryParticipant" style={{ marginLeft: 20 }} />
+      )
+    })
+  },
+  FamilyMembersNames: {
+    screen: FamilyMembersNamesView,
+    navigationOptions: ({ navigation }) => ({
+      ...generateNavStyles({ navigation, hadowHeader: false }),
+      ...addCloseIcon(navigation),
+      headerTitle: (
+        <Title
+          title="views.familyMembers"
+          style={{ marginLeft: 'auto', marginRight: 'auto' }}
+        />
+      )
+    })
+  },
   Location: {
     screen: LocationView,
     navigationOptions: ({ navigation }) => ({
@@ -57,32 +83,21 @@ export default {
   SocioEconomicQuestion: {
     screen: SocioEconomicQuestionView,
     navigationOptions: ({ navigation }) => ({
-      ...generateNavStyles({
-        navigation,
-        burgerMenu: false,
-        shadowHeader: false
-      })
+      ...generateNavStyles({ navigation, shadowHeader: false }),
+      ...addCloseIcon(navigation)
     })
   },
   BeginLifemap: {
     screen: BeginLifemapView,
     navigationOptions: ({ navigation }) => ({
+      ...generateNavStyles({ navigation, shadowHeader: false }),
+      ...addCloseIcon(navigation),
       headerTitle: (
-        <Text
-          accessibilityLiveRegion="assertive"
-          style={[
-            styles.headerTitleStyle,
-            { marginLeft: 'auto', marginRight: 'auto' }
-          ]}
-        >
-          {i18n.t('views.yourLifeMap')}
-        </Text>
-      ),
-      ...generateNavStyles({
-        navigation,
-        burgerMenu: false,
-        shadowHeader: false
-      })
+        <Title
+          title="views.yourLifeMap"
+          style={{ marginLeft: 'auto', marginRight: 'auto' }}
+        />
+      )
     })
   },
   Question: {
@@ -192,32 +207,6 @@ export default {
         navigation,
         burgerMenu: false
       })
-    })
-  },
-  FamilyParticipant: {
-    screen: FamilyParticipantView,
-    navigationOptions: ({ navigation }) => ({
-      ...generateNavStyles({
-        navigation,
-        shadowHeader: false
-      }),
-      ...addCloseIcon(navigation),
-      headerTitle: (
-        <Title title="views.primaryParticipant" style={{ marginLeft: 20 }} />
-      )
-    })
-  },
-  FamilyMembersNames: {
-    screen: FamilyMembersNamesView,
-    navigationOptions: ({ navigation }) => ({
-      ...generateNavStyles({ navigation, hadowHeader: false }),
-      ...addCloseIcon(navigation),
-      headerTitle: (
-        <Title
-          title="views.familyMembers"
-          style={{ marginLeft: 'auto', marginRight: 'auto' }}
-        />
-      )
     })
   },
   FamilyMember: {

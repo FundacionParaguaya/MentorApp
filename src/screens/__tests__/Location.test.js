@@ -25,7 +25,7 @@ global.fetch = () => new Promise(() => {})
 const createTestProps = props => ({
   t: value => value,
   nav: {
-    draftId: 2,
+    draftId: 4,
     survey: {
       surveyId: 100,
       surveyConfig: { surveyLocation: { country: 'BG' } }

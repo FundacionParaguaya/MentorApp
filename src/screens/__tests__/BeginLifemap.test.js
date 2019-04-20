@@ -8,21 +8,19 @@ import draft from '../__mocks__/draftMock.json'
 
 const createTestProps = props => ({
   t: value => value,
+  nav: {
+    draftId: 4,
+    survey: {
+      id: 2,
+      title: 'Other survey',
+      surveyStoplightQuestions: [{ a: 'a' }, { b: 'b' }, { c: 'c' }]
+    }
+  },
   navigation: {
     navigate: jest.fn(),
     replace: jest.fn(),
     setParams: jest.fn(),
-    getParam: jest.fn(param => {
-      if (param === 'survey') {
-        return {
-          id: 2,
-          title: 'Other survey',
-          surveyStoplightQuestions: [{ a: 'a' }, { b: 'b' }, { c: 'c' }]
-        }
-      }
-
-      return 4
-    })
+    getParam: jest.fn()
   },
   drafts: [draft],
   addDraftProgress: jest.fn(),
