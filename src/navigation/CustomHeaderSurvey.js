@@ -3,10 +3,11 @@ import { Text, View, StyleSheet } from 'react-native'
 import globalStyles from '../globalStyles'
 import PropTypes from 'prop-types'
 import colors from '../theme.json'
+import { connect } from 'react-redux'
 
-export default class CustomHeaderSurvey extends Component {
+export class CustomHeaderSurveyComponent extends Component {
   render() {
-    const { title, dimension, navigation } = this.props
+    const { navigation, nav } = this.props
     return (
       <View
         style={styles.headerQuestions}
@@ -16,17 +17,25 @@ export default class CustomHeaderSurvey extends Component {
         }}
         accessibilityLiveRegion="assertive"
       >
-        <Text style={styles.dimension}>{dimension.toUpperCase()}</Text>
-        <Text style={styles.title}>{title}</Text>
+        <Text style={styles.dimension}>
+          {nav.survey.surveyStoplightQuestions[
+            navigation.state.params.step
+          ].dimension.toUpperCase()}
+        </Text>
+        <Text style={styles.title}>
+          {
+            nav.survey.surveyStoplightQuestions[navigation.state.params.step]
+              .title
+          }
+        </Text>
       </View>
     )
   }
 }
 
-CustomHeaderSurvey.propTypes = {
-  title: PropTypes.string.isRequired,
-  dimension: PropTypes.string.isRequired,
-  navigation: PropTypes.object.isRequired
+CustomHeaderSurveyComponent.propTypes = {
+  navigation: PropTypes.object.isRequired,
+  nav: PropTypes.object.isRequired
 }
 
 const styles = StyleSheet.create({
@@ -48,3 +57,9 @@ const styles = StyleSheet.create({
     color: colors.dark
   }
 })
+
+const mapStateToProps = ({ nav }) => ({
+  nav
+})
+
+export default connect(mapStateToProps)(CustomHeaderSurveyComponent)

@@ -102,29 +102,17 @@ export default {
   },
   Question: {
     screen: QuestionView,
-    navigationOptions: ({ navigation }) => {
-      const { survey, step } = navigation.state.params
-      const activeQuestion = survey.surveyStoplightQuestions[step]
-      const { questionText, dimension } = activeQuestion
-
-      return {
-        headerTitle: (
-          <CustomHeaderSurvey
-            navigation={navigation}
-            title={questionText}
-            dimension={dimension}
-          />
-        ),
-        ...generateNavStyles({
-          navigation,
-          burgerMenu: false,
-          shadowHeader: false,
-          headerHeight: navigation.getParam('navigationHeight')
-            ? navigation.getParam('navigationHeight') - 20
-            : 66
-        })
-      }
-    }
+    navigationOptions: ({ navigation }) => ({
+      ...generateNavStyles({
+        navigation,
+        shadowHeader: false,
+        headerHeight: navigation.getParam('navigationHeight')
+          ? navigation.getParam('navigationHeight') - 20
+          : 66
+      }),
+      ...addCloseIcon(navigation),
+      headerTitle: <CustomHeaderSurvey navigation={navigation} />
+    })
   },
   Skipped: {
     screen: SkippedView,
@@ -150,18 +138,11 @@ export default {
   Overview: {
     screen: OverviewView,
     navigationOptions: ({ navigation }) => ({
+      ...generateNavStyles({ navigation }),
+      ...addCloseIcon(navigation),
       headerTitle: (
-        <Text
-          accessibilityLiveRegion="assertive"
-          style={[styles.headerTitleStyle, { marginLeft: 20 }]}
-        >
-          {i18n.t('views.yourLifeMap')}
-        </Text>
-      ),
-      ...generateNavStyles({
-        navigation,
-        burgerMenu: false
-      })
+        <Title title="views.yourLifeMap" style={{ marginLeft: 20 }} />
+      )
     })
   },
   AddPriority: {

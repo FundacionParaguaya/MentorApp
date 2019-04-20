@@ -1,6 +1,5 @@
 import React from 'react'
 import { shallow } from 'enzyme'
-import { TouchableHighlight } from 'react-native'
 import { Question } from '../lifemap/Question'
 import SliderComponent from '../../components/Slider'
 import IconButton from '../../components/IconButton'
@@ -8,17 +7,27 @@ import StickyFooter from '../../components/StickyFooter'
 
 const createTestProps = props => ({
   t: value => value,
+  nav: {
+    draftId: 4,
+    survey: {
+      id: 1,
+      title: 'Test survey 1',
+      surveyStoplightQuestions: [
+        {
+          stoplightColors: [{ codeName: 'phoneNumber' }],
+          required: false,
+          dimension: 'Dimension'
+        }
+      ]
+    }
+  },
   navigation: {
     navigate: jest.fn(),
     setParams: jest.fn(),
     isFocused: jest.fn(),
     getParam: jest.fn(param => {
-      if (param === 'survey') {
-        return survey
-      } else if (param === 'step') {
+      if (param === 'step') {
         return 0
-      } else if (param === 'draftId') {
-        return 1
       }
     })
   },
@@ -43,7 +52,6 @@ describe('Question View', () => {
   beforeEach(() => {
     const props = createTestProps()
     wrapper = shallow(<Question {...props} />)
-    survey.surveyStoplightQuestions[0].required = false
   })
   describe('rendering', () => {
     it('renders StickyFooter', () => {
@@ -79,25 +87,8 @@ describe('Question View', () => {
     it('renders IconButton when indicator is not required', () => {
       expect(wrapper.find(IconButton)).toHaveLength(1)
     })
-    it('renders Text when indicator is required', () => {
-      survey.surveyStoplightQuestions[0].required = true
-      const props = createTestProps()
-      wrapper = shallow(<Question {...props} />)
-      expect(wrapper.find(TouchableHighlight)).toHaveLength(0)
-    })
   })
 })
-const survey = {
-  id: 1,
-  title: 'Test survey 1',
-  surveyStoplightQuestions: [
-    {
-      stoplightColors: [{ codeName: 'phoneNumber' }],
-      required: false,
-      dimension: 'Dimension'
-    }
-  ]
-}
 
 describe('Render optimization', () => {
   let wrapper
