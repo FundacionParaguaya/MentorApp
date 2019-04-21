@@ -27,6 +27,7 @@
   ],
 
   "indicatorSurveyDataList": [
+    { "key": "phoneNumber", "value": 0 },
     { "key": "insurance", "value": 1 },
     { "key": "entertainmentAndRecreation", "value": 3 },
     { "key": "stableHousing", "value": 2 }

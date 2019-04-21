@@ -1,5 +1,4 @@
 import React from 'react'
-import { Text, StyleSheet, Platform } from 'react-native'
 import TermsView from '../screens/lifemap/Terms'
 import SocioEconomicQuestionView from '../screens/lifemap/SocioEconomicQuestion'
 import FinalView from '../screens/lifemap/Final'
@@ -13,11 +12,9 @@ import OverviewView from '../screens/lifemap/Overview'
 import AddPriorityView from '../screens/lifemap/AddPriority'
 import AddAchievementView from '../screens/lifemap/AddAchievement'
 import FamilyMemberView from '../screens/lifemap/FamilyMember'
-import i18n from '../i18n'
 import Title from './Title'
 import { generateNavStyles, addCloseIcon } from './helpers'
 import CustomHeaderSurvey from './CustomHeaderSurvey'
-import colors from '../theme.json'
 
 // Reusable object for all screens related to a draft
 export default {
@@ -117,22 +114,14 @@ export default {
   Skipped: {
     screen: SkippedView,
     navigationOptions: ({ navigation }) => ({
+      ...generateNavStyles({ navigation, shadowHeader: false }),
+      ...addCloseIcon(navigation),
       headerTitle: (
-        <Text
-          accessibilityLiveRegion="assertive"
-          style={[
-            styles.headerTitleStyle,
-            { marginLeft: 'auto', marginRight: 'auto' }
-          ]}
-        >
-          {i18n.t('views.skippedIndicators')}
-        </Text>
-      ),
-      ...generateNavStyles({
-        navigation,
-        burgerMenu: false,
-        shadowHeader: false
-      })
+        <Title
+          title="views.skippedIndicators"
+          style={{ marginLeft: 'auto', marginRight: 'auto' }}
+        />
+      )
     })
   },
   Overview: {
@@ -148,46 +137,29 @@ export default {
   AddPriority: {
     screen: AddPriorityView,
     navigationOptions: ({ navigation }) => ({
+      ...generateNavStyles({ navigation }),
+      ...addCloseIcon(navigation),
       headerTitle: (
-        <Text
-          accessibilityLiveRegion="assertive"
-          style={[styles.headerTitleStyle, { marginLeft: 20 }]}
-        >
-          {i18n.t('views.yourLifeMap')}
-        </Text>
-      ),
-      ...generateNavStyles({ navigation, burgerMenu: false })
+        <Title title="views.yourLifeMap" style={{ marginLeft: 20 }} />
+      )
     })
   },
   AddAchievement: {
     screen: AddAchievementView,
     navigationOptions: ({ navigation }) => ({
+      ...generateNavStyles({ navigation }),
+      ...addCloseIcon(navigation),
       headerTitle: (
-        <Text
-          accessibilityLiveRegion="assertive"
-          style={[styles.headerTitleStyle, { marginLeft: 20 }]}
-        >
-          {i18n.t('views.yourLifeMap')}
-        </Text>
-      ),
-      ...generateNavStyles({ navigation, burgerMenu: false })
+        <Title title="views.yourLifeMap" style={{ marginLeft: 20 }} />
+      )
     })
   },
   Final: {
     screen: FinalView,
     navigationOptions: ({ navigation }) => ({
-      headerTitle: (
-        <Text
-          accessibilityLiveRegion="assertive"
-          style={[styles.headerTitleStyle, { marginLeft: 20 }]}
-        >
-          {i18n.t('general.thankYou')}
-        </Text>
-      ),
-      ...generateNavStyles({
-        navigation,
-        burgerMenu: false
-      })
+      ...generateNavStyles({ navigation }),
+      ...addCloseIcon(navigation),
+      headerTitle: <Title title="general.thankYou" style={{ marginLeft: 20 }} />
     })
   },
   FamilyMember: {
@@ -201,20 +173,3 @@ export default {
     })
   }
 }
-
-const styles = StyleSheet.create({
-  headerTitleStyle: {
-    ...Platform.select({
-      ios: {
-        fontFamily: 'Poppins'
-      },
-      android: {
-        fontFamily: 'Poppins SemiBold'
-      }
-    }),
-    fontSize: 18,
-    fontWeight: '200',
-    lineHeight: 26,
-    color: colors.black
-  }
-})
