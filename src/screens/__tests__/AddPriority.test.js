@@ -9,9 +9,13 @@ import Counter from '../../components/Counter'
 
 const createTestProps = props => ({
   t: value => value,
+  nav: {
+    draftId: 4,
+    survey: {}
+  },
   navigation: {
     navigate: jest.fn(),
-    goBack: jest.fn(),
+    replace: jest.fn(),
     isFocused: jest.fn(),
     setParams: jest.fn(),
     getParam: jest.fn(param => {
@@ -59,7 +63,7 @@ describe('AddPriority View', () => {
   })
 
   describe('functionality', () => {
-    it('doesn\'t save the priority if no months entered', () => {
+    it('does not save the priority if no months entered', () => {
       wrapper
         .find(StickyFooter)
         .props()
@@ -162,46 +166,5 @@ describe('Render optimization', () => {
     })
     wrapper = shallow(<AddPriority {...props} />)
     expect(wrapper.instance().props.drafts[1]).toBeFalsy()
-  })
-  it('fields are read only when there is no draft id', () => {
-    props = createTestProps({
-      navigation: {
-        navigate: jest.fn(),
-        goBack: jest.fn(),
-        isFocused: jest.fn(),
-        setParams: jest.fn(),
-        getParam: jest.fn(param => {
-          if (param === 'indicator') {
-            return 'income'
-          } else if (param === 'draftId') {
-            return undefined
-          } else if (param === 'familyLifemap') {
-            return { surveyId: 1, priorities: [{ indicator: 'income' }] }
-          }
-        })
-      }
-    })
-    wrapper = shallow(<AddPriority {...props} />)
-
-    expect(
-      wrapper
-        .find(TextInput)
-        .first()
-        .props().readonly
-    ).toBe(true)
-
-    expect(
-      wrapper
-        .find(TextInput)
-        .last()
-        .props().readonly
-    ).toBe(true)
-
-    expect(
-      wrapper
-        .find(Counter)
-        .last()
-        .props().readonly
-    ).toBe(true)
   })
 })

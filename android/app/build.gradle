@@ -150,8 +150,6 @@ android {
 
 dependencies {
     compile project(':react-native-sentry')
-    compile project(':react-native-background-fetch')
-    compile project(':react-native-background-task')
     compile project(':react-native-splash-screen')
     compile project(':react-native-vector-icons')
     compile project(':react-native-languages')

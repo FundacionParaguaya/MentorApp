@@ -8,6 +8,10 @@ import LifemapVisual from '../../components/LifemapVisual'
 
 const createTestProps = props => ({
   t: value => value,
+  nav: {
+    draftId: 4,
+    survey: { surveyStoplightQuestions: [] }
+  },
   user: { token: 'token' },
   env: 'env',
   submitDraft: jest.fn(),

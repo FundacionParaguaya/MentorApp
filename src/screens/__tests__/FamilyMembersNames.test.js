@@ -5,70 +5,36 @@ import TextInput from '../../components/TextInput'
 import StickyFooter from '../../components/StickyFooter'
 import Select from '../../components/Select'
 import DateInput from '../../components/DateInput'
-import { Text } from 'react-native'
 
 const createTestProps = props => ({
   t: value => value,
-  navigation: {
-    setParams: jest.fn(),
-    getParam: jest.fn(param =>
-      param === 'draftId'
-        ? 4
-        : {
-            surveyConfig: {
-              gender: [
-                {
-                  text: 'Female',
-                  value: 'F'
-                },
-                {
-                  text: 'Male',
-                  value: 'M'
-                },
-                {
-                  text: 'Prefer not to disclose',
-                  value: 'O'
-                }
-              ]
-            }
-          }
-    ),
-    navigate: jest.fn(),
-    isFocused: jest.fn(() => true)
-  },
-  drafts: [
-    {
-      draftId: 4,
-      surveyId: 1,
-      progress: { screen: 'FamilyMembersNames' },
-      economicSurveyDataList: [
-        { key: 'educationPersonMostStudied', value: 'SCHOOL-COMPLETE' },
-        { key: 'receiveStateIncome', value: 'NO' },
-        { key: 'currency', value: 'GBP/Pound Sterling' },
-        { key: 'areaOfResidence', value: 'URBAN' }
-      ],
-
-      indicatorSurveyDataList: [
-        { key: 'insurance', value: 1 },
-        { key: 'entertainmentAndRecreation', value: 3 },
-        { key: 'stableHousing', value: 2 }
-      ],
-      familyData: {
-        countFamilyMembers: 2,
-        familyMembersList: [
+  nav: {
+    survey: {
+      surveyConfig: {
+        gender: [
           {
-            firstName: 'Juan',
-            lastName: 'Perez'
+            text: 'Female',
+            value: 'F'
           },
           {
-            firstName: 'Ana',
-            gender: 'F',
-            birthDate: 1515708000
+            text: 'Male',
+            value: 'M'
+          },
+          {
+            text: 'Prefer not to disclose',
+            value: 'O'
           }
         ]
       }
-    }
-  ],
+    },
+    draftId: 4
+  },
+  navigation: {
+    isFocused: jest.fn(),
+    navigate: jest.fn(),
+    setParams: jest.fn(),
+    getParam: jest.fn()
+  },
   addSurveyData: jest.fn(),
   removeFamilyMembers: jest.fn(),
   addSurveyFamilyMemberData: jest.fn(),
@@ -88,16 +54,7 @@ describe('FamilyMembersNames View', () => {
         continueLabel: 'general.continue'
       })
     })
-    it('renders TextInput', () => {
-      expect(wrapper.find(TextInput)).toHaveLength(1)
-    })
 
-    it('renders Select', () => {
-      expect(wrapper.find(Select)).toHaveLength(1)
-    })
-    it('renders Text', () => {
-      expect(wrapper.find(Text)).toHaveLength(2)
-    })
     it('renders DateInput', () => {
       expect(wrapper.find(DateInput)).toHaveLength(1)
     })
@@ -130,7 +87,7 @@ describe('FamilyMembersNames View', () => {
     })
 
     it('gives DateInput the proper value', () => {
-      expect(wrapper.find(DateInput).props().value).toBe(1515708000)
+      expect(wrapper.find(DateInput).props().value).toBe(12345)
     })
 
     it('gives Select the proper value', () => {
@@ -212,7 +169,7 @@ describe('Render optimization', () => {
   })
   it('checks if screen is focused before updating', () => {
     wrapper.setProps({
-      drafts: [...wrapper.instance().props.drafts, { draftId: 5 }]
+      nav: { draftId: 5 }
     })
     expect(wrapper.instance().props.navigation.isFocused).toHaveBeenCalledTimes(
       1
@@ -220,18 +177,8 @@ describe('Render optimization', () => {
   })
   it('updates screen if focused', () => {
     wrapper.setProps({
-      drafts: [...wrapper.instance().props.drafts, { draftId: 5 }]
+      nav: { draftId: 5 }
     })
-    expect(wrapper.instance().props.drafts[1]).toEqual({ draftId: 5 })
-  })
-  it('does not update screen if not focused', () => {
-    wrapper.setProps({
-      drafts: [...wrapper.instance().props.drafts, { draftId: 5 }]
-    })
-    props = createTestProps({
-      navigation: { ...props.navigation, isFocused: jest.fn(() => false) }
-    })
-    wrapper = shallow(<FamilyMembersNames {...props} />)
-    expect(wrapper.instance().props.drafts[1]).toBeFalsy()
+    expect(wrapper.instance().props.nav).toEqual({ draftId: 5 })
   })
 })

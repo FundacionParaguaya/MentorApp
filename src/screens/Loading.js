@@ -1,22 +1,10 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
-import {
-  Text,
-  StyleSheet,
-  View,
-  ActivityIndicator,
-  Platform,
-  AsyncStorage
-} from 'react-native'
+import { Text, StyleSheet, View, ActivityIndicator } from 'react-native'
 import { connect } from 'react-redux'
 import MapboxGL from '@mapbox/react-native-mapbox-gl'
 import Icon from 'react-native-vector-icons/MaterialIcons'
-import {
-  loadFamilies,
-  loadSurveys,
-  setSyncedState,
-  logout
-} from '../redux/actions'
+import { loadFamilies, loadSurveys, logout } from '../redux/actions'
 import colors from '../theme.json'
 import globalStyles from '../globalStyles'
 import { url } from '../config'
@@ -24,45 +12,45 @@ import { initImageCaching } from '../cache'
 
 export class Loading extends Component {
   state = {
-    loadingData: false, // know when to show that data is synced
+    syncingServerData: false, // know when to show that data is synced
     cachingImages: false, // know when image caching is running
     downloadingMap: false,
     offlineRegionStatus: null,
     mapDownloadError: null
   }
 
-  loadData = () => {
+  syncSurveys = () => {
     // mark that loading has stated to show the progress
     this.setState({
-      loadingData: true
+      syncingServerData: true
     })
 
-    if (!this.props.surveys.length) {
-      this.props.loadFamilies(url[this.props.env], this.props.user.token)
+    // if surveys are synced skip to syncing families
+    if (this.props.sync.surveys) {
+      this.syncFamilies()
+    } else {
       this.props.loadSurveys(url[this.props.env], this.props.user.token)
     }
   }
 
-  setSyncedState = () => {
-    // if the user has no token redirect to the login page
-    if (!this.props.user.token) {
-      this.props.setSyncedState('login')
-    } else if (this.props.user.token && this.props.surveys.length) {
-      // if we have everything synced
-      this.props.setSyncedState('yes')
+  handleImageCaching = () => {
+    if (
+      !!this.props.sync.images.total &&
+      this.props.sync.images.total === this.props.sync.images.synced
+    ) {
+      this.props.navigation.navigate('DrawerStack')
     } else {
-      // else sync the data
-      this.props.setSyncedState('no')
-      this.loadData()
+      initImageCaching()
     }
   }
 
-  handleImageCaching() {
-    this.setState({
-      cachingImages: true
-    })
-
-    initImageCaching()
+  syncFamilies = () => {
+    // if families are synced skip to caching images
+    if (this.props.sync.families) {
+      this.handleImageCaching()
+    } else {
+      this.props.loadFamilies(url[this.props.env], this.props.user.token)
+    }
   }
 
   downloadMapData = () => {
@@ -136,86 +124,69 @@ export class Loading extends Component {
     })
   }
 
-  async componentDidMount() {
-    // only when user is loging out clear the data
-    if (this.props.sync.synced === 'logout') {
-      // delete the cached map packs
-      if (MapboxGL.offlineManager) {
-        await MapboxGL.offlineManager.deletePack('Sofia')
-        await MapboxGL.offlineManager.deletePack('Cerrito')
-      }
+  // async componentDidMount() {
+  //   // only when user is loging out clear the data
+  //   if (this.props.sync.synced === 'logout') {
+  //     // delete the cached map packs
+  //     if (MapboxGL.offlineManager) {
+  //       await MapboxGL.offlineManager.deletePack('Sofia')
+  //       await MapboxGL.offlineManager.deletePack('Cerrito')
+  //     }
+  //
+  //     // clear the async storage and reset the store
+  //     AsyncStorage.clear(() => {
+  //       this.props.logout()
+  //       this.props.setSyncedState('login')
+  //     })
+  //   } else if (this.props.user.token) {
+  //     this.setSyncedState()
+  //   }
+  // }
 
-      // clear the async storage and reset the store
-      AsyncStorage.clear(() => {
-        this.props.logout()
-        this.props.setSyncedState('login')
-      })
-    } else if (this.props.user.token) {
-      this.setSyncedState()
+  componentDidMount() {
+    // if user has logged in initiate sync
+    if (this.props.user.token) {
+      this.syncSurveys()
+    } else {
+      this.props.navigation.navigate('Login')
     }
   }
 
   componentDidUpdate(prevProps) {
-    // if store is hydrated
-    if (!prevProps.hydration && this.props.hydration) {
-      this.setSyncedState()
+    // if user logs in
+    if (!prevProps.user.token && this.props.user.token) {
+      this.syncSurveys()
     }
 
-    if (
-      this.props.surveys.length &&
-      !this.props.offline.outbox.lenght &&
-      !this.state.cachingImages &&
-      !this.state.downloadingMap
-    ) {
-      setTimeout(() => {
-        this.downloadMapData()
-      }, 1000)
+    // start syncing families once surveys are synced
+    if (!prevProps.sync.surveys && this.props.sync.surveys) {
+      this.syncFamilies()
     }
 
-    // if map is cached start image caching
-    if (
-      this.props.surveys.length &&
-      !this.props.offline.outbox.lenght &&
-      this.state.offlineRegionStatus &&
-      this.state.offlineRegionStatus.percentage === 100 &&
-      !this.state.cachingImages
-    ) {
-      this.setState({
-        cachingImages: true
-      })
-      setTimeout(() => {
-        this.handleImageCaching()
-      }, 1000)
+    // start caching indicator images once families are synced
+    if (!prevProps.sync.families && this.props.sync.families) {
+      this.handleImageCaching()
     }
 
+    // if everything is synced navigate to drawer stack
     if (
-      this.state.offlineRegionStatus &&
-      this.state.offlineRegionStatus.percentage === 100 &&
-      this.state.cachingImages &&
       !!this.props.sync.images.total &&
       this.props.sync.images.total === this.props.sync.images.synced
     ) {
-      setTimeout(() => {
-        this.props.setSyncedState('yes')
-      }, 1000)
+      this.props.navigation.navigate('DrawerStack')
     }
   }
 
   render() {
     const { sync, surveys, families } = this.props
-    const {
-      loadingData,
-      cachingImages,
-      offlineRegionStatus,
-      dataCached
-    } = this.state
+    const { syncingServerData, cachingImages, offlineRegionStatus } = this.state
 
     return (
       <View style={[globalStyles.container, styles.view]}>
         <View style={styles.loadingContainer}>
           <Text style={globalStyles.h3}>We are preparing the app …</Text>
           <ActivityIndicator
-            size={Platform.OS === 'android' ? 60 : 'large'}
+            size="large"
             color={colors.palered}
             style={styles.indicator}
           />
@@ -223,29 +194,43 @@ export class Loading extends Component {
           <Text style={globalStyles.h3}>Yes!</Text>
           <Text style={globalStyles.subline}>We will be ready soon.</Text>
 
-          {loadingData && (
+          {syncingServerData && (
             <View style={styles.sync}>
               <View style={{ flexDirection: 'row' }}>
-                {dataCached && (
+                {sync.surveys && (
                   <Icon name="check" color={colors.palegreen} size={18} />
                 )}
-                <Text style={dataCached ? { color: colors.palegreen } : {}}>
-                  {dataCached
-                    ? ` ${families.length} Families Synced`
-                    : 'Syncing families...'}
-                </Text>
-              </View>
-
-              <View style={{ flexDirection: 'row' }}>
-                {dataCached && (
-                  <Icon name="check" color={colors.palegreen} size={18} />
-                )}
-                <Text style={dataCached ? { color: colors.palegreen } : {}}>
-                  {dataCached
+                <Text style={sync.surveys ? { color: colors.palegreen } : {}}>
+                  {sync.surveys
                     ? ` ${surveys.length} Surveys Synced`
                     : 'Syncing surveys...'}
                 </Text>
               </View>
+
+              {sync.surveys && (
+                <View style={{ flexDirection: 'row' }}>
+                  {sync.families && (
+                    <Icon name="check" color={colors.palegreen} size={18} />
+                  )}
+                  <Text
+                    style={sync.families ? { color: colors.palegreen } : {}}
+                  >
+                    {sync.families
+                      ? ` ${families.length} Families Synced`
+                      : 'Syncing families...'}
+                  </Text>
+                </View>
+              )}
+
+              {sync.families && (
+                <Text>
+                  {sync.images.synced && sync.images.total
+                    ? `Syncing survey images: ${sync.images.synced} / ${
+                        sync.images.total
+                      }`
+                    : 'Calculating total images to cache...'}
+                </Text>
+              )}
             </View>
           )}
 
@@ -261,16 +246,6 @@ export class Loading extends Component {
               </Text>
             </View>
           )}
-
-          {cachingImages && (
-            <Text>
-              {sync.images.synced && sync.images.total
-                ? `Syncing survey images: ${sync.images.synced} / ${
-                    sync.images.total
-                  }`
-                : 'Calculating total images to cache...'}
-            </Text>
-          )}
         </View>
       </View>
     )
@@ -281,10 +256,10 @@ Loading.propTypes = {
   loadFamilies: PropTypes.func.isRequired,
   loadSurveys: PropTypes.func.isRequired,
   logout: PropTypes.func,
-  setSyncedState: PropTypes.func.isRequired,
   env: PropTypes.oneOf(['production', 'demo', 'testing', 'development']),
   user: PropTypes.object.isRequired,
   sync: PropTypes.object.isRequired,
+  navigation: PropTypes.object.isRequired,
   surveys: PropTypes.array.isRequired,
   families: PropTypes.array.isRequired,
   offline: PropTypes.object.isRequired,
@@ -335,7 +310,6 @@ const mapStateToProps = ({
 const mapDispatchToProps = {
   loadFamilies,
   loadSurveys,
-  setSyncedState,
   logout
 }
 

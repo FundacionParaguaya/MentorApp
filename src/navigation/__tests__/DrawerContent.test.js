@@ -1,6 +1,6 @@
 import React from 'react'
 import { shallow } from 'enzyme'
-import { DrawerContent } from '../navigation/DrawerContent'
+import { DrawerContent } from '../DrawerContent'
 
 const createTestProps = props => ({
   navigation: {

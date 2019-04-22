@@ -20,6 +20,7 @@ import SearchBar from '../../components/SearchBar'
 import Select from '../../components/Select'
 import marker from '../../../assets/images/marker.png'
 import center from '../../../assets/images/centerMap.png'
+import { getDraft } from './helpers'
 
 export class Location extends Component {
   state = {
@@ -34,9 +35,6 @@ export class Location extends Component {
     showMap: false // show map even when no location is returned
   }
 
-  survey = this.props.navigation.getParam('survey')
-  draftId = this.props.navigation.getParam('draftId') || null
-  readonly = !!this.props.navigation.getParam('family')
   errorsDetected = []
   locationCheckTimer
 
@@ -53,7 +51,7 @@ export class Location extends Component {
   }
 
   addSurveyData = (text, field) => {
-    this.props.addSurveyData(this.draftId, 'familyData', {
+    this.props.addSurveyData(this.props.nav.draftId, 'familyData', {
       [field]: text
     })
   }
@@ -92,14 +90,15 @@ export class Location extends Component {
             this.getDeviceLocation()
           }, 5000)
         } else {
-          const draft = this.getDraft()
+          const { survey } = this.props.nav
+          const draft = getDraft()
 
           if (!this.getFieldValue(draft, 'latitude')) {
-            if (this.survey.surveyConfig.surveyLocation.latitude) {
+            if (survey.surveyConfig.surveyLocation.latitude) {
               this.setState({
                 showMap: true,
-                latitude: this.survey.surveyConfig.surveyLocation.latitude,
-                longitude: this.survey.surveyConfig.surveyLocation.longitude
+                latitude: survey.surveyConfig.surveyLocation.latitude,
+                longitude: survey.surveyConfig.surveyLocation.longitude
               })
             } else {
               this.setState({
@@ -159,12 +158,9 @@ export class Location extends Component {
       this.addSurveyData(0, 'accuracy')
     }
   }
-  getDraft = () =>
-    this.props.navigation.getParam('family') ||
-    this.props.drafts.find(draft => draft.draftId === this.draftId)
 
   componentDidMount() {
-    const draft = this.getDraft()
+    const draft = this.props.navigation.getParam('family') || getDraft()
 
     if (!this.getFieldValue(draft, 'latitude')) {
       this.getDeviceLocation()
@@ -181,7 +177,7 @@ export class Location extends Component {
       screen: 'Location'
     })
 
-    if (!this.readonly) {
+    if (!this.props.nav.readonly) {
       this.props.navigation.setParams({
         onPressBack: this.onPressBack
       })
@@ -189,21 +185,18 @@ export class Location extends Component {
   }
 
   onPressBack = () => {
-    const draft = this.getDraft()
+    const { draftId } = this.props.nav
+    const draft = getDraft()
 
-    this.props.addDraftProgress(this.draftId, {
+    this.props.addDraftProgress(draftId, {
       current: draft.progress.current - 1
     })
 
     if (draft.familyData.familyMembersList.length > 1) {
-      this.props.navigation.navigate('FamilyMembersNames', {
-        draftId: this.draftId,
-        survey: this.survey
-      })
+      this.props.navigation.navigate('FamilyMembersNames')
     } else {
       this.props.navigation.navigate('FamilyParticipant', {
-        draftId: this.draftId,
-        survey: this.survey
+        draftId
       })
     }
   }
@@ -222,20 +215,19 @@ export class Location extends Component {
         showErrors: true
       })
     } else {
-      const draft = this.getDraft()
+      const draft = getDraft()
 
-      this.props.addDraftProgress(this.draftId, {
+      this.props.addDraftProgress(this.props.nav.draftId, {
         current: draft.progress.current + 1
       })
 
-      this.props.navigation.replace('SocioEconomicQuestion', {
-        draftId: this.draftId,
-        survey: this.survey
-      })
+      this.props.navigation.replace('SocioEconomicQuestion')
     }
   }
   render() {
     const { t } = this.props
+    const { survey, readonly } = this.props.nav
+
     const {
       mapsError,
       latitude,
@@ -247,27 +239,25 @@ export class Location extends Component {
       showErrors
     } = this.state
 
-    const draft = this.getDraft()
+    const draft = this.props.navigation.getParam('family') || getDraft()
 
     return (
       <StickyFooter
         handleClick={this.handleClick}
-        readonly={this.readonly}
+        readonly={readonly}
         continueLabel={t('general.continue')}
         progress={
-          !this.readonly && draft
-            ? draft.progress.current / draft.progress.total
-            : 0
+          !readonly && draft ? draft.progress.current / draft.progress.total : 0
         }
       >
-        {(!this.readonly || (this.readonly && latitude)) && (
+        {(!readonly || (readonly && latitude)) && (
           <View>
             {showMap ? (
               <View>
                 <View pointerEvents="none" style={styles.fakeMarker}>
                   <Image source={marker} />
                 </View>
-                {!this.readonly && (
+                {!readonly && (
                   <SearchBar
                     id="searchAddress"
                     style={styles.search}
@@ -284,15 +274,15 @@ export class Location extends Component {
                   zoomLevel={15}
                   style={styles.map}
                   logoEnabled={false}
-                  zoomEnabled={!this.readonly}
+                  zoomEnabled={!readonly}
                   rotateEnabled={false}
-                  scrollEnabled={!this.readonly}
+                  scrollEnabled={!readonly}
                   pitchEnabled={false}
                   onRegionDidChange={this.onDragMap}
                   minZoomLevel={14}
                   maxZoomLevel={18}
                 />
-                {!this.readonly && (
+                {!readonly && (
                   <View>
                     {centeringMap ? (
                       <ActivityIndicator
@@ -367,18 +357,18 @@ export class Location extends Component {
             label={t('views.family.country')}
             countrySelect
             placeholder={
-              this.readonly
+              readonly
                 ? t('views.family.country')
                 : t('views.family.selectACountry')
             }
             field="country"
             value={
               this.getFieldValue(draft, 'country') ||
-              this.survey.surveyConfig.surveyLocation.country
+              survey.surveyConfig.surveyLocation.country
             }
             detectError={this.detectError}
-            country={this.survey.surveyConfig.surveyLocation.country}
-            readonly={this.readonly}
+            country={survey.surveyConfig.surveyLocation.country}
+            readonly={readonly}
           />
           <TextInput
             id="postCode"
@@ -387,7 +377,7 @@ export class Location extends Component {
             value={this.getFieldValue(draft, 'postCode') || ''}
             placeholder={t('views.family.postcode')}
             detectError={this.detectError}
-            readonly={this.readonly}
+            readonly={readonly}
           />
           <TextInput
             id="address"
@@ -397,7 +387,7 @@ export class Location extends Component {
             placeholder={t('views.family.streetOrHouseDescription')}
             validation="long-string"
             detectError={this.detectError}
-            readonly={this.readonly}
+            readonly={readonly}
             multiline
           />
         </View>
@@ -409,8 +399,8 @@ export class Location extends Component {
 Location.propTypes = {
   t: PropTypes.func.isRequired,
   navigation: PropTypes.object.isRequired,
+  nav: PropTypes.object.isRequired,
   addSurveyData: PropTypes.func.isRequired,
-  drafts: PropTypes.array,
   addDraftProgress: PropTypes.func.isRequired
 }
 
@@ -419,8 +409,8 @@ const mapDispatchToProps = {
   addDraftProgress
 }
 
-const mapStateToProps = ({ drafts }) => ({
-  drafts
+const mapStateToProps = ({ nav }) => ({
+  nav
 })
 
 export default withNamespaces()(

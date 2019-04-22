@@ -6,30 +6,29 @@ import Button from '../../components/Button'
 import LifemapVisual from '../../components/LifemapVisual'
 import LifemapOverview from '../../components/LifemapOverview'
 import BottomModal from '../../components/BottomModal'
+import draftMock from '../__mocks__/draftMock'
 
 const createTestProps = props => ({
   t: value => value,
+  nav: {
+    draftId: 4,
+    survey: {
+      id: 2,
+      title: 'Other survey',
+      minimumPriorities: 5,
+      surveyStoplightQuestions: [
+        { phoneNumber: 'phoneNumber' },
+        { education: 'education' },
+        { c: 'c' }
+      ]
+    }
+  },
   addDraftProgress: jest.fn(),
   navigation: {
     navigate: jest.fn(),
     isFocused: jest.fn(),
     setParams: jest.fn(),
     getParam: jest.fn(param => {
-      if (param === 'draftId') {
-        return 1
-      }
-      if (param === 'survey') {
-        return {
-          id: 2,
-          title: 'Other survey',
-          minimumPriorities: 5,
-          surveyStoplightQuestions: [
-            { phoneNumber: 'phoneNumber' },
-            { education: 'education' },
-            { c: 'c' }
-          ]
-        }
-      }
       if (param === 'resumeDraft') {
         return false
       }
@@ -88,21 +87,6 @@ describe('Overview', () => {
           isFocused: jest.fn(),
           setParams: jest.fn(),
           getParam: jest.fn(param => {
-            if (param === 'draftId') {
-              return 1
-            }
-            if (param === 'survey') {
-              return {
-                id: 2,
-                title: 'Other survey',
-                minimumPriorities: 5,
-                surveyStoplightQuestions: [
-                  { phoneNumber: 'phoneNumber' },
-                  { education: 'education' },
-                  { c: 'c' }
-                ]
-              }
-            }
             if (param === 'resumeDraft') {
               return true
             }
@@ -122,44 +106,30 @@ describe('Overview', () => {
       ])
     })
     it('passes the correct draft data to lifemap overview', () => {
-      expect(wrapper.find(LifemapOverview).props().draftData).toEqual({
-        draftId: 1,
-        priorities: [{ action: 'Some action' }],
-        achievements: [],
-        progress: { screen: 'Location' },
-        indicatorSurveyDataList: [
-          { key: 'phoneNumber', value: 3 },
-          { key: 'education', value: 1 },
-          { key: 'ind', value: 1 },
-          { key: 'Other ind', value: 2 },
-          { key: 'Skipped', value: 0 }
-        ]
-      })
+      expect(wrapper.find(LifemapOverview).props().draftData).toEqual(draftMock)
     })
 
     it('resumes the draft when Resume is clicked', () => {
       props = createTestProps({
+        nav: {
+          draftId: 4,
+          survey: {
+            id: 2,
+            title: 'Other survey',
+            minimumPriorities: 5,
+            surveyStoplightQuestions: [
+              { phoneNumber: 'phoneNumber' },
+              { education: 'education' },
+              { c: 'c' }
+            ]
+          }
+        },
         navigation: {
           navigate: jest.fn(),
           isFocused: jest.fn(),
           setParams: jest.fn(),
           replace: jest.fn(),
           getParam: jest.fn(param => {
-            if (param === 'draftId') {
-              return 1
-            }
-            if (param === 'survey') {
-              return {
-                id: 2,
-                title: 'Other survey',
-                minimumPriorities: 5,
-                surveyStoplightQuestions: [
-                  { phoneNumber: 'phoneNumber' },
-                  { education: 'education' },
-                  { c: 'c' }
-                ]
-              }
-            }
             if (param === 'resumeDraft') {
               return true
             }
@@ -173,20 +143,9 @@ describe('Overview', () => {
         .props()
         .handleClick()
       expect(props.navigation.replace).toHaveBeenCalledTimes(1)
-      expect(props.navigation.replace).toHaveBeenCalledWith('Location', {
-        draftId: 1,
+      expect(props.navigation.replace).toHaveBeenCalledWith('Overview', {
         socioEconomics: undefined,
-        step: undefined,
-        survey: {
-          id: 2,
-          minimumPriorities: 5,
-          surveyStoplightQuestions: [
-            { phoneNumber: 'phoneNumber' },
-            { education: 'education' },
-            { c: 'c' }
-          ],
-          title: 'Other survey'
-        }
+        step: undefined
       })
     })
   })
@@ -235,19 +194,7 @@ describe('Render optimization', () => {
   it('navigates back to skipped screen if there are skipped questions', () => {
     wrapper.instance().onPressBack()
 
-    expect(props.navigation.navigate).toHaveBeenCalledWith('Skipped', {
-      draftId: 1,
-      survey: {
-        id: 2,
-        minimumPriorities: 5,
-        surveyStoplightQuestions: [
-          { phoneNumber: 'phoneNumber' },
-          { education: 'education' },
-          { c: 'c' }
-        ],
-        title: 'Other survey'
-      }
-    })
+    expect(props.navigation.navigate).toHaveBeenCalledWith('Skipped')
   })
 
   it('navigates to Question screen when there are no skipped questions', () => {
@@ -271,20 +218,7 @@ describe('Render optimization', () => {
     wrapper = shallow(<Overview {...props} />)
     wrapper.instance().onPressBack()
 
-    expect(props.navigation.navigate).toHaveBeenCalledWith('Question', {
-      draftId: 1,
-      step: 2,
-      survey: {
-        id: 2,
-        minimumPriorities: 5,
-        surveyStoplightQuestions: [
-          { phoneNumber: 'phoneNumber' },
-          { education: 'education' },
-          { c: 'c' }
-        ],
-        title: 'Other survey'
-      }
-    })
+    expect(props.navigation.navigate).toHaveBeenCalledWith('Skipped')
   })
 
   it('can filter by colors', () => {

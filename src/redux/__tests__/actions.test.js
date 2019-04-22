@@ -7,6 +7,8 @@ import * as action from '../actions'
 const middlewares = [thunk]
 const mockStore = configureStore(middlewares)
 
+jest.useFakeTimers()
+
 describe('environment actions', () => {
   it('should create an action to set env', () => {
     const env = 'production'
@@ -96,24 +98,23 @@ describe('families actions', () => {
     const env = 'https://mock/env'
     const token = 'token'
     const expectedAction = {
-      type: action.LOAD_FAMILIES,
-      env,
-      token,
+      env: 'https://mock/env',
       meta: {
         offline: {
+          commit: { type: 'LOAD_FAMILIES_COMMIT' },
           effect: {
-            url: `${env}/graphql`,
+            body:
+              '{"query":"query { familiesNewStructure {familyId name code snapshotList { surveyId createdAt familyData { familyMembersList { birthCountry birthDate documentNumber documentType email familyId firstName firstParticipant gender id lastName memberIdentifier phoneNumber socioEconomicAnswers { key value}  }  countFamilyMembers latitude longitude country accuracy } economicSurveyDataList { key value } indicatorSurveyDataList { key value } achievements { action indicator roadmap } priorities { action estimatedDate indicator reason } } } }"}',
+            headers: { Authorization: 'Bearer token' },
             method: 'POST',
-            headers: { Authorization: `Bearer ${token}` },
-            body: JSON.stringify({
-              query:
-                'query { familiesNewStructure {familyId name code snapshotList { surveyId createdAt familyData { familyMembersList { birthCountry birthDate documentNumber documentType email familyId firstName firstParticipant gender id lastName memberIdentifier phoneNumber socioEconomicAnswers { key value}  }  countFamilyMembers latitude longitude country accuracy } economicSurveyDataList { key value } indicatorSurveyDataList { key value } achievements { action indicator roadmap } priorities { action estimatedDate indicator reason } } } }'
-            })
-          },
-          commit: { type: action.LOAD_FAMILIES }
+            url: 'https://mock/env/graphql'
+          }
         }
-      }
+      },
+      token: 'token',
+      type: 'LOAD_FAMILIES'
     }
+
     expect(action.loadFamilies(env, token)).toEqual(expectedAction)
   })
 })
@@ -123,24 +124,23 @@ describe('surveys actions', () => {
     const env = 'https://mock/env'
     const token = 'token'
     const expectedAction = {
-      type: action.LOAD_SURVEYS,
-      env,
-      token,
+      env: 'https://mock/env',
       meta: {
         offline: {
+          commit: { type: 'LOAD_SURVEYS_COMMIT' },
           effect: {
-            url: `${env}/graphql`,
+            body:
+              '{"query":"query { surveysByUser { title id minimumPriorities privacyPolicy { title  text } termsConditions{ title text } surveyConfig { documentType {text value} gender { text value} surveyLocation { country latitude longitude} }  surveyEconomicQuestions { questionText codeName answerType topic required forFamilyMember options {text value} conditions{ codeName type value operator} } surveyStoplightQuestions { questionText codeName dimension id stoplightColors { url value description } required } } }"}',
+            headers: { Authorization: 'Bearer token' },
             method: 'POST',
-            headers: { Authorization: `Bearer ${token}` },
-            body: JSON.stringify({
-              query:
-                'query { surveysByUser { title id minimumPriorities privacyPolicy { title  text } termsConditions{ title text } surveyConfig { documentType {text value} gender { text value} surveyLocation { country latitude longitude} }  surveyEconomicQuestions { questionText codeName answerType topic required forFamilyMember options {text value} conditions{ codeName type value operator} } surveyStoplightQuestions { questionText codeName dimension id stoplightColors { url value description } required } } }'
-            })
-          },
-          commit: { type: action.LOAD_SURVEYS }
+            url: 'https://mock/env/graphql'
+          }
         }
-      }
+      },
+      token: 'token',
+      type: 'LOAD_SURVEYS'
     }
+
     expect(action.loadSurveys(env, token)).toEqual(expectedAction)
   })
 })
@@ -341,15 +341,6 @@ describe('drafts actions', () => {
         amount
       }
       expect(action.setSyncedItemAmount(item, amount)).toEqual(expectedAction)
-    })
-
-    it('should create an action to set synced state', () => {
-      const value = true
-      const expectedAction = {
-        type: action.SET_SYNCED_STATE,
-        value
-      }
-      expect(action.setSyncedState(value)).toEqual(expectedAction)
     })
   })
 })
