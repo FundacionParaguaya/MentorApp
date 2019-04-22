@@ -13,8 +13,7 @@ import { initImageCaching } from '../cache'
 export class Loading extends Component {
   state = {
     syncingServerData: false, // know when to show that data is synced
-    cachingImages: false, // know when image caching is running
-    downloadingMap: false,
+    cachingImages: false,
     offlineRegionStatus: null,
     mapDownloadError: null
   }
@@ -40,6 +39,9 @@ export class Loading extends Component {
     ) {
       this.props.navigation.navigate('DrawerStack')
     } else {
+      this.setState({
+        cachingImages: true
+      })
       initImageCaching()
     }
   }
@@ -47,63 +49,53 @@ export class Loading extends Component {
   syncFamilies = () => {
     // if families are synced skip to caching images
     if (this.props.sync.families) {
-      this.handleImageCaching()
+      this.downloadMapData()
     } else {
       this.props.loadFamilies(url[this.props.env], this.props.user.token)
     }
   }
 
   downloadMapData = () => {
-    this.setState({
-      dataCached: true,
-      downloadingMap: true
-    })
-
-    // check for the Sofia pack and download it if it doesn't exist
-    MapboxGL.offlineManager.getPack('Sofia').then(pack => {
-      if (!pack) {
-        MapboxGL.offlineManager.createPack(
-          {
-            name: 'Sofia',
-            styleURL: MapboxGL.StyleURL.Street,
-            minZoom: 14,
-            maxZoom: 18,
-            bounds: [[23.2769621, 42.7159553], [23.3447338, 42.6754659]]
-          },
-          this.onMapDownloadProgress,
-          this.onMapDownloadError
-        )
-      } else {
-        this.setState({
-          offlineRegionStatus: { percentage: 100 }
+    if (
+      this.state.offlineRegionStatus &&
+      this.state.offlineRegionStatus.percentage === 100
+    ) {
+      this.handleImageCaching()
+    } else {
+      // download GECO map is that survey is in the synced ones
+      if (this.props.surveys.some(survey => survey.title === 'Chile - Geco')) {
+        // check for the GECO pack
+        MapboxGL.offlineManager.getPack('GECO').then(pack => {
+          if (!pack) {
+            MapboxGL.offlineManager.createPack(
+              {
+                name: 'GECO',
+                styleURL: MapboxGL.StyleURL.Street,
+                minZoom: 10,
+                maxZoom: 15,
+                bounds: [[-71.0187, -33.687], [-70.3036, -33.1287]]
+              },
+              this.onMapDownloadProgress,
+              this.onMapDownloadError
+            )
+          } else {
+            this.setState({
+              offlineRegionStatus: { percentage: 100 }
+            })
+            this.handleImageCaching()
+          }
         })
-      }
-    })
-
-    // check for the Cerrito pack
-    MapboxGL.offlineManager.getPack('Cerrito').then(pack => {
-      if (!pack) {
-        MapboxGL.offlineManager.createPack(
-          {
-            name: 'Cerrito',
-            styleURL: MapboxGL.StyleURL.Street,
-            minZoom: 14,
-            maxZoom: 18,
-            bounds: [[-57.606658, -24.92751], [-57.48788, -24.997528]]
-          },
-          this.onMapDownloadProgress,
-          this.onMapDownloadError
-        )
       } else {
-        this.setState({
-          offlineRegionStatus: { percentage: 100 }
-        })
+        this.handleImageCaching()
       }
-    })
+    }
   }
 
   // update map download progress
   onMapDownloadProgress = (offlineRegion, offlineRegionStatus) => {
+    if (offlineRegionStatus.percentage > 99) {
+      this.handleImageCaching()
+    }
     // if there is no offlineRegionStatus in the state, reset the percentage
     if (!this.state.offlineRegionStatus) {
       this.setState({
@@ -115,6 +107,8 @@ export class Loading extends Component {
       this.setState({
         offlineRegionStatus
       })
+    } else {
+      this.handleImageCaching()
     }
   }
 
@@ -163,12 +157,12 @@ export class Loading extends Component {
       this.syncFamilies()
     }
 
-    // start caching indicator images once families are synced
+    // if families are synced check for map data
     if (!prevProps.sync.families && this.props.sync.families) {
-      this.handleImageCaching()
+      this.downloadMapData()
     }
 
-    // if everything is synced navigate to drawer stack
+    // if everything is synced navigate to home
     if (
       !!this.props.sync.images.total &&
       this.props.sync.images.total === this.props.sync.images.synced
@@ -179,7 +173,7 @@ export class Loading extends Component {
 
   render() {
     const { sync, surveys, families } = this.props
-    const { syncingServerData, cachingImages, offlineRegionStatus } = this.state
+    const { syncingServerData, offlineRegionStatus, cachingImages } = this.state
 
     return (
       <View style={[globalStyles.container, styles.view]}>
@@ -222,7 +216,25 @@ export class Loading extends Component {
                 </View>
               )}
 
-              {sync.families && (
+              {offlineRegionStatus && (
+                <View style={{ flexDirection: 'row' }}>
+                  {cachingImages && (
+                    <Icon name="check" color={colors.palegreen} size={18} />
+                  )}
+                  <Text
+                    style={cachingImages ? { color: colors.palegreen } : {}}
+                  >
+                    {' '}
+                    Downloading offline maps{' '}
+                    {cachingImages
+                      ? 100
+                      : offlineRegionStatus.percentage.toFixed(0)}
+                    %
+                  </Text>
+                </View>
+              )}
+
+              {cachingImages && (
                 <Text>
                   {sync.images.synced && sync.images.total
                     ? `Syncing survey images: ${sync.images.synced} / ${
@@ -231,19 +243,6 @@ export class Loading extends Component {
                     : 'Calculating total images to cache...'}
                 </Text>
               )}
-            </View>
-          )}
-
-          {offlineRegionStatus && (
-            <View style={{ flexDirection: 'row' }}>
-              {cachingImages && (
-                <Icon name="check" color={colors.palegreen} size={18} />
-              )}
-              <Text style={cachingImages ? { color: colors.palegreen } : {}}>
-                {' '}
-                Downloading offline maps{' '}
-                {offlineRegionStatus.percentage.toFixed(0)}%
-              </Text>
             </View>
           )}
         </View>

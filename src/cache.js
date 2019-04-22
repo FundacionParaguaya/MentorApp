@@ -74,7 +74,7 @@ export const cacheImages = async imageURLs => {
 }
 
 export const initImageCaching = async () => {
-  const surveys = await getSurveys()
+  const surveys = getSurveys()
   const imageURLs = await filterURLsFromSurveys(surveys)
   cacheImages(imageURLs)
 }

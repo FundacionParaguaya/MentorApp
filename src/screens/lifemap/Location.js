@@ -279,8 +279,6 @@ export class Location extends Component {
                   scrollEnabled={!readonly}
                   pitchEnabled={false}
                   onRegionDidChange={this.onDragMap}
-                  minZoomLevel={14}
-                  maxZoomLevel={18}
                 />
                 {!readonly && (
                   <View>
