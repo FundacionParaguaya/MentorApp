@@ -80,7 +80,7 @@ export class AddAchievement extends Component {
 
   render() {
     const { t } = this.props
-    const { draftId } = this.props.nav
+    const { draftId, readonly } = this.props.nav
     const { showErrors } = this.state
     const data = this.getData()
     const achievement = this.getAchievementValue(data)
@@ -117,7 +117,7 @@ export class AddAchievement extends Component {
         <TextInput
           field="action"
           required
-          readonly={!draftId}
+          readonly={readonly}
           showErrors={showErrors}
           detectError={this.detectError}
           onChangeText={text => this.setState({ action: text })}
@@ -134,7 +134,7 @@ export class AddAchievement extends Component {
           placeholder={
             this.state.roadmap ? '' : t('views.lifemap.writeYourAnswerHere')
           }
-          readonly={!draftId}
+          readonly={readonly}
           value={achievement ? achievement.roadmap : ''}
           multiline
         />

@@ -92,15 +92,16 @@ export const addMenuIcon = navigation => ({
   )
 })
 
-// !navigation.getParam('family') &&
-// !navigation.getParam('member') &&
-// navigation.state.routeName !== 'Final' &&
-// !burgerMenu &&
-// !navigation.getParam('withoutCloseButton')
-
-export const addCloseIcon = navigation => ({
-  headerRight: <CloseButton navigation={navigation} style={styles.touchable} />
-})
+export const addCloseIcon = navigation =>
+  !navigation.getParam('family') ? (
+    {
+      headerRight: (
+        <CloseButton navigation={navigation} style={styles.touchable} />
+      )
+    }
+  ) : (
+    <View />
+  )
 
 const styles = StyleSheet.create({
   touchable: {

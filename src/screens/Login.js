@@ -64,20 +64,16 @@ export class Login extends Component {
   }
 
   onLogin = () => {
-    if (this.state.username.trim() === 'demo') {
-      this.props.setEnv('demo')
-    } else this.props.setEnv('production')
+    const env = this.state.username.trim() === 'demo' ? 'demo' : 'production'
+
+    this.props.setEnv(env)
 
     this.setState({
       loading: true
     })
 
     this.props
-      .login(
-        this.state.username.trim(),
-        this.state.password,
-        url[this.props.env]
-      )
+      .login(this.state.username.trim(), this.state.password, url[env])
       .then(() => {
         if (this.props.user.status === 401) {
           this.setState({

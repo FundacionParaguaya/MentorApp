@@ -84,7 +84,7 @@ export class AddPriority extends Component {
     const { validationError, reason, action, estimatedDate } = this.state
     const data = this.getData()
     const priority = this.getPriorityValue(data)
-    const { draftId } = this.props.nav
+    const { draftId, readonly } = this.props.nav
 
     return (
       <StickyFooter
@@ -119,7 +119,7 @@ export class AddPriority extends Component {
           label={t('views.lifemap.whyDontYouHaveIt')}
           value={priority ? priority.reason : ''}
           multiline
-          readonly={!draftId}
+          readonly={readonly}
         />
         <TextInput
           label={t('views.lifemap.whatWillYouDoToGetIt')}
@@ -127,14 +127,14 @@ export class AddPriority extends Component {
           placeholder={action ? '' : t('views.lifemap.writeYourAnswerHere')}
           value={priority ? priority.action : ''}
           multiline
-          readonly={!draftId}
+          readonly={readonly}
         />
         <View style={{ padding: 15 }}>
           <Counter
             editCounter={this.editCounter}
             count={estimatedDate}
             text={t('views.lifemap.howManyMonthsWillItTake')}
-            readonly={!draftId}
+            readonly={readonly}
           />
         </View>
         {/* Error message */}

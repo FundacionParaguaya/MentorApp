@@ -29,12 +29,11 @@ export class SocioEconomicQuestion extends Component {
   }
 
   errorsDetected = []
-  readonly = !!this.props.navigation.getParam('family')
   state = { errorsDetected: [], showErrors: false }
 
   constructor(props) {
     super(props)
-    const draft = getDraft()
+    const draft = this.props.navigation.getParam('family') || getDraft()
     // If this is the first socio economics screen set the whole process
     // in the navigation. On every next screen it will know which questions
     // to ask and if it is done.
@@ -118,13 +117,14 @@ export class SocioEconomicQuestion extends Component {
   }
 
   componentDidMount() {
-    if (!this.readonly) {
+    const { readonly } = this.props.nav
+    if (!readonly) {
       this.props.addDraftProgress(this.props.nav.draftId, {
         screen: 'SocioEconomicQuestion',
         socioEconomics: this.props.navigation.getParam('socioEconomics')
       })
 
-      if (!this.readonly) {
+      if (!readonly) {
         this.props.navigation.setParams({
           onPressBack: this.onPressBack
         })
@@ -275,11 +275,13 @@ export class SocioEconomicQuestion extends Component {
   render() {
     const { t } = this.props
     const { showErrors } = this.state
-    const draft = getDraft()
+    const draft = this.props.navigation.getParam('family') || getDraft()
     const socioEconomics = this.props.navigation.getParam('socioEconomics')
     const questionsForThisScreen = socioEconomics
       ? socioEconomics.questionsPerScreen[socioEconomics.currentScreen - 1]
       : []
+
+    const { readonly } = this.props.nav
 
     const showMemberName = (member, questionsForFamilyMember) => {
       const questionsForThisMember = questionsForFamilyMember.filter(question =>
@@ -296,10 +298,9 @@ export class SocioEconomicQuestion extends Component {
       <StickyFooter
         handleClick={this.submitForm}
         continueLabel={t('general.continue')}
+        readonly={readonly}
         progress={
-          !this.readonly && draft
-            ? draft.progress.current / draft.progress.total
-            : 0
+          !readonly && draft ? draft.progress.current / draft.progress.total : 0
         }
       >
         {/* questions for entire family */}
@@ -324,7 +325,7 @@ export class SocioEconomicQuestion extends Component {
                   field={question.codeName}
                   value={this.getFieldValue(draft, question.codeName) || ''}
                   detectError={this.detectError}
-                  readonly={this.readonly}
+                  readonly={readonly}
                   options={question.options}
                 />
               ) : question.answerType === 'number' ? (
@@ -338,7 +339,7 @@ export class SocioEconomicQuestion extends Component {
                   field={question.codeName}
                   value={this.getFieldValue(draft, question.codeName) || ''}
                   detectError={this.detectError}
-                  readonly={this.readonly}
+                  readonly={readonly}
                   validation="number"
                   keyboardType="numeric"
                 />
@@ -353,7 +354,7 @@ export class SocioEconomicQuestion extends Component {
                   field={question.codeName}
                   value={this.getFieldValue(draft, question.codeName) || ''}
                   detectError={this.detectError}
-                  readonly={this.readonly}
+                  readonly={readonly}
                 />
               )
             )
@@ -395,7 +396,7 @@ export class SocioEconomicQuestion extends Component {
                           ) || ''
                         }
                         detectError={this.detectError}
-                        readonly={this.readonly}
+                        readonly={readonly}
                         options={question.options}
                       />
                     ) : (
@@ -417,7 +418,7 @@ export class SocioEconomicQuestion extends Component {
                           ) || ''
                         }
                         detectError={this.detectError}
-                        readonly={this.readonly}
+                        readonly={readonly}
                       />
                     )
                   )}

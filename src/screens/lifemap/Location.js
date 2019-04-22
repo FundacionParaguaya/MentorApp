@@ -35,7 +35,6 @@ export class Location extends Component {
     showMap: false // show map even when no location is returned
   }
 
-  readonly = !!this.props.navigation.getParam('family')
   errorsDetected = []
   locationCheckTimer
 
@@ -161,7 +160,7 @@ export class Location extends Component {
   }
 
   componentDidMount() {
-    const draft = getDraft()
+    const draft = this.props.navigation.getParam('family') || getDraft()
 
     if (!this.getFieldValue(draft, 'latitude')) {
       this.getDeviceLocation()
@@ -178,7 +177,7 @@ export class Location extends Component {
       screen: 'Location'
     })
 
-    if (!this.readonly) {
+    if (!this.props.nav.readonly) {
       this.props.navigation.setParams({
         onPressBack: this.onPressBack
       })
@@ -227,7 +226,7 @@ export class Location extends Component {
   }
   render() {
     const { t } = this.props
-    const { survey } = this.props.nav
+    const { survey, readonly } = this.props.nav
 
     const {
       mapsError,
@@ -240,27 +239,25 @@ export class Location extends Component {
       showErrors
     } = this.state
 
-    const draft = getDraft()
+    const draft = this.props.navigation.getParam('family') || getDraft()
 
     return (
       <StickyFooter
         handleClick={this.handleClick}
-        readonly={this.readonly}
+        readonly={readonly}
         continueLabel={t('general.continue')}
         progress={
-          !this.readonly && draft
-            ? draft.progress.current / draft.progress.total
-            : 0
+          !readonly && draft ? draft.progress.current / draft.progress.total : 0
         }
       >
-        {(!this.readonly || (this.readonly && latitude)) && (
+        {(!readonly || (readonly && latitude)) && (
           <View>
             {showMap ? (
               <View>
                 <View pointerEvents="none" style={styles.fakeMarker}>
                   <Image source={marker} />
                 </View>
-                {!this.readonly && (
+                {!readonly && (
                   <SearchBar
                     id="searchAddress"
                     style={styles.search}
@@ -277,15 +274,15 @@ export class Location extends Component {
                   zoomLevel={15}
                   style={styles.map}
                   logoEnabled={false}
-                  zoomEnabled={!this.readonly}
+                  zoomEnabled={!readonly}
                   rotateEnabled={false}
-                  scrollEnabled={!this.readonly}
+                  scrollEnabled={!readonly}
                   pitchEnabled={false}
                   onRegionDidChange={this.onDragMap}
                   minZoomLevel={14}
                   maxZoomLevel={18}
                 />
-                {!this.readonly && (
+                {!readonly && (
                   <View>
                     {centeringMap ? (
                       <ActivityIndicator
@@ -360,7 +357,7 @@ export class Location extends Component {
             label={t('views.family.country')}
             countrySelect
             placeholder={
-              this.readonly
+              readonly
                 ? t('views.family.country')
                 : t('views.family.selectACountry')
             }
@@ -371,7 +368,7 @@ export class Location extends Component {
             }
             detectError={this.detectError}
             country={survey.surveyConfig.surveyLocation.country}
-            readonly={this.readonly}
+            readonly={readonly}
           />
           <TextInput
             id="postCode"
@@ -380,7 +377,7 @@ export class Location extends Component {
             value={this.getFieldValue(draft, 'postCode') || ''}
             placeholder={t('views.family.postcode')}
             detectError={this.detectError}
-            readonly={this.readonly}
+            readonly={readonly}
           />
           <TextInput
             id="address"
@@ -390,7 +387,7 @@ export class Location extends Component {
             placeholder={t('views.family.streetOrHouseDescription')}
             validation="long-string"
             detectError={this.detectError}
-            readonly={this.readonly}
+            readonly={readonly}
             multiline
           />
         </View>

@@ -134,7 +134,7 @@ export class Question extends Component {
     return (
       <StickyFooter
         handleClick={this.handleClick}
-        readonly={true}
+        readonly
         progress={draft ? draft.progress.current / draft.progress.total : 0}
         currentScreen="Question"
       >

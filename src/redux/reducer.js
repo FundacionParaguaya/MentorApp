@@ -471,10 +471,18 @@ export const nav = (
 ) => {
   switch (action.type) {
     case UPDATE_NAV:
-      return {
-        ...state,
-        [action.item]: action.value
+      if (typeof action.value !== 'undefined') {
+        return {
+          ...state,
+          [action.item]: action.value
+        }
+      } else {
+        return {
+          ...state,
+          ...action.item
+        }
       }
+
     default:
       return state
   }
@@ -551,7 +559,7 @@ export const rootReducer = (state, action) => {
         openModal: null,
         beforeCloseModal: null,
         readonly: false,
-        draft: null,
+        draftId: null,
         survey: null,
         deleteDraftOnExit: false
       }

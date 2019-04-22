@@ -90,7 +90,7 @@ describe('login reducer', () => {
       nav: {
         beforeCloseModal: null,
         deleteDraftOnExit: false,
-        draft: null,
+        draftId: null,
         openModal: null,
         readonly: false,
         survey: null

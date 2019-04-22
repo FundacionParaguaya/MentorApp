@@ -203,7 +203,7 @@ export class Overview extends Component {
               surveyData={survey.surveyStoplightQuestions}
               draftData={data}
               navigateToScreen={this.navigateToScreen}
-              draftOverview={!this.resumeDraft}
+              draftOverview={!this.resumeDraft && !this.props.familyLifemap}
               selectedFilter={selectedFilter}
             />
           </View>

@@ -29,9 +29,13 @@ export class Dashboard extends Component {
   }
 
   componentDidMount() {
-    this.props.updateNav('survey', null)
-    this.props.updateNav('draftId', null)
-    this.props.updateNav('deleteDraftOnExit', false)
+    this.props.updateNav({
+      survey: null,
+      readonly: false,
+      draftId: null,
+      deleteDraftOnExit: false
+    })
+
     if (UIManager.AccessibilityEventTypes) {
       setTimeout(() => {
         UIManager.sendAccessibilityEvent(
@@ -67,11 +71,10 @@ export class Dashboard extends Component {
   }
 
   navigateToDraft = draft => {
-    this.props.updateNav('draftId', draft.draftId)
-    this.props.updateNav(
-      'survey',
-      this.props.surveys.find(survey => survey.id === draft.surveyId)
-    )
+    this.props.updateNav({
+      survey: this.props.surveys.find(survey => survey.id === draft.surveyId),
+      draftId: draft.draftId
+    })
 
     if (
       draft.progress.screen !== 'Question' &&

@@ -22,11 +22,11 @@ import colors from '../../theme.json'
 
 export class FamilyParticipant extends Component {
   //Get draft id from Redux store if it exists else create new draft id
-  draftId = this.props.navigation.getParam('draftId') || uuid()
+  draftId = this.props.nav.readonly
+    ? null
+    : this.props.navigation.getParam('draftId') || uuid()
 
   errorsDetected = []
-
-  readonly = !!this.props.navigation.getParam('family')
 
   state = { errorsDetected: [], showErrors: false }
 
@@ -70,12 +70,16 @@ export class FamilyParticipant extends Component {
 
   componentDidMount() {
     // create a new draft if not exising
-    if (!this.props.navigation.getParam('draftId')) {
+    if (
+      !this.props.nav.readonly &&
+      !this.props.navigation.getParam('family') &&
+      !this.props.navigation.getParam('draftId')
+    ) {
       this.props.updateNav('draftId', this.draftId)
       this.createDraft()
     }
 
-    if (!this.readonly && this.props.nav.draftId) {
+    if (!this.props.nav.readonly && this.props.nav.draftId) {
       this.props.addDraftProgress(this.draftId, {
         screen: 'FamilyParticipant',
         current: 1,
@@ -201,22 +205,20 @@ export class FamilyParticipant extends Component {
 
   render() {
     const { t } = this.props
-    const { survey } = this.props.nav
+    const { survey, readonly } = this.props.nav
     const { showErrors } = this.state
 
-    const draft = this.props.drafts.find(
-      draft => draft.draftId === this.draftId
-    )
+    const draft =
+      this.props.navigation.getParam('family') ||
+      this.props.drafts.find(draft => draft.draftId === this.draftId)
 
     return (
       <StickyFooter
         handleClick={this.handleClick}
         continueLabel={t('general.continue')}
-        readonly={this.readonly}
+        readonly={readonly}
         progress={
-          !this.readonly && draft
-            ? draft.progress.current / draft.progress.total
-            : 0
+          !readonly && draft ? draft.progress.current / draft.progress.total : 0
         }
       >
         <Decoration variation="primaryParticipant">
@@ -225,7 +227,7 @@ export class FamilyParticipant extends Component {
         <TextInput
           validation="string"
           field="firstName"
-          readonly={this.readonly}
+          readonly={readonly}
           onChangeText={this.addSurveyData}
           placeholder={t('views.family.firstName')}
           value={this.getFieldValue(draft, 'firstName') || ''}
@@ -237,7 +239,7 @@ export class FamilyParticipant extends Component {
           field="lastName"
           validation="string"
           onChangeText={this.addSurveyData}
-          readonly={this.readonly}
+          readonly={readonly}
           placeholder={t('views.family.lastName')}
           value={this.getFieldValue(draft, 'lastName') || ''}
           required
@@ -248,7 +250,7 @@ export class FamilyParticipant extends Component {
           id="gender"
           required
           onChange={this.addSurveyData}
-          readonly={this.readonly}
+          readonly={readonly}
           label={t('views.family.gender')}
           placeholder={t('views.family.selectGender')}
           field="gender"
@@ -266,13 +268,13 @@ export class FamilyParticipant extends Component {
           showErrors={showErrors}
           onValidDate={this.addSurveyData}
           value={this.getFieldValue(draft, 'birthDate')}
-          readonly={this.readonly}
+          readonly={readonly}
         />
 
         <Select
           required
           onChange={this.addSurveyData}
-          readonly={this.readonly}
+          readonly={readonly}
           label={t('views.family.documentType')}
           placeholder={t('views.family.documentType')}
           field="documentType"
@@ -283,7 +285,7 @@ export class FamilyParticipant extends Component {
         />
         <TextInput
           onChangeText={this.addSurveyData}
-          readonly={this.readonly}
+          readonly={readonly}
           field="documentNumber"
           required
           value={this.getFieldValue(draft, 'documentNumber')}
@@ -295,7 +297,7 @@ export class FamilyParticipant extends Component {
           id="country"
           required
           onChange={this.addSurveyData}
-          readonly={this.readonly}
+          readonly={readonly}
           label={t('views.family.countryOfBirth')}
           countrySelect
           country={survey.surveyConfig.surveyLocation.country}
@@ -312,7 +314,7 @@ export class FamilyParticipant extends Component {
           id="familyMembersCount"
           required
           onChange={this.addFamilyCount}
-          readonly={this.readonly}
+          readonly={readonly}
           label={t('views.family.peopleLivingInThisHousehold')}
           placeholder={t('views.family.peopleLivingInThisHousehold')}
           field="countFamilyMembers"
@@ -323,7 +325,7 @@ export class FamilyParticipant extends Component {
         />
         <TextInput
           onChangeText={this.addSurveyData}
-          readonly={this.readonly}
+          readonly={readonly}
           field="email"
           value={this.getFieldValue(draft, 'email')}
           placeholder={t('views.family.email')}
@@ -333,7 +335,7 @@ export class FamilyParticipant extends Component {
         />
         <TextInput
           onChangeText={this.addSurveyData}
-          readonly={this.readonly}
+          readonly={readonly}
           field="phoneNumber"
           value={this.getFieldValue(draft, 'phoneNumber')}
           placeholder={t('views.family.phone')}

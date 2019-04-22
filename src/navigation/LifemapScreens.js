@@ -167,7 +167,6 @@ export default {
     navigationOptions: ({ navigation }) => ({
       ...generateNavStyles({
         navigation,
-        burgerMenu: false,
         shadowHeader: false
       })
     })
