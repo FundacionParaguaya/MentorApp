@@ -177,47 +177,6 @@ export class Loading extends Component {
     }
   }
 
-  // componentDidUpdate() {
-  //   if (
-  //     this.props.surveys.length &&
-  //     !this.props.offline.outbox.lenght &&
-  //     !this.state.cachingImages &&
-  //     !this.state.downloadingMap
-  //   ) {
-  //     setTimeout(() => {
-  //       this.downloadMapData()
-  //     }, 1000)
-  //   }
-  //
-  //   // if map is cached start image caching
-  //   if (
-  //     this.props.surveys.length &&
-  //     !this.props.offline.outbox.lenght &&
-  //     this.state.offlineRegionStatus &&
-  //     this.state.offlineRegionStatus.percentage === 100 &&
-  //     !this.state.cachingImages
-  //   ) {
-  //     this.setState({
-  //       cachingImages: true
-  //     })
-  //     setTimeout(() => {
-  //       this.handleImageCaching()
-  //     }, 1000)
-  //   }
-  //
-  //   if (
-  //     this.state.offlineRegionStatus &&
-  //     this.state.offlineRegionStatus.percentage === 100 &&
-  //     this.state.cachingImages &&
-  //     !!this.props.sync.images.total &&
-  //     this.props.sync.images.total === this.props.sync.images.synced
-  //   ) {
-  //     setTimeout(() => {
-  //       this.props.setSyncedState('yes')
-  //     }, 1000)
-  //   }
-  // }
-
   render() {
     const { sync, surveys, families } = this.props
     const { syncingServerData, cachingImages, offlineRegionStatus } = this.state
