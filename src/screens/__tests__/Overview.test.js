@@ -194,9 +194,7 @@ describe('Render optimization', () => {
   it('navigates back to skipped screen if there are skipped questions', () => {
     wrapper.instance().onPressBack()
 
-    expect(props.navigation.navigate).toHaveBeenCalledWith('Question', {
-      step: 2
-    })
+    expect(props.navigation.navigate).toHaveBeenCalledWith('Skipped')
   })
 
   it('navigates to Question screen when there are no skipped questions', () => {
@@ -220,9 +218,7 @@ describe('Render optimization', () => {
     wrapper = shallow(<Overview {...props} />)
     wrapper.instance().onPressBack()
 
-    expect(props.navigation.navigate).toHaveBeenCalledWith('Question', {
-      step: 2
-    })
+    expect(props.navigation.navigate).toHaveBeenCalledWith('Skipped')
   })
 
   it('can filter by colors', () => {

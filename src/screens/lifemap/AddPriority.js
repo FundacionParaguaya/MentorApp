@@ -11,6 +11,7 @@ import globalStyles from '../../globalStyles'
 import colors from '../../theme.json'
 import TextInput from '../../components/TextInput'
 import Counter from '../../components/Counter'
+import { getDraft } from './helpers'
 
 export class AddPriority extends Component {
   state = {
@@ -20,7 +21,7 @@ export class AddPriority extends Component {
     validationError: false,
     indicator: this.props.navigation.getParam('indicator')
   }
-  draftId = this.props.navigation.getParam('draftId')
+
   shouldComponentUpdate() {
     return this.props.navigation.isFocused()
   }
@@ -43,13 +44,13 @@ export class AddPriority extends Component {
     this.setState(priority)
 
     this.props.navigation.setParams({
-      withoutCloseButton: this.draftId ? false : true
+      withoutCloseButton: this.props.nav.draftId ? false : true
     })
   }
 
   getData = () =>
-    this.draftId
-      ? this.props.drafts.filter(draft => draft.draftId === this.draftId)[0]
+    this.props.nav.draftId
+      ? getDraft()
       : this.props.navigation.getParam('familyLifemap')
 
   addPriority = () => {
@@ -60,11 +61,13 @@ export class AddPriority extends Component {
     } else {
       const { reason, action, estimatedDate, indicator } = this.state
       this.props.addSurveyPriorityAcheivementData({
-        id: this.draftId,
+        id: this.props.nav.draftId,
         category: 'priorities',
         payload: { reason, action, estimatedDate, indicator }
       })
-      this.props.navigation.goBack()
+      this.props.navigation.replace('Overview', {
+        resumeDraft: false
+      })
     }
   }
 
@@ -81,12 +84,13 @@ export class AddPriority extends Component {
     const { validationError, reason, action, estimatedDate } = this.state
     const data = this.getData()
     const priority = this.getPriorityValue(data)
+    const { draftId } = this.props.nav
 
     return (
       <StickyFooter
         continueLabel={t('general.save')}
         handleClick={this.addPriority}
-        visible={!!this.draftId}
+        visible={!!draftId}
       >
         <View style={globalStyles.container}>
           <Text style={globalStyles.h2}>
@@ -115,7 +119,7 @@ export class AddPriority extends Component {
           label={t('views.lifemap.whyDontYouHaveIt')}
           value={priority ? priority.reason : ''}
           multiline
-          readonly={!this.draftId}
+          readonly={!draftId}
         />
         <TextInput
           label={t('views.lifemap.whatWillYouDoToGetIt')}
@@ -123,14 +127,14 @@ export class AddPriority extends Component {
           placeholder={action ? '' : t('views.lifemap.writeYourAnswerHere')}
           value={priority ? priority.action : ''}
           multiline
-          readonly={!this.draftId}
+          readonly={!draftId}
         />
         <View style={{ padding: 15 }}>
           <Counter
             editCounter={this.editCounter}
             count={estimatedDate}
             text={t('views.lifemap.howManyMonthsWillItTake')}
-            readonly={!this.draftId}
+            readonly={!draftId}
           />
         </View>
         {/* Error message */}
@@ -149,7 +153,7 @@ export class AddPriority extends Component {
 AddPriority.propTypes = {
   t: PropTypes.func.isRequired,
   navigation: PropTypes.object.isRequired,
-  drafts: PropTypes.array.isRequired,
+  nav: PropTypes.object.isRequired,
   addSurveyPriorityAcheivementData: PropTypes.func.isRequired
 }
 
@@ -157,8 +161,8 @@ const mapDispatchToProps = {
   addSurveyPriorityAcheivementData
 }
 
-const mapStateToProps = ({ drafts }) => ({
-  drafts
+const mapStateToProps = ({ nav }) => ({
+  nav
 })
 
 export default withNamespaces()(

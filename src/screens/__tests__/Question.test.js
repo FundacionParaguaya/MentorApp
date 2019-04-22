@@ -23,6 +23,7 @@ const createTestProps = props => ({
   },
   navigation: {
     navigate: jest.fn(),
+    replace: jest.fn(),
     setParams: jest.fn(),
     isFocused: jest.fn(),
     getParam: jest.fn(param => {

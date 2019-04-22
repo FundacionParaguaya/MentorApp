@@ -20,13 +20,13 @@ export class Overview extends Component {
     filterModalIsOpen: false,
     selectedFilter: false,
     filterLabel: false,
-    tipIsVisible: true
+    tipIsVisible: false
   }
-  familyLifemap = this.props.familyLifemap
+
   resumeDraft = this.props.navigation.getParam('resumeDraft')
   componentDidMount() {
     const { draftId } = this.props.nav
-    if (!this.resumeDraft && !this.familyLifemap) {
+    if (!this.resumeDraft && !this.props.familyLifemap) {
       this.props.addDraftProgress(draftId, {
         screen: 'Overview'
       })
@@ -40,7 +40,7 @@ export class Overview extends Component {
 
   onPressBack = () => {
     //If we do not arrive to this screen from the families screen
-    if (!this.familyLifemap) {
+    if (!this.props.familyLifemap) {
       const draft = getDraft()
       const skippedQuestions = draft.indicatorSurveyDataList.filter(
         question => question.value === 0
@@ -62,7 +62,7 @@ export class Overview extends Component {
 
   navigateToScreen = (screen, indicator, indicatorText) =>
     this.props.navigation.navigate(screen, {
-      familyLifemap: this.familyLifemap,
+      familyLifemap: this.props.familyLifemap,
       indicator,
       indicatorText
     })
@@ -120,7 +120,9 @@ export class Overview extends Component {
     const { survey } = this.props.nav
     const { t } = this.props
     const { filterModalIsOpen, selectedFilter, filterLabel } = this.state
-    const data = this.familyLifemap ? this.familyLifemap : getDraft()
+    const data = this.props.familyLifemap
+      ? this.props.familyLifemap
+      : getDraft()
 
     const mandatoryPrioritiesCount = this.getMandatoryPrioritiesCount(data)
 
@@ -151,7 +153,7 @@ export class Overview extends Component {
       <StickyFooter
         continueLabel={t('general.continue')}
         handleClick={() => this.handleContinue(mandatoryPrioritiesCount, data)}
-        visible={!this.resumeDraft && !this.familyLifemap}
+        visible={!this.resumeDraft && !this.props.familyLifemap}
         type={tipIsVisible ? 'tip' : 'button'}
         tipTitle={t('views.lifemap.toComplete')}
         onTipClose={this.onTipClose}
@@ -201,7 +203,7 @@ export class Overview extends Component {
               surveyData={survey.surveyStoplightQuestions}
               draftData={data}
               navigateToScreen={this.navigateToScreen}
-              draftOverview={!!this.draftId}
+              draftOverview={!this.resumeDraft}
               selectedFilter={selectedFilter}
             />
           </View>

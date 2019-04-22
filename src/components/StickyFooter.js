@@ -68,7 +68,7 @@ export default class StickyFooter extends Component {
             {this.props.type === 'button' ? (
               <View style={{ height: 50 }}>
                 <Button
-                  id='continue'
+                  id="continue"
                   colored
                   text={this.props.continueLabel}
                   handleClick={this.props.handleClick}
