@@ -14,6 +14,7 @@ export class Loading extends Component {
   state = {
     syncingServerData: false, // know when to show that data is synced
     cachingImages: false,
+    downloadingMap: false,
     offlineRegionStatus: null,
     mapDownloadError: null
   }
@@ -56,6 +57,9 @@ export class Loading extends Component {
   }
 
   downloadMapData = () => {
+    this.setState({
+      downloadingMap: true
+    })
     if (
       this.state.offlineRegionStatus &&
       this.state.offlineRegionStatus.percentage === 100
@@ -93,11 +97,9 @@ export class Loading extends Component {
 
   // update map download progress
   onMapDownloadProgress = (offlineRegion, offlineRegionStatus) => {
-    if (offlineRegionStatus.percentage > 99) {
+    if (offlineRegionStatus.percentage === 100) {
       this.handleImageCaching()
-    }
-    // if there is no offlineRegionStatus in the state, reset the percentage
-    if (!this.state.offlineRegionStatus) {
+    } else if (!this.state.offlineRegionStatus) {
       this.setState({
         offlineRegionStatus: { percentage: 0 }
       })
@@ -118,28 +120,10 @@ export class Loading extends Component {
     })
   }
 
-  // async componentDidMount() {
-  //   // only when user is loging out clear the data
-  //   if (this.props.sync.synced === 'logout') {
-  //     // delete the cached map packs
-  //     if (MapboxGL.offlineManager) {
-  //       await MapboxGL.offlineManager.deletePack('Sofia')
-  //       await MapboxGL.offlineManager.deletePack('Cerrito')
-  //     }
-  //
-  //     // clear the async storage and reset the store
-  //     AsyncStorage.clear(() => {
-  //       this.props.logout()
-  //       this.props.setSyncedState('login')
-  //     })
-  //   } else if (this.props.user.token) {
-  //     this.setSyncedState()
-  //   }
-  // }
-
   componentDidMount() {
-    // if user has logged in initiate sync
-    if (this.props.user.token) {
+    if (this.props.surveys.length) {
+      this.props.navigation.navigate('DrawerStack')
+    } else if (this.props.user.token) {
       this.syncSurveys()
     } else {
       this.props.navigation.navigate('Login')
@@ -165,6 +149,7 @@ export class Loading extends Component {
     // if everything is synced navigate to home
     if (
       !!this.props.sync.images.total &&
+      prevProps.sync.images.total !== prevProps.sync.images.synced &&
       this.props.sync.images.total === this.props.sync.images.synced
     ) {
       this.props.navigation.navigate('DrawerStack')
@@ -173,7 +158,12 @@ export class Loading extends Component {
 
   render() {
     const { sync, surveys, families } = this.props
-    const { syncingServerData, offlineRegionStatus, cachingImages } = this.state
+    const {
+      syncingServerData,
+      offlineRegionStatus,
+      cachingImages,
+      downloadingMap
+    } = this.state
 
     return (
       <View style={[globalStyles.container, styles.view]}>
@@ -216,7 +206,7 @@ export class Loading extends Component {
                 </View>
               )}
 
-              {offlineRegionStatus && (
+              {downloadingMap && (
                 <View style={{ flexDirection: 'row' }}>
                   {cachingImages && (
                     <Icon name="check" color={colors.palegreen} size={18} />
@@ -224,12 +214,13 @@ export class Loading extends Component {
                   <Text
                     style={cachingImages ? { color: colors.palegreen } : {}}
                   >
-                    {' '}
-                    Downloading offline maps{' '}
-                    {cachingImages
-                      ? 100
-                      : offlineRegionStatus.percentage.toFixed(0)}
-                    %
+                    {offlineRegionStatus
+                      ? `Downloading offline maps ${
+                          cachingImages
+                            ? 100
+                            : offlineRegionStatus.percentage.toFixed(0)
+                        } %`
+                      : 'Checking for offline maps'}
                   </Text>
                 </View>
               )}

@@ -1,20 +1,10 @@
 import RNFetchBlob from 'rn-fetch-blob'
-import { NetInfo } from 'react-native'
 import store from './redux/store'
 import { setSyncedItemTotal, setSyncedItemAmount } from './redux/actions'
 let dirs = RNFetchBlob.fs.dirs
 
 export const getSurveys = () => store.getState().surveys
 let isOnline = true
-let connection
-
-// resume caching on connection change
-NetInfo.addEventListener('connectionChange', e => {
-  if (connection === 'none') {
-    initImageCaching()
-  }
-  connection = e.type
-})
 
 export const filterURLsFromSurveys = surveys => {
   const imageURLs = []

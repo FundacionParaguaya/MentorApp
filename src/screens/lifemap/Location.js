@@ -5,7 +5,8 @@ import {
   ActivityIndicator,
   Text,
   Image,
-  TouchableHighlight
+  TouchableHighlight,
+  NetInfo
 } from 'react-native'
 import { connect } from 'react-redux'
 import PropTypes from 'prop-types'
@@ -20,6 +21,8 @@ import SearchBar from '../../components/SearchBar'
 import Select from '../../components/Select'
 import marker from '../../../assets/images/marker.png'
 import center from '../../../assets/images/centerMap.png'
+import happy from '../../../assets/images/happy.png'
+import sad from '../../../assets/images/sad.png'
 import { getDraft } from './helpers'
 
 export class Location extends Component {
@@ -29,10 +32,11 @@ export class Location extends Component {
     longitude: null,
     accuracy: null,
     searchAddress: '',
+    showSearch: true,
     errorsDetected: [],
-    mapsError: false, // error code (2 for location off, 3 for timeout)
     centeringMap: false, // while map is centering we show a different spinner
-    showMap: false // show map even when no location is returned
+    loading: true,
+    showForm: false
   }
 
   errorsDetected = []
@@ -60,64 +64,6 @@ export class Location extends Component {
       return
     }
     return draft.familyData[field]
-  }
-
-  getDeviceLocation = () => {
-    this.setState({
-      centeringMap: true
-    })
-    navigator.geolocation.getCurrentPosition(
-      position => {
-        this.setState({
-          mapsError: false,
-          showMap: true,
-          centeringMap: false,
-          latitude: position.coords.latitude,
-          longitude: position.coords.longitude,
-          accuracy: position.coords.accuracy
-        })
-        this.addSurveyData(position.coords.latitude, 'latitude')
-        this.addSurveyData(position.coords.longitude, 'longitude')
-        this.addSurveyData(position.coords.accuracy, 'accuracy')
-      },
-      error => {
-        // if error, try getting position after timeout
-        if (error.code === 2) {
-          this.setState({
-            showMap: false
-          })
-          this.locationCheckTimer = setTimeout(() => {
-            this.getDeviceLocation()
-          }, 5000)
-        } else {
-          const { survey } = this.props.nav
-          const draft = getDraft()
-
-          if (!this.getFieldValue(draft, 'latitude')) {
-            if (survey.surveyConfig.surveyLocation.latitude) {
-              this.setState({
-                showMap: true,
-                latitude: survey.surveyConfig.surveyLocation.latitude,
-                longitude: survey.surveyConfig.surveyLocation.longitude
-              })
-            } else {
-              this.setState({
-                showMap: true,
-                latitude: 0,
-                longitude: 0
-              })
-            }
-          }
-        }
-
-        this.setState({ centeringMap: false, mapsError: error.code })
-      },
-      {
-        enableHighAccuracy: false,
-        timeout: 10000,
-        maximumAge: 0
-      }
-    )
   }
 
   searcForAddress = () => {
@@ -159,19 +105,112 @@ export class Location extends Component {
     }
   }
 
+  determineScreenState = async isOnline => {
+    const { survey } = this.props.nav
+
+    if (isOnline) {
+      navigator.geolocation.getCurrentPosition(
+        position => {
+          this.setState({
+            loading: false,
+            centeringMap: false,
+            latitude: position.coords.latitude,
+            longitude: position.coords.longitude,
+            accuracy: position.coords.accuracy
+          })
+          this.addSurveyData(position.coords.latitude, 'latitude')
+          this.addSurveyData(position.coords.longitude, 'longitude')
+          this.addSurveyData(position.coords.accuracy, 'accuracy')
+        },
+        () => {
+          const position = survey.surveyConfig.surveyLocation
+          this.setState({
+            loading: false,
+            centeringMap: false,
+            latitude: position.latitude,
+            longitude: position.longitude,
+            accuracy: 0
+          })
+          this.addSurveyData(position.latitude, 'latitude')
+          this.addSurveyData(position.longitude, 'longitude')
+          this.addSurveyData(0, 'accuracy')
+        },
+        {
+          enableHighAccuracy: false,
+          timeout: 10000,
+          maximumAge: 0
+        }
+      )
+    } else {
+      if (survey.title === 'Chile - Geco') {
+        const position = survey.surveyConfig.surveyLocation
+        this.setState({
+          showSearch: false,
+          loading: false,
+          centeringMap: false,
+          latitude: position.latitude,
+          longitude: position.longitude,
+          accuracy: 0
+        })
+        this.addSurveyData(position.latitude, 'latitude')
+        this.addSurveyData(position.longitude, 'longitude')
+        this.addSurveyData(0, 'accuracy')
+      } else {
+        navigator.geolocation.getCurrentPosition(
+          position => {
+            this.setState({
+              loading: false,
+              centeringMap: false,
+              showForm: true,
+              latitude: position.coords.latitude,
+              longitude: position.coords.longitude,
+              accuracy: position.coords.accuracy
+            })
+            this.addSurveyData(position.coords.latitude, 'latitude')
+            this.addSurveyData(position.coords.longitude, 'longitude')
+            this.addSurveyData(position.coords.accuracy, 'accuracy')
+          },
+          () => {
+            this.setState({
+              loading: false,
+              centeringMap: false,
+              showForm: true
+            })
+          },
+          {
+            enableHighAccuracy: false,
+            timeout: 10000,
+            maximumAge: 0
+          }
+        )
+      }
+    }
+  }
+
   componentDidMount() {
     const draft = this.props.navigation.getParam('family') || getDraft()
 
-    if (!this.getFieldValue(draft, 'latitude')) {
-      this.getDeviceLocation()
-    } else {
-      this.setState({
-        latitude: parseFloat(this.getFieldValue(draft, 'latitude')),
-        longitude: parseFloat(this.getFieldValue(draft, 'longitude')),
-        accuracy: parseFloat(this.getFieldValue(draft, 'accuracy')),
-        showMap: true
-      })
-    }
+    // monitor for connection changes
+    NetInfo.addEventListener('connectionChange', conncection => {
+      if (!this.getFieldValue(draft, 'latitude')) {
+        this.determineScreenState(conncection.type === 'none' ? false : true)
+      }
+    })
+
+    // check if online first
+    NetInfo.isConnected.fetch().then(isOnline => {
+      this.determineScreenState(isOnline)
+      // if (!this.getFieldValue(draft, 'latitude')) {
+      //   this.determineScreenState(isOnline)
+      // } else {
+      //   this.setState({
+      //     latitude: parseFloat(this.getFieldValue(draft, 'latitude')),
+      //     longitude: parseFloat(this.getFieldValue(draft, 'longitude')),
+      //     accuracy: parseFloat(this.getFieldValue(draft, 'accuracy')),
+      //     loading: false
+      //   })
+      // }
+    })
 
     this.props.addDraftProgress(draft.draftId, {
       screen: 'Location'
@@ -229,124 +268,159 @@ export class Location extends Component {
     const { survey, readonly } = this.props.nav
 
     const {
-      mapsError,
       latitude,
       longitude,
       accuracy,
       searchAddress,
       centeringMap,
-      showMap,
-      showErrors
+      loading,
+      showErrors,
+      showSearch,
+      showForm
     } = this.state
 
     const draft = this.props.navigation.getParam('family') || getDraft()
 
-    return (
-      <StickyFooter
-        handleClick={this.handleClick}
-        readonly={readonly}
-        continueLabel={t('general.continue')}
-        progress={
-          !readonly && draft ? draft.progress.current / draft.progress.total : 0
-        }
-      >
-        {(!readonly || (readonly && latitude)) && (
-          <View>
-            {showMap ? (
-              <View>
-                <View pointerEvents="none" style={styles.fakeMarker}>
-                  <Image source={marker} />
-                </View>
-                {!readonly && (
-                  <SearchBar
-                    id="searchAddress"
-                    style={styles.search}
-                    placeholder={t('views.family.searchByStreetOrPostalCode')}
-                    onChangeText={searchAddress =>
-                      this.setState({ searchAddress })
-                    }
-                    onSubmit={this.searcForAddress}
-                    value={searchAddress}
-                  />
-                )}
-                <MapboxGL.MapView
-                  centerCoordinate={[longitude, latitude]}
-                  zoomLevel={15}
-                  style={styles.map}
-                  logoEnabled={false}
-                  zoomEnabled={!readonly}
-                  rotateEnabled={false}
-                  scrollEnabled={!readonly}
-                  pitchEnabled={false}
-                  onRegionDidChange={this.onDragMap}
-                />
-                {!readonly && (
-                  <View>
-                    {centeringMap ? (
-                      <ActivityIndicator
-                        style={styles.center}
-                        size={54}
-                        color={colors.palegreen}
-                      />
-                    ) : (
-                      <TouchableHighlight
-                        id="centerMap"
-                        underlayColor={'transparent'}
-                        activeOpacity={1}
-                        style={styles.center}
-                        onPress={this.getDeviceLocation}
-                      >
-                        <Image
-                          source={center}
-                          style={{ width: 21, height: 21 }}
-                        />
-                      </TouchableHighlight>
-                    )}
-                  </View>
-                )}
-              </View>
-            ) : (
-              <View style={[styles.placeholder, styles.map]}>
-                {mapsError !== 3 && !latitude && (
-                  <ActivityIndicator
-                    style={styles.spinner}
-                    size={80}
-                    color={colors.palered}
-                  />
-                )}
-                {!mapsError && !latitude ? (
-                  <Text style={globalStyles.h2}>
-                    {t('views.family.gettingYourLocation')}
-                  </Text>
-                ) : (
-                  <View>
-                    <Text style={[globalStyles.h2, styles.centerText]}>
-                      Hmmm!
-                    </Text>
-                    <Text style={[styles.errorMsg, styles.centerText]}>
-                      {mapsError === 2 &&
-                        t('views.family.somethingIsNotWorking')}
-                    </Text>
-                    <Text style={[styles.errorSubMsg, styles.centerText]}>
-                      {mapsError === 2 &&
-                        t('views.family.checkLocationServicesTurnedOn')}
-                    </Text>
-                  </View>
-                )}
-              </View>
-            )}
+    if (loading) {
+      return (
+        <View style={[globalStyles.container, styles.placeholder]}>
+          <ActivityIndicator
+            style={styles.spinner}
+            size={80}
+            color={colors.palered}
+          />
+          {!readonly && (
+            <Text style={globalStyles.h2}>
+              {t('views.family.gettingYourLocation')}
+            </Text>
+          )}
+        </View>
+      )
+    } else if (!showForm) {
+      return (
+        <StickyFooter
+          handleClick={this.handleClick}
+          readonly={readonly}
+          continueLabel={t('general.continue')}
+          progress={
+            !readonly && draft
+              ? draft.progress.current / draft.progress.total
+              : 0
+          }
+          fullHeight
+        >
+          <View pointerEvents="none" style={styles.fakeMarker}>
+            <Image source={marker} />
           </View>
-        )}
-
-        <View>
-          <Text id="accuracy" style={styles.accuracy}>
-            {accuracy
-              ? `${t('views.family.gpsAccurate').replace(
+          {!readonly && showSearch && (
+            <SearchBar
+              id="searchAddress"
+              style={styles.search}
+              placeholder={t('views.family.searchByStreetOrPostalCode')}
+              onChangeText={searchAddress => this.setState({ searchAddress })}
+              onSubmit={this.searcForAddress}
+              value={searchAddress}
+            />
+          )}
+          <MapboxGL.MapView
+            centerCoordinate={[longitude, latitude]}
+            zoomLevel={15}
+            style={{ width: '100%', flexGrow: 2 }}
+            logoEnabled={false}
+            zoomEnabled={!readonly}
+            rotateEnabled={false}
+            scrollEnabled={!readonly}
+            pitchEnabled={false}
+            onRegionDidChange={this.onDragMap}
+            minZoomLevel={10}
+            maxZoomLevel={15}
+          />
+          {!readonly && (
+            <View>
+              {centeringMap ? (
+                <ActivityIndicator
+                  style={styles.center}
+                  size="small"
+                  color={colors.palegreen}
+                />
+              ) : (
+                <TouchableHighlight
+                  id="centerMap"
+                  underlayColor={'transparent'}
+                  activeOpacity={1}
+                  style={styles.center}
+                  onPress={this.determineScreenState}
+                >
+                  <Image source={center} style={{ width: 21, height: 21 }} />
+                </TouchableHighlight>
+              )}
+            </View>
+          )}
+        </StickyFooter>
+      )
+    } else {
+      return readonly ? (
+        <View
+          style={[
+            globalStyles.background,
+            {
+              flex: 1,
+              flexDirection: 'column',
+              justifyContent: 'center'
+            }
+          ]}
+        >
+          <Text style={[globalStyles.h2, { textAlign: 'center' }]}>
+            {t('views.family.mapUnavailavleOffline')}
+          </Text>
+        </View>
+      ) : (
+        <StickyFooter
+          handleClick={this.handleClick}
+          readonly={readonly}
+          continueLabel={t('general.continue')}
+          progress={
+            !readonly && draft
+              ? draft.progress.current / draft.progress.total
+              : 0
+          }
+        >
+          {latitude ? (
+            <View style={[styles.placeholder, styles.map]}>
+              <Image
+                source={happy}
+                style={{ width: 50, height: 50, marginBottom: 20 }}
+              />
+              <Text style={[globalStyles.h2, { marginBottom: 20 }]}>
+                {t('views.family.weFoundYou')}
+              </Text>
+              <Text style={globalStyles.h3}>
+                lat: {latitude}, long: {longitude}
+              </Text>
+              <Text style={[globalStyles.h4, { marginBottom: 20 }]}>
+                {`${t('views.family.gpsAccurate').replace(
                   '%n',
                   Math.round(accuracy)
-                )}`
-              : ' '}
-          </Text>
+                )}`}
+              </Text>
+              <Text style={[globalStyles.h3, { textAlign: 'center' }]}>
+                {t('views.family.tellUsMore')}
+              </Text>
+            </View>
+          ) : (
+            <View style={[styles.placeholder, styles.map]}>
+              <Image
+                source={sad}
+                style={{ width: 50, height: 50, marginBottom: 20 }}
+              />
+              <Text style={[globalStyles.h2, { marginBottom: 20 }]}>
+                {t('views.family.weCannotLocate')}
+              </Text>
+              <Text style={[globalStyles.h3, { textAlign: 'center' }]}>
+                {t('views.family.tellUsMore')}
+              </Text>
+            </View>
+          )}
           <Select
             id="countrySelect"
             required
@@ -388,9 +462,9 @@ export class Location extends Component {
             readonly={readonly}
             multiline
           />
-        </View>
-      </StickyFooter>
-    )
+        </StickyFooter>
+      )
+    }
   }
 }
 
@@ -427,7 +501,6 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center'
   },
-  accuracy: { marginLeft: 30 },
   fakeMarker: {
     zIndex: 2,
     position: 'absolute',
@@ -461,19 +534,5 @@ const styles = StyleSheet.create({
   },
   spinner: {
     marginBottom: 15
-  },
-  centerText: {
-    textAlign: 'center'
-  },
-  errorMsg: {
-    marginTop: 15,
-    color: colors.palegrey
-  },
-  errorSubMsg: {
-    marginTop: 20,
-    fontWeight: '500',
-    fontSize: 14,
-    lineHeight: 20,
-    color: colors.palered
   }
 })
