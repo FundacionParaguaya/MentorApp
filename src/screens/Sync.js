@@ -11,7 +11,7 @@ import { connect } from 'react-redux'
 import PropTypes from 'prop-types'
 import globalStyles from '../globalStyles'
 import { withNamespaces } from 'react-i18next'
-import { submitDraft } from '../redux/actions'
+import { submitDraft, updateNav } from '../redux/actions'
 import { url } from '../config'
 
 import SyncUpToDate from '../components/sync/SyncUpToDate'
@@ -35,6 +35,11 @@ export class Sync extends Component {
   }
 
   navigateToDraft = draft => {
+    this.props.updateNav({
+      survey: this.props.surveys.find(survey => survey.id === draft.surveyId),
+      draftId: draft.draftId
+    })
+
     if (
       draft.progress.screen !== 'Question' &&
       draft.progress.screen !== 'Skipped' &&
@@ -131,7 +136,8 @@ Sync.propTypes = {
   env: PropTypes.oneOf(['production', 'demo', 'testing', 'development']),
   user: PropTypes.object.isRequired,
   surveys: PropTypes.array,
-  submitDraft: PropTypes.func.isRequired
+  submitDraft: PropTypes.func.isRequired,
+  updateNav: PropTypes.func.isRequired
 }
 
 const styles = StyleSheet.create({
@@ -150,7 +156,8 @@ const mapStateToProps = ({ drafts, offline, env, user, surveys }) => ({
 })
 
 const mapDispatchToProps = {
-  submitDraft
+  submitDraft,
+  updateNav
 }
 
 export default withNamespaces()(

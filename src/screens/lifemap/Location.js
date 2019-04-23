@@ -105,7 +105,33 @@ export class Location extends Component {
     }
   }
 
-  determineScreenState = async isOnline => {
+  // if the user has draged the map and the draft has stored some coordinates
+  setCoordinatesFromDraft = (isOnline, draft) => {
+    const { survey } = this.props.nav
+
+    this.setState({
+      latitude: parseFloat(this.getFieldValue(draft, 'latitude')),
+      longitude: parseFloat(this.getFieldValue(draft, 'longitude')),
+      accuracy: parseFloat(this.getFieldValue(draft, 'accuracy')),
+      loading: false,
+      centeringMap: false
+    })
+
+    if (!isOnline) {
+      if (survey.title === 'Chile - Geco') {
+        this.setState({
+          showSearch: false
+        })
+      } else {
+        this.setState({
+          showForm: true
+        })
+      }
+    }
+  }
+
+  // try getting device location and set map state according to online state
+  getDeviceCoordinates = isOnline => {
     const { survey } = this.props.nav
 
     if (isOnline) {
@@ -190,26 +216,28 @@ export class Location extends Component {
   componentDidMount() {
     const draft = this.props.navigation.getParam('family') || getDraft()
 
+    // the there is no save country in the draft, set it to the survey one
+    if (!this.getFieldValue(draft, 'country')) {
+      this.addSurveyData(
+        this.props.nav.survey.surveyConfig.surveyLocation.country,
+        'country'
+      )
+    }
+
     // monitor for connection changes
     NetInfo.addEventListener('connectionChange', conncection => {
       if (!this.getFieldValue(draft, 'latitude')) {
-        this.determineScreenState(conncection.type === 'none' ? false : true)
+        this.getDeviceCoordinates(conncection.type === 'none' ? false : true)
       }
     })
 
     // check if online first
     NetInfo.isConnected.fetch().then(isOnline => {
-      this.determineScreenState(isOnline)
-      // if (!this.getFieldValue(draft, 'latitude')) {
-      //   this.determineScreenState(isOnline)
-      // } else {
-      //   this.setState({
-      //     latitude: parseFloat(this.getFieldValue(draft, 'latitude')),
-      //     longitude: parseFloat(this.getFieldValue(draft, 'longitude')),
-      //     accuracy: parseFloat(this.getFieldValue(draft, 'accuracy')),
-      //     loading: false
-      //   })
-      // }
+      if (!this.getFieldValue(draft, 'latitude')) {
+        this.getDeviceCoordinates(isOnline)
+      } else {
+        this.setCoordinatesFromDraft(isOnline, draft)
+      }
     })
 
     this.props.addDraftProgress(draft.draftId, {
@@ -349,7 +377,7 @@ export class Location extends Component {
                   underlayColor={'transparent'}
                   activeOpacity={1}
                   style={styles.center}
-                  onPress={this.determineScreenState}
+                  onPress={this.getDeviceCoordinates}
                 >
                   <Image source={center} style={{ width: 21, height: 21 }} />
                 </TouchableHighlight>
@@ -394,7 +422,7 @@ export class Location extends Component {
               <Text style={[globalStyles.h2, { marginBottom: 20 }]}>
                 {t('views.family.weFoundYou')}
               </Text>
-              <Text style={globalStyles.h3}>
+              <Text style={[globalStyles.h3, { textAlign: 'center' }]}>
                 lat: {latitude}, long: {longitude}
               </Text>
               <Text style={[globalStyles.h4, { marginBottom: 20 }]}>
