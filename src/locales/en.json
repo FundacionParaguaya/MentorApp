@@ -110,7 +110,10 @@
       "lifemap": "Life map",
       "lifeMapCreatedOn": "Life Map draft created on",
       "lifeMapAfterSync": "Life Map available after family syncs",
-      "created": "Created on"
+      "created": "Created on",
+      "weFoundYou": "We found you!",
+      "weCannotLocate": "We cannot locate you!",
+      "tellUsMore": "You can tell us more about this location in the form bellow!"
     },
     "lifemap": {
       "thisLifeMapHas": "This life map has %n questions. It will take approximately 35 minutes to complete!",
