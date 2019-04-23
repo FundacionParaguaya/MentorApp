@@ -31,6 +31,8 @@ export default class SliderItem extends Component {
         onPress={this.props.onPress}
         onHideUnderlay={() => this.togglePressedState(false)}
         onShowUnderlay={() => this.togglePressedState(true)}
+        accessibilityLabel={value === slide.value ? 'selected' : 'deselected'}
+        accessibilityHint={slide.description}
       >
         <View>
           <Image
