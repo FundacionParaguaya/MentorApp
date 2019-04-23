@@ -6,6 +6,7 @@ import StickyFooter from '../../components/StickyFooter'
 import { connect } from 'react-redux'
 import PropTypes from 'prop-types'
 import { withNamespaces } from 'react-i18next'
+import { isPortrait } from '../../responsivenessHelpers'
 
 import {
   addSurveyData,
@@ -164,7 +165,7 @@ export class Question extends Component {
         progress={draft ? draft.progress.current / draft.progress.total : 0}
         currentScreen="Question"
       >
-        <View style={{ height: bodyHeight }}>
+        <View style={!!dimensions && isPortrait(dimensions) ? { height: bodyHeight } : {}}>
           <SliderComponent
             slides={this.slides}
             value={this.getFieldValue(draft, this.indicator.codeName)}

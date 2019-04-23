@@ -1,11 +1,17 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
-import { View, Text, StyleSheet, TouchableHighlight, ScrollView } from 'react-native'
+import {
+  View,
+  Text,
+  StyleSheet,
+  TouchableHighlight,
+  ScrollView
+} from 'react-native'
 import Icon from 'react-native-vector-icons/MaterialIcons'
 import colors from '../theme.json'
 import Image from './CachedImage'
 import globalStyles from '../globalStyles'
-import { isPortrait, isTablet, isLandscape } from '../responsivenessHelpers'
+import { isPortrait } from '../responsivenessHelpers'
 
 const slideColors = {
   1: 'red',
@@ -23,21 +29,24 @@ export default class SliderItem extends Component {
       pressed
     })
   }
-  calculateTextContentHeight = (event) => {
+  calculateTextContentHeight = event => {
     this.setState({ textContentHeight: event.nativeEvent.layout.height })
   }
 
   render() {
     const { slide, value, bodyHeight, dimensions } = this.props
     const slideHeight = bodyHeight - 100
-    const imageHeight = (bodyHeight / 2) - 25
-    const textAreaHeight = slideHeight - imageHeight - 10 - 30 // - 30 is margin top on image + icon
-    // console.log(isPortrait(dimensions), isTablet(dimensions), isLandscape(dimensions))
+    const imageHeight = bodyHeight / 2
+    const textAreaHeight = slideHeight - imageHeight // - 30 is margin top on image + icon
+
     return (
       <TouchableHighlight
         activeOpacity={1}
         underlayColor={'transparent'}
-        style={[styles.slide, {height: slideHeight }]}
+        style={[
+          styles.slide,
+          !!dimensions && !!isPortrait(dimensions) ? { height: slideHeight } : {}
+        ]}
         onPress={this.props.onPress}
         onHideUnderlay={() => this.togglePressedState(false)}
         onShowUnderlay={() => this.togglePressedState(true)}
@@ -47,9 +56,9 @@ export default class SliderItem extends Component {
             source={slide.url}
             style={{
               ...styles.image,
-              height: imageHeight
+              height: !!dimensions && !!isPortrait(dimensions) ? imageHeight : imageHeight * 2
             }}
-            />
+          />
 
           <View
             id="icon-view"
@@ -62,20 +71,32 @@ export default class SliderItem extends Component {
             <Icon name="done" size={47} color={colors.white} />
           </View>
 
-          <View style={{ height: textAreaHeight }} onStartShouldSetResponder={() => true}>
-            <ScrollView contentContainerStyle={{ flexGrow:1, height: this.textContentHeight, paddingBottom: 30 }}>
-                <Text
-                  onLayout={event => this.calculateTextContentHeight(event)}
-                  style={{
-                    ...globalStyles.p,
-                    ...styles.text,
-                    color: slide.value === 2 ? colors.black : colors.white
-                  }}
-                  >
-                  {slide.description}
-                </Text>
-            </ScrollView>      
-          </View>  
+          <View
+            style={[
+              !!dimensions && !!isPortrait(dimensions) ? { height: textAreaHeight } : {},
+              { paddingBottom: 15 }
+            ]}
+            onStartShouldSetResponder={() => true}
+          >
+            <ScrollView
+              contentContainerStyle={{
+                flexGrow: 1,
+                height: this.textContentHeight,
+                paddingBottom: 30
+              }}
+            >
+              <Text
+                onLayout={event => this.calculateTextContentHeight(event)}
+                style={{
+                  ...globalStyles.p,
+                  ...styles.text,
+                  color: slide.value === 2 ? colors.black : colors.white
+                }}
+              >
+                {slide.description}
+              </Text>
+            </ScrollView>
+          </View>
         </View>
       </TouchableHighlight>
     )
@@ -86,7 +107,8 @@ SliderItem.propTypes = {
   onPress: PropTypes.func,
   slide: PropTypes.object.isRequired,
   value: PropTypes.number,
-  dimensions: PropTypes.object
+  dimensions: PropTypes.object,
+  bodyHeight: PropTypes.number.isRequired
 }
 
 const styles = StyleSheet.create({
@@ -102,16 +124,16 @@ const styles = StyleSheet.create({
     fontSize: 18,
     lineHeight: 23,
     fontFamily: 'Poppins',
-    alignSelf: 'center',
-
+    alignSelf: 'center'
   },
   textVertical: {
-    flex: 1, flex: 1,
+    flex: 1,
+    flex: 1,
     justifyContent: 'center',
     alignItems: 'center'
   },
   image: {
-    width: '100%',
+    width: '100%'
     // marginTop: 10
   },
   iconBig: {
