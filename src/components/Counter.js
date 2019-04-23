@@ -19,7 +19,7 @@ class Counter extends Component {
   render() {
     return (
       <View style={styles.container}>
-        <Text style={styles.text}>{this.props.text}* </Text>
+        <Text style={styles.text}>{this.props.text} * </Text>
         <View style={styles.counter}>
           <Text style={styles.count}> {this.props.count} </Text>
           <TouchableHighlight
