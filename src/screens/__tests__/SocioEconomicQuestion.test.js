@@ -28,33 +28,25 @@ const draft = {
       }
     ]
   },
-  progress: { "screen": "Question" , "current": 3}
+  progress: { screen: 'Question', current: 3 }
 }
 
 const createTestProps = props => ({
   t: value => value,
+  nav: {
+    draftId: 4,
+    survey: data
+  },
   navigation: {
     navigate: jest.fn(),
     push: jest.fn(),
-    getParam: jest.fn(param => {
-      if (param === 'survey') {
-        return data
-      } else {
-        return null
-      }
-    }),
+    getParam: jest.fn(),
     setParams: jest.fn(),
     isFocused: jest.fn(() => true)
   },
   addSurveyData: jest.fn(),
   addDraftProgress: jest.fn(),
   addSurveyFamilyMemberData: jest.fn(),
-  drafts: [
-    {
-      draftId: 1
-    },
-    draft
-  ],
   ...props
 })
 
@@ -210,7 +202,7 @@ describe('SocioEconomicQuestion screens', () => {
         .onChange('PHYSICAL', 'health')
 
       expect(wrapper.instance().props.addSurveyData).toHaveBeenCalledWith(
-        2,
+        4,
         'economicSurveyDataList',
         { health: 'PHYSICAL' }
       )
@@ -369,8 +361,7 @@ describe('SocioEconomicQuestion screens', () => {
       ).toHaveBeenCalledTimes(1)
 
       expect(wrapper.instance().props.navigation.navigate).toHaveBeenCalledWith(
-        'BeginLifemap',
-        expect.any(Object)
+        'BeginLifemap'
       )
     })
   })
@@ -385,7 +376,7 @@ describe('Render optimization', () => {
   })
   it('checks if screen is focused before updating', () => {
     wrapper.setProps({
-      drafts: [...wrapper.instance().props.drafts, { draftId: 5 }]
+      nav: { ...props.nav, draftId: 5 }
     })
     expect(wrapper.instance().props.navigation.isFocused).toHaveBeenCalledTimes(
       1
@@ -393,18 +384,18 @@ describe('Render optimization', () => {
   })
   it('updates screen if focused', () => {
     wrapper.setProps({
-      drafts: [...wrapper.instance().props.drafts, { draftId: 5 }]
+      nav: { ...props.nav, draftId: 5 }
     })
-    expect(wrapper.instance().props.drafts[2]).toEqual({ draftId: 5 })
+    expect(props.nav).toEqual({ ...props.nav, draftId: 4 })
   })
   it('does not update screen if not focused', () => {
     wrapper.setProps({
-      drafts: [...wrapper.instance().props.drafts, { draftId: 5 }]
+      test: true
     })
     props = createTestProps({
       navigation: { ...props.navigation, isFocused: jest.fn(() => false) }
     })
     wrapper = shallow(<SocioEconomicQuestion {...props} />)
-    expect(wrapper.instance().props.drafts[2]).toBeFalsy()
+    expect(props.test).toBeFalsy()
   })
 })

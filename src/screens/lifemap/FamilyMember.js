@@ -5,7 +5,7 @@ import { withNamespaces } from 'react-i18next'
 import TextInput from '../../components/TextInput'
 import globalStyles from '../../globalStyles'
 import Select from '../../components/Select'
-import DateInputComponent from '../../components/DateInput'
+import DateInput from '../../components/DateInput'
 import colors from '../../theme.json'
 
 export class FamilyMember extends Component {
@@ -56,7 +56,7 @@ export class FamilyMember extends Component {
             { text: 'I prefer not to answer', value: 'N' }
           ]}
         />
-        <DateInputComponent
+        <DateInput
           label={t('views.family.dateOfBirth')}
           value={member.birthDate}
           readonly

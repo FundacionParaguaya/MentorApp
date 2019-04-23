@@ -50,19 +50,5 @@ describe('Surveys View', () => {
         )
       })
     })
-    it('calls sets the screen title on mount', () => {
-      expect(
-        wrapper.instance().props.navigation.setParams
-      ).toHaveBeenCalledTimes(1)
-    })
-    it('updates screen title when lng prop changes', () => {
-      wrapper.setProps({ lng: 'es' })
-      expect(
-        wrapper.instance().props.navigation.setParams
-      ).toHaveBeenCalledTimes(2)
-      expect(
-        wrapper.instance().props.navigation.setParams
-      ).toHaveBeenCalledWith({ title: 'views.createLifemap' })
-    })
   })
 })

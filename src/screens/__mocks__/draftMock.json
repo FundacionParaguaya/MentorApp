@@ -27,12 +27,13 @@
   ],
 
   "indicatorSurveyDataList": [
+    { "key": "phoneNumber", "value": 0 },
     { "key": "insurance", "value": 1 },
     { "key": "entertainmentAndRecreation", "value": 3 },
     { "key": "stableHousing", "value": 2 }
   ],
   "familyData": {
-    "countFamilyMembers": 1,
+    "countFamilyMembers": 2,
     "country": "PY",
     "longitude": -25.8976,
     "latitude": -22.2521,

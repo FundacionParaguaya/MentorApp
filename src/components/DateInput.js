@@ -6,7 +6,7 @@ import { withNamespaces } from 'react-i18next'
 import colors from '../theme.json'
 import Select from './Select'
 
-export class DateInput extends React.Component {
+export class DateInputComponent extends React.Component {
   state = {
     day: '',
     month: '',
@@ -111,9 +111,11 @@ export class DateInput extends React.Component {
 
     return (
       <View>
-        <Text 
+        <Text
           style={[styles.text, { marginBottom: readonly ? -15 : 15 }]}
-          accessibilityLabel={`${this.props.label} ${required && !readonly ? ' This is a mandatory field.' : ''}`}
+          accessibilityLabel={`${this.props.label} ${
+            required && !readonly ? ' This is a mandatory field.' : ''
+          }`}
         >
           {this.props.label} {required && !readonly ? '*' : ''}
         </Text>
@@ -176,7 +178,7 @@ const styles = StyleSheet.create({
   text: { marginLeft: 30 }
 })
 
-DateInput.propTypes = {
+DateInputComponent.propTypes = {
   label: PropTypes.string,
   value: PropTypes.number,
   t: PropTypes.func.isRequired,
@@ -188,4 +190,4 @@ DateInput.propTypes = {
   onValidDate: PropTypes.func
 }
 
-export default withNamespaces()(DateInput)
+export default withNamespaces()(DateInputComponent)
