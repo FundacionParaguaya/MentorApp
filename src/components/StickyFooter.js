@@ -56,12 +56,17 @@ export default class StickyFooter extends Component {
         {!!this.props.progress && (
           <ProgressBar
             progress={this.props.progress}
-            currentScreen={
-              this.props.currentScreen ? this.props.currentScreen : ''
-            }
+            currentScreen={this.props.currentScreen || ''}
           />
         )}
-        <ScrollView>{this.props.children}</ScrollView>
+        {this.props.fullHeight ? (
+          <View style={{ width: '100%', flexGrow: 2 }}>
+            {this.props.children}
+          </View>
+        ) : (
+          <ScrollView>{this.props.children}</ScrollView>
+        )}
+
         {!this.props.readonly &&
         (this.props.visible && this.state.continueVisible) ? (
           <View>
@@ -97,6 +102,7 @@ StickyFooter.propTypes = {
   type: PropTypes.oneOf(['button', 'tip']),
   tipTitle: PropTypes.string,
   tipIsVisible: PropTypes.bool,
+  fullHeight: PropTypes.bool,
   tipDescription: PropTypes.string,
   onTipClose: PropTypes.func,
   readonly: PropTypes.bool,
