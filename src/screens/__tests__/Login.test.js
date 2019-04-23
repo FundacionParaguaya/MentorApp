@@ -1,6 +1,6 @@
 import React from 'react'
 import { shallow } from 'enzyme'
-import { ScrollView, TextInput, Text, Dimensions } from 'react-native'
+import { ScrollView, TextInput, Text } from 'react-native'
 import Button from '../../components/Button'
 import { Login } from '../Login'
 
@@ -74,15 +74,6 @@ describe('Login View', () => {
         username: 'Joe',
         password: 'Foo'
       })
-    })
-
-    it('sets the env to demo when username is demo', () => {
-      wrapper
-        .find('#username')
-        .props()
-        .onChangeText('demo')
-      expect(wrapper.instance().props.setEnv).toHaveBeenCalledTimes(1)
-      expect(wrapper.instance().props.setEnv).toHaveBeenCalledWith('demo')
     })
 
     it('clicking login calls login action', () => {

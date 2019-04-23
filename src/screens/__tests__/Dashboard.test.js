@@ -16,6 +16,7 @@ const createTestProps = props => ({
   user: { status: '' },
   loadSurveys: jest.fn(),
   loadSnapshots: jest.fn(),
+  updateNav: jest.fn(),
   loadFamilies: jest.fn(),
   offline: { outbox: [] },
   drafts: [
@@ -55,20 +56,6 @@ describe('Dashboard View', () => {
       expect(wrapper.find(FlatList).props().data).toEqual(
         wrapper.instance().props.drafts.reverse()
       )
-    })
-    it('calls sets the screen title on mount', () => {
-      expect(
-        wrapper.instance().props.navigation.setParams
-      ).toHaveBeenCalledTimes(1)
-    })
-    it('updates screen title when lng prop changes', () => {
-      wrapper.setProps({ lng: 'es' })
-      expect(
-        wrapper.instance().props.navigation.setParams
-      ).toHaveBeenCalledTimes(2)
-      expect(
-        wrapper.instance().props.navigation.setParams
-      ).toHaveBeenCalledWith({ title: 'views.dashboard' })
     })
   })
 })

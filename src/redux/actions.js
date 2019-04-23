@@ -59,6 +59,7 @@ export const setEnv = env => ({
 // Surveys
 
 export const LOAD_SURVEYS = 'LOAD_SURVEYS'
+export const LOAD_SURVEYS_COMMIT = 'LOAD_SURVEYS_COMMIT'
 
 export const loadSurveys = (env, token) => ({
   type: LOAD_SURVEYS,
@@ -75,7 +76,7 @@ export const loadSurveys = (env, token) => ({
             'query { surveysByUser { title id minimumPriorities privacyPolicy { title  text } termsConditions{ title text } surveyConfig { documentType {text value} gender { text value} surveyLocation { country latitude longitude} }  surveyEconomicQuestions { questionText codeName answerType topic required forFamilyMember options {text value} conditions{ codeName type value operator} } surveyStoplightQuestions { questionText codeName dimension id stoplightColors { url value description } required } } }'
         })
       },
-      commit: { type: LOAD_SURVEYS }
+      commit: { type: LOAD_SURVEYS_COMMIT }
     }
   }
 })
@@ -83,6 +84,7 @@ export const loadSurveys = (env, token) => ({
 // Families
 
 export const LOAD_FAMILIES = 'LOAD_FAMILIES'
+export const LOAD_FAMILIES_COMMIT = 'LOAD_FAMILIES_COMMIT'
 
 export const loadFamilies = (env, token) => ({
   type: LOAD_FAMILIES,
@@ -99,7 +101,7 @@ export const loadFamilies = (env, token) => ({
             'query { familiesNewStructure {familyId name code snapshotList { surveyId createdAt familyData { familyMembersList { birthCountry birthDate documentNumber documentType email familyId firstName firstParticipant gender id lastName memberIdentifier phoneNumber socioEconomicAnswers { key value}  }  countFamilyMembers latitude longitude country accuracy } economicSurveyDataList { key value } indicatorSurveyDataList { key value } achievements { action indicator roadmap } priorities { action estimatedDate indicator reason } } } }'
         })
       },
-      commit: { type: LOAD_FAMILIES }
+      commit: { type: LOAD_FAMILIES_COMMIT }
     }
   }
 })
@@ -253,7 +255,17 @@ export const setSyncedItemAmount = (item, amount) => ({
   amount
 })
 
-export const setSyncedState = value => ({
+export const syncDrafts = value => ({
   type: SET_SYNCED_STATE,
+  item: 'drafts',
+  value
+})
+
+// NAV
+export const UPDATE_NAV = 'UPDATE_NAV'
+
+export const updateNav = (item, value) => ({
+  type: UPDATE_NAV,
+  item,
   value
 })

@@ -1,32 +1,27 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import { Text, StyleSheet, View, Platform } from 'react-native'
-import { deleteDraft } from '../../redux/actions'
-import store from '../../redux/store'
-import Popup from '../Popup'
-import Button from '../Button'
-import i18n from '../../i18n'
-import globalStyles from '../../globalStyles'
-import colors from '../../theme.json'
+import { connect } from 'react-redux'
+import { deleteDraft, updateNav } from '../redux/actions'
+import store from '../redux/store'
+import Popup from '../components/Popup'
+import Button from '../components/Button'
+import i18n from '../i18n'
+import globalStyles from '../globalStyles'
+import colors from '../theme.json'
 
-export default class ExitDraftPopup extends Component {
+export class ExitDraftModal extends Component {
   render() {
-    const {
-      navigation,
-      isOpen,
-      onClose,
-      routeName,
-      deleteOnExit,
-      draftId,
-      navigateTo
-    } = this.props
+    const { isOpen, onClose, nav } = this.props
 
     return (
       <Popup isOpen={isOpen} onClose={onClose}>
-        {deleteOnExit || routeName === 'Terms' || routeName === 'Privacy' ? (
+        {nav.deleteDraftOnExit ||
+        nav.openModal === 'exitOnTerms' ||
+        nav.openModal === 'deleteDraftOnExit' ? (
           <View>
             <Text style={[globalStyles.centerText, globalStyles.h3]}>
-              {routeName === 'FamilyParticipant'
+              {nav.deleteDraftOnExit
                 ? i18n.t('views.modals.lifeMapWillNotBeSaved')
                 : i18n.t('views.modals.weCannotContinueToCreateTheLifeMap')}
             </Text>
@@ -51,23 +46,22 @@ export default class ExitDraftPopup extends Component {
             text={i18n.t('general.yes')}
             style={{ width: 107 }}
             handleClick={() => {
-              if (deleteOnExit) {
-                store.dispatch(deleteDraft(draftId))
+              // if not enough info for draft delete it
+              if (nav.deleteDraftOnExit) {
+                store.dispatch(deleteDraft(nav.draftId))
               }
-              isOpen === true
-                ? navigation.setParams({ modalOpen: false })
-                : false
-              navigation.popToTop()
-              navigateTo
-                ? navigation.navigate(navigateTo)
-                : navigation.navigate('Dashboard')
+
+              nav.beforeCloseModal()
+
+              // close modal
+              onClose()
             }}
           />
           <Button
             outlined
             text={i18n.t('general.no')}
             style={{ width: 107 }}
-            handleClick={() => navigation.setParams({ modalOpen: false })}
+            handleClick={onClose}
           />
         </View>
       </Popup>
@@ -75,14 +69,12 @@ export default class ExitDraftPopup extends Component {
   }
 }
 
-ExitDraftPopup.propTypes = {
-  navigation: PropTypes.object,
+ExitDraftModal.propTypes = {
+  nav: PropTypes.object,
   isOpen: PropTypes.bool,
   onClose: PropTypes.func,
   routeName: PropTypes.string,
-  draftId: PropTypes.oneOfType([PropTypes.bool, PropTypes.string]),
-  deleteOnExit: PropTypes.bool,
-  navigateTo: PropTypes.oneOfType([PropTypes.bool, PropTypes.string])
+  draftId: PropTypes.oneOfType([PropTypes.bool, PropTypes.string])
 }
 
 const styles = StyleSheet.create({
@@ -107,3 +99,16 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between'
   }
 })
+
+const mapStateToProps = ({ nav }) => ({
+  nav
+})
+
+const mapDispatchToProps = {
+  updateNav
+}
+
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(ExitDraftModal)

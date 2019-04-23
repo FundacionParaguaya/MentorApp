@@ -14,6 +14,7 @@ import RoundImage from '../components/RoundImage'
 import Button from '../components/Button'
 
 export class Family extends Component {
+  // set the title of the screen to the family name
   static navigationOptions = ({ navigation }) => {
     return {
       title: `${navigation.getParam('familyName', 'Families')}  ${
@@ -31,6 +32,8 @@ export class Family extends Component {
   }
   familyLifemap = this.props.navigation.getParam('familyLifemap')
   isDraft = this.props.navigation.getParam('isDraft')
+
+  // extract socio economic categories from snapshot
   socioEconomicCategories = [
     ...new Set(
       this.props.navigation
@@ -113,7 +116,6 @@ export class Family extends Component {
                       handleClick={() => {
                         if (!index) {
                           navigation.navigate('FamilyParticipant', {
-                            survey: this.familyLifemap.surveyId,
                             family: this.familyLifemap
                           })
                         } else {
@@ -136,7 +138,6 @@ export class Family extends Component {
                   text={t('views.location')}
                   handleClick={() => {
                     navigation.navigate('Location', {
-                      survey: navigation.getParam('survey'),
                       family: this.familyLifemap
                     })
                   }}
@@ -148,7 +149,6 @@ export class Family extends Component {
                         text={item}
                         handleClick={() => {
                           navigation.navigate('SocioEconomicQuestion', {
-                            survey: navigation.getParam('survey'),
                             family: this.familyLifemap,
                             page: index
                           })

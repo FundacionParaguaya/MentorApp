@@ -1,6 +1,6 @@
 import React from 'react'
 import { shallow } from 'enzyme'
-import { ScrollView, Text, FlatList } from 'react-native'
+import { ScrollView, FlatList } from 'react-native'
 import { Sync } from '../Sync'
 import SyncUpToDate from '../../components/sync/SyncUpToDate'
 import SyncOffline from '../../components/sync/SyncOffline'
@@ -60,20 +60,6 @@ describe('Sync Lifemap View when no questions are skipped', () => {
       })
       wrapper = shallow(<Sync {...props} />)
       expect(wrapper.find(FlatList)).toHaveLength(1)
-    })
-    it('calls sets the screen title on mount', () => {
-      expect(
-        wrapper.instance().props.navigation.setParams
-      ).toHaveBeenCalledTimes(1)
-    })
-    it('updates screen title when lng prop changes', () => {
-      wrapper.setProps({ lng: 'es' })
-      expect(
-        wrapper.instance().props.navigation.setParams
-      ).toHaveBeenCalledTimes(2)
-      expect(
-        wrapper.instance().props.navigation.setParams
-      ).toHaveBeenCalledWith({ title: 'views.synced' })
     })
   })
 })

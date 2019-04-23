@@ -1,14 +1,20 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
-import { Text, StyleSheet, View, Platform } from 'react-native'
+import {
+  Text,
+  StyleSheet,
+  View,
+  Platform,
+  ActivityIndicator
+} from 'react-native'
 import CommunityIcon from 'react-native-vector-icons/MaterialCommunityIcons'
-import Popup from '../Popup'
-import Checkbox from '../Checkbox'
+import Popup from '../components/Popup'
+import Checkbox from '../components/Checkbox'
 import Icon from 'react-native-vector-icons/MaterialIcons'
-import Button from '../Button'
-import i18n from '../../i18n'
-import colors from '../../theme.json'
-import globalStyles from '../../globalStyles'
+import Button from '../components/Button'
+import i18n from '../i18n'
+import colors from '../theme.json'
+import globalStyles from '../globalStyles'
 
 export default class LogoutPopup extends Component {
   render() {
@@ -20,9 +26,22 @@ export default class LogoutPopup extends Component {
       logUserOut,
       showCheckboxes,
       onPressCheckbox,
-      onModalClose
+      onModalClose,
+      logingOut
     } = this.props
-    return (
+    return logingOut ? (
+      <Popup
+        isOpen={navigation.getParam('logoutModalOpen')}
+        onClose={onModalClose}
+        style={{ paddingVertical: 100 }}
+      >
+        <ActivityIndicator
+          size="large"
+          color={colors.palered}
+          style={styles.indicator}
+        />
+      </Popup>
+    ) : (
       <Popup
         isOpen={navigation.getParam('logoutModalOpen')}
         onClose={onModalClose}
@@ -31,8 +50,7 @@ export default class LogoutPopup extends Component {
           <Icon name="close" size={20} />
         </View>
 
-        <View style={styles.modalContainer} 
-        accessibilityLiveRegion='polite'>
+        <View style={styles.modalContainer} accessibilityLiveRegion="polite">
           <View style={{ alignItems: 'center' }}>
             {!checkboxesVisible ? (
               <Icon
@@ -182,6 +200,7 @@ LogoutPopup.propTypes = {
   navigation: PropTypes.object.isRequired,
   showErrors: PropTypes.bool.isRequired,
   checkboxesVisible: PropTypes.bool.isRequired,
+  logingOut: PropTypes.bool.isRequired,
   unsyncedDrafts: PropTypes.number.isRequired,
   logUserOut: PropTypes.func.isRequired,
   showCheckboxes: PropTypes.func.isRequired,

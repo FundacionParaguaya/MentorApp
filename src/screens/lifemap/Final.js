@@ -9,16 +9,14 @@ import Button from '../../components/Button'
 import globalStyles from '../../globalStyles'
 import { submitDraft, addDraftProgress } from '../../redux/actions'
 import { url } from '../../config'
+import { getDraft } from './helpers'
 
 export class Final extends Component {
-  draftId = this.props.navigation.getParam('draftId')
-  survey = this.props.navigation.getParam('survey')
-
   shouldComponentUpdate() {
     return this.props.navigation.isFocused()
   }
   componentDidMount() {
-    this.props.addDraftProgress(this.draftId, {
+    this.props.addDraftProgress(this.props.nav.draftId, {
       screen: 'Final'
     })
 
@@ -29,17 +27,13 @@ export class Final extends Component {
 
   onPressBack = () => {
     this.props.navigation.replace('Overview', {
-      draftId: this.draftId,
-      survey: this.survey,
       resumeDraft: false
     })
   }
 
   render() {
     const { t } = this.props
-    const draft = this.props.drafts.filter(
-      item => item.draftId === this.draftId
-    )[0]
+    const draft = getDraft()
 
     return (
       <ScrollView
@@ -67,7 +61,9 @@ export class Final extends Component {
           <LifemapVisual
             bigMargin
             questions={draft.indicatorSurveyDataList}
-            questionsLength={this.survey.surveyStoplightQuestions.length}
+            questionsLength={
+              this.props.nav.survey.surveyStoplightQuestions.length
+            }
             priorities={draft.priorities}
             achievements={draft.achievements}
           />
@@ -80,7 +76,7 @@ export class Final extends Component {
               this.props.submitDraft(
                 url[this.props.env],
                 this.props.user.token,
-                this.draftId,
+                this.props.nav.draftId,
                 draft
               )
               this.props.navigation.popToTop()
@@ -105,7 +101,7 @@ const styles = StyleSheet.create({
 
 Final.propTypes = {
   t: PropTypes.func.isRequired,
-  drafts: PropTypes.array.isRequired,
+  nav: PropTypes.object.isRequired,
   navigation: PropTypes.object.isRequired,
   submitDraft: PropTypes.func.isRequired,
   addDraftProgress: PropTypes.func.isRequired,
@@ -113,9 +109,9 @@ Final.propTypes = {
   user: PropTypes.object.isRequired
 }
 
-const mapStateToProps = ({ drafts, env, user }) => ({
+const mapStateToProps = ({ nav, env, user }) => ({
   env,
-  drafts,
+  nav,
   user
 })
 const mapDispatchToProps = {

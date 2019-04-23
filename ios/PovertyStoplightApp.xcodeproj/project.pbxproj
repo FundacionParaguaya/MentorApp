@@ -717,6 +717,8 @@
 						ProvisioningStyle = Automatic;
 						TestTargetID = 2D02E47A1E0B4A5D006451C7;
 					};
+					13B07F861A680F5B00A75B9A = {
+					};
 				};
 			};
 			buildConfigurationList = 83CBB9FA1A601CBA00E9B192 /* Build configuration list for PBXProject "PovertyStoplightApp" */;
@@ -1207,6 +1209,8 @@
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
 				);
+				FRAMEWORK_SEARCH_PATHS = (
+				);
 			};
 			name = Debug;
 		};
@@ -1231,6 +1235,8 @@
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
 				);
+				FRAMEWORK_SEARCH_PATHS = (
+				);
 			};
 			name = Release;
 		};
@@ -1253,6 +1259,8 @@
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
 				);
+				FRAMEWORK_SEARCH_PATHS = (
+				);
 			};
 			name = Debug;
 		};
@@ -1273,6 +1281,8 @@
 				VERSIONING_SYSTEM = "apple-generic";
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
+				);
+				FRAMEWORK_SEARCH_PATHS = (
 				);
 			};
 			name = Release;
@@ -1306,6 +1316,8 @@
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
 				);
+				FRAMEWORK_SEARCH_PATHS = (
+				);
 			};
 			name = Debug;
 		};
@@ -1338,6 +1350,8 @@
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
 				);
+				FRAMEWORK_SEARCH_PATHS = (
+				);
 			};
 			name = Release;
 		};
@@ -1369,6 +1383,8 @@
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
 				);
+				FRAMEWORK_SEARCH_PATHS = (
+				);
 			};
 			name = Debug;
 		};
@@ -1399,6 +1415,8 @@
 				);
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
+				);
+				FRAMEWORK_SEARCH_PATHS = (
 				);
 			};
 			name = Release;

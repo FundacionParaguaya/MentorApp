@@ -1,13 +1,13 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import { Text, StyleSheet, View, Platform } from 'react-native'
-import { deleteDraft } from '../../redux/actions'
-import store from '../../redux/store'
-import Popup from '../Popup'
-import Button from '../Button'
-import i18n from '../../i18n'
-import globalStyles from '../../globalStyles'
-import colors from '../../theme.json'
+import { deleteDraft } from '../redux/actions'
+import store from '../redux/store'
+import Popup from '../components/Popup'
+import Button from '../components/Button'
+import i18n from '../i18n'
+import globalStyles from '../globalStyles'
+import colors from '../theme.json'
 
 export default class BackDraftPopup extends Component {
   render() {
@@ -19,7 +19,7 @@ export default class BackDraftPopup extends Component {
             ? i18n.t('views.modals.lifeMapWillNotBeSaved')
             : i18n.t('views.modals.weCannotContinueToCreateTheLifeMap')}
         </Text>
-        <Text 
+        <Text
           style={[globalStyles.centerText, styles.subline]}
           accessibilityLabel={'Are you sure you want to go back?'}
         >
