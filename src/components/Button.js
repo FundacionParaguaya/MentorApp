@@ -66,6 +66,9 @@ class Button extends Component {
         disabled={disabled}
         onHideUnderlay={this.togglePressedState}
         onShowUnderlay={this.togglePressedState}
+        accessibilityRole="button"
+        accessibilityLabel={text}
+        accessibilityHint={disabled ? 'disabled' : ''}
       >
         <View style={{ flexDirection: 'row' }}>
           {icon ? (
