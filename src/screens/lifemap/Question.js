@@ -152,7 +152,7 @@ export class Question extends Component {
   render() {
     const draft = this.getDraft()
     const { t, dimensions, navigation } = this.props
-    const { navigationHeight } = this.props.navigation.state.params
+    const { navigationHeight } = navigation.state.params
     const headerHeight = !!navigationHeight ? navigationHeight : 95
     const paddingOfStickyFooter = 15
     const bodyHeight = dimensions.height - headerHeight - paddingOfStickyFooter
