@@ -47,10 +47,10 @@ export class Login extends Component {
       : this.setState({ connection: false, error: 'No connection' })
 
   onConnectivityChange = () => {
-    NetInfo.addEventListener('connectionChange', () =>
+    NetInfo.addEventListener('connectionChange', conncection =>
       this.setState({
-        connection: !this.state.connection,
-        error: this.state.connection ? 'No connection' : false
+        connection: conncection.type === 'none' ? false : true,
+        error: conncection.type === 'none' ? 'No connection' : false
       })
     )
   }
