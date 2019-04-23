@@ -60,7 +60,10 @@ export default class StickyFooter extends Component {
           />
         )}
         {this.props.fullHeight ? (
-          <View style={{ width: '100%', flexGrow: 2 }}>
+          <View
+            style={{ width: '100%', flexGrow: 2 }}
+            keyboardShouldPersistTaps={'handled'}
+          >
             {this.props.children}
           </View>
         ) : (
