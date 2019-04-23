@@ -5,9 +5,11 @@ import {
   ActivityIndicator,
   Text,
   Image,
+  Keyboard,
   TouchableHighlight,
   NetInfo
 } from 'react-native'
+import { GooglePlacesAutocomplete } from 'react-native-google-places-autocomplete'
 import { connect } from 'react-redux'
 import PropTypes from 'prop-types'
 import { withNamespaces } from 'react-i18next'
@@ -17,7 +19,6 @@ import { addSurveyData, addDraftProgress } from '../../redux/actions'
 import TextInput from '../../components/TextInput'
 import globalStyles from '../../globalStyles'
 import colors from '../../theme.json'
-import SearchBar from '../../components/SearchBar'
 import Select from '../../components/Select'
 import marker from '../../../assets/images/marker.png'
 import center from '../../../assets/images/centerMap.png'
@@ -27,6 +28,7 @@ import { getDraft } from './helpers'
 
 export class Location extends Component {
   state = {
+    showList: false,
     showErrors: false,
     latitude: null,
     longitude: null,
@@ -66,26 +68,6 @@ export class Location extends Component {
     return draft.familyData[field]
   }
 
-  searcForAddress = () => {
-    fetch(
-      `https://maps.googleapis.com/maps/api/geocode/json?address=${this.state.searchAddress.replace(
-        ' ',
-        '+'
-      )}&key=AIzaSyBLGYYy86_7QPT-dKgUnFMIJyhUE6AGVwM`
-    )
-      .then(r =>
-        r
-          .json()
-          .then(res =>
-            this.setState({
-              latitude: res.results[0].geometry.location.lat,
-              longitude: res.results[0].geometry.location.lng
-            })
-          )
-          .catch()
-      )
-      .catch()
-  }
   onDragMap = region => {
     const { coordinates } = region.geometry
     const longitude = coordinates[0]
@@ -134,8 +116,13 @@ export class Location extends Component {
   getDeviceCoordinates = isOnline => {
     const { survey } = this.props.nav
 
+    this.setState({
+      centeringMap: true
+    })
+
     if (isOnline) {
       navigator.geolocation.getCurrentPosition(
+        // if location is available and we are online center on it
         position => {
           this.setState({
             loading: false,
@@ -149,17 +136,25 @@ export class Location extends Component {
           this.addSurveyData(position.coords.accuracy, 'accuracy')
         },
         () => {
-          const position = survey.surveyConfig.surveyLocation
-          this.setState({
-            loading: false,
-            centeringMap: false,
-            latitude: position.latitude,
-            longitude: position.longitude,
-            accuracy: 0
-          })
-          this.addSurveyData(position.latitude, 'latitude')
-          this.addSurveyData(position.longitude, 'longitude')
-          this.addSurveyData(0, 'accuracy')
+          // if no location available reset to survey location only when
+          // no location comes from the draft
+          if (!this.getFieldValue(getDraft(), 'latitude')) {
+            const position = survey.surveyConfig.surveyLocation
+            this.setState({
+              loading: false,
+              centeringMap: false,
+              latitude: position.latitude,
+              longitude: position.longitude,
+              accuracy: 0
+            })
+            this.addSurveyData(position.latitude, 'latitude')
+            this.addSurveyData(position.longitude, 'longitude')
+            this.addSurveyData(0, 'accuracy')
+          } else {
+            this.setState({
+              centeringMap: false
+            })
+          }
         },
         {
           enableHighAccuracy: false,
@@ -168,6 +163,7 @@ export class Location extends Component {
         }
       )
     } else {
+      // if offline map is available center on it
       if (survey.title === 'Chile - Geco') {
         const position = survey.surveyConfig.surveyLocation
         this.setState({
@@ -183,6 +179,7 @@ export class Location extends Component {
         this.addSurveyData(0, 'accuracy')
       } else {
         navigator.geolocation.getCurrentPosition(
+          // if no offline map is available, but there is location save it
           position => {
             this.setState({
               loading: false,
@@ -196,6 +193,7 @@ export class Location extends Component {
             this.addSurveyData(position.coords.longitude, 'longitude')
             this.addSurveyData(position.coords.accuracy, 'accuracy')
           },
+          // otherwise ask for more details
           () => {
             this.setState({
               loading: false,
@@ -214,6 +212,16 @@ export class Location extends Component {
   }
 
   componentDidMount() {
+    // set search location keyboard events
+    this.keyboardDidShowListener = Keyboard.addListener(
+      'keyboardDidShow',
+      this._keyboardDidShow
+    )
+    this.keyboardDidHideListener = Keyboard.addListener(
+      'keyboardDidHide',
+      this._keyboardDidHide
+    )
+
     const draft = this.props.navigation.getParam('family') || getDraft()
 
     // the there is no save country in the draft, set it to the survey one
@@ -249,6 +257,16 @@ export class Location extends Component {
         onPressBack: this.onPressBack
       })
     }
+  }
+  componentWillUnmount() {
+    this.keyboardDidShowListener.remove()
+    this.keyboardDidHideListener.remove()
+  }
+  _keyboardDidHide = () => {
+    this.setState({ showList: false })
+  }
+  _keyboardDidShow = () => {
+    this.setState({ showList: true })
   }
 
   onPressBack = () => {
@@ -299,7 +317,6 @@ export class Location extends Component {
       latitude,
       longitude,
       accuracy,
-      searchAddress,
       centeringMap,
       loading,
       showErrors,
@@ -307,7 +324,7 @@ export class Location extends Component {
       showForm
     } = this.state
 
-    const draft = this.props.navigation.getParam('family') || getDraft()
+    const draft = getDraft()
 
     if (loading) {
       return (
@@ -341,13 +358,58 @@ export class Location extends Component {
             <Image source={marker} />
           </View>
           {!readonly && showSearch && (
-            <SearchBar
-              id="searchAddress"
-              style={styles.search}
+            <GooglePlacesAutocomplete
+              keyboardShouldPersistTaps={'handled'}
               placeholder={t('views.family.searchByStreetOrPostalCode')}
-              onChangeText={searchAddress => this.setState({ searchAddress })}
-              onSubmit={this.searcForAddress}
-              value={searchAddress}
+              autoFocus={false}
+              returnKeyType={'default'}
+              fetchDetails={true}
+              onPress={(data, details = null) => {
+                this.setState({
+                  latitude: details.geometry.location.lat,
+                  longitude: details.geometry.location.lng,
+                  showList: false
+                })
+              }}
+              query={{
+                key: 'AIzaSyBLGYYy86_7QPT-dKgUnFMIJyhUE6AGVwM',
+                language: 'en', // language of the results
+                types: '(cities)' // default: 'geocode'
+              }}
+              styles={{
+                container: styles.search,
+                listView: {
+                  backgroundColor: colors.white,
+                  display: this.state.showList ? 'flex' : 'none',
+                  marginHorizontal: 9,
+                  marginTop: 8
+                },
+                textInputContainer: {
+                  backgroundColor: 'transparent',
+                  borderBottomWidth: 0,
+                  borderTopWidth: 0,
+                  alignItems: 'center',
+                  flexDirection: 'row'
+                },
+                description: {
+                  fontWeight: 'bold'
+                },
+                predefinedPlacesDescription: {
+                  color: '#1faadb'
+                },
+                textInput: {
+                  height: 52,
+                  backgroundColor: '#fff',
+                  borderRadius: 2,
+                  borderWidth: 1,
+                  borderColor: colors.lightgrey,
+                  fontFamily: 'Roboto',
+                  fontSize: 16,
+                  lineHeight: 21,
+                  color: colors.lightdark
+                }
+              }}
+              currentLocation={false}
             />
           )}
           <MapboxGL.MapView
@@ -540,7 +602,7 @@ const styles = StyleSheet.create({
     alignItems: 'center'
   },
   search: {
-    zIndex: 2,
+    zIndex: 3,
     position: 'absolute',
     top: 7.5,
     right: 7.5,
