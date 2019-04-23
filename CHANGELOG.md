@@ -1,5 +1,28 @@
 # Change Log
 
+## [v1.7.1](https://github.com/FundacionParaguaya/MentorApp/tree/v1.7.1) (2019-04-23)
+[Full Changelog](https://github.com/FundacionParaguaya/MentorApp/compare/v1.7.0...v1.7.1)
+
+**Implemented enhancements:**
+
+- Map UI - Online map full screen and automatically set country based on location [\#527](https://github.com/FundacionParaguaya/MentorApp/issues/527)
+- Navigation refactor part 2 - accessibility, translation [\#522](https://github.com/FundacionParaguaya/MentorApp/issues/522)
+
+**Fixed bugs:**
+
+- Translate these 2 titles to Spanish [\#525](https://github.com/FundacionParaguaya/MentorApp/issues/525)
+
+**Closed issues:**
+
+- Delete these Geco users [\#542](https://github.com/FundacionParaguaya/MentorApp/issues/542)
+- HotFix for GECO Hub Offline Map Coordinates  [\#533](https://github.com/FundacionParaguaya/MentorApp/issues/533)
+- Editorial changes on titles [\#492](https://github.com/FundacionParaguaya/MentorApp/issues/492)
+
+**Merged pull requests:**
+
+- Offline map states [\#547](https://github.com/FundacionParaguaya/MentorApp/pull/547) ([Danman7](https://github.com/Danman7))
+- Navigation refactor [\#539](https://github.com/FundacionParaguaya/MentorApp/pull/539) ([Danman7](https://github.com/Danman7))
+
 ## [v1.7.0](https://github.com/FundacionParaguaya/MentorApp/tree/v1.7.0) (2019-04-17)
 [Full Changelog](https://github.com/FundacionParaguaya/MentorApp/compare/v1.6.8...v1.7.0)
 
@@ -16,7 +39,6 @@
 - Bug in accessing a "pending sync" direct from a family profile [\#504](https://github.com/FundacionParaguaya/MentorApp/issues/504)
 - Location not functioning when ON [\#499](https://github.com/FundacionParaguaya/MentorApp/issues/499)
 - Required Priority Field does not state asterisk [\#487](https://github.com/FundacionParaguaya/MentorApp/issues/487)
-- Android Header Elements Missing [\#465](https://github.com/FundacionParaguaya/MentorApp/issues/465)
 - Offline map in blank [\#458](https://github.com/FundacionParaguaya/MentorApp/issues/458)
 - Zoom in map not accurate [\#456](https://github.com/FundacionParaguaya/MentorApp/issues/456)
 
@@ -30,7 +52,6 @@
 - The Offline Map - Rethinking, Technical and from a UX Perspectective [\#470](https://github.com/FundacionParaguaya/MentorApp/issues/470)
 - Families List in Alphabetical Order [\#464](https://github.com/FundacionParaguaya/MentorApp/issues/464)
 - Family Member Page Improvements [\#463](https://github.com/FundacionParaguaya/MentorApp/issues/463)
-- Unit Tests - Review and Improve [\#451](https://github.com/FundacionParaguaya/MentorApp/issues/451)
 - Design Amends for Accessiblity [\#448](https://github.com/FundacionParaguaya/MentorApp/issues/448)
 - Editorial Amends [\#437](https://github.com/FundacionParaguaya/MentorApp/issues/437)
 - Add number of Families to Families Screen [\#436](https://github.com/FundacionParaguaya/MentorApp/issues/436)

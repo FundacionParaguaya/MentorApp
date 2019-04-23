@@ -6,8 +6,10 @@ import SearchBar from '../../components/SearchBar'
 
 const createTestProps = props => ({
   loadFamilies: jest.fn(),
+  updateNav: jest.fn(),
   env: 'development',
   t: value => value,
+
   navigation: {
     navigate: jest.fn(),
     setParams: jest.fn()

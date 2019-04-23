@@ -1,14 +1,18 @@
 import React from 'react'
 import { StyleSheet, View, Platform } from 'react-native'
 import { AndroidBackHandler } from 'react-navigation-backhandler'
-import ExitDraftPopup from './ExitDraftPopup'
 import BackDraftPopup from './BackDraftPopup'
-import colors from '../../theme.json'
-import IconButton from '../IconButton'
+import colors from '../theme.json'
+import IconButton from '../components/IconButton'
+import CloseButton from './CloseButton'
 
 // Each of the major views has a stack that needs the same nav options.
 // These options handle the header styles and menu icon.
-export const generateNavOptions = ({ navigation, burgerMenu = true, shadowHeader = true, headerHeight = 66 }) => ({
+export const generateNavStyles = ({
+  navigation,
+  shadowHeader = true,
+  headerHeight = 66
+}) => ({
   headerTitleStyle: {
     ...Platform.select({
       ios: {
@@ -22,13 +26,13 @@ export const generateNavOptions = ({ navigation, burgerMenu = true, shadowHeader
     fontWeight: '200',
     lineHeight: 26,
     marginLeft: shadowHeader ? 20 : 'auto',
-    marginRight: shadowHeader ? 0 : 'auto' 
+    marginRight: shadowHeader ? 0 : 'auto'
   },
   headerStyle: {
     height: headerHeight,
     backgroundColor: colors.white,
     elevation: shadowHeader ? 1 : 0,
-    paddingTop: shadowHeader ? 0 : 10 
+    paddingTop: shadowHeader ? 0 : 10
   },
   headerLeftContainerStyle: {
     marginLeft: 19
@@ -36,44 +40,7 @@ export const generateNavOptions = ({ navigation, burgerMenu = true, shadowHeader
   headerRightContainerStyle: {
     marginRight: -16
   },
-  headerRight:
-    !navigation.getParam('family') &&
-    !navigation.getParam('member') &&
-    navigation.state.routeName !== 'Final' &&
-    !burgerMenu &&
-    !navigation.getParam('withoutCloseButton') ? (
-      <View>
-        <IconButton
-          style={styles.touchable}
-          onPress={() => navigation.setParams({ modalOpen: true })}
-          icon="close"
-          size={25}
-          accessible={true}
-          accessibilityLabel={'Exit'}
-        />
-        <ExitDraftPopup
-          isOpen={navigation.getParam('modalOpen')}
-          onClose={() => navigation.setParams({ modalOpen: false })}
-          navigation={navigation}
-          routeName={navigation.state.routeName}
-          deleteOnExit={navigation.getParam('deleteOnExit')}
-          draftId={navigation.getParam('draftId')}
-        />
-      </View>
-    ) : (
-      <View />
-    ),
-  headerLeft: burgerMenu ? (
-    <IconButton
-      style={styles.touchable}
-      onPress={() => navigation.toggleDrawer()}
-      icon="menu"
-      size={30}
-      badge
-      accessible={true}
-      accessibilityLabel={'Navigation'}
-    />
-  ) : (
+  headerLeft: (
     <AndroidBackHandler
       onBackPress={() => {
         if (navigation.getParam('onPressBack')) {
@@ -110,6 +77,31 @@ export const generateNavOptions = ({ navigation, burgerMenu = true, shadowHeader
     </AndroidBackHandler>
   )
 })
+
+export const addMenuIcon = navigation => ({
+  headerLeft: (
+    <IconButton
+      style={styles.touchable}
+      onPress={() => navigation.toggleDrawer()}
+      icon="menu"
+      size={30}
+      badge
+      accessible={true}
+      accessibilityLabel={'Navigation'}
+    />
+  )
+})
+
+export const addCloseIcon = navigation =>
+  !navigation.getParam('family') ? (
+    {
+      headerRight: (
+        <CloseButton navigation={navigation} style={styles.touchable} />
+      )
+    }
+  ) : (
+    <View />
+  )
 
 const styles = StyleSheet.create({
   touchable: {

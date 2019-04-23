@@ -5,20 +5,21 @@ import {
   Text,
   StyleSheet,
   View,
-  Platform
+  Platform,
+  AsyncStorage
 } from 'react-native'
+import MapboxGL from '@mapbox/react-native-mapbox-gl'
 import { withNamespaces } from 'react-i18next'
 import { connect } from 'react-redux'
 import PropTypes from 'prop-types'
-import globalStyles from '../../globalStyles'
-import IconButtonComponent from '../IconButton'
-import i18n from '../../i18n'
-import colors from '../../theme.json'
-import { switchLanguage, setSyncedState } from '../../redux/actions'
+import globalStyles from '../globalStyles'
+import IconButton from '../components/IconButton'
+import i18n from '../i18n'
+import colors from '../theme.json'
+import { switchLanguage, logout, updateNav } from '../redux/actions'
 import LogoutPopup from './LogoutPopup'
-import ExitDraftPopup from './ExitDraftPopup'
-import dashboardIcon from '../../../assets/images/icon_dashboard.png'
-import familyNavIcon from '../../../assets/images/icon_family_nav.png'
+import dashboardIcon from '../../assets/images/icon_dashboard.png'
+import familyNavIcon from '../../assets/images/icon_family_nav.png'
 
 // Component that renders the drawer menu content. DrawerItems are the links to
 // the given views.
@@ -27,6 +28,7 @@ export class DrawerContent extends Component {
     checkboxesVisible: false,
     ckeckedBoxes: 0,
     showErrors: false,
+    logingOut: false,
     activeTab: 'Dashboard'
   }
 
@@ -35,16 +37,26 @@ export class DrawerContent extends Component {
     this.props.switchLanguage(lng) // set the redux language for next app use
     this.props.navigation.toggleDrawer() // close drawer
   }
-  logUserOut = () => {
+  logUserOut = async () => {
     const { checkboxesVisible, ckeckedBoxes } = this.state
 
     // allow the user to logout only if he checks all boxes
     if (!checkboxesVisible || (checkboxesVisible && ckeckedBoxes === 4)) {
       this.setState({
-        showErrors: false
+        showErrors: false,
+        logingOut: true
       })
 
-      this.props.setSyncedState('logout')
+      // delete the cached map packs
+      if (MapboxGL.offlineManager) {
+        await MapboxGL.offlineManager.deletePack('GECO')
+      }
+
+      // clear the async storage and reset the store
+      AsyncStorage.clear(() => {
+        this.props.logout()
+        this.props.navigation.navigate('Login')
+      })
     } else {
       this.setState({
         showErrors: true
@@ -63,42 +75,53 @@ export class DrawerContent extends Component {
     })
   }
   navigateToScreen = (screen, currentStack) => {
-    const { navigation } = this.props
+    // navigation comes from react-navigation, nav comes from redux
+    const { navigation, nav } = this.props
+
     this.setState({ activeTab: screen })
     navigation.toggleDrawer()
-    currentStack.key === 'Surveys' && currentStack.index
-      ? navigation.setParams({ modalOpen: true })
-      : navigation.navigate(screen)
+
+    if (currentStack.key === 'Surveys' && currentStack.index) {
+      if (nav.deleteDraftOnExit) {
+        this.props.updateNav('openModal', 'deleteDraft')
+      } else if (
+        navigation.state.routeName === 'Terms' ||
+        navigation.state.routeName === 'Privacy'
+      ) {
+        this.props.updateNav('openModal', 'exitOnTerms')
+      } else {
+        this.props.updateNav('openModal', 'exitDraft')
+      }
+
+      this.props.updateNav('beforeCloseModal', () => {
+        // reset navigation
+        navigation.popToTop()
+        navigation.navigate(this.state.activeTab)
+        this.props.updateNav('beforeCloseModal', null)
+      })
+    } else {
+      navigation.navigate(screen)
+    }
   }
   render() {
     const { lng, user, navigation } = this.props
-    const { checkboxesVisible, showErrors } = this.state
+    const { checkboxesVisible, showErrors, logingOut } = this.state
     const unsyncedDrafts = this.props.drafts.filter(
       draft => draft.status !== 'Synced'
     ).length
     const { state } = navigation
     const currentStack = state.routes[state.index]
-    const stackParams = currentStack.routes[currentStack.index].params
-
-    let draftId, deleteOnExit
-    if (stackParams && stackParams !== null) {
-      draftId = stackParams.draftId !== undefined ? stackParams.draftId : false
-      deleteOnExit =
-        stackParams.deleteOnExit !== undefined
-          ? stackParams.deleteOnExit
-          : false
-    }
 
     return (
       <ScrollView contentContainerStyle={styles.container}>
         <View>
           <Image
             style={{ height: 172, width: 304 }}
-            source={require('../../../assets/images/navigation_image.png')}
+            source={require('../../assets/images/navigation_image.png')}
           />
           {/* Language Switcher */}
           <View style={styles.languageSwitch}>
-            <IconButtonComponent
+            <IconButton
               id="en"
               onPress={() => this.changeLanguage('en')}
               text="ENG"
@@ -112,7 +135,7 @@ export class DrawerContent extends Component {
             <Text style={[globalStyles.h3, styles.whiteText]}>
               {'  '}|{'  '}
             </Text>
-            <IconButtonComponent
+            <IconButton
               id="es"
               onPress={() => this.changeLanguage('es')}
               text="ESP"
@@ -134,7 +157,7 @@ export class DrawerContent extends Component {
         </View>
         <View style={styles.itemsContainer}>
           <View>
-            <IconButtonComponent
+            <IconButton
               id="dashboard"
               style={{
                 ...styles.navItem,
@@ -146,7 +169,7 @@ export class DrawerContent extends Component {
               text={i18n.t('views.home')}
               textStyle={styles.label}
             />
-            <IconButtonComponent
+            <IconButton
               id="surveys"
               style={{
                 ...styles.navItem,
@@ -159,7 +182,7 @@ export class DrawerContent extends Component {
               textStyle={styles.label}
               text={i18n.t('views.createLifemap')}
             />
-            <IconButtonComponent
+            <IconButton
               id="families"
               style={{
                 ...styles.navItem,
@@ -172,7 +195,7 @@ export class DrawerContent extends Component {
               text={i18n.t('views.families')}
               textStyle={styles.label}
             />
-            <IconButtonComponent
+            <IconButton
               id="sync"
               style={{
                 ...styles.navItem,
@@ -189,7 +212,7 @@ export class DrawerContent extends Component {
           </View>
         </View>
         {/* Logout button */}
-        <IconButtonComponent
+        <IconButton
           id="logout"
           style={styles.navItem}
           onPress={() => {
@@ -211,6 +234,7 @@ export class DrawerContent extends Component {
           logUserOut={this.logUserOut}
           showCheckboxes={this.showCheckboxes}
           onPressCheckbox={this.onPressCheckbox}
+          logingOut={logingOut}
           onModalClose={() => {
             this.setState({
               checkboxesVisible: false,
@@ -220,40 +244,34 @@ export class DrawerContent extends Component {
             navigation.setParams({ logoutModalOpen: false })
           }}
         />
-        {/* Exit Popup */}
-        <ExitDraftPopup
-          navigation={navigation}
-          isOpen={navigation.getParam('modalOpen')}
-          onClose={() => navigation.setParams({ modalOpen: false })}
-          routeName={currentStack.routes[currentStack.index].routeName}
-          deleteOnExit={deleteOnExit}
-          draftId={draftId}
-          navigateTo={this.state.activeTab}
-        />
       </ScrollView>
     )
   }
 }
 
 DrawerContent.propTypes = {
+  nav: PropTypes.object.isRequired,
   lng: PropTypes.string,
   switchLanguage: PropTypes.func.isRequired,
-  setSyncedState: PropTypes.func.isRequired,
+  updateNav: PropTypes.func.isRequired,
+  logout: PropTypes.func.isRequired,
   navigation: PropTypes.object.isRequired,
   user: PropTypes.object.isRequired,
   drafts: PropTypes.array.isRequired,
   env: PropTypes.oneOf(['production', 'demo', 'testing', 'development'])
 }
 
-const mapStateToProps = ({ env, user, drafts }) => ({
+const mapStateToProps = ({ env, user, drafts, nav }) => ({
   env,
   user,
-  drafts
+  drafts,
+  nav
 })
 
 const mapDispatchToProps = {
   switchLanguage,
-  setSyncedState
+  logout,
+  updateNav
 }
 
 export default withNamespaces()(
