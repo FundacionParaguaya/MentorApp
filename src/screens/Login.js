@@ -111,7 +111,7 @@ export class Login extends Component {
             autoCapitalize="none"
             style={{
               ...styles.input,
-              borderColor: this.state.error ? colors.red : colors.green
+              borderColor: this.state.error ? colors.red : colors.palegreen
             }}
             onChangeText={username => this.setState({ username })}
           />
@@ -122,7 +122,7 @@ export class Login extends Component {
             autoCapitalize="none"
             style={{
               ...styles.input,
-              borderColor: this.state.error ? colors.red : colors.green,
+              borderColor: this.state.error ? colors.red : colors.palegreen,
               marginBottom: this.state.error ? 0 : 25
             }}
             onChangeText={password => this.setState({ password })}

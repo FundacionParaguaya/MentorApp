@@ -42,7 +42,7 @@ describe('LifemapVisual Component', () => {
           .find(Icon)
           .at(2)
           .props().color
-      ).toEqual(colors.green)
+      ).toEqual(colors.palegreen)
     })
 
     it('renders yellow color', () => {

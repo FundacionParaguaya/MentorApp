@@ -23,7 +23,7 @@ class Counter extends Component {
         <View style={styles.counter}>
           <Text style={styles.count}> {this.props.count} </Text>
           <TouchableHighlight
-            underlayColor={colors.green}
+            underlayColor={colors.palegreen}
             style={styles.countButton}
             onPress={() => this.props.editCounter('minus')}
             disabled={this.props.readonly}
@@ -35,12 +35,12 @@ class Counter extends Component {
             <Icon
               style={styles.icon}
               name="minus"
-              color={this.state.minusPressed ? colors.white : colors.green}
+              color={this.state.minusPressed ? colors.white : colors.palegreen}
               size={30}
             />
           </TouchableHighlight>
           <TouchableHighlight
-            underlayColor={colors.green}
+            underlayColor={colors.palegreen}
             style={styles.countButton}
             onHideUnderlay={() => this.togglePressedState('plusPressed', false)}
             onShowUnderlay={() => this.togglePressedState('plusPressed', true)}
@@ -50,7 +50,7 @@ class Counter extends Component {
             <Icon
               style={styles.icon}
               name="plus"
-              color={this.state.plusPressed ? colors.white : colors.green}
+              color={this.state.plusPressed ? colors.white : colors.palegreen}
               size={30}
             />
           </TouchableHighlight>
@@ -87,7 +87,7 @@ const styles = StyleSheet.create({
   },
   countButton: {
     margin: 1,
-    borderColor: colors.green,
+    borderColor: colors.palegreen,
     borderWidth: 1,
     borderRadius: 2
   },

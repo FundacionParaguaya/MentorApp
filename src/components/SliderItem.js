@@ -9,7 +9,7 @@ import globalStyles from '../globalStyles'
 const slideColors = {
   1: 'red',
   2: 'gold',
-  3: 'green'
+  3: 'palegreen'
 }
 
 export default class SliderItem extends Component {
