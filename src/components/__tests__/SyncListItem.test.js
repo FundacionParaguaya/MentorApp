@@ -1,8 +1,7 @@
 import React from 'react'
 
 import { shallow } from 'enzyme'
-import { Text, View } from 'react-native'
-import Icon from 'react-native-vector-icons/MaterialIcons'
+import { Text } from 'react-native'
 import SyncListItem from '../sync/SyncListItem'
 
 const createTestProps = props => ({
@@ -28,7 +27,6 @@ describe('SyncListItem Component', () => {
   })
 
   describe('rendering', () => {
-
     it('renders the correct number of family members in first Text component', () => {
       expect(
         wrapper

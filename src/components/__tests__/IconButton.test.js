@@ -3,7 +3,7 @@ import { shallow } from 'enzyme'
 import { TouchableHighlight, Text, Image } from 'react-native'
 import Icon from 'react-native-vector-icons/MaterialIcons'
 import CommunityIcon from 'react-native-vector-icons/MaterialCommunityIcons'
-import { IconButton } from '../IconButton'
+import { IconButtonComponent } from '../IconButton'
 
 const createTestProps = props => ({
   icon: 'menu',
@@ -21,7 +21,7 @@ describe('IconButton', () => {
 
   beforeEach(() => {
     props = createTestProps()
-    wrapper = shallow(<IconButton {...props} />)
+    wrapper = shallow(<IconButtonComponent {...props} />)
   })
 
   it('is not pressed by default', () => {
@@ -57,7 +57,7 @@ describe('IconButton', () => {
 
   it('displays community icon', () => {
     props = createTestProps({ communityIcon: 'account' })
-    wrapper = shallow(<IconButton {...props} />)
+    wrapper = shallow(<IconButtonComponent {...props} />)
     expect(wrapper.find(CommunityIcon)).toHaveLength(1)
     expect(wrapper.find(CommunityIcon)).toHaveProp({ name: 'account' })
   })
@@ -71,7 +71,7 @@ describe('IconButton', () => {
 
   it('displays image', () => {
     props = createTestProps({ imageSource: 2 })
-    wrapper = shallow(<IconButton {...props} />)
+    wrapper = shallow(<IconButtonComponent {...props} />)
     expect(wrapper.find(Image)).toHaveLength(1)
     expect(wrapper.find(Image)).toHaveProp({ source: 2 })
   })

@@ -6,7 +6,7 @@ import CommunityIcon from 'react-native-vector-icons/MaterialCommunityIcons'
 import PropTypes from 'prop-types'
 import colors from '../theme.json'
 
-export class IconButton extends Component {
+export class IconButtonComponent extends Component {
   state = {
     pressed: false
   }
@@ -99,7 +99,7 @@ export class IconButton extends Component {
   }
 }
 
-IconButton.propTypes = {
+IconButtonComponent.propTypes = {
   style: PropTypes.object,
   iconStyle: PropTypes.object,
   icon: PropTypes.string,
@@ -113,7 +113,7 @@ IconButton.propTypes = {
   drafts: PropTypes.array,
   offline: PropTypes.object.isRequired,
   accessible: PropTypes.bool,
-  accessibilityLabel: PropTypes.oneOfType([PropTypes.bool, PropTypes.string]),
+  accessibilityLabel: PropTypes.oneOfType([PropTypes.bool, PropTypes.string])
 }
 
 const styles = StyleSheet.create({
@@ -141,4 +141,4 @@ const styles = StyleSheet.create({
 
 const mapStateToProps = ({ offline, drafts }) => ({ offline, drafts })
 
-export default connect(mapStateToProps)(IconButton)
+export default connect(mapStateToProps)(IconButtonComponent)

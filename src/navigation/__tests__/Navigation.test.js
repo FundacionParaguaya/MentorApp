@@ -1,8 +1,8 @@
 import React from 'react'
 import { shallow } from 'enzyme'
 import { Image } from 'react-native'
-import { AppStack } from '../navigation'
-import { DrawerContent } from '../navigation/DrawerContent'
+import { DrawerNavigation } from '../stacks'
+import { DrawerContent } from '../DrawerContent'
 
 const createTestProps = props => ({
   navigation: {
@@ -20,7 +20,7 @@ const createTestProps = props => ({
 
 describe('Navigation', () => {
   describe('Drawer', () => {
-    const wrapper = shallow(<AppStack />)
+    const wrapper = shallow(<DrawerNavigation />)
     it('contains all links', () => {
       expect(wrapper.instance().state.nav.routes[0].routes).toHaveLength(4)
     })
@@ -54,6 +54,7 @@ describe('Navigation', () => {
         activeTab: 'Dashboard',
         checkboxesVisible: false,
         ckeckedBoxes: 0,
+        logingOut: false,
         showErrors: false
       })
     })

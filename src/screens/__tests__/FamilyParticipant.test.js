@@ -9,28 +9,11 @@ import StickyFooter from '../../components/StickyFooter'
 
 const createTestProps = props => ({
   t: value => value,
+  updateNav: jest.fn(),
   createDraft: jest.fn(),
   deleteDraft: jest.fn(),
-  addSurveyFamilyMemberData: jest.fn(),
-  addDraftProgress: jest.fn(),
-  addSurveyData: jest.fn(),
-  removeFamilyMembers: jest.fn(),
-  navigation: {
-    navigate: jest.fn(),
-    getParam: jest.fn(param => {
-      if (param === 'draftId' || param === 'family') {
-        return null
-      } else {
-        return 1
-      }
-    }),
-    setParams: jest.fn(),
-    reset: jest.fn(),
-    isFocused: jest.fn()
-  },
-  drafts: [draft],
-  surveys: [
-    {
+  nav: {
+    survey: {
       id: 1,
       title: 'Dev Demo',
       survey_version_id: 2,
@@ -67,7 +50,25 @@ const createTestProps = props => ({
         ]
       }
     }
-  ],
+  },
+  addSurveyFamilyMemberData: jest.fn(),
+  addDraftProgress: jest.fn(),
+  addSurveyData: jest.fn(),
+  removeFamilyMembers: jest.fn(),
+  navigation: {
+    navigate: jest.fn(),
+    getParam: jest.fn(param => {
+      if (param === 'draftId' || param === 'family') {
+        return null
+      } else {
+        return 1
+      }
+    }),
+    setParams: jest.fn(),
+    reset: jest.fn(),
+    isFocused: jest.fn()
+  },
+  drafts: [draft],
   env: 'development',
   user: {
     token: ''
@@ -90,31 +91,8 @@ describe('Family Participant View', () => {
         )
       })
 
-      it('sets proper surveyId when there is no draft', () => {
-        expect(wrapper.instance().surveyId).toBe(1)
-      })
-
-      it('sets survey with surveyConfig', () => {
-        expect(wrapper.instance().survey.id).toBe(1)
-        expect(wrapper.instance().survey.title).toBe('Dev Demo')
-        expect(wrapper.instance().survey.surveyConfig).toEqual(
-          expect.any(Object)
-        )
-      })
-
       it('creates a new draft on componentDidMount if such does not exist', () => {
         expect(wrapper.instance().props.createDraft).toHaveBeenCalledTimes(1)
-      })
-      it('calls setParam on mount', () => {
-        expect(
-          wrapper.instance().props.navigation.setParams
-        ).toHaveBeenCalledTimes(1)
-      })
-
-      it('calls addDraftProgress on mount', () => {
-        expect(wrapper.instance().props.addDraftProgress).toHaveBeenCalledTimes(
-          1
-        )
       })
     })
 
@@ -140,10 +118,6 @@ describe('Family Participant View', () => {
 
       it('sets draftId', () => {
         expect(wrapper.instance().draftId).toBe(4)
-      })
-
-      it('sets proper surveyId when there is a draft', () => {
-        expect(wrapper.instance().surveyId).toBe(1)
       })
 
       it('does not create a new draft on componentDidMount if such exists', () => {
@@ -200,7 +174,6 @@ describe('Family Participant View', () => {
   })
 
   describe('functionality', () => {
-
     it('calls addSurveyFamilyMemberData on input change', () => {
       wrapper
         .find(TextInput)
