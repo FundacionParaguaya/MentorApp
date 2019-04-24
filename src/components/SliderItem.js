@@ -34,7 +34,7 @@ export default class SliderItem extends Component {
   }
 
   render() {
-    const { slide, value, bodyHeight, dimensions } = this.props
+    const { slide, value, bodyHeight, portrait, tablet} = this.props
     const slideHeight = bodyHeight - 100
     const imageHeight = bodyHeight / 2
     const textAreaHeight = slideHeight - imageHeight // - 30 is margin top on image + icon
@@ -45,7 +45,7 @@ export default class SliderItem extends Component {
         underlayColor={'transparent'}
         style={[
           styles.slide,
-          !!dimensions && !!isPortrait(dimensions) ? { height: slideHeight } : {}
+          portrait ? { height: slideHeight } : {}
         ]}
         onPress={this.props.onPress}
         onHideUnderlay={() => this.togglePressedState(false)}
@@ -56,7 +56,7 @@ export default class SliderItem extends Component {
             source={slide.url}
             style={{
               ...styles.image,
-              height: !!dimensions && !!isPortrait(dimensions) ? imageHeight : imageHeight * 2
+              height: portrait ? imageHeight : imageHeight * 2
             }}
           />
 
@@ -73,8 +73,8 @@ export default class SliderItem extends Component {
 
           <View
             style={[
-              !!dimensions && !!isPortrait(dimensions) ? { height: textAreaHeight } : {},
-              { paddingBottom: 15 }
+              portrait ? { height: textAreaHeight } : {},
+              tablet ? styles.textVertical : { paddingBottom: 15 }
             ]}
             onStartShouldSetResponder={() => true}
           >
@@ -108,7 +108,9 @@ SliderItem.propTypes = {
   slide: PropTypes.object.isRequired,
   value: PropTypes.number,
   dimensions: PropTypes.object,
-  bodyHeight: PropTypes.number.isRequired
+  bodyHeight: PropTypes.number.isRequired,
+  tablet: PropTypes.bool,
+  portrait: PropTypes.bool
 }
 
 const styles = StyleSheet.create({

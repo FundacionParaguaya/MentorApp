@@ -50,6 +50,8 @@ export class Slider extends Component {
           value={this.props.value}
           bodyHeight={this.props.bodyHeight}
           dimensions={this.props.dimensions}
+          portrait={this.props.portrait}
+          tablet={this.props.tablet}
         />
       </View>
     )
@@ -68,7 +70,7 @@ export class Slider extends Component {
           renderItem={this.renderSlide}
           sliderWidth={width}
           containerCustomStyle={{ overflow: 'visible' }}
-          itemWidth={width - 60}
+          itemWidth={this.props.portrait ? width - 60 : width / 2 + 50}
           loop={true}
           inactiveSlideOpacity={1}
           activeSlideAlignment={'center'}
@@ -86,7 +88,9 @@ Slider.propTypes = {
   value: PropTypes.number,
   selectAnswer: PropTypes.func.isRequired,
   dimensions: PropTypes.object,
-  bodyHeight: PropTypes.number.isRequired
+  bodyHeight: PropTypes.number.isRequired,
+  tablet: PropTypes.bool,
+  portrait: PropTypes.bool
 }
 
 const styles = StyleSheet.create({

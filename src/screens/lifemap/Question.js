@@ -6,7 +6,7 @@ import StickyFooter from '../../components/StickyFooter'
 import { connect } from 'react-redux'
 import PropTypes from 'prop-types'
 import { withNamespaces } from 'react-i18next'
-import { isPortrait } from '../../responsivenessHelpers'
+import { isPortrait, isTablet } from '../../responsivenessHelpers'
 
 import {
   addSurveyData,
@@ -156,6 +156,8 @@ export class Question extends Component {
     const { navigationHeight } = navigation.state.params
     const headerHeight = !!navigationHeight ? navigationHeight : 95
     const paddingOfStickyFooter = 15
+    const portrait = !!dimensions && isPortrait(dimensions)
+    const tablet = !!dimensions && isTablet(dimensions)
     const bodyHeight = dimensions.height - headerHeight - paddingOfStickyFooter
 
     return (
@@ -165,12 +167,20 @@ export class Question extends Component {
         progress={draft ? draft.progress.current / draft.progress.total : 0}
         currentScreen="Question"
       >
-        <View style={!!dimensions && isPortrait(dimensions) ? { height: bodyHeight } : {}}>
+        <View
+          style={
+            (portrait && tablet) || (portrait && !tablet) 
+              ? { height: bodyHeight }
+              : !tablet && !portrait ? { height: dimensions.width } : {}
+          }
+        >
           <SliderComponent
             slides={this.slides}
             value={this.getFieldValue(draft, this.indicator.codeName)}
             selectAnswer={answer => this.selectAnswer(answer)}
             bodyHeight={bodyHeight}
+            tablet={tablet}
+            portrait={portrait}
           />
           <View style={styles.skip}>
             {this.indicator.required ? (
