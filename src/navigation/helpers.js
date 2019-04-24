@@ -75,7 +75,9 @@ export const generateNavStyles = ({
         />
       </View>
     </AndroidBackHandler>
-  )
+  ),
+  // empty view to help center titles where there is no close icon
+  headerRight: <View style={{ width: 25 }} />
 })
 
 export const addMenuIcon = navigation => ({

@@ -234,15 +234,38 @@ export class Location extends Component {
 
     // monitor for connection changes
     NetInfo.addEventListener('connectionChange', conncection => {
+      this.setState({
+        loading: true
+      })
+
+      const isOnline = conncection.type === 'none' ? false : true
+
       if (!this.getFieldValue(draft, 'latitude')) {
-        this.getDeviceCoordinates(conncection.type === 'none' ? false : true)
+        if (!this.props.nav.readonly) {
+          this.getDeviceCoordinates(isOnline)
+        } else {
+          this.setState({
+            loading: false,
+            showForm: true
+          })
+        }
+      } else {
+        this.setCoordinatesFromDraft(isOnline, draft)
       }
     })
 
     // check if online first
     NetInfo.isConnected.fetch().then(isOnline => {
       if (!this.getFieldValue(draft, 'latitude')) {
-        this.getDeviceCoordinates(isOnline)
+        if (!this.props.nav.readonly) {
+          this.getDeviceCoordinates(isOnline)
+        } else {
+          this.setState({
+            isOnline,
+            loading: false,
+            showForm: true
+          })
+        }
       } else {
         this.setCoordinatesFromDraft(isOnline, draft)
       }
@@ -300,7 +323,7 @@ export class Location extends Component {
         showErrors: true
       })
     } else {
-      const draft = getDraft()
+      const draft = this.props.navigation.getParam('family') || getDraft()
 
       this.props.addDraftProgress(this.props.nav.draftId, {
         current: draft.progress.current + 1
@@ -324,7 +347,8 @@ export class Location extends Component {
       showForm
     } = this.state
 
-    const draft = getDraft()
+    const draft = this.props.navigation.getParam('family') || getDraft()
+    console.log(draft)
 
     if (loading) {
       return (
@@ -449,22 +473,7 @@ export class Location extends Component {
         </StickyFooter>
       )
     } else {
-      return readonly ? (
-        <View
-          style={[
-            globalStyles.background,
-            {
-              flex: 1,
-              flexDirection: 'column',
-              justifyContent: 'center'
-            }
-          ]}
-        >
-          <Text style={[globalStyles.h2, { textAlign: 'center' }]}>
-            {t('views.family.mapUnavailavleOffline')}
-          </Text>
-        </View>
-      ) : (
+      return (
         <StickyFooter
           handleClick={this.handleClick}
           readonly={readonly}
@@ -475,42 +484,47 @@ export class Location extends Component {
               : 0
           }
         >
-          {latitude ? (
-            <View style={[styles.placeholder, styles.map]}>
-              <Image
-                source={happy}
-                style={{ width: 50, height: 50, marginBottom: 20 }}
-              />
-              <Text style={[globalStyles.h2, { marginBottom: 20 }]}>
-                {t('views.family.weFoundYou')}
-              </Text>
-              <Text style={[globalStyles.h3, { textAlign: 'center' }]}>
-                lat: {latitude}, long: {longitude}
-              </Text>
-              <Text style={[globalStyles.h4, { marginBottom: 20 }]}>
-                {`${t('views.family.gpsAccurate').replace(
-                  '%n',
-                  Math.round(accuracy)
-                )}`}
-              </Text>
-              <Text style={[globalStyles.h3, { textAlign: 'center' }]}>
-                {t('views.family.tellUsMore')}
-              </Text>
-            </View>
-          ) : (
-            <View style={[styles.placeholder, styles.map]}>
-              <Image
-                source={sad}
-                style={{ width: 50, height: 50, marginBottom: 20 }}
-              />
-              <Text style={[globalStyles.h2, { marginBottom: 20 }]}>
-                {t('views.family.weCannotLocate')}
-              </Text>
-              <Text style={[globalStyles.h3, { textAlign: 'center' }]}>
-                {t('views.family.tellUsMore')}
-              </Text>
+          {!readonly && (
+            <View>
+              {latitude ? (
+                <View style={[styles.placeholder, styles.map]}>
+                  <Image
+                    source={happy}
+                    style={{ width: 50, height: 50, marginBottom: 20 }}
+                  />
+                  <Text style={[globalStyles.h2, { marginBottom: 20 }]}>
+                    {t('views.family.weFoundYou')}
+                  </Text>
+                  <Text style={[globalStyles.h3, { textAlign: 'center' }]}>
+                    lat: {latitude}, long: {longitude}
+                  </Text>
+                  <Text style={[globalStyles.h4, { marginBottom: 20 }]}>
+                    {`${t('views.family.gpsAccurate').replace(
+                      '%n',
+                      Math.round(accuracy)
+                    )}`}
+                  </Text>
+                  <Text style={[globalStyles.h3, { textAlign: 'center' }]}>
+                    {t('views.family.tellUsMore')}
+                  </Text>
+                </View>
+              ) : (
+                <View style={[styles.placeholder, styles.map]}>
+                  <Image
+                    source={sad}
+                    style={{ width: 50, height: 50, marginBottom: 20 }}
+                  />
+                  <Text style={[globalStyles.h2, { marginBottom: 20 }]}>
+                    {t('views.family.weCannotLocate')}
+                  </Text>
+                  <Text style={[globalStyles.h3, { textAlign: 'center' }]}>
+                    {t('views.family.tellUsMore')}
+                  </Text>
+                </View>
+              )}
             </View>
           )}
+
           <Select
             id="countrySelect"
             required
