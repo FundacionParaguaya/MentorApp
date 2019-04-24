@@ -121,7 +121,15 @@ export class Loading extends Component {
   }
 
   componentDidMount() {
-    if (this.props.surveys.length) {
+    const { families, surveys, images } = this.props.sync
+
+    // if everything is already synced move to dashboard
+    if (
+      families &&
+      surveys &&
+      !!images.total &&
+      images.total === images.synced
+    ) {
       this.props.navigation.navigate('DrawerStack')
     } else if (this.props.user.token) {
       this.syncSurveys()
