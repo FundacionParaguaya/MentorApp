@@ -223,7 +223,7 @@ export class FamilyParticipant extends Component {
         }
       >
         <Decoration variation="primaryParticipant">
-          <Icon name="face" color={colors.grey} size={55} style={styles.icon} />
+          <Icon name="face" color={colors.grey} size={61} style={styles.icon} />
           <Text style={[globalStyles.h2Bold, styles.heading]}>{t('views.family.primaryParticipantHeading')}</Text>
         </Decoration>
         <TextInput
@@ -355,10 +355,10 @@ const styles = StyleSheet.create({
   },
   heading: {
     alignSelf: 'center',
-    paddingBottom: 20,
-    color: colors.darkgrey,
     textAlign: 'center',
-    paddingHorizontal: 20
+    paddingBottom: 20,
+    paddingHorizontal: 20,
+    color: colors.grey
   }
 })
 

@@ -53,13 +53,13 @@ export default class Decoration extends Component {
           </View>
         )}
         {variation === 'familyMemberNamesHeader' && (
-          <View style={{ zIndex: -1 }}>
+          <View style={{ zIndex: -1, marginTop: -15 }}>
             <View style={[styles.ballsContainer, { zIndex: 1 }]}>
               <View>
                 <Orb
                   size={30}
                   color={colors.palered}
-                  position={{ x: -110, y: -35 }}
+                  position={{ x: -110, y: -45 }}
                 />
                 <Orb
                   size={35}
@@ -79,7 +79,7 @@ export default class Decoration extends Component {
                 <Orb
                   size={35}
                   color={colors.palegold}
-                  position={{ x: 40, y: -40 }}
+                  position={{ x: 40, y: -60 }}
                 />
               </View>
             </View>
@@ -120,7 +120,7 @@ export default class Decoration extends Component {
           </View>
         )}
         {variation === 'primaryParticipant' && (
-          <View style={{ zIndex: -1, paddingTop: 20 }}>
+          <View style={{ zIndex: -1 }}>
             <View style={[styles.ballsContainer, { zIndex: 1 }]}>
               <View>
                 <Orb

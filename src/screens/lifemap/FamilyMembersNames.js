@@ -163,11 +163,12 @@ export class FamilyMembersNames extends Component {
               <Text
                 style={{
                   ...globalStyles.h2Bold,
+                  fontSize: 17,
                   color: colors.grey,
                   marginLeft: 5
                 }}
               >
-                {`${t('views.family.familyMember')} ${i + 2}`}
+                {`${t('views.family.familyMember')}`}
               </Text>
             </View>
             <TextInput
@@ -228,7 +229,7 @@ const styles = StyleSheet.create({
     alignSelf: 'center'
   },
   circleContainer: {
-    marginBottom: 10,
+    // marginBottom: 10,
     marginTop: 20,
     position: 'relative'
   },
@@ -247,10 +248,10 @@ const styles = StyleSheet.create({
   },
   heading: {
     alignSelf: 'center',
-    paddingBottom: 20,
-    color: colors.darkgrey,
     textAlign: 'center',
-    paddingHorizontal: 20
+    paddingBottom: 25,
+    paddingHorizontal: 20,
+    color: colors.grey
   }
 })
 
