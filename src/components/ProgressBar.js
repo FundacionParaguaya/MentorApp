@@ -3,7 +3,7 @@ import { View, StyleSheet } from 'react-native'
 import PropTypes from 'prop-types'
 import colors from '../theme.json'
 
-export class ProgressBar extends Component {
+export class ProgressBarComponent extends Component {
   render() {
     const { progress } = this.props
     return (
@@ -30,7 +30,7 @@ export class ProgressBar extends Component {
   }
 }
 
-ProgressBar.propTypes = {
+ProgressBarComponent.propTypes = {
   progress: PropTypes.number,
   currentScreen: PropTypes.string
 }
@@ -57,4 +57,4 @@ const styles = StyleSheet.create({
   }
 })
 
-export default ProgressBar
+export default ProgressBarComponent
