@@ -4,26 +4,16 @@ import moment from 'moment'
 import { View, StyleSheet, Text } from 'react-native'
 import { withNamespaces } from 'react-i18next'
 import colors from '../theme.json'
-import Select from './Select'
+import DatePickerWheel from './DatePickerWheel'
 
 export class DateInputComponent extends React.Component {
   state = {
-    day: '',
-    month: '',
-    year: '',
+    date: '',
     error: false
   }
 
-  setDay = day => {
-    this.setState({ day })
-  }
-
-  setMonth = month => {
-    this.setState({ month })
-  }
-
-  setYear = year => {
-    this.setState({ year })
+  setDate = date => {
+    this.setState({ date })
   }
 
   //Make array of the days
@@ -40,18 +30,14 @@ export class DateInputComponent extends React.Component {
   }).reverse()
 
   validateDate() {
-    const { day, month, year } = this.state
+    const { date } = this.state
 
-    const error = !moment(
-      `${year} ${month} ${day}`,
-      'YYYY MMMM D',
-      true
-    ).isValid()
+    const error = !moment(`${date}`, 'D MMMM YYYY', true).isValid()
 
     if (error) {
       this.props.detectError(true, this.props.field)
     } else {
-      const unix = moment.utc(`${year} ${month} ${day}`, 'YYYY MMMM D').unix()
+      const unix = moment.utc(`${date}`, 'D MMMM YYYY').unix()
       this.props.detectError(false, this.props.field)
       this.props.onValidDate(unix, this.props.field)
     }
@@ -68,21 +54,19 @@ export class DateInputComponent extends React.Component {
 
     if (this.props.value) {
       this.setState({
-        day: moment.unix(this.props.value).format('D'),
-        month: moment.unix(this.props.value).format('MMMM'),
-        year: moment.unix(this.props.value).format('YYYY')
+        date: moment.unix(this.props.value).format('D MMMM YYYY')
       })
     }
   }
 
   componentDidUpdate(prevProps, prevState) {
-    const { day, month, year } = this.state
+    const { date } = this.state
 
     if (JSON.stringify(prevState) !== JSON.stringify(this.state)) {
-      if (day && month && year) {
+      if (date) {
         this.validateDate()
       }
-      if (prevState.day && prevState.month && prevState.year) {
+      if (prevState.date) {
         this.validateDate()
       }
     }
@@ -93,7 +77,7 @@ export class DateInputComponent extends React.Component {
 
   render() {
     const { t, readonly, required } = this.props
-    const { day, month, year } = this.state
+    const { date } = this.state
     const months = [
       { text: t('months.january'), value: 'January' },
       { text: t('months.february'), value: 'February' },
@@ -111,44 +95,32 @@ export class DateInputComponent extends React.Component {
 
     return (
       <View>
-        <Text
-          style={[styles.text, { marginBottom: readonly ? -15 : 15 }]}
-          accessibilityLabel={`${this.props.label} ${
-            required && !readonly ? ' This is a mandatory field.' : ''
-          }`}
-        >
-          {this.props.label} {required && !readonly ? '*' : ''}
-        </Text>
+        {readonly && (
+          <Text
+            style={[styles.text, { marginBottom: readonly ? -15 : 15 }]}
+            accessibilityLabel={`${this.props.label} ${
+              required && !readonly ? ' This is a mandatory field.' : ''
+            }`}
+          >
+            {this.props.label} {required && !readonly ? '*' : ''}
+          </Text>
+        )}
         <View style={styles.container}>
-          <View style={styles.month}>
-            <Select
-              onChange={month => this.setMonth(month)}
-              label={t('general.month')}
-              placeholder={readonly ? '' : t('views.family.selectMonth')}
+          <View style={styles.date}>
+            <DatePickerWheel
+              onChange={date => this.setDate(date)}
+              label={this.props.label}
+              placeholder={
+                readonly
+                  ? ''
+                  : `${this.props.label} ${required && !readonly ? '*' : ''}`
+              }
               field=""
               readonly={readonly}
-              value={month}
-              options={months}
-            />
-          </View>
-          <View style={styles.day}>
-            <Select
-              onChange={day => this.setDay(day)}
-              placeholder={readonly ? '' : t('general.day')}
-              field=""
-              readonly={readonly}
-              value={Number(day)}
-              options={this.days}
-            />
-          </View>
-          <View style={styles.year}>
-            <Select
-              onChange={year => this.setYear(year)}
-              placeholder={readonly ? '' : t('general.year')}
-              field=""
-              readonly={readonly}
-              value={Number(year)}
-              options={this.years}
+              value={date}
+              days={this.days}
+              months={months}
+              years={this.years}
             />
           </View>
         </View>
@@ -169,12 +141,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'flex-end'
   },
-  day: {
-    width: '25%',
-    marginLeft: '-3%'
-  },
-  year: { width: '36%', marginLeft: '-3%' },
-  month: { width: '45%' },
+  date: { width: '100%' },
   text: { marginLeft: 30 }
 })
 

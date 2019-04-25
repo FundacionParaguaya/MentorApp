@@ -23,7 +23,8 @@
     "family": "Familia",
     "cachedData": "Datos almacenados",
     "chooseView": "Elegir vista",
-    "create": "Crear"
+    "create": "Crear",
+    "confirm": "Confirmar"
   },
   "validation": {
     "fieldIsRequired": "Este campo es requerido",
