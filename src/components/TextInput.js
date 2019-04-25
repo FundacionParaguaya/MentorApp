@@ -224,7 +224,8 @@ const styles = StyleSheet.create({
   activeInput: {
     marginTop: -10,
     paddingBottom: 0,
-    height: 50
+    height: 50,
+    paddingBottom:15
   },
   blur: {
     backgroundColor: colors.primary,
