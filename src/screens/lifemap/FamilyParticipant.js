@@ -212,6 +212,12 @@ export class FamilyParticipant extends Component {
     const draft =
       this.props.navigation.getParam('family') ||
       this.props.drafts.find(draft => draft.draftId === this.draftId)
+    let autofocusFirstName
+    if (this.getFieldValue(draft, 'firstName')) {
+      autofocusFirstName = false
+    } else {
+      autofocusFirstName = true
+    }
 
     return (
       <StickyFooter
@@ -226,7 +232,9 @@ export class FamilyParticipant extends Component {
           <Icon name="face" color={colors.grey} size={61} style={styles.icon} />
           <Text style={[globalStyles.h2Bold, styles.heading]}>{t('views.family.primaryParticipantHeading')}</Text>
         </Decoration>
+
         <TextInput
+          autoFocus={autofocusFirstName}
           validation="string"
           field="firstName"
           readonly={readonly}
