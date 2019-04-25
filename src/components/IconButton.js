@@ -6,7 +6,7 @@ import CommunityIcon from 'react-native-vector-icons/MaterialCommunityIcons'
 import PropTypes from 'prop-types'
 import colors from '../theme.json'
 
-export class IconButton extends Component {
+export class IconButtonComponent extends Component {
   state = {
     pressed: false
   }
@@ -48,7 +48,7 @@ export class IconButton extends Component {
                 name={icon}
                 style={this.props.iconStyle || {}}
                 size={this.props.size || 30}
-                color={this.state.pressed ? colors.green : colors.palegreen}
+                color={this.state.pressed ? colors.palegreen : colors.palegreen}
                 accessible={accessible}
                 accessibilityLabel={accessibilityLabel}
               />
@@ -66,7 +66,7 @@ export class IconButton extends Component {
               name={communityIcon}
               style={this.props.iconStyle || {}}
               size={this.props.size || 30}
-              color={this.state.pressed ? colors.green : colors.palegreen}
+              color={this.state.pressed ? colors.palegreen : colors.palegreen}
             />
           )}
           {imageSource && <Image source={imageSource} />}
@@ -78,7 +78,7 @@ export class IconButton extends Component {
                   ? {}
                   : {
                       color: this.state.pressed
-                        ? colors.green
+                        ? colors.palegreen
                         : colors.palegreen
                     }
               ]}
@@ -99,7 +99,7 @@ export class IconButton extends Component {
   }
 }
 
-IconButton.propTypes = {
+IconButtonComponent.propTypes = {
   style: PropTypes.object,
   iconStyle: PropTypes.object,
   icon: PropTypes.string,
@@ -113,7 +113,7 @@ IconButton.propTypes = {
   drafts: PropTypes.array,
   offline: PropTypes.object.isRequired,
   accessible: PropTypes.bool,
-  accessibilityLabel: PropTypes.oneOfType([PropTypes.bool, PropTypes.string]),
+  accessibilityLabel: PropTypes.oneOfType([PropTypes.bool, PropTypes.string])
 }
 
 const styles = StyleSheet.create({
@@ -141,4 +141,4 @@ const styles = StyleSheet.create({
 
 const mapStateToProps = ({ offline, drafts }) => ({ offline, drafts })
 
-export default connect(mapStateToProps)(IconButton)
+export default connect(mapStateToProps)(IconButtonComponent)

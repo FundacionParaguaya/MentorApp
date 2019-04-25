@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
-import { View, StyleSheet, Text } from 'react-native'
+import { View, StyleSheet, Text, Platform } from 'react-native'
 import { connect } from 'react-redux'
 import { withNamespaces } from 'react-i18next'
 import StickyFooter from '../../components/StickyFooter'
@@ -11,23 +11,29 @@ import {
   addSurveyFamilyMemberData,
   addDraftProgress
 } from '../../redux/actions'
+import colors from '../../theme.json'
+import { getDraft } from './helpers'
 
 export class SocioEconomicQuestion extends Component {
   static navigationOptions = ({ navigation }) => {
     return {
-      title: navigation.getParam('title')
+      headerTitle: (
+        <Text
+          accessibilityLiveRegion="assertive"
+          style={styles.headerTitleStyle}
+        >
+          {navigation.getParam('title')}
+        </Text>
+      )
     }
   }
 
   errorsDetected = []
-  readonly = !!this.props.navigation.getParam('family')
   state = { errorsDetected: [], showErrors: false }
-  draftId = this.props.navigation.getParam('draftId')
-  survey = this.props.navigation.getParam('survey')
 
   constructor(props) {
     super(props)
-    const draft = this.getDraft()
+    const draft = this.props.navigation.getParam('family') || getDraft()
     // If this is the first socio economics screen set the whole process
     // in the navigation. On every next screen it will know which questions
     // to ask and if it is done.
@@ -38,9 +44,8 @@ export class SocioEconomicQuestion extends Component {
 
       // go trough all questions and separate them by screen
       // filter method - checks if family members meet the conditions based on age
-      props.navigation
-        .getParam('survey')
-        .surveyEconomicQuestions.filter(question =>
+      props.nav.survey.surveyEconomicQuestions
+        .filter(question =>
           !!question.conditions &&
           question.conditions.length &&
           !!question.forFamilyMember &&
@@ -112,13 +117,14 @@ export class SocioEconomicQuestion extends Component {
   }
 
   componentDidMount() {
-    if (!this.readonly) {
-      this.props.addDraftProgress(this.draftId, {
+    const { readonly } = this.props.nav
+    if (!readonly) {
+      this.props.addDraftProgress(this.props.nav.draftId, {
         screen: 'SocioEconomicQuestion',
         socioEconomics: this.props.navigation.getParam('socioEconomics')
       })
 
-      if (!this.readonly) {
+      if (!readonly) {
         this.props.navigation.setParams({
           onPressBack: this.onPressBack
         })
@@ -127,21 +133,16 @@ export class SocioEconomicQuestion extends Component {
   }
 
   onPressBack = () => {
-    const draft = this.getDraft()
+    const draft = getDraft()
     const socioEconomics = this.props.navigation.getParam('socioEconomics')
 
-    this.props.addDraftProgress(this.draftId, {
+    this.props.addDraftProgress(this.props.nav.draftId, {
       current: draft.progress.current - 1
     })
 
     socioEconomics.currentScreen === 1
-      ? this.props.navigation.navigate('Location', {
-          draftId: this.draftId,
-          survey: this.survey
-        })
+      ? this.props.navigation.navigate('Location')
       : this.props.navigation.push('SocioEconomicQuestion', {
-          draftId: this.draftId,
-          survey: this.survey,
           socioEconomics: {
             currentScreen: socioEconomics.currentScreen - 1,
             questionsPerScreen: socioEconomics.questionsPerScreen,
@@ -154,13 +155,13 @@ export class SocioEconomicQuestion extends Component {
     return this.props.navigation.isFocused()
   }
   addSurveyData = (text, field) => {
-    this.props.addSurveyData(this.draftId, 'economicSurveyDataList', {
+    this.props.addSurveyData(this.props.nav.draftId, 'economicSurveyDataList', {
       [field]: text
     })
   }
   addSurveyFamilyMemberData = (text, field, index) => {
     this.props.addSurveyFamilyMemberData({
-      id: this.draftId,
+      id: this.props.nav.draftId,
       index,
       isSocioEconomicAnswer: true,
       payload: {
@@ -207,7 +208,7 @@ export class SocioEconomicQuestion extends Component {
     })
   }
   submitForm = () => {
-    const draft = this.getDraft()
+    const draft = getDraft()
 
     if (this.errorsDetected.length) {
       this.setState({
@@ -216,18 +217,13 @@ export class SocioEconomicQuestion extends Component {
     } else {
       const socioEconomics = this.props.navigation.getParam('socioEconomics')
 
-      this.props.addDraftProgress(this.draftId, {
+      this.props.addDraftProgress(this.props.nav.draftId, {
         current: draft.progress.current + 1
       })
 
       socioEconomics.currentScreen === socioEconomics.totalScreens
-        ? this.props.navigation.navigate('BeginLifemap', {
-            draftId: this.draftId,
-            survey: this.survey
-          })
+        ? this.props.navigation.navigate('BeginLifemap')
         : this.props.navigation.push('SocioEconomicQuestion', {
-            draftId: this.draftId,
-            survey: this.survey,
             socioEconomics: {
               currentScreen: socioEconomics.currentScreen + 1,
               questionsPerScreen: socioEconomics.questionsPerScreen,
@@ -236,10 +232,6 @@ export class SocioEconomicQuestion extends Component {
           })
     }
   }
-
-  getDraft = () =>
-    this.props.navigation.getParam('family') ||
-    this.props.drafts.find(draft => draft.draftId === this.draftId)
 
   checkCondition = (selectedVal, conditionVal, operator) => {
     switch (operator) {
@@ -256,7 +248,7 @@ export class SocioEconomicQuestion extends Component {
 
   isConditionMet = (question, familyMember = false) => {
     const { codeName, value, operator } = question.conditions[0]
-    const draft = this.getDraft()
+    const draft = getDraft()
     if (codeName === 'birthdate' && familyMember) {
       return this.checkCondition(
         this.calculateAge(familyMember.birthDate),
@@ -283,11 +275,13 @@ export class SocioEconomicQuestion extends Component {
   render() {
     const { t } = this.props
     const { showErrors } = this.state
-    const draft = this.getDraft()
+    const draft = this.props.navigation.getParam('family') || getDraft()
     const socioEconomics = this.props.navigation.getParam('socioEconomics')
     const questionsForThisScreen = socioEconomics
       ? socioEconomics.questionsPerScreen[socioEconomics.currentScreen - 1]
       : []
+
+    const { readonly } = this.props.nav
 
     const showMemberName = (member, questionsForFamilyMember) => {
       const questionsForThisMember = questionsForFamilyMember.filter(question =>
@@ -304,10 +298,9 @@ export class SocioEconomicQuestion extends Component {
       <StickyFooter
         handleClick={this.submitForm}
         continueLabel={t('general.continue')}
+        readonly={readonly}
         progress={
-          !this.readonly && draft
-            ? draft.progress.current / draft.progress.total
-            : 0
+          !readonly && draft ? draft.progress.current / draft.progress.total : 0
         }
       >
         {/* questions for entire family */}
@@ -332,7 +325,7 @@ export class SocioEconomicQuestion extends Component {
                   field={question.codeName}
                   value={this.getFieldValue(draft, question.codeName) || ''}
                   detectError={this.detectError}
-                  readonly={this.readonly}
+                  readonly={readonly}
                   options={question.options}
                 />
               ) : question.answerType === 'number' ? (
@@ -346,7 +339,7 @@ export class SocioEconomicQuestion extends Component {
                   field={question.codeName}
                   value={this.getFieldValue(draft, question.codeName) || ''}
                   detectError={this.detectError}
-                  readonly={this.readonly}
+                  readonly={readonly}
                   validation="number"
                   keyboardType="numeric"
                 />
@@ -361,7 +354,7 @@ export class SocioEconomicQuestion extends Component {
                   field={question.codeName}
                   value={this.getFieldValue(draft, question.codeName) || ''}
                   detectError={this.detectError}
-                  readonly={this.readonly}
+                  readonly={readonly}
                 />
               )
             )
@@ -403,7 +396,7 @@ export class SocioEconomicQuestion extends Component {
                           ) || ''
                         }
                         detectError={this.detectError}
-                        readonly={this.readonly}
+                        readonly={readonly}
                         options={question.options}
                       />
                     ) : (
@@ -425,7 +418,7 @@ export class SocioEconomicQuestion extends Component {
                           ) || ''
                         }
                         detectError={this.detectError}
-                        readonly={this.readonly}
+                        readonly={readonly}
                       />
                     )
                   )}
@@ -444,8 +437,8 @@ export class SocioEconomicQuestion extends Component {
 
 SocioEconomicQuestion.propTypes = {
   t: PropTypes.func.isRequired,
+  nav: PropTypes.object.isRequired,
   navigation: PropTypes.object.isRequired,
-  drafts: PropTypes.array.isRequired,
   addSurveyData: PropTypes.func.isRequired,
   addSurveyFamilyMemberData: PropTypes.func.isRequired,
   addDraftProgress: PropTypes.func.isRequired
@@ -459,6 +452,22 @@ const styles = StyleSheet.create({
     marginBottom: 10,
     fontSize: 16,
     lineHeight: 20
+  },
+  headerTitleStyle: {
+    ...Platform.select({
+      ios: {
+        fontFamily: 'Poppins'
+      },
+      android: {
+        fontFamily: 'Poppins SemiBold'
+      }
+    }),
+    fontSize: 18,
+    fontWeight: '200',
+    lineHeight: 26,
+    color: colors.black,
+    marginLeft: 'auto',
+    marginRight: 'auto'
   }
 })
 
@@ -468,9 +477,8 @@ const mapDispatchToProps = {
   addDraftProgress
 }
 
-const mapStateToProps = ({ drafts, surveys }) => ({
-  drafts,
-  surveys
+const mapStateToProps = ({ nav }) => ({
+  nav
 })
 
 export default withNamespaces()(

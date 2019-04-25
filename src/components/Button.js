@@ -54,25 +54,28 @@ class Button extends Component {
             !underlined && {
               borderColor:
                 !borderColor || borderColor === colors.palegreen
-                  ? colors.green
+                  ? colors.palegreen
                   : borderColor === colors.palered
                   ? colors.red
                   : colors.lightdark
             }
         ]}
-        underlayColor={colored ? colors.green : colors.white}
+        underlayColor={colored ? colors.palegreen : colors.white}
         activeOpacity={1}
         onPress={handleClick}
         disabled={disabled}
         onHideUnderlay={this.togglePressedState}
         onShowUnderlay={this.togglePressedState}
+        accessibilityRole="button"
+        accessibilityLabel={text}
+        accessibilityHint={disabled ? 'disabled' : ''}
       >
         <View style={{ flexDirection: 'row' }}>
           {icon ? (
             <Icon
               name={icon}
               size={21}
-              color={pressed ? colors.green : colors.palegreen}
+              color={pressed ? colors.palegreen : colors.palegreen}
               style={styles.icon}
             />
           ) : (
@@ -93,14 +96,14 @@ class Button extends Component {
                 !colored && {
                   color:
                     !borderColor || borderColor === colors.palegreen
-                      ? colors.green
+                      ? colors.palegreen
                       : borderColor === colors.palered
                       ? colors.red
                       : colors.lightdark
                 },
-                this.props.style && this.props.style['backgroundColor'] 
-                  ? styles.whiteText 
-                  : null 
+              this.props.style && this.props.style['backgroundColor']
+                ? styles.whiteText
+                : null
             ]}
           >
             {text}

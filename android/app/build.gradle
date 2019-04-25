@@ -102,8 +102,8 @@ android {
         applicationId "com.povertystoplightapp"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
-        versionCode 32
-        versionName "1.6.8"
+        versionCode 35
+        versionName "1.7.2"
         ndk {
             abiFilters "armeabi-v7a", "x86"
         }
@@ -149,9 +149,8 @@ android {
 }
 
 dependencies {
+    implementation project(':@delightfulstudio_react-native-wheel-picker-android')
     compile project(':react-native-sentry')
-    compile project(':react-native-background-fetch')
-    compile project(':react-native-background-task')
     compile project(':react-native-splash-screen')
     compile project(':react-native-vector-icons')
     compile project(':react-native-languages')

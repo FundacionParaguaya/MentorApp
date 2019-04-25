@@ -5,8 +5,8 @@ import {
   SET_LOGIN_STATE,
   USER_LOGOUT,
   SET_ENV,
-  LOAD_SURVEYS,
-  LOAD_FAMILIES,
+  LOAD_SURVEYS_COMMIT,
+  LOAD_FAMILIES_COMMIT,
   CREATE_DRAFT,
   ADD_SURVEY_DATA,
   ADD_SURVEY_PRIORITY_ACHEIVEMENT_DATA,
@@ -23,7 +23,8 @@ import {
   SET_SYNCED_ITEM_TOTAL,
   SET_SYNCED_ITEM_AMOUNT,
   SET_SYNCED_STATE,
-  SET_DIMENSIONS
+  SET_DIMENSIONS,
+  UPDATE_NAV
 } from './actions'
 
 //Login
@@ -73,22 +74,20 @@ export const dimensions = (state = { width: null, height: null }, action) => {
 }
 
 //Surveys
-
 export const surveys = (state = [], action) => {
   switch (action.type) {
-    case LOAD_SURVEYS:
-      return action.payload ? action.payload.data.surveysByUser : state
+    case LOAD_SURVEYS_COMMIT:
+      return action.payload.data.surveysByUser
     default:
       return state
   }
 }
 
 //Families
-
 export const families = (state = [], action) => {
   switch (action.type) {
-    case LOAD_FAMILIES:
-      return action.payload ? action.payload.data.familiesNewStructure : state
+    case LOAD_FAMILIES_COMMIT:
+      return action.payload.data.familiesNewStructure
     default:
       return state
   }
@@ -422,7 +421,8 @@ export const hydration = (state = false, action) => {
 // Sync
 export const sync = (
   state = {
-    synced: 'no',
+    surveys: false,
+    families: false,
     images: {
       total: 0,
       synced: 0
@@ -434,7 +434,7 @@ export const sync = (
     case SET_SYNCED_STATE:
       return {
         ...state,
-        synced: action.value
+        [action.item]: action.value
       }
     case SET_SYNCED_ITEM_TOTAL:
       return {
@@ -457,6 +457,37 @@ export const sync = (
   }
 }
 
+// Navigation
+export const nav = (
+  state = {
+    openModal: null,
+    beforeCloseModal: null,
+    readonly: false,
+    draftId: null,
+    survey: null,
+    deleteDraftOnExit: false
+  },
+  action
+) => {
+  switch (action.type) {
+    case UPDATE_NAV:
+      if (typeof action.value !== 'undefined') {
+        return {
+          ...state,
+          [action.item]: action.value
+        }
+      } else {
+        return {
+          ...state,
+          ...action.item
+        }
+      }
+
+    default:
+      return state
+  }
+}
+
 const appReducer = combineReducers({
   env,
   user,
@@ -466,14 +497,76 @@ const appReducer = combineReducers({
   language,
   hydration,
   sync,
-  dimensions
+  dimensions,
+  nav
 })
 
 export const rootReducer = (state, action) => {
-  if (action.type === USER_LOGOUT) {
-    state = undefined
+  // note that surveys are synced in the store
+  if (action.type === LOAD_SURVEYS_COMMIT) {
+    state = {
+      ...state,
+      sync: {
+        ...state.sync,
+        surveys: true
+      }
+    }
   }
 
+  // note that families are synced in the store
+  if (action.type === LOAD_FAMILIES_COMMIT) {
+    state = {
+      ...state,
+      sync: {
+        ...state.sync,
+        families: true
+      }
+    }
+  }
+
+  // if there are no images to cache, make it so the loading screen can continue
+  if (action.type === SET_SYNCED_ITEM_TOTAL && !action.amount) {
+    state = {
+      ...state,
+      sync: {
+        ...state.sync,
+        images: {
+          total: 1,
+          synced: 1
+        }
+      }
+    }
+  }
+
+  if (action.type === USER_LOGOUT) {
+    // reset store
+    state = {
+      ...state,
+      user: { token: null, status: null, username: null },
+      drafts: [],
+      surveys: [],
+      families: [],
+      env: 'production',
+      sync: {
+        surveys: false,
+        families: false,
+        images: {
+          total: 0,
+          synced: 0
+        }
+      },
+      nav: {
+        openModal: null,
+        beforeCloseModal: null,
+        readonly: false,
+        draftId: null,
+        survey: null,
+        deleteDraftOnExit: false
+      }
+    }
+  }
+
+  // create detailed sentry report on sync error
   if (action.type === SUBMIT_DRAFT_ROLLBACK) {
     Sentry.setExtraContext({
       payload: action.meta.payload,

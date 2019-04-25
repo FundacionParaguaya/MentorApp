@@ -1,42 +1,64 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
-import { View, Text, StyleSheet, TouchableHighlight } from 'react-native'
+import {
+  View,
+  Text,
+  StyleSheet,
+  TouchableHighlight,
+  ScrollView
+} from 'react-native'
 import Icon from 'react-native-vector-icons/MaterialIcons'
 import colors from '../theme.json'
 import Image from './CachedImage'
 import globalStyles from '../globalStyles'
+import { isPortrait } from '../responsivenessHelpers'
 
 const slideColors = {
   1: 'red',
   2: 'gold',
-  3: 'green'
+  3: 'palegreen'
 }
 
 export default class SliderItem extends Component {
   state = {
-    pressed: false
+    pressed: false,
+    textContentHeight: 0
   }
   togglePressedState = pressed => {
     this.setState({
       pressed
     })
   }
+  calculateTextContentHeight = event => {
+    this.setState({ textContentHeight: event.nativeEvent.layout.height })
+  }
+
   render() {
-    const { slide, value } = this.props
+    const { slide, value, bodyHeight, portrait, tablet} = this.props
+    const slideHeight = bodyHeight - 100
+    const imageHeight = bodyHeight / 2
+    const textAreaHeight = slideHeight - imageHeight // - 30 is margin top on image + icon
+
     return (
       <TouchableHighlight
         activeOpacity={1}
         underlayColor={'transparent'}
-        style={styles.slide}
+        style={[
+          styles.slide,
+          portrait ? { height: slideHeight } : {}
+        ]}
         onPress={this.props.onPress}
         onHideUnderlay={() => this.togglePressedState(false)}
         onShowUnderlay={() => this.togglePressedState(true)}
+        accessibilityLabel={value === slide.value ? 'selected' : 'deselected'}
+        accessibilityHint={slide.description}
       >
         <View>
           <Image
             source={slide.url}
             style={{
-              ...styles.image
+              ...styles.image,
+              height: portrait ? imageHeight : imageHeight * 2
             }}
           />
 
@@ -48,18 +70,35 @@ export default class SliderItem extends Component {
               opacity: value === slide.value || this.state.pressed ? 1 : 0
             }}
           >
-            <Icon name="done" size={56} color={colors.white} />
+            <Icon name="done" size={47} color={colors.white} />
           </View>
 
-          <Text
-            style={{
-              ...globalStyles.p,
-              ...styles.text,
-              color: slide.value === 2 ? colors.black : colors.white
-            }}
+          <View
+            style={[
+              portrait ? { height: textAreaHeight } : {},
+              tablet ? styles.textVertical : { paddingBottom: 15 }
+            ]}
+            onStartShouldSetResponder={() => true}
           >
-            {slide.description}
-          </Text>
+            <ScrollView
+              contentContainerStyle={{
+                flexGrow: 1,
+                height: this.textContentHeight,
+                paddingBottom: 30
+              }}
+            >
+              <Text
+                onLayout={event => this.calculateTextContentHeight(event)}
+                style={{
+                  ...globalStyles.p,
+                  ...styles.text,
+                  color: slide.value === 2 ? colors.black : colors.white
+                }}
+              >
+                {slide.description}
+              </Text>
+            </ScrollView>
+          </View>
         </View>
       </TouchableHighlight>
     )
@@ -69,30 +108,46 @@ export default class SliderItem extends Component {
 SliderItem.propTypes = {
   onPress: PropTypes.func,
   slide: PropTypes.object.isRequired,
-  value: PropTypes.number
+  value: PropTypes.number,
+  dimensions: PropTypes.object,
+  bodyHeight: PropTypes.number.isRequired,
+  tablet: PropTypes.bool,
+  portrait: PropTypes.bool
 }
 
 const styles = StyleSheet.create({
   slide: {
-    width: '100%'
+    // width: '100%'
   },
   text: {
     color: colors.white,
     textAlign: 'center',
-    padding: 15
+    paddingRight: 15,
+    paddingLeft: 15,
+    paddingTop: 5,
+    fontSize: 18,
+    lineHeight: 23,
+    fontFamily: 'Poppins',
+    alignSelf: 'center'
+  },
+  textVertical: {
+    flex: 1,
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center'
   },
   image: {
-    width: '100%',
-    marginTop: 10
+    width: '100%'
+    // marginTop: 10
   },
   iconBig: {
-    borderRadius: 40,
+    borderRadius: 50,
     width: 80,
     height: 80,
     justifyContent: 'center',
     alignItems: 'center',
     alignSelf: 'center',
-    marginTop: -50,
+    marginTop: -30,
     marginBottom: -20
   }
 })

@@ -16,5 +16,6 @@
   "error": "#E0504C",
   "progressBarBg": "#D8D8D8",
   "headerBorder": "rgba(0,0,0,.18)",
-  "black": "#000000"
+  "black": "#000000",
+  "darkgrey": "#4A4A4A"
 }

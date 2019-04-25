@@ -1,23 +1,21 @@
-import React, { Component } from "react"
-import { StyleSheet, ScrollView, View, Text } from "react-native"
-import { connect } from "react-redux"
-import PropTypes from "prop-types"
-import { withNamespaces } from "react-i18next"
-import Decoration from "../../components/decoration/Decoration"
-import globalStyles from "../../globalStyles"
-import RoundImage from "../../components/RoundImage"
-import Button from "../../components/Button"
-import StickyFooter from "../../components/StickyFooter"
-import { addDraftProgress } from "../../redux/actions"
+import React, { Component } from 'react'
+import { StyleSheet, View, Text } from 'react-native'
+import { connect } from 'react-redux'
+import PropTypes from 'prop-types'
+import { withNamespaces } from 'react-i18next'
+import Decoration from '../../components/decoration/Decoration'
+import globalStyles from '../../globalStyles'
+import RoundImage from '../../components/RoundImage'
+import StickyFooter from '../../components/StickyFooter'
+import { addDraftProgress } from '../../redux/actions'
+import { getDraft } from './helpers'
 
 export class BeginLifemap extends Component {
-  survey = this.props.navigation.getParam("survey")
-  draftId = this.props.navigation.getParam("draftId")
-  numberOfQuestions = this.survey.surveyStoplightQuestions.length
+  numberOfQuestions = this.props.nav.survey.surveyStoplightQuestions.length
 
   componentDidMount() {
-    this.props.addDraftProgress(this.draftId, {
-      screen: "BeginLifemap"
+    this.props.addDraftProgress(this.props.nav.draftId, {
+      screen: 'BeginLifemap'
     })
 
     this.props.navigation.setParams({
@@ -26,43 +24,36 @@ export class BeginLifemap extends Component {
   }
 
   onPressBack = () => {
-    const draft = this.getDraft()
+    const draft = getDraft()
 
-    this.props.addDraftProgress(this.draftId, {
+    this.props.addDraftProgress(this.props.nav.draftId, {
       current: draft.progress.current - 1
     })
 
-    this.props.navigation.replace("SocioEconomicQuestion", {
-      draftId: this.draftId,
-      survey: this.survey,
+    this.props.navigation.replace('SocioEconomicQuestion', {
       fromBeginLifemap: true
     })
   }
 
-  getDraft = () =>
-    this.props.drafts.find(draft => draft.draftId === this.draftId)
-
   handleClick = () => {
-    const draft = this.getDraft()
+    const draft = getDraft()
 
-    this.props.addDraftProgress(this.draftId, {
+    this.props.addDraftProgress(this.props.nav.draftId, {
       current: draft.progress.current + 1
     })
 
-    this.props.navigation.navigate("Question", {
-      draftId: this.props.navigation.getParam("draftId"),
-      survey: this.survey,
+    this.props.navigation.navigate('Question', {
       step: 0
     })
   }
 
   render() {
     const { t } = this.props
-    const draft = this.getDraft()
+    const draft = getDraft()
     return (
       <StickyFooter
         handleClick={this.handleClick}
-        continueLabel={t("general.continue")}
+        continueLabel={t('general.continue')}
         progress={draft ? draft.progress.current / draft.progress.total : 0}
       >
         <View
@@ -72,8 +63,8 @@ export class BeginLifemap extends Component {
           }}
         >
           <Text style={{ ...globalStyles.h3, ...styles.text }}>
-            {t("views.lifemap.thisLifeMapHas").replace(
-              "%n",
+            {t('views.lifemap.thisLifeMapHas').replace(
+              '%n',
               this.numberOfQuestions
             )}
           </Text>
@@ -81,42 +72,34 @@ export class BeginLifemap extends Component {
             <RoundImage source="stoplight" />
           </Decoration>
         </View>
-        <View style={{ height: 50 }}>
-        </View>
+        <View style={{ height: 50 }} />
       </StickyFooter>
     )
   }
 }
 const styles = StyleSheet.create({
   text: {
-    textAlign: "center",
+    textAlign: 'center',
     paddingLeft: 50,
     paddingRight: 50,
     paddingTop: 80,
     paddingBottom: 30
-  },
-  contentContainer: {
-    flexGrow: 1,
-    flexDirection: "column",
-    justifyContent: "space-between"
   }
 })
 
 BeginLifemap.propTypes = {
   t: PropTypes.func.isRequired,
-  surveys: PropTypes.array,
   navigation: PropTypes.object.isRequired,
-  addDraftProgress: PropTypes.func.isRequired,
-  drafts: PropTypes.array.isRequired
+  nav: PropTypes.object.isRequired,
+  addDraftProgress: PropTypes.func.isRequired
 }
 
 const mapDispatchToProps = {
   addDraftProgress
 }
 
-const mapStateToProps = ({ surveys, drafts }) => ({
-  surveys,
-  drafts
+const mapStateToProps = ({ nav }) => ({
+  nav
 })
 
 export default withNamespaces()(

@@ -3,6 +3,7 @@ import { StyleSheet, View, Text, Image, TouchableHighlight } from 'react-native'
 import { connect } from 'react-redux'
 import PropTypes from 'prop-types'
 import { withNamespaces } from 'react-i18next'
+import { getDraft } from './helpers'
 import { addDraftProgress } from '../../redux/actions'
 import StickyFooter from '../../components/StickyFooter'
 import LifemapVisual from '../../components/LifemapVisual'
@@ -19,46 +20,40 @@ export class Overview extends Component {
     filterModalIsOpen: false,
     selectedFilter: false,
     filterLabel: false,
-    tipIsVisible: true
+    tipIsVisible: false
   }
-  draftId = this.props.navigation.getParam('draftId')
-  familyLifemap = this.props.familyLifemap
-  survey = this.props.navigation.getParam('survey')
+
   resumeDraft = this.props.navigation.getParam('resumeDraft')
   componentDidMount() {
-    if (!this.resumeDraft && !this.familyLifemap) {
-      this.props.addDraftProgress(this.draftId, {
+    const { draftId } = this.props.nav
+    if (!this.resumeDraft && !this.props.familyLifemap) {
+      this.props.addDraftProgress(draftId, {
         screen: 'Overview'
       })
 
       this.props.navigation.setParams({
         onPressBack: this.onPressBack,
-        withoutCloseButton: this.draftId ? false : true
+        withoutCloseButton: draftId ? false : true
       })
     }
   }
 
   onPressBack = () => {
     //If we do not arrive to this screen from the families screen
-    if (!this.familyLifemap) {
-      const draft = this.getDraft()
+    if (!this.props.familyLifemap) {
+      const draft = getDraft()
       const skippedQuestions = draft.indicatorSurveyDataList.filter(
         question => question.value === 0
       )
-      this.props.addDraftProgress(this.draftId, {
+      this.props.addDraftProgress(this.props.nav.draftId, {
         current: draft.progress.current - 1
       })
       // If there are no skipped questions
       if (skippedQuestions.length > 0) {
-        this.props.navigation.navigate('Skipped', {
-          draftId: this.draftId,
-          survey: this.survey
-        })
+        this.props.navigation.navigate('Skipped')
       } else
         this.props.navigation.navigate('Question', {
-          draftId: this.draftId,
-          survey: this.survey,
-          step: this.survey.surveyStoplightQuestions.length - 1
+          step: this.props.nav.survey.surveyStoplightQuestions.length - 1
         })
     }
     // If we arrive to this screen from the families screen
@@ -67,9 +62,7 @@ export class Overview extends Component {
 
   navigateToScreen = (screen, indicator, indicatorText) =>
     this.props.navigation.navigate(screen, {
-      draftId: this.draftId,
-      familyLifemap: this.familyLifemap,
-      survey: this.survey,
+      familyLifemap: this.props.familyLifemap,
       indicator,
       indicatorText
     })
@@ -99,10 +92,11 @@ export class Overview extends Component {
   }
 
   getMandatoryPrioritiesCount(draft) {
+    const { survey } = this.props.nav
     const potentialPrioritiesCount = this.getPotentialPrioritiesCount(draft)
 
-    return potentialPrioritiesCount > this.survey.minimumPriorities
-      ? this.survey.minimumPriorities
+    return potentialPrioritiesCount > survey.minimumPriorities
+      ? survey.minimumPriorities
       : potentialPrioritiesCount
   }
 
@@ -122,14 +116,13 @@ export class Overview extends Component {
     }
   }
 
-  getDraft = () => this.props.drafts.find(item => item.draftId === this.draftId)
-
   render() {
+    const { survey } = this.props.nav
     const { t } = this.props
     const { filterModalIsOpen, selectedFilter, filterLabel } = this.state
-    const data = this.familyLifemap
-      ? this.familyLifemap
-      : this.props.drafts.find(item => item.draftId === this.draftId)
+    const data = this.props.familyLifemap
+      ? this.props.familyLifemap
+      : getDraft()
 
     const mandatoryPrioritiesCount = this.getMandatoryPrioritiesCount(data)
 
@@ -160,7 +153,7 @@ export class Overview extends Component {
       <StickyFooter
         continueLabel={t('general.continue')}
         handleClick={() => this.handleContinue(mandatoryPrioritiesCount, data)}
-        visible={!this.resumeDraft && !this.familyLifemap}
+        visible={!this.resumeDraft && !this.props.familyLifemap}
         type={tipIsVisible ? 'tip' : 'button'}
         tipTitle={t('views.lifemap.toComplete')}
         onTipClose={this.onTipClose}
@@ -173,7 +166,7 @@ export class Overview extends Component {
               questions={data.indicatorSurveyDataList}
               priorities={data.priorities}
               achievements={data.achievements}
-              questionsLength={this.survey.surveyStoplightQuestions.length}
+              questionsLength={survey.surveyStoplightQuestions.length}
             />
             {this.resumeDraft ? (
               <Button
@@ -185,8 +178,6 @@ export class Overview extends Component {
                 text={t('general.resumeDraft')}
                 handleClick={() => {
                   this.props.navigation.replace(data.progress.screen, {
-                    draftId: this.draftId,
-                    survey: this.survey,
                     step: data.progress.step,
                     socioEconomics: data.progress.socioEconomics
                   })
@@ -209,10 +200,10 @@ export class Overview extends Component {
               </View>
             </TouchableHighlight>
             <LifemapOverview
-              surveyData={this.survey.surveyStoplightQuestions}
+              surveyData={survey.surveyStoplightQuestions}
               draftData={data}
               navigateToScreen={this.navigateToScreen}
-              draftOverview={!!this.draftId}
+              draftOverview={!this.resumeDraft && !this.props.familyLifemap}
               selectedFilter={selectedFilter}
             />
           </View>
@@ -241,7 +232,7 @@ export class Overview extends Component {
               <FilterListItem
                 id="green"
                 onPress={() => this.selectFilter(3, t('views.lifemap.green'))}
-                color={colors.green}
+                color={colors.palegreen}
                 text={t('views.lifemap.green')}
                 amount={
                   data.indicatorSurveyDataList.filter(item => item.value === 3)
@@ -358,14 +349,14 @@ const mapDispatchToProps = {
 
 Overview.propTypes = {
   t: PropTypes.func.isRequired,
-  drafts: PropTypes.array.isRequired,
+  nav: PropTypes.object.isRequired,
   navigation: PropTypes.object.isRequired,
   familyLifemap: PropTypes.object,
   addDraftProgress: PropTypes.func.isRequired
 }
 
-const mapStateToProps = ({ drafts }) => ({
-  drafts
+const mapStateToProps = ({ nav }) => ({
+  nav
 })
 
 export default withNamespaces()(

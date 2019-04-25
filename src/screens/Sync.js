@@ -1,10 +1,17 @@
 import React, { Component } from 'react'
-import { StyleSheet, ScrollView, Text, FlatList } from 'react-native'
+import {
+  StyleSheet,
+  ScrollView,
+  FlatList,
+  View,
+  UIManager,
+  findNodeHandle
+} from 'react-native'
 import { connect } from 'react-redux'
 import PropTypes from 'prop-types'
 import globalStyles from '../globalStyles'
 import { withNamespaces } from 'react-i18next'
-import { submitDraft } from '../redux/actions'
+import { submitDraft, updateNav } from '../redux/actions'
 import { url } from '../config'
 
 import SyncUpToDate from '../components/sync/SyncUpToDate'
@@ -14,28 +21,25 @@ import SyncListItem from '../components/sync/SyncListItem'
 import SyncRetry from '../components/sync/SyncRetry'
 
 export class Sync extends Component {
-  static navigationOptions = ({ navigation }) => {
-    return {
-      title: navigation.getParam('title', 'Sync')
-    }
-  }
-
-  updateTitle = () =>
-    this.props.navigation.setParams({
-      title: this.props.t('views.synced')
-    })
+  acessibleComponent = React.createRef()
 
   componentDidMount() {
-    this.updateTitle()
-  }
-
-  componentDidUpdate(prevProps) {
-    if (prevProps.lng !== this.props.lng) {
-      this.updateTitle()
+    if (UIManager.AccessibilityEventTypes) {
+      setTimeout(() => {
+        UIManager.sendAccessibilityEvent(
+          findNodeHandle(this.acessibleComponent.current),
+          UIManager.AccessibilityEventTypes.typeViewFocused
+        )
+      }, 1)
     }
   }
 
   navigateToDraft = draft => {
+    this.props.updateNav({
+      survey: this.props.surveys.find(survey => survey.id === draft.surveyId),
+      draftId: draft.draftId
+    })
+
     if (
       draft.progress.screen !== 'Question' &&
       draft.progress.screen !== 'Skipped' &&
@@ -77,39 +81,43 @@ export class Sync extends Component {
 
     return (
       <ScrollView contentContainerStyle={[globalStyles.container, styles.view]}>
-        {offline.online && !pendingDrafts.length && !draftsWithError.length ? (
-          <SyncUpToDate date={lastSync} lng={this.props.lng} />
-        ) : null}
-        {offline.online && pendingDrafts.length ? (
-          <SyncInProgress pendingDraftsLength={pendingDrafts.length} />
-        ) : null}
-        {!offline.online ? (
-          <SyncOffline pendingDraftsLength={pendingDrafts.length} />
-        ) : null}
-        {offline.online && draftsWithError.length && !pendingDrafts.length ? (
-          <SyncRetry 
-            draftsWithError={draftsWithError.length} 
-            retrySubmit={() => {
-              draftsWithError.forEach(draft => {                
-                this.props.submitDraft(
-                  url[this.props.env],
-                  this.props.user.token,
-                  draft.draftId,
-                  draft
-                )
-              })
-            }}
+        <View ref={this.acessibleComponent} accessible={true}>
+          {offline.online &&
+          !pendingDrafts.length &&
+          !draftsWithError.length ? (
+            <SyncUpToDate date={lastSync} lng={this.props.lng} />
+          ) : null}
+          {offline.online && pendingDrafts.length ? (
+            <SyncInProgress pendingDraftsLength={pendingDrafts.length} />
+          ) : null}
+          {!offline.online ? (
+            <SyncOffline pendingDraftsLength={pendingDrafts.length} />
+          ) : null}
+          {offline.online && draftsWithError.length && !pendingDrafts.length ? (
+            <SyncRetry
+              draftsWithError={draftsWithError.length}
+              retrySubmit={() => {
+                draftsWithError.forEach(draft => {
+                  this.props.submitDraft(
+                    url[this.props.env],
+                    this.props.user.token,
+                    draft.draftId,
+                    draft
+                  )
+                })
+              }}
             />
-        )  : null}
+          ) : null}
+        </View>
         {list.length ? (
           <FlatList
             style={{ marginTop: 15 }}
             data={list}
             keyExtractor={(item, index) => index.toString()}
             renderItem={({ item }) => (
-              <SyncListItem 
-                item={item.familyData} 
-                status={item.status} 
+              <SyncListItem
+                item={item.familyData}
+                status={item.status}
                 handleClick={() => this.navigateToDraft(item)}
               />
             )}
@@ -121,13 +129,15 @@ export class Sync extends Component {
 }
 
 Sync.propTypes = {
+  navigation: PropTypes.object.isRequired,
   drafts: PropTypes.array.isRequired,
   offline: PropTypes.object.isRequired,
   lng: PropTypes.string.isRequired,
   env: PropTypes.oneOf(['production', 'demo', 'testing', 'development']),
   user: PropTypes.object.isRequired,
   surveys: PropTypes.array,
-  submitDraft: PropTypes.func.isRequired
+  submitDraft: PropTypes.func.isRequired,
+  updateNav: PropTypes.func.isRequired
 }
 
 const styles = StyleSheet.create({
@@ -146,7 +156,13 @@ const mapStateToProps = ({ drafts, offline, env, user, surveys }) => ({
 })
 
 const mapDispatchToProps = {
-  submitDraft
+  submitDraft,
+  updateNav
 }
 
-export default withNamespaces()(connect(mapStateToProps,mapDispatchToProps)(Sync))
+export default withNamespaces()(
+  connect(
+    mapStateToProps,
+    mapDispatchToProps
+  )(Sync)
+)

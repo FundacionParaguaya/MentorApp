@@ -15,16 +15,15 @@ import Decoration from '../../components/decoration/Decoration'
 import globalStyles from '../../globalStyles'
 import Select from '../../components/Select'
 import DateInput from '../../components/DateInput'
+import { getDraft } from './helpers'
 
 export class FamilyMembersNames extends Component {
-  draftId = this.props.navigation.getParam('draftId')
-  survey = this.props.navigation.getParam('survey')
-  gender = this.survey.surveyConfig.gender
+  gender = this.props.nav.survey.surveyConfig.gender
   errorsDetected = []
   state = { errorsDetected: [], showErrors: false }
 
   componentDidMount() {
-    this.props.addDraftProgress(this.draftId, {
+    this.props.addDraftProgress(this.props.nav.draftId, {
       screen: 'FamilyMembersNames'
     })
 
@@ -34,16 +33,15 @@ export class FamilyMembersNames extends Component {
   }
 
   onPressBack = () => {
-    const draft = this.getDraft()
+    const draft = getDraft()
 
-    this.props.addDraftProgress(this.draftId, {
+    this.props.addDraftProgress(this.props.nav.draftId, {
       current: draft.progress.current - 1,
       total: draft.progress.total - 1
     })
 
     this.props.navigation.navigate('FamilyParticipant', {
-      draftId: this.draftId,
-      survey: this.survey
+      draftId: this.props.nav.draftId
     })
   }
   shouldComponentUpdate() {
@@ -63,28 +61,23 @@ export class FamilyMembersNames extends Component {
   }
 
   handleClick = () => {
-    const draft = this.getDraft()
+    const draft = getDraft()
 
     if (this.state.errorsDetected.length) {
       this.setState({
         showErrors: true
       })
     } else {
-      this.props.addDraftProgress(this.draftId, {
+      this.props.addDraftProgress(this.props.nav.draftId, {
         current: draft.progress.current + 1
       })
 
-      this.props.navigation.navigate('Location', {
-        draftId: this.draftId,
-        survey: this.survey
-      })
+      this.props.navigation.navigate('Location')
     }
   }
-  getDraft = () =>
-    this.props.drafts.find(draft => draft.draftId === this.draftId)
 
   getFieldValue = field => {
-    const draft = this.getDraft()
+    const draft = getDraft()
     if (!draft) {
       return
     }
@@ -94,7 +87,7 @@ export class FamilyMembersNames extends Component {
 
   addFamilyMemberName(name, index) {
     this.props.addSurveyFamilyMemberData({
-      id: this.draftId,
+      id: this.props.nav.draftId,
       index,
       payload: {
         firstName: name,
@@ -105,7 +98,7 @@ export class FamilyMembersNames extends Component {
 
   addFamilyMemberGender(gender, index) {
     this.props.addSurveyFamilyMemberData({
-      id: this.draftId,
+      id: this.props.nav.draftId,
       index,
       payload: {
         gender
@@ -115,7 +108,7 @@ export class FamilyMembersNames extends Component {
 
   addFamilyMemberBirthdate(birthDate, index) {
     this.props.addSurveyFamilyMemberData({
-      id: this.draftId,
+      id: this.props.nav.draftId,
       index,
       payload: {
         birthDate
@@ -126,7 +119,8 @@ export class FamilyMembersNames extends Component {
   render() {
     const { t } = this.props
     const { showErrors } = this.state
-    const draft = this.getDraft()
+    const draft = getDraft()
+    let onlyOneAutoFocusCheck = false
 
     const familyMembersCount =
       draft.familyData.countFamilyMembers &&
@@ -152,79 +146,102 @@ export class FamilyMembersNames extends Component {
               style={styles.icon}
             />
           </View>
+          <Text style={[globalStyles.h2Bold, styles.heading]}>
+            {t('views.family.familyMembersHeading')}
+          </Text>
         </Decoration>
 
-        {familyMembersCount.map((item, i) => (
-          <View key={i} style={{ marginBottom: 20 }}>
-            {i % 2 ? <Decoration variation="familyMemberNamesBody" /> : null}
-            <View
-              style={{
-                display: 'flex',
-                flexDirection: 'row',
-                paddingHorizontal: 20,
-                marginBottom: 15
-              }}
-            >
-              <Icon name="face" color={colors.grey} size={22} />
-              <Text
+        {familyMembersCount.map((item, i) => {
+          let firstNameAutoFocus
+          if (this.getFieldValue('familyMembersList')[i + 1]) {
+            if (this.getFieldValue('familyMembersList')[i + 1].firstName) {
+              firstNameAutoFocus = false
+            } else {
+              if (!onlyOneAutoFocusCheck) {
+                onlyOneAutoFocusCheck = true
+                firstNameAutoFocus = true
+              }
+            }
+          } else {
+            if (!onlyOneAutoFocusCheck) {
+              onlyOneAutoFocusCheck = true
+              firstNameAutoFocus = true
+            }
+          }
+          return (
+            <View key={i} style={{ marginBottom: 20 }}>
+              {i % 2 ? <Decoration variation="familyMemberNamesBody" /> : null}
+              <View
                 style={{
-                  ...globalStyles.h2Bold,
-                  color: colors.grey,
-                  marginLeft: 5
+                  display: 'flex',
+                  flexDirection: 'row',
+                  paddingHorizontal: 20,
+                  marginBottom: 15
                 }}
               >
-                {`${t('views.family.familyMember')} ${i + 1}`}
-              </Text>
-            </View>
-            <TextInput
-              key={i}
-              validation="string"
-              field={i.toString()}
-              onChangeText={text => this.addFamilyMemberName(text, i + 1)}
-              placeholder={`${t('views.family.firstName')}`}
-              value={
-                (this.getFieldValue('familyMembersList')[i + 1] || {})
-                  .firstName || ''
-              }
-              required
-              detectError={this.detectError}
-              showErrors={showErrors}
-            />
-            <Select
-              field={i.toString()}
-              onChange={text => this.addFamilyMemberGender(text, i + 1)}
-              label={t('views.family.gender')}
-              placeholder={t('views.family.selectGender')}
-              value={
-                (this.getFieldValue('familyMembersList')[i + 1] || {}).gender ||
-                ''
-              }
-              detectError={this.detectError}
-              options={this.gender}
-            />
+                <Icon name="face" color={colors.grey} size={22} />
+                <Text
+                  style={{
+                    ...globalStyles.h2Bold,
+                    color: colors.grey,
+                    marginLeft: 5
+                  }}
+                >
+                  {`${t('views.family.familyMember')} ${i + 1}`}
+                </Text>
+              </View>
+              <TextInput
+                autoFocus={firstNameAutoFocus}
+                key={i}
+                validation="string"
+                field={i.toString()}
+                onChangeText={text => this.addFamilyMemberName(text, i + 1)}
+                placeholder={`${t('views.family.firstName')}`}
+                value={
+                  (this.getFieldValue('familyMembersList')[i + 1] || {})
+                    .firstName || ''
+                }
+                required
+                detectError={this.detectError}
+                showErrors={showErrors}
+              />
+              <Select
+                field={i.toString()}
+                onChange={text => this.addFamilyMemberGender(text, i + 1)}
+                label={t('views.family.gender')}
+                placeholder={t('views.family.selectGender')}
+                value={
+                  (this.getFieldValue('familyMembersList')[i + 1] || {})
+                    .gender || ''
+                }
+                detectError={this.detectError}
+                options={this.gender}
+              />
 
-            <DateInput
-              field={i.toString()}
-              label={t('views.family.dateOfBirth')}
-              detectError={this.detectError}
-              showErrors={this.state.showErrors}
-              required
-              onValidDate={date => this.addFamilyMemberBirthdate(date, i + 1)}
-              value={
-                (this.getFieldValue('familyMembersList')[i + 1] || {}).birthDate
-              }
-            />
-          </View>
-        ))}
+              <DateInput
+                field={i.toString()}
+                label={t('views.family.dateOfBirth')}
+                detectError={this.detectError}
+                showErrors={this.state.showErrors}
+                required
+                onValidDate={date => this.addFamilyMemberBirthdate(date, i + 1)}
+                value={
+                  (this.getFieldValue('familyMembersList')[i + 1] || {})
+                    .birthDate
+                }
+              />
+            </View>
+          )
+        })}
       </StickyFooter>
     )
   }
 }
 
 FamilyMembersNames.propTypes = {
-  drafts: PropTypes.array,
   t: PropTypes.func.isRequired,
   navigation: PropTypes.object.isRequired,
+  nav: PropTypes.object.isRequired,
   addSurveyFamilyMemberData: PropTypes.func.isRequired,
   addDraftProgress: PropTypes.func.isRequired
 }
@@ -234,7 +251,7 @@ const styles = StyleSheet.create({
     alignSelf: 'center'
   },
   circleContainer: {
-    marginBottom: 10,
+    // marginBottom: 10,
     marginTop: 20,
     position: 'relative'
   },
@@ -250,6 +267,13 @@ const styles = StyleSheet.create({
     borderRadius: 50,
     backgroundColor: colors.lightgrey,
     zIndex: 1
+  },
+  heading: {
+    alignSelf: 'center',
+    textAlign: 'center',
+    paddingBottom: 25,
+    paddingHorizontal: 20,
+    color: colors.grey
   }
 })
 
@@ -258,8 +282,8 @@ const mapDispatchToProps = {
   addDraftProgress
 }
 
-const mapStateToProps = ({ drafts }) => ({
-  drafts
+const mapStateToProps = ({ nav }) => ({
+  nav
 })
 
 export default withNamespaces()(

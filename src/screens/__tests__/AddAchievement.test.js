@@ -8,9 +8,13 @@ import StickyFooter from '../../components/StickyFooter'
 
 const createTestProps = props => ({
   t: value => value,
+  nav: {
+    draftId: 4,
+    survey: {}
+  },
   navigation: {
     navigate: jest.fn(),
-    goBack: jest.fn(),
+    replace: jest.fn(),
     isFocused: jest.fn(),
     setParams: jest.fn(),
     getParam: jest.fn(param => {
@@ -137,39 +141,5 @@ describe('Render optimization', () => {
     expect(
       wrapper.instance().props.addSurveyPriorityAcheivementData
     ).toHaveBeenCalledTimes(1)
-  })
-  it('fields are read only when there is no draft id', () => {
-    props = createTestProps({
-      navigation: {
-        navigate: jest.fn(),
-        goBack: jest.fn(),
-        isFocused: jest.fn(),
-        setParams: jest.fn(),
-        getParam: jest.fn(param => {
-          if (param === 'indicator') {
-            return 'income'
-          } else if (param === 'draftId') {
-            return undefined
-          } else if (param === 'familyLifemap') {
-            return { surveyId: 1, achievements: [{ indicator: 'income' }] }
-          }
-        })
-      }
-    })
-    wrapper = shallow(<AddAchievement {...props} />)
-
-    expect(
-      wrapper
-        .find(TextInput)
-        .first()
-        .props().readonly
-    ).toBe(true)
-
-    expect(
-      wrapper
-        .find(TextInput)
-        .last()
-        .props().readonly
-    ).toBe(true)
   })
 })
