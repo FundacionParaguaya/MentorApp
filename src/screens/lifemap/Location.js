@@ -348,7 +348,6 @@ export class Location extends Component {
     } = this.state
 
     const draft = this.props.navigation.getParam('family') || getDraft()
-    console.log(draft)
 
     if (loading) {
       return (

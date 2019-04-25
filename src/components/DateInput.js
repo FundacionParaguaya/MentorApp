@@ -125,7 +125,7 @@ export class DateInputComponent extends React.Component {
           </View>
         </View>
         {this.state.error ? (
-          <Text style={{ ...styles.text, color: colors.red }}>
+          <Text style={{ ...styles.text, color: colors.red, ...styles.error }}>
             {t('views.family.selectValidDate')}
           </Text>
         ) : (
@@ -142,7 +142,8 @@ const styles = StyleSheet.create({
     alignItems: 'flex-end'
   },
   date: { width: '100%' },
-  text: { marginLeft: 30 }
+  text: { marginLeft: 30 },
+  error: { marginBottom: 10, marginTop: -10 }
 })
 
 DateInputComponent.propTypes = {

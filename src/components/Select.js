@@ -239,18 +239,21 @@ const styles = StyleSheet.create({
     borderBottomWidth: 1,
     marginHorizontal: 15,
     justifyContent: 'center',
-    minHeight: 60,
+    height: 65,
     paddingBottom: 6,
     borderBottomColor: colors.grey,
     borderTopLeftRadius: 8,
-    borderTopRightRadius: 8
+    borderTopRightRadius: 8,
   },
   placeholder: {
     paddingHorizontal: 15,
-    ...globalStyles.subline
+    ...globalStyles.subline,
+    lineHeight: 50,
+    height: 50,
   },
   withoutValue: {
-    backgroundColor: colors.primary
+    backgroundColor: colors.primary,
+    height: 65
   },
   dropdown: {
     paddingVertical: 25,
@@ -277,7 +280,7 @@ const styles = StyleSheet.create({
   },
   active: {
     backgroundColor: colors.white,
-    borderBottomColor: colors.green
+    borderBottomColor: colors.green,
   },
   error: {
     backgroundColor: colors.white,
@@ -290,7 +293,8 @@ const styles = StyleSheet.create({
     paddingHorizontal: 15,
     fontSize: 14,
     color: colors.palegrey,
-    marginBottom: 10,
+    // marginBottom: 10,
     zIndex: 100
+
   }
 })
