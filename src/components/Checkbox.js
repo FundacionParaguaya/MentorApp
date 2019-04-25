@@ -36,6 +36,9 @@ class Checkbox extends Component {
             textStyle || globalStyles.subline,
             showErrors && !checked ? styles.error : {}
           ]}
+          accessibilityLabel={`${this.props.title}${
+            showErrors && !checked ? ' *' : ''
+          } ${checked === true ? 'checked' : 'unchecked'}`}
         />
       </TouchableHighlight>
     )

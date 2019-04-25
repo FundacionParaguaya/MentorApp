@@ -66,6 +66,9 @@ class Button extends Component {
         disabled={disabled}
         onHideUnderlay={this.togglePressedState}
         onShowUnderlay={this.togglePressedState}
+        accessibilityRole="button"
+        accessibilityLabel={text}
+        accessibilityHint={disabled ? 'disabled' : ''}
       >
         <View style={{ flexDirection: 'row' }}>
           {icon ? (
@@ -98,9 +101,9 @@ class Button extends Component {
                       ? colors.red
                       : colors.lightdark
                 },
-                this.props.style && this.props.style['backgroundColor'] 
-                  ? styles.whiteText 
-                  : null 
+              this.props.style && this.props.style['backgroundColor']
+                ? styles.whiteText
+                : null
             ]}
           >
             {text}

@@ -46,7 +46,12 @@ export default class LogoutPopup extends Component {
         isOpen={navigation.getParam('logoutModalOpen')}
         onClose={onModalClose}
       >
-        <View style={{ alignItems: 'flex-end' }}>
+        <View
+          style={{ alignItems: 'flex-end', paddingVertical: 10 }}
+          accessible={true}
+          accessibilityLabel={i18n.t('general.close')}
+          accessibilityRole={'button'}
+        >
           <Icon name="close" size={20} />
         </View>
 

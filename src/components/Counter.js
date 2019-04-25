@@ -37,6 +37,8 @@ class Counter extends Component {
               name="minus"
               color={this.state.minusPressed ? colors.white : colors.palegreen}
               size={30}
+              accessibilityRole="button"
+              accessibilityLabel="minus"
             />
           </TouchableHighlight>
           <TouchableHighlight
@@ -52,6 +54,8 @@ class Counter extends Component {
               name="plus"
               color={this.state.plusPressed ? colors.white : colors.palegreen}
               size={30}
+              accessibilityRole="button"
+              accessibilityLabel="plus"
             />
           </TouchableHighlight>
         </View>
