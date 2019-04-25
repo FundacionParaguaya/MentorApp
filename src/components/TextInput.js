@@ -211,7 +211,7 @@ const styles = StyleSheet.create({
     borderBottomWidth: 1,
     marginHorizontal: 15,
     justifyContent: 'center',
-    minHeight: 60,
+    height: 65,
     borderTopLeftRadius: 8,
     borderTopRightRadius: 8
   },
@@ -230,9 +230,10 @@ const styles = StyleSheet.create({
     fontSize: 14
   },
   activeInput: {
-    // marginTop: -10,
+    marginTop: -10,
     paddingBottom: 0,
-    height: 50
+    height: 50,
+    paddingBottom:15
   },
   blur: {
     backgroundColor: colors.primary,
@@ -253,7 +254,7 @@ const styles = StyleSheet.create({
   text: {
     marginLeft: 15,
     position: 'relative',
-    top: 10,
+    // top: 10,
     height: 30,
     zIndex: 100
   }
