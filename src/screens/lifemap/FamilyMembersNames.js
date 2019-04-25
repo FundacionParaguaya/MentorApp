@@ -145,6 +145,7 @@ export class FamilyMembersNames extends Component {
               style={styles.icon}
             />
           </View>
+          <Text style={[globalStyles.h2Bold, styles.heading]}>{t('views.family.familyMembersHeading')}</Text>
         </Decoration>
 
         {familyMembersCount.map((item, i) => (
@@ -162,11 +163,12 @@ export class FamilyMembersNames extends Component {
               <Text
                 style={{
                   ...globalStyles.h2Bold,
+                  fontSize: 17,
                   color: colors.grey,
                   marginLeft: 5
                 }}
               >
-                {`${t('views.family.familyMember')} ${i + 1}`}
+                {`${t('views.family.familyMember')}`}
               </Text>
             </View>
             <TextInput
@@ -227,7 +229,7 @@ const styles = StyleSheet.create({
     alignSelf: 'center'
   },
   circleContainer: {
-    marginBottom: 10,
+    // marginBottom: 10,
     marginTop: 20,
     position: 'relative'
   },
@@ -243,6 +245,13 @@ const styles = StyleSheet.create({
     borderRadius: 50,
     backgroundColor: colors.lightgrey,
     zIndex: 1
+  },
+  heading: {
+    alignSelf: 'center',
+    textAlign: 'center',
+    paddingBottom: 25,
+    paddingHorizontal: 20,
+    color: colors.grey
   }
 })
 
