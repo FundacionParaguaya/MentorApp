@@ -5,7 +5,9 @@ import StickyFooter from '../../components/StickyFooter'
 import { connect } from 'react-redux'
 import PropTypes from 'prop-types'
 import { withNamespaces } from 'react-i18next'
+import { isPortrait, isTablet } from '../../responsivenessHelpers'
 import { getDraft } from './helpers'
+
 import {
   addSurveyData,
   addDraftProgress,
@@ -130,7 +132,14 @@ export class Question extends Component {
 
   render() {
     const draft = getDraft()
-    const { t } = this.props
+    const { t, dimensions, navigation } = this.props
+    const { navigationHeight } = navigation.state.params
+    const headerHeight = navigationHeight ? navigationHeight : 95
+    const paddingOfStickyFooter = 15
+    const portrait = !!dimensions && isPortrait(dimensions)
+    const tablet = !!dimensions && isTablet(dimensions)
+    const bodyHeight = dimensions.height - headerHeight - paddingOfStickyFooter
+
     return (
       <StickyFooter
         handleClick={this.handleClick}
@@ -138,21 +147,34 @@ export class Question extends Component {
         progress={draft ? draft.progress.current / draft.progress.total : 0}
         currentScreen="Question"
       >
-        <SliderComponent
-          slides={this.slides}
-          value={this.getFieldValue(draft, this.indicator.codeName)}
-          selectAnswer={answer => this.selectAnswer(answer)}
-        />
-        <View style={styles.skip}>
-          {this.indicator.required ? (
-            <Text>{t('views.lifemap.responseRequired')}</Text>
-          ) : (
-            <IconButton
-              text={t('views.lifemap.skipThisQuestion')}
-              textStyle={styles.link}
-              onPress={() => this.selectAnswer(0)}
-            />
-          )}
+        <View
+          style={
+            (portrait && tablet) || (portrait && !tablet)
+              ? { height: bodyHeight }
+              : !tablet && !portrait
+              ? { height: dimensions.width }
+              : {}
+          }
+        >
+          <SliderComponent
+            slides={this.slides}
+            value={this.getFieldValue(draft, this.indicator.codeName)}
+            selectAnswer={answer => this.selectAnswer(answer)}
+            bodyHeight={bodyHeight}
+            tablet={tablet}
+            portrait={portrait}
+          />
+          <View style={styles.skip}>
+            {this.indicator.required ? (
+              <Text>{t('views.lifemap.responseRequired')}</Text>
+            ) : (
+              <IconButton
+                text={t('views.lifemap.skipThisQuestion')}
+                textStyle={styles.link}
+                onPress={() => this.selectAnswer(0)}
+              />
+            )}
+          </View>
         </View>
       </StickyFooter>
     )
@@ -161,27 +183,28 @@ export class Question extends Component {
 
 const styles = StyleSheet.create({
   skip: {
-    justifyContent: 'center',
-    alignItems: 'center',
-    paddingTop: 40,
-    paddingBottom: 30
+    alignItems: 'flex-end',
+    marginRight: 30,
+    marginTop: 15
   },
   link: {
-    color: colors.green
+    color: colors.palegreen
   }
 })
 
 Question.propTypes = {
   t: PropTypes.func.isRequired,
   addSurveyData: PropTypes.func.isRequired,
+  dimensions: PropTypes.object.isRequired,
   nav: PropTypes.object.isRequired,
   navigation: PropTypes.object.isRequired,
   addDraftProgress: PropTypes.func.isRequired,
   deleteSurveyPriorityAcheivementData: PropTypes.func.isRequired
 }
 
-const mapStateToProps = ({ nav }) => ({
-  nav
+const mapStateToProps = ({ nav, dimensions }) => ({
+  nav,
+  dimensions
 })
 
 const mapDispatchToProps = {

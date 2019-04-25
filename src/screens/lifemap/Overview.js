@@ -232,7 +232,7 @@ export class Overview extends Component {
               <FilterListItem
                 id="green"
                 onPress={() => this.selectFilter(3, t('views.lifemap.green'))}
-                color={colors.green}
+                color={colors.palegreen}
                 text={t('views.lifemap.green')}
                 amount={
                   data.indicatorSurveyDataList.filter(item => item.value === 3)

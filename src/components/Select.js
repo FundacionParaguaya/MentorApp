@@ -133,10 +133,12 @@ class Select extends Component {
                   styles.title,
                   isOpen &&
                     !errorMsg && {
-                      color: colors.green
+                      color: colors.palegreen
                     }
                 ]}
-                accessibilityLabel={`${placeholder} ${ required && !readonly ? ' This is a mandatory field.' : ''}`}
+                accessibilityLabel={`${placeholder} ${
+                  required && !readonly ? ' This is a mandatory field.' : ''
+                }`}
               >{`${placeholder}${required && !readonly ? ' *' : ''}`}</Text>
             )}
             <Text
@@ -144,7 +146,9 @@ class Select extends Component {
                 styles.placeholder,
                 errorMsg ? { color: colors.red } : {}
               ]}
-              accessibilityLabel={`${placeholder}${required ? ' This is a mandatory field.' : ''}`}
+              accessibilityLabel={`${placeholder}${
+                required ? ' This is a mandatory field.' : ''
+              }`}
             >
               {value ? text : `${placeholder}${required ? ' *' : ''}`}
             </Text>
@@ -243,13 +247,13 @@ const styles = StyleSheet.create({
     paddingBottom: 6,
     borderBottomColor: colors.grey,
     borderTopLeftRadius: 8,
-    borderTopRightRadius: 8,
+    borderTopRightRadius: 8
   },
   placeholder: {
     paddingHorizontal: 15,
     ...globalStyles.subline,
     lineHeight: 50,
-    height: 50,
+    height: 50
   },
   withoutValue: {
     backgroundColor: colors.primary,
@@ -280,7 +284,7 @@ const styles = StyleSheet.create({
   },
   active: {
     backgroundColor: colors.white,
-    borderBottomColor: colors.green,
+    borderBottomColor: colors.palegreen
   },
   error: {
     backgroundColor: colors.white,
@@ -295,6 +299,5 @@ const styles = StyleSheet.create({
     color: colors.palegrey,
     // marginBottom: 10,
     zIndex: 100
-
   }
 })

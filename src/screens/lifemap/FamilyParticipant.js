@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { StyleSheet } from 'react-native'
+import { StyleSheet, Text } from 'react-native'
 import { connect } from 'react-redux'
 import PropTypes from 'prop-types'
 import uuid from 'uuid/v1'
@@ -19,6 +19,7 @@ import TextInput from '../../components/TextInput'
 import DateInput from '../../components/DateInput'
 import Decoration from '../../components/decoration/Decoration'
 import colors from '../../theme.json'
+import globalStyles from '../../globalStyles'
 
 export class FamilyParticipant extends Component {
   //Get draft id from Redux store if it exists else create new draft id
@@ -211,6 +212,12 @@ export class FamilyParticipant extends Component {
     const draft =
       this.props.navigation.getParam('family') ||
       this.props.drafts.find(draft => draft.draftId === this.draftId)
+    let autofocusFirstName
+    if (this.getFieldValue(draft, 'firstName')) {
+      autofocusFirstName = false
+    } else {
+      autofocusFirstName = true
+    }
 
     return (
       <StickyFooter
@@ -222,9 +229,12 @@ export class FamilyParticipant extends Component {
         }
       >
         <Decoration variation="primaryParticipant">
-          <Icon name="face" color={colors.grey} size={55} style={styles.icon} />
+          <Icon name="face" color={colors.grey} size={61} style={styles.icon} />
+          <Text style={[globalStyles.h2Bold, styles.heading]}>{t('views.family.primaryParticipantHeading')}</Text>
         </Decoration>
+
         <TextInput
+          autoFocus={autofocusFirstName}
           validation="string"
           field="firstName"
           readonly={readonly}
@@ -350,6 +360,13 @@ export class FamilyParticipant extends Component {
 const styles = StyleSheet.create({
   icon: {
     alignSelf: 'center'
+  },
+  heading: {
+    alignSelf: 'center',
+    textAlign: 'center',
+    paddingBottom: 20,
+    paddingHorizontal: 20,
+    color: colors.grey
   }
 })
 

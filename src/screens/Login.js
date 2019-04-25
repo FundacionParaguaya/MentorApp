@@ -64,30 +64,62 @@ export class Login extends Component {
   }
 
   onLogin = () => {
-    const env = this.state.username.trim() === 'demo' ? 'demo' : 'production'
+    let env = this.state.username.trim() === 'demo' ? 'demo' : 'production'
+    let envCheck = this.state.username.trim().substring(0, 2)
 
-    this.props.setEnv(env)
-
-    this.setState({
-      loading: true
-    })
-
-    this.props
-      .login(this.state.username.trim(), this.state.password, url[env])
-      .then(() => {
-        if (this.props.user.status === 401) {
-          this.setState({
-            loading: false
-          })
-          this.setState({ error: 'Wrong username or password' })
-        } else {
-          this.setState({
-            loading: false,
-            error: false
-          })
-          this.props.navigation.navigate('Loading')
-        }
+    if (envCheck !== 't/' && envCheck !== 'd/' && envCheck !== 'p/') {
+      this.props.setEnv(env)
+      this.setState({
+        loading: true
       })
+      this.props
+        .login(this.state.username.trim(), this.state.password, url[env])
+        .then(() => {
+          if (this.props.user.status === 401) {
+            this.setState({
+              loading: false
+            })
+            this.setState({ error: 'Wrong username or password' })
+          } else {
+            this.setState({
+              loading: false,
+              error: false
+            })
+            this.props.navigation.navigate('Loading')
+          }
+        })
+    } else {
+      if (envCheck === 't/') {
+        env = 'testing'
+      } else if (envCheck === 'd/') {
+        env = 'demo'
+      } else if (envCheck === 'p/') {
+        env = 'production'
+      }
+      let userNameClean = this.state.username
+        .trim()
+        .substring(2, this.state.username.trim().length)
+      this.props.setEnv(env)
+      this.setState({
+        loading: true
+      })
+      this.props
+        .login(userNameClean, this.state.password, url[env])
+        .then(() => {
+          if (this.props.user.status === 401) {
+            this.setState({
+              loading: false
+            })
+            this.setState({ error: 'Wrong username or password' })
+          } else {
+            this.setState({
+              loading: false,
+              error: false
+            })
+            this.props.navigation.navigate('Loading')
+          }
+        })
+    }
   }
 
   render() {
@@ -111,7 +143,7 @@ export class Login extends Component {
             autoCapitalize="none"
             style={{
               ...styles.input,
-              borderColor: this.state.error ? colors.red : colors.green
+              borderColor: this.state.error ? colors.red : colors.palegreen
             }}
             onChangeText={username => this.setState({ username })}
           />
@@ -122,7 +154,7 @@ export class Login extends Component {
             autoCapitalize="none"
             style={{
               ...styles.input,
-              borderColor: this.state.error ? colors.red : colors.green,
+              borderColor: this.state.error ? colors.red : colors.palegreen,
               marginBottom: this.state.error ? 0 : 25
             }}
             onChangeText={password => this.setState({ password })}

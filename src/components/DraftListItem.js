@@ -27,6 +27,21 @@ class DraftListItem extends Component {
     }
   }
 
+  setStatusTitle = status => {
+    switch (status) {
+      case 'Draft':
+        return 'Draft'
+      case 'Synced':
+        return 'Completed'
+      case 'Pending sync':
+        return 'Sync Pending'
+      case 'Sync error':
+        return 'Sync Error'
+      default:
+        return ''
+    }
+  }
+
   capitalize = s => {
     if (typeof s !== 'string') return ''
     const string = s.split('.').join('')
@@ -66,9 +81,7 @@ class DraftListItem extends Component {
                 this.props.item.status === 'Synced' ? colors.grey : colors.white
             }}
           >
-            {this.props.item.status === 'Synced'
-              ? 'Completed'
-              : this.props.item.status}
+            {this.setStatusTitle(this.props.item.status)}
           </Text>
         </View>
         {!linkDisabled ? (
