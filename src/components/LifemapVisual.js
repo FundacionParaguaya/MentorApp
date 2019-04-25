@@ -11,7 +11,7 @@ class LifemapVisual extends Component {
       case 2:
         return colors.gold
       case 3:
-        return colors.green
+        return colors.palegreen
       case 0:
         return colors.palegrey
 

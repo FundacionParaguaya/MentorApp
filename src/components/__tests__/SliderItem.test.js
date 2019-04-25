@@ -62,7 +62,7 @@ describe('SliderItem Component', () => {
     })
     wrapper = shallow(<SliderItem {...props} />)
     expect(wrapper.find('#icon-view').props().style.backgroundColor).toBe(
-      colors.green
+      colors.palegreen
     )
   })
   it('toggles between pressed states', () => {

@@ -188,7 +188,7 @@ const styles = StyleSheet.create({
     marginTop: 15
   },
   link: {
-    color: colors.green
+    color: colors.palegreen
   }
 })
 

@@ -97,7 +97,7 @@ class TextInput extends Component {
   defineTextColor = status => {
     switch (status) {
       case 'active':
-        return colors.green
+        return colors.palegreen
       case 'blur':
         return colors.palegrey
       case 'error':
@@ -236,7 +236,7 @@ const styles = StyleSheet.create({
   },
   active: {
     backgroundColor: colors.white,
-    borderBottomColor: colors.green
+    borderBottomColor: colors.palegreen
   },
   error: {
     backgroundColor: colors.white,

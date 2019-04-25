@@ -80,7 +80,7 @@ export default class Orb extends Component {
 
     const backgroundColor = animateColor.interpolate({
       inputRange: [0, 1],
-      outputRange: [color || colors.yellow, colors.green]
+      outputRange: [color || colors.yellow, colors.palegreen]
     })
 
     return (

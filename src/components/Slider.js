@@ -9,12 +9,12 @@ import Carousel from 'react-native-snap-carousel'
 const slideColors = {
   1: 'red',
   2: 'gold',
-  3: 'green'
+  3: 'palegreen'
 }
 
 export class Slider extends Component {
   state = {
-    selectedColor: colors.green
+    selectedColor: colors.palegreen
   }
 
   getSelectedAnswer = value => {
