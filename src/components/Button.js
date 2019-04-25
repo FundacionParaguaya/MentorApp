@@ -54,13 +54,13 @@ class Button extends Component {
             !underlined && {
               borderColor:
                 !borderColor || borderColor === colors.palegreen
-                  ? colors.green
+                  ? colors.palegreen
                   : borderColor === colors.palered
                   ? colors.red
                   : colors.lightdark
             }
         ]}
-        underlayColor={colored ? colors.green : colors.white}
+        underlayColor={colored ? colors.palegreen : colors.white}
         activeOpacity={1}
         onPress={handleClick}
         disabled={disabled}
@@ -72,7 +72,7 @@ class Button extends Component {
             <Icon
               name={icon}
               size={21}
-              color={pressed ? colors.green : colors.palegreen}
+              color={pressed ? colors.palegreen : colors.palegreen}
               style={styles.icon}
             />
           ) : (
@@ -93,7 +93,7 @@ class Button extends Component {
                 !colored && {
                   color:
                     !borderColor || borderColor === colors.palegreen
-                      ? colors.green
+                      ? colors.palegreen
                       : borderColor === colors.palered
                       ? colors.red
                       : colors.lightdark

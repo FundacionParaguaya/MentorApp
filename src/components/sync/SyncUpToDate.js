@@ -27,7 +27,7 @@ export class SyncUpToDate extends Component {
     return (
       <View style={styles.view}>
         <Text style={globalStyles.h3}>{i18n.t('views.sync.upToDate')}</Text>
-        <Icon style={styles.icon} name="done" size={60} color={colors.green} />
+        <Icon style={styles.icon} name="done" size={60} color={colors.palegreen} />
         {this.props.date ? (
           <Text
             accessibilityLabel={

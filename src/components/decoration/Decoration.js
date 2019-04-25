@@ -178,7 +178,7 @@ export default class Decoration extends Component {
                 />
                 <Orb
                   size={15}
-                  color={colors.green}
+                  color={colors.palegreen}
                   position={{ x: 120, y: -40 }}
                 />
               </View>
