@@ -14,7 +14,9 @@ export class CustomHeaderSurveyComponent extends Component {
         style={styles.headerQuestions}
         onLayout={event => {
           const { height } = event.nativeEvent.layout
-          navigation.setParams({ navigationHeight: height })
+          height > 115
+            ? navigation.setParams({ navigationHeight: height })
+            : false
         }}
         accessibilityLiveRegion="assertive"
       >

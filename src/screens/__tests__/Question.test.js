@@ -30,8 +30,10 @@ const createTestProps = props => ({
       if (param === 'step') {
         return 0
       }
-    })
+    }),
+    state: { params: { headerHeight: 100  } }
   },
+  dimensions: { height: 100 },
   addSurveyData: jest.fn(),
   addDraftProgress: jest.fn(),
   deleteSurveyPriorityAcheivementData: jest.fn(),
