@@ -1,5 +1,31 @@
 # Change Log
 
+## [v1.7.2](https://github.com/FundacionParaguaya/MentorApp/tree/v1.7.2) (2019-04-24)
+[Full Changelog](https://github.com/FundacionParaguaya/MentorApp/compare/v1.7.1...v1.7.2)
+
+**Implemented enhancements:**
+
+- Auto select of First Form Field [\#79](https://github.com/FundacionParaguaya/MentorApp/issues/79)
+
+**Fixed bugs:**
+
+- Retrospective of Family Location often showing current location [\#562](https://github.com/FundacionParaguaya/MentorApp/issues/562)
+- Edition errors in App Release [\#561](https://github.com/FundacionParaguaya/MentorApp/issues/561)
+- Indicator titles do not appear in Irradia [\#556](https://github.com/FundacionParaguaya/MentorApp/issues/556)
+- App crashes after pressing continue on read-only screen [\#514](https://github.com/FundacionParaguaya/MentorApp/issues/514)
+- Incorrectly re-appearing priorities message [\#502](https://github.com/FundacionParaguaya/MentorApp/issues/502)
+- Sync Labels not coherent between dashboard and sync screens [\#497](https://github.com/FundacionParaguaya/MentorApp/issues/497)
+
+**Closed issues:**
+
+- Some devices doesn't read the content of the Modals \(i.e. Android Oreo , Voice Assistant\) [\#484](https://github.com/FundacionParaguaya/MentorApp/issues/484)
+
+**Merged pull requests:**
+
+- Rc 1.7.2 [\#567](https://github.com/FundacionParaguaya/MentorApp/pull/567) ([Danman7](https://github.com/Danman7))
+- fix \#496 added asterix to the counter component [\#537](https://github.com/FundacionParaguaya/MentorApp/pull/537) ([zommerberg](https://github.com/zommerberg))
+- fix \#457 added places autocomplete [\#536](https://github.com/FundacionParaguaya/MentorApp/pull/536) ([zommerberg](https://github.com/zommerberg))
+
 ## [v1.7.1](https://github.com/FundacionParaguaya/MentorApp/tree/v1.7.1) (2019-04-23)
 [Full Changelog](https://github.com/FundacionParaguaya/MentorApp/compare/v1.7.0...v1.7.1)
 
@@ -11,6 +37,8 @@
 **Fixed bugs:**
 
 - Translate these 2 titles to Spanish [\#525](https://github.com/FundacionParaguaya/MentorApp/issues/525)
+- Missing Asterisk on Priority Screen "How many months will it take?" [\#496](https://github.com/FundacionParaguaya/MentorApp/issues/496)
+- Search location in map not accurate [\#457](https://github.com/FundacionParaguaya/MentorApp/issues/457)
 
 **Closed issues:**
 

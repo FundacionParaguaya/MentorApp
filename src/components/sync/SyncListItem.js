@@ -35,9 +35,9 @@ class SyncListItem extends Component {
               : ''
             }`}</Text>
             {status === 'Pending sync' ? (
-              <Text style={styles.label}>Pending</Text>
+              <Text style={[styles.label, styles.pendingSync]}>Sync Pending</Text>
             ) : (
-              <Text style={[styles.label, styles.error]}>Sync error</Text>
+              <Text style={[styles.label, styles.error]}>Sync Error</Text>
             )}
           </View>
         </View>
@@ -84,8 +84,11 @@ const styles = StyleSheet.create({
     height: 25,
     lineHeight: 25,
     textAlign: 'center',
-    marginTop: 5,
-    backgroundColor: colors.lightgrey
+    marginTop: 5
+  },
+  pendingSync: { 
+    backgroundColor: colors.palered, 
+    color: colors.white
   },
   error: {
     backgroundColor: colors.palered,

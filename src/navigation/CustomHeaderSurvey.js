@@ -8,6 +8,7 @@ import { connect } from 'react-redux'
 export class CustomHeaderSurveyComponent extends Component {
   render() {
     const { navigation, nav } = this.props
+
     return (
       <View
         style={styles.headerQuestions}
@@ -25,7 +26,7 @@ export class CustomHeaderSurveyComponent extends Component {
         <Text style={styles.title}>
           {
             nav.survey.surveyStoplightQuestions[navigation.state.params.step]
-              .title
+              .questionText
           }
         </Text>
       </View>

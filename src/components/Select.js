@@ -133,7 +133,7 @@ class Select extends Component {
                   styles.title,
                   isOpen &&
                     !errorMsg && {
-                      color: colors.green
+                      color: colors.palegreen
                     }
                 ]}
                 accessibilityLabel={`${placeholder} ${ required && !readonly ? ' This is a mandatory field.' : ''}`}
@@ -277,7 +277,7 @@ const styles = StyleSheet.create({
   },
   active: {
     backgroundColor: colors.white,
-    borderBottomColor: colors.green
+    borderBottomColor: colors.palegreen
   },
   error: {
     backgroundColor: colors.white,

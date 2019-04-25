@@ -9,7 +9,7 @@ import globalStyles from '../globalStyles'
 const slideColors = {
   1: 'red',
   2: 'gold',
-  3: 'green'
+  3: 'palegreen'
 }
 
 export default class SliderItem extends Component {
@@ -31,6 +31,8 @@ export default class SliderItem extends Component {
         onPress={this.props.onPress}
         onHideUnderlay={() => this.togglePressedState(false)}
         onShowUnderlay={() => this.togglePressedState(true)}
+        accessibilityLabel={value === slide.value ? 'selected' : 'deselected'}
+        accessibilityHint={slide.description}
       >
         <View>
           <Image

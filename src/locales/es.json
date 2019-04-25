@@ -67,6 +67,8 @@
     "skippedIndicators": "Preguntas omitidas",
     "readCarefully": "Favor lea atentamente antes de crear el Mapa de Vida",
     "family": {
+      "primaryParticipantHeading": "¡Cuéntanos sobre tí!",
+      "familyMembersHeading": "Ahora, ¡cuéntanos sobre las personas con las que vives!",
       "firstName": "Nombre",
       "lastName": "Apellido",
       "selectGender": "Seleccione género",
@@ -109,7 +111,10 @@
       "details": "Perfil",
       "lifemap": "Mapa de vida",
       "lifeMapCreatedOn": "Borrador del Mapa de Vida creado",
-      "created": "Creado"
+      "created": "Creado",
+      "weFoundYou": "¡Te encontramos!",
+      "weCannotLocate": "¡No podemos localizarte!",
+      "tellUsMore": "Puede decirnos más acerca de esta ubicación en el siguiente formulario"
     },
     "lifemap": {
       "thisLifeMapHas": "Este Mapa de Vida tiene %n preguntas. ¡Tardará aproximadamente 35 minutos en completarse!",

@@ -48,7 +48,7 @@ export class IconButtonComponent extends Component {
                 name={icon}
                 style={this.props.iconStyle || {}}
                 size={this.props.size || 30}
-                color={this.state.pressed ? colors.green : colors.palegreen}
+                color={this.state.pressed ? colors.palegreen : colors.palegreen}
                 accessible={accessible}
                 accessibilityLabel={accessibilityLabel}
               />
@@ -66,7 +66,7 @@ export class IconButtonComponent extends Component {
               name={communityIcon}
               style={this.props.iconStyle || {}}
               size={this.props.size || 30}
-              color={this.state.pressed ? colors.green : colors.palegreen}
+              color={this.state.pressed ? colors.palegreen : colors.palegreen}
             />
           )}
           {imageSource && <Image source={imageSource} />}
@@ -78,7 +78,7 @@ export class IconButtonComponent extends Component {
                   ? {}
                   : {
                       color: this.state.pressed
-                        ? colors.green
+                        ? colors.palegreen
                         : colors.palegreen
                     }
               ]}

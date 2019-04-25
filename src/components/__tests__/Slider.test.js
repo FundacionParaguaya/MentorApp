@@ -52,7 +52,7 @@ describe('Slider Component', () => {
 
   describe('functionality', () => {
     it('has correct initial state', () => {
-      expect(wrapper.instance().state.selectedColor).toEqual(colors.green)
+      expect(wrapper.instance().state.selectedColor).toEqual(colors.palegreen)
     })
     it('does not change state when user clicks on green slide', () => {
       wrapper
@@ -60,7 +60,7 @@ describe('Slider Component', () => {
         .at(0)
         .props()
         .onPress()
-      expect(wrapper.instance().state.selectedColor).toEqual(colors.green)
+      expect(wrapper.instance().state.selectedColor).toEqual(colors.palegreen)
     })
     it('does changes state to yellow when user clicks on yellow slide', () => {
       wrapper

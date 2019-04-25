@@ -19,9 +19,13 @@ export default class Popup extends Component {
           style={styles.container}
           onPress={onClose}
           id="overlay"
-          accessible={true}
-        >
-          <View id="modal" style={styles.modal}>
+          >
+          <View
+            id="modal"
+            style={styles.modal}
+            accessible={true}
+            accessibilityLiveRegion="assertive"
+          >
             {children}
           </View>
         </TouchableHighlight>

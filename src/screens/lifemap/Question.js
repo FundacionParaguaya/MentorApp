@@ -167,7 +167,7 @@ const styles = StyleSheet.create({
     paddingBottom: 30
   },
   link: {
-    color: colors.green
+    color: colors.palegreen
   }
 })
 

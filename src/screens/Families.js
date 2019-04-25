@@ -126,44 +126,44 @@ export class Families extends Component {
     )
 
     return (
-      <ScrollView
-        style={globalStyles.background}
-        contentContainerStyle={styles.container}
-      >
-        <View ref={this.acessibleComponent} accessible={true}>
-          {familiesToSync ? (
-            <ActivityIndicator
-              size={30}
-              color={colors.palered}
-              style={styles.spinner}
-            />
-          ) : null}
-          <SearchBar
-            id="searchAddress"
-            style={styles.search}
-            placeholder={'Search by name'}
-            onChangeText={search => this.setState({ search })}
-            value={this.state.search}
-          />
-          <View style={styles.bar}>
-            <Text style={{ ...globalStyles.subline, ...styles.familiesCount }}>
-              {filteredFamilies.length} {t('views.families').toLowerCase()}
-            </Text>
-          </View>
-          <FlatList
-            data={this.sortByName(filteredFamilies)}
-            keyExtractor={(item, index) => index.toString()}
-            renderItem={({ item }) => (
-              <FamiliesListItem
-                error={t('views.family.error')}
-                lng={this.props.lng}
-                handleClick={() => this.handleClickOnFamily(item)}
-                family={item}
-              />
-            )}
-          />
+      <View style={[globalStyles.background, styles.container]}>
+        <SearchBar
+          id="searchAddress"
+          style={styles.search}
+          placeholder={'Search by name'}
+          onChangeText={search => this.setState({ search })}
+          value={this.state.search}
+        />
+        <View style={styles.bar}>
+          <Text style={{ ...globalStyles.subline, ...styles.familiesCount }}>
+            {filteredFamilies.length} {t('views.families').toLowerCase()}
+          </Text>
         </View>
-      </ScrollView>
+        <ScrollView>
+          <View ref={this.acessibleComponent} accessible={true}>
+            {familiesToSync ? (
+              <ActivityIndicator
+                size={30}
+                color={colors.palered}
+                style={styles.spinner}
+              />
+            ) : null}
+
+            <FlatList
+              data={this.sortByName(filteredFamilies)}
+              keyExtractor={(item, index) => index.toString()}
+              renderItem={({ item }) => (
+                <FamiliesListItem
+                  error={t('views.family.error')}
+                  lng={this.props.lng}
+                  handleClick={() => this.handleClickOnFamily(item)}
+                  family={item}
+                />
+              )}
+            />
+          </View>
+        </ScrollView>
+      </View>
     )
   }
 }
