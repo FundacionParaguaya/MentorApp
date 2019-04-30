@@ -354,7 +354,7 @@ export class Location extends Component {
         <View style={[globalStyles.container, styles.placeholder]}>
           <ActivityIndicator
             style={styles.spinner}
-            size={80}
+            size="large"
             color={colors.palered}
           />
           {!readonly && (

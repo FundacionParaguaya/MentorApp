@@ -1,6 +1,10 @@
 import React from 'react'
 import { shallow } from 'enzyme'
+import { ActivityIndicator, Text } from 'react-native'
+import MapboxGL from '@mapbox/react-native-mapbox-gl'
 import { Location } from '../lifemap/Location'
+import TextInput from '../../components/TextInput'
+import Select from '../../components/Select'
 
 jest.useFakeTimers()
 
@@ -43,10 +47,14 @@ const createTestProps = props => ({
     isFocused: jest.fn(() => true)
   },
   nav: {
+    readonly: false,
     draftId: 4,
     survey: {
+      title: 'Chile - Geco',
       surveyId: 100,
-      surveyConfig: { surveyLocation: { country: 'BG' } }
+      surveyConfig: {
+        surveyLocation: { country: 'BG', latitude: 10, longitude: 11 }
+      }
     }
   },
   addSurveyData: jest.fn(),
@@ -88,7 +96,93 @@ describe('Family Location component', () => {
     props = createTestProps()
     wrapper = shallow(<Location {...props} />)
   })
-  it('renders the continue button with proper label', () => {
-    expect(true).toEqual(true)
+  describe('loading state', () => {
+    it('shows ActivityIndicator', () => {
+      expect(wrapper.find(ActivityIndicator)).toHaveLength(1)
+    })
+
+    it('show getting location message only when actually getting location', () => {
+      expect(wrapper.find(Text)).toHaveHTML(
+        '<react-native-mock>views.family.gettingYourLocation</react-native-mock>'
+      )
+
+      wrapper.setProps({ nav: { readonly: true } })
+
+      expect(wrapper.find(Text)).toHaveLength(0)
+    })
+  })
+  describe('showing the map', () => {
+    beforeEach(() => {
+      wrapper.instance().getDeviceCoordinates(true)
+    })
+    it('get device coordinates and shows map', () => {
+      expect(wrapper).toHaveState({ latitude: 44, longitude: 45, accuracy: 15 })
+    })
+    it('centers map on survey location if device location is unavailable', () => {
+      wrapper.setState({ latitude: 15, longitude: 15 })
+      expect(wrapper.find(MapboxGL.MapView)).toHaveProp({
+        centerCoordinate: [15, 15]
+      })
+    })
+    it('shows map offline when a survey one available', () => {
+      wrapper.instance().getDeviceCoordinates(false)
+      expect(wrapper).toHaveState({ latitude: 10, longitude: 11, accuracy: 0 })
+      expect(wrapper.find(MapboxGL.MapView)).toHaveLength(1)
+    })
+  })
+  describe('showing the form instead of the map', () => {
+    beforeEach(() => {
+      props = createTestProps({
+        nav: {
+          readonly: false,
+          draftId: 4,
+          survey: {
+            surveyId: 100,
+            surveyConfig: {
+              surveyLocation: { country: 'BG', latitude: 10, longitude: 11 }
+            }
+          }
+        }
+      })
+      wrapper = shallow(<Location {...props} />)
+      wrapper.instance().getDeviceCoordinates(false)
+      wrapper.setState({ showForm: true })
+    })
+
+    it('shows form with correct message when offline and location is availavle', () => {
+      expect(wrapper).toHaveState({ latitude: 44, longitude: 45, accuracy: 15 })
+      expect(wrapper.find(MapboxGL.MapView)).toHaveLength(0)
+      expect(wrapper.find(Text).first()).toHaveHTML(
+        '<react-native-mock>views.family.weFoundYou</react-native-mock>'
+      )
+    })
+    it('shows form with correct message when offline and location is not availavle', () => {
+      wrapper.setState({ latitude: null })
+      expect(wrapper.find(MapboxGL.MapView)).toHaveLength(0)
+      expect(wrapper.find(Text).first()).toHaveHTML(
+        '<react-native-mock>views.family.weCannotLocate</react-native-mock>'
+      )
+    })
+    it('set correct default value for country select', () => {
+      expect(wrapper.find(Select)).toHaveProp({ value: 'PY' })
+    })
+  })
+  describe('reviewing family location', () => {
+    beforeEach(() => {
+      props = createTestProps({
+        nav: {
+          readonly: true,
+          draftId: 4,
+          survey: {
+            title: 'Chile - Geco',
+            surveyId: 100,
+            surveyConfig: {
+              surveyLocation: { country: 'BG', latitude: 10, longitude: 11 }
+            }
+          }
+        }
+      })
+      wrapper = shallow(<Location {...props} />)
+    })
   })
 })
