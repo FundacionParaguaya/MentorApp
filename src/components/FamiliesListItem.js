@@ -7,10 +7,11 @@ import 'moment/locale/es'
 import colors from '../theme.json'
 import globalStyles from '../globalStyles'
 import ListItem from './ListItem'
+import { withNamespaces } from 'react-i18next'
 
 moment.locale('en')
 
-class FamiliesListItem extends Component {
+export class FamiliesListItem extends Component {
   capitalize = s => {
     if (typeof s !== 'string') return ''
     const string = s.split('.').join('')
@@ -18,7 +19,7 @@ class FamiliesListItem extends Component {
   }
 
   render() {
-    const { family, lng } = this.props
+    const { family, lng, t } = this.props
     const firstParticipant =
       family.snapshotList && family.snapshotList.length
         ? family.snapshotList[0].familyData.familyMembersList.find(
@@ -62,7 +63,7 @@ class FamiliesListItem extends Component {
               style={{ ...globalStyles.subline, ...styles.p }}
               accessibilityLabel={
                 birthDate
-                  ? `Date Of Birth: ${birthDateWithLocale
+                  ? `${t('views.family.dateOfBirth')} ${birthDateWithLocale
                       .utc()
                       .format('MMMM DD, YYYY')}`
                   : ''
@@ -96,7 +97,8 @@ FamiliesListItem.propTypes = {
   handleClick: PropTypes.func.isRequired,
   error: PropTypes.string,
   birthDate: PropTypes.number,
-  lng: PropTypes.string.isRequired
+  lng: PropTypes.string.isRequired,
+  t: PropTypes.func
 }
 
 const styles = StyleSheet.create({
@@ -140,4 +142,4 @@ const styles = StyleSheet.create({
   }
 })
 
-export default FamiliesListItem
+export default withNamespaces()(FamiliesListItem)

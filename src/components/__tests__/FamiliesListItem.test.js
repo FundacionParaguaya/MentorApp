@@ -3,10 +3,11 @@ import React from 'react'
 import { shallow } from 'enzyme'
 import { Text } from 'react-native'
 import Icon from 'react-native-vector-icons/MaterialIcons'
-import FamiliesListItem from '../FamiliesListItem'
+import {FamiliesListItem} from '../FamiliesListItem'
 import ListItem from '../ListItem'
 
 const createTestProps = props => ({
+  t: value => value,
   handleClick: jest.fn(),
   lng: 'en',
   family: {
