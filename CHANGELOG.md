@@ -1,5 +1,36 @@
 # Change Log
 
+## [v1.7.3](https://github.com/FundacionParaguaya/MentorApp/tree/v1.7.3) (2019-04-30)
+[Full Changelog](https://github.com/FundacionParaguaya/MentorApp/compare/v1.7.2...v1.7.3)
+
+**Implemented enhancements:**
+
+- Infinite Loop on Indicators [\#481](https://github.com/FundacionParaguaya/MentorApp/issues/481)
+- Add text into the Poverty Stoplight Section [\#479](https://github.com/FundacionParaguaya/MentorApp/issues/479)
+- Improvements to Responsive and the Indicator Pages [\#477](https://github.com/FundacionParaguaya/MentorApp/issues/477)
+- Changes to Date of Birth Field - Better UX [\#435](https://github.com/FundacionParaguaya/MentorApp/issues/435)
+- Adjust logic for server selection so that the App can be tested in testing server [\#256](https://github.com/FundacionParaguaya/MentorApp/issues/256)
+
+**Fixed bugs:**
+
+- Title does not appear in indicator 20 of Nelixia [\#571](https://github.com/FundacionParaguaya/MentorApp/issues/571)
+- Title does not appear in indicator 8 of Nelixia [\#570](https://github.com/FundacionParaguaya/MentorApp/issues/570)
+- Continue button did not work in Irradia [\#555](https://github.com/FundacionParaguaya/MentorApp/issues/555)
+- Indicators titles and images do not appear [\#549](https://github.com/FundacionParaguaya/MentorApp/issues/549)
+- Incorrect 2nd member name [\#544](https://github.com/FundacionParaguaya/MentorApp/issues/544)
+- Progress bar is slow [\#493](https://github.com/FundacionParaguaya/MentorApp/issues/493)
+- Android Header Elements Missing [\#465](https://github.com/FundacionParaguaya/MentorApp/issues/465)
+
+**Merged pull requests:**
+
+- Replaced current date picker component with DatePickerWheel [\#573](https://github.com/FundacionParaguaya/MentorApp/pull/573) ([vasildimitroffhristoff](https://github.com/vasildimitroffhristoff))
+- fix \#256 added env selection on login [\#572](https://github.com/FundacionParaguaya/MentorApp/pull/572) ([zommerberg](https://github.com/zommerberg))
+- 479 text changes [\#563](https://github.com/FundacionParaguaya/MentorApp/pull/563) ([vasildimitroffhristoff](https://github.com/vasildimitroffhristoff))
+- 484 acessiblity checks [\#548](https://github.com/FundacionParaguaya/MentorApp/pull/548) ([vasildimitroffhristoff](https://github.com/vasildimitroffhristoff))
+- Adjusted the correct styling for labels in Sync 2.Changed the all gre… [\#546](https://github.com/FundacionParaguaya/MentorApp/pull/546) ([vasildimitroffhristoff](https://github.com/vasildimitroffhristoff))
+- 477 responsive indicators [\#545](https://github.com/FundacionParaguaya/MentorApp/pull/545) ([vasildimitroffhristoff](https://github.com/vasildimitroffhristoff))
+- fix \#79 added autofocus to primaryparticipant and familymembers [\#538](https://github.com/FundacionParaguaya/MentorApp/pull/538) ([zommerberg](https://github.com/zommerberg))
+
 ## [v1.7.2](https://github.com/FundacionParaguaya/MentorApp/tree/v1.7.2) (2019-04-24)
 [Full Changelog](https://github.com/FundacionParaguaya/MentorApp/compare/v1.7.1...v1.7.2)
 
