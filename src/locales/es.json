@@ -28,6 +28,7 @@
   },
   "validation": {
     "fieldIsRequired": "Este campo es requerido",
+    "fieldIsRequiredAccessibilityLabel": "Este campo es requerido",
     "validEmailAddress": "Favor ingrese una dirección de correo electrónico válida",
     "lessThan250Characters": "El valor debe ser menos de 250 caracteres.",
     "lessThan50Characters": "El valor debe ser menos de 50 caracteres.",

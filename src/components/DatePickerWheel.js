@@ -131,7 +131,9 @@ class DatePickerWheel extends Component {
         underlayColor={'transparent'}
         activeOpacity={1}
         onPress={this.toggleDropdown}
-      >
+        accessible={true}
+        accessibilityLabel={required && !readonly ? `${i18n.t('validation.fieldIsRequiredAccessibilityLabel')}` : ``}
+     >
         <View style={styles.wrapper}>
           <View
             style={[
@@ -150,9 +152,9 @@ class DatePickerWheel extends Component {
                       color: colors.green
                     }
                 ]}
-                accessibilityLabel={`${placeholder} ${
-                  required && !readonly ? ' This is a mandatory field.' : ''
-                }`}
+                // accessibilityLabel={`${placeholder} ${
+                //   required && !readonly ? ' This is a mandatory field.' : ''
+                // }`}
               >{`${placeholder}${required && !readonly ? ' *' : ''}`}</Text>
             )}
             <Text
@@ -160,9 +162,9 @@ class DatePickerWheel extends Component {
                 styles.placeholder,
                 errorMsg ? { color: colors.red } : {}
               ]}
-              accessibilityLabel={`${placeholder}${
-                required ? ' This is a mandatory field.' : ''
-              }`}
+              // accessibilityLabel={`${placeholder}${
+              //   required ? ' This is a mandatory field.' : ''
+              // }`}
             >
               {value ? text : `${placeholder}${required ? ' *' : ''}`}
             </Text>

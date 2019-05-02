@@ -140,7 +140,7 @@ class TextInput extends Component {
           <Text
             style={styles.label}
             accessibilityLabel={`${label} ${
-              required && !readonly ? ' This is a mandatory field.' : ''
+              required && !readonly ? i18n.t('validation.fieldIsRequiredAccessibilityLabel') : ''
             }`}
           >{`${label}${required && !readonly ? ' *' : ''}`}</Text>
         )}
@@ -148,7 +148,7 @@ class TextInput extends Component {
           style={[styles.container, styles[status]]}
           accessible={true}
           accessibilityLabel={`${placeholder} ${
-            required && !label && !readonly ? ' This is a mandatory field' : ''
+            required && !label && !readonly ? i18n.t('validation.fieldIsRequiredAccessibilityLabel') : ''
           }`}
         >
           {!showPlaceholder && !label ? (
@@ -159,7 +159,7 @@ class TextInput extends Component {
               }}
               accessibilityLabel={`${placeholder} ${
                 required && !label && !readonly
-                  ? ' This is a mandatory field.'
+                  ?  i18n.t('validation.fieldIsRequiredAccessibilityLabel')
                   : ''
               }`}
             >
