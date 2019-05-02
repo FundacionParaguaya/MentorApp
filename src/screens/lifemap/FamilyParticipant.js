@@ -230,7 +230,14 @@ export class FamilyParticipant extends Component {
       >
         <Decoration variation="primaryParticipant">
           <Icon name="face" color={colors.grey} size={61} style={styles.icon} />
-          <Text style={[globalStyles.h2Bold, styles.heading]}>{t('views.family.primaryParticipantHeading')}</Text>
+          {readonly === false ? (
+            <Text
+              readonly={readonly}
+              style={[globalStyles.h2Bold, styles.heading]}
+            >
+              {t('views.family.primaryParticipantHeading')}
+            </Text>
+          ) : null}
         </Decoration>
 
         <TextInput
