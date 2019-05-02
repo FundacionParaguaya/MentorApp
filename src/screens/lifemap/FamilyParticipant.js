@@ -230,7 +230,7 @@ export class FamilyParticipant extends Component {
       >
         <Decoration variation="primaryParticipant">
           <Icon name="face" color={colors.grey} size={61} style={styles.icon} />
-          {readonly === false ? (
+          {readonly !== true ? (
             <Text
               readonly={readonly}
               style={[globalStyles.h2Bold, styles.heading]}
