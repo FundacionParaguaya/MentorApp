@@ -61,8 +61,7 @@ export class Slider extends Component {
             flexGrow: 1,
             flexDirection: 'row',
             flexWrap: 'wrap',
-            justifyContent: 'space-around',
-            padding: '2%'
+            justifyContent: 'space-around'
           }}
           ref={ref => {
             this.scrollView = ref
@@ -74,7 +73,7 @@ export class Slider extends Component {
             <View
               key={i}
               style={{
-                width: '32.2%',
+                width: '32%',
                 backgroundColor: colors[slideColors[slide.value]],
                 borderRadius: 3
               }}

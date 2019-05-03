@@ -138,7 +138,8 @@ const styles = StyleSheet.create({
   },
   image: {
     width: '100%',
-    borderRadius: 3
+    borderRadius: 3,
+    marginTop: 10
   },
   iconBig: {
     borderRadius: 50,
