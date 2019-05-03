@@ -25,6 +25,16 @@ export class Overview extends Component {
 
   resumeDraft = this.props.navigation.getParam('resumeDraft')
   componentDidMount() {
+    const draft = getDraft()
+    const data = this.props.familyLifemap
+      ? this.props.familyLifemap
+      : getDraft()
+    const mandatoryPrioritiesCount = this.getMandatoryPrioritiesCount(data)
+    if (mandatoryPrioritiesCount > draft.priorities.length) {
+      this.setState({
+        tipIsVisible: true
+      })
+    }
     const { draftId } = this.props.nav
     if (!this.resumeDraft && !this.props.familyLifemap) {
       this.props.addDraftProgress(draftId, {
