@@ -183,11 +183,12 @@ export class FamilyMembersNames extends Component {
                 <Text
                   style={{
                     ...globalStyles.h2Bold,
+                    fontSize: 16,
                     color: colors.grey,
                     marginLeft: 5
                   }}
                 >
-                  {`${t('views.family.familyMember')} ${i + 1}`}
+                  {`${t('views.family.familyMember')}`}
                 </Text>
               </View>
               <TextInput

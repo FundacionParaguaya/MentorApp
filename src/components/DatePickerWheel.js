@@ -350,8 +350,8 @@ const styles = StyleSheet.create({
   confirm: {
     color: colors.palegreen,
     fontWeight: 'bold',
-    textTransform: 'uppercase',
-    fontSize: 14
+    textTransform: 'capitalize',
+    fontSize: 17
   }
 })
 
