@@ -149,6 +149,7 @@ android {
 }
 
 dependencies {
+    implementation project(':react-native-device-info')
     implementation project(':@delightfulstudio_react-native-wheel-picker-android')
     compile project(':react-native-sentry')
     compile project(':react-native-splash-screen')

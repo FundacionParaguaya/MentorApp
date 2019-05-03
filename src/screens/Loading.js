@@ -4,7 +4,14 @@ import { Text, StyleSheet, View, ActivityIndicator } from 'react-native'
 import { connect } from 'react-redux'
 import MapboxGL from '@mapbox/react-native-mapbox-gl'
 import Icon from 'react-native-vector-icons/MaterialIcons'
-import { loadFamilies, loadSurveys, logout } from '../redux/actions'
+import DeviceInfo from 'react-native-device-info'
+import {
+  loadFamilies,
+  loadSurveys,
+  logout,
+  setAppVersion,
+  resetSyncState
+} from '../redux/actions'
 import colors from '../theme.json'
 import globalStyles from '../globalStyles'
 import { url } from '../config'
@@ -19,14 +26,14 @@ export class Loading extends Component {
     mapDownloadError: null
   }
 
-  syncSurveys = () => {
+  syncSurveys = resync => {
     // mark that loading has stated to show the progress
     this.setState({
       syncingServerData: true
     })
 
     // if surveys are synced skip to syncing families
-    if (this.props.sync.surveys) {
+    if (!resync && this.props.sync.surveys) {
       this.syncFamilies()
     } else {
       this.props.loadSurveys(url[this.props.env], this.props.user.token)
@@ -121,20 +128,27 @@ export class Loading extends Component {
   }
 
   componentDidMount() {
-    const { families, surveys, images } = this.props.sync
+    const { families, surveys, images, appVersion } = this.props.sync
 
-    // if everything is already synced move to dashboard
-    if (
+    if (!this.props.user.token) {
+      // if user hasn't logged in, navigate to login
+      this.props.navigation.navigate('Login')
+    } else if (!appVersion || appVersion !== DeviceInfo.getVersion()) {
+      // if there is no app version in store or version has changed
+      // clear sync state and sync again
+      this.props.resetSyncState()
+      this.props.setAppVersion(DeviceInfo.getVersion())
+      this.syncSurveys('re-sync')
+    } else if (
       families &&
       surveys &&
       !!images.total &&
       images.total === images.synced
     ) {
+      // if everything is synced navigate to Dashboard
       this.props.navigation.navigate('DrawerStack')
-    } else if (this.props.user.token) {
-      this.syncSurveys()
     } else {
-      this.props.navigation.navigate('Login')
+      this.syncSurveys()
     }
   }
 
@@ -254,6 +268,8 @@ Loading.propTypes = {
   loadFamilies: PropTypes.func.isRequired,
   loadSurveys: PropTypes.func.isRequired,
   logout: PropTypes.func,
+  resetSyncState: PropTypes.func,
+  setAppVersion: PropTypes.func,
   env: PropTypes.oneOf(['production', 'demo', 'testing', 'development']),
   user: PropTypes.object.isRequired,
   sync: PropTypes.object.isRequired,
@@ -308,7 +324,9 @@ const mapStateToProps = ({
 const mapDispatchToProps = {
   loadFamilies,
   loadSurveys,
-  logout
+  logout,
+  setAppVersion,
+  resetSyncState
 }
 
 export default connect(

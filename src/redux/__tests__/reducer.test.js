@@ -97,6 +97,7 @@ describe('login reducer', () => {
       },
       surveys: [],
       sync: {
+        appVersion: null,
         families: false,
         images: { synced: 0, total: 0 },
         surveys: false
