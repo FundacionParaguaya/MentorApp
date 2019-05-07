@@ -11,7 +11,6 @@ import Icon from 'react-native-vector-icons/MaterialIcons'
 import colors from '../theme.json'
 import Image from './CachedImage'
 import globalStyles from '../globalStyles'
-import { isPortrait } from '../responsivenessHelpers'
 
 const slideColors = {
   1: 'red',
@@ -34,19 +33,21 @@ export default class SliderItem extends Component {
   }
 
   render() {
-    const { slide, value, bodyHeight, portrait, tablet} = this.props
-    const slideHeight = bodyHeight - 100
-    const imageHeight = bodyHeight / 2
+    const { slide, value, bodyHeight, portrait, tablet } = this.props
+    const slideHeight =
+      !tablet && !portrait
+        ? bodyHeight - 70
+        : tablet && portrait
+        ? bodyHeight - 160
+        : bodyHeight - 100
+    const imageHeight = !tablet && !portrait ? bodyHeight / 3 : bodyHeight / 2
     const textAreaHeight = slideHeight - imageHeight // - 30 is margin top on image + icon
 
     return (
       <TouchableHighlight
         activeOpacity={1}
         underlayColor={'transparent'}
-        style={[
-          styles.slide,
-          portrait ? { height: slideHeight } : {}
-        ]}
+        style={[styles.slide, { height: slideHeight }]}
         onPress={this.props.onPress}
         onHideUnderlay={() => this.togglePressedState(false)}
         onShowUnderlay={() => this.togglePressedState(true)}
@@ -56,19 +57,27 @@ export default class SliderItem extends Component {
         <View>
           <Image
             source={slide.url}
-            style={{
-              ...styles.image,
-              height: portrait ? imageHeight : imageHeight * 2
-            }}
+            style={[
+              {
+                ...styles.image,
+                height: imageHeight
+              },
+              !tablet && !portrait ? { marginTop: 5 } : { marginTop: 10 }
+            ]}
           />
 
           <View
             id="icon-view"
-            style={{
-              ...styles.iconBig,
-              backgroundColor: colors[slideColors[slide.value]],
-              opacity: value === slide.value || this.state.pressed ? 1 : 0
-            }}
+            style={[
+              {
+                ...styles.iconBig,
+                backgroundColor: colors[slideColors[slide.value]],
+                opacity: value === slide.value || this.state.pressed ? 1 : 0
+              },
+              tablet && portrait
+                ? styles.tickIconTabletSizes
+                : styles.tickIconDefaultSizes
+            ]}
           >
             <Icon name="done" size={47} color={colors.white} />
           </View>
@@ -76,7 +85,7 @@ export default class SliderItem extends Component {
           <View
             style={[
               portrait ? { height: textAreaHeight } : {},
-              tablet ? styles.textVertical : { paddingBottom: 15 }
+              tablet && !portrait ? styles.textVertical : { paddingBottom: 15 }
             ]}
             onStartShouldSetResponder={() => true}
           >
@@ -84,16 +93,19 @@ export default class SliderItem extends Component {
               contentContainerStyle={{
                 flexGrow: 1,
                 height: this.textContentHeight,
-                paddingBottom: 30
+                paddingBottom: 50
               }}
             >
               <Text
                 onLayout={event => this.calculateTextContentHeight(event)}
-                style={{
-                  ...globalStyles.p,
-                  ...styles.text,
-                  color: slide.value === 2 ? colors.black : colors.white
-                }}
+                style={[
+                  {
+                    ...globalStyles.p,
+                    ...styles.text,
+                    color: slide.value === 2 ? colors.black : colors.white
+                  },
+                  tablet ? styles.textTablet : styles.textPhone
+                ]}
               >
                 {slide.description}
               </Text>
@@ -117,13 +129,11 @@ SliderItem.propTypes = {
 
 const styles = StyleSheet.create({
   slide: {
-    // width: '100%'
+    width: '100%'
   },
   text: {
     color: colors.white,
     textAlign: 'center',
-    paddingRight: 15,
-    paddingLeft: 15,
     paddingTop: 5,
     fontSize: 18,
     lineHeight: 23,
@@ -131,24 +141,40 @@ const styles = StyleSheet.create({
     alignSelf: 'center'
   },
   textVertical: {
-    flex: 1,
-    flex: 1,
+    paddingTop: 0,
     justifyContent: 'center',
     alignItems: 'center'
   },
   image: {
     width: '100%',
-    borderRadius: 3,
-    marginTop: 10
+    borderRadius: 3
   },
   iconBig: {
-    borderRadius: 50,
-    width: 80,
-    height: 80,
+    borderRadius: 150,
     justifyContent: 'center',
     alignItems: 'center',
-    alignSelf: 'center',
-    marginTop: -30,
+    alignSelf: 'center'
+  },
+  tickIconTabletSizes: {
+    width: 150,
+    height: 150,
+    marginTop: -60,
+    marginBottom: -50
+  },
+  tickIconDefaultSizes: {
+    width: 80,
+    height: 80,
+    marginTop: -40,
     marginBottom: -20
+  },
+  textTablet: {
+    lineHeight: 30,
+    fontSize: 22,
+    paddingRight: 40,
+    paddingLeft: 40
+  },
+  textPhone: {
+    paddingRight: 15,
+    paddingLeft: 15
   }
 })

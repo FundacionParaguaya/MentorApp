@@ -139,7 +139,7 @@ export class Question extends Component {
     const portrait = !!dimensions && isPortrait(dimensions)
     const tablet = !!dimensions && isTablet(dimensions)
     const bodyHeight = dimensions.height - headerHeight - paddingOfStickyFooter
-
+    
     return (
       <StickyFooter
         handleClick={this.handleClick}
@@ -147,15 +147,7 @@ export class Question extends Component {
         progress={draft ? draft.progress.current / draft.progress.total : 0}
         currentScreen="Question"
       >
-        <View
-          style={
-            (portrait && tablet) || (portrait && !tablet)
-              ? { height: bodyHeight }
-              : !tablet && !portrait
-              ? { height: dimensions.width }
-              : {}
-          }
-        >
+        <View style={[{ height: bodyHeight }, tablet && portrait ? {marginTop: 30} : {}]}>
           <SliderComponent
             slides={this.slides}
             value={this.getFieldValue(draft, this.indicator.codeName)}
@@ -164,7 +156,7 @@ export class Question extends Component {
             tablet={tablet}
             portrait={portrait}
           />
-          <View style={styles.skip}>
+          <View style={[styles.skip, !tablet && !portrait ? { height: 40 } : tablet && portrait ? { height: 120 } : {height: 60} ]}>
             {this.indicator.required ? (
               <Text>{t('views.lifemap.responseRequired')}</Text>
             ) : (
@@ -186,8 +178,7 @@ const styles = StyleSheet.create({
     alignItems: 'flex-end',
     justifyContent: 'center',
     marginRight: 30,
-    marginTop: 0,
-    height: 60
+    // marginTop: 0
   },
   link: {
     color: colors.palegreen

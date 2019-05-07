@@ -4,7 +4,6 @@ import { View, StyleSheet, ScrollView } from 'react-native'
 import SliderItem from './SliderItem'
 import colors from '../theme.json'
 import { connect } from 'react-redux'
-import { isPortrait } from '../responsivenessHelpers'
 
 const slideColors = {
   1: 'red',
@@ -52,16 +51,16 @@ export class Slider extends Component {
   render() {
     const { width } = this.props.dimensions
     return (
-      <View>
+      <View style={!this.props.portrait ? { paddingHorizontal: 15 } : {}}>
         <ScrollView
           horizontal
           showsHorizontalScrollIndicator={false}
           contentContainerStyle={{
-            width: isPortrait(this.props.dimensions) ? '280%' : '90%',
+            width: this.props.portrait ? '280%' : '90%',
             flexGrow: 1,
             flexDirection: 'row',
             flexWrap: 'wrap',
-            justifyContent: 'space-around'
+            justifyContent: 'space-evenly'
           }}
           ref={ref => {
             this.scrollView = ref
@@ -73,7 +72,7 @@ export class Slider extends Component {
             <View
               key={i}
               style={{
-                width: '32%',
+                width: '31%',
                 backgroundColor: colors[slideColors[slide.value]],
                 borderRadius: 3
               }}
