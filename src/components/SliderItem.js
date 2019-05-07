@@ -169,7 +169,7 @@ const styles = StyleSheet.create({
   },
   textTablet: {
     lineHeight: 30,
-    fontSize: 24,
+    fontSize: 22,
     paddingRight: 40,
     paddingLeft: 40
   },
