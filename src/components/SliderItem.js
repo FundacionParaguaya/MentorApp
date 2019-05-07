@@ -137,8 +137,9 @@ const styles = StyleSheet.create({
     alignItems: 'center'
   },
   image: {
-    width: '100%'
-    // marginTop: 10
+    width: '100%',
+    borderRadius: 3,
+    marginTop: 10
   },
   iconBig: {
     borderRadius: 50,

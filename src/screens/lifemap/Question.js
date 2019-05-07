@@ -184,8 +184,10 @@ export class Question extends Component {
 const styles = StyleSheet.create({
   skip: {
     alignItems: 'flex-end',
+    justifyContent: 'center',
     marginRight: 30,
-    marginTop: 15
+    marginTop: 0,
+    height: 60
   },
   link: {
     color: colors.palegreen

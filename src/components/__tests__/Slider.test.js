@@ -1,7 +1,8 @@
 import React from 'react'
 import { shallow } from 'enzyme'
 import { Slider } from '../Slider'
-import Carousel from 'react-native-snap-carousel'
+import { ScrollView } from 'react-native'
+import  SliderItem  from '../SliderItem'
 
 const createTestProps = props => ({
   slides: [
@@ -40,7 +41,11 @@ describe('Slider Component', () => {
   })
   describe('rendering', () => {
     it('renders ScrollView', () => {
-      expect(wrapper.find(Carousel)).toHaveLength(1)
+      expect(wrapper.find(ScrollView)).toHaveLength(1)
+    })
+
+     it('renders SliderItem', () => {
+      expect(wrapper.find(SliderItem)).toHaveLength(3)
     })
   })
 })
