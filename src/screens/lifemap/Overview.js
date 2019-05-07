@@ -29,8 +29,12 @@ export class Overview extends Component {
     const data = this.props.familyLifemap
       ? this.props.familyLifemap
       : getDraft()
-    const mandatoryPrioritiesCount = this.getMandatoryPrioritiesCount(data)
-    if (mandatoryPrioritiesCount > draft.priorities.length) {
+
+    // show priorities message if no priorities are made or they are not enough
+    if (
+      !draft.priorities.length ||
+      this.getMandatoryPrioritiesCount(data) > draft.priorities.length
+    ) {
       this.setState({
         tipIsVisible: true
       })
