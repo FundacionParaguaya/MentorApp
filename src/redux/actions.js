@@ -242,6 +242,7 @@ export const setHydrated = () => ({
 export const SET_SYNCED_ITEM_TOTAL = 'SET_SYNCED_ITEM_TOTAL'
 export const SET_SYNCED_ITEM_AMOUNT = 'SET_SYNCED_ITEM_AMOUNT'
 export const SET_SYNCED_STATE = 'SET_SYNCED_STATE'
+export const RESET_SYNCED_STATE = 'RESET_SYNCED_STATE'
 
 export const setSyncedItemTotal = (item, amount) => ({
   type: SET_SYNCED_ITEM_TOTAL,
@@ -255,10 +256,14 @@ export const setSyncedItemAmount = (item, amount) => ({
   amount
 })
 
-export const syncDrafts = value => ({
+export const setAppVersion = value => ({
   type: SET_SYNCED_STATE,
-  item: 'drafts',
+  item: 'appVersion',
   value
+})
+
+export const resetSyncState = () => ({
+  type: RESET_SYNCED_STATE
 })
 
 // NAV
