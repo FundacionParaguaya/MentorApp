@@ -8,7 +8,7 @@ import globalStyles from '../../globalStyles'
 import RoundImage from '../../components/RoundImage'
 import StickyFooter from '../../components/StickyFooter'
 import { addDraftProgress } from '../../redux/actions'
-import { getDraft } from './helpers'
+import { getDraft, getTotalEconomicScreens } from './helpers'
 
 export class BeginLifemap extends Component {
   numberOfQuestions = this.props.nav.survey.surveyStoplightQuestions.length
@@ -24,24 +24,12 @@ export class BeginLifemap extends Component {
   }
 
   onPressBack = () => {
-    const draft = getDraft()
-
-    this.props.addDraftProgress(this.props.nav.draftId, {
-      current: draft.progress.current - 1
-    })
-
     this.props.navigation.replace('SocioEconomicQuestion', {
       fromBeginLifemap: true
     })
   }
 
   handleClick = () => {
-    const draft = getDraft()
-
-    this.props.addDraftProgress(this.props.nav.draftId, {
-      current: draft.progress.current + 1
-    })
-
     this.props.navigation.navigate('Question', {
       step: 0
     })
@@ -54,7 +42,13 @@ export class BeginLifemap extends Component {
       <StickyFooter
         handleClick={this.handleClick}
         continueLabel={t('general.continue')}
-        progress={draft ? draft.progress.current / draft.progress.total : 0}
+        progress={
+          draft
+            ? ((draft.familyData.countFamilyMembers > 1 ? 4 : 3) +
+                getTotalEconomicScreens(this.props.nav.survey)) /
+              draft.progress.total
+            : 0
+        }
       >
         <View
           style={{

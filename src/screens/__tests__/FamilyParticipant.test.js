@@ -18,6 +18,7 @@ const createTestProps = props => ({
       title: 'Dev Demo',
       survey_version_id: 2,
       surveyStoplightQuestions: [],
+      surveyEconomicQuestions: [],
       surveyConfig: {
         surveyLocation: { country: 'BG' },
         gender: [

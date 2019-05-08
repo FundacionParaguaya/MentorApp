@@ -10,7 +10,7 @@ const createTestProps = props => ({
   t: value => value,
   nav: {
     draftId: 4,
-    survey: { surveyStoplightQuestions: [] }
+    survey: { surveyStoplightQuestions: [], surveyEconomicQuestions: [] }
   },
   user: { token: 'token' },
   env: 'env',

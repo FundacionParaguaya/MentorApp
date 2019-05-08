@@ -12,6 +12,7 @@ const createTestProps = props => ({
     survey: {
       id: 2,
       title: 'Other survey',
+      surveyEconomicQuestions: [],
       surveyStoplightQuestions: [
         { phoneNumber: 'phoneNumber' },
         { education: 'education' },

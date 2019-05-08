@@ -127,7 +127,7 @@ export default {
   Overview: {
     screen: OverviewView,
     navigationOptions: ({ navigation }) => ({
-      ...generateNavStyles({ navigation }),
+      ...generateNavStyles({ navigation, shadowHeader: false }),
       ...addCloseIcon(navigation),
       headerTitle: (
         <Title title="views.yourLifeMap" style={{ marginLeft: 20 }} />

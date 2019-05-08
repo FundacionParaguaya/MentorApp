@@ -18,7 +18,8 @@ const createTestProps = props => ({
           required: false,
           dimension: 'Dimension'
         }
-      ]
+      ],
+      surveyEconomicQuestions: []
     }
   },
   navigation: {
@@ -31,7 +32,7 @@ const createTestProps = props => ({
         return 0
       }
     }),
-    state: { params: { headerHeight: 100  } }
+    state: { params: { headerHeight: 100 } }
   },
   dimensions: { height: 100 },
   addSurveyData: jest.fn(),
