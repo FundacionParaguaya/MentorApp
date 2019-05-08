@@ -75,6 +75,7 @@
       "selectGender": "Seleccione género",
       "documentType": "Tipo de documento",
       "documentNumber": "Número de documento",
+      "lifeMapAfterSync": "El Mapa de Vida estará disponible después de la sincronización",
       "selectACountry": "Seleccione un/tu país",
       "email": "Correo electrónico",
       "phone": "Teléfono",
