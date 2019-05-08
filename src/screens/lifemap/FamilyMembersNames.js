@@ -15,7 +15,7 @@ import Decoration from '../../components/decoration/Decoration'
 import globalStyles from '../../globalStyles'
 import Select from '../../components/Select'
 import DateInput from '../../components/DateInput'
-import { getDraft } from './helpers'
+import { getDraft, getTotalScreens } from './helpers'
 
 export class FamilyMembersNames extends Component {
   gender = this.props.nav.survey.surveyConfig.gender
@@ -24,7 +24,8 @@ export class FamilyMembersNames extends Component {
 
   componentDidMount() {
     this.props.addDraftProgress(this.props.nav.draftId, {
-      screen: 'FamilyMembersNames'
+      screen: 'FamilyMembersNames',
+      total: getTotalScreens(this.props.nav.survey)
     })
 
     this.props.navigation.setParams({
@@ -33,13 +34,6 @@ export class FamilyMembersNames extends Component {
   }
 
   onPressBack = () => {
-    const draft = getDraft()
-
-    this.props.addDraftProgress(this.props.nav.draftId, {
-      current: draft.progress.current - 1,
-      total: draft.progress.total - 1
-    })
-
     this.props.navigation.navigate('FamilyParticipant', {
       draftId: this.props.nav.draftId
     })
@@ -61,17 +55,11 @@ export class FamilyMembersNames extends Component {
   }
 
   handleClick = () => {
-    const draft = getDraft()
-
     if (this.state.errorsDetected.length) {
       this.setState({
         showErrors: true
       })
     } else {
-      this.props.addDraftProgress(this.props.nav.draftId, {
-        current: draft.progress.current + 1
-      })
-
       this.props.navigation.navigate('Location')
     }
   }
@@ -134,7 +122,7 @@ export class FamilyMembersNames extends Component {
       <StickyFooter
         handleClick={() => this.handleClick(draft)}
         continueLabel={t('general.continue')}
-        progress={draft ? draft.progress.current / draft.progress.total : 0}
+        progress={draft ? 2 / draft.progress.total : 0}
       >
         <Decoration variation="familyMemberNamesHeader">
           <View style={styles.circleContainer}>

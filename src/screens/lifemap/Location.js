@@ -24,7 +24,7 @@ import marker from '../../../assets/images/marker.png'
 import center from '../../../assets/images/centerMap.png'
 import happy from '../../../assets/images/happy.png'
 import sad from '../../../assets/images/sad.png'
-import { getDraft } from './helpers'
+import { getDraft, getTotalScreens } from './helpers'
 
 export class Location extends Component {
   state = {
@@ -212,6 +212,7 @@ export class Location extends Component {
   }
 
   componentDidMount() {
+    const { survey } = this.props.nav
     // set search location keyboard events
     this.keyboardDidShowListener = Keyboard.addListener(
       'keyboardDidShow',
@@ -226,10 +227,7 @@ export class Location extends Component {
 
     // the there is no save country in the draft, set it to the survey one
     if (!this.getFieldValue(draft, 'country')) {
-      this.addSurveyData(
-        this.props.nav.survey.surveyConfig.surveyLocation.country,
-        'country'
-      )
+      this.addSurveyData(survey.surveyConfig.surveyLocation.country, 'country')
     }
 
     // monitor for connection changes
@@ -272,7 +270,8 @@ export class Location extends Component {
     })
 
     this.props.addDraftProgress(draft.draftId, {
-      screen: 'Location'
+      screen: 'Location',
+      total: getTotalScreens(survey)
     })
 
     if (!this.props.nav.readonly) {
@@ -295,10 +294,6 @@ export class Location extends Component {
   onPressBack = () => {
     const { draftId } = this.props.nav
     const draft = getDraft()
-
-    this.props.addDraftProgress(draftId, {
-      current: draft.progress.current - 1
-    })
 
     if (draft.familyData.familyMembersList.length > 1) {
       this.props.navigation.navigate('FamilyMembersNames')
@@ -323,12 +318,6 @@ export class Location extends Component {
         showErrors: true
       })
     } else {
-      const draft = this.props.navigation.getParam('family') || getDraft()
-
-      this.props.addDraftProgress(this.props.nav.draftId, {
-        current: draft.progress.current + 1
-      })
-
       this.props.navigation.replace('SocioEconomicQuestion')
     }
   }
@@ -372,7 +361,8 @@ export class Location extends Component {
           continueLabel={t('general.continue')}
           progress={
             !readonly && draft
-              ? draft.progress.current / draft.progress.total
+              ? (draft.familyData.countFamilyMembers > 1 ? 3 : 2) /
+                draft.progress.total
               : 0
           }
           fullHeight

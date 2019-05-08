@@ -20,6 +20,7 @@ import DateInput from '../../components/DateInput'
 import Decoration from '../../components/decoration/Decoration'
 import colors from '../../theme.json'
 import globalStyles from '../../globalStyles'
+import { getTotalScreens } from './helpers'
 
 export class FamilyParticipant extends Component {
   //Get draft id from Redux store if it exists else create new draft id
@@ -44,9 +45,10 @@ export class FamilyParticipant extends Component {
   }
 
   createDraft() {
+    const { survey } = this.props.nav
     this.props.createDraft({
-      surveyId: this.props.nav.survey.id,
-      surveyVersionId: this.props.nav.survey['surveyVersionId'],
+      surveyId: survey.id,
+      surveyVersionId: survey['surveyVersionId'],
       created: Date.now(),
       draftId: this.draftId,
       economicSurveyDataList: [],
@@ -55,8 +57,7 @@ export class FamilyParticipant extends Component {
       achievements: [],
       progress: {
         screen: 'FamilyParticipant',
-        current: 1,
-        total: 5 + this.props.nav.survey.surveyStoplightQuestions.length
+        total: getTotalScreens(survey)
       },
       familyData: {
         familyMembersList: [
@@ -83,8 +84,7 @@ export class FamilyParticipant extends Component {
     if (!this.props.nav.readonly && this.props.nav.draftId) {
       this.props.addDraftProgress(this.draftId, {
         screen: 'FamilyParticipant',
-        current: 1,
-        total: 5 + this.props.nav.survey.surveyStoplightQuestions.length
+        total: getTotalScreens(this.props.nav.survey)
       })
     }
   }
@@ -104,18 +104,9 @@ export class FamilyParticipant extends Component {
 
       if (this.getFamilyCount(draft) > 1) {
         // if multiple family members navigate to members screens
-        this.props.addDraftProgress(this.draftId, {
-          current: draft.progress.current + 1,
-          total: draft.progress.total + 2
-        })
-
         this.props.navigation.navigate('FamilyMembersNames')
       } else {
         // if only one family member, navigate directly to location
-        this.props.addDraftProgress(draft.draftId, {
-          current: draft.progress.current + 1
-        })
-
         this.props.navigation.navigate('Location')
       }
     }
@@ -224,9 +215,7 @@ export class FamilyParticipant extends Component {
         handleClick={this.handleClick}
         continueLabel={t('general.continue')}
         readonly={readonly}
-        progress={
-          !readonly && draft ? draft.progress.current / draft.progress.total : 0
-        }
+        progress={!readonly && draft ? 1 / draft.progress.total : 0}
       >
         <Decoration variation="primaryParticipant">
           <Icon name="face" color={colors.grey} size={61} style={styles.icon} />
