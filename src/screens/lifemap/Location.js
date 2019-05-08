@@ -9,7 +9,9 @@ import {
   TouchableHighlight,
   NetInfo
 } from 'react-native'
+/* eslint-disable import/named */
 import { GooglePlacesAutocomplete } from 'react-native-google-places-autocomplete'
+/* eslint-enable import/named */
 import { connect } from 'react-redux'
 import PropTypes from 'prop-types'
 import { withNamespaces } from 'react-i18next'

@@ -1,4 +1,6 @@
 {
+  "surveyStoplightQuestions": [],
+  "surveyEconomicQuestions": [],
   "surveyEconomicQuestions": [
     {
       "questionText": "Is there any member with disabilities in your household? Please indicate the disability type",

@@ -7,7 +7,7 @@ export const getDraft = () =>
     .drafts.find(draft => draft.draftId === store.getState().nav.draftId) ||
   draftMock
 
-const getTotalEconomicScreens = survey => {
+export const getTotalEconomicScreens = survey => {
   let currentDimension = ''
   let totalScreens = 0
 
