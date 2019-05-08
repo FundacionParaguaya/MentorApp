@@ -83,7 +83,7 @@ export class Loading extends Component {
                 name: 'GECO',
                 styleURL: MapboxGL.StyleURL.Street,
                 minZoom: 10,
-                maxZoom: 13,
+                maxZoom: 15,
                 bounds: [[-71.0187, -33.687], [-70.3036, -33.1287]]
               },
               this.onMapDownloadProgress,
