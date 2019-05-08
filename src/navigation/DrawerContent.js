@@ -20,6 +20,7 @@ import { switchLanguage, logout, updateNav } from '../redux/actions'
 import LogoutPopup from './LogoutPopup'
 import dashboardIcon from '../../assets/images/icon_dashboard.png'
 import familyNavIcon from '../../assets/images/icon_family_nav.png'
+import { isPortrait } from '../responsivenessHelpers'
 
 // Component that renders the drawer menu content. DrawerItems are the links to
 // the given views.
@@ -111,18 +112,24 @@ export class DrawerContent extends Component {
   }
 
   render() {
-    const { lng, user, navigation } = this.props
-    const { checkboxesVisible, showErrors, logingOut, drawerContentWidth } = this.state
+    const { lng, user, navigation, dimensions } = this.props
+    const {
+      checkboxesVisible,
+      showErrors,
+      logingOut,
+      drawerContentWidth
+    } = this.state
     const unsyncedDrafts = this.props.drafts.filter(
       draft => draft.status !== 'Synced'
     ).length
     const { state } = navigation
     const currentStack = state.routes[state.index]
-
+    const portrait = !!dimensions && isPortrait(dimensions)
+    
     return (
       <ScrollView
         style={{ width: drawerContentWidth }}
-        contentContainerStyle={styles.container}
+        contentContainerStyle={[!portrait ? {} : styles.container ]}
         onLayout={this.onLayout}
       >
         <View>
@@ -167,60 +174,67 @@ export class DrawerContent extends Component {
           {/* Links */}
         </View>
         <View style={styles.itemsContainer}>
-          <View>
-            <IconButton
-              id="dashboard"
-              style={{
-                ...styles.navItem,
-                backgroundColor:
-                  this.state.activeTab === 'Dashboard' ? colors.primary : null
-              }}
-              onPress={() => this.navigateToScreen('Dashboard', currentStack)}
-              imageSource={dashboardIcon}
-              text={i18n.t('views.home')}
-              textStyle={styles.label}
-            />
-            <IconButton
-              id="surveys"
-              style={{
-                ...styles.navItem,
-                backgroundColor:
-                  this.state.activeTab === 'Surveys' ? colors.primary : null
-              }}
-              onPress={() => this.navigateToScreen('Surveys', currentStack)}
-              icon="swap-calls"
-              size={20}
-              textStyle={styles.label}
-              text={i18n.t('views.createLifemap')}
-            />
-            <IconButton
-              id="families"
-              style={{
-                ...styles.navItem,
-                backgroundColor:
-                  this.state.activeTab === 'Families' ? colors.primary : null
-              }}
-              onPress={() => this.navigateToScreen('Families', currentStack)}
-              imageSource={familyNavIcon}
-              size={20}
-              text={i18n.t('views.families')}
-              textStyle={styles.label}
-            />
-            <IconButton
-              id="sync"
-              style={{
-                ...styles.navItem,
-                backgroundColor:
-                  this.state.activeTab === 'Sync' ? colors.primary : null
-              }}
-              onPress={() => this.navigateToScreen('Sync', currentStack)}
-              icon="sync"
-              size={20}
-              text={i18n.t('views.synced')}
-              textStyle={styles.label}
-              badge
-            />
-          </View>
+          <ScrollView
+            contentContainerStyle={{
+              flexGrow: 1,
+              height: 250,
+            }}
+          >
+            <View>
+              <IconButton
+                id="dashboard"
+                style={{
+                  ...styles.navItem,
+                  backgroundColor:
+                    this.state.activeTab === 'Dashboard' ? colors.primary : null
+                }}
+                onPress={() => this.navigateToScreen('Dashboard', currentStack)}
+                imageSource={dashboardIcon}
+                text={i18n.t('views.home')}
+                textStyle={styles.label}
+              />
+              <IconButton
+                id="surveys"
+                style={{
+                  ...styles.navItem,
+                  backgroundColor:
+                    this.state.activeTab === 'Surveys' ? colors.primary : null
+                }}
+                onPress={() => this.navigateToScreen('Surveys', currentStack)}
+                icon="swap-calls"
+                size={20}
+                textStyle={styles.label}
+                text={i18n.t('views.createLifemap')}
+              />
+              <IconButton
+                id="families"
+                style={{
+                  ...styles.navItem,
+                  backgroundColor:
+                    this.state.activeTab === 'Families' ? colors.primary : null
+                }}
+                onPress={() => this.navigateToScreen('Families', currentStack)}
+                imageSource={familyNavIcon}
+                size={20}
+                text={i18n.t('views.families')}
+                textStyle={styles.label}
+              />
+              <IconButton
+                id="sync"
+                style={{
+                  ...styles.navItem,
+                  backgroundColor:
+                    this.state.activeTab === 'Sync' ? colors.primary : null
+                }}
+                onPress={() => this.navigateToScreen('Sync', currentStack)}
+                icon="sync"
+                size={20}
+                text={i18n.t('views.synced')}
+                textStyle={styles.label}
+                badge
+              />
+            </View>
+          </ScrollView>
         </View>
         {/* Logout button */}
         <IconButton
@@ -269,14 +283,16 @@ DrawerContent.propTypes = {
   navigation: PropTypes.object.isRequired,
   user: PropTypes.object.isRequired,
   drafts: PropTypes.array.isRequired,
-  env: PropTypes.oneOf(['production', 'demo', 'testing', 'development'])
+  env: PropTypes.oneOf(['production', 'demo', 'testing', 'development']),
+  dimensions: PropTypes.object.isRequired,
 }
 
-const mapStateToProps = ({ env, user, drafts, nav }) => ({
+const mapStateToProps = ({ env, user, drafts, nav, dimensions }) => ({
   env,
   user,
   drafts,
-  nav
+  nav,
+  dimensions
 })
 
 const mapDispatchToProps = {
