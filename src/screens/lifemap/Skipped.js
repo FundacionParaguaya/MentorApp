@@ -6,7 +6,7 @@ import { withNamespaces } from 'react-i18next'
 import { addDraftProgress } from '../../redux/actions'
 import StickyFooter from '../../components/StickyFooter'
 import SkippedListItem from '../../components/SkippedListItem'
-import { getDraft } from './helpers'
+import { getDraft, getTotalScreens } from './helpers'
 
 export class Skipped extends Component {
   indicatorsArray = this.props.nav.survey.surveyStoplightQuestions.map(
@@ -16,7 +16,8 @@ export class Skipped extends Component {
 
   componentDidMount() {
     this.props.addDraftProgress(this.props.nav.draftId, {
-      screen: 'Skipped'
+      screen: 'Skipped',
+      total: getTotalScreens(this.props.nav.survey)
     })
     this.props.navigation.setParams({
       onPressBack: this.onPressBack
@@ -24,11 +25,6 @@ export class Skipped extends Component {
   }
 
   onPressBack = () => {
-    const draft = getDraft()
-    this.props.addDraftProgress(this.props.nav.draftId, {
-      current: draft.progress.total - 2
-    })
-
     this.props.navigation.navigate('Question', {
       step: this.props.nav.survey.surveyStoplightQuestions.length - 1
     })
@@ -56,6 +52,7 @@ export class Skipped extends Component {
     const skippedQuestions = draft.indicatorSurveyDataList.filter(
       question => question.value === 0
     )
+
     return (
       <StickyFooter
         handleClick={this.handleClick}
@@ -64,7 +61,7 @@ export class Skipped extends Component {
         tipTitle={t('views.lifemap.youSkipped')}
         tipDescription={t('views.lifemap.whyNotTryAgain')}
         onTipClose={this.onTipClose}
-        progress={draft ? (draft.progress.total - 1) / draft.progress.total : 0}
+        progress={draft ? (draft.progress.total - 2) / draft.progress.total : 0}
       >
         <Image
           style={styles.image}
