@@ -112,7 +112,7 @@ export class DrawerContent extends Component {
 
   render() {
     const { lng, user, navigation } = this.props
-    const { checkboxesVisible, showErrors, logingOut } = this.state
+    const { checkboxesVisible, showErrors, logingOut, drawerContentWidth } = this.state
     const unsyncedDrafts = this.props.drafts.filter(
       draft => draft.status !== 'Synced'
     ).length
@@ -121,13 +121,13 @@ export class DrawerContent extends Component {
 
     return (
       <ScrollView
-        style={{ width: this.state.drawerContentWidth }}
+        style={{ width: drawerContentWidth }}
         contentContainerStyle={styles.container}
         onLayout={this.onLayout}
       >
         <View>
           <Image
-            style={{ height: 172, width: this.state.drawerContentWidth }}
+            style={{ height: 172, width: drawerContentWidth }}
             source={require('../../assets/images/navigation_image.png')}
           />
           {/* Language Switcher */}
