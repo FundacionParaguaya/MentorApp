@@ -29,7 +29,8 @@ export class DrawerContent extends Component {
     ckeckedBoxes: 0,
     showErrors: false,
     logingOut: false,
-    activeTab: 'Dashboard'
+    activeTab: 'Dashboard',
+    drawerContentWidth: 320
   }
 
   changeLanguage = lng => {
@@ -103,6 +104,12 @@ export class DrawerContent extends Component {
       navigation.navigate(screen)
     }
   }
+  onLayout = e => {
+    this.setState({
+      drawerContentWidth: e.nativeEvent.layout.width
+    })
+  }
+
   render() {
     const { lng, user, navigation } = this.props
     const { checkboxesVisible, showErrors, logingOut } = this.state
@@ -113,10 +120,14 @@ export class DrawerContent extends Component {
     const currentStack = state.routes[state.index]
 
     return (
-      <ScrollView contentContainerStyle={styles.container}>
+      <ScrollView
+        style={{ width: this.state.drawerContentWidth }}
+        contentContainerStyle={styles.container}
+        onLayout={this.onLayout}
+      >
         <View>
           <Image
-            style={{ height: 172, width: 304 }}
+            style={{ height: 172, width: this.state.drawerContentWidth }}
             source={require('../../assets/images/navigation_image.png')}
           />
           {/* Language Switcher */}
