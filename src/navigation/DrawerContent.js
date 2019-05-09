@@ -20,7 +20,7 @@ import { switchLanguage, logout, updateNav } from '../redux/actions'
 import LogoutPopup from './LogoutPopup'
 import dashboardIcon from '../../assets/images/icon_dashboard.png'
 import familyNavIcon from '../../assets/images/icon_family_nav.png'
-import { isPortrait } from '../responsivenessHelpers'
+import { isPortrait, isTablet } from '../responsivenessHelpers'
 
 // Component that renders the drawer menu content. DrawerItems are the links to
 // the given views.
@@ -105,6 +105,7 @@ export class DrawerContent extends Component {
       navigation.navigate(screen)
     }
   }
+
   onLayout = e => {
     this.setState({
       drawerContentWidth: e.nativeEvent.layout.width
@@ -124,12 +125,13 @@ export class DrawerContent extends Component {
     ).length
     const { state } = navigation
     const currentStack = state.routes[state.index]
-    const portrait = !!dimensions && isPortrait(dimensions)
-    
+    const landscape = !!dimensions && !isPortrait(dimensions)
+    const phone = !!dimensions && !isTablet(dimensions)
+
     return (
       <ScrollView
         style={{ width: drawerContentWidth }}
-        contentContainerStyle={[!portrait ? {} : styles.container ]}
+        contentContainerStyle={[landscape && phone ? {} : styles.container]}
         onLayout={this.onLayout}
       >
         <View>
@@ -176,8 +178,7 @@ export class DrawerContent extends Component {
         <View style={styles.itemsContainer}>
           <ScrollView
             contentContainerStyle={{
-              flexGrow: 1,
-              height: 250,
+              flexGrow: 1
             }}
           >
             <View>
@@ -284,7 +285,7 @@ DrawerContent.propTypes = {
   user: PropTypes.object.isRequired,
   drafts: PropTypes.array.isRequired,
   env: PropTypes.oneOf(['production', 'demo', 'testing', 'development']),
-  dimensions: PropTypes.object.isRequired,
+  dimensions: PropTypes.object.isRequired
 }
 
 const mapStateToProps = ({ env, user, drafts, nav, dimensions }) => ({
