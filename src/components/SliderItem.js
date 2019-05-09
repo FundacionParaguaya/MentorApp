@@ -42,7 +42,7 @@ export default class SliderItem extends Component {
         : bodyHeight - 100
     const imageHeight = !tablet && !portrait ? bodyHeight / 3 : bodyHeight / 2
     const textAreaHeight = slideHeight - imageHeight // - 30 is margin top on image + icon
-
+    console.log(this.state.textContentHeight)
     return (
       <TouchableHighlight
         activeOpacity={1}
@@ -92,7 +92,7 @@ export default class SliderItem extends Component {
             <ScrollView
               contentContainerStyle={{
                 flexGrow: 1,
-                height: this.textContentHeight,
+                height: this.state.textContentHeight,
                 paddingBottom: 50
               }}
             >
