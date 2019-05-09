@@ -40,7 +40,8 @@ export class Location extends Component {
     errorsDetected: [],
     centeringMap: false, // while map is centering we show a different spinner
     loading: true,
-    showForm: false
+    showForm: false,
+    cachedMapPacks: []
   }
 
   errorsDetected = []
@@ -91,6 +92,13 @@ export class Location extends Component {
 
   // if the user has draged the map and the draft has stored some coordinates
   setCoordinatesFromDraft = (isOnline, draft) => {
+    const showFormOffline = this.isUserLocationWithinMapPackBounds(
+      [
+        parseFloat(this.getFieldValue(draft, 'longitude')),
+        parseFloat(this.getFieldValue(draft, 'latitude'))
+      ],
+      this.state.cachedMapPacks.map(pack => pack.bounds)
+    )
     const { survey } = this.props.nav
 
     this.setState({
@@ -108,7 +116,8 @@ export class Location extends Component {
         })
       } else {
         this.setState({
-          showForm: true
+          showForm: showFormOffline ? false : true,
+          showSearch: false
         })
       }
     }
@@ -166,27 +175,32 @@ export class Location extends Component {
       )
     } else {
       // if offline map is available center on it
-      if (survey.title === 'Chile - Geco') {
-        const position = survey.surveyConfig.surveyLocation
-        this.setState({
-          showSearch: false,
-          loading: false,
-          centeringMap: false,
-          latitude: position.latitude,
-          longitude: position.longitude,
-          accuracy: 0
-        })
-        this.addSurveyData(position.latitude, 'latitude')
-        this.addSurveyData(position.longitude, 'longitude')
-        this.addSurveyData(0, 'accuracy')
-      } else {
+      // if (survey.title === 'Chile - Geco') {
+      //   const position = survey.surveyConfig.surveyLocation
+      //   this.setState({
+      //     showSearch: false,
+      //     loading: false,
+      //     centeringMap: false,
+      //     latitude: position.latitude,
+      //     longitude: position.longitude,
+      //     accuracy: 0
+      //   })
+      //   this.addSurveyData(position.latitude, 'latitude')
+      //   this.addSurveyData(position.longitude, 'longitude')
+      //   this.addSurveyData(0, 'accuracy')
+      // } else {
         navigator.geolocation.getCurrentPosition(
           // if no offline map is available, but there is location save it
           position => {
+            const showFormOffline = this.isUserLocationWithinMapPackBounds(
+              [position.coords.latitude, position.coords.longitude],
+              this.state.cachedMapPacks.map(pack => pack.bounds)
+            )
+
             this.setState({
               loading: false,
               centeringMap: false,
-              showForm: true,
+              showForm: showFormOffline ? false : true,
               latitude: position.coords.latitude,
               longitude: position.coords.longitude,
               accuracy: position.coords.accuracy
@@ -209,11 +223,44 @@ export class Location extends Component {
             maximumAge: 0
           }
         )
-      }
+      // }
     }
   }
 
+  isUserLocationWithinMapPackBounds(point, packs) {
+    const longitude = point[0]
+    const latitude = point[1]
+
+    if (packs.length) {
+      return packs.some(packBoundaries => {
+        const neLng = packBoundaries[0][0]
+        const neLat = packBoundaries[0][1]
+        const swLng = packBoundaries[1][0]
+        const swLat = packBoundaries[1][1]
+        return (
+          longitude <= neLng &&
+          longitude >= swLng &&
+          latitude <= neLat &&
+          latitude >= swLat
+        )
+      })
+    }
+  }
+
+  getMapOfflinePacks() {
+    MapboxGL.offlineManager.getPacks().then(packs => {
+      if (packs.length) {
+        packs.map(offlinePack => {
+          this.setState({
+            cachedMapPacks: [...this.state.cachedMapPacks, offlinePack]
+          })
+        })
+      }
+    })
+  }
+
   componentDidMount() {
+    this.getMapOfflinePacks()
     const { survey } = this.props.nav
     // set search location keyboard events
     this.keyboardDidShowListener = Keyboard.addListener(
