@@ -28,7 +28,7 @@ export class CachedImage extends Component {
 
 CachedImage.propTypes = {
   source: PropTypes.string,
-  style: PropTypes.object
+  style: PropTypes.oneOfType([PropTypes.object, PropTypes.array])
 }
 
 export default CachedImage

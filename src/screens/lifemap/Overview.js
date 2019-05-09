@@ -25,6 +25,20 @@ export class Overview extends Component {
 
   resumeDraft = this.props.navigation.getParam('resumeDraft')
   componentDidMount() {
+    const draft = getDraft()
+    const data = this.props.familyLifemap
+      ? this.props.familyLifemap
+      : getDraft()
+
+    // show priorities message if no priorities are made or they are not enough
+    if (
+      !draft.priorities.length ||
+      this.getMandatoryPrioritiesCount(data) > draft.priorities.length
+    ) {
+      this.setState({
+        tipIsVisible: true
+      })
+    }
     const { draftId } = this.props.nav
     if (!this.resumeDraft && !this.props.familyLifemap) {
       this.props.addDraftProgress(draftId, {
@@ -45,9 +59,7 @@ export class Overview extends Component {
       const skippedQuestions = draft.indicatorSurveyDataList.filter(
         question => question.value === 0
       )
-      this.props.addDraftProgress(this.props.nav.draftId, {
-        current: draft.progress.current - 1
-      })
+
       // If there are no skipped questions
       if (skippedQuestions.length > 0) {
         this.props.navigation.navigate('Skipped')
@@ -120,9 +132,8 @@ export class Overview extends Component {
     const { survey } = this.props.nav
     const { t } = this.props
     const { filterModalIsOpen, selectedFilter, filterLabel } = this.state
-    const data = this.props.familyLifemap
-      ? this.props.familyLifemap
-      : getDraft()
+
+    const data = this.props.familyLifemap || getDraft()
 
     const mandatoryPrioritiesCount = this.getMandatoryPrioritiesCount(data)
 
@@ -158,6 +169,11 @@ export class Overview extends Component {
         tipTitle={t('views.lifemap.toComplete')}
         onTipClose={this.onTipClose}
         tipDescription={getTipDescription()}
+        progress={
+          !this.resumeDraft && !this.props.familyLifemap
+            ? (data.progress.total - 1) / data.progress.total
+            : 0
+        }
       >
         <View style={[globalStyles.background, styles.contentContainer]}>
           <View style={styles.indicatorsContainer}>

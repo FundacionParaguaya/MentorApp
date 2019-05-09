@@ -15,8 +15,8 @@ export const isLandscape = dimensions => {
 
 export const isTablet = dimensions => {
   return (
-    (dimensions.scale < 2 && msp(dimensions, 1000)) ||
-    (dimensions.scale >= 2 && msp(dimensions, 2000))
+    (dimensions.scale < 2 && msp(dimensions, 912)) ||
+    (dimensions.scale >= 2 && msp(dimensions, 1824))
   )
 }
 

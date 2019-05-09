@@ -1,10 +1,9 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
-import { View, StyleSheet } from 'react-native'
+import { View, StyleSheet, ScrollView } from 'react-native'
 import SliderItem from './SliderItem'
 import colors from '../theme.json'
 import { connect } from 'react-redux'
-import Carousel from 'react-native-snap-carousel'
 
 const slideColors = {
   1: 'red',
@@ -16,68 +15,85 @@ export class Slider extends Component {
   state = {
     selectedColor: colors.palegreen
   }
+  timer
+  componentDidMount() {
+    const { width } = this.props.dimensions
 
-  getSelectedAnswer = value => {
-    switch (value) {
-      case 1:
-        return 2
-      case 2:
-        return 1
-      case 3:
-        return 0
-      default:
-        return 0
+    const value = value => {
+      switch (value) {
+        case 1:
+          return 2
+        case 2:
+          return 1
+        case 3:
+          return 0
+        default:
+          return 0
+      }
+    }
+
+    if (value(this.props.value)) {
+      this.timer = setTimeout(() => {
+        if (this.scrollView) {
+          this.scrollView.scrollTo({
+            x: (width - (1 / 10) * width) * value(this.props.value),
+            animated: true
+          })
+        }
+      }, 1)
     }
   }
 
-  renderSlide = ({ item, index }) => {
-    return (
-      <View
-        key={index}
-        style={[
-          styles.slideWrapper,
-          { backgroundColor: colors[slideColors[item.value]] }
-        ]}
-      >
-        <SliderItem
-          slide={item}
-          onPress={() => {
-            this.props.selectAnswer(item.value)
-            this.setState({
-              selectedColor: colors[slideColors[item.value]]
-            })
-          }}
-          value={this.props.value}
-          bodyHeight={this.props.bodyHeight}
-          dimensions={this.props.dimensions}
-          portrait={this.props.portrait}
-          tablet={this.props.tablet}
-        />
-      </View>
-    )
+  componentWillUnmount() {
+    clearTimeout(this.timer)
   }
 
   render() {
     const { width } = this.props.dimensions
-    const activeSlide = this.props.value
-      ? this.getSelectedAnswer(this.props.value)
-      : 0
     return (
-      <View>
-        <Carousel
-          ref={c => this._carousel = c}
-          data={this.props.slides}
-          renderItem={this.renderSlide}
-          sliderWidth={width}
-          containerCustomStyle={{ overflow: 'visible' }}
-          itemWidth={this.props.portrait ? width - 60 : width / 2 + 50}
-          loop={true}
-          inactiveSlideOpacity={1}
-          activeSlideAlignment={'center'}
-          loopClonesPerSide={10}
-          firstItem={activeSlide}
-          activeSlideOffset={50}
-        />
+      <View style={!this.props.portrait ? { paddingHorizontal: 15 } : {}}>
+        <ScrollView
+          horizontal
+          showsHorizontalScrollIndicator={false}
+          contentContainerStyle={{
+            width: this.props.portrait ? '280%' : '90%',
+            flexGrow: 1,
+            flexDirection: 'row',
+            flexWrap: 'wrap',
+            justifyContent: 'space-evenly'
+          }}
+          ref={ref => {
+            this.scrollView = ref
+          }}
+          snapToAlignment="center"
+          snapToInterval={width - (1 / 10) * width}
+        >
+          {this.props.slides.map((slide, i) => (
+            <View
+              key={i}
+              style={{
+                width: '31%',
+                backgroundColor: colors[slideColors[slide.value]],
+                borderRadius: 3
+              }}
+            >
+              <SliderItem
+                slide={slide}
+                onPress={() => {
+                  this.props.selectAnswer(slide.value)
+                  this.setState({
+                    selectedColor: colors[slideColors[slide.value]]
+                  })
+                }}
+                value={this.props.value}
+                bodyHeight={this.props.bodyHeight}
+                dimensions={this.props.dimensions}
+                portrait={this.props.portrait}
+                tablet={this.props.tablet}
+              />
+            </View>
+          ))}
+        </ScrollView>
       </View>
     )
   }
@@ -92,13 +108,6 @@ Slider.propTypes = {
   tablet: PropTypes.bool,
   portrait: PropTypes.bool
 }
-
-const styles = StyleSheet.create({
-  slideWrapper: {
-    borderRadius: 3,
-    paddingTop: 10
-  }
-})
 
 const mapStateToProps = ({ dimensions }) => ({
   dimensions

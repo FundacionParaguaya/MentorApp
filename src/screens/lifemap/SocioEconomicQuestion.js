@@ -12,7 +12,7 @@ import {
   addDraftProgress
 } from '../../redux/actions'
 import colors from '../../theme.json'
-import { getDraft } from './helpers'
+import { getDraft, getTotalScreens } from './helpers'
 
 export class SocioEconomicQuestion extends Component {
   static navigationOptions = ({ navigation }) => {
@@ -118,10 +118,10 @@ export class SocioEconomicQuestion extends Component {
 
   componentDidMount() {
     const { readonly } = this.props.nav
+
     if (!readonly) {
       this.props.addDraftProgress(this.props.nav.draftId, {
-        screen: 'SocioEconomicQuestion',
-        socioEconomics: this.props.navigation.getParam('socioEconomics')
+        screen: 'SocioEconomicQuestion'
       })
 
       if (!readonly) {
@@ -133,12 +133,7 @@ export class SocioEconomicQuestion extends Component {
   }
 
   onPressBack = () => {
-    const draft = getDraft()
     const socioEconomics = this.props.navigation.getParam('socioEconomics')
-
-    this.props.addDraftProgress(this.props.nav.draftId, {
-      current: draft.progress.current - 1
-    })
 
     socioEconomics.currentScreen === 1
       ? this.props.navigation.navigate('Location')
@@ -208,18 +203,12 @@ export class SocioEconomicQuestion extends Component {
     })
   }
   submitForm = () => {
-    const draft = getDraft()
-
     if (this.errorsDetected.length) {
       this.setState({
         showErrors: true
       })
     } else {
       const socioEconomics = this.props.navigation.getParam('socioEconomics')
-
-      this.props.addDraftProgress(this.props.nav.draftId, {
-        current: draft.progress.current + 1
-      })
 
       socioEconomics.currentScreen === socioEconomics.totalScreens
         ? this.props.navigation.navigate('BeginLifemap')
@@ -300,7 +289,11 @@ export class SocioEconomicQuestion extends Component {
         continueLabel={t('general.continue')}
         readonly={readonly}
         progress={
-          !readonly && draft ? draft.progress.current / draft.progress.total : 0
+          !readonly && draft
+            ? ((draft.familyData.countFamilyMembers > 1 ? 3 : 2) +
+                (socioEconomics ? socioEconomics.currentScreen : 1)) /
+              draft.progress.total
+            : 0
         }
       >
         {/* questions for entire family */}

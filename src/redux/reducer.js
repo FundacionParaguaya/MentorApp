@@ -23,6 +23,7 @@ import {
   SET_SYNCED_ITEM_TOTAL,
   SET_SYNCED_ITEM_AMOUNT,
   SET_SYNCED_STATE,
+  RESET_SYNCED_STATE,
   SET_DIMENSIONS,
   UPDATE_NAV
 } from './actions'
@@ -421,6 +422,7 @@ export const hydration = (state = false, action) => {
 // Sync
 export const sync = (
   state = {
+    appVersion: null,
     surveys: false,
     families: false,
     images: {
@@ -450,6 +452,15 @@ export const sync = (
         [action.item]: {
           synced: action.amount,
           total: state[action.item].total
+        }
+      }
+    case RESET_SYNCED_STATE:
+      return {
+        surveys: false,
+        families: false,
+        images: {
+          total: 0,
+          synced: 0
         }
       }
     default:
@@ -548,6 +559,7 @@ export const rootReducer = (state, action) => {
       families: [],
       env: 'production',
       sync: {
+        appVersion: null,
         surveys: false,
         families: false,
         images: {
