@@ -132,8 +132,14 @@ class DatePickerWheel extends Component {
         activeOpacity={1}
         onPress={this.toggleDropdown}
         accessible={true}
-        accessibilityLabel={required && !readonly ? `${placeholder} ${i18n.t('validation.fieldIsRequiredAccessibilityLabel')}` : ``}
-     >
+        accessibilityLabel={
+          required && !readonly
+            ? `${placeholder} ${i18n.t(
+                'validation.fieldIsRequiredAccessibilityLabel'
+              )}`
+            : ``
+        }
+      >
         <View style={styles.wrapper}>
           <View
             style={[
@@ -275,13 +281,13 @@ const styles = StyleSheet.create({
     paddingBottom: 6,
     borderBottomColor: colors.grey,
     borderTopLeftRadius: 8,
-    borderTopRightRadius: 8,
+    borderTopRightRadius: 8
   },
   placeholder: {
     paddingHorizontal: 15,
     ...globalStyles.subline,
     lineHeight: 50,
-    height: 50,
+    height: 50
   },
   withoutValue: {
     backgroundColor: colors.primary,
@@ -312,7 +318,7 @@ const styles = StyleSheet.create({
   },
   active: {
     backgroundColor: colors.white,
-    borderBottomColor: colors.green,
+    borderBottomColor: colors.green
   },
   error: {
     backgroundColor: colors.white,
@@ -327,7 +333,6 @@ const styles = StyleSheet.create({
     color: colors.palegrey,
     // marginBottom: 10,
     zIndex: 100
-
   },
   wheelPicker: {
     width: '33%',
