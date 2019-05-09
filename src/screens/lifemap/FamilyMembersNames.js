@@ -85,6 +85,12 @@ export class FamilyMembersNames extends Component {
   }
 
   addFamilyMemberGender(gender, index) {
+    const draft = getDraft()
+    const familyMemberDraft = draft.familyData.familyMembersList[index]
+
+    if (familyMemberDraft.gender === 'O' && gender !== 'O') {
+      delete familyMemberDraft.otherGender
+    }
     this.props.addSurveyFamilyMemberData({
       id: this.props.nav.draftId,
       index,
@@ -93,7 +99,15 @@ export class FamilyMembersNames extends Component {
       }
     })
   }
-
+  addFamilyMemberSpecifyGender(gender, index) {
+    this.props.addSurveyFamilyMemberData({
+      id: this.props.nav.draftId,
+      index,
+      payload: {
+        otherGender: gender
+      }
+    })
+  }
   addFamilyMemberBirthdate(birthDate, index) {
     this.props.addSurveyFamilyMemberData({
       id: this.props.nav.draftId,
@@ -109,6 +123,7 @@ export class FamilyMembersNames extends Component {
     const { showErrors } = this.state
     const draft = getDraft()
     let onlyOneAutoFocusCheck = false
+    const { survey } = this.props.nav
 
     const familyMembersCount =
       draft.familyData.countFamilyMembers &&
@@ -206,7 +221,34 @@ export class FamilyMembersNames extends Component {
                 detectError={this.detectError}
                 options={this.gender}
               />
-
+              {draft.familyData.familyMembersList[i + 1] !== undefined ? (
+                <View>
+                  {draft.familyData.familyMembersList[i + 1].gender !==
+                  undefined ? (
+                    <View>
+                      {draft.familyData.familyMembersList[i + 1].gender ===
+                      'O' ? (
+                        <TextInput
+                          validation="string"
+                          field={i.toString()}
+                          onChangeText={text =>
+                            this.addFamilyMemberSpecifyGender(text, i + 1)
+                          }
+                          placeholder={t('views.family.specifyGender')}
+                          value={
+                            (
+                              this.getFieldValue('familyMembersList')[i + 1] ||
+                              {}
+                            ).otherGender || ''
+                          }
+                          detectError={this.detectError}
+                          showErrors={showErrors}
+                        />
+                      ) : null}
+                    </View>
+                  ) : null}
+                </View>
+              ) : null}
               <DateInput
                 field={i.toString()}
                 label={t('views.family.dateOfBirth')}

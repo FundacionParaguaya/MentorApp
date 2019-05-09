@@ -21,7 +21,6 @@ import Decoration from '../../components/decoration/Decoration'
 import colors from '../../theme.json'
 import globalStyles from '../../globalStyles'
 import { getTotalScreens } from './helpers'
-
 export class FamilyParticipant extends Component {
   //Get draft id from Redux store if it exists else create new draft id
   draftId = this.props.nav.readonly
@@ -174,6 +173,46 @@ export class FamilyParticipant extends Component {
   }
 
   addSurveyData = (text, field) => {
+    let draft = this.props.drafts.find(draft => draft.draftId === this.draftId)
+    let primaryParticipantDraft = (primaryParticipantDraft =
+      draft.familyData.familyMembersList[0])
+    const { survey } = this.props.nav
+    let genderValues = survey.surveyConfig.gender
+    if (field === 'gender') {
+      let otherTypeGender
+      genderValues.forEach(ele => {
+        if (typeof ele.otherOption !== undefined) {
+          if (ele.otherOption) {
+            otherTypeGender = ele.value
+          }
+        }
+      })
+      if (
+        otherTypeGender === this.getFieldValue(draft, 'gender') &&
+        text !== 'O'
+      ) {
+        delete primaryParticipantDraft.customGender
+      }
+    }
+
+    if (field === 'documentType') {
+      let otherTypeDocumentNumber
+      let docValues = survey.surveyConfig.documentType
+      docValues.forEach(ele => {
+        if (typeof ele.otherOption !== undefined) {
+          if (ele.otherOption) {
+            otherTypeDocumentNumber = ele.value
+          }
+        }
+      })
+      if (
+        otherTypeDocumentNumber === this.getFieldValue(draft, 'documentType') &&
+        text !== this.getFieldValue(draft, 'documentType')
+      ) {
+        delete primaryParticipantDraft.customDocumentType
+      }
+    }
+
     this.props.addSurveyFamilyMemberData({
       id: this.draftId,
       index: 0,
@@ -199,7 +238,6 @@ export class FamilyParticipant extends Component {
     const { t } = this.props
     const { survey, readonly } = this.props.nav
     const { showErrors } = this.state
-
     const draft =
       this.props.navigation.getParam('family') ||
       this.props.drafts.find(draft => draft.draftId === this.draftId)
@@ -209,7 +247,25 @@ export class FamilyParticipant extends Component {
     } else {
       autofocusFirstName = true
     }
+    let otherTypeDocumentNumber = 0
+    let otherTypeGender = 0
+    let docValues = survey.surveyConfig.documentType
+    let genderValues = survey.surveyConfig.gender
+    docValues.forEach(ele => {
+      if (typeof ele.otherOption !== undefined) {
+        if (ele.otherOption) {
+          otherTypeDocumentNumber = ele.value
+        }
+      }
+    })
 
+    genderValues.forEach(ele => {
+      if (typeof ele.otherOption !== undefined) {
+        if (ele.otherOption) {
+          otherTypeGender = ele.value
+        }
+      }
+    })
     return (
       <StickyFooter
         handleClick={this.handleClick}
@@ -265,7 +321,19 @@ export class FamilyParticipant extends Component {
           showErrors={showErrors}
           options={this.gender}
         />
-
+        {otherTypeGender === this.getFieldValue(draft, 'gender') ? (
+          <TextInput
+            field="customGender"
+            validation="string"
+            onChangeText={this.addSurveyData}
+            readonly={readonly}
+            placeholder={t('views.family.specifyGender')}
+            value={this.getFieldValue(draft, 'customGender') || ''}
+            required
+            detectError={this.detectError}
+            showErrors={showErrors}
+          />
+        ) : null}
         <DateInput
           required
           label={t('views.family.dateOfBirth')}
@@ -289,6 +357,21 @@ export class FamilyParticipant extends Component {
           showErrors={showErrors}
           options={this.documentType}
         />
+        {otherTypeDocumentNumber ===
+        this.getFieldValue(draft, 'documentType') ? (
+          <TextInput
+            field="customDocumentType"
+            validation="string"
+            onChangeText={this.addSurveyData}
+            readonly={readonly}
+            placeholder={t('views.family.customDocumentType')}
+            value={this.getFieldValue(draft, 'customDocumentType') || ''}
+            required
+            detectError={this.detectError}
+            showErrors={showErrors}
+          />
+        ) : null}
+
         <TextInput
           onChangeText={this.addSurveyData}
           readonly={readonly}
