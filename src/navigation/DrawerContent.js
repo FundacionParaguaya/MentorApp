@@ -104,7 +104,7 @@ export class DrawerContent extends Component {
     }
   }
   render() {
-    const { lng, user, navigation } = this.props
+    const { lng, user, navigation, sync } = this.props
     const { checkboxesVisible, showErrors, logingOut } = this.state
     const unsyncedDrafts = this.props.drafts.filter(
       draft => draft.status !== 'Synced'
@@ -152,6 +152,9 @@ export class DrawerContent extends Component {
             style={[styles.username, globalStyles.h3, styles.whiteText]}
           >
             {user.username}
+          </Text>
+          <Text style={[styles.appversion, globalStyles.h4, styles.whiteText]}>
+            Version {sync.appVersion}
           </Text>
           {/* Links */}
         </View>
@@ -258,14 +261,16 @@ DrawerContent.propTypes = {
   navigation: PropTypes.object.isRequired,
   user: PropTypes.object.isRequired,
   drafts: PropTypes.array.isRequired,
-  env: PropTypes.oneOf(['production', 'demo', 'testing', 'development'])
+  env: PropTypes.oneOf(['production', 'demo', 'testing', 'development']),
+  sync: PropTypes.object.isRequired
 }
 
-const mapStateToProps = ({ env, user, drafts, nav }) => ({
+const mapStateToProps = ({ env, user, drafts, nav, sync }) => ({
   env,
   user,
   drafts,
-  nav
+  nav,
+  sync
 })
 
 const mapDispatchToProps = {
@@ -305,8 +310,14 @@ const styles = StyleSheet.create({
   },
   username: {
     position: 'absolute',
-    top: 139,
+    top: 119,
     left: 16
+  },
+  appversion: {
+    position: 'absolute',
+    top: 139,
+    left: 16,
+    fontSize: 12
   },
   navItem: {
     flexDirection: 'row',
