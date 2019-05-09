@@ -5,6 +5,7 @@ import { View, StyleSheet, Text } from 'react-native'
 import { withNamespaces } from 'react-i18next'
 import colors from '../theme.json'
 import DatePickerWheel from './DatePickerWheel'
+import i18n from '../i18n'
 
 export class DateInputComponent extends React.Component {
   state = {
@@ -99,7 +100,7 @@ export class DateInputComponent extends React.Component {
           <Text
             style={[styles.text, { marginBottom: readonly ? -15 : 15 }]}
             accessibilityLabel={`${this.props.label} ${
-              required && !readonly ? ' This is a mandatory field.' : ''
+              required && !readonly ? i18n.t('validation.fieldIsRequiredAccessibilityLabel') : ''
             }`}
           >
             {this.props.label} {required && !readonly ? '*' : ''}
@@ -113,7 +114,7 @@ export class DateInputComponent extends React.Component {
               placeholder={
                 readonly
                   ? ''
-                  : `${this.props.label} ${required && !readonly ? '*' : ''}`
+                  : `${this.props.label}`
               }
               field=""
               readonly={readonly}
@@ -121,6 +122,8 @@ export class DateInputComponent extends React.Component {
               days={this.days}
               months={months}
               years={this.years}
+              required={this.props.required}
+              detectError={this.props.detectError}
             />
           </View>
         </View>

@@ -132,7 +132,7 @@ class DatePickerWheel extends Component {
         activeOpacity={1}
         onPress={this.toggleDropdown}
         accessible={true}
-        accessibilityLabel={required && !readonly ? `${i18n.t('validation.fieldIsRequiredAccessibilityLabel')}` : ``}
+        accessibilityLabel={required && !readonly ? `${placeholder} ${i18n.t('validation.fieldIsRequiredAccessibilityLabel')}` : ``}
      >
         <View style={styles.wrapper}>
           <View
