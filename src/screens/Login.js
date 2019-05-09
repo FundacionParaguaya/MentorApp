@@ -170,7 +170,15 @@ export class Login extends Component {
             <View />
           )}
           {this.state.loading ? (
-            <ActivityIndicator />
+            <React.Fragment>
+              <Button
+                id="login-button"
+                handleClick={() => this.onLogin()}
+                text="Logging in ..."
+                disabled={true}
+                colored
+              />
+            </React.Fragment>
           ) : (
             <Button
               id="login-button"

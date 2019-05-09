@@ -4,13 +4,18 @@ import './src/i18n'
 import App from './App'
 import { name as appName } from './app.json'
 
-// setup Sentry crash reports
-Sentry.config(
-  'https://5c0325e3929542f5a8541a247df43c52@sentry.io/1332316'
-).install()
+// get env
+const nodeEnv = process.env
+
+// setup Sentry crash reports only for production
+Sentry.config('https://5c0325e3929542f5a8541a247df43c52@sentry.io/1332316')
+
+if (nodeEnv.NODE_ENV !== 'development') {
+  Sentry.install()
+}
 
 // set sentry environment to production or development
-const nodeEnv = process.env
+
 Sentry.setTagsContext({
   environment: nodeEnv.NODE_ENV
 })

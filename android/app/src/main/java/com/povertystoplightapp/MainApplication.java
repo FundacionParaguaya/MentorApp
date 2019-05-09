@@ -2,6 +2,7 @@ package com.povertystoplightapp;
 
 import android.app.Application;
 import com.facebook.react.ReactApplication;
+import com.learnium.RNDeviceInfo.RNDeviceInfo;
 import com.delightfulstudio.wheelpicker.WheelPickerPackage;
 import io.sentry.RNSentryPackage;
 import org.devio.rn.splashscreen.SplashScreenReactPackage;
@@ -30,7 +31,8 @@ public class MainApplication extends Application implements ReactApplication {
     protected List<ReactPackage> getPackages() {
       return Arrays.<ReactPackage>asList(
           new MainReactPackage(),
-            new WheelPickerPackage(),
+          new RNDeviceInfo(),
+          new WheelPickerPackage(),
           new RNSentryPackage(),
           new SplashScreenReactPackage(),
           new VectorIconsPackage(),

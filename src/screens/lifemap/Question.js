@@ -6,7 +6,7 @@ import { connect } from 'react-redux'
 import PropTypes from 'prop-types'
 import { withNamespaces } from 'react-i18next'
 import { isPortrait, isTablet } from '../../responsivenessHelpers'
-import { getDraft } from './helpers'
+import { getDraft, getTotalEconomicScreens } from './helpers'
 
 import {
   addSurveyData,
@@ -84,17 +84,10 @@ export class Question extends Component {
       this.step + 1 < this.indicators.length &&
       !this.props.navigation.getParam('skipped')
     ) {
-      this.props.addDraftProgress(draftId, {
-        current: draft.progress.current + 1
-      })
       return this.props.navigation.replace('Question', {
         step: this.step + 1
       })
     } else if (this.step + 1 >= this.indicators.length && answer === 0) {
-      this.props.addDraftProgress(draftId, {
-        current: draft.progress.current + 1,
-        total: draft.progress.total + 1
-      })
       return this.props.navigation.navigate('Skipped')
     } else if (
       (this.props.navigation.getParam('skipped') &&
@@ -102,27 +95,15 @@ export class Question extends Component {
         answer !== 0) ||
       skippedQuestions.length === 0
     ) {
-      this.props.addDraftProgress(draftId, {
-        current: draft.progress.current + 1
-      })
       return this.props.navigation.navigate('Overview', {
         resumeDraft: false
       })
     } else {
-      this.props.addDraftProgress(draftId, {
-        current: draft.progress.current + 1,
-        total: draft.progress.total + 1
-      })
       return this.props.navigation.replace('Skipped')
     }
   }
 
   onPressBack = () => {
-    const draft = getDraft()
-    this.props.addDraftProgress(this.props.nav.draftId, {
-      current: draft.progress.current - 1
-    })
-
     if (this.step > 0) {
       this.props.navigation.replace('Question', {
         step: this.step - 1
@@ -144,17 +125,21 @@ export class Question extends Component {
       <StickyFooter
         handleClick={this.handleClick}
         readonly
-        progress={draft ? draft.progress.current / draft.progress.total : 0}
+        progress={
+          draft
+            ? ((draft.familyData.countFamilyMembers > 1 ? 5 : 4) +
+                getTotalEconomicScreens(this.props.nav.survey) +
+                this.step) /
+              draft.progress.total
+            : 0
+        }
         currentScreen="Question"
       >
         <View
-          style={
-            (portrait && tablet) || (portrait && !tablet)
-              ? { height: bodyHeight }
-              : !tablet && !portrait
-              ? { height: dimensions.width }
-              : {}
-          }
+          style={[
+            { height: bodyHeight },
+            tablet && portrait ? { marginTop: 30 } : {}
+          ]}
         >
           <SliderComponent
             slides={this.slides}
@@ -164,7 +149,16 @@ export class Question extends Component {
             tablet={tablet}
             portrait={portrait}
           />
-          <View style={styles.skip}>
+          <View
+            style={[
+              styles.skip,
+              !tablet && !portrait
+                ? { height: 40 }
+                : tablet && portrait
+                ? { height: 120 }
+                : { height: 60 }
+            ]}
+          >
             {this.indicator.required ? (
               <Text>{t('views.lifemap.responseRequired')}</Text>
             ) : (
@@ -184,8 +178,9 @@ export class Question extends Component {
 const styles = StyleSheet.create({
   skip: {
     alignItems: 'flex-end',
-    marginRight: 30,
-    marginTop: 15
+    justifyContent: 'center',
+    marginRight: 30
+    // marginTop: 0
   },
   link: {
     color: colors.palegreen

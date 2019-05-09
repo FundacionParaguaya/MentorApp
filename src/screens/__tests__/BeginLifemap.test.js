@@ -11,6 +11,7 @@ const createTestProps = props => ({
   nav: {
     draftId: 4,
     survey: {
+      surveyEconomicQuestions: [],
       id: 2,
       title: 'Other survey',
       surveyStoplightQuestions: [{ a: 'a' }, { b: 'b' }, { c: 'c' }]

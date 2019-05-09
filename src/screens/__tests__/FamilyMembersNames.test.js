@@ -10,6 +10,8 @@ const createTestProps = props => ({
   t: value => value,
   nav: {
     survey: {
+      surveyStoplightQuestions: [],
+      surveyEconomicQuestions: [],
       surveyConfig: {
         gender: [
           {

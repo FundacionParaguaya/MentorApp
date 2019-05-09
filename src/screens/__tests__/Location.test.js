@@ -3,7 +3,6 @@ import { shallow } from 'enzyme'
 import { ActivityIndicator, Text } from 'react-native'
 import MapboxGL from '@mapbox/react-native-mapbox-gl'
 import { Location } from '../lifemap/Location'
-import TextInput from '../../components/TextInput'
 import Select from '../../components/Select'
 
 jest.useFakeTimers()
@@ -50,6 +49,8 @@ const createTestProps = props => ({
     readonly: false,
     draftId: 4,
     survey: {
+      surveyEconomicQuestions: [],
+      surveyStoplightQuestions: [],
       title: 'Chile - Geco',
       surveyId: 100,
       surveyConfig: {
@@ -137,6 +138,8 @@ describe('Family Location component', () => {
           readonly: false,
           draftId: 4,
           survey: {
+            surveyEconomicQuestions: [],
+            surveyStoplightQuestions: [],
             surveyId: 100,
             surveyConfig: {
               surveyLocation: { country: 'BG', latitude: 10, longitude: 11 }

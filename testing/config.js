@@ -4,6 +4,13 @@ import 'jest-enzyme'
 
 Enzyme.configure({ adapter: new Adapter() })
 
+// mock device info
+jest.mock('react-native-device-info', () => {
+  return {
+    getModel: jest.fn()
+  }
+})
+
 // mock react native
 jest.mock('react-native', () => require('react-native-mock-render'), {
   virtual: true,
