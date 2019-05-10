@@ -212,7 +212,6 @@ export class FamilyMembersNames extends Component {
                 label={t('views.family.dateOfBirth')}
                 detectError={this.detectError}
                 showErrors={this.state.showErrors}
-                required
                 onValidDate={date => this.addFamilyMemberBirthdate(date, i + 1)}
                 value={
                   (this.getFieldValue('familyMembersList')[i + 1] || {})

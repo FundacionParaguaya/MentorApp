@@ -62,7 +62,7 @@ export class DateInputComponent extends React.Component {
   componentDidUpdate(prevProps, prevState) {
     const { date } = this.state
 
-    if (JSON.stringify(prevState) !== JSON.stringify(this.state)) {
+    if (JSON.stringify(prevState) !== JSON.stringify(this.state) && this.props.required) {
       if (date) {
         this.validateDate()
       }
@@ -70,7 +70,7 @@ export class DateInputComponent extends React.Component {
         this.validateDate()
       }
     }
-    if (prevProps.showErrors !== this.props.showErrors) {
+    if (prevProps.showErrors !== this.props.showErrors && this.props.required) {
       this.validateDate()
     }
   }
