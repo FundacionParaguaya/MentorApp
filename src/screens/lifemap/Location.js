@@ -188,23 +188,19 @@ export class Location extends Component {
             : false
 
           if (survey.title === 'Chile - Geco') {
-            isLocationInBoundaries
-              ? this.setState({
-                  loading: false,
-                  centeringMap: false,
-                  showForm: false,
-                  latitude: position.coords.latitude,
-                  longitude: position.coords.longitude,
-                  accuracy: position.coords.accuracy
-                })
-              : this.setState({
-                  loading: false,
-                  centeringMap: false,
-                  showSearch: false,
-                  latitude: positionFromSurvey.latitude,
-                  longitude: positionFromSurvey.longitude,
-                  accuracy: 0
-                })
+            this.setState({
+              loading: false,
+              centeringMap: false,
+              showSearch: false,
+              showForm: false,
+              latitude: isLocationInBoundaries
+                ? position.coords.latitude
+                : positionFromSurvey.latitude,
+              longitude: isLocationInBoundaries
+                ? position.coords.longitude
+                : positionFromSurvey.longitude,
+              accuracy: isLocationInBoundaries ? position.coords.accuracy : 0
+            })
 
             this.addSurveyData(
               isLocationInBoundaries
