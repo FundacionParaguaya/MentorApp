@@ -18,6 +18,33 @@ export class FamiliesListItem extends Component {
     return string.charAt(0).toUpperCase() + string.slice(1)
   }
 
+  setAccessibilityTextFamilyMembers(membersCount) {
+    switch (membersCount) {
+      case 1:
+        return `${this.props.t(
+          'views.family.oneMember'
+        )}`
+      case 2:
+        return `${this.props.t(
+          'views.family.twoMembers'
+        )}`
+      case 3:
+        return `${this.props.t(
+          'views.family.threeMembers'
+        )}`
+      case 4:
+        return `${this.props.t(
+          'views.family.fourMembers'
+        )}`
+      case 5:
+        return `${this.props.t(
+          'views.family.fiveMembers'
+        )}`
+      default:
+        break
+    }
+  }
+
   render() {
     const { family, lng, t } = this.props
     const firstParticipant =
@@ -26,6 +53,18 @@ export class FamiliesListItem extends Component {
             item => item.firstParticipant
           )
         : null
+    const familyMembersCount =
+      family.snapshotList &&
+      family.snapshotList[0] &&
+      family.snapshotList[0].familyData.countFamilyMembers &&
+      family.snapshotList[0].familyData.countFamilyMembers > 1
+        ? family.snapshotList[0].familyData.countFamilyMembers - 1
+        : 0
+
+    const accessibilityTextFamilyMembersCount = this.setAccessibilityTextFamilyMembers(
+      familyMembersCount
+    )
+
     const birthDate = firstParticipant
       ? firstParticipant.birthDate
       : family.birthDate
@@ -40,18 +79,18 @@ export class FamiliesListItem extends Component {
         disabled={family.snapshotList && !family.snapshotList.length}
       >
         <View>
-          { family.snapshotList &&
-            family.snapshotList[0] &&
-            family.snapshotList[0].familyData.countFamilyMembers &&
-            family.snapshotList[0].familyData.countFamilyMembers > 1 && (
-              <View style={styles.countCircleWrapper}>
-                <View style={styles.countCircle}>
-                  <Text style={[globalStyles.h4, { color: colors.lightdark }]}>
-                    + {family.snapshotList[0].familyData.countFamilyMembers - 1}
-                  </Text>
-                </View>
+          {familyMembersCount ? (
+            <View
+              style={styles.countCircleWrapper}
+              importantForAccessibility="no-hide-descendants"
+            >
+              <View style={styles.countCircle}>
+                <Text style={[globalStyles.h4, { color: colors.lightdark }]}>
+                  + {familyMembersCount}
+                </Text>
               </View>
-            )}
+            </View>
+          ) : null}
 
           <Icon name="face" color={colors.grey} size={40} />
         </View>
@@ -63,9 +102,13 @@ export class FamiliesListItem extends Component {
               style={{ ...globalStyles.subline, ...styles.p }}
               accessibilityLabel={
                 birthDate
-                  ? `${t('views.family.dateOfBirth')} ${birthDateWithLocale
+                  ? `${t(
+                      'views.family.dateOfBirth'
+                    )} ${birthDateWithLocale
                       .utc()
-                      .format('MMMM DD, YYYY')}`
+                      .format(
+                        'MMMM DD, YYYY'
+                      )} ${accessibilityTextFamilyMembersCount}`
                   : ''
               }
             >

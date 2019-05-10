@@ -69,6 +69,11 @@
     "skippedIndicators": "Preguntas omitidas",
     "readCarefully": "Favor lea atentamente antes de crear el Mapa de Vida",
     "family": {
+      "oneMember": "Un miembro de la familia",
+      "twoMembers": "Dos miembros de la familia",
+      "threeMembers": "Tres miembros de la familia",
+      "fourMembers": "Cuatro miembros de la familia",
+      "fiveMembers": "cinco miembros de la familia",
       "primaryParticipantHeading": "¡Cuéntanos sobre tí!",
       "familyMembersHeading": "Ahora, ¡cuéntanos sobre las personas con las que vives!",
       "firstName": "Nombre",

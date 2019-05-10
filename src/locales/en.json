@@ -69,6 +69,11 @@
     "skippedIndicators": "Skipped questions",
     "readCarefully": "Please read carefully before creating the Life Map",
     "family": {
+      "oneMember": "One family member",
+      "twoMembers": "Two family members",
+      "threeMembers": "Three family members",
+      "fourMembers": "Four family members",
+      "fiveMembers": "Five family members",
       "primaryParticipantHeading": "Tell us about yourself!",
       "familyMembersHeading": "Now, tell us about all the people you live with!",
       "firstName": "First name",
