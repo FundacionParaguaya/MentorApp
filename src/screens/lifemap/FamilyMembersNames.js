@@ -89,7 +89,7 @@ export class FamilyMembersNames extends Component {
     const familyMemberDraft = draft.familyData.familyMembersList[index]
 
     if (familyMemberDraft.gender === 'O' && gender !== 'O') {
-      delete familyMemberDraft.otherGender
+      delete familyMemberDraft.customGender
     }
     this.props.addSurveyFamilyMemberData({
       id: this.props.nav.draftId,
@@ -104,7 +104,7 @@ export class FamilyMembersNames extends Component {
       id: this.props.nav.draftId,
       index,
       payload: {
-        otherGender: gender
+        customGender: gender
       }
     })
   }
@@ -123,7 +123,6 @@ export class FamilyMembersNames extends Component {
     const { showErrors } = this.state
     const draft = getDraft()
     let onlyOneAutoFocusCheck = false
-    const { survey } = this.props.nav
 
     const familyMembersCount =
       draft.familyData.countFamilyMembers &&
@@ -239,7 +238,7 @@ export class FamilyMembersNames extends Component {
                             (
                               this.getFieldValue('familyMembersList')[i + 1] ||
                               {}
-                            ).otherGender || ''
+                            ).customGender || ''
                           }
                           detectError={this.detectError}
                           showErrors={showErrors}

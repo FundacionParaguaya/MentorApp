@@ -100,12 +100,6 @@ describe('SocioEconomicQuestion screens', () => {
                             text: 'No member with disabilities'
                           }
                         ]
-                      },
-                      {
-                        questionText:
-                          'What is the property title situation of your household?',
-                        answerType: 'select',
-                        codeName: '2'
                       }
                     ],
                     forFamilyMember: []
@@ -146,7 +140,7 @@ describe('SocioEconomicQuestion screens', () => {
     })
 
     it('renders Select elements for each select question', () => {
-      expect(wrapper.find(Select)).toHaveLength(2)
+      expect(wrapper.find(Select)).toHaveLength(1)
     })
 
     it('shows a select with all props', () => {
@@ -312,13 +306,14 @@ describe('SocioEconomicQuestion screens', () => {
     })
 
     it('renders a TextInput for each text question for each family member', () => {
-      expect(wrapper.find(TextInput)).toHaveLength(3)
+      expect(wrapper.find(TextInput)).toHaveLength(2)
     })
 
     it('sets the correct TextInput props', () => {
       expect(wrapper.find(TextInput).first()).toHaveProp({
-        required: false,
-        placeholder: 'Please state household income'
+        required: true,
+        placeholder:
+          'Please estimate your gross monthly household income (i.e, before taxes National Insurance contributions or other deductions)'
       })
     })
 

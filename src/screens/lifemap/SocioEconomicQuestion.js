@@ -12,7 +12,7 @@ import {
   addDraftProgress
 } from '../../redux/actions'
 import colors from '../../theme.json'
-import { getDraft, getTotalScreens } from './helpers'
+import { getDraft } from './helpers'
 
 export class SocioEconomicQuestion extends Component {
   static navigationOptions = ({ navigation }) => {
@@ -294,8 +294,8 @@ export class SocioEconomicQuestion extends Component {
       ? socioEconomics.questionsPerScreen[socioEconomics.currentScreen - 1]
       : []
 
-    const { readonly, survey } = this.props.nav
-    console.log(draft, survey)
+    const { readonly } = this.props.nav
+
     const showMemberName = (member, questionsForFamilyMember) => {
       const questionsForThisMember = questionsForFamilyMember.filter(question =>
         !!question.conditions && question.conditions.length
@@ -412,7 +412,7 @@ export class SocioEconomicQuestion extends Component {
                   />
                 )
               } else {
-                <TextInput
+                ;<TextInput
                   multiline
                   key={question.codeName}
                   required={question.required}
