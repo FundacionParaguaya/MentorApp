@@ -120,28 +120,28 @@ describe('families actions', () => {
 })
 
 describe('surveys actions', () => {
-  // it('should create an action to load the list of surveys', () => {
-  //   const env = 'https://mock/env'
-  //   const token = 'token'
-  //   const expectedAction = {
-  //     env: 'https://mock/env',
-  //     meta: {
-  //       offline: {
-  //         commit: { type: 'LOAD_SURVEYS_COMMIT' },
-  //         effect: {
-  //           body:
-  //             '{"query":"query { surveysByUser { title id minimumPriorities privacyPolicy { title  text } termsConditions{ title text } surveyConfig { documentType {text value} gender { text value} surveyLocation { country latitude longitude} }  surveyEconomicQuestions { questionText codeName answerType topic required forFamilyMember options {text value} conditions{ codeName type value operator} } surveyStoplightQuestions { questionText codeName dimension id stoplightColors { url value description } required } } }"}',
-  //           headers: { Authorization: 'Bearer token' },
-  //           method: 'POST',
-  //           url: 'https://mock/env/graphql'
-  //         }
-  //       }
-  //     },
-  //     token: 'token',
-  //     type: 'LOAD_SURVEYS'
-  //   }
-  //   expect(action.loadSurveys(env, token)).toEqual(expectedAction)
-  // })
+  it('should create an action to load the list of surveys', () => {
+    const env = 'https://mock/env'
+    const token = 'token'
+    const expectedAction = {
+      env: 'https://mock/env',
+      meta: {
+        offline: {
+          commit: { type: 'LOAD_SURVEYS_COMMIT' },
+          effect: {
+            body:
+              '{"query":"query { surveysByUser { title id minimumPriorities privacyPolicy { title  text } termsConditions{ title text } surveyConfig { documentType {text value} gender { text value} surveyLocation { country latitude longitude} }  surveyEconomicQuestions { questionText codeName answerType topic required forFamilyMember options {text value} conditions{ codeName type value operator} } surveyStoplightQuestions { questionText codeName dimension id stoplightColors { url value description } required } } }"}',
+            headers: { Authorization: 'Bearer token' },
+            method: 'POST',
+            url: 'https://mock/env/graphql'
+          }
+        }
+      },
+      token: 'token',
+      type: 'LOAD_SURVEYS'
+    }
+    expect(action.loadSurveys(env, token)).toEqual(expectedAction)
+  })
 })
 
 describe('drafts actions', () => {
