@@ -209,7 +209,7 @@ export class FamilyParticipant extends Component {
     } else {
       autofocusFirstName = true
     }
-    console.log(draft, survey)
+
     return (
       <StickyFooter
         handleClick={this.handleClick}
