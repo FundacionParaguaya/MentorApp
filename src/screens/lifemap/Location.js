@@ -92,13 +92,6 @@ export class Location extends Component {
 
   // if the user has draged the map and the draft has stored some coordinates
   setCoordinatesFromDraft = (isOnline, draft) => {
-    const showFormOffline = this.isUserLocationWithinMapPackBounds(
-      [
-        parseFloat(this.getFieldValue(draft, 'longitude')),
-        parseFloat(this.getFieldValue(draft, 'latitude'))
-      ],
-      this.state.cachedMapPacks.map(pack => pack.bounds)
-    )
     const { survey } = this.props.nav
 
     this.setState({
@@ -110,13 +103,23 @@ export class Location extends Component {
     })
 
     if (!isOnline) {
+      const isLocationInBoundaries = !!this.state.cachedMapPacks.length
+        ? this.isUserLocationWithinMapPackBounds(
+            [
+              parseFloat(this.getFieldValue(draft, 'longitude')),
+              parseFloat(this.getFieldValue(draft, 'latitude'))
+            ],
+            this.state.cachedMapPacks.map(pack => pack.bounds)
+          )
+        : false
+
       if (survey.title === 'Chile - Geco') {
         this.setState({
           showSearch: false
         })
       } else {
         this.setState({
-          showForm: showFormOffline ? false : true,
+          showForm: isLocationInBoundaries ? false : true, // false shows map
           showSearch: false
         })
       }
@@ -189,40 +192,42 @@ export class Location extends Component {
       //   this.addSurveyData(position.longitude, 'longitude')
       //   this.addSurveyData(0, 'accuracy')
       // } else {
-        navigator.geolocation.getCurrentPosition(
-          // if no offline map is available, but there is location save it
-          position => {
-            const showFormOffline = this.isUserLocationWithinMapPackBounds(
-              [position.coords.latitude, position.coords.longitude],
-              this.state.cachedMapPacks.map(pack => pack.bounds)
-            )
+      navigator.geolocation.getCurrentPosition(
+        // if no offline map is available, but there is location save it
+        position => {
+          const isLocationInBoundaries = !!this.state.cachedMapPacks.length
+            ? this.isUserLocationWithinMapPackBounds(
+                [position.coords.latitude, position.coords.longitude],
+                this.state.cachedMapPacks.map(pack => pack.bounds)
+              )
+            : false
 
-            this.setState({
-              loading: false,
-              centeringMap: false,
-              showForm: showFormOffline ? false : true,
-              latitude: position.coords.latitude,
-              longitude: position.coords.longitude,
-              accuracy: position.coords.accuracy
-            })
-            this.addSurveyData(position.coords.latitude, 'latitude')
-            this.addSurveyData(position.coords.longitude, 'longitude')
-            this.addSurveyData(position.coords.accuracy, 'accuracy')
-          },
-          // otherwise ask for more details
-          () => {
-            this.setState({
-              loading: false,
-              centeringMap: false,
-              showForm: true
-            })
-          },
-          {
-            enableHighAccuracy: false,
-            timeout: 10000,
-            maximumAge: 0
-          }
-        )
+          this.setState({
+            loading: false,
+            centeringMap: false,
+            showForm: isLocationInBoundaries ? false : true,
+            latitude: position.coords.latitude,
+            longitude: position.coords.longitude,
+            accuracy: position.coords.accuracy
+          })
+          this.addSurveyData(position.coords.latitude, 'latitude')
+          this.addSurveyData(position.coords.longitude, 'longitude')
+          this.addSurveyData(position.coords.accuracy, 'accuracy')
+        },
+        // otherwise ask for more details
+        () => {
+          this.setState({
+            loading: false,
+            centeringMap: false,
+            showForm: true
+          })
+        },
+        {
+          enableHighAccuracy: false,
+          timeout: 10000,
+          maximumAge: 0
+        }
+      )
       // }
     }
   }
@@ -245,6 +250,7 @@ export class Location extends Component {
         )
       })
     }
+    return false
   }
 
   getMapOfflinePacks() {
