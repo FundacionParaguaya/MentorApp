@@ -271,7 +271,6 @@ export class SocioEconomicQuestion extends Component {
       : []
 
     const { readonly } = this.props.nav
-
     const showMemberName = (member, questionsForFamilyMember) => {
       const questionsForThisMember = questionsForFamilyMember.filter(question =>
         !!question.conditions && question.conditions.length
