@@ -113,7 +113,7 @@ export class DrawerContent extends Component {
   }
 
   render() {
-    const { lng, user, navigation, dimensions } = this.props
+    const { lng, user, navigation, dimensions, sync } = this.props
     const {
       checkboxesVisible,
       showErrors,
@@ -172,6 +172,9 @@ export class DrawerContent extends Component {
             style={[styles.username, globalStyles.h3, styles.whiteText]}
           >
             {user.username}
+          </Text>
+          <Text style={[styles.appversion, globalStyles.h4, styles.whiteText]}>
+            Version {sync.appVersion}
           </Text>
           {/* Links */}
         </View>
@@ -285,15 +288,17 @@ DrawerContent.propTypes = {
   user: PropTypes.object.isRequired,
   drafts: PropTypes.array.isRequired,
   env: PropTypes.oneOf(['production', 'demo', 'testing', 'development']),
-  dimensions: PropTypes.object.isRequired
+  dimensions: PropTypes.object.isRequired,
+  sync: PropTypes.object.isRequired
 }
 
-const mapStateToProps = ({ env, user, drafts, nav, dimensions }) => ({
+const mapStateToProps = ({ env, user, drafts, nav, dimensions, sync }) => ({
   env,
   user,
   drafts,
   nav,
-  dimensions
+  dimensions,
+  sync
 })
 
 const mapDispatchToProps = {
@@ -333,8 +338,14 @@ const styles = StyleSheet.create({
   },
   username: {
     position: 'absolute',
-    top: 139,
+    top: 119,
     left: 16
+  },
+  appversion: {
+    position: 'absolute',
+    top: 139,
+    left: 16,
+    fontSize: 12
   },
   navItem: {
     flexDirection: 'row',
