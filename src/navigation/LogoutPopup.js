@@ -29,6 +29,19 @@ export default class LogoutPopup extends Component {
       onModalClose,
       logingOut
     } = this.props
+
+    const popupAccessibilityText = unsyncedDrafts
+      ? `${i18n.t('views.logout.youHaveUnsynchedData')} ${i18n.t(
+          'views.logout.thisDataWillBeLost'
+        )} ${i18n.t('views.logout.areYouSureYouWantToLogOut')} ${i18n.t(
+          'general.yes'
+        )} ${i18n.t('general.no')}`
+      : `${i18n.t('views.logout.weWillMissYou')} ${i18n.t(
+          'views.logout.comeBackSoon'
+        )} ${i18n.t('views.logout.areYouSureYouWantToLogOut')} ${i18n.t(
+          'general.yes'
+        )} ${i18n.t('general.no')}`
+
     return logingOut ? (
       <Popup
         isOpen={navigation.getParam('logoutModalOpen')}
@@ -47,153 +60,161 @@ export default class LogoutPopup extends Component {
         onClose={onModalClose}
       >
         <View
-          style={{ alignItems: 'flex-end', paddingVertical: 10 }}
           accessible={true}
-          accessibilityLabel={i18n.t('general.close')}
-          accessibilityRole={'button'}
+          accessibilityLabel={`${popupAccessibilityText}`}
+          accessibilityLiveRegion="assertive"
         >
-          <Icon name="close" size={20} />
-        </View>
-
-        <View style={styles.modalContainer} accessibilityLiveRegion="polite">
-          <View style={{ alignItems: 'center' }}>
-            {!checkboxesVisible ? (
-              <Icon
-                name="sentiment-dissatisfied"
-                color={colors.lightdark}
-                size={44}
-              />
-            ) : (
-              <CommunityIcon
-                name="exclamation"
-                color={colors.palered}
-                size={60}
-              />
-            )}
-            <Text
-              style={[
-                styles.title,
-                checkboxesVisible ? { color: colors.palered } : {}
-              ]}
-            >
-              {!checkboxesVisible
-                ? i18n.t('views.logout.logout')
-                : `${i18n.t('general.warning')}!`}
-            </Text>
+          <View
+            style={{ alignItems: 'flex-end', paddingVertical: 10 }}
+            accessible={true}
+            accessibilityLabel={i18n.t('general.close')}
+            accessibilityRole={'button'}
+          >
+            <Icon name="close" size={20} />
           </View>
 
-          {/* Popup text */}
-          {!checkboxesVisible ? (
-            <View>
-              {unsyncedDrafts ? (
-                <View style={{ alignItems: 'center' }}>
-                  <Text style={globalStyles.h3}>
-                    {i18n.t('views.logout.youHaveUnsynchedData')}
-                  </Text>
-                  <Text style={[globalStyles.h3, { color: colors.palered }]}>
-                    {i18n.t('views.logout.thisDataWillBeLost')}
-                  </Text>
-                </View>
+          <View style={styles.modalContainer}>
+            <View style={{ alignItems: 'center' }}>
+              {!checkboxesVisible ? (
+                <Icon
+                  name="sentiment-dissatisfied"
+                  color={colors.lightdark}
+                  size={44}
+                />
               ) : (
-                <View style={{ alignItems: 'center' }}>
-                  <Text style={globalStyles.h3}>
-                    {i18n.t('views.logout.weWillMissYou')}
-                  </Text>
-                  <Text style={[globalStyles.h3, { color: colors.palegreen }]}>
-                    {i18n.t('views.logout.comeBackSoon')}
-                  </Text>
-                </View>
+                <CommunityIcon
+                  name="exclamation"
+                  color={colors.palered}
+                  size={60}
+                />
               )}
-              <Text style={[styles.confirm, globalStyles.h3]}>
-                {i18n.t('views.logout.areYouSureYouWantToLogOut')}
+              <Text
+                style={[
+                  styles.title,
+                  checkboxesVisible ? { color: colors.palered } : {}
+                ]}
+              >
+                {!checkboxesVisible
+                  ? i18n.t('views.logout.logout')
+                  : `${i18n.t('general.warning')}!`}
               </Text>
             </View>
-          ) : (
-            // Checkboxes section
-            <View style={{ alignItems: 'center' }}>
-              <View style={{ marginBottom: 25, alignItems: 'center' }}>
-                <Text style={[globalStyles.h3, { textAlign: 'center' }]}>
-                  {i18n.t('views.logout.looseYourData')}
-                </Text>
-                <Text style={[globalStyles.h3, { color: colors.palered }]}>
-                  {i18n.t('views.logout.cannotUndo')}
-                </Text>
-              </View>
-              <View style={{ marginBottom: 15 }}>
-                <Checkbox
-                  containerStyle={styles.checkbox}
-                  checkboxColor={colors.palered}
-                  textStyle={styles.checkboxText}
-                  showErrors={showErrors}
-                  onIconPress={onPressCheckbox}
-                  title={`${i18n.t('general.delete')} ${i18n.t(
-                    'general.drafts'
-                  )}`}
-                />
-                <Checkbox
-                  containerStyle={styles.checkbox}
-                  checkboxColor={colors.palered}
-                  textStyle={styles.checkboxText}
-                  showErrors={showErrors}
-                  onIconPress={onPressCheckbox}
-                  title={`${i18n.t('general.delete')} ${i18n.t(
-                    'general.lifeMaps'
-                  )}`}
-                />
-                <Checkbox
-                  containerStyle={styles.checkbox}
-                  checkboxColor={colors.palered}
-                  textStyle={styles.checkboxText}
-                  showErrors={showErrors}
-                  onIconPress={onPressCheckbox}
-                  title={`${i18n.t('general.delete')} ${i18n.t(
-                    'general.familyInfo'
-                  )}`}
-                />
-                <Checkbox
-                  containerStyle={styles.checkbox}
-                  checkboxColor={colors.palered}
-                  textStyle={styles.checkboxText}
-                  showErrors={showErrors}
-                  onIconPress={onPressCheckbox}
-                  title={`${i18n.t('general.delete')} ${i18n.t(
-                    'general.cachedData'
-                  )}`}
-                />
-              </View>
-            </View>
-          )}
 
-          {/* Buttons bar */}
-          <View style={styles.buttonBar}>
-            <Button
-              id="ok-button"
-              outlined
-              text={
-                checkboxesVisible
-                  ? i18n.t('general.delete')
-                  : i18n.t('general.yes')
-              }
-              borderColor={unsyncedDrafts ? colors.palered : colors.palegreen}
-              style={{ width: 107, alignSelf: 'flex-start' }}
-              handleClick={
-                unsyncedDrafts && !checkboxesVisible
-                  ? showCheckboxes
-                  : logUserOut
-              }
-            />
-            <Button
-              id="cancel-button"
-              outlined
-              borderColor={colors.grey}
-              text={
-                !checkboxesVisible
-                  ? i18n.t('general.no')
-                  : i18n.t('general.cancel')
-              }
-              style={{ width: 107, alignSelf: 'flex-end' }}
-              handleClick={onModalClose}
-            />
+            {/* Popup text */}
+            {!checkboxesVisible ? (
+              <View>
+                {unsyncedDrafts ? (
+                  <View style={{ alignItems: 'center' }}>
+                    <Text style={globalStyles.h3}>
+                      {i18n.t('views.logout.youHaveUnsynchedData')}
+                    </Text>
+                    <Text style={[globalStyles.h3, { color: colors.palered }]}>
+                      {i18n.t('views.logout.thisDataWillBeLost')}
+                    </Text>
+                  </View>
+                ) : (
+                  <View style={{ alignItems: 'center' }}>
+                    <Text style={globalStyles.h3}>
+                      {i18n.t('views.logout.weWillMissYou')}
+                    </Text>
+                    <Text
+                      style={[globalStyles.h3, { color: colors.palegreen }]}
+                    >
+                      {i18n.t('views.logout.comeBackSoon')}
+                    </Text>
+                  </View>
+                )}
+                <Text style={[styles.confirm, globalStyles.h3]}>
+                  {i18n.t('views.logout.areYouSureYouWantToLogOut')}
+                </Text>
+              </View>
+            ) : (
+              // Checkboxes section
+              <View style={{ alignItems: 'center' }}>
+                <View style={{ marginBottom: 25, alignItems: 'center' }}>
+                  <Text style={[globalStyles.h3, { textAlign: 'center' }]}>
+                    {i18n.t('views.logout.looseYourData')}
+                  </Text>
+                  <Text style={[globalStyles.h3, { color: colors.palered }]}>
+                    {i18n.t('views.logout.cannotUndo')}
+                  </Text>
+                </View>
+                <View style={{ marginBottom: 15 }}>
+                  <Checkbox
+                    containerStyle={styles.checkbox}
+                    checkboxColor={colors.palered}
+                    textStyle={styles.checkboxText}
+                    showErrors={showErrors}
+                    onIconPress={onPressCheckbox}
+                    title={`${i18n.t('general.delete')} ${i18n.t(
+                      'general.drafts'
+                    )}`}
+                  />
+                  <Checkbox
+                    containerStyle={styles.checkbox}
+                    checkboxColor={colors.palered}
+                    textStyle={styles.checkboxText}
+                    showErrors={showErrors}
+                    onIconPress={onPressCheckbox}
+                    title={`${i18n.t('general.delete')} ${i18n.t(
+                      'general.lifeMaps'
+                    )}`}
+                  />
+                  <Checkbox
+                    containerStyle={styles.checkbox}
+                    checkboxColor={colors.palered}
+                    textStyle={styles.checkboxText}
+                    showErrors={showErrors}
+                    onIconPress={onPressCheckbox}
+                    title={`${i18n.t('general.delete')} ${i18n.t(
+                      'general.familyInfo'
+                    )}`}
+                  />
+                  <Checkbox
+                    containerStyle={styles.checkbox}
+                    checkboxColor={colors.palered}
+                    textStyle={styles.checkboxText}
+                    showErrors={showErrors}
+                    onIconPress={onPressCheckbox}
+                    title={`${i18n.t('general.delete')} ${i18n.t(
+                      'general.cachedData'
+                    )}`}
+                  />
+                </View>
+              </View>
+            )}
+
+            {/* Buttons bar */}
+            <View style={styles.buttonBar}>
+              <Button
+                id="ok-button"
+                outlined
+                text={
+                  checkboxesVisible
+                    ? i18n.t('general.delete')
+                    : i18n.t('general.yes')
+                }
+                borderColor={unsyncedDrafts ? colors.palered : colors.palegreen}
+                style={{ width: 107, alignSelf: 'flex-start' }}
+                handleClick={
+                  unsyncedDrafts && !checkboxesVisible
+                    ? showCheckboxes
+                    : logUserOut
+                }
+              />
+              <Button
+                id="cancel-button"
+                outlined
+                borderColor={colors.grey}
+                text={
+                  !checkboxesVisible
+                    ? i18n.t('general.no')
+                    : i18n.t('general.cancel')
+                }
+                style={{ width: 107, alignSelf: 'flex-end' }}
+                handleClick={onModalClose}
+              />
+            </View>
           </View>
         </View>
       </Popup>
