@@ -33,7 +33,6 @@ export class NavWrapper extends Component {
 
     return this.props.hydration ? (
       <View style={styles.container}>
-        <StatusBar backgroundColor="#309E43" barStyle="light-content" />
         <RootStack />
 
         {/* Modals */}
