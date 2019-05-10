@@ -12,7 +12,7 @@ import FamilyTab from '../components/FamilyTab'
 import OverviewComponent from './lifemap/Overview'
 import RoundImage from '../components/RoundImage'
 import Button from '../components/Button'
-
+import { updateNav } from '../redux/actions'
 export class Family extends Component {
   // set the title of the screen to the family name
   static navigationOptions = ({ navigation }) => {
@@ -46,6 +46,19 @@ export class Family extends Component {
       withoutCloseButton: true
     })
   }
+  handleResumeClick = () => {
+    const { navigation } = this.props
+    this.props.updateNav({
+      readonly: false
+    })
+    navigation.replace(this.familyLifemap.progress.screen, {
+      draftId: this.familyLifemap.draftId,
+      survey: this.survey,
+      step: this.familyLifemap.progress.step,
+      socioEconomics: this.familyLifemap.progress.socioEconomics
+    })
+  }
+
   survey = this.props.surveys.find(
     item => item.id === this.familyLifemap.surveyId
   )
@@ -189,15 +202,7 @@ export class Family extends Component {
                       }}
                       colored
                       text={t('general.resumeDraft')}
-                      handleClick={() => {
-                        navigation.replace(this.familyLifemap.progress.screen, {
-                          draftId: this.familyLifemap.draftId,
-                          survey: this.survey,
-                          step: this.familyLifemap.progress.step,
-                          socioEconomics: this.familyLifemap.progress
-                            .socioEconomics
-                        })
-                      }}
+                      handleClick={() => this.handleResumeClick()}
                     />
                   ) : (
                     <Text
@@ -237,7 +242,8 @@ export class Family extends Component {
 Family.propTypes = {
   surveys: PropTypes.array,
   navigation: PropTypes.object.isRequired,
-  t: PropTypes.func
+  t: PropTypes.func,
+  updateNav: PropTypes.func.isRequired
 }
 
 const styles = StyleSheet.create({
@@ -295,7 +301,14 @@ const styles = StyleSheet.create({
     zIndex: 10
   }
 })
-
+const mapDispatchToProps = {
+  updateNav
+}
 const mapStateToProps = ({ surveys }) => ({ surveys })
 
-export default withNamespaces()(connect(mapStateToProps)(Family))
+export default withNamespaces()(
+  connect(
+    mapStateToProps,
+    mapDispatchToProps
+  )(Family)
+)
