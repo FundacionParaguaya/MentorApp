@@ -102,7 +102,7 @@ export class Location extends Component {
     })
 
     if (!isOnline) {
-      const isLocationInBoundaries = !!this.state.cachedMapPacks.length
+      const isLocationInBoundaries = this.state.cachedMapPacks.length
         ? this.isUserLocationWithinMapPackBounds(
             [
               parseFloat(this.getFieldValue(draft, 'longitude')),
@@ -180,7 +180,7 @@ export class Location extends Component {
         // if no offline map is available, but there is location save it
         position => {
           const positionFromSurvey = survey.surveyConfig.surveyLocation
-          const isLocationInBoundaries = !!this.state.cachedMapPacks.length
+          const isLocationInBoundaries = this.state.cachedMapPacks.length
             ? this.isUserLocationWithinMapPackBounds(
                 [position.coords.latitude, position.coords.longitude],
                 this.state.cachedMapPacks.map(pack => pack.bounds)
@@ -422,7 +422,7 @@ export class Location extends Component {
         <View style={[globalStyles.container, styles.placeholder]}>
           <ActivityIndicator
             style={styles.spinner}
-            size={80}
+            size="large"
             color={colors.palered}
           />
           {!readonly && (

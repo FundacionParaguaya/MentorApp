@@ -303,7 +303,7 @@ const styles = StyleSheet.create({
   }
 })
 
-const mapStateToProps = ({
+export const mapStateToProps = ({
   sync,
   surveys,
   env,

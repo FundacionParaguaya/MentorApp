@@ -30,8 +30,9 @@ const createTestProps = props => ({
 
 describe('BeginLifemap View', () => {
   let wrapper
+  let props
   beforeEach(() => {
-    const props = createTestProps()
+    props = createTestProps()
     wrapper = shallow(<BeginLifemap {...props} />)
   })
   describe('rendering', () => {
@@ -63,6 +64,12 @@ describe('BeginLifemap View', () => {
 
       wrapper.instance().onPressBack()
       expect(spy).toHaveBeenCalledTimes(1)
+    })
+    it('navigates to first indicator question on pressing continue', () => {
+      wrapper.instance().handleClick()
+      expect(props.navigation.navigate).toHaveBeenCalledWith('Question', {
+        step: 0
+      })
     })
   })
 })

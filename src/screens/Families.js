@@ -143,7 +143,7 @@ export class Families extends Component {
           <View ref={this.acessibleComponent} accessible={true}>
             {familiesToSync ? (
               <ActivityIndicator
-                size={30}
+                size="small"
                 color={colors.palered}
                 style={styles.spinner}
               />
@@ -201,7 +201,7 @@ const styles = StyleSheet.create({
   }
 })
 
-const mapStateToProps = ({
+export const mapStateToProps = ({
   families,
   user,
   offline,

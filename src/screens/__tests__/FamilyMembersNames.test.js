@@ -119,23 +119,6 @@ describe('FamilyMembersNames View', () => {
     })
   })
 
-  // it("gets first Input value from draft", () => {
-  //   expect(
-  //     wrapper
-  //       .find(TextInput)
-  //       .first()
-  //       .props().value
-  //   ).toBe("Juan")
-  // })
-  // it("gets second Input value from draft", () => {
-  //   expect(
-  //     wrapper
-  //       .find(TextInput)
-  //       .last()
-  //       .props().value
-  //   ).toBe("Ana")
-  // })
-
   it('calls addFamilyMemberName on input change', () => {
     const spy = jest.spyOn(wrapper.instance(), 'addFamilyMemberName')
 
@@ -182,5 +165,14 @@ describe('Render optimization', () => {
       nav: { draftId: 5 }
     })
     expect(wrapper.instance().props.nav).toEqual({ draftId: 5 })
+  })
+
+  it('can set other gender', () => {
+    console.log(
+      wrapper
+        .find(TextInput)
+        .last()
+        .props()
+    )
   })
 })

@@ -1,7 +1,5 @@
 import React from 'react'
 import { shallow } from 'enzyme'
-import { Text } from 'react-native'
-import Icon from 'react-native-vector-icons/MaterialIcons'
 import { AddAchievement } from '../lifemap/AddAchievement'
 import TextInput from '../../components/TextInput'
 import StickyFooter from '../../components/StickyFooter'
@@ -53,11 +51,18 @@ describe('AddAchievement View', () => {
         continueLabel: 'general.save'
       })
     })
-    it('renders Icon', () => {
-      expect(wrapper.find(Icon)).toHaveLength(1)
-    })
-    it('renders Text', () => {
-      expect(wrapper.find(Text)).toHaveLength(2)
+
+    it('shows errors if form is incorrect', () => {
+      wrapper.instance().errorsDetected = ['country']
+
+      wrapper
+        .find(StickyFooter)
+        .props()
+        .handleClick()
+
+      expect(wrapper).toHaveState({
+        showErrors: true
+      })
     })
   })
 
@@ -89,6 +94,15 @@ describe('AddAchievement View', () => {
         .onChangeText('Some roadmap')
       expect(wrapper.instance().state.roadmap).toEqual('Some roadmap')
     })
+  })
+
+  it('detects an error', () => {
+    wrapper.instance().detectError(true, 'phoneNumber')
+    wrapper.instance().detectError(true, 'months')
+    expect(wrapper.instance().errorsDetected).toEqual(['phoneNumber', 'months'])
+
+    wrapper.instance().detectError(false, 'phoneNumber')
+    expect(wrapper.instance().errorsDetected).toEqual(['months'])
   })
 })
 

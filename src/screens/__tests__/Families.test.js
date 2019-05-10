@@ -1,15 +1,16 @@
 import React from 'react'
 import { shallow } from 'enzyme'
 import { ScrollView, ActivityIndicator, FlatList } from 'react-native'
-import { Families } from '../Families'
+import { Families, mapStateToProps } from '../Families'
 import SearchBar from '../../components/SearchBar'
 
 const createTestProps = props => ({
   loadFamilies: jest.fn(),
   updateNav: jest.fn(),
+  surveys: [{ id: 1 }],
+  lng: 'en',
   env: 'development',
   t: value => value,
-
   navigation: {
     navigate: jest.fn(),
     setParams: jest.fn()
@@ -18,7 +19,8 @@ const createTestProps = props => ({
     {
       familyId: 12,
       name: 'Adams Family',
-      code: '123'
+      code: '123',
+      draft: { surveyId: 1 }
     },
     {
       familyId: 21,
@@ -40,7 +42,8 @@ const createTestProps = props => ({
             lastName: 'User'
           }
         ]
-      }
+      },
+      status: 'Draft'
     }
   ],
   user: { token: '' },
@@ -59,6 +62,10 @@ describe('Families View', () => {
   describe('rendering', () => {
     it('renders base ScrollView', () => {
       expect(wrapper.find(ScrollView)).toHaveLength(1)
+    })
+
+    it('maps proper state', () => {
+      expect(mapStateToProps({ env: 'test' })).toEqual({ env: 'test' })
     })
 
     it('renders Activity indicator when there are families to fetch and the user is online', () => {
@@ -85,11 +92,30 @@ describe('Families View', () => {
 
     it('renders a list of families', () => {
       expect(wrapper.find(FlatList)).toHaveLength(1)
+
+      const data = wrapper.find(FlatList).props().data
+
+      const spy = jest.spyOn(wrapper.instance(), 'handleClickOnFamily')
+
+      expect(
+        wrapper
+          .find(FlatList)
+          .props()
+          .keyExtractor(data[0], 0)
+      ).toEqual('0')
+
+      wrapper
+        .find(FlatList)
+        .props()
+        .renderItem({ item: data[0] })
+        .props.handleClick()
+
+      expect(spy).toHaveBeenCalledTimes(1)
     })
   })
 
   it('passes the correct number of synced and non synced families to FlatList', () => {
-    expect(wrapper.find(FlatList).props().data).toHaveLength(3)
+    expect(wrapper.find(FlatList).props().data).toHaveLength(4)
   })
 
   describe('functionality', () => {
