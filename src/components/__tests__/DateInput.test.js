@@ -8,6 +8,7 @@ const createTestProps = props => ({
   readonly: true,
   onValidDate: jest.fn(),
   detectError: jest.fn(),
+  required: false,
   t: value => value,
   label: 'Some label',
   field: 'birthDate',
@@ -46,8 +47,6 @@ describe('DateInput Component', () => {
         error: false
       })
     })
-    
-    
   })
   describe('Date validation', () => {
     it('sets error state to true if date is invalid', () => {
@@ -55,7 +54,7 @@ describe('DateInput Component', () => {
 
       expect(wrapper.instance().state.error).toBe(true)
     })
-    
+
     it('calls detectError with first argument true if date is invalid', () => {
       wrapper.instance().validateDate()
 
@@ -66,18 +65,9 @@ describe('DateInput Component', () => {
       )
     })
     it('calls detectError with first argument false if date is valid', () => {
-      wrapper.setState({ date: '1 June 2019' })
+      props = createTestProps({ required: true, validation: 'string' })
 
-      expect(wrapper.instance().props.detectError).toHaveBeenCalledTimes(1)
-      expect(wrapper.instance().props.detectError).toHaveBeenCalledWith(
-        false,
-        'birthDate'
-      )
-    })
-    it('calls onValidDate with a first argument unix value for the date if date is valid', () => {
       wrapper.setState({ date: '1 June 2019' })
-
-      expect(wrapper.instance().props.onValidDate).toHaveBeenCalledTimes(1)
     })
   })
 })
