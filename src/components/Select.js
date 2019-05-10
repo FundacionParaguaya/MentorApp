@@ -102,7 +102,7 @@ class Select extends Component {
     countriesArr.push(defaultCountry)
 
     if (
-      typeof survey.surveyConfig.countryOfBirth !== undefined &&
+      typeof survey.surveyConfig.countryOfBirth !== 'undefined' &&
       survey.surveyConfig.countryOfBirth !== null
     ) {
       survey.surveyConfig.countryOfBirth.forEach(e => {
