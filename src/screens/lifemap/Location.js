@@ -93,7 +93,6 @@ export class Location extends Component {
   // if the user has draged the map and the draft has stored some coordinates
   setCoordinatesFromDraft = (isOnline, draft) => {
     const { survey } = this.props.nav
-
     this.setState({
       latitude: parseFloat(this.getFieldValue(draft, 'latitude')),
       longitude: parseFloat(this.getFieldValue(draft, 'longitude')),
@@ -113,20 +112,16 @@ export class Location extends Component {
           )
         : false
 
-      this.setState({
-        showForm: isLocationInBoundaries ? false : true, // false shows map
-        showSearch: false
-      })
-
-      // if (survey.title === 'Chile - Geco') {
-      //   this.setState({
-      //     showSearch: false
-      //   })
-      // } else {
-      //   this.setState({
-      //     showSearch: true
-      //   })
-      // }
+      if (survey.title === 'Chile - Geco') {
+        this.setState({
+          showSearch: false
+        })
+      } else {
+        this.setState({
+          showForm: isLocationInBoundaries ? false : true, // false shows map
+          showSearch: false
+        })
+      }
     }
   }
 
@@ -181,21 +176,6 @@ export class Location extends Component {
         }
       )
     } else {
-      // if offline map is available center on it
-      // if (survey.title === 'Chile - Geco') {
-      //   const position = survey.surveyConfig.surveyLocation
-      //   this.setState({
-      //     showSearch: false,
-      //     loading: false,
-      //     centeringMap: false,
-      //     latitude: position.latitude,
-      //     longitude: position.longitude,
-      //     accuracy: 0
-      //   })
-      //   this.addSurveyData(position.latitude, 'latitude')
-      //   this.addSurveyData(position.longitude, 'longitude')
-      //   this.addSurveyData(0, 'accuracy')
-      // } else {
       navigator.geolocation.getCurrentPosition(
         // if no offline map is available, but there is location save it
         position => {
@@ -205,18 +185,48 @@ export class Location extends Component {
                 this.state.cachedMapPacks.map(pack => pack.bounds)
               )
             : false
+            
+          if (survey.title === 'Chile - Geco') {
+            this.setState({
+              loading: false,
+              centeringMap: false
+            })
+            if (isLocationInBoundaries) {
+              this.setState({
+                showForm: false,
+                latitude: position.coords.latitude,
+                longitude: position.coords.longitude,
+                accuracy: position.coords.accuracy
+              })
 
-          this.setState({
-            loading: false,
-            centeringMap: false,
-            showForm: isLocationInBoundaries ? false : true,
-            latitude: position.coords.latitude,
-            longitude: position.coords.longitude,
-            accuracy: position.coords.accuracy
-          })
-          this.addSurveyData(position.coords.latitude, 'latitude')
-          this.addSurveyData(position.coords.longitude, 'longitude')
-          this.addSurveyData(position.coords.accuracy, 'accuracy')
+              this.addSurveyData(position.coords.latitude, 'latitude')
+              this.addSurveyData(position.coords.longitude, 'longitude')
+              this.addSurveyData(position.coords.accuracy, 'accuracy')
+            } else {
+              const positionFromSurvey = survey.surveyConfig.surveyLocation
+              this.setState({
+                showSearch: false,
+                latitude: positionFromSurvey.latitude,
+                longitude: positionFromSurvey.longitude,
+                accuracy: 0
+              })
+              this.addSurveyData(position.latitude, 'latitude')
+              this.addSurveyData(position.longitude, 'longitude')
+              this.addSurveyData(0, 'accuracy')
+            }
+          } else {
+            this.setState({
+              loading: false,
+              centeringMap: false,
+              showForm: isLocationInBoundaries ? false : true,
+              latitude: position.coords.latitude,
+              longitude: position.coords.longitude,
+              accuracy: position.coords.accuracy
+            })
+            this.addSurveyData(position.coords.latitude, 'latitude')
+            this.addSurveyData(position.coords.longitude, 'longitude')
+            this.addSurveyData(position.coords.accuracy, 'accuracy')
+          }
         },
         // otherwise ask for more details
         () => {
@@ -232,7 +242,6 @@ export class Location extends Component {
           maximumAge: 0
         }
       )
-      // }
     }
   }
 
@@ -240,33 +249,40 @@ export class Location extends Component {
     const longitude = point[0]
     const latitude = point[1]
 
-    if (packs.length) {
-      return packs.some(packBoundaries => {
-        const neLng = packBoundaries[0][0]
-        const neLat = packBoundaries[0][1]
-        const swLng = packBoundaries[1][0]
-        const swLat = packBoundaries[1][1]
-        return (
-          longitude <= neLng &&
-          longitude >= swLng &&
-          latitude <= neLat &&
-          latitude >= swLat
-        )
-      })
-    }
-    return false
+    return packs.some(packBoundaries => {
+      const neLng = packBoundaries[0][0]
+      const neLat = packBoundaries[0][1]
+      const swLng = packBoundaries[1][0]
+      const swLat = packBoundaries[1][1]
+
+      const eastBound = longitude < neLng
+      const westBound = longitude > swLng
+      let inLong
+
+      if (neLng < swLng) {
+        inLong = eastBound || westBound
+      } else {
+        inLong = eastBound && westBound
+      }
+
+      const inLat = latitude > swLat && latitude < neLat
+      return inLat && inLong
+    })
   }
 
   getMapOfflinePacks() {
-    MapboxGL.offlineManager.getPacks().then(packs => {
-      if (packs.length) {
-        packs.map(offlinePack => {
-          this.setState({
-            cachedMapPacks: [...this.state.cachedMapPacks, offlinePack]
+    MapboxGL.offlineManager
+      .getPacks()
+      .then(packs => {
+        if (packs.length) {
+          packs.map(offlinePack => {
+            this.setState({
+              cachedMapPacks: [...this.state.cachedMapPacks, offlinePack]
+            })
           })
-        })
-      }
-    })
+        }
+      })
+      .catch(() => {})
   }
 
   componentDidMount() {
