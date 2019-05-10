@@ -140,7 +140,6 @@ describe('surveys actions', () => {
       token: 'token',
       type: 'LOAD_SURVEYS'
     }
-
     expect(action.loadSurveys(env, token)).toEqual(expectedAction)
   })
 })
