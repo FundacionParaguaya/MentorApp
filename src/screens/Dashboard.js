@@ -110,8 +110,7 @@ export class Dashboard extends Component {
     return (
       <ScrollView style={globalStyles.background}>
         <View ref={this.acessibleComponent} accessible={true}>
-          {this.props.offline.outbox.length &&
-          navigation.getParam('firstTimeVisitor') ? null : (
+          {this.props.offline.outbox.length ? null : (
             <View>
               <View style={globalStyles.container}>
                 <Decoration>

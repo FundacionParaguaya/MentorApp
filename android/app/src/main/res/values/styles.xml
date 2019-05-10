@@ -1,6 +1,5 @@
 <resources>
     <style name="AppTheme" parent="Theme.AppCompat.Light.NoActionBar">
-         <item name="android:statusBarColor">@color/palebeige</item>
-         <item name="colorAccent">@color/pale_green</item>
+         <item name="android:statusBarColor">@color/pale_green</item>
     </style>
 </resources>

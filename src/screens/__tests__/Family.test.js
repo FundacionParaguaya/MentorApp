@@ -7,6 +7,7 @@ import RoundImage from '../../components/RoundImage'
 import Button from '../../components/Button'
 const createTestProps = props => ({
   t: value => value,
+  updateNav: jest.fn(),
   navigation: {
     setParams: jest.fn(),
     replace: jest.fn(),

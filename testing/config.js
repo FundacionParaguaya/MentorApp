@@ -151,6 +151,7 @@ jest.mock('@mapbox/react-native-mapbox-gl', () => {
     static offlineManager = {
       deletePack: jest.fn(),
       getPack: jest.fn().mockImplementation(() => Promise.resolve(true)),
+      getPacks: jest.fn().mockImplementation(() => Promise.resolve(true)),
       offlineManager: jest.fn()
     }
   }

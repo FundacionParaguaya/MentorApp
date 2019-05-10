@@ -15,7 +15,7 @@ import arrow from '../../assets/images/selectArrow.png'
 import colors from '../theme.json'
 import globalStyles from '../globalStyles'
 import i18n from '../i18n'
-
+import { connect } from 'react-redux'
 const countryList = countries(require('localized-countries/data/en')).array()
 
 class Select extends Component {
@@ -91,12 +91,44 @@ class Select extends Component {
     const defaultCountry = this.props.country
       ? countryList.filter(item => item.code === this.props.country)[0]
       : ''
-
+    const { survey } = this.props.nav
     let countries = countryList.filter(
       country => country.code !== defaultCountry.code
     )
+
     // Add default country to the beginning of the list
-    countries.unshift(defaultCountry)
+    let countriesArr = []
+
+    countriesArr.push(defaultCountry)
+
+    if (
+      typeof survey.surveyConfig.countryOfBirth !== 'undefined' &&
+      survey.surveyConfig.countryOfBirth !== null
+    ) {
+      survey.surveyConfig.countryOfBirth.forEach(e => {
+        let addCountry = true
+        let fixedObj = {
+          code: '',
+          lavel: ''
+        }
+        fixedObj.label = e.text
+        fixedObj.code = e.value
+        e.value
+        countriesArr.forEach(elem => {
+          if (elem.code === fixedObj.code) {
+            addCountry = false
+          }
+        })
+        if (addCountry) {
+          countriesArr.unshift(fixedObj)
+        }
+      })
+    }
+
+    countriesArr.forEach(element => {
+      countries = countries.filter(country => country.code !== element.code)
+      countries.unshift(element)
+    })
     // Add prefer not to say answer at the end of the list
     countries.push({ code: 'NONE', label: 'I prefer not to say' })
 
@@ -230,10 +262,15 @@ Select.propTypes = {
   readonly: PropTypes.bool,
   showErrors: PropTypes.bool,
   required: PropTypes.bool,
+  nav: PropTypes.object.isRequired,
   detectError: PropTypes.func
 }
 
-export default Select
+const mapStateToProps = ({ nav }) => ({
+  nav
+})
+
+export default connect(mapStateToProps)(Select)
 
 const styles = StyleSheet.create({
   wrapper: {
