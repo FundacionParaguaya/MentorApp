@@ -52,6 +52,43 @@ describe('Dashboard View', () => {
     expect(wrapper.find(FlatList).props().data).toEqual(
       wrapper.instance().props.drafts.reverse()
     )
+
+    const data = wrapper.find(FlatList).props().data
+
+    const navigateToDraft = jest.spyOn(wrapper.instance(), 'navigateToDraft')
+    const navigateToPendingSync = jest.spyOn(
+      wrapper.instance(),
+      'navigateToPendingSync'
+    )
+
+    expect(
+      wrapper
+        .find(FlatList)
+        .props()
+        .keyExtractor(data[0], 0)
+    ).toEqual('0')
+
+    wrapper
+      .find(FlatList)
+      .props()
+      .renderItem({ item: { status: 'Draft', progress: {} } })
+      .props.handleClick()
+
+    expect(navigateToDraft).toHaveBeenCalledTimes(1)
+
+    wrapper
+      .find(FlatList)
+      .props()
+      .renderItem({
+        item: {
+          status: 'Pending sync',
+          progress: {},
+          familyData: { familyMembersList: [{ firstName: 'Test' }] }
+        }
+      })
+      .props.handleClick()
+
+    expect(navigateToPendingSync).toHaveBeenCalledTimes(1)
   })
 
   it('navigates to correct screen based on draft status', () => {
@@ -84,5 +121,14 @@ describe('Dashboard View', () => {
     wrapper = shallow(<Dashboard {...props} />)
 
     expect(wrapper.find('#latest-drafts')).toHaveLength(0)
+  })
+
+  it('allows user to create new lifemap', () => {
+    wrapper
+      .find('#create-lifemap')
+      .props()
+      .handleClick()
+
+    expect(props.navigation.navigate).toHaveBeenCalledWith('Surveys')
   })
 })

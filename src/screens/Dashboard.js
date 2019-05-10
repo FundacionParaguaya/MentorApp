@@ -21,12 +21,7 @@ import { connect } from 'react-redux'
 import colors from '../theme.json'
 
 export class Dashboard extends Component {
-  slowLoadingTimer
   acessibleComponent = React.createRef()
-
-  clearTimers = () => {
-    clearTimeout(this.slowLoadingTimer)
-  }
 
   componentDidMount() {
     this.props.updateNav({
@@ -52,10 +47,6 @@ export class Dashboard extends Component {
         env: this.props.env
       }
     })
-  }
-
-  componentWillUnmount() {
-    this.clearTimers()
   }
 
   navigateToPendingSync = draft => {
@@ -117,6 +108,7 @@ export class Dashboard extends Component {
                   <RoundImage source="family" />
                 </Decoration>
                 <Button
+                  id="create-lifemap"
                   text={t('views.createLifemap')}
                   colored
                   handleClick={() => this.props.navigation.navigate('Surveys')}
@@ -140,9 +132,6 @@ export class Dashboard extends Component {
                     item={item}
                     handleClick={() => {
                       switch (item.status) {
-                        case 'Synced':
-                          this.navigateToSynced(item)
-                          break
                         case 'Pending sync':
                           this.navigateToPendingSync(item)
                           break
