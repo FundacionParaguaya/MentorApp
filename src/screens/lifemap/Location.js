@@ -179,41 +179,49 @@ export class Location extends Component {
       navigator.geolocation.getCurrentPosition(
         // if no offline map is available, but there is location save it
         position => {
+          const positionFromSurvey = survey.surveyConfig.surveyLocation
           const isLocationInBoundaries = !!this.state.cachedMapPacks.length
             ? this.isUserLocationWithinMapPackBounds(
                 [position.coords.latitude, position.coords.longitude],
                 this.state.cachedMapPacks.map(pack => pack.bounds)
               )
             : false
-            
-          if (survey.title === 'Chile - Geco') {
-            this.setState({
-              loading: false,
-              centeringMap: false
-            })
-            if (isLocationInBoundaries) {
-              this.setState({
-                showForm: false,
-                latitude: position.coords.latitude,
-                longitude: position.coords.longitude,
-                accuracy: position.coords.accuracy
-              })
 
-              this.addSurveyData(position.coords.latitude, 'latitude')
-              this.addSurveyData(position.coords.longitude, 'longitude')
-              this.addSurveyData(position.coords.accuracy, 'accuracy')
-            } else {
-              const positionFromSurvey = survey.surveyConfig.surveyLocation
-              this.setState({
-                showSearch: false,
-                latitude: positionFromSurvey.latitude,
-                longitude: positionFromSurvey.longitude,
-                accuracy: 0
-              })
-              this.addSurveyData(position.latitude, 'latitude')
-              this.addSurveyData(position.longitude, 'longitude')
-              this.addSurveyData(0, 'accuracy')
-            }
+          if (survey.title === 'Chile - Geco') {
+            isLocationInBoundaries
+              ? this.setState({
+                  loading: false,
+                  centeringMap: false,
+                  showForm: false,
+                  latitude: position.coords.latitude,
+                  longitude: position.coords.longitude,
+                  accuracy: position.coords.accuracy
+                })
+              : this.setState({
+                  loading: false,
+                  centeringMap: false,
+                  showSearch: false,
+                  latitude: positionFromSurvey.latitude,
+                  longitude: positionFromSurvey.longitude,
+                  accuracy: 0
+                })
+
+            this.addSurveyData(
+              isLocationInBoundaries
+                ? position.coords.latitude
+                : positionFromSurvey.latitude,
+              'latitude'
+            )
+            this.addSurveyData(
+              isLocationInBoundaries
+                ? position.coords.longitude
+                : positionFromSurvey.longitude,
+              'longitude'
+            )
+            this.addSurveyData(
+              isLocationInBoundaries ? position.coords.accuracy : 0,
+              'accuracy'
+            )
           } else {
             this.setState({
               loading: false,
