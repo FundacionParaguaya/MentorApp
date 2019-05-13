@@ -187,6 +187,7 @@ export class FamilyParticipant extends Component {
           }
         }
       })
+
       if (
         otherTypeGender === this.getFieldValue(draft, 'gender') &&
         text !== 'O'
@@ -205,6 +206,7 @@ export class FamilyParticipant extends Component {
           }
         }
       })
+
       if (
         otherTypeDocumentNumber === this.getFieldValue(draft, 'documentType') &&
         text !== this.getFieldValue(draft, 'documentType')

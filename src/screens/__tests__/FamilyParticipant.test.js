@@ -2,7 +2,7 @@ import React from 'react'
 import { shallow } from 'enzyme'
 import { FamilyParticipant } from '../lifemap/FamilyParticipant'
 import Select from '../../components/Select'
-import DateInputComponent from '../../components/DateInput'
+import DateInput from '../../components/DateInput'
 import TextInput from '../../components/TextInput'
 import draft from '../__mocks__/draftMock.json'
 import StickyFooter from '../../components/StickyFooter'
@@ -13,6 +13,7 @@ const createTestProps = props => ({
   createDraft: jest.fn(),
   deleteDraft: jest.fn(),
   nav: {
+    draftId: 4,
     survey: {
       id: 1,
       title: 'Dev Demo',
@@ -32,21 +33,25 @@ const createTestProps = props => ({
           },
           {
             text: 'Prefer not to disclose',
-            value: 'O'
+            value: 'O',
+            otherOption: true
           }
         ],
         documentType: [
           {
             text: 'National Insurance Number',
-            value: 'NATIONALINSURANCE'
+            value: 'NATIONALINSURANCE',
+            otherOption: false
           },
           {
             text: 'Organisation Reference Number',
-            value: 'ORGANISATIONALREFERENCENUMBER'
+            value: 'ORGANISATIONALREFERENCENUMBER',
+            otherOption: false
           },
           {
             text: 'Other identification',
-            value: 'OTHER'
+            value: 'OTHER',
+            otherOption: true
           }
         ]
       }
@@ -59,7 +64,9 @@ const createTestProps = props => ({
   navigation: {
     navigate: jest.fn(),
     getParam: jest.fn(param => {
-      if (param === 'draftId' || param === 'family') {
+      if (param === 'family') {
+        return null
+      } else if (param === 'draftId') {
         return null
       } else {
         return 1
@@ -79,8 +86,9 @@ const createTestProps = props => ({
 
 describe('Family Participant View', () => {
   let wrapper
+  let props
   beforeEach(() => {
-    const props = createTestProps()
+    props = createTestProps()
     wrapper = shallow(<FamilyParticipant {...props} />)
   })
 
@@ -140,7 +148,7 @@ describe('Family Participant View', () => {
       expect(wrapper.find(Select)).toHaveLength(4)
     })
     it('renders DateInput', () => {
-      expect(wrapper.find(DateInputComponent)).toHaveLength(1)
+      expect(wrapper.find(DateInput)).toHaveLength(1)
     })
 
     it('country select has preselected default country', () => {
@@ -152,10 +160,12 @@ describe('Family Participant View', () => {
         navigation: {
           navigate: jest.fn(),
           getParam: jest.fn(param => {
-            if (param === 'draftId') {
+            if (param === 'family') {
+              return null
+            } else if (param === 'draftId') {
               return 4
             } else {
-              return null
+              return 1
             }
           }),
           setParams: jest.fn(),
@@ -174,42 +184,64 @@ describe('Family Participant View', () => {
     })
   })
 
+  describe('changing fields', () => {
+    let wrapper
+    let props
+    beforeEach(() => {
+      props = createTestProps({
+        navigation: {
+          navigate: jest.fn(),
+          getParam: jest.fn(param => {
+            if (param === 'family') {
+              return null
+            } else if (param === 'draftId') {
+              return 4
+            } else {
+              return 1
+            }
+          }),
+          setParams: jest.fn(),
+          reset: jest.fn()
+        }
+      })
+      wrapper = shallow(<FamilyParticipant {...props} />)
+    })
+
+    it('calls addSurveyFamilyMemberData on input change', () => {
+      wrapper
+        .find(TextInput)
+        .first()
+        .props()
+        .onChangeText()
+
+      expect(
+        wrapper.instance().props.addSurveyFamilyMemberData
+      ).toHaveBeenCalledTimes(1)
+    })
+    it('calls addSurveyFamilyMemberData on select change', () => {
+      wrapper
+        .find(Select)
+        .first()
+        .props()
+        .onChange()
+
+      expect(
+        wrapper.instance().props.addSurveyFamilyMemberData
+      ).toHaveBeenCalledTimes(1)
+    })
+
+    it('calls addSurveyFamilyMemberData on valid date input', () => {
+      wrapper
+        .find(DateInput)
+        .props()
+        .onValidDate('January 21 1999')
+      expect(
+        wrapper.instance().props.addSurveyFamilyMemberData
+      ).toHaveBeenCalledTimes(1)
+    })
+  })
+
   describe('functionality', () => {
-    ////No idea how to fix man
-
-    // it('calls addSurveyFamilyMemberData on input change', () => {
-    //   wrapper
-    //     .find(TextInput)
-    //     .first()
-    //     .props()
-    //     .onChangeText()
-
-    //   expect(
-    //     wrapper.instance().props.addSurveyFamilyMemberData
-    //   ).toHaveBeenCalledTimes(1)
-    // })
-    // it('calls addSurveyFamilyMemberData on select change', () => {
-    //   wrapper
-    //     .find(Select)
-    //     .first()
-    //     .props()
-    //     .onChange()
-
-    //   expect(
-    //     wrapper.instance().props.addSurveyFamilyMemberData
-    //   ).toHaveBeenCalledTimes(1)
-    // })
-
-    // it('calls addSurveyFamilyMemberData on valid date input', () => {
-    //   wrapper
-    //     .find(DateInputComponent)
-    //     .props()
-    //     .onValidDate('January 21 1999')
-    //   expect(
-    //     wrapper.instance().props.addSurveyFamilyMemberData
-    //   ).toHaveBeenCalledTimes(1)
-    // })
-
     it('detects an error', () => {
       wrapper.instance().detectError(true, 'phoneNumber')
       expect(wrapper.instance().errorsDetected).toEqual(['phoneNumber'])
@@ -220,10 +252,32 @@ describe('Family Participant View', () => {
       wrapper.instance().detectError(false, 'phoneNumber')
       expect(wrapper.instance().errorsDetected).toEqual([])
     })
+
+    it('navigates to proper screen, based on family count', () => {
+      wrapper.instance().handleClick()
+
+      expect(props.navigation.navigate).toHaveBeenCalledWith(
+        'FamilyMembersNames'
+      )
+
+      props.drafts[0].familyData.countFamilyMembers = 1
+
+      wrapper.instance().handleClick()
+
+      expect(props.navigation.navigate).toHaveBeenCalledWith('Location')
+    })
+
+    it('shows errors if detected', () => {
+      wrapper.instance().errorsDetected = ['field']
+
+      wrapper.instance().handleClick()
+
+      expect(wrapper).toHaveState({ showErrors: true })
+    })
   })
 })
 
-describe('Family Member Count Functionality', () => {
+describe('participant adding/removing data', () => {
   let wrapper
   let props
   beforeEach(() => {
@@ -266,7 +320,9 @@ describe('Family Member Count Functionality', () => {
             familyMembersList: [
               {
                 firstName: 'Juan',
-                lastName: 'Perez'
+                lastName: 'Perez',
+                gender: 'O',
+                documentType: 'OTHER'
               },
               {
                 firstName: 'Ana'
@@ -309,6 +365,26 @@ describe('Family Member Count Functionality', () => {
       4,
       1
     )
+  })
+
+  it('deletes drafts on exit if not sufficient data in the form', () => {
+    wrapper.instance().errorsDetected = ['field']
+
+    wrapper.instance().addSurveyData('first', 'name')
+
+    expect(props.updateNav).toHaveBeenCalledWith('deleteDraftOnExit', true)
+  })
+
+  it('sets other gender and document type', () => {
+    wrapper.instance().addSurveyData('note', 'documentType')
+
+    expect(
+      props.drafts[0].familyData.familyMembersList[0].documentType
+    ).toEqual('OTHER')
+
+    wrapper.instance().addSurveyData('tree', 'gender')
+
+    expect(props.drafts[0].familyData.familyMembersList[0].gender).toEqual('O')
   })
 })
 

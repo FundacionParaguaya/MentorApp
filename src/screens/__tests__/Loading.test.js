@@ -1,7 +1,6 @@
 import React from 'react'
 import { shallow } from 'enzyme'
 import { Loading, mapStateToProps } from '../Loading'
-import { url } from '../../config'
 
 jest.useFakeTimers()
 
