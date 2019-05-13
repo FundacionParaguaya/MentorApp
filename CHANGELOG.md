@@ -1,5 +1,58 @@
 # Change Log
 
+## [v1.8.0](https://github.com/FundacionParaguaya/MentorApp/tree/v1.8.0) (2019-05-13)
+[Full Changelog](https://github.com/FundacionParaguaya/MentorApp/compare/v1.7.4...v1.8.0)
+
+**Implemented enhancements:**
+
+- Re-sync app on update [\#564](https://github.com/FundacionParaguaya/MentorApp/issues/564)
+- Error should display with incorrect birthdate [\#540](https://github.com/FundacionParaguaya/MentorApp/issues/540)
+- Map UI - If offline check if user is within map pack border [\#528](https://github.com/FundacionParaguaya/MentorApp/issues/528)
+- State app version in App [\#466](https://github.com/FundacionParaguaya/MentorApp/issues/466)
+- Access drafts that are pending sync [\#443](https://github.com/FundacionParaguaya/MentorApp/issues/443)
+
+**Fixed bugs:**
+
+- Continue button missing on resuming draft [\#584](https://github.com/FundacionParaguaya/MentorApp/issues/584)
+- Progress bar is incorrect [\#568](https://github.com/FundacionParaguaya/MentorApp/issues/568)
+- Login Button disappears on click [\#552](https://github.com/FundacionParaguaya/MentorApp/issues/552)
+- Logging in takes too much time [\#551](https://github.com/FundacionParaguaya/MentorApp/issues/551)
+- Birthdate of other members with asterisk [\#550](https://github.com/FundacionParaguaya/MentorApp/issues/550)
+- Text: "It will be available after sync" is not shown [\#541](https://github.com/FundacionParaguaya/MentorApp/issues/541)
+- Wrong display screen in smartphone [\#526](https://github.com/FundacionParaguaya/MentorApp/issues/526)
+- Sentry reports overview [\#520](https://github.com/FundacionParaguaya/MentorApp/issues/520)
+- Extra White Space on Navigation [\#503](https://github.com/FundacionParaguaya/MentorApp/issues/503)
+- Focus Field Colour [\#498](https://github.com/FundacionParaguaya/MentorApp/issues/498)
+- Progress Bar and Indicators [\#495](https://github.com/FundacionParaguaya/MentorApp/issues/495)
+
+**Closed issues:**
+
+- Ability to sticky to top not one list element but various  [\#646](https://github.com/FundacionParaguaya/MentorApp/issues/646)
+- Edition Household = Househoulds [\#643](https://github.com/FundacionParaguaya/MentorApp/issues/643)
+- Remove Breadcrumbs from Surveys page [\#642](https://github.com/FundacionParaguaya/MentorApp/issues/642)
+- Improve Sentry Reporting [\#513](https://github.com/FundacionParaguaya/MentorApp/issues/513)
+- Unit Tests - Review and Improve [\#451](https://github.com/FundacionParaguaya/MentorApp/issues/451)
+- 64 Bit requirement on Apps [\#326](https://github.com/FundacionParaguaya/MentorApp/issues/326)
+- Ongoing Design Improvements & Issues [\#93](https://github.com/FundacionParaguaya/MentorApp/issues/93)
+
+**Merged pull requests:**
+
+- Add tests for family participant [\#651](https://github.com/FundacionParaguaya/MentorApp/pull/651) ([Danman7](https://github.com/Danman7))
+- Unit tests [\#647](https://github.com/FundacionParaguaya/MentorApp/pull/647) ([Danman7](https://github.com/Danman7))
+- Fix \#208 ability to stick to top multiple countries [\#645](https://github.com/FundacionParaguaya/MentorApp/pull/645) ([zommerberg](https://github.com/zommerberg))
+- fix \#584 button no longer missing on resume draft [\#644](https://github.com/FundacionParaguaya/MentorApp/pull/644) ([zommerberg](https://github.com/zommerberg))
+- added app version text inside the drawer nav [\#640](https://github.com/FundacionParaguaya/MentorApp/pull/640) ([vasildimitroffhristoff](https://github.com/vasildimitroffhristoff))
+- fix \#551 improved logging time [\#639](https://github.com/FundacionParaguaya/MentorApp/pull/639) ([zommerberg](https://github.com/zommerberg))
+- fix \#221 added other options [\#638](https://github.com/FundacionParaguaya/MentorApp/pull/638) ([zommerberg](https://github.com/zommerberg))
+- If offline check for users location and if it is within the cached ma… [\#637](https://github.com/FundacionParaguaya/MentorApp/pull/637) ([vasildimitroffhristoff](https://github.com/vasildimitroffhristoff))
+- removed required age selec for family members screen and added check … [\#634](https://github.com/FundacionParaguaya/MentorApp/pull/634) ([vasildimitroffhristoff](https://github.com/vasildimitroffhristoff))
+- 503 extra white space [\#633](https://github.com/FundacionParaguaya/MentorApp/pull/633) ([vasildimitroffhristoff](https://github.com/vasildimitroffhristoff))
+- Progress bar methodology update [\#628](https://github.com/FundacionParaguaya/MentorApp/pull/628) ([Danman7](https://github.com/Danman7))
+- fix \#541 added text to family [\#599](https://github.com/FundacionParaguaya/MentorApp/pull/599) ([zommerberg](https://github.com/zommerberg))
+- fix \#552 improved the login button [\#597](https://github.com/FundacionParaguaya/MentorApp/pull/597) ([zommerberg](https://github.com/zommerberg))
+- Setup app version check and re-sync [\#593](https://github.com/FundacionParaguaya/MentorApp/pull/593) ([Danman7](https://github.com/Danman7))
+- Changed color of the tear drop which appears on focus inside the text… [\#586](https://github.com/FundacionParaguaya/MentorApp/pull/586) ([vasildimitroffhristoff](https://github.com/vasildimitroffhristoff))
+
 ## [v1.7.4](https://github.com/FundacionParaguaya/MentorApp/tree/v1.7.4) (2019-05-07)
 [Full Changelog](https://github.com/FundacionParaguaya/MentorApp/compare/v1.7.3...v1.7.4)
 
