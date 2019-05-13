@@ -166,13 +166,4 @@ describe('Render optimization', () => {
     })
     expect(wrapper.instance().props.nav).toEqual({ draftId: 5 })
   })
-
-  it('can set other gender', () => {
-    console.log(
-      wrapper
-        .find(TextInput)
-        .last()
-        .props()
-    )
-  })
 })
