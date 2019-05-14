@@ -113,7 +113,7 @@ export class Location extends Component {
           )
         : false
 
-      if (survey.title === 'Chile - Geco') {
+      if (survey.title && survey.title === 'Chile - Geco') {
         this.setState({
           showSearch: false
         })
@@ -188,7 +188,7 @@ export class Location extends Component {
               )
             : false
 
-          if (survey.title === 'Chile - Geco') {
+          if (survey.title && survey.title === 'Chile - Geco') {
             this.setState({
               loading: false,
               centeringMap: false,

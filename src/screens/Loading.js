@@ -74,7 +74,11 @@ export class Loading extends Component {
       this.handleImageCaching()
     } else {
       // download GECO map is that survey is in the synced ones
-      if (this.props.surveys.some(survey => survey.title === 'Chile - Geco')) {
+      if (
+        this.props.surveys.some(
+          survey => survey.title && survey.title === 'Chile - Geco'
+        )
+      ) {
         // check for the GECO pack
         MapboxGL.offlineManager.getPack('GECO').then(pack => {
           if (!pack) {
