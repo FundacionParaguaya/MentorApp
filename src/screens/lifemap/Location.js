@@ -9,6 +9,7 @@ import {
   TouchableHighlight,
   NetInfo
 } from 'react-native'
+import Geolocation from '@react-native-community/geolocation'
 /* eslint-disable import/named */
 import { GooglePlacesAutocomplete } from 'react-native-google-places-autocomplete'
 /* eslint-enable import/named */
@@ -134,7 +135,7 @@ export class Location extends Component {
     })
 
     if (isOnline) {
-      navigator.geolocation.getCurrentPosition(
+      Geolocation.getCurrentPosition(
         // if location is available and we are online center on it
         position => {
           this.setState({
@@ -176,7 +177,7 @@ export class Location extends Component {
         }
       )
     } else {
-      navigator.geolocation.getCurrentPosition(
+      Geolocation.getCurrentPosition(
         // if no offline map is available, but there is location save it
         position => {
           const positionFromSurvey = survey.surveyConfig.surveyLocation
