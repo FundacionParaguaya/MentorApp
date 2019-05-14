@@ -249,11 +249,11 @@ export class SocioEconomicQuestion extends Component {
   checkCondition = (selectedVal, conditionVal, operator) => {
     switch (operator) {
       case 'above':
-        return parseInt(selectedVal) > parseInt(conditionVal)
+        return selectedVal > conditionVal
       case 'equals':
-        return parseInt(selectedVal) === parseInt(conditionVal)
+        return selectedVal === conditionVal
       case 'greater_than_eq':
-        return parseInt(selectedVal) >= parseInt(conditionVal)
+        return selectedVal >= conditionVal
       default:
         return false
     }
@@ -264,8 +264,8 @@ export class SocioEconomicQuestion extends Component {
     const draft = getDraft()
     if (codeName.toLocaleLowerCase() === 'birthdate' && familyMember) {
       return this.checkCondition(
-        this.calculateAge(familyMember.birthDate),
-        value,
+        parseInt(this.calculateAge(familyMember.birthDate)),
+        parseInt(value),
         operator
       )
     } else {
