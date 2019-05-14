@@ -31,7 +31,12 @@ export default class SliderItem extends Component {
   calculateTextContentHeight = event => {
     this.setState({ textContentHeight: event.nativeEvent.layout.height })
   }
-
+  pressText = () => {
+    this.setState({ pressed: true })
+    setTimeout(() => {
+      this.props.onPress()
+    }, 0)
+  }
   render() {
     const { slide, value, bodyHeight, portrait, tablet } = this.props
     const slideHeight =
@@ -42,12 +47,17 @@ export default class SliderItem extends Component {
         : bodyHeight - 100
     const imageHeight = !tablet && !portrait ? bodyHeight / 3 : bodyHeight / 2
     const textAreaHeight = slideHeight - imageHeight // - 30 is margin top on image + icon
+
     return (
       <TouchableHighlight
         activeOpacity={1}
         underlayColor={'transparent'}
         style={[styles.slide, { height: slideHeight }]}
-        onPress={this.props.onPress}
+        onPress={() =>
+          setTimeout(() => {
+            this.props.onPress()
+          }, 0)
+        }
         onHideUnderlay={() => this.togglePressedState(false)}
         onShowUnderlay={() => this.togglePressedState(true)}
         accessibilityLabel={value === slide.value ? 'selected' : 'deselected'}
@@ -64,7 +74,6 @@ export default class SliderItem extends Component {
               !tablet && !portrait ? { marginTop: 5 } : { marginTop: 10 }
             ]}
           />
-
           <View
             id="icon-view"
             style={[
@@ -96,6 +105,7 @@ export default class SliderItem extends Component {
               }}
             >
               <Text
+                onPress={() => this.pressText()}
                 onLayout={event => this.calculateTextContentHeight(event)}
                 style={[
                   {
