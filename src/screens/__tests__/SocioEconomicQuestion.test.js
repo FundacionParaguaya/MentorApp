@@ -59,15 +59,15 @@ describe('SocioEconomicQuestion screens', () => {
       wrapper = shallow(<SocioEconomicQuestion {...props} />)
     })
 
-    it('sets navigation socioEconomics param', () => {
-      expect(
-        wrapper.instance().props.navigation.setParams
-      ).toHaveBeenCalledTimes(2)
+    // it('sets navigation socioEconomics param', () => {
+    //   expect(
+    //     wrapper.instance().props.navigation.setParams
+    //   ).toHaveBeenCalledTimes(2)
 
-      expect(
-        wrapper.instance().props.navigation.setParams
-      ).toHaveBeenCalledWith({ socioEconomics: expect.any(Object) })
-    })
+    //   expect(
+    //     wrapper.instance().props.navigation.setParams
+    //   ).toHaveBeenCalledWith({ socioEconomics: expect.any(Object) })
+    // })
   })
 
   describe('after data is set', () => {

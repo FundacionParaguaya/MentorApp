@@ -49,7 +49,7 @@ export class SocioEconomicQuestion extends Component {
           !!question.conditions &&
           question.conditions.length &&
           !!question.forFamilyMember &&
-          question.conditions[0].codeName === 'birthdate'
+          question.conditions[0].codeName.toLocaleLowerCase() === 'birthdate'
             ? draft.familyData.familyMembersList.filter(
                 member => !!this.isConditionMet(question, member)
               ).length
@@ -249,11 +249,11 @@ export class SocioEconomicQuestion extends Component {
   checkCondition = (selectedVal, conditionVal, operator) => {
     switch (operator) {
       case 'above':
-        return selectedVal > conditionVal
+        return parseInt(selectedVal) > parseInt(conditionVal)
       case 'equals':
-        return selectedVal === conditionVal
+        return parseInt(selectedVal) === parseInt(conditionVal)
       case 'greater_than_eq':
-        return selectedVal >= conditionVal
+        return parseInt(selectedVal) >= parseInt(conditionVal)
       default:
         return false
     }
@@ -262,7 +262,7 @@ export class SocioEconomicQuestion extends Component {
   isConditionMet = (question, familyMember = false) => {
     const { codeName, value, operator } = question.conditions[0]
     const draft = getDraft()
-    if (codeName === 'birthdate' && familyMember) {
+    if (codeName.toLocaleLowerCase() === 'birthdate' && familyMember) {
       return this.checkCondition(
         this.calculateAge(familyMember.birthDate),
         value,
