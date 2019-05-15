@@ -90,7 +90,6 @@ export class Family extends Component {
     const { activeTab } = this.state
     const { t, navigation } = this.props
     const { familyData } = this.familyLifemap
-    console.log(this.state.isOnline)
 
     return (
       <ScrollView
