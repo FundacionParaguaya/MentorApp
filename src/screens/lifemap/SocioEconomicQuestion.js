@@ -263,11 +263,13 @@ export class SocioEconomicQuestion extends Component {
     const { codeName, value, operator } = question.conditions[0]
     const draft = getDraft()
     if (codeName.toLocaleLowerCase() === 'birthdate' && familyMember) {
-      return this.checkCondition(
-        parseInt(this.calculateAge(familyMember.birthDate)),
-        parseInt(value),
-        operator
-      )
+      return !!familyMember.birthDate
+        ? this.checkCondition(
+            parseInt(this.calculateAge(familyMember.birthDate)),
+            parseInt(value),
+            operator
+          )
+        : false
     } else {
       const answeredQuestions = draft.economicSurveyDataList || []
       const userAnswer = answeredQuestions.find(
@@ -411,7 +413,7 @@ export class SocioEconomicQuestion extends Component {
                   />
                 )
               } else {
-                ;<TextInput
+                <TextInput
                   multiline
                   key={question.codeName}
                   required={question.required}

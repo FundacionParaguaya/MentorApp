@@ -48,26 +48,26 @@ describe('DateInput Component', () => {
       })
     })
   })
-  describe('Date validation', () => {
-    it('sets error state to true if date is invalid', () => {
-      wrapper.instance().validateDate()
+  // describe('Date validation', () => {
+  //   it('sets error state to true if date is invalid', () => {
+  //     wrapper.instance().validateDate()
 
-      expect(wrapper.instance().state.error).toBe(true)
-    })
+  //     expect(wrapper.instance().state.error).toBe(true)
+  //   })
 
-    it('calls detectError with first argument true if date is invalid', () => {
-      wrapper.instance().validateDate()
+  //   it('calls detectError with first argument true if date is invalid', () => {
+  //     wrapper.instance().validateDate()
 
-      expect(wrapper.instance().props.detectError).toHaveBeenCalledTimes(1)
-      expect(wrapper.instance().props.detectError).toHaveBeenCalledWith(
-        true,
-        'birthDate'
-      )
-    })
-    it('calls detectError with first argument false if date is valid', () => {
-      props = createTestProps({ required: true, validation: 'string' })
+  //     expect(wrapper.instance().props.detectError).toHaveBeenCalledTimes(1)
+  //     expect(wrapper.instance().props.detectError).toHaveBeenCalledWith(
+  //       true,
+  //       'birthDate'
+  //     )
+  //   })
+  //   it('calls detectError with first argument false if date is valid', () => {
+  //     props = createTestProps({ required: true, validation: 'string' })
 
-      wrapper.setState({ date: '1 June 2019' })
-    })
-  })
+  //     wrapper.setState({ date: '1 June 2019' })
+  //   })
+  // })
 })
