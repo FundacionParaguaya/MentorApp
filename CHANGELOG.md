@@ -1,5 +1,21 @@
 # Change Log
 
+## [v1.8.1](https://github.com/FundacionParaguaya/MentorApp/tree/v1.8.1) (2019-05-15)
+[Full Changelog](https://github.com/FundacionParaguaya/MentorApp/compare/v1.8.0...v1.8.1)
+
+**Fixed bugs:**
+
+- Tickbox NOT appearing on indicator selection [\#650](https://github.com/FundacionParaguaya/MentorApp/issues/650)
+- Skip screen if there is no conditional economic logic [\#648](https://github.com/FundacionParaguaya/MentorApp/issues/648)
+- Only image area is clickable in indicators pages [\#608](https://github.com/FundacionParaguaya/MentorApp/issues/608)
+- Whole text of indicator doesn't appear [\#600](https://github.com/FundacionParaguaya/MentorApp/issues/600)
+
+**Merged pull requests:**
+
+- Fixed problem with scrolling the full text of the indicators [\#659](https://github.com/FundacionParaguaya/MentorApp/pull/659) ([vasildimitroffhristoff](https://github.com/vasildimitroffhristoff))
+- 648 skip screen conditional [\#658](https://github.com/FundacionParaguaya/MentorApp/pull/658) ([vasildimitroffhristoff](https://github.com/vasildimitroffhristoff))
+- fix \#650 and \#608 checkbox and text click [\#655](https://github.com/FundacionParaguaya/MentorApp/pull/655) ([zommerberg](https://github.com/zommerberg))
+
 ## [v1.8.0](https://github.com/FundacionParaguaya/MentorApp/tree/v1.8.0) (2019-05-13)
 [Full Changelog](https://github.com/FundacionParaguaya/MentorApp/compare/v1.7.4...v1.8.0)
 
