@@ -1,9 +1,11 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
-import { View, StyleSheet, ScrollView } from 'react-native'
+import { View, StyleSheet, ScrollView, Vibration } from 'react-native'
 import SliderItem from './SliderItem'
 import colors from '../theme.json'
 import { connect } from 'react-redux'
+
+const VIBRATION_DURATION = 120
 
 const slideColors = {
   1: 'red',
@@ -18,6 +20,7 @@ export class Slider extends Component {
   state = {
     selectedColor: colors.palegreen
   }
+
   componentDidMount() {
     this._isMounted = true
     const { width } = this.props.dimensions
@@ -53,12 +56,17 @@ export class Slider extends Component {
   }
 
   onSlidePress = slide => {
+    this.vibrate()
     this.props.selectAnswer(slide.value)
     if (this._isMounted) {
       this.setState({
         selectedColor: colors[slideColors[slide.value]]
       })
     }
+  }
+
+  vibrate = () => {
+    Vibration.vibrate(VIBRATION_DURATION)
   }
 
   render() {
