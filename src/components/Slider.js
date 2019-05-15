@@ -12,11 +12,14 @@ const slideColors = {
 }
 
 export class Slider extends Component {
+  _isMounted = false
+  _timer
+
   state = {
     selectedColor: colors.palegreen
   }
-  timer
   componentDidMount() {
+    this._isMounted = true
     const { width } = this.props.dimensions
 
     const value = value => {
@@ -33,7 +36,7 @@ export class Slider extends Component {
     }
 
     if (value(this.props.value)) {
-      this.timer = setTimeout(() => {
+      this._timer = setTimeout(() => {
         if (this.scrollView) {
           this.scrollView.scrollTo({
             x: (width - (1 / 10) * width) * value(this.props.value),
@@ -45,7 +48,8 @@ export class Slider extends Component {
   }
 
   componentWillUnmount() {
-    clearTimeout(this.timer)
+    clearTimeout(this._timer)
+    this._isMounted = false
   }
 
   render() {
@@ -81,9 +85,11 @@ export class Slider extends Component {
                 slide={slide}
                 onPress={() => {
                   this.props.selectAnswer(slide.value)
-                  this.setState({
-                    selectedColor: colors[slideColors[slide.value]]
-                  })
+                  if (this._isMounted) {
+                    this.setState({
+                      selectedColor: colors[slideColors[slide.value]]
+                    })
+                  }
                 }}
                 value={this.props.value}
                 bodyHeight={this.props.bodyHeight}
