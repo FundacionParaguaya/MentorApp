@@ -7,7 +7,8 @@ import {
   Image,
   Keyboard,
   TouchableHighlight,
-  NetInfo
+  NetInfo,
+  AppState
 } from 'react-native'
 import Geolocation from '@react-native-community/geolocation'
 /* eslint-disable import/named */
@@ -28,7 +29,6 @@ import center from '../../../assets/images/centerMap.png'
 import happy from '../../../assets/images/happy.png'
 import sad from '../../../assets/images/sad.png'
 import { getDraft, getTotalScreens } from './helpers'
-import { AppState } from 'react-native'
 
 export class Location extends Component {
   state = {
