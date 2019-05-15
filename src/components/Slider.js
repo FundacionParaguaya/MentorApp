@@ -52,6 +52,15 @@ export class Slider extends Component {
     this._isMounted = false
   }
 
+  onSlidePress = slide => {
+    this.props.selectAnswer(slide.value)
+    if (this._isMounted) {
+      this.setState({
+        selectedColor: colors[slideColors[slide.value]]
+      })
+    }
+  }
+
   render() {
     const { width } = this.props.dimensions
     return (
@@ -59,38 +68,27 @@ export class Slider extends Component {
         <ScrollView
           horizontal
           showsHorizontalScrollIndicator={false}
+          snapToAlignment="center"
+          snapToInterval={width - (1 / 10) * width}
           contentContainerStyle={{
             width: this.props.portrait ? '280%' : '90%',
-            flexGrow: 1,
-            flexDirection: 'row',
-            flexWrap: 'wrap',
-            justifyContent: 'space-evenly'
+            ...styles.slideWrapper
           }}
           ref={ref => {
             this.scrollView = ref
           }}
-          snapToAlignment="center"
-          snapToInterval={width - (1 / 10) * width}
         >
           {this.props.slides.map((slide, i) => (
             <View
               key={i}
               style={{
-                width: '31%',
                 backgroundColor: colors[slideColors[slide.value]],
-                borderRadius: 3
+                ...styles.slideItem
               }}
             >
               <SliderItem
                 slide={slide}
-                onPress={() => {
-                  this.props.selectAnswer(slide.value)
-                  if (this._isMounted) {
-                    this.setState({
-                      selectedColor: colors[slideColors[slide.value]]
-                    })
-                  }
-                }}
+                onPress={() => this.onSlidePress(slide)}
                 value={this.props.value}
                 bodyHeight={this.props.bodyHeight}
                 dimensions={this.props.dimensions}
@@ -104,6 +102,19 @@ export class Slider extends Component {
     )
   }
 }
+
+const styles = StyleSheet.create({
+  slideWrapper: {
+    flexGrow: 1,
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    justifyContent: 'space-evenly'
+  },
+  slideItem: {
+    width: '31%',
+    borderRadius: 3
+  }
+})
 
 Slider.propTypes = {
   slides: PropTypes.array.isRequired,
