@@ -125,11 +125,11 @@ describe('Family Location component', () => {
         centerCoordinate: [15, 15]
       })
     })
-    it('shows map offline when a survey one available', () => {
-      wrapper.instance().getDeviceCoordinates(false)
-      expect(wrapper).toHaveState({ latitude: 10, longitude: 11, accuracy: 0 })
-      expect(wrapper.find(MapboxGL.MapView)).toHaveLength(1)
-    })
+    // it('shows map offline when a survey one available', () => {
+    //   wrapper.instance().getDeviceCoordinates(false)
+    //   expect(wrapper).toHaveState({ latitude: 10, longitude: 11, accuracy: 0 })
+    //   expect(wrapper.find(MapboxGL.MapView)).toHaveLength(1)
+    // })
   })
   describe('showing the form instead of the map', () => {
     beforeEach(() => {

@@ -113,16 +113,20 @@ export class Location extends Component {
           )
         : false
 
-      if (survey.title && survey.title === 'Chile - Geco') {
-        this.setState({
-          showSearch: false
-        })
-      } else {
-        this.setState({
-          showForm: isLocationInBoundaries ? false : true, // false shows map
-          showSearch: false
-        })
-      }
+      this.setState({
+        showForm: isLocationInBoundaries ? false : true, // false shows map
+        showSearch: false
+      })
+
+      // if (survey.title === 'Chile - Geco') {
+      //   this.setState({
+      //     showSearch: false
+      //   })
+      // } else {
+      //   this.setState({
+      //     showSearch: true
+      //   })
+      // }
     }
   }
 
@@ -180,7 +184,7 @@ export class Location extends Component {
       Geolocation.getCurrentPosition(
         // if no offline map is available, but there is location save it
         position => {
-          const positionFromSurvey = survey.surveyConfig.surveyLocation
+          console.log(position)
           const isLocationInBoundaries = this.state.cachedMapPacks.length
             ? this.isUserLocationWithinMapPackBounds(
                 [position.coords.latitude, position.coords.longitude],
@@ -188,50 +192,17 @@ export class Location extends Component {
               )
             : false
 
-          if (survey.title && survey.title === 'Chile - Geco') {
-            this.setState({
-              loading: false,
-              centeringMap: false,
-              showSearch: false,
-              showForm: false,
-              latitude: isLocationInBoundaries
-                ? position.coords.latitude
-                : positionFromSurvey.latitude,
-              longitude: isLocationInBoundaries
-                ? position.coords.longitude
-                : positionFromSurvey.longitude,
-              accuracy: isLocationInBoundaries ? position.coords.accuracy : 0
-            })
-
-            this.addSurveyData(
-              isLocationInBoundaries
-                ? position.coords.latitude
-                : positionFromSurvey.latitude,
-              'latitude'
-            )
-            this.addSurveyData(
-              isLocationInBoundaries
-                ? position.coords.longitude
-                : positionFromSurvey.longitude,
-              'longitude'
-            )
-            this.addSurveyData(
-              isLocationInBoundaries ? position.coords.accuracy : 0,
-              'accuracy'
-            )
-          } else {
-            this.setState({
-              loading: false,
-              centeringMap: false,
-              showForm: isLocationInBoundaries ? false : true,
-              latitude: position.coords.latitude,
-              longitude: position.coords.longitude,
-              accuracy: position.coords.accuracy
-            })
-            this.addSurveyData(position.coords.latitude, 'latitude')
-            this.addSurveyData(position.coords.longitude, 'longitude')
-            this.addSurveyData(position.coords.accuracy, 'accuracy')
-          }
+          this.setState({
+            loading: false,
+            centeringMap: false,
+            showForm: isLocationInBoundaries ? false : true,
+            latitude: position.coords.latitude,
+            longitude: position.coords.longitude,
+            accuracy: position.coords.accuracy
+          })
+          this.addSurveyData(position.coords.latitude, 'latitude')
+          this.addSurveyData(position.coords.longitude, 'longitude')
+          this.addSurveyData(position.coords.accuracy, 'accuracy')
         },
         // otherwise ask for more details
         () => {
@@ -247,6 +218,7 @@ export class Location extends Component {
           maximumAge: 0
         }
       )
+      // }
     }
   }
 
@@ -254,25 +226,21 @@ export class Location extends Component {
     const longitude = point[0]
     const latitude = point[1]
 
-    return packs.some(packBoundaries => {
-      const neLng = packBoundaries[0][0]
-      const neLat = packBoundaries[0][1]
-      const swLng = packBoundaries[1][0]
-      const swLat = packBoundaries[1][1]
-
-      const eastBound = longitude < neLng
-      const westBound = longitude > swLng
-      let inLong
-
-      if (neLng < swLng) {
-        inLong = eastBound || westBound
-      } else {
-        inLong = eastBound && westBound
-      }
-
-      const inLat = latitude > swLat && latitude < neLat
-      return inLat && inLong
-    })
+    if (packs.length) {
+      return packs.some(packBoundaries => {
+        const neLng = packBoundaries[0][0]
+        const neLat = packBoundaries[0][1]
+        const swLng = packBoundaries[1][0]
+        const swLat = packBoundaries[1][1]
+        return (
+          longitude <= neLng &&
+          longitude >= swLng &&
+          latitude <= neLat &&
+          latitude >= swLat
+        )
+      })
+    }
+    return false
   }
 
   getMapOfflinePacks() {
