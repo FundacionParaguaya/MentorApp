@@ -53,12 +53,12 @@ class DraftListItem extends Component {
     const itemCreateDateWithLocale = moment(item.created)
     itemCreateDateWithLocale.locale(lng)
 
-    const linkDisabled = item.status === 'Synced'
+    // const linkDisabled = item.status === 'Synced'
     return (
       <ListItem
         style={{ ...styles.listItem, ...styles.borderBottom }}
         onPress={this.props.handleClick}
-        disabled={linkDisabled}
+        // disabled={linkDisabled}
       >
         <View>
           <Text
@@ -84,11 +84,11 @@ class DraftListItem extends Component {
             {this.setStatusTitle(this.props.item.status)}
           </Text>
         </View>
-        {!linkDisabled ? (
+        {/* {!linkDisabled ? (
           <Icon name="navigate-next" size={23} color={colors.lightdark} />
         ) : (
           <View />
-        )}
+        )} */}
       </ListItem>
     )
   }

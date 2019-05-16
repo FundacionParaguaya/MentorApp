@@ -42,9 +42,21 @@ export class Family extends Component {
     )
   ]
   componentDidMount() {
+    const { survey } = this.props.nav
+    const { navigation } = this.props
     this.props.navigation.setParams({
       withoutCloseButton: true
     })
+
+    if (typeof survey !== 'undefined') {
+      this.props.updateNav({
+        survey: this.props.surveys.find(
+          item => item.id === this.familyLifemap.surveyId
+        ),
+        draftId: navigation.getParam('draftId'),
+        readonly: true
+      })
+    }
   }
   handleResumeClick = () => {
     const { navigation } = this.props
@@ -243,7 +255,8 @@ Family.propTypes = {
   surveys: PropTypes.array,
   navigation: PropTypes.object.isRequired,
   t: PropTypes.func,
-  updateNav: PropTypes.func.isRequired
+  updateNav: PropTypes.func.isRequired,
+  nav: PropTypes.object.isRequired
 }
 
 const styles = StyleSheet.create({
@@ -304,7 +317,7 @@ const styles = StyleSheet.create({
 const mapDispatchToProps = {
   updateNav
 }
-const mapStateToProps = ({ surveys }) => ({ surveys })
+const mapStateToProps = ({ nav, surveys }) => ({ nav, surveys })
 
 export default withNamespaces()(
   connect(
