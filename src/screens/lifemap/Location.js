@@ -130,6 +130,89 @@ export class Location extends Component {
     }
   }
 
+  getCoordinatesOnline = survey => {
+    Geolocation.getCurrentPosition(
+      // if location is available and we are online center on it
+      position => {
+        this.setState({
+          loading: false,
+          centeringMap: false,
+          latitude: position.coords.latitude,
+          longitude: position.coords.longitude,
+          accuracy: position.coords.accuracy
+        })
+        this.addSurveyData(position.coords.latitude, 'latitude')
+        this.addSurveyData(position.coords.longitude, 'longitude')
+        this.addSurveyData(position.coords.accuracy, 'accuracy')
+      },
+      () => {
+        // if no location available reset to survey location only when
+        // no location comes from the draft
+        if (!this.getFieldValue(getDraft(), 'latitude')) {
+          const position = survey.surveyConfig.surveyLocation
+          this.setState({
+            loading: false,
+            centeringMap: false,
+            latitude: position.latitude,
+            longitude: position.longitude,
+            accuracy: 0
+          })
+          this.addSurveyData(position.latitude, 'latitude')
+          this.addSurveyData(position.longitude, 'longitude')
+          this.addSurveyData(0, 'accuracy')
+        } else {
+          this.setState({
+            centeringMap: false
+          })
+        }
+      },
+      {
+        enableHighAccuracy: false,
+        timeout: 10000,
+        maximumAge: 0
+      }
+    )
+  }
+
+  getCoordinatesOffline = () => {
+    Geolocation.getCurrentPosition(
+      // if no offline map is available, but there is location save it
+      position => {
+        const isLocationInBoundaries = this.state.cachedMapPacks.length
+          ? this.isUserLocationWithinMapPackBounds(
+              [position.coords.latitude, position.coords.longitude],
+              this.state.cachedMapPacks.map(pack => pack.bounds)
+            )
+          : false
+
+        this.setState({
+          loading: false,
+          centeringMap: false,
+          showForm: isLocationInBoundaries ? false : true,
+          latitude: position.coords.latitude,
+          longitude: position.coords.longitude,
+          accuracy: position.coords.accuracy
+        })
+        this.addSurveyData(position.coords.latitude, 'latitude')
+        this.addSurveyData(position.coords.longitude, 'longitude')
+        this.addSurveyData(position.coords.accuracy, 'accuracy')
+      },
+      // otherwise ask for more details
+      () => {
+        this.setState({
+          loading: false,
+          centeringMap: false,
+          showForm: true
+        })
+      },
+      {
+        enableHighAccuracy: false,
+        timeout: 10000,
+        maximumAge: 0
+      }
+    )
+  }
+
   // try getting device location and set map state according to online state
   getDeviceCoordinates = isOnline => {
     const { survey } = this.props.nav
@@ -138,88 +221,7 @@ export class Location extends Component {
       centeringMap: true
     })
 
-    if (isOnline) {
-      Geolocation.getCurrentPosition(
-        // if location is available and we are online center on it
-        position => {
-          this.setState({
-            loading: false,
-            centeringMap: false,
-            latitude: position.coords.latitude,
-            longitude: position.coords.longitude,
-            accuracy: position.coords.accuracy
-          })
-          this.addSurveyData(position.coords.latitude, 'latitude')
-          this.addSurveyData(position.coords.longitude, 'longitude')
-          this.addSurveyData(position.coords.accuracy, 'accuracy')
-        },
-        () => {
-          // if no location available reset to survey location only when
-          // no location comes from the draft
-          if (!this.getFieldValue(getDraft(), 'latitude')) {
-            const position = survey.surveyConfig.surveyLocation
-            this.setState({
-              loading: false,
-              centeringMap: false,
-              latitude: position.latitude,
-              longitude: position.longitude,
-              accuracy: 0
-            })
-            this.addSurveyData(position.latitude, 'latitude')
-            this.addSurveyData(position.longitude, 'longitude')
-            this.addSurveyData(0, 'accuracy')
-          } else {
-            this.setState({
-              centeringMap: false
-            })
-          }
-        },
-        {
-          enableHighAccuracy: false,
-          timeout: 10000,
-          maximumAge: 0
-        }
-      )
-    } else {
-      Geolocation.getCurrentPosition(
-        // if no offline map is available, but there is location save it
-        position => {
-          console.log(position)
-          const isLocationInBoundaries = this.state.cachedMapPacks.length
-            ? this.isUserLocationWithinMapPackBounds(
-                [position.coords.latitude, position.coords.longitude],
-                this.state.cachedMapPacks.map(pack => pack.bounds)
-              )
-            : false
-
-          this.setState({
-            loading: false,
-            centeringMap: false,
-            showForm: isLocationInBoundaries ? false : true,
-            latitude: position.coords.latitude,
-            longitude: position.coords.longitude,
-            accuracy: position.coords.accuracy
-          })
-          this.addSurveyData(position.coords.latitude, 'latitude')
-          this.addSurveyData(position.coords.longitude, 'longitude')
-          this.addSurveyData(position.coords.accuracy, 'accuracy')
-        },
-        // otherwise ask for more details
-        () => {
-          this.setState({
-            loading: false,
-            centeringMap: false,
-            showForm: true
-          })
-        },
-        {
-          enableHighAccuracy: false,
-          timeout: 10000,
-          maximumAge: 0
-        }
-      )
-      // }
-    }
+    isOnline ? this.getCoordinatesOnline(survey) : this.getCoordinatesOffline()
   }
 
   isUserLocationWithinMapPackBounds(point, packs) {
