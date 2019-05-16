@@ -92,7 +92,7 @@ export default class SliderItem extends Component {
 
           <View
             style={[
-              portrait ? { height: textAreaHeight } : {},
+              { height: textAreaHeight },
               tablet && !portrait ? styles.textVertical : { paddingBottom: 15 }
             ]}
             onStartShouldSetResponder={() => true}
@@ -100,8 +100,7 @@ export default class SliderItem extends Component {
             <ScrollView
               contentContainerStyle={{
                 flexGrow: 1,
-                height: this.state.textContentHeight,
-                paddingBottom: 50
+                paddingBottom: 40
               }}
             >
               <Text

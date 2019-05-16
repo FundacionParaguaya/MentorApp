@@ -66,7 +66,7 @@ describe('SocioEconomicQuestion screens', () => {
 
       expect(
         wrapper.instance().props.navigation.setParams
-      ).toHaveBeenCalledWith({ socioEconomics: expect.any(Object) })
+      ).toHaveBeenCalledWith({ onPressBack: expect.any(Function) })
     })
   })
 
