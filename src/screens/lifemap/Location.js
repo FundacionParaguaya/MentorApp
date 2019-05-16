@@ -105,8 +105,8 @@ export class Location extends Component {
     if (!isOnline) {
       const isLocationInBoundaries = this.state.cachedMapPacks.length
         ? this.isUserLocationWithinMapPackBounds(
-              parseFloat(this.getFieldValue(draft, 'longitude')),
-              parseFloat(this.getFieldValue(draft, 'latitude')),
+            parseFloat(this.getFieldValue(draft, 'longitude')),
+            parseFloat(this.getFieldValue(draft, 'latitude')),
             this.state.cachedMapPacks.map(pack => pack.bounds)
           )
         : false
@@ -174,12 +174,23 @@ export class Location extends Component {
   }
 
   getCoordinatesOffline = () => {
+    /* 
+      @ Test coordinates 
+        1. Chile, Peldehue, Provincia de Chacabuco
+        lng = -70.654634, lat = -33.1287 
+        2. Paraguay, Doctor Carlos Antonio López, 9800 Zona Urbano Cerrito, Paraguay
+        lat = -24.981278, lng = -57.552463
+    */
+
     Geolocation.getCurrentPosition(
       // if no offline map is available, but there is location save it
       position => {
         const { longitude, latitude, accuracy } = position.coords
         const isLocationInBoundaries = this.state.cachedMapPacks.length
-          ? this.isUserLocationWithinMapPackBounds(longitude, latitude, this.state.cachedMapPacks.map(pack => pack.bounds)
+          ? this.isUserLocationWithinMapPackBounds(
+              longitude,
+              latitude,
+              this.state.cachedMapPacks.map(pack => pack.bounds)
             )
           : false
 
