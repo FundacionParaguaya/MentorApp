@@ -105,10 +105,8 @@ export class Location extends Component {
     if (!isOnline) {
       const isLocationInBoundaries = this.state.cachedMapPacks.length
         ? this.isUserLocationWithinMapPackBounds(
-            [
               parseFloat(this.getFieldValue(draft, 'longitude')),
-              parseFloat(this.getFieldValue(draft, 'latitude'))
-            ],
+              parseFloat(this.getFieldValue(draft, 'latitude')),
             this.state.cachedMapPacks.map(pack => pack.bounds)
           )
         : false
@@ -134,16 +132,17 @@ export class Location extends Component {
     Geolocation.getCurrentPosition(
       // if location is available and we are online center on it
       position => {
+        const { longitude, latitude, accuracy } = position.coords
         this.setState({
           loading: false,
           centeringMap: false,
-          latitude: position.coords.latitude,
-          longitude: position.coords.longitude,
-          accuracy: position.coords.accuracy
+          latitude,
+          longitude,
+          accuracy
         })
-        this.addSurveyData(position.coords.latitude, 'latitude')
-        this.addSurveyData(position.coords.longitude, 'longitude')
-        this.addSurveyData(position.coords.accuracy, 'accuracy')
+        this.addSurveyData(latitude, 'latitude')
+        this.addSurveyData(longitude, 'longitude')
+        this.addSurveyData(accuracy, 'accuracy')
       },
       () => {
         // if no location available reset to survey location only when
@@ -178,10 +177,9 @@ export class Location extends Component {
     Geolocation.getCurrentPosition(
       // if no offline map is available, but there is location save it
       position => {
+        const { longitude, latitude, accuracy } = position.coords
         const isLocationInBoundaries = this.state.cachedMapPacks.length
-          ? this.isUserLocationWithinMapPackBounds(
-              [position.coords.latitude, position.coords.longitude],
-              this.state.cachedMapPacks.map(pack => pack.bounds)
+          ? this.isUserLocationWithinMapPackBounds(longitude, latitude, this.state.cachedMapPacks.map(pack => pack.bounds)
             )
           : false
 
@@ -189,13 +187,13 @@ export class Location extends Component {
           loading: false,
           centeringMap: false,
           showForm: isLocationInBoundaries ? false : true,
-          latitude: position.coords.latitude,
-          longitude: position.coords.longitude,
-          accuracy: position.coords.accuracy
+          latitude,
+          longitude,
+          accuracy
         })
-        this.addSurveyData(position.coords.latitude, 'latitude')
-        this.addSurveyData(position.coords.longitude, 'longitude')
-        this.addSurveyData(position.coords.accuracy, 'accuracy')
+        this.addSurveyData(latitude, 'latitude')
+        this.addSurveyData(longitude, 'longitude')
+        this.addSurveyData(accuracy, 'accuracy')
       },
       // otherwise ask for more details
       () => {
@@ -224,25 +222,25 @@ export class Location extends Component {
     isOnline ? this.getCoordinatesOnline(survey) : this.getCoordinatesOffline()
   }
 
-  isUserLocationWithinMapPackBounds(point, packs) {
-    const longitude = point[0]
-    const latitude = point[1]
+  isUserLocationWithinMapPackBounds(longitude, latitude, packs) {
+    return packs.some(packBoundaries => {
+      const neLng = packBoundaries[0][0]
+      const neLat = packBoundaries[0][1]
+      const swLng = packBoundaries[1][0]
+      const swLat = packBoundaries[1][1]
 
-    if (packs.length) {
-      return packs.some(packBoundaries => {
-        const neLng = packBoundaries[0][0]
-        const neLat = packBoundaries[0][1]
-        const swLng = packBoundaries[1][0]
-        const swLat = packBoundaries[1][1]
-        return (
-          longitude <= neLng &&
-          longitude >= swLng &&
-          latitude <= neLat &&
-          latitude >= swLat
-        )
-      })
-    }
-    return false
+      const eastBound = longitude <= neLng
+      const westBound = longitude >= swLng
+      let inLong
+      if (neLng <= swLng) {
+        inLong = eastBound || westBound
+      } else {
+        inLong = eastBound && westBound
+      }
+
+      const inLat = latitude >= swLat && latitude <= neLat
+      return inLat && inLong
+    })
   }
 
   getMapOfflinePacks() {
