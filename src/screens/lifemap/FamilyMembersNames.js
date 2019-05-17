@@ -131,7 +131,7 @@ export class FamilyMembersNames extends Component {
             .fill()
             .map((item, index) => index)
         : []
-
+    console.log(draft)
     return (
       <StickyFooter
         handleClick={() => this.handleClick(draft)}
