@@ -52,6 +52,8 @@ export class DrawerContent extends Component {
       // delete the cached map packs
       if (MapboxGL.offlineManager) {
         await MapboxGL.offlineManager.deletePack('GECO')
+        await MapboxGL.offlineManager.deletePack('Cerrito')
+        await MapboxGL.offlineManager.deletePack('Sofia')
       }
 
       // clear the async storage and reset the store

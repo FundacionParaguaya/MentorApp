@@ -22,6 +22,7 @@ export class Loading extends Component {
     syncingServerData: false, // know when to show that data is synced
     cachingImages: false,
     downloadingMap: false,
+    cachingImages: false,
     offlineRegionStatus: null,
     mapDownloadError: null
   }
@@ -63,23 +64,21 @@ export class Loading extends Component {
     }
   }
 
+  isSurveyInSynced = title =>
+    this.props.surveys.some(survey => survey.title && survey.title === title)
+
   downloadMapData = () => {
     this.setState({
       downloadingMap: true
     })
+
+    // download GECO map is that survey is in the synced ones
     if (
-      this.state.offlineRegionStatus &&
-      this.state.offlineRegionStatus.percentage === 100
+      this.isSurveyInSynced('Chile - Geco') ||
+      this.isSurveyInSynced('Paraguay - Demo, FUPA')
     ) {
-      this.handleImageCaching()
-    } else {
-      // download GECO map is that survey is in the synced ones
-      if (
-        this.props.surveys.some(
-          survey => survey.title && survey.title === 'Chile - Geco'
-        )
-      ) {
-        // check for the GECO pack
+      // check for the GECO pack
+      if (this.isSurveyInSynced('Chile - Geco')) {
         MapboxGL.offlineManager.getPack('GECO').then(pack => {
           if (!pack) {
             MapboxGL.offlineManager.createPack(
@@ -97,20 +96,41 @@ export class Loading extends Component {
             this.setState({
               offlineRegionStatus: { percentage: 100 }
             })
-            this.handleImageCaching()
           }
         })
-      } else {
-        this.handleImageCaching()
       }
+
+      // check for Cerrito pack
+      if (this.isSurveyInSynced('Paraguay - Demo, FUPA')) {
+        MapboxGL.offlineManager.getPack('Cerrito').then(pack => {
+          if (!pack) {
+            MapboxGL.offlineManager.createPack(
+              {
+                name: 'Cerrito',
+                styleURL: MapboxGL.StyleURL.Street,
+                minZoom: 14,
+                maxZoom: 18,
+                bounds: [[-57.606658, -24.92751], [-57.48788, -24.997528]]
+              },
+              this.onMapDownloadProgress,
+              this.onMapDownloadError
+            )
+          } else {
+            this.setState({
+              offlineRegionStatus: { percentage: 100 }
+            })
+          }
+        })
+      }
+    } else {
+      this.handleImageCaching()
     }
   }
 
   // update map download progress
   onMapDownloadProgress = (offlineRegion, offlineRegionStatus) => {
-    if (offlineRegionStatus.percentage === 100) {
-      this.handleImageCaching()
-    } else if (!this.state.offlineRegionStatus) {
+    console.log(offlineRegionStatus)
+    if (!this.state.offlineRegionStatus) {
       this.setState({
         offlineRegionStatus: { percentage: 0 }
       })
@@ -120,8 +140,6 @@ export class Loading extends Component {
       this.setState({
         offlineRegionStatus
       })
-    } else {
-      this.handleImageCaching()
     }
   }
 
@@ -170,6 +188,19 @@ export class Loading extends Component {
     // if families are synced check for map data
     if (!prevProps.sync.families && this.props.sync.families) {
       this.downloadMapData()
+    }
+
+    if (
+      this.props.surveys.length &&
+      !this.props.offline.outbox.lenght &&
+      this.state.offlineRegionStatus &&
+      this.state.offlineRegionStatus.percentage === 100 &&
+      !this.state.cachingImages
+    ) {
+      this.setState({ cachingImages: true })
+      setTimeout(() => {
+        this.handleImageCaching()
+      }, 1000)
     }
 
     // if everything is synced navigate to home
