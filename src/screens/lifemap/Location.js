@@ -250,7 +250,6 @@ export class Location extends Component {
     MapboxGL.offlineManager
       .getPacks()
       .then(packs => {
-        console.log(packs)
         if (packs.length) {
           packs.map(offlinePack => {
             this.setState({

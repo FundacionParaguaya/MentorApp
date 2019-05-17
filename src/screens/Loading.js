@@ -129,7 +129,6 @@ export class Loading extends Component {
 
   // update map download progress
   onMapDownloadProgress = (offlineRegion, offlineRegionStatus) => {
-    console.log(offlineRegionStatus)
     if (!this.state.offlineRegionStatus) {
       this.setState({
         offlineRegionStatus: { percentage: 0 }
