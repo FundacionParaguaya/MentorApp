@@ -69,8 +69,7 @@
   "jest": {
     "preset": "react-native",
     "setupFilesAfterEnv": [
-      "<rootDir>/testing/config.js",
-      "<rootDir>/e2e/init.js"
+      "<rootDir>/testing/config.js"
     ],
     "moduleNameMapper": {
       "\\.(jpg|JPG|jpeg|png|gif|eot|otf|webp|svg|ttf|woff|woff2|mp4|webm|wav|mp3|m4a|aac|oga)$": "<rootDir>testing/assetsTransformer.js",
