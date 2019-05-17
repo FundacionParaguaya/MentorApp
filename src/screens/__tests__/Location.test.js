@@ -127,7 +127,11 @@ describe('Family Location component', () => {
     })
     it('shows map offline when a survey one available', () => {
       wrapper.instance().getDeviceCoordinates(false)
-      expect(wrapper).toHaveState({ latitude: 10, longitude: 11, accuracy: 0 })
+      expect(wrapper).toHaveState({
+        latitude: -23.6513184,
+        longitude: -70.3981301,
+        accuracy: 0
+      })
       expect(wrapper.find(MapboxGL.MapView)).toHaveLength(1)
     })
   })
