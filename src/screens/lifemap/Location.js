@@ -93,7 +93,6 @@ export class Location extends Component {
 
   // if the user has draged the map and the draft has stored some coordinates
   setCoordinatesFromDraft = (isOnline, draft) => {
-    const { survey } = this.props.nav
     this.setState({
       latitude: parseFloat(this.getFieldValue(draft, 'latitude')),
       longitude: parseFloat(this.getFieldValue(draft, 'longitude')),
@@ -174,10 +173,10 @@ export class Location extends Component {
   }
 
   getCoordinatesOffline = () => {
-    /* 
-      @ Test coordinates 
+    /*
+      @ Test coordinates
         1. Chile, Peldehue, Provincia de Chacabuco
-        lng = -70.654634, lat = -33.1287 
+        lng = -70.654634, lat = -33.1287
         2. Paraguay, Doctor Carlos Antonio López, 9800 Zona Urbano Cerrito, Paraguay
         lat = -24.981278, lng = -57.552463
     */
