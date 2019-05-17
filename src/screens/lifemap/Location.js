@@ -180,7 +180,7 @@ export class Location extends Component {
       Geolocation.getCurrentPosition(
         // if no offline map is available, but there is location save it
         position => {
-          const positionFromSurvey = survey.surveyConfig.surveyLocation
+          let positionFromSurvey = survey.surveyConfig.surveyLocation
           const isLocationInBoundaries = this.state.cachedMapPacks.length
             ? this.isUserLocationWithinMapPackBounds(
                 [position.coords.latitude, position.coords.longitude],
@@ -189,6 +189,10 @@ export class Location extends Component {
             : false
 
           if (survey.title && survey.title === 'Chile - Geco') {
+            positionFromSurvey = {
+              latitude: -23.6513184,
+              longitude: -70.3981301
+            }
             this.setState({
               loading: false,
               centeringMap: false,

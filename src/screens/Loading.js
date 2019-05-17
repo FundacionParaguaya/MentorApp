@@ -88,7 +88,7 @@ export class Loading extends Component {
                 styleURL: MapboxGL.StyleURL.Street,
                 minZoom: 10,
                 maxZoom: 13,
-                bounds: [[-71.0187, -33.687], [-70.3036, -33.1287]]
+                bounds: [[-70.6626, -24.1093], [-69.7407, -22.7571]]
               },
               this.onMapDownloadProgress,
               this.onMapDownloadError
