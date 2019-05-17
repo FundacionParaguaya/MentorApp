@@ -261,8 +261,6 @@ export class SocioEconomicQuestion extends Component {
 
   isConditionMet = (question, familyMember = false) => {
     const { codeName, value, operator } = question.conditions[0]
-    console.log(familyMember)
-    console.log(question)
     const draft = getDraft()
     if (codeName.toLocaleLowerCase() === 'birthdate' && familyMember) {
       return !!familyMember.birthDate
