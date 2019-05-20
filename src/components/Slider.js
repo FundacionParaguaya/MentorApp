@@ -1,9 +1,11 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
-import { View, StyleSheet, ScrollView } from 'react-native'
+import { View, StyleSheet, ScrollView, Vibration } from 'react-native'
 import SliderItem from './SliderItem'
 import colors from '../theme.json'
 import { connect } from 'react-redux'
+
+const VIBRATION_DURATION = 120
 
 const slideColors = {
   1: 'red',
@@ -12,11 +14,15 @@ const slideColors = {
 }
 
 export class Slider extends Component {
+  _isMounted = false
+  _timer
+
   state = {
     selectedColor: colors.palegreen
   }
-  timer
+
   componentDidMount() {
+    this._isMounted = true
     const { width } = this.props.dimensions
 
     const value = value => {
@@ -33,7 +39,7 @@ export class Slider extends Component {
     }
 
     if (value(this.props.value)) {
-      this.timer = setTimeout(() => {
+      this._timer = setTimeout(() => {
         if (this.scrollView) {
           this.scrollView.scrollTo({
             x: (width - (1 / 10) * width) * value(this.props.value),
@@ -45,7 +51,22 @@ export class Slider extends Component {
   }
 
   componentWillUnmount() {
-    clearTimeout(this.timer)
+    clearTimeout(this._timer)
+    this._isMounted = false
+  }
+
+  onSlidePress = slide => {
+    this.vibrate()
+    this.props.selectAnswer(slide.value)
+    if (this._isMounted) {
+      this.setState({
+        selectedColor: colors[slideColors[slide.value]]
+      })
+    }
+  }
+
+  vibrate = () => {
+    Vibration.vibrate(VIBRATION_DURATION)
   }
 
   render() {
@@ -55,36 +76,27 @@ export class Slider extends Component {
         <ScrollView
           horizontal
           showsHorizontalScrollIndicator={false}
+          snapToAlignment="center"
+          snapToInterval={width - (1 / 10) * width}
           contentContainerStyle={{
             width: this.props.portrait ? '280%' : '90%',
-            flexGrow: 1,
-            flexDirection: 'row',
-            flexWrap: 'wrap',
-            justifyContent: 'space-evenly'
+            ...styles.slideWrapper
           }}
           ref={ref => {
             this.scrollView = ref
           }}
-          snapToAlignment="center"
-          snapToInterval={width - (1 / 10) * width}
         >
           {this.props.slides.map((slide, i) => (
             <View
               key={i}
               style={{
-                width: '31%',
                 backgroundColor: colors[slideColors[slide.value]],
-                borderRadius: 3
+                ...styles.slideItem
               }}
             >
               <SliderItem
                 slide={slide}
-                onPress={() => {
-                  this.props.selectAnswer(slide.value)
-                  this.setState({
-                    selectedColor: colors[slideColors[slide.value]]
-                  })
-                }}
+                onPress={() => this.onSlidePress(slide)}
                 value={this.props.value}
                 bodyHeight={this.props.bodyHeight}
                 dimensions={this.props.dimensions}
@@ -98,6 +110,19 @@ export class Slider extends Component {
     )
   }
 }
+
+const styles = StyleSheet.create({
+  slideWrapper: {
+    flexGrow: 1,
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    justifyContent: 'space-evenly'
+  },
+  slideItem: {
+    width: '31%',
+    borderRadius: 3
+  }
+})
 
 Slider.propTypes = {
   slides: PropTypes.array.isRequired,
