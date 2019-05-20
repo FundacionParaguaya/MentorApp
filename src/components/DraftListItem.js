@@ -1,6 +1,5 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
-import Icon from 'react-native-vector-icons/MaterialIcons'
 import { Text, StyleSheet, View } from 'react-native'
 import moment from 'moment'
 import 'moment/locale/es'
@@ -53,12 +52,11 @@ class DraftListItem extends Component {
     const itemCreateDateWithLocale = moment(item.created)
     itemCreateDateWithLocale.locale(lng)
 
-    const linkDisabled = item.status === 'Synced'
+    // const linkDisabled = item.status === 'Synced'
     return (
       <ListItem
         style={{ ...styles.listItem, ...styles.borderBottom }}
         onPress={this.props.handleClick}
-        disabled={linkDisabled}
       >
         <View>
           <Text
@@ -84,11 +82,6 @@ class DraftListItem extends Component {
             {this.setStatusTitle(this.props.item.status)}
           </Text>
         </View>
-        {!linkDisabled ? (
-          <Icon name="navigate-next" size={23} color={colors.lightdark} />
-        ) : (
-          <View />
-        )}
       </ListItem>
     )
   }
