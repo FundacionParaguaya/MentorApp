@@ -51,7 +51,9 @@ export class ExitDraftModal extends Component {
                 store.dispatch(deleteDraft(nav.draftId))
               }
 
-              nav.beforeCloseModal()
+              if (nav.beforeCloseModal) {
+                nav.beforeCloseModal()
+              }
 
               // close modal
               onClose()

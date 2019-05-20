@@ -12,7 +12,7 @@ import {
   addDraftProgress
 } from '../../redux/actions'
 import colors from '../../theme.json'
-import { getDraft, getTotalScreens } from './helpers'
+import { getDraft } from './helpers'
 
 export class SocioEconomicQuestion extends Component {
   static navigationOptions = ({ navigation }) => {
@@ -49,7 +49,7 @@ export class SocioEconomicQuestion extends Component {
           !!question.conditions &&
           question.conditions.length &&
           !!question.forFamilyMember &&
-          question.conditions[0].codeName === 'birthdate'
+          question.conditions[0].codeName.toLocaleLowerCase() === 'birthdate'
             ? draft.familyData.familyMembersList.filter(
                 member => !!this.isConditionMet(question, member)
               ).length
@@ -154,6 +154,19 @@ export class SocioEconomicQuestion extends Component {
       [field]: text
     })
   }
+  addSurveyDataOtherField = (text, field) => {
+    const draft = this.props.navigation.getParam('family') || getDraft()
+    let value
+    draft.economicSurveyDataList.forEach(e => {
+      if (e.key === field) {
+        value = e.value
+      }
+    })
+    this.props.addSurveyData(this.props.nav.draftId, 'economicSurveyDataList', {
+      [field]: value,
+      other: text
+    })
+  }
   addSurveyFamilyMemberData = (text, field, index) => {
     this.props.addSurveyFamilyMemberData({
       id: this.props.nav.draftId,
@@ -175,6 +188,17 @@ export class SocioEconomicQuestion extends Component {
 
     return draft.economicSurveyDataList.filter(item => item.key === field)[0]
       .value
+  }
+  getOtherFieldValue = (draft, field) => {
+    if (
+      !draft ||
+      !draft.economicSurveyDataList ||
+      !draft.economicSurveyDataList.filter(item => item.key === field)[0]
+    ) {
+      return
+    }
+    return draft.economicSurveyDataList.filter(item => item.key === field)[0]
+      .other
   }
   getFamilyMemberFieldValue = (draft, field, index) => {
     if (
@@ -238,12 +262,14 @@ export class SocioEconomicQuestion extends Component {
   isConditionMet = (question, familyMember = false) => {
     const { codeName, value, operator } = question.conditions[0]
     const draft = getDraft()
-    if (codeName === 'birthdate' && familyMember) {
-      return this.checkCondition(
-        this.calculateAge(familyMember.birthDate),
-        value,
-        operator
-      )
+    if (codeName.toLocaleLowerCase() === 'birthdate' && familyMember) {
+      return !!familyMember.birthDate
+        ? this.checkCondition(
+            parseInt(this.calculateAge(familyMember.birthDate)),
+            parseInt(value),
+            operator
+          )
+        : false
     } else {
       const answeredQuestions = draft.economicSurveyDataList || []
       const userAnswer = answeredQuestions.find(
@@ -271,7 +297,6 @@ export class SocioEconomicQuestion extends Component {
       : []
 
     const { readonly } = this.props.nav
-
     const showMemberName = (member, questionsForFamilyMember) => {
       const questionsForThisMember = questionsForFamilyMember.filter(question =>
         !!question.conditions && question.conditions.length
@@ -306,22 +331,88 @@ export class SocioEconomicQuestion extends Component {
                   : false
                 : question
             )
-            .map(question =>
-              question.answerType === 'select' ? (
-                <Select
-                  key={question.codeName}
-                  required={question.required}
-                  onChange={this.addSurveyData}
-                  placeholder={question.questionText}
-                  showErrors={showErrors}
-                  label={question.questionText}
-                  field={question.codeName}
-                  value={this.getFieldValue(draft, question.codeName) || ''}
-                  detectError={this.detectError}
-                  readonly={readonly}
-                  options={question.options}
-                />
-              ) : question.answerType === 'number' ? (
+            .map(question => {
+              if (question.answerType === 'select') {
+                let otherOptionDetected = false
+                let otherOptionValue
+                question.options.forEach(e => {
+                  if (e.otherOption) {
+                    otherOptionDetected = true
+                    otherOptionValue = e.value
+                  }
+                })
+
+                if (otherOptionDetected) {
+                  return (
+                    <React.Fragment key={question.codeName}>
+                      <Select
+                        required={question.required}
+                        onChange={this.addSurveyData}
+                        placeholder={question.questionText}
+                        showErrors={showErrors}
+                        label={question.questionText}
+                        field={question.codeName}
+                        value={
+                          this.getFieldValue(draft, question.codeName) || ''
+                        }
+                        detectError={this.detectError}
+                        readonly={readonly}
+                        options={question.options}
+                      />
+                      {this.getFieldValue(draft, question.codeName) ===
+                      otherOptionValue ? (
+                        <TextInput
+                          required={question.required}
+                          field={question.codeName}
+                          validation="string"
+                          onChangeText={this.addSurveyDataOtherField}
+                          readonly={readonly}
+                          placeholder={t('views.family.specifyQuestionAbove')}
+                          value={
+                            this.getOtherFieldValue(draft, question.codeName) ||
+                            ''
+                          }
+                          detectError={this.detectError}
+                          showErrors={showErrors}
+                        />
+                      ) : null}
+                    </React.Fragment>
+                  )
+                } else {
+                  return (
+                    <Select
+                      key={question.codeName}
+                      required={question.required}
+                      onChange={this.addSurveyData}
+                      placeholder={question.questionText}
+                      showErrors={showErrors}
+                      label={question.questionText}
+                      field={question.codeName}
+                      value={this.getFieldValue(draft, question.codeName) || ''}
+                      detectError={this.detectError}
+                      readonly={readonly}
+                      options={question.options}
+                    />
+                  )
+                }
+              } else if (question.answerType === 'number') {
+                return (
+                  <TextInput
+                    multiline
+                    key={question.codeName}
+                    required={question.required}
+                    onChangeText={this.addSurveyData}
+                    placeholder={question.questionText}
+                    showErrors={showErrors}
+                    field={question.codeName}
+                    value={this.getFieldValue(draft, question.codeName) || ''}
+                    detectError={this.detectError}
+                    readonly={readonly}
+                    validation="number"
+                    keyboardType="numeric"
+                  />
+                )
+              } else {
                 <TextInput
                   multiline
                   key={question.codeName}
@@ -333,24 +424,9 @@ export class SocioEconomicQuestion extends Component {
                   value={this.getFieldValue(draft, question.codeName) || ''}
                   detectError={this.detectError}
                   readonly={readonly}
-                  validation="number"
-                  keyboardType="numeric"
                 />
-              ) : (
-                <TextInput
-                  multiline
-                  key={question.codeName}
-                  required={question.required}
-                  onChangeText={this.addSurveyData}
-                  placeholder={question.questionText}
-                  showErrors={showErrors}
-                  field={question.codeName}
-                  value={this.getFieldValue(draft, question.codeName) || ''}
-                  detectError={this.detectError}
-                  readonly={readonly}
-                />
-              )
-            )
+              }
+            })
         ) : (
           <View />
         )}

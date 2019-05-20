@@ -4,11 +4,20 @@ import 'jest-enzyme'
 
 Enzyme.configure({ adapter: new Adapter() })
 
+// mock device info
+jest.mock('react-native-device-info', () => {
+  return {
+    getModel: jest.fn()
+  }
+})
+
+// mock react native
 jest.mock('react-native', () => require('react-native-mock-render'), {
   virtual: true,
   timers: 'fake'
 })
 
+// mock mapbox
 jest.mock('@mapbox/react-native-mapbox-gl', () => {
   const React = require('React')
   const NativeModules = require('react-native')
@@ -107,7 +116,8 @@ jest.mock('@mapbox/react-native-mapbox-gl', () => {
       })
     },
     offlineManager: {
-      deletePack: jest.fn()
+      deletePack: jest.fn(),
+      offlineManager: jest.fn()
     },
     getPacks: () => Promise.resolve([]),
     deletePack: () => Promise.resolve(),
@@ -137,5 +147,12 @@ jest.mock('@mapbox/react-native-mapbox-gl', () => {
     }
 
     static setAccessToken = () => jest.fn()
+
+    static offlineManager = {
+      deletePack: jest.fn(),
+      getPack: jest.fn().mockImplementation(() => Promise.resolve(true)),
+      getPacks: jest.fn().mockImplementation(() => Promise.resolve(true)),
+      offlineManager: jest.fn()
+    }
   }
 })

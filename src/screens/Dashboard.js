@@ -21,12 +21,7 @@ import { connect } from 'react-redux'
 import colors from '../theme.json'
 
 export class Dashboard extends Component {
-  slowLoadingTimer
   acessibleComponent = React.createRef()
-
-  clearTimers = () => {
-    clearTimeout(this.slowLoadingTimer)
-  }
 
   componentDidMount() {
     this.props.updateNav({
@@ -52,10 +47,6 @@ export class Dashboard extends Component {
         env: this.props.env
       }
     })
-  }
-
-  componentWillUnmount() {
-    this.clearTimers()
   }
 
   navigateToPendingSync = draft => {
@@ -93,54 +84,31 @@ export class Dashboard extends Component {
       })
   }
 
-  navigateToSynced = draft => {
-    const { firstName, lastName } = draft.familyData.familyMembersList[0]
-
-    const filteredFamily = this.props.families.find(family => {
-      return (
-        family.name.toLowerCase() ===
-          `${firstName} ${lastName}`.toLowerCase() &&
-        family.snapshotList &&
-        family.snapshotList.length &&
-        family.snapshotList.some(
-          snapshot =>
-            snapshot.surveyId === draft.surveyId &&
-            JSON.stringify(snapshot.familyData) ===
-              JSON.stringify(snapshot.familyData)
-        )
-      )
-    })
-
-    this.props.navigation.navigate('Family', {
-      familyName: filteredFamily.name,
-      familyLifemap: filteredFamily.snapshotList
-        ? filteredFamily.snapshotList[0]
-        : filteredFamily.draft,
-      isDraft: !filteredFamily.snapshotList,
-      survey: this.props.surveys.find(survey =>
-        filteredFamily.snapshotList
-          ? survey.id === filteredFamily.snapshotList[0].surveyId
-          : survey.id === filteredFamily.draft.surveyId
-      ),
-      activeTab: 'LifeMap'
-    })
+  handleClickOnListItem = item => {
+    switch (item.status) {
+      case 'Pending sync':
+        this.navigateToPendingSync(item)
+        break
+      default:
+        this.navigateToDraft(item)
+    }
   }
 
   render() {
-    const { t, navigation, drafts } = this.props
+    const { t, drafts } = this.props
 
     const list = drafts.slice().reverse()
     return (
       <ScrollView style={globalStyles.background}>
         <View ref={this.acessibleComponent} accessible={true}>
-          {this.props.offline.outbox.length &&
-          navigation.getParam('firstTimeVisitor') ? null : (
+          {this.props.offline.outbox.length ? null : (
             <View>
               <View style={globalStyles.container}>
                 <Decoration>
                   <RoundImage source="family" />
                 </Decoration>
                 <Button
+                  id="create-lifemap"
                   text={t('views.createLifemap')}
                   colored
                   handleClick={() => this.props.navigation.navigate('Surveys')}
@@ -164,9 +132,6 @@ export class Dashboard extends Component {
                     item={item}
                     handleClick={() => {
                       switch (item.status) {
-                        case 'Synced':
-                          this.navigateToSynced(item)
-                          break
                         case 'Pending sync':
                           this.navigateToPendingSync(item)
                           break
@@ -213,7 +178,7 @@ Dashboard.propTypes = {
   families: PropTypes.array
 }
 
-const mapStateToProps = ({
+export const mapStateToProps = ({
   env,
   user,
   drafts,

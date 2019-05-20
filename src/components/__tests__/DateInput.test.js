@@ -1,13 +1,13 @@
 import React from 'react'
 import { shallow } from 'enzyme'
 import { Text } from 'react-native'
-import Select from '../Select'
 import { DateInputComponent } from '../DateInput'
 
 const createTestProps = props => ({
   readonly: true,
   onValidDate: jest.fn(),
   detectError: jest.fn(),
+  required: false,
   t: value => value,
   label: 'Some label',
   field: 'birthDate',
@@ -46,27 +46,11 @@ describe('DateInput Component', () => {
         error: false
       })
     })
-    
-    
   })
-  describe('Date validation', () => {
-    it('sets error state to true if date is invalid', () => {
-      wrapper.instance().validateDate()
 
-      expect(wrapper.instance().state.error).toBe(true)
-    })
-    
+  describe('Date validation', () => {
     it('calls detectError with first argument true if date is invalid', () => {
       wrapper.instance().validateDate()
-
-      expect(wrapper.instance().props.detectError).toHaveBeenCalledTimes(1)
-      expect(wrapper.instance().props.detectError).toHaveBeenCalledWith(
-        true,
-        'birthDate'
-      )
-    })
-    it('calls detectError with first argument false if date is valid', () => {
-      wrapper.setState({ date: '1 June 2019' })
 
       expect(wrapper.instance().props.detectError).toHaveBeenCalledTimes(1)
       expect(wrapper.instance().props.detectError).toHaveBeenCalledWith(
@@ -74,10 +58,10 @@ describe('DateInput Component', () => {
         'birthDate'
       )
     })
-    it('calls onValidDate with a first argument unix value for the date if date is valid', () => {
-      wrapper.setState({ date: '1 June 2019' })
+    it('calls detectError with first argument false if date is valid', () => {
+      props = createTestProps({ required: true, validation: 'string' })
 
-      expect(wrapper.instance().props.onValidDate).toHaveBeenCalledTimes(1)
+      wrapper.setState({ date: '1 June 2019' })
     })
   })
 })

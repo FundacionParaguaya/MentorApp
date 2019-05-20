@@ -14,7 +14,6 @@ import BottomModal from '../../components/BottomModal'
 import arrow from '../../../assets/images/selectArrow.png'
 import globalStyles from '../../globalStyles'
 import colors from '../../theme.json'
-
 export class Overview extends Component {
   state = {
     filterModalIsOpen: false,
@@ -134,9 +133,7 @@ export class Overview extends Component {
     const { filterModalIsOpen, selectedFilter, filterLabel } = this.state
 
     const data = this.props.familyLifemap || getDraft()
-
     const mandatoryPrioritiesCount = this.getMandatoryPrioritiesCount(data)
-
     const tipIsVisible = !this.resumeDraft && this.state.tipIsVisible
     const getTipDescription = () => {
       //no mandatory priotities

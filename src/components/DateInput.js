@@ -33,7 +33,12 @@ export class DateInputComponent extends React.Component {
   validateDate() {
     const { date } = this.state
 
-    const error = !moment(`${date}`, 'D MMMM YYYY', true).isValid()
+    const error =
+      (this.props.required && !date) ||
+      (this.props.required && !this.props.value) ||
+      (!this.props.required && !!date)
+        ? !moment(`${date}`, 'D MMMM YYYY', true).isValid()
+        : false
 
     if (error) {
       this.props.detectError(true, this.props.field)

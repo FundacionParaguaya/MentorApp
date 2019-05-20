@@ -74,7 +74,11 @@ export class Loading extends Component {
       this.handleImageCaching()
     } else {
       // download GECO map is that survey is in the synced ones
-      if (this.props.surveys.some(survey => survey.title === 'Chile - Geco')) {
+      if (
+        this.props.surveys.some(
+          survey => survey.title && survey.title === 'Chile - Geco'
+        )
+      ) {
         // check for the GECO pack
         MapboxGL.offlineManager.getPack('GECO').then(pack => {
           if (!pack) {
@@ -83,8 +87,8 @@ export class Loading extends Component {
                 name: 'GECO',
                 styleURL: MapboxGL.StyleURL.Street,
                 minZoom: 10,
-                maxZoom: 15,
-                bounds: [[-71.0187, -33.687], [-70.3036, -33.1287]]
+                maxZoom: 13,
+                bounds: [[-70.6626, -24.1093], [-69.7407, -22.7571]]
               },
               this.onMapDownloadProgress,
               this.onMapDownloadError
@@ -303,7 +307,7 @@ const styles = StyleSheet.create({
   }
 })
 
-const mapStateToProps = ({
+export const mapStateToProps = ({
   sync,
   surveys,
   env,

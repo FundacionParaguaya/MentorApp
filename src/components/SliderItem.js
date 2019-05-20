@@ -31,7 +31,12 @@ export default class SliderItem extends Component {
   calculateTextContentHeight = event => {
     this.setState({ textContentHeight: event.nativeEvent.layout.height })
   }
-
+  pressText = () => {
+    this.setState({ pressed: true })
+    setTimeout(() => {
+      this.props.onPress()
+    }, 0)
+  }
   render() {
     const { slide, value, bodyHeight, portrait, tablet } = this.props
     const slideHeight =
@@ -48,7 +53,11 @@ export default class SliderItem extends Component {
         activeOpacity={1}
         underlayColor={'transparent'}
         style={[styles.slide, { height: slideHeight }]}
-        onPress={this.props.onPress}
+        onPress={() =>
+          setTimeout(() => {
+            this.props.onPress()
+          }, 0)
+        }
         onHideUnderlay={() => this.togglePressedState(false)}
         onShowUnderlay={() => this.togglePressedState(true)}
         accessibilityLabel={value === slide.value ? 'selected' : 'deselected'}
@@ -65,7 +74,6 @@ export default class SliderItem extends Component {
               !tablet && !portrait ? { marginTop: 5 } : { marginTop: 10 }
             ]}
           />
-
           <View
             id="icon-view"
             style={[
@@ -84,7 +92,7 @@ export default class SliderItem extends Component {
 
           <View
             style={[
-              portrait ? { height: textAreaHeight } : {},
+              { height: textAreaHeight },
               tablet && !portrait ? styles.textVertical : { paddingBottom: 15 }
             ]}
             onStartShouldSetResponder={() => true}
@@ -92,11 +100,11 @@ export default class SliderItem extends Component {
             <ScrollView
               contentContainerStyle={{
                 flexGrow: 1,
-                height: this.textContentHeight,
-                paddingBottom: 50
+                paddingBottom: 40
               }}
             >
               <Text
+                onPress={() => this.pressText()}
                 onLayout={event => this.calculateTextContentHeight(event)}
                 style={[
                   {

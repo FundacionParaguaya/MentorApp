@@ -9,6 +9,7 @@ import {
   TouchableHighlight,
   NetInfo
 } from 'react-native'
+import Geolocation from '@react-native-community/geolocation'
 /* eslint-disable import/named */
 import { GooglePlacesAutocomplete } from 'react-native-google-places-autocomplete'
 /* eslint-enable import/named */
@@ -40,7 +41,8 @@ export class Location extends Component {
     errorsDetected: [],
     centeringMap: false, // while map is centering we show a different spinner
     loading: true,
-    showForm: false
+    showForm: false,
+    cachedMapPacks: []
   }
 
   errorsDetected = []
@@ -91,8 +93,6 @@ export class Location extends Component {
 
   // if the user has draged the map and the draft has stored some coordinates
   setCoordinatesFromDraft = (isOnline, draft) => {
-    const { survey } = this.props.nav
-
     this.setState({
       latitude: parseFloat(this.getFieldValue(draft, 'latitude')),
       longitude: parseFloat(this.getFieldValue(draft, 'longitude')),
@@ -102,16 +102,123 @@ export class Location extends Component {
     })
 
     if (!isOnline) {
-      if (survey.title === 'Chile - Geco') {
+      const isLocationInBoundaries = this.state.cachedMapPacks.length
+        ? this.isUserLocationWithinMapPackBounds(
+            parseFloat(this.getFieldValue(draft, 'longitude')),
+            parseFloat(this.getFieldValue(draft, 'latitude')),
+            this.state.cachedMapPacks.map(pack => pack.bounds)
+          )
+        : false
+
+      this.setState({
+        showForm: isLocationInBoundaries ? false : true, // false shows map
+        showSearch: false
+      })
+
+      // if (survey.title === 'Chile - Geco') {
+      //   this.setState({
+      //     showSearch: false
+      //   })
+      // } else {
+      //   this.setState({
+      //     showSearch: true
+      //   })
+      // }
+    }
+  }
+
+  getCoordinatesOnline = survey => {
+    Geolocation.getCurrentPosition(
+      // if location is available and we are online center on it
+      position => {
+        const { longitude, latitude, accuracy } = position.coords
         this.setState({
-          showSearch: false
+          loading: false,
+          centeringMap: false,
+          latitude,
+          longitude,
+          accuracy
         })
-      } else {
+        this.addSurveyData(latitude, 'latitude')
+        this.addSurveyData(longitude, 'longitude')
+        this.addSurveyData(accuracy, 'accuracy')
+      },
+      () => {
+        // if no location available reset to survey location only when
+        // no location comes from the draft
+        if (!this.getFieldValue(getDraft(), 'latitude')) {
+          const position = survey.surveyConfig.surveyLocation
+          this.setState({
+            loading: false,
+            centeringMap: false,
+            latitude: position.latitude,
+            longitude: position.longitude,
+            accuracy: 0
+          })
+          this.addSurveyData(position.latitude, 'latitude')
+          this.addSurveyData(position.longitude, 'longitude')
+          this.addSurveyData(0, 'accuracy')
+        } else {
+          this.setState({
+            centeringMap: false
+          })
+        }
+      },
+      {
+        enableHighAccuracy: false,
+        timeout: 10000,
+        maximumAge: 0
+      }
+    )
+  }
+
+  getCoordinatesOffline = () => {
+    /*
+      @ Test coordinates
+        1. Chile, Peldehue, Provincia de Chacabuco
+        lng = -70.654634, lat = -33.1287
+        2. Paraguay, Doctor Carlos Antonio López, 9800 Zona Urbano Cerrito, Paraguay
+        lat = -24.981278, lng = -57.552463
+    */
+
+    Geolocation.getCurrentPosition(
+      // if no offline map is available, but there is location save it
+      position => {
+        const { longitude, latitude, accuracy } = position.coords
+        const isLocationInBoundaries = this.state.cachedMapPacks.length
+          ? this.isUserLocationWithinMapPackBounds(
+              longitude,
+              latitude,
+              this.state.cachedMapPacks.map(pack => pack.bounds)
+            )
+          : false
+
         this.setState({
+          loading: false,
+          centeringMap: false,
+          showForm: isLocationInBoundaries ? false : true,
+          latitude,
+          longitude,
+          accuracy
+        })
+        this.addSurveyData(latitude, 'latitude')
+        this.addSurveyData(longitude, 'longitude')
+        this.addSurveyData(accuracy, 'accuracy')
+      },
+      // otherwise ask for more details
+      () => {
+        this.setState({
+          loading: false,
+          centeringMap: false,
           showForm: true
         })
+      },
+      {
+        enableHighAccuracy: false,
+        timeout: 10000,
+        maximumAge: 0
       }
-    }
+    )
   }
 
   // try getting device location and set map state according to online state
@@ -122,98 +229,47 @@ export class Location extends Component {
       centeringMap: true
     })
 
-    if (isOnline) {
-      navigator.geolocation.getCurrentPosition(
-        // if location is available and we are online center on it
-        position => {
-          this.setState({
-            loading: false,
-            centeringMap: false,
-            latitude: position.coords.latitude,
-            longitude: position.coords.longitude,
-            accuracy: position.coords.accuracy
-          })
-          this.addSurveyData(position.coords.latitude, 'latitude')
-          this.addSurveyData(position.coords.longitude, 'longitude')
-          this.addSurveyData(position.coords.accuracy, 'accuracy')
-        },
-        () => {
-          // if no location available reset to survey location only when
-          // no location comes from the draft
-          if (!this.getFieldValue(getDraft(), 'latitude')) {
-            const position = survey.surveyConfig.surveyLocation
-            this.setState({
-              loading: false,
-              centeringMap: false,
-              latitude: position.latitude,
-              longitude: position.longitude,
-              accuracy: 0
-            })
-            this.addSurveyData(position.latitude, 'latitude')
-            this.addSurveyData(position.longitude, 'longitude')
-            this.addSurveyData(0, 'accuracy')
-          } else {
-            this.setState({
-              centeringMap: false
-            })
-          }
-        },
-        {
-          enableHighAccuracy: false,
-          timeout: 10000,
-          maximumAge: 0
-        }
-      )
-    } else {
-      // if offline map is available center on it
-      if (survey.title === 'Chile - Geco') {
-        const position = survey.surveyConfig.surveyLocation
-        this.setState({
-          showSearch: false,
-          loading: false,
-          centeringMap: false,
-          latitude: position.latitude,
-          longitude: position.longitude,
-          accuracy: 0
-        })
-        this.addSurveyData(position.latitude, 'latitude')
-        this.addSurveyData(position.longitude, 'longitude')
-        this.addSurveyData(0, 'accuracy')
+    isOnline ? this.getCoordinatesOnline(survey) : this.getCoordinatesOffline()
+  }
+
+  isUserLocationWithinMapPackBounds(longitude, latitude, packs) {
+    return packs.some(packBoundaries => {
+      const neLng = packBoundaries[0][0]
+      const neLat = packBoundaries[0][1]
+      const swLng = packBoundaries[1][0]
+      const swLat = packBoundaries[1][1]
+
+      const eastBound = longitude <= neLng
+      const westBound = longitude >= swLng
+      let inLong
+      if (neLng <= swLng) {
+        inLong = eastBound || westBound
       } else {
-        navigator.geolocation.getCurrentPosition(
-          // if no offline map is available, but there is location save it
-          position => {
-            this.setState({
-              loading: false,
-              centeringMap: false,
-              showForm: true,
-              latitude: position.coords.latitude,
-              longitude: position.coords.longitude,
-              accuracy: position.coords.accuracy
-            })
-            this.addSurveyData(position.coords.latitude, 'latitude')
-            this.addSurveyData(position.coords.longitude, 'longitude')
-            this.addSurveyData(position.coords.accuracy, 'accuracy')
-          },
-          // otherwise ask for more details
-          () => {
-            this.setState({
-              loading: false,
-              centeringMap: false,
-              showForm: true
-            })
-          },
-          {
-            enableHighAccuracy: false,
-            timeout: 10000,
-            maximumAge: 0
-          }
-        )
+        inLong = eastBound && westBound
       }
-    }
+
+      const inLat = latitude >= swLat && latitude <= neLat
+      return inLat && inLong
+    })
+  }
+
+  getMapOfflinePacks() {
+    MapboxGL.offlineManager
+      .getPacks()
+      .then(packs => {
+        if (packs.length) {
+          packs.map(offlinePack => {
+            this.setState({
+              cachedMapPacks: [...this.state.cachedMapPacks, offlinePack]
+            })
+          })
+        }
+      })
+      .catch(() => {})
   }
 
   componentDidMount() {
+    this.getMapOfflinePacks()
     const { survey } = this.props.nav
     // set search location keyboard events
     this.keyboardDidShowListener = Keyboard.addListener(
@@ -345,7 +401,7 @@ export class Location extends Component {
         <View style={[globalStyles.container, styles.placeholder]}>
           <ActivityIndicator
             style={styles.spinner}
-            size={80}
+            size="large"
             color={colors.palered}
           />
           {!readonly && (
