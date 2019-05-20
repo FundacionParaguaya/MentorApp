@@ -55,6 +55,9 @@ export class Family extends Component {
     )
   ]
   componentDidMount() {
+    const { survey } = this.props.nav
+    const { navigation } = this.props
+
     // monitor for connection changes
     NetInfo.addEventListener('connectionChange', conncection => {
       const isOnline = conncection.type === 'none' ? false : true
@@ -69,6 +72,16 @@ export class Family extends Component {
     this.props.navigation.setParams({
       withoutCloseButton: true
     })
+
+    if (typeof survey !== 'undefined') {
+      this.props.updateNav({
+        survey: this.props.surveys.find(
+          item => item.id === this.familyLifemap.surveyId
+        ),
+        draftId: navigation.getParam('draftId'),
+        readonly: true
+      })
+    }
   }
   handleResumeClick = () => {
     const { navigation } = this.props
@@ -90,7 +103,6 @@ export class Family extends Component {
     const { activeTab } = this.state
     const { t, navigation } = this.props
     const { familyData } = this.familyLifemap
-
     return (
       <ScrollView
         style={globalStyles.background}
@@ -315,7 +327,8 @@ Family.propTypes = {
   surveys: PropTypes.array,
   navigation: PropTypes.object.isRequired,
   t: PropTypes.func,
-  updateNav: PropTypes.func.isRequired
+  updateNav: PropTypes.func.isRequired,
+  nav: PropTypes.object.isRequired
 }
 
 const styles = StyleSheet.create({
@@ -396,7 +409,7 @@ const styles = StyleSheet.create({
 const mapDispatchToProps = {
   updateNav
 }
-const mapStateToProps = ({ surveys }) => ({ surveys })
+const mapStateToProps = ({ nav, surveys }) => ({ nav, surveys })
 
 export default withNamespaces()(
   connect(

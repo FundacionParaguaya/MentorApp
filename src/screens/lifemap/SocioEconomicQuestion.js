@@ -49,7 +49,7 @@ export class SocioEconomicQuestion extends Component {
           !!question.conditions &&
           question.conditions.length &&
           !!question.forFamilyMember &&
-          question.conditions[0].codeName === 'birthdate'
+          question.conditions[0].codeName.toLocaleLowerCase() === 'birthdate'
             ? draft.familyData.familyMembersList.filter(
                 member => !!this.isConditionMet(question, member)
               ).length
@@ -153,6 +153,42 @@ export class SocioEconomicQuestion extends Component {
     this.props.addSurveyData(this.props.nav.draftId, 'economicSurveyDataList', {
       [field]: text
     })
+
+    const draft = this.props.navigation.getParam('family') || getDraft()
+    const socioEconomics = this.props.navigation.getParam('socioEconomics')
+    const questionsForThisScreen = socioEconomics
+      ? socioEconomics.questionsPerScreen[socioEconomics.currentScreen - 1]
+      : []
+
+    let qustionToFiler = []
+    if (draft.economicSurveyDataList.length) {
+      questionsForThisScreen.forFamily.forEach(ele => {
+        if (typeof ele.conditions !== 'undefined') {
+          if (ele.conditions.length) {
+            draft.economicSurveyDataList.forEach(element => {
+              if (element.key === ele.codeName) {
+                qustionToFiler.push(ele)
+              }
+            })
+          }
+        }
+      })
+    }
+    if (qustionToFiler.length) {
+      qustionToFiler.forEach(elem => {
+        elem.conditions.forEach(ele => {
+          if (ele.codeName === field) {
+            if (ele.value !== text) {
+              draft.economicSurveyDataList.forEach((element, index) => {
+                if (elem.codeName === element.key) {
+                  draft.economicSurveyDataList.splice(index, 1)
+                }
+              })
+            }
+          }
+        })
+      })
+    }
   }
   addSurveyDataOtherField = (text, field) => {
     const draft = this.props.navigation.getParam('family') || getDraft()
@@ -262,12 +298,14 @@ export class SocioEconomicQuestion extends Component {
   isConditionMet = (question, familyMember = false) => {
     const { codeName, value, operator } = question.conditions[0]
     const draft = getDraft()
-    if (codeName === 'birthdate' && familyMember) {
-      return this.checkCondition(
-        this.calculateAge(familyMember.birthDate),
-        value,
-        operator
-      )
+    if (codeName.toLocaleLowerCase() === 'birthdate' && familyMember) {
+      return !!familyMember.birthDate
+        ? this.checkCondition(
+            parseInt(this.calculateAge(familyMember.birthDate)),
+            parseInt(value),
+            operator
+          )
+        : true
     } else {
       const answeredQuestions = draft.economicSurveyDataList || []
       const userAnswer = answeredQuestions.find(
@@ -305,7 +343,6 @@ export class SocioEconomicQuestion extends Component {
         <Text style={styles.memberName}>{member.firstName}</Text>
       ) : null
     }
-
     return (
       <StickyFooter
         handleClick={this.submitForm}
@@ -411,7 +448,7 @@ export class SocioEconomicQuestion extends Component {
                   />
                 )
               } else {
-                ;<TextInput
+                <TextInput
                   multiline
                   key={question.codeName}
                   required={question.required}

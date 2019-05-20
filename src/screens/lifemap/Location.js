@@ -7,7 +7,8 @@ import {
   Image,
   Keyboard,
   TouchableHighlight,
-  NetInfo
+  NetInfo,
+  AppState
 } from 'react-native'
 import Geolocation from '@react-native-community/geolocation'
 /* eslint-disable import/named */
@@ -42,7 +43,8 @@ export class Location extends Component {
     centeringMap: false, // while map is centering we show a different spinner
     loading: true,
     showForm: false,
-    cachedMapPacks: []
+    cachedMapPacks: [],
+    appState: AppState.currentState
   }
 
   errorsDetected = []
@@ -93,7 +95,6 @@ export class Location extends Component {
 
   // if the user has draged the map and the draft has stored some coordinates
   setCoordinatesFromDraft = (isOnline, draft) => {
-    const { survey } = this.props.nav
     this.setState({
       latitude: parseFloat(this.getFieldValue(draft, 'latitude')),
       longitude: parseFloat(this.getFieldValue(draft, 'longitude')),
@@ -105,25 +106,103 @@ export class Location extends Component {
     if (!isOnline) {
       const isLocationInBoundaries = this.state.cachedMapPacks.length
         ? this.isUserLocationWithinMapPackBounds(
-            [
-              parseFloat(this.getFieldValue(draft, 'longitude')),
-              parseFloat(this.getFieldValue(draft, 'latitude'))
-            ],
+            parseFloat(this.getFieldValue(draft, 'longitude')),
+            parseFloat(this.getFieldValue(draft, 'latitude')),
             this.state.cachedMapPacks.map(pack => pack.bounds)
           )
         : false
 
-      if (survey.title && survey.title === 'Chile - Geco') {
-        this.setState({
-          showSearch: false
-        })
-      } else {
-        this.setState({
-          showForm: isLocationInBoundaries ? false : true, // false shows map
-          showSearch: false
-        })
-      }
+      this.setState({
+        showForm: isLocationInBoundaries ? false : true, // false shows map
+        showSearch: false
+      })
     }
+  }
+
+  getCoordinatesOnline = survey => {
+    Geolocation.getCurrentPosition(
+      // if location is available and we are online center on it
+      position => {
+        const { longitude, latitude, accuracy } = position.coords
+        this.setState({
+          loading: false,
+          centeringMap: false,
+          latitude,
+          longitude,
+          accuracy
+        })
+        this.addSurveyData(latitude, 'latitude')
+        this.addSurveyData(longitude, 'longitude')
+        this.addSurveyData(accuracy, 'accuracy')
+      },
+      () => {
+        // if no location available reset to survey location only when
+        // no location comes from the draft
+        if (!this.getFieldValue(getDraft(), 'latitude')) {
+          const position = survey.surveyConfig.surveyLocation
+          this.setState({
+            loading: false,
+            centeringMap: false,
+            latitude: position.latitude,
+            longitude: position.longitude,
+            accuracy: 0
+          })
+          this.addSurveyData(position.latitude, 'latitude')
+          this.addSurveyData(position.longitude, 'longitude')
+          this.addSurveyData(0, 'accuracy')
+        } else {
+          this.setState({
+            centeringMap: false
+          })
+        }
+      },
+      {
+        enableHighAccuracy: false,
+        timeout: 10000,
+        maximumAge: 0
+      }
+    )
+  }
+
+  getCoordinatesOffline = () => {
+    Geolocation.getCurrentPosition(
+      // if no offline map is available, but there is location save it
+      position => {
+        const { longitude, latitude, accuracy } = position.coords
+        const isLocationInBoundaries = this.state.cachedMapPacks.length
+          ? this.isUserLocationWithinMapPackBounds(
+              longitude,
+              latitude,
+              this.state.cachedMapPacks.map(pack => pack.bounds)
+            )
+          : false
+
+        this.setState({
+          loading: false,
+          centeringMap: false,
+          showForm: isLocationInBoundaries ? false : true,
+          latitude,
+          longitude,
+          accuracy
+        })
+        this.addSurveyData(latitude, 'latitude')
+        this.addSurveyData(longitude, 'longitude')
+        this.addSurveyData(accuracy, 'accuracy')
+      },
+      // otherwise ask for more details
+      () => {
+        this.setState({
+          loading: false,
+          centeringMap: false,
+          showForm: true
+        })
+      },
+      {
+        enableHighAccuracy: false,
+        timeout: 10000,
+        maximumAge: 0
+      }
+    )
   }
 
   // try getting device location and set map state according to online state
@@ -134,143 +213,26 @@ export class Location extends Component {
       centeringMap: true
     })
 
-    if (isOnline) {
-      Geolocation.getCurrentPosition(
-        // if location is available and we are online center on it
-        position => {
-          this.setState({
-            loading: false,
-            centeringMap: false,
-            latitude: position.coords.latitude,
-            longitude: position.coords.longitude,
-            accuracy: position.coords.accuracy
-          })
-          this.addSurveyData(position.coords.latitude, 'latitude')
-          this.addSurveyData(position.coords.longitude, 'longitude')
-          this.addSurveyData(position.coords.accuracy, 'accuracy')
-        },
-        () => {
-          // if no location available reset to survey location only when
-          // no location comes from the draft
-          if (!this.getFieldValue(getDraft(), 'latitude')) {
-            const position = survey.surveyConfig.surveyLocation
-            this.setState({
-              loading: false,
-              centeringMap: false,
-              latitude: position.latitude,
-              longitude: position.longitude,
-              accuracy: 0
-            })
-            this.addSurveyData(position.latitude, 'latitude')
-            this.addSurveyData(position.longitude, 'longitude')
-            this.addSurveyData(0, 'accuracy')
-          } else {
-            this.setState({
-              centeringMap: false
-            })
-          }
-        },
-        {
-          enableHighAccuracy: false,
-          timeout: 10000,
-          maximumAge: 0
-        }
-      )
-    } else {
-      Geolocation.getCurrentPosition(
-        // if no offline map is available, but there is location save it
-        position => {
-          const positionFromSurvey = survey.surveyConfig.surveyLocation
-          const isLocationInBoundaries = this.state.cachedMapPacks.length
-            ? this.isUserLocationWithinMapPackBounds(
-                [position.coords.latitude, position.coords.longitude],
-                this.state.cachedMapPacks.map(pack => pack.bounds)
-              )
-            : false
-
-          if (survey.title && survey.title === 'Chile - Geco') {
-            this.setState({
-              loading: false,
-              centeringMap: false,
-              showSearch: false,
-              showForm: false,
-              latitude: isLocationInBoundaries
-                ? position.coords.latitude
-                : positionFromSurvey.latitude,
-              longitude: isLocationInBoundaries
-                ? position.coords.longitude
-                : positionFromSurvey.longitude,
-              accuracy: isLocationInBoundaries ? position.coords.accuracy : 0
-            })
-
-            this.addSurveyData(
-              isLocationInBoundaries
-                ? position.coords.latitude
-                : positionFromSurvey.latitude,
-              'latitude'
-            )
-            this.addSurveyData(
-              isLocationInBoundaries
-                ? position.coords.longitude
-                : positionFromSurvey.longitude,
-              'longitude'
-            )
-            this.addSurveyData(
-              isLocationInBoundaries ? position.coords.accuracy : 0,
-              'accuracy'
-            )
-          } else {
-            this.setState({
-              loading: false,
-              centeringMap: false,
-              showForm: isLocationInBoundaries ? false : true,
-              latitude: position.coords.latitude,
-              longitude: position.coords.longitude,
-              accuracy: position.coords.accuracy
-            })
-            this.addSurveyData(position.coords.latitude, 'latitude')
-            this.addSurveyData(position.coords.longitude, 'longitude')
-            this.addSurveyData(position.coords.accuracy, 'accuracy')
-          }
-        },
-        // otherwise ask for more details
-        () => {
-          this.setState({
-            loading: false,
-            centeringMap: false,
-            showForm: true
-          })
-        },
-        {
-          enableHighAccuracy: false,
-          timeout: 10000,
-          maximumAge: 0
-        }
-      )
-    }
+    isOnline ? this.getCoordinatesOnline(survey) : this.getCoordinatesOffline()
   }
 
-  isUserLocationWithinMapPackBounds(point, packs) {
-    const longitude = point[0]
-    const latitude = point[1]
-
+  isUserLocationWithinMapPackBounds(longitude, latitude, packs) {
     return packs.some(packBoundaries => {
       const neLng = packBoundaries[0][0]
       const neLat = packBoundaries[0][1]
       const swLng = packBoundaries[1][0]
       const swLat = packBoundaries[1][1]
 
-      const eastBound = longitude < neLng
-      const westBound = longitude > swLng
+      const eastBound = longitude <= neLng
+      const westBound = longitude >= swLng
       let inLong
-
-      if (neLng < swLng) {
+      if (neLng <= swLng) {
         inLong = eastBound || westBound
       } else {
         inLong = eastBound && westBound
       }
 
-      const inLat = latitude > swLat && latitude < neLat
+      const inLat = latitude >= swLat && latitude <= neLat
       return inLat && inLong
     })
   }
@@ -290,7 +252,18 @@ export class Location extends Component {
       .catch(() => {})
   }
 
+  _handleAppStateChange = nextAppState => {
+    if (
+      this.state.appState.match(/inactive|background/) &&
+      nextAppState === 'active'
+    ) {
+      this.props.navigation.replace('Location')
+    }
+    this.setState({ appState: nextAppState })
+  }
+
   componentDidMount() {
+    AppState.addEventListener('change', this._handleAppStateChange)
     this.getMapOfflinePacks()
     const { survey } = this.props.nav
     // set search location keyboard events
@@ -361,6 +334,7 @@ export class Location extends Component {
     }
   }
   componentWillUnmount() {
+    AppState.removeEventListener('change', this._handleAppStateChange)
     this.keyboardDidShowListener.remove()
     this.keyboardDidHideListener.remove()
   }
@@ -404,7 +378,6 @@ export class Location extends Component {
   render() {
     const { t } = this.props
     const { survey, readonly } = this.props.nav
-
     const {
       latitude,
       longitude,
@@ -417,7 +390,6 @@ export class Location extends Component {
     } = this.state
 
     const draft = this.props.navigation.getParam('family') || getDraft()
-
     if (loading) {
       return (
         <View style={[globalStyles.container, styles.placeholder]}>
@@ -472,36 +444,15 @@ export class Location extends Component {
               styles={{
                 container: styles.search,
                 listView: {
-                  backgroundColor: colors.white,
                   display: this.state.showList ? 'flex' : 'none',
-                  marginHorizontal: 9,
-                  marginTop: 8
+                  ...styles.autoCompleteListView
                 },
-                textInputContainer: {
-                  backgroundColor: 'transparent',
-                  borderBottomWidth: 0,
-                  borderTopWidth: 0,
-                  alignItems: 'center',
-                  flexDirection: 'row'
-                },
-                description: {
-                  fontWeight: 'bold'
-                },
-                predefinedPlacesDescription: {
-                  color: '#1faadb'
-                },
-                textInput: {
-                  height: 52,
-                  backgroundColor: '#fff',
-                  borderRadius: 2,
-                  borderWidth: 1,
-                  borderColor: colors.lightgrey,
-                  fontFamily: 'Roboto',
-                  fontSize: 16,
-                  lineHeight: 21,
-                  color: colors.lightdark
-                }
+                textInputContainer: styles.autoCompleteTextInputContainer,
+                description: styles.autoCompleteDescription,
+                predefinedPlacesDescription: styles.predefinedPlacesDescription,
+                textInput: styles.autoCompleteTextInput,
               }}
+              placeholderTextColor={colors.grey}
               currentLocation={false}
             />
           )}
@@ -707,5 +658,34 @@ const styles = StyleSheet.create({
   },
   spinner: {
     marginBottom: 15
+  },
+  autoCompleteTextInputContainer: {
+    backgroundColor: 'transparent',
+    borderBottomWidth: 0,
+    borderTopWidth: 0,
+    alignItems: 'center',
+    flexDirection: 'row'
+  },
+  autoCompleteDescription: {
+    fontWeight: 'bold'
+  },
+  predefinedPlacesDescription: {
+    color: '#1faadb'
+  },
+  autoCompleteTextInput: {
+    height: 52,
+    backgroundColor: '#fff',
+    borderRadius: 2,
+    borderWidth: 1,
+    borderColor: colors.lightgrey,
+    fontFamily: 'Roboto',
+    fontSize: 16,
+    lineHeight: 21,
+    color: colors.grey
+  },
+  autoCompleteListView: {
+    backgroundColor: colors.white,
+    marginHorizontal: 9,
+    marginTop: 8
   }
 })
