@@ -160,71 +160,89 @@ export class FamilyParticipant extends Component {
   getFieldValue = (draft, field) => {
     if (!draft) {
       return
+    } else if (typeof draft !== 'undefined' && draft !== 'null') {
+      if (
+        typeof draft.familyData !== 'undefined' &&
+        draft.familyData !== 'null'
+      ) {
+        return draft.familyData.familyMembersList[0][field]
+      }
     }
-
-    return draft.familyData.familyMembersList[0][field]
   }
 
   getFamilyCount = draft => {
     if (!draft) {
       return
+    } else if (typeof draft !== 'undefined' && draft !== 'null') {
+      if (
+        typeof draft.familyData !== 'undefined' &&
+        draft.familyData !== 'null'
+      ) {
+        return draft.familyData.countFamilyMembers
+      }
     }
-    return draft.familyData.countFamilyMembers
   }
 
   addSurveyData = (text, field) => {
     let draft = this.props.drafts.find(draft => draft.draftId === this.draftId)
-    let primaryParticipantDraft = (primaryParticipantDraft =
-      draft.familyData.familyMembersList[0])
-    const { survey } = this.props.nav
-    let genderValues = survey.surveyConfig.gender
-    if (field === 'gender') {
-      let otherTypeGender
-      genderValues.forEach(ele => {
-        if (typeof ele.otherOption !== undefined) {
-          if (ele.otherOption) {
-            otherTypeGender = ele.value
+    if (typeof draft !== 'undefined' && draft !== 'null') {
+      if (
+        typeof draft.familyData !== 'undefined' &&
+        draft.familyData !== 'null'
+      ) {
+        let primaryParticipantDraft = draft.familyData.familyMembersList[0]
+        const { survey } = this.props.nav
+        let genderValues = survey.surveyConfig.gender
+        if (field === 'gender') {
+          let otherTypeGender
+          genderValues.forEach(ele => {
+            if (typeof ele.otherOption !== undefined) {
+              if (ele.otherOption) {
+                otherTypeGender = ele.value
+              }
+            }
+          })
+
+          if (
+            otherTypeGender === this.getFieldValue(draft, 'gender') &&
+            text !== 'O'
+          ) {
+            delete primaryParticipantDraft.customGender
           }
         }
-      })
 
-      if (
-        otherTypeGender === this.getFieldValue(draft, 'gender') &&
-        text !== 'O'
-      ) {
-        delete primaryParticipantDraft.customGender
-      }
-    }
+        if (field === 'documentType') {
+          let otherTypeDocumentNumber
+          let docValues = survey.surveyConfig.documentType
+          docValues.forEach(ele => {
+            if (typeof ele.otherOption !== undefined) {
+              if (ele.otherOption) {
+                otherTypeDocumentNumber = ele.value
+              }
+            }
+          })
 
-    if (field === 'documentType') {
-      let otherTypeDocumentNumber
-      let docValues = survey.surveyConfig.documentType
-      docValues.forEach(ele => {
-        if (typeof ele.otherOption !== undefined) {
-          if (ele.otherOption) {
-            otherTypeDocumentNumber = ele.value
+          if (
+            otherTypeDocumentNumber ===
+              this.getFieldValue(draft, 'documentType') &&
+            text !== this.getFieldValue(draft, 'documentType')
+          ) {
+            delete primaryParticipantDraft.customDocumentType
           }
         }
-      })
 
-      if (
-        otherTypeDocumentNumber === this.getFieldValue(draft, 'documentType') &&
-        text !== this.getFieldValue(draft, 'documentType')
-      ) {
-        delete primaryParticipantDraft.customDocumentType
+        this.props.addSurveyFamilyMemberData({
+          id: this.draftId,
+          index: 0,
+          payload: {
+            [field]: text
+          }
+        })
+
+        if (this.errorsDetected.length) {
+          this.props.updateNav('deleteDraftOnExit', true)
+        }
       }
-    }
-
-    this.props.addSurveyFamilyMemberData({
-      id: this.draftId,
-      index: 0,
-      payload: {
-        [field]: text
-      }
-    })
-
-    if (this.errorsDetected.length) {
-      this.props.updateNav('deleteDraftOnExit', true)
     }
   }
 
