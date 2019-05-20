@@ -78,7 +78,6 @@ export class Family extends Component {
     const { activeTab } = this.state
     const { t, navigation } = this.props
     const { familyData } = this.familyLifemap
-
     return (
       <ScrollView
         style={globalStyles.background}
