@@ -35,7 +35,7 @@ export class FamilyMember extends Component {
   render() {
     const { t } = this.props
     const member = this.props.navigation.getParam('member')
-    console.log('here idk')
+
     return (
       <View style={[globalStyles.background, styles.contentContainer]}>
         <TextInput

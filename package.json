@@ -1,6 +1,6 @@
 {
   "name": "PovertyStoplightApp",
-  "version": "1.8.1",
+  "version": "1.8.2",
   "private": true,
   "scripts": {
     "start": "node node_modules/react-native/local-cli/cli.js start -- --reset-cache",
@@ -66,7 +66,9 @@
   },
   "jest": {
     "preset": "react-native",
-    "setupTestFrameworkScriptFile": "<rootDir>/testing/config.js",
+    "setupFilesAfterEnv": [
+      "<rootDir>/testing/config.js"
+    ],
     "moduleNameMapper": {
       "\\.(jpg|JPG|jpeg|png|gif|eot|otf|webp|svg|ttf|woff|woff2|mp4|webm|wav|mp3|m4a|aac|oga)$": "<rootDir>testing/assetsTransformer.js",
       "\\.(css|less)$": "<rootDir>testing/assetsTransformer.js"

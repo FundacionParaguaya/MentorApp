@@ -1,5 +1,28 @@
 # Change Log
 
+## [v1.8.2](https://github.com/FundacionParaguaya/MentorApp/tree/v1.8.2) (2019-05-17)
+[Full Changelog](https://github.com/FundacionParaguaya/MentorApp/compare/v1.8.1...v1.8.2)
+
+**Implemented enhancements:**
+
+- If device location outside cached map, show form [\#665](https://github.com/FundacionParaguaya/MentorApp/issues/665)
+
+**Fixed bugs:**
+
+- App Icon not showing anymore [\#534](https://github.com/FundacionParaguaya/MentorApp/issues/534)
+
+**Closed issues:**
+
+- Downloading whole countries offline [\#666](https://github.com/FundacionParaguaya/MentorApp/issues/666)
+- CHANGE HARD CODED MAP FOR GECO SURVEY [\#664](https://github.com/FundacionParaguaya/MentorApp/issues/664)
+- What´s a breaking change? [\#641](https://github.com/FundacionParaguaya/MentorApp/issues/641)
+
+**Merged pull requests:**
+
+- Updated Geco coords [\#675](https://github.com/FundacionParaguaya/MentorApp/pull/675) ([Danman7](https://github.com/Danman7))
+- fix \#534 fixed icon not appearing [\#671](https://github.com/FundacionParaguaya/MentorApp/pull/671) ([zommerberg](https://github.com/zommerberg))
+- 665 location offline [\#669](https://github.com/FundacionParaguaya/MentorApp/pull/669) ([vasildimitroffhristoff](https://github.com/vasildimitroffhristoff))
+
 ## [v1.8.1](https://github.com/FundacionParaguaya/MentorApp/tree/v1.8.1) (2019-05-15)
 [Full Changelog](https://github.com/FundacionParaguaya/MentorApp/compare/v1.8.0...v1.8.1)
 
