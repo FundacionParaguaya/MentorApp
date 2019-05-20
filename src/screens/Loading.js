@@ -67,6 +67,26 @@ export class Loading extends Component {
   isSurveyInSynced = title =>
     this.props.surveys.some(survey => survey.title && survey.title === title)
 
+  downloadOfflineMapPack = (options, name) => {
+    MapboxGL.offlineManager.getPack('GECO').then(pack => {
+      if (!pack) {
+        MapboxGL.offlineManager.createPack(
+          {
+            name,
+            styleURL: MapboxGL.StyleURL.Street,
+            ...options
+          },
+          this.onMapDownloadProgress,
+          this.onMapDownloadError
+        )
+      } else {
+        this.setState({
+          offlineRegionStatus: { percentage: 100 }
+        })
+      }
+    })
+  }
+
   downloadMapData = () => {
     this.setState({
       downloadingMap: true
@@ -79,48 +99,22 @@ export class Loading extends Component {
     ) {
       // check for the GECO pack
       if (this.isSurveyInSynced('Chile - Geco')) {
-        MapboxGL.offlineManager.getPack('GECO').then(pack => {
-          if (!pack) {
-            MapboxGL.offlineManager.createPack(
-              {
-                name: 'GECO',
-                styleURL: MapboxGL.StyleURL.Street,
-                minZoom: 10,
-                maxZoom: 13,
-                bounds: [[-71.0187, -33.687], [-70.3036, -33.1287]]
-              },
-              this.onMapDownloadProgress,
-              this.onMapDownloadError
-            )
-          } else {
-            this.setState({
-              offlineRegionStatus: { percentage: 100 }
-            })
-          }
-        })
+        const options = {
+          minZoom: 10,
+          maxZoom: 13,
+          bounds: [[-70.6626, -24.1093], [-69.7407, -22.7571]]
+        }
+        this.downloadOfflineMapPack(options, 'GECO')
       }
 
       // check for Cerrito pack
       if (this.isSurveyInSynced('Paraguay - Demo, FUPA')) {
-        MapboxGL.offlineManager.getPack('Cerrito').then(pack => {
-          if (!pack) {
-            MapboxGL.offlineManager.createPack(
-              {
-                name: 'Cerrito',
-                styleURL: MapboxGL.StyleURL.Street,
-                minZoom: 14,
-                maxZoom: 18,
-                bounds: [[-57.606658, -24.92751], [-57.48788, -24.997528]]
-              },
-              this.onMapDownloadProgress,
-              this.onMapDownloadError
-            )
-          } else {
-            this.setState({
-              offlineRegionStatus: { percentage: 100 }
-            })
-          }
-        })
+        const options = {
+          minZoom: 14,
+          maxZoom: 18,
+          bounds: [[-57.606658, -24.92751], [-57.48788, -24.997528]]
+        }
+        this.downloadOfflineMapPack(options, 'Cerrito')
       }
     } else {
       this.handleImageCaching()
