@@ -7,7 +7,8 @@ import {
   Image,
   Keyboard,
   TouchableHighlight,
-  NetInfo
+  NetInfo,
+  AppState
 } from 'react-native'
 import Geolocation from '@react-native-community/geolocation'
 /* eslint-disable import/named */
@@ -42,7 +43,8 @@ export class Location extends Component {
     centeringMap: false, // while map is centering we show a different spinner
     loading: true,
     showForm: false,
-    cachedMapPacks: []
+    cachedMapPacks: [],
+    appState: AppState.currentState
   }
 
   errorsDetected = []
@@ -250,7 +252,18 @@ export class Location extends Component {
       .catch(() => {})
   }
 
+  _handleAppStateChange = nextAppState => {
+    if (
+      this.state.appState.match(/inactive|background/) &&
+      nextAppState === 'active'
+    ) {
+      this.props.navigation.replace('Location')
+    }
+    this.setState({ appState: nextAppState })
+  }
+
   componentDidMount() {
+    AppState.addEventListener('change', this._handleAppStateChange)
     this.getMapOfflinePacks()
     const { survey } = this.props.nav
     // set search location keyboard events
@@ -321,6 +334,7 @@ export class Location extends Component {
     }
   }
   componentWillUnmount() {
+    AppState.removeEventListener('change', this._handleAppStateChange)
     this.keyboardDidShowListener.remove()
     this.keyboardDidHideListener.remove()
   }
@@ -364,7 +378,6 @@ export class Location extends Component {
   render() {
     const { t } = this.props
     const { survey, readonly } = this.props.nav
-
     const {
       latitude,
       longitude,
@@ -377,7 +390,6 @@ export class Location extends Component {
     } = this.state
 
     const draft = this.props.navigation.getParam('family') || getDraft()
-
     if (loading) {
       return (
         <View style={[globalStyles.container, styles.placeholder]}>
