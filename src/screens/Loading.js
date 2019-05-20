@@ -22,7 +22,6 @@ export class Loading extends Component {
     syncingServerData: false, // know when to show that data is synced
     cachingImages: false,
     downloadingMap: false,
-    cachingImages: false,
     offlineRegionStatus: null,
     mapDownloadError: null
   }
@@ -68,7 +67,7 @@ export class Loading extends Component {
     this.props.surveys.some(survey => survey.title && survey.title === title)
 
   downloadOfflineMapPack = (options, name) => {
-    MapboxGL.offlineManager.getPack('GECO').then(pack => {
+    MapboxGL.offlineManager.getPack(name).then(pack => {
       if (!pack) {
         MapboxGL.offlineManager.createPack(
           {
@@ -95,7 +94,7 @@ export class Loading extends Component {
     // download GECO map is that survey is in the synced ones
     if (
       this.isSurveyInSynced('Chile - Geco') ||
-      this.isSurveyInSynced('Paraguay - Demo, FUPA')
+      this.isSurveyInSynced('Paraguay - Activate, FUPA')
     ) {
       // check for the GECO pack
       if (this.isSurveyInSynced('Chile - Geco')) {
@@ -108,7 +107,7 @@ export class Loading extends Component {
       }
 
       // check for Cerrito pack
-      if (this.isSurveyInSynced('Paraguay - Demo, FUPA')) {
+      if (this.isSurveyInSynced('Paraguay - Activate, FUPA')) {
         const options = {
           minZoom: 10,
           maxZoom: 13,

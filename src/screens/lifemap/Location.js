@@ -114,16 +114,6 @@ export class Location extends Component {
         showForm: isLocationInBoundaries ? false : true, // false shows map
         showSearch: false
       })
-
-      // if (survey.title === 'Chile - Geco') {
-      //   this.setState({
-      //     showSearch: false
-      //   })
-      // } else {
-      //   this.setState({
-      //     showSearch: true
-      //   })
-      // }
     }
   }
 
