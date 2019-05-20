@@ -49,7 +49,7 @@ export class SocioEconomicQuestion extends Component {
           !!question.conditions &&
           question.conditions.length &&
           !!question.forFamilyMember &&
-          question.conditions[0].codeName === 'birthdate'
+          question.conditions[0].codeName.toLocaleLowerCase() === 'birthdate'
             ? draft.familyData.familyMembersList.filter(
                 member => !!this.isConditionMet(question, member)
               ).length
@@ -298,12 +298,14 @@ export class SocioEconomicQuestion extends Component {
   isConditionMet = (question, familyMember = false) => {
     const { codeName, value, operator } = question.conditions[0]
     const draft = getDraft()
-    if (codeName === 'birthdate' && familyMember) {
-      return this.checkCondition(
-        this.calculateAge(familyMember.birthDate),
-        value,
-        operator
-      )
+    if (codeName.toLocaleLowerCase() === 'birthdate' && familyMember) {
+      return !!familyMember.birthDate
+        ? this.checkCondition(
+            parseInt(this.calculateAge(familyMember.birthDate)),
+            parseInt(value),
+            operator
+          )
+        : true
     } else {
       const answeredQuestions = draft.economicSurveyDataList || []
       const userAnswer = answeredQuestions.find(

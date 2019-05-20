@@ -1,7 +1,6 @@
 import React from 'react'
 import { shallow } from 'enzyme'
 import { Text } from 'react-native'
-import Select from '../Select'
 import { DateInputComponent } from '../DateInput'
 
 const createTestProps = props => ({
@@ -48,19 +47,14 @@ describe('DateInput Component', () => {
       })
     })
   })
+
   describe('Date validation', () => {
-    it('sets error state to true if date is invalid', () => {
-      wrapper.instance().validateDate()
-
-      expect(wrapper.instance().state.error).toBe(true)
-    })
-
     it('calls detectError with first argument true if date is invalid', () => {
       wrapper.instance().validateDate()
 
       expect(wrapper.instance().props.detectError).toHaveBeenCalledTimes(1)
       expect(wrapper.instance().props.detectError).toHaveBeenCalledWith(
-        true,
+        false,
         'birthDate'
       )
     })
