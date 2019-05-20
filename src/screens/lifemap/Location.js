@@ -432,36 +432,15 @@ export class Location extends Component {
               styles={{
                 container: styles.search,
                 listView: {
-                  backgroundColor: colors.white,
                   display: this.state.showList ? 'flex' : 'none',
-                  marginHorizontal: 9,
-                  marginTop: 8
+                  ...styles.autoCompleteListView
                 },
-                textInputContainer: {
-                  backgroundColor: 'transparent',
-                  borderBottomWidth: 0,
-                  borderTopWidth: 0,
-                  alignItems: 'center',
-                  flexDirection: 'row'
-                },
-                description: {
-                  fontWeight: 'bold'
-                },
-                predefinedPlacesDescription: {
-                  color: '#1faadb'
-                },
-                textInput: {
-                  height: 52,
-                  backgroundColor: '#fff',
-                  borderRadius: 2,
-                  borderWidth: 1,
-                  borderColor: colors.lightgrey,
-                  fontFamily: 'Roboto',
-                  fontSize: 16,
-                  lineHeight: 21,
-                  color: colors.lightdark
-                }
+                textInputContainer: styles.autoCompleteTextInputContainer,
+                description: styles.autoCompleteDescription,
+                predefinedPlacesDescription: styles.predefinedPlacesDescription,
+                textInput: styles.autoCompleteTextInput,
               }}
+              placeholderTextColor={colors.grey}
               currentLocation={false}
             />
           )}
@@ -667,5 +646,34 @@ const styles = StyleSheet.create({
   },
   spinner: {
     marginBottom: 15
+  },
+  autoCompleteTextInputContainer: {
+    backgroundColor: 'transparent',
+    borderBottomWidth: 0,
+    borderTopWidth: 0,
+    alignItems: 'center',
+    flexDirection: 'row'
+  },
+  autoCompleteDescription: {
+    fontWeight: 'bold'
+  },
+  predefinedPlacesDescription: {
+    color: '#1faadb'
+  },
+  autoCompleteTextInput: {
+    height: 52,
+    backgroundColor: '#fff',
+    borderRadius: 2,
+    borderWidth: 1,
+    borderColor: colors.lightgrey,
+    fontFamily: 'Roboto',
+    fontSize: 16,
+    lineHeight: 21,
+    color: colors.grey
+  },
+  autoCompleteListView: {
+    backgroundColor: colors.white,
+    marginHorizontal: 9,
+    marginTop: 8
   }
 })
