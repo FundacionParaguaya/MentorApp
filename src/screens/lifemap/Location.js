@@ -114,16 +114,6 @@ export class Location extends Component {
         showForm: isLocationInBoundaries ? false : true, // false shows map
         showSearch: false
       })
-
-      // if (survey.title === 'Chile - Geco') {
-      //   this.setState({
-      //     showSearch: false
-      //   })
-      // } else {
-      //   this.setState({
-      //     showSearch: true
-      //   })
-      // }
     }
   }
 
@@ -173,14 +163,6 @@ export class Location extends Component {
   }
 
   getCoordinatesOffline = () => {
-    /*
-      @ Test coordinates
-        1. Chile, Peldehue, Provincia de Chacabuco
-        lng = -70.654634, lat = -33.1287
-        2. Paraguay, Doctor Carlos Antonio López, 9800 Zona Urbano Cerrito, Paraguay
-        lat = -24.981278, lng = -57.552463
-    */
-
     Geolocation.getCurrentPosition(
       // if no offline map is available, but there is location save it
       position => {
