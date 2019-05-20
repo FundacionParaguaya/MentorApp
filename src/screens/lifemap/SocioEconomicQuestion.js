@@ -269,7 +269,7 @@ export class SocioEconomicQuestion extends Component {
             parseInt(value),
             operator
           )
-        : false
+        : true
     } else {
       const answeredQuestions = draft.economicSurveyDataList || []
       const userAnswer = answeredQuestions.find(
