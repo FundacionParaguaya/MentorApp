@@ -31,13 +31,15 @@ class Button extends Component {
       handleClick,
       underlined,
       text,
-      style
+      style,
+      testID
     } = this.props
 
     const { pressed } = this.state
 
     return (
       <TouchableHighlight
+        testID={testID}
         style={[
           styles.buttonStyle,
           !colored && !disabled && !outlined && styles.transparent,
@@ -122,6 +124,7 @@ Button.propTypes = {
   underlined: PropTypes.bool,
   outlined: PropTypes.bool,
   icon: PropTypes.string,
+  testID: PropTypes.string,
   disabled: PropTypes.bool,
   style: PropTypes.object
 }

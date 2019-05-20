@@ -183,6 +183,7 @@ export class Login extends Component {
           ) : (
             <Button
               id="login-button"
+              testID="login-button"
               handleClick={() => this.onLogin()}
               text="Login"
               colored
