@@ -19,7 +19,7 @@ import DraftListItem from '../components/DraftListItem'
 import globalStyles from '../globalStyles'
 import { connect } from 'react-redux'
 import colors from '../theme.json'
-
+import Icon from 'react-native-vector-icons/MaterialCommunityIcons'
 export class Dashboard extends Component {
   acessibleComponent = React.createRef()
 
@@ -96,7 +96,6 @@ export class Dashboard extends Component {
 
   render() {
     const { t, drafts } = this.props
-
     const list = drafts.slice().reverse()
     return (
       <ScrollView style={globalStyles.background}>
@@ -107,6 +106,17 @@ export class Dashboard extends Component {
                 <Decoration>
                   <RoundImage source="family" />
                 </Decoration>
+                <View style={{ ...styles.familiesIcon }}>
+                  <Icon
+                    name="face"
+                    style={{ ...styles.familiesIconIcon }}
+                    size={60}
+                  />
+                </View>
+
+                <Text style={{ ...styles.familiesCount }}>
+                  {this.props.families.length} {t('views.families')}
+                </Text>
                 <Button
                   id="create-lifemap"
                   text={t('views.createLifemap')}
@@ -151,8 +161,33 @@ export class Dashboard extends Component {
   }
 }
 const styles = StyleSheet.create({
+  familiesIconIcon: {
+    margin: 'auto'
+  },
+  familiesIcon: {
+    zIndex: 2,
+    justifyContent: 'center',
+    alignItems: 'center',
+    position: 'absolute',
+    top: 174,
+    left: 164,
+    right: 0,
+    bottom: 0,
+    backgroundColor: 'white',
+    width: 80,
+    height: 80,
+    borderRadius: 50
+  },
+  familiesCount: {
+    flex: 1,
+    fontSize: 20,
+    textAlign: 'center',
+    marginBottom: 20,
+    marginTop: 12
+  },
   listTitle: {
     backgroundColor: colors.primary,
+
     height: 41,
     lineHeight: 41,
     flex: 1,
