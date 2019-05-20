@@ -228,7 +228,7 @@ export class Loading extends Component {
           <Text style={globalStyles.subline}>We will be ready soon.</Text>
 
           {syncingServerData && (
-            <View style={styles.sync}>
+            <View style={styles.sync} testID="syncing-surveys">
               <View style={{ flexDirection: 'row' }}>
                 {sync.surveys && (
                   <Icon name="check" color={colors.palegreen} size={18} />

@@ -139,6 +139,7 @@ export class Login extends Component {
           <Text style={globalStyles.h5}>USERNAME</Text>
           <TextInput
             id="username"
+            testID="username-input"
             autoCapitalize="none"
             style={{
               ...styles.input,
@@ -149,6 +150,7 @@ export class Login extends Component {
           <Text style={globalStyles.h5}>PASSWORD</Text>
           <TextInput
             id="password"
+            testID="password-input"
             secureTextEntry
             autoCapitalize="none"
             style={{
@@ -181,6 +183,7 @@ export class Login extends Component {
           ) : (
             <Button
               id="login-button"
+              testID="login-button"
               handleClick={() => this.onLogin()}
               text="Login"
               colored

@@ -10,7 +10,7 @@
     "browser": true,
     "jest/globals": true
   },
-  "plugins": ["react", "import", "react-native", "jest"],
+  "plugins": ["react", "import", "react-native", "jest", "detox"],
   "extends": [
     "eslint:recommended",
     "plugin:react/recommended",
