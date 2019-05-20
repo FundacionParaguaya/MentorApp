@@ -93,7 +93,6 @@ export class Location extends Component {
 
   // if the user has draged the map and the draft has stored some coordinates
   setCoordinatesFromDraft = (isOnline, draft) => {
-    const { survey } = this.props.nav
     this.setState({
       latitude: parseFloat(this.getFieldValue(draft, 'latitude')),
       longitude: parseFloat(this.getFieldValue(draft, 'longitude')),

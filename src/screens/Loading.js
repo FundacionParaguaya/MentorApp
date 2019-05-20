@@ -110,9 +110,9 @@ export class Loading extends Component {
       // check for Cerrito pack
       if (this.isSurveyInSynced('Paraguay - Demo, FUPA')) {
         const options = {
-          minZoom: 14,
-          maxZoom: 18,
-          bounds: [[-57.606658, -24.92751], [-57.48788, -24.997528]]
+          minZoom: 10,
+          maxZoom: 13,
+          bounds: [[-70.6626, -24.1093], [-69.7407, -22.7571]]
         }
         this.downloadOfflineMapPack(options, 'Cerrito')
       }
