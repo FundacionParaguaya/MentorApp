@@ -16,13 +16,9 @@ describe('Login', () => {
     await element(by.id('app-container')).tap()
   })
 
-  it('should be able to click login', async () => {
+  it('should be able to login', async () => {
     await expect(element(by.id('login-button'))).toBeVisible()
 
     await element(by.id('login-button')).tap()
-  })
-
-  it('should sync surveys', async () => {
-    await expect(element(by.id('syncing-surveys'))).toBeVisible()
   })
 })
