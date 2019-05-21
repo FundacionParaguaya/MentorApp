@@ -31,7 +31,7 @@ export class DrawerContent extends Component {
     showErrors: false,
     logingOut: false,
     activeTab: 'Dashboard',
-    drawerContentWidth: 320
+    drawerContentWidth: 304
   }
 
   changeLanguage = lng => {
