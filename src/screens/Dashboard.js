@@ -83,7 +83,22 @@ export class Dashboard extends Component {
         resumeDraft: true
       })
   }
-
+  navigateToSynced = item => {
+    this.props.updateNav({
+      survey: this.props.surveys.find(survey => survey.id === item.surveyId),
+      draftId: item.draftId,
+      readonly: true
+    })
+    this.props.navigation.navigate('Family', {
+      familyName: item.familyData.familyMembersList[0].firstName,
+      familyLifemap: item,
+      draftId: item.draftId,
+      isDraft: !item,
+      survey: this.props.surveys.find(survey =>
+        item ? survey.id === item.surveyId : null
+      )
+    })
+  }
   handleClickOnListItem = item => {
     switch (item.status) {
       case 'Pending sync':
@@ -149,6 +164,9 @@ export class Dashboard extends Component {
                       switch (item.status) {
                         case 'Pending sync':
                           this.navigateToPendingSync(item)
+                          break
+                        case 'Synced':
+                          this.navigateToSynced(item)
                           break
                         default:
                           this.navigateToDraft(item)

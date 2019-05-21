@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { View, StyleSheet, StatusBar, Dimensions } from 'react-native'
+import { View, StyleSheet, Dimensions } from 'react-native'
 import PropTypes from 'prop-types'
 import SplashScreen from 'react-native-splash-screen'
 import { connect } from 'react-redux'
@@ -32,7 +32,7 @@ export class NavWrapper extends Component {
     const { nav, updateNav } = this.props
 
     return this.props.hydration ? (
-      <View style={styles.container}>
+      <View style={styles.container} testID="app-container">
         <RootStack />
 
         {/* Modals */}

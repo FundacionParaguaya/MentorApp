@@ -41,20 +41,23 @@
     "validator": "^10.9.0"
   },
   "devDependencies": {
+    "@babel/polyfill": "^7.4.4",
     "babel-eslint": "^10.0.1",
     "babel-jest": "23.6.0",
     "babel-plugin-transform-inline-environment-variables": "^0.4.3",
     "babel-plugin-transform-remove-console": "^6.9.4",
+    "detox": "^12.8.0",
     "enzyme": "^3.7.0",
     "enzyme-adapter-react-16": "^1.12.1",
     "eslint": "^5.16.0",
+    "eslint-plugin-detox": "^1.0.0",
     "eslint-plugin-import": "^2.14.0",
     "eslint-plugin-jest": "^21.27.2",
     "eslint-plugin-react": "^7.11.1",
     "eslint-plugin-react-native": "^3.5.0",
     "fetch-mock": "^7.2.5",
     "husky": "^1.2.0",
-    "jest": "^23.6.0",
+    "jest": "^24.8.0",
     "jest-enzyme": "^6.1.2",
     "lint-staged": "^8.1.0",
     "metro-react-native-babel-preset": "0.45.3",
@@ -76,6 +79,9 @@
     "transform": {
       "^.+\\.(js)$": "<rootDir>/node_modules/react-native/jest/preprocessor.js"
     },
+    "modulePathIgnorePatterns": [
+      "e2e/"
+    ],
     "transformIgnorePatterns": [
       "node_modules/(?!react-native|react-native-languages|react-navigation|rn-fetch-blob|@react-native-community|@delightfulstudio|react-native-device-info)"
     ]
@@ -95,5 +101,22 @@
     "assets": [
       "assets/fonts"
     ]
+  },
+  "detox": {
+    "configurations": {
+      "android.emu.debug": {
+        "binaryPath": "android/app/build/outputs/apk/debug/app-debug.apk",
+        "build": "cd android && ./gradlew assembleDebug assembleAndroidTest -DtestBuildType=debug && cd ..",
+        "type": "android.emulator",
+        "name": "test"
+      },
+      "android.emu.release": {
+        "binaryPath": "android/app/build/outputs/apk/release/app-release.apk",
+        "build": "cd android && ./gradlew assembleRelease assembleAndroidTest -DtestBuildType=release && cd ..",
+        "type": "android.emulator",
+        "name": "test"
+      }
+    },
+    "test-runner": "jest"
   }
 }
