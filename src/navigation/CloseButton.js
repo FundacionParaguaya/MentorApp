@@ -9,22 +9,26 @@ class CloseButton extends Component {
     // navigation comes from react-navigation, nav comes from redux
     const { navigation, nav } = this.props
 
+    let openModal
+
     if (nav.deleteDraftOnExit) {
-      this.props.updateNav('openModal', 'deleteDraft')
+      openModal = 'deleteDraft'
     } else if (
       navigation.state.routeName === 'Terms' ||
       navigation.state.routeName === 'Privacy'
     ) {
-      this.props.updateNav('openModal', 'exitOnTerms')
+      openModal = 'exitOnTerms'
     } else {
-      this.props.updateNav('openModal', 'exitDraft')
+      openModal = 'exitDraft'
     }
 
-    this.props.updateNav('beforeCloseModal', () => {
-      // reset navigation
-      navigation.popToTop()
-      navigation.navigate('Dashboard')
-      this.props.updateNav('beforeCloseModal', null)
+    this.props.updateNav({
+      openModal,
+      beforeCloseModal: () => {
+        // reset navigation
+        navigation.popToTop()
+        navigation.navigate('Dashboard')
+      }
     })
   }
   render() {

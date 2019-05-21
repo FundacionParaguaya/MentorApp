@@ -86,22 +86,26 @@ export class DrawerContent extends Component {
     navigation.toggleDrawer()
 
     if (currentStack.key === 'Surveys' && currentStack.index) {
+      let openModal
+
       if (nav.deleteDraftOnExit) {
-        this.props.updateNav('openModal', 'deleteDraft')
+        openModal = 'deleteDraft'
       } else if (
         navigation.state.routeName === 'Terms' ||
         navigation.state.routeName === 'Privacy'
       ) {
-        this.props.updateNav('openModal', 'exitOnTerms')
+        openModal = 'exitOnTerms'
       } else {
-        this.props.updateNav('openModal', 'exitDraft')
+        openModal = 'exitDraft'
       }
 
-      this.props.updateNav('beforeCloseModal', () => {
-        // reset navigation
-        navigation.popToTop()
-        navigation.navigate(this.state.activeTab)
-        this.props.updateNav('beforeCloseModal', null)
+      this.props.updateNav({
+        openModal,
+        beforeCloseModal: () => {
+          // reset navigation
+          navigation.popToTop()
+          navigation.navigate('Dashboard')
+        }
       })
     } else {
       navigation.navigate(screen)

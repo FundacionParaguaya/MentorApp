@@ -129,7 +129,6 @@ SliderItem.propTypes = {
   onPress: PropTypes.func,
   slide: PropTypes.object.isRequired,
   value: PropTypes.number,
-  dimensions: PropTypes.object,
   bodyHeight: PropTypes.number.isRequired,
   tablet: PropTypes.bool,
   portrait: PropTypes.bool

@@ -1,4 +1,4 @@
-import { createStackNavigator } from 'react-navigation'
+import { createStackNavigator, createSwitchNavigator } from 'react-navigation'
 import DrawerNavigator from './DrawerNavigator'
 import LoginView from '../screens/Login'
 import LoadingView from '../screens/Loading'
@@ -23,7 +23,7 @@ export const DrawerNavigation = createStackNavigator(
   }
 )
 
-export default createStackNavigator(
+export default createSwitchNavigator(
   {
     loginStack: { screen: LoginStack },
     drawerStack: { screen: DrawerNavigation }

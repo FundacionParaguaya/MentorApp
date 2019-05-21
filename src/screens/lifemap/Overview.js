@@ -1,5 +1,12 @@
 import React, { Component } from 'react'
-import { StyleSheet, View, Text, Image, TouchableHighlight } from 'react-native'
+import {
+  StyleSheet,
+  View,
+  Text,
+  Image,
+  TouchableHighlight,
+  InteractionManager
+} from 'react-native'
 import { connect } from 'react-redux'
 import PropTypes from 'prop-types'
 import { withNamespaces } from 'react-i18next'
@@ -24,31 +31,33 @@ export class Overview extends Component {
 
   resumeDraft = this.props.navigation.getParam('resumeDraft')
   componentDidMount() {
-    const draft = getDraft()
-    const data = this.props.familyLifemap
-      ? this.props.familyLifemap
-      : getDraft()
+    InteractionManager.runAfterInteractions(() => {
+      const draft = getDraft()
+      const data = this.props.familyLifemap
+        ? this.props.familyLifemap
+        : getDraft()
 
-    // show priorities message if no priorities are made or they are not enough
-    if (
-      !draft.priorities.length ||
-      this.getMandatoryPrioritiesCount(data) > draft.priorities.length
-    ) {
-      this.setState({
-        tipIsVisible: true
-      })
-    }
-    const { draftId } = this.props.nav
-    if (!this.resumeDraft && !this.props.familyLifemap) {
-      this.props.addDraftProgress(draftId, {
-        screen: 'Overview'
-      })
+      // show priorities message if no priorities are made or they are not enough
+      if (
+        !draft.priorities.length ||
+        this.getMandatoryPrioritiesCount(data) > draft.priorities.length
+      ) {
+        this.setState({
+          tipIsVisible: true
+        })
+      }
+      const { draftId } = this.props.nav
+      if (!this.resumeDraft && !this.props.familyLifemap) {
+        this.props.addDraftProgress(draftId, {
+          screen: 'Overview'
+        })
 
-      this.props.navigation.setParams({
-        onPressBack: this.onPressBack,
-        withoutCloseButton: draftId ? false : true
-      })
-    }
+        this.props.navigation.setParams({
+          onPressBack: this.onPressBack,
+          withoutCloseButton: draftId ? false : true
+        })
+      }
+    })
   }
 
   onPressBack = () => {

@@ -163,9 +163,9 @@ describe('Render optimization', () => {
     wrapper.setProps({
       drafts: [...wrapper.instance().props.drafts, { draftId: 5 }]
     })
-    //chnaged it to 2 because of changes in Overview.js  #580
+
     expect(wrapper.instance().props.navigation.isFocused).toHaveBeenCalledTimes(
-      2
+      1
     )
   })
   it('updates screen if focused', () => {
@@ -183,14 +183,6 @@ describe('Render optimization', () => {
     })
     wrapper = shallow(<Overview {...props} />)
     expect(wrapper.instance().props.drafts[1]).toBeFalsy()
-  })
-  it('calls setParam on mount', () => {
-    expect(wrapper.instance().props.navigation.setParams).toHaveBeenCalledTimes(
-      1
-    )
-  })
-  it('calls addDraftProgress on mount', () => {
-    expect(wrapper.instance().props.addDraftProgress).toHaveBeenCalledTimes(1)
   })
 
   it('navigates back to skipped screen if there are skipped questions', () => {

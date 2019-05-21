@@ -1,9 +1,14 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
-import { View, StyleSheet, ScrollView, Vibration } from 'react-native'
+import {
+  View,
+  StyleSheet,
+  ScrollView,
+  Vibration,
+  Dimensions
+} from 'react-native'
 import SliderItem from './SliderItem'
 import colors from '../theme.json'
-import { connect } from 'react-redux'
 
 const VIBRATION_DURATION = 120
 
@@ -23,7 +28,7 @@ export class Slider extends Component {
 
   componentDidMount() {
     this._isMounted = true
-    const { width } = this.props.dimensions
+    const width = Dimensions.get('window').width
 
     const value = value => {
       switch (value) {
@@ -70,7 +75,8 @@ export class Slider extends Component {
   }
 
   render() {
-    const { width } = this.props.dimensions
+    const width = Dimensions.get('window').width
+
     return (
       <View style={!this.props.portrait ? { paddingHorizontal: 15 } : {}}>
         <ScrollView
@@ -99,7 +105,6 @@ export class Slider extends Component {
                 onPress={() => this.onSlidePress(slide)}
                 value={this.props.value}
                 bodyHeight={this.props.bodyHeight}
-                dimensions={this.props.dimensions}
                 portrait={this.props.portrait}
                 tablet={this.props.tablet}
               />
@@ -128,14 +133,9 @@ Slider.propTypes = {
   slides: PropTypes.array.isRequired,
   value: PropTypes.number,
   selectAnswer: PropTypes.func.isRequired,
-  dimensions: PropTypes.object,
   bodyHeight: PropTypes.number.isRequired,
   tablet: PropTypes.bool,
   portrait: PropTypes.bool
 }
 
-const mapStateToProps = ({ dimensions }) => ({
-  dimensions
-})
-
-export default connect(mapStateToProps)(Slider)
+export default Slider
