@@ -218,7 +218,7 @@ export default class Decoration extends Component {
                   animated
                   size={45}
                   color={colors.red}
-                  position={{ x: -50, y: 60 }}
+                  position={{ x: -130, y: 70 }}
                 />
                 <Orb
                   animated
