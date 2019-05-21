@@ -103,20 +103,25 @@ export class Dashboard extends Component {
           {this.props.offline.outbox.length ? null : (
             <View>
               <View style={globalStyles.container}>
-                <Decoration>
-                  <RoundImage source="family" />
-                </Decoration>
-                <View style={{ ...styles.familiesIcon }}>
-                  <Icon
-                    name="face"
-                    style={{ ...styles.familiesIconIcon }}
-                    size={60}
-                  />
+                <View
+                  style={{ alignItems: 'center', justifyContent: 'center' }}
+                >
+                  <Decoration>
+                    <RoundImage source="family" />
+                  </Decoration>
+                  <View style={styles.familiesIcon}>
+                    <Icon
+                      name="face"
+                      style={styles.familiesIconIcon}
+                      size={60}
+                    />
+                  </View>
+
+                  <Text style={{ ...styles.familiesCount }}>
+                    {this.props.families.length} {t('views.families')}
+                  </Text>
                 </View>
 
-                <Text style={{ ...styles.familiesCount }}>
-                  {this.props.families.length} {t('views.families')}
-                </Text>
                 <Button
                   id="create-lifemap"
                   text={t('views.createLifemap')}
@@ -165,14 +170,11 @@ const styles = StyleSheet.create({
     margin: 'auto'
   },
   familiesIcon: {
+    top: 120,
     zIndex: 2,
     justifyContent: 'center',
     alignItems: 'center',
     position: 'absolute',
-    top: 174,
-    left: 164,
-    right: 0,
-    bottom: 0,
     backgroundColor: 'white',
     width: 80,
     height: 80,
@@ -182,12 +184,10 @@ const styles = StyleSheet.create({
     flex: 1,
     fontSize: 20,
     textAlign: 'center',
-    marginBottom: 20,
-    marginTop: 12
+    marginBottom: 20
   },
   listTitle: {
     backgroundColor: colors.primary,
-
     height: 41,
     lineHeight: 41,
     flex: 1,
