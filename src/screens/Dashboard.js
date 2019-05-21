@@ -19,7 +19,7 @@ import DraftListItem from '../components/DraftListItem'
 import globalStyles from '../globalStyles'
 import { connect } from 'react-redux'
 import colors from '../theme.json'
-
+import Icon from 'react-native-vector-icons/MaterialCommunityIcons'
 export class Dashboard extends Component {
   acessibleComponent = React.createRef()
 
@@ -111,7 +111,6 @@ export class Dashboard extends Component {
 
   render() {
     const { t, drafts } = this.props
-
     const list = drafts.slice().reverse()
     return (
       <ScrollView style={globalStyles.background}>
@@ -119,9 +118,25 @@ export class Dashboard extends Component {
           {this.props.offline.outbox.length ? null : (
             <View>
               <View style={globalStyles.container}>
-                <Decoration>
-                  <RoundImage source="family" />
-                </Decoration>
+                <View
+                  style={{ alignItems: 'center', justifyContent: 'center' }}
+                >
+                  <Decoration>
+                    <RoundImage source="family" />
+                  </Decoration>
+                  <View style={styles.familiesIcon}>
+                    <Icon
+                      name="face"
+                      style={styles.familiesIconIcon}
+                      size={60}
+                    />
+                  </View>
+
+                  <Text style={{ ...styles.familiesCount }}>
+                    {this.props.families.length} {t('views.families')}
+                  </Text>
+                </View>
+
                 <Button
                   id="create-lifemap"
                   text={t('views.createLifemap')}
@@ -169,6 +184,26 @@ export class Dashboard extends Component {
   }
 }
 const styles = StyleSheet.create({
+  familiesIconIcon: {
+    margin: 'auto'
+  },
+  familiesIcon: {
+    top: 120,
+    zIndex: 2,
+    justifyContent: 'center',
+    alignItems: 'center',
+    position: 'absolute',
+    backgroundColor: 'white',
+    width: 80,
+    height: 80,
+    borderRadius: 50
+  },
+  familiesCount: {
+    flex: 1,
+    fontSize: 20,
+    textAlign: 'center',
+    marginBottom: 20
+  },
   listTitle: {
     backgroundColor: colors.primary,
     height: 41,
