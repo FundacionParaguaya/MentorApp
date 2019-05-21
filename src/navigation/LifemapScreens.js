@@ -12,6 +12,7 @@ import OverviewView from '../screens/lifemap/Overview'
 import AddPriorityView from '../screens/lifemap/AddPriority'
 import AddAchievementView from '../screens/lifemap/AddAchievement'
 import FamilyMemberView from '../screens/lifemap/FamilyMember'
+import TakePictureView from '../screens/lifemap/TakePicture'
 import Title from './Title'
 import { generateNavStyles, addCloseIcon } from './helpers'
 import CustomHeaderSurvey from './CustomHeaderSurvey'
@@ -160,6 +161,13 @@ export default {
       ...generateNavStyles({ navigation }),
       ...addCloseIcon(navigation),
       headerTitle: <Title title="general.thankYou" style={{ marginLeft: 20 }} />
+    })
+  },
+  TakePicture: {
+    screen: TakePictureView,
+    navigationOptions: ({ navigation }) => ({
+      ...generateNavStyles({ navigation }),
+      headerTitle: <Title title="Take a photo" style={{ marginLeft: 20 }} />
     })
   },
   FamilyMember: {

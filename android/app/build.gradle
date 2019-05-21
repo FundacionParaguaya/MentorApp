@@ -163,6 +163,7 @@ dependencies {
     implementation "com.facebook.react:react-native:+"  // From node_modules
     androidTestImplementation('com.wix:detox:+') { transitive = true }
     androidTestImplementation 'junit:junit:4.12'
+    compile project(":rncamerakit")
 }
 
 // Run this once to be able to run the application with BUCK

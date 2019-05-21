@@ -1,5 +1,11 @@
 import React, { Component } from 'react'
-import { StyleSheet, ScrollView, View, Text } from 'react-native'
+import {
+  StyleSheet,
+  ScrollView,
+  View,
+  Text,
+  TouchableHighlight
+} from 'react-native'
 import { connect } from 'react-redux'
 import PropTypes from 'prop-types'
 import { withNamespaces } from 'react-i18next'
@@ -10,6 +16,7 @@ import globalStyles from '../../globalStyles'
 import { submitDraft, addDraftProgress } from '../../redux/actions'
 import { url } from '../../config'
 import { getDraft } from './helpers'
+import Icon from 'react-native-vector-icons/MaterialCommunityIcons'
 
 export class Final extends Component {
   shouldComponentUpdate() {
@@ -67,6 +74,61 @@ export class Final extends Component {
             priorities={draft.priorities}
             achievements={draft.achievements}
           />
+
+          <View
+            style={{
+              flex: 1,
+              flexDirection: 'row',
+              justifyContent: 'space-between'
+            }}
+          >
+            <TouchableHighlight
+              onPress={() => this.props.navigation.navigate('TakePicture')}
+              style={{ flex: 1 }}
+            >
+              <View
+                style={{
+                  flex: 1,
+                  backgroundColor: '#fafafa',
+                  textAlign: 'auto',
+                  borderWidth: 2,
+                  borderColor: '#ddd',
+                  borderRadius: 2,
+                  marginBottom: 20,
+                  marginTop: 20,
+                  borderStyle: 'dotted',
+                  paddingVertical: 5,
+                  flexDirection: 'row',
+                  justifyContent: 'center'
+                }}
+              >
+                <Icon style={{ alignSelf: 'center' }} name="camera" size={40} />
+              </View>
+            </TouchableHighlight>
+            <TouchableHighlight
+              onPress={() => this.props.navigation.navigate('TakePicture')}
+              style={{ flex: 1 }}
+            >
+              <View
+                style={{
+                  flex: 1,
+                  backgroundColor: '#eee',
+                  textAlign: 'auto',
+                  marginBottom: 20,
+                  marginTop: 20,
+                  paddingVertical: 5,
+                  flexDirection: 'row',
+                  justifyContent: 'center'
+                }}
+              >
+                <Icon
+                  style={{ alignSelf: 'center' }}
+                  name="folder-outline"
+                  size={40}
+                />
+              </View>
+            </TouchableHighlight>
+          </View>
         </View>
         <View style={{ height: 50 }}>
           <Button

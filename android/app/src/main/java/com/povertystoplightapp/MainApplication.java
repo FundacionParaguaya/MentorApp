@@ -15,6 +15,7 @@ import com.facebook.react.shell.MainReactPackage;
 import com.facebook.soloader.SoLoader;
 import com.facebook.react.modules.storage.ReactDatabaseSupplier;
 import com.mapbox.rctmgl.RCTMGLPackage;
+import com.wix.RNCameraKit.RNCameraKitPackage;
 
 import java.util.Arrays;
 import java.util.List;
@@ -38,7 +39,8 @@ public class MainApplication extends Application implements ReactApplication {
           new VectorIconsPackage(),
           new RNLanguagesPackage(),
           new RNFetchBlobPackage(),
-          new RCTMGLPackage()
+          new RCTMGLPackage(),
+          new RNCameraKitPackage()
       );
     }
 
