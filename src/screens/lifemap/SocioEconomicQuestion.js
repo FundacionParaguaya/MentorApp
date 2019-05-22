@@ -409,6 +409,7 @@ export class SocioEconomicQuestion extends Component {
                 if (otherOptionDetected) {
                   return (
                     <React.Fragment key={question.codeName}>
+                     {question.answerType === 'radio' ? <Text style={{marginLeft:10,marginBottom:15}}>{question.questionText}</Text> : null}
                       <Select
                         draft={draft}
                         radio={question.answerType === 'radio' ? true : false}
@@ -446,6 +447,8 @@ export class SocioEconomicQuestion extends Component {
                   )
                 } else {
                   return (
+                    <React.Fragment>
+                    {question.answerType === 'radio' ? <Text style={{marginLeft:10,marginBottom:15}}>{question.questionText}</Text> : null}
                     <Select
                       draft={draft}
                       radio={question.answerType === 'radio' ? true : false}
@@ -461,6 +464,8 @@ export class SocioEconomicQuestion extends Component {
                       readonly={readonly}
                       options={question.options}
                     />
+                    </React.Fragment>
+                  
                   )
                 }
               } else if (question.answerType === 'number') {
@@ -481,7 +486,9 @@ export class SocioEconomicQuestion extends Component {
                   />
                 )
               } else if (question.answerType === 'checkbox') {
-                return question.options.map(e => {
+               return <View key={question.codeName}>
+                 <Text style={{marginLeft:10}}>{question.questionText}</Text>
+                 {question.options.map(e => {
                   return (
                     <View key={e.value}>
                       <Checkbox
@@ -498,7 +505,8 @@ export class SocioEconomicQuestion extends Component {
                       />
                     </View>
                   )
-                })
+                })}
+                </View>
               } else {
                 <TextInput
                   multiline

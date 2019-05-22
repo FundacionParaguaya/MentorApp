@@ -176,6 +176,7 @@ export const drafts = (state = [], action) => {
           } else {
             // if item is not in array push it
             let multipleValue = []
+            multipleValue.push(Object.values(action.payload)[0])
             let obj2 = {
               key: Object.keys(action.payload)[0],
               value: null,
