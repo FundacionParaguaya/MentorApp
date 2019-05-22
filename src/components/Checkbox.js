@@ -3,8 +3,8 @@ import PropTypes from 'prop-types'
 import { TouchableHighlight, StyleSheet } from 'react-native'
 import { CheckBox } from 'react-native-elements'
 import colors from '../theme.json'
+import { getDraft } from '../screens/lifemap/helpers'
 import globalStyles from '../globalStyles'
-
 class Checkbox extends Component {
   state = { checked: false }
 
@@ -12,11 +12,30 @@ class Checkbox extends Component {
     this.props.onIconPress(!this.state.checked)
     this.setState({ checked: !this.state.checked })
   }
-
+  componentDidMount() {
+    const draft = getDraft()
+    if (
+      typeof this.props.value !== 'undefined' &&
+      this.props.value !== null &&
+      this.props.codeName !== 'undefined' &&
+      this.props.codeName !== null
+    ) {
+      draft.economicSurveyDataList.forEach(e => {
+        if (e.key === this.props.codeName) {
+          if (typeof e.multipleValue !== 'undefined') {
+            e.multipleValue.forEach(el => {
+              if (el === this.props.value) {
+                this.setState({ checked: true })
+              }
+            })
+          }
+        }
+      })
+    }
+  }
   render() {
     const { checked } = this.state
     const { containerStyle, textStyle, checkboxColor, showErrors } = this.props
-
     return (
       <TouchableHighlight
         underlayColor={'transparent'}
@@ -49,6 +68,8 @@ Checkbox.propTypes = {
   title: PropTypes.string.isRequired,
   onIconPress: PropTypes.func.isRequired,
   containerStyle: PropTypes.object,
+  value: PropTypes.string,
+  codeName: PropTypes.string,
   checkboxColor: PropTypes.string,
   showErrors: PropTypes.bool,
   textStyle: PropTypes.object

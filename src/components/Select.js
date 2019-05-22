@@ -8,6 +8,11 @@ import {
   Image,
   ScrollView
 } from 'react-native'
+import RadioForm, {
+  RadioButton,
+  RadioButtonInput,
+  RadioButtonLabel
+} from 'react-native-simple-radio-button'
 import BottomModal from './BottomModal'
 import ListItem from './ListItem'
 import countries from 'localized-countries'
@@ -15,13 +20,15 @@ import arrow from '../../assets/images/selectArrow.png'
 import colors from '../theme.json'
 import globalStyles from '../globalStyles'
 import i18n from '../i18n'
+import { getDraft } from '../screens/lifemap/helpers'
 import { connect } from 'react-redux'
 const countryList = countries(require('localized-countries/data/en')).array()
 
 class Select extends Component {
   state = {
     isOpen: false,
-    errorMsg: ''
+    errorMsg: '',
+    radioChecked: null
   }
 
   toggleDropdown = () => {
@@ -57,11 +64,49 @@ class Select extends Component {
       this.props.field ? this.props.detectError(false, this.props.field) : ''
     }
   }
-
+  validateInputRadio = (value, i) => {
+    this.setState({
+      isOpen: false,
+      radioChecked: i
+    })
+    if (this.props.required && !value) {
+      this.handleError(i18n.t('validation.fieldIsRequired'))
+      this.setState({
+        errorMsg: i18n.t('validation.fieldIsRequired')
+      })
+    } else {
+      this.props.onChange(value, this.props.field)
+      this.setState({
+        errorMsg: null
+      })
+      this.props.field ? this.props.detectError(false, this.props.field) : ''
+    }
+  }
   componentDidMount() {
     // on mount validate empty required fields without showing an errors message
     if (this.props.required && !this.props.value) {
       this.props.detectError(true, this.props.field)
+    }
+
+    const draft = getDraft()
+    if (this.state.radioChecked === null) {
+      this.props.surveys.forEach(e => {
+        if (e.id === draft.surveyId) {
+          e.surveyEconomicQuestions.forEach(ele => {
+            if (ele.answerType === 'radio') {
+              draft.economicSurveyDataList.forEach(e => {
+                if (e.key === ele.codeName) {
+                  ele.options.forEach((el, i) => {
+                    if (el.value === e.value) {
+                      this.setState({ radioChecked: i })
+                    }
+                  })
+                }
+              })
+            }
+          })
+        }
+      })
     }
 
     // save country to draft on mount
@@ -95,7 +140,6 @@ class Select extends Component {
     let countries = countryList.filter(
       country => country.code !== defaultCountry.code
     )
-
     // Add default country to the beginning of the list
     let countriesArr = []
 
@@ -143,7 +187,16 @@ class Select extends Component {
     } else {
       text = ''
     }
-
+    let radio = false
+    let radio_props = []
+    if (typeof this.props.radio !== 'undefined') {
+      radio = this.props.radio
+      if (radio) {
+        this.props.options.forEach(e => {
+          radio_props.push({ label: e.text, value: e.value })
+        })
+      }
+    }
     return (
       <TouchableHighlight
         underlayColor={'transparent'}
@@ -151,94 +204,148 @@ class Select extends Component {
         onPress={this.toggleDropdown}
       >
         <View style={styles.wrapper}>
-          <View
-            style={[
-              styles.container,
-              !value && styles.withoutValue,
-              errorMsg && styles.error,
-              isOpen && styles.active
-            ]}
-          >
-            {!!value && (
-              <Text
-                style={[
-                  styles.title,
-                  isOpen &&
-                    !errorMsg && {
-                      color: colors.palegreen
-                    }
-                ]}
-                accessibilityLabel={`${placeholder} ${
-                  required && !readonly ? ' This is a mandatory field.' : ''
-                }`}
-              >{`${placeholder}${required && !readonly ? ' *' : ''}`}</Text>
-            )}
-            <Text
-              style={[
-                styles.placeholder,
-                errorMsg ? { color: colors.red } : {}
-              ]}
-              accessibilityLabel={`${placeholder}${
-                required ? ' This is a mandatory field.' : ''
-              }`}
-            >
-              {value ? text : `${placeholder}${required ? ' *' : ''}`}
-            </Text>
-            {!readonly ? <Image source={arrow} style={styles.arrow} /> : null}
-
-            <BottomModal
-              isOpen={isOpen}
-              onRequestClose={this.toggleDropdown}
-              onEmptyClose={() => {
-                this.validateInput('')
-                this.toggleDropdown()
+          {radio ? (
+            <View
+              style={{
+                justifyContent: 'center',
+                alignItems: 'center'
               }}
             >
-              <View style={styles.dropdown}>
-                {countrySelect ? (
-                  <ScrollView>
-                    {countries.map(item => (
-                      <ListItem
-                        key={item.code}
-                        onPress={() => this.validateInput(item.code)}
-                      >
-                        <Text
-                          style={[
-                            styles.option,
-                            value === item.code && styles.selected
-                          ]}
-                          accessibilityLabel={`${item.label}`}
+              <RadioForm formHorizontal={true} animation={false}>
+                <View
+                  style={{
+                    flexDirection: 'row',
+                    justifyContent: 'space-around',
+                    alignItems: 'space-around',
+                    flexWrap: 'wrap'
+                  }}
+                >
+                  {radio_props.map((obj, i) => {
+                    return (
+                      <RadioButton labelHorizontal={true} key={i}>
+                        <RadioButtonInput
+                          obj={obj}
+                          index={i}
+                          isSelected={this.state.radioChecked === i}
+                          onPress={value => this.validateInputRadio(value, i)}
+                          borderWidth={2}
+                          buttonInnerColor={'#50AA47'}
+                          buttonOuterColor={
+                            this.state.radioChecked === i
+                              ? '#50AA47'
+                              : '#50AA47'
+                          }
+                          buttonSize={20}
+                          buttonOuterSize={30}
+                          buttonStyle={{}}
+                          buttonWrapStyle={{ marginLeft: 10 }}
+                        />
+                        <RadioButtonLabel
+                          obj={obj}
+                          index={i}
+                          labelHorizontal={true}
+                          onPress={value => this.validateInputRadio(value, i)}
+                          labelStyle={{ fontSize: 17, color: '#4a4a4a' }}
+                          labelWrapStyle={{}}
+                        />
+                      </RadioButton>
+                    )
+                  })}
+                </View>
+              </RadioForm>
+            </View>
+          ) : (
+            <View
+              style={[
+                styles.container,
+                !value && styles.withoutValue,
+                errorMsg && styles.error,
+                isOpen && styles.active
+              ]}
+            >
+              {!!value && (
+                <Text
+                  style={[
+                    styles.title,
+                    isOpen &&
+                      !errorMsg && {
+                        color: colors.palegreen
+                      }
+                  ]}
+                  accessibilityLabel={`${placeholder} ${
+                    required && !readonly ? ' This is a mandatory field.' : ''
+                  }`}
+                >{`${placeholder}${required && !readonly ? ' *' : ''}`}</Text>
+              )}
+
+              <Text
+                style={[
+                  styles.placeholder,
+                  errorMsg ? { color: colors.red } : {}
+                ]}
+                accessibilityLabel={`${placeholder}${
+                  required ? ' This is a mandatory field.' : ''
+                }`}
+              >
+                {value ? text : `${placeholder}${required ? ' *' : ''}`}
+              </Text>
+              {!readonly ? <Image source={arrow} style={styles.arrow} /> : null}
+
+              <BottomModal
+                isOpen={isOpen}
+                onRequestClose={this.toggleDropdown}
+                onEmptyClose={() => {
+                  this.validateInput('')
+                  this.toggleDropdown()
+                }}
+              >
+                <View style={styles.dropdown}>
+                  {countrySelect ? (
+                    <ScrollView>
+                      {countries.map(item => (
+                        <ListItem
+                          key={item.code}
+                          onPress={() => this.validateInput(item.code)}
                         >
-                          {item.label}
-                        </Text>
-                      </ListItem>
-                    ))}
-                  </ScrollView>
-                ) : (
-                  <ScrollView>
-                    {options.map(item => (
-                      <ListItem
-                        underlayColor={'transparent'}
-                        activeOpacity={1}
-                        key={item.value}
-                        onPress={() => this.validateInput(item.value)}
-                      >
-                        <Text
-                          style={[
-                            styles.option,
-                            value === item.value && styles.selected
-                          ]}
-                          accessibilityLabel={`${item.text}`}
+                          <Text
+                            style={[
+                              styles.option,
+                              value === item.code && styles.selected
+                            ]}
+                            accessibilityLabel={`${item.label}`}
+                          >
+                            {item.label}
+                          </Text>
+                        </ListItem>
+                      ))}
+                    </ScrollView>
+                  ) : (
+                    <ScrollView>
+                      {options.map(item => (
+                        <ListItem
+                          underlayColor={'transparent'}
+                          activeOpacity={1}
+                          key={item.value}
+                          onPress={() => this.validateInput(item.value)}
                         >
-                          {item.text}
-                        </Text>
-                      </ListItem>
-                    ))}
-                  </ScrollView>
-                )}
-              </View>
-            </BottomModal>
-          </View>
+                          <Text
+                            style={[
+                              styles.option,
+                              value === item.value && styles.selected
+                            ]}
+                            accessibilityLabel={`${item.text}`}
+                          >
+                            {item.text}
+                          </Text>
+                        </ListItem>
+                      ))}
+                    </ScrollView>
+                  )}
+                </View>
+              </BottomModal>
+            </View>
+          )}
+
           {/* Error message */}
           {!!errorMsg && (
             <View style={{ marginLeft: 30 }}>
@@ -257,24 +364,28 @@ Select.propTypes = {
   value: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
   placeholder: PropTypes.string.isRequired,
   field: PropTypes.string,
+  radio: PropTypes.bool,
   country: PropTypes.string,
   countrySelect: PropTypes.bool,
   readonly: PropTypes.bool,
   showErrors: PropTypes.bool,
   required: PropTypes.bool,
   nav: PropTypes.object.isRequired,
-  detectError: PropTypes.func
+  detectError: PropTypes.func,
+  draft: PropTypes.object.isRequired,
+  surveys: PropTypes.array
 }
 
-const mapStateToProps = ({ nav }) => ({
-  nav
+const mapStateToProps = ({ nav, surveys }) => ({
+  nav,
+  surveys
 })
 
 export default connect(mapStateToProps)(Select)
 
 const styles = StyleSheet.create({
   wrapper: {
-    marginBottom: 15
+    marginBottom: 20
   },
   container: {
     borderBottomWidth: 1,
