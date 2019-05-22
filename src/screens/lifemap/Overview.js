@@ -204,8 +204,10 @@ export class Overview extends Component {
               underlayColor={'transparent'}
               activeOpacity={1}
               onPress={this.toggleFilterModal}
+              accessible={true} 
+              
             >
-              <View style={styles.listTitle}>
+              <View style={styles.listTitle} accessibilityLabel={filterLabel || t('views.lifemap.allIndicators')} accessibilityHint="Double tap to open dropdown">
                 <Text style={globalStyles.subline}>
                   {filterLabel || t('views.lifemap.allIndicators')}
                 </Text>
@@ -227,75 +229,87 @@ export class Overview extends Component {
             onRequestClose={this.toggleFilterModal}
             onEmptyClose={() => this.selectFilter(false)}
           >
-            <View style={styles.dropdown}>
+            <View style={styles.dropdown} accessible={true} accessibilityLiveRegion="assertive">
               <Text style={[globalStyles.p, styles.modalTitle]}>
                 {t('general.chooseView')}
               </Text>
 
               {/* All */}
-              <FilterListItem
-                id="all"
-                onPress={() => this.selectFilter(false)}
-                color={'#EAD1AF'}
-                text={t('views.lifemap.allIndicators')}
-                amount={data.indicatorSurveyDataList.length}
-              />
+              <View accessibilityLabel={t('views.lifemap.allIndicators')}>
+                <FilterListItem
+                  id="all"
+                  onPress={() => this.selectFilter(false)}
+                  color={'#EAD1AF'}
+                  text={t('views.lifemap.allIndicators')}
+                  amount={data.indicatorSurveyDataList.length}
+                  />
+              </View>
 
               {/* Green */}
-              <FilterListItem
-                id="green"
-                onPress={() => this.selectFilter(3, t('views.lifemap.green'))}
-                color={colors.palegreen}
-                text={t('views.lifemap.green')}
-                amount={
-                  data.indicatorSurveyDataList.filter(item => item.value === 3)
-                    .length
-                }
-              />
+              <View accessibilityLabel={t('views.lifemap.green')}>
+                <FilterListItem
+                  id="green"
+                  onPress={() => this.selectFilter(3, t('views.lifemap.green'))}
+                  color={colors.palegreen}
+                  text={t('views.lifemap.green')}
+                  amount={
+                    data.indicatorSurveyDataList.filter(item => item.value === 3)
+                      .length
+                  }
+                />
+              </View>
 
               {/* Yellow */}
-              <FilterListItem
-                id="yellow"
-                onPress={() => this.selectFilter(2, t('views.lifemap.yellow'))}
-                color={colors.gold}
-                text={t('views.lifemap.yellow')}
-                amount={
-                  data.indicatorSurveyDataList.filter(item => item.value === 2)
-                    .length
-                }
-              />
+              <View accessibilityLabel={t('views.lifemap.yellow')}>
+                <FilterListItem
+                  id="yellow"
+                  onPress={() => this.selectFilter(2, t('views.lifemap.yellow'))}
+                  color={colors.gold}
+                  text={t('views.lifemap.yellow')}
+                  amount={
+                    data.indicatorSurveyDataList.filter(item => item.value === 2)
+                      .length
+                  }
+                />
+              </View>
 
               {/* Red */}
-              <FilterListItem
-                id="red"
-                onPress={() => this.selectFilter(1, t('views.lifemap.red'))}
-                color={colors.red}
-                text={t('views.lifemap.red')}
-                amount={
-                  data.indicatorSurveyDataList.filter(item => item.value === 1)
-                    .length
-                }
-              />
+              <View accessibilityLabel={t('views.lifemap.red')}>
+                <FilterListItem
+                  id="red"
+                  onPress={() => this.selectFilter(1, t('views.lifemap.red'))}
+                  color={colors.red}
+                  text={t('views.lifemap.red')}
+                  amount={
+                    data.indicatorSurveyDataList.filter(item => item.value === 1)
+                      .length
+                  }
+                />
+              </View>
 
               {/* Priorities/achievements */}
-              <FilterListItem
-                id="priorities"
-                onPress={() =>
-                  this.selectFilter(
-                    'priorities',
-                    `${t('views.lifemap.priorities')} & ${t(
-                      'views.lifemap.achievements'
-                    )}`
-                  )
-                }
-                color={colors.blue}
-                text={`${t('views.lifemap.priorities')} & ${t(
-                  'views.lifemap.achievements'
-                )}`}
-                amount={data.priorities.length + data.achievements.length}
-              />
+              <View accessibilityLabel={t('views.lifemap.priorities')}>
+                <FilterListItem
+                  id="priorities"
+                  onPress={() =>
+                    this.selectFilter(
+                      'priorities',
+                      `${t('views.lifemap.priorities')} & ${t(
+                        'views.lifemap.achievements'
+                      )}`
+                    )
+                  }
+                  color={colors.blue}
+                  text={`${t('views.lifemap.priorities')} & ${t(
+                    'views.lifemap.achievements'
+                  )}`}
+                  amount={data.priorities.length + data.achievements.length}
+                />
+              </View>
 
               {/* Skipped */}
+              <View accessibilityLabel={t('views.skippedIndicators')}>
+
               <FilterListItem
                 id="skipped"
                 onPress={() =>
@@ -308,6 +322,7 @@ export class Overview extends Component {
                     .length
                 }
               />
+              </View>
             </View>
           </BottomModal>
         </View>

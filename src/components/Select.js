@@ -17,6 +17,7 @@ import globalStyles from '../globalStyles'
 import i18n from '../i18n'
 import { connect } from 'react-redux'
 const countryList = countries(require('localized-countries/data/en')).array()
+import { setListOfLabeles } from '../accessibilityHelpers'
 
 class Select extends Component {
   state = {
@@ -194,7 +195,10 @@ class Select extends Component {
                 this.toggleDropdown()
               }}
             >
-              <View style={styles.dropdown}>
+              <View
+                style={styles.dropdown}
+                accessibilityLabel={setListOfLabeles(options)}
+              >
                 {countrySelect ? (
                   <ScrollView>
                     {countries.map(item => (
@@ -207,7 +211,7 @@ class Select extends Component {
                             styles.option,
                             value === item.code && styles.selected
                           ]}
-                          accessibilityLabel={`${item.label}`}
+                          // accessibilityLabel={`${item.label}`}
                         >
                           {item.label}
                         </Text>
@@ -228,7 +232,6 @@ class Select extends Component {
                             styles.option,
                             value === item.value && styles.selected
                           ]}
-                          accessibilityLabel={`${item.text}`}
                         >
                           {item.text}
                         </Text>

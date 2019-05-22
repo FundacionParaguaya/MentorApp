@@ -9,7 +9,7 @@ import i18n from '../i18n'
 class Tip extends Component {
   render() {
     return (
-      <View style={styles.tipview}>
+      <View style={styles.tipview} accessible={true} accessibilityLiveRegion="assertive">
         <Text style={[globalStyles.h3, styles.text]}>{this.props.title}</Text>
         <Text style={[globalStyles.p, styles.text]}>
           {this.props.description}
@@ -18,6 +18,8 @@ class Tip extends Component {
           style={{
             height: 48
           }}
+          accessibilityLabel={i18n.t('general.gotIt')}
+          accessibilityRole="button"
         >
           <Button
             text={i18n.t('general.gotIt')}
