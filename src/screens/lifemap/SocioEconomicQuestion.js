@@ -41,17 +41,23 @@ export class SocioEconomicQuestion extends Component {
       let currentDimension = ''
       let questionsPerScreen = []
       let totalScreens = 0
-      // this loops through the survey questions and replaces the values for text with decoded 
+      // this loops through the survey questions and replaces the values for text with decoded
       // ones, which fixes problem encoding
       const surveyQuestions = props.nav.survey.surveyEconomicQuestions.map(
-        question => ({
-          ...question,
-          options: question.options.map(option => ({
-            ...option,
-            text: decodeURIComponent(escape(option.text))
-          }))
-        })
+        question =>
+          question.options.length
+            ? {
+                ...question,
+                options: question.options.map(option => ({
+                  ...option,
+                  text: !/^[A-Za-z0-9]*$/.test(option.text.replace(/\s/g, '')) // check if the title contains spanish cahracters
+                    ? option.text
+                    : decodeURIComponent(escape(option.text))
+                }))
+              }
+            : question
       )
+
       // go trough all questions and separate them by screen
       // filter method - checks if family members meet the conditions based on age
       surveyQuestions
