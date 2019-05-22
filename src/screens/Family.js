@@ -209,7 +209,9 @@ export class Family extends Component {
                   renderItem={({ item, index }) => (
                     <FamilyListItem
                       icon
-                      text={`${item.firstName} ${!index ? item.lastName : ''}`}
+                      text={`${decodeURIComponent(escape(item.firstName))} ${
+                        !index ? decodeURIComponent(escape(item.lastName)) : ''
+                      }`}
                       handleClick={() => {
                         if (!index) {
                           navigation.navigate('FamilyParticipant', {

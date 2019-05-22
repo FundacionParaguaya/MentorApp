@@ -312,7 +312,9 @@ export class FamilyParticipant extends Component {
           readonly={readonly}
           onChangeText={this.addSurveyData}
           placeholder={t('views.family.firstName')}
-          value={this.getFieldValue(draft, 'firstName') || ''}
+          value={decodeURIComponent(
+            escape(this.getFieldValue(draft, 'firstName') || '')
+          )}
           required
           detectError={this.detectError}
           showErrors={showErrors}
@@ -323,7 +325,9 @@ export class FamilyParticipant extends Component {
           onChangeText={this.addSurveyData}
           readonly={readonly}
           placeholder={t('views.family.lastName')}
-          value={this.getFieldValue(draft, 'lastName') || ''}
+          value={decodeURIComponent(
+            escape(this.getFieldValue(draft, 'lastName') || '')
+          )}
           required
           detectError={this.detectError}
           showErrors={showErrors}
