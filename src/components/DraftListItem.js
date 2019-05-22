@@ -1,5 +1,6 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
+import Icon from 'react-native-vector-icons/MaterialIcons'
 import { Text, StyleSheet, View } from 'react-native'
 import moment from 'moment'
 import 'moment/locale/es'
@@ -82,6 +83,7 @@ class DraftListItem extends Component {
             {this.setStatusTitle(this.props.item.status)}
           </Text>
         </View>
+        <Icon name="navigate-next" size={23} color={colors.lightdark} />
       </ListItem>
     )
   }
