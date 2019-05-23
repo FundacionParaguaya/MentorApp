@@ -3,6 +3,7 @@ import { shallow } from 'enzyme'
 import { ActivityIndicator, Text } from 'react-native'
 import MapboxGL from '@mapbox/react-native-mapbox-gl'
 import { Location } from '../lifemap/Location'
+import draft from '../__mocks__/draftMock.json'
 
 jest.useFakeTimers()
 
@@ -31,8 +32,8 @@ const createTestProps = props => ({
     replace: jest.fn(),
     setParams: jest.fn(),
     getParam: jest.fn(param => {
-      if (param === 'draftId') {
-        return 2
+      if (param === 'draft') {
+        return draft
       } else if (param === 'survey') {
         return {
           surveyId: 100,
@@ -59,33 +60,6 @@ const createTestProps = props => ({
   },
   addSurveyData: jest.fn(),
   addDraftProgress: jest.fn(),
-  drafts: [
-    {
-      draftId: 1
-    },
-    {
-      draftId: 2,
-      surveyId: 1,
-      economicSurveyDataList: [],
-      indicatorSurveyDataList: [],
-      progress: { screen: 'Location' },
-      familyData: {
-        countFamilyMembers: 2,
-        familyMembersList: [
-          {
-            firstName: 'Juan',
-            lastName: 'Perez',
-            birthCountry: 'Brazil'
-          },
-          {
-            firstName: 'Ana',
-            gender: 'F',
-            birthDate: 1515708000
-          }
-        ]
-      }
-    }
-  ],
   ...props
 })
 

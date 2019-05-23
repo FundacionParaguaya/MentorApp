@@ -88,11 +88,7 @@ describe('login reducer', () => {
       hydration: false,
       language: false,
       nav: {
-        beforeCloseModal: null,
-        deleteDraftOnExit: false,
-        draftInProgress: null,
         draftId: null,
-        openModal: null,
         readonly: false,
         survey: null
       },

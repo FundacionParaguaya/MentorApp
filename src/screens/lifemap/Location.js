@@ -28,7 +28,7 @@ import marker from '../../../assets/images/marker.png'
 import center from '../../../assets/images/centerMap.png'
 import happy from '../../../assets/images/happy.png'
 import sad from '../../../assets/images/sad.png'
-import { getDraft, getTotalScreens } from './helpers'
+import { getTotalScreens } from './helpers'
 
 export class Location extends Component {
   state = {
@@ -44,7 +44,10 @@ export class Location extends Component {
     loading: true,
     showForm: false,
     cachedMapPacks: [],
-    appState: AppState.currentState
+    appState: AppState.currentState,
+    draft:
+      this.props.navigation.getParam('draft') ||
+      this.props.navigation.getParam('family')
   }
 
   errorsDetected = []
@@ -138,7 +141,7 @@ export class Location extends Component {
       () => {
         // if no location available reset to survey location only when
         // no location comes from the draft
-        if (!this.getFieldValue(getDraft(), 'latitude')) {
+        if (!this.getFieldValue(this.state.draft, 'latitude')) {
           const position = survey.surveyConfig.surveyLocation
           this.setState({
             loading: false,
@@ -276,11 +279,19 @@ export class Location extends Component {
       this._keyboardDidHide
     )
 
-    const draft = this.props.navigation.getParam('family') || getDraft()
+    const { draft } = this.state
 
     // the there is no save country in the draft, set it to the survey one
-    if (!this.getFieldValue(draft, 'country')) {
-      this.addSurveyData(survey.surveyConfig.surveyLocation.country, 'country')
+    if (!draft.familyData.country) {
+      this.setState({
+        draft: {
+          ...draft,
+          familyData: {
+            ...draft.familyData,
+            country: survey.surveyConfig.surveyLocation.country
+          }
+        }
+      })
     }
 
     // monitor for connection changes
@@ -346,15 +357,12 @@ export class Location extends Component {
   }
 
   onPressBack = () => {
-    const { draftId } = this.props.nav
-    const draft = getDraft()
+    const { draft } = this.state
 
     if (draft.familyData.familyMembersList.length > 1) {
-      this.props.navigation.navigate('FamilyMembersNames')
+      this.props.navigation.navigate('FamilyMembersNames', { draft })
     } else {
-      this.props.navigation.navigate('FamilyParticipant', {
-        draftId
-      })
+      this.props.navigation.navigate('FamilyParticipant', { draft })
     }
   }
 
@@ -386,10 +394,9 @@ export class Location extends Component {
       loading,
       showErrors,
       showSearch,
-      showForm
+      showForm,
+      draft
     } = this.state
-
-    const draft = this.props.navigation.getParam('family') || getDraft()
 
     if (loading) {
       return (
@@ -560,7 +567,7 @@ export class Location extends Component {
             }
             field="country"
             value={
-              this.getFieldValue(draft, 'country') ||
+              draft.familyData.country ||
               survey.surveyConfig.surveyLocation.country
             }
             detectError={this.detectError}
@@ -571,7 +578,7 @@ export class Location extends Component {
             id="postCode"
             onChangeText={this.addSurveyData}
             field="postCode"
-            value={this.getFieldValue(draft, 'postCode') || ''}
+            value={draft.familyData.postCode || ''}
             placeholder={t('views.family.postcode')}
             detectError={this.detectError}
             readonly={readonly}
@@ -580,7 +587,7 @@ export class Location extends Component {
             id="address"
             onChangeText={this.addSurveyData}
             field="address"
-            value={this.getFieldValue(draft, 'address') || ''}
+            value={draft.familyData.address || ''}
             placeholder={t('views.family.streetOrHouseDescription')}
             validation="long-string"
             detectError={this.detectError}

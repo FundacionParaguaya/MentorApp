@@ -24,28 +24,14 @@ export class Dashboard extends Component {
   acessibleComponent = React.createRef()
 
   componentDidMount() {
-    const {
-      survey,
-      readonly,
-      draftId,
-      deleteDraftOnExit,
-      beforeCloseModal
-    } = this.props.nav
+    const { survey, readonly, draftId } = this.props.nav
 
     // clear nav state if it's set to something
-    if (
-      survey ||
-      readonly ||
-      draftId ||
-      deleteDraftOnExit ||
-      beforeCloseModal
-    ) {
+    if (survey || readonly || draftId) {
       this.props.updateNav({
         survey: null,
         readonly: false,
-        draftId: null,
-        beforeCloseModal: null,
-        deleteDraftOnExit: false
+        draftId: null
       })
     }
 

@@ -498,13 +498,9 @@ export const sync = (
 // Navigation
 export const nav = (
   state = {
-    openModal: null,
-    beforeCloseModal: null,
     readonly: false,
     draftId: null,
-    draftInProgress: null,
-    survey: null,
-    deleteDraftOnExit: false
+    survey: null
   },
   action
 ) => {
@@ -596,13 +592,9 @@ export const rootReducer = (state, action) => {
         }
       },
       nav: {
-        openModal: null,
-        beforeCloseModal: null,
         readonly: false,
         draftId: null,
-        draftInProgress: null,
-        survey: null,
-        deleteDraftOnExit: false
+        survey: null
       }
     }
   }

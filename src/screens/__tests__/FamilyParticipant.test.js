@@ -107,7 +107,8 @@ describe('Family Participant View', () => {
               }
             }),
             setParams: jest.fn(),
-            reset: jest.fn()
+            reset: jest.fn(),
+            isFocused: jest.fn()
           },
           ...props
         })
@@ -143,6 +144,7 @@ describe('Family Participant View', () => {
     it('sets proper TextInput value from draft', () => {
       const props = createTestProps({
         navigation: {
+          isFocused: jest.fn(),
           navigate: jest.fn(),
           getParam: jest.fn(param => {
             if (param === 'family') {
@@ -185,7 +187,8 @@ describe('Family Participant View', () => {
             }
           }),
           setParams: jest.fn(),
-          reset: jest.fn()
+          reset: jest.fn(),
+          isFocused: jest.fn()
         }
       })
       wrapper = shallow(<FamilyParticipant {...props} />)
@@ -208,14 +211,18 @@ describe('Family Participant View', () => {
       wrapper.instance().handleClick()
 
       expect(props.navigation.navigate).toHaveBeenCalledWith(
-        'FamilyMembersNames'
+        'FamilyMembersNames',
+        expect.any(Object)
       )
 
       props.drafts[0].familyData.countFamilyMembers = 1
 
       wrapper.instance().handleClick()
 
-      expect(props.navigation.navigate).toHaveBeenCalledWith('Location')
+      expect(props.navigation.navigate).toHaveBeenCalledWith(
+        'Location',
+        expect.any(Object)
+      )
     })
 
     it('shows errors if detected', () => {
@@ -288,18 +295,6 @@ describe('participant adding/removing data', () => {
   it('gives Select the proper value', () => {
     expect(wrapper.find('#familyMembersCount').props().value).toBe(1)
   })
-
-  it('sets other gender and document type', () => {
-    wrapper.instance().addSurveyData('note', 'documentType')
-
-    expect(
-      props.drafts[0].familyData.familyMembersList[0].documentType
-    ).toEqual('OTHER')
-
-    wrapper.instance().addSurveyData('tree', 'gender')
-
-    expect(props.drafts[0].familyData.familyMembersList[0].gender).toEqual('O')
-  })
 })
 
 describe('Render optimization', () => {
@@ -314,7 +309,7 @@ describe('Render optimization', () => {
       drafts: [...wrapper.instance().props.drafts, { draftId: 5 }]
     })
     expect(wrapper.instance().props.navigation.isFocused).toHaveBeenCalledTimes(
-      1
+      2
     )
   })
   it('updates screen if focused', () => {
