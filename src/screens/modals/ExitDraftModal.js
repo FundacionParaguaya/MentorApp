@@ -15,6 +15,7 @@ export class ExitDraftModal extends Component {
     const { navigation } = this.props
     const draft = navigation.getParam('draft')
     const isNewDraft = navigation.getParam('isNewDraft')
+    const screen = navigation.getParam('screen')
 
     const resetAction = StackActions.reset({
       index: 0,
@@ -27,6 +28,9 @@ export class ExitDraftModal extends Component {
     }
 
     this.props.navigation.dispatch(resetAction)
+    if (screen) {
+      this.props.navigation.navigate(screen)
+    }
   }
 
   onClose = () => {

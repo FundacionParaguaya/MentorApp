@@ -80,32 +80,21 @@ export class DrawerContent extends Component {
   }
   navigateToScreen = (screen, currentStack) => {
     // navigation comes from react-navigation, nav comes from redux
-    const { navigation, nav } = this.props
+    const { navigation } = this.props
 
     this.setState({ activeTab: screen })
     navigation.toggleDrawer()
 
     if (currentStack.key === 'Surveys' && currentStack.index) {
-      let openModal
+      const { navigation } = this.props
+      const draft = navigation.getParam('draft')
+      const isNewDraft = navigation.getParam('isNewDraft')
 
-      if (nav.deleteDraftOnExit) {
-        openModal = 'deleteDraft'
-      } else if (
-        navigation.state.routeName === 'Terms' ||
-        navigation.state.routeName === 'Privacy'
-      ) {
-        openModal = 'exitOnTerms'
-      } else {
-        openModal = 'exitDraft'
-      }
-
-      this.props.updateNav({
-        openModal,
-        beforeCloseModal: () => {
-          // reset navigation
-          navigation.popToTop()
-          navigation.navigate('Dashboard')
-        }
+      // open the exit modal with the params it needs
+      this.props.navigation.navigate('ExitDraftModal', {
+        draft,
+        isNewDraft,
+        screen
       })
     } else {
       navigation.navigate(screen)
