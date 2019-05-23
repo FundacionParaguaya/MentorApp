@@ -470,7 +470,7 @@ export class SocioEconomicQuestion extends Component {
                   />
                 )
               } else {
-                ;<TextInput
+                <TextInput
                   multiline
                   key={question.codeName}
                   required={question.required}
