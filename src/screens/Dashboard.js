@@ -67,8 +67,7 @@ export class Dashboard extends Component {
 
   navigateToDraft = draft => {
     this.props.updateNav({
-      survey: this.props.surveys.find(survey => survey.id === draft.surveyId),
-      draftId: draft.draftId
+      survey: this.props.surveys.find(survey => survey.id === draft.surveyId)
     })
 
     if (

@@ -167,7 +167,8 @@ describe('drafts reducer', () => {
   ]
   it('should handle CREATE_DRAFT', () => {
     const payload = {
-      draftId: 3
+      draftId: 3,
+      status: 'Draft'
     }
     expect(
       reducer.drafts(initialStore, {

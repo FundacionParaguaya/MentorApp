@@ -100,7 +100,7 @@ const nodeEnv = process.env
 export const drafts = (state = [], action) => {
   switch (action.type) {
     case CREATE_DRAFT:
-      return [...state, { ...action.payload, status: 'Draft' }]
+      return [...state, action.payload]
 
     case UPDATE_DRAFT:
       return state.map(draft => {

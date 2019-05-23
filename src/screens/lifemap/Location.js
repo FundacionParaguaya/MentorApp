@@ -18,8 +18,8 @@ import { connect } from 'react-redux'
 import PropTypes from 'prop-types'
 import { withNamespaces } from 'react-i18next'
 import MapboxGL from '@mapbox/react-native-mapbox-gl'
+import { updateDraft } from '../../redux/actions'
 import StickyFooter from '../../components/StickyFooter'
-import { addSurveyData, addDraftProgress } from '../../redux/actions'
 import TextInput from '../../components/TextInput'
 import globalStyles from '../../globalStyles'
 import colors from '../../theme.json'
@@ -34,9 +34,6 @@ export class Location extends Component {
   state = {
     showList: false,
     showErrors: false,
-    latitude: null,
-    longitude: null,
-    accuracy: null,
     searchAddress: '',
     showSearch: true,
     errorsDetected: [],
@@ -65,43 +62,37 @@ export class Location extends Component {
     })
   }
 
-  addSurveyData = (text, field) => {
-    this.props.addSurveyData(this.props.nav.draftId, 'familyData', {
-      [field]: text
-    })
-  }
-  getFieldValue = (draft, field) => {
-    if (!draft) {
-      return
-    }
-    return draft.familyData[field]
-  }
-
   onDragMap = region => {
+    const { draft } = this.state
+    const { familyData } = draft
     const { coordinates } = region.geometry
     const longitude = coordinates[0]
     const latitude = coordinates[1]
 
     // prevent jumping of the marker by updating only when the region changes
     if (
-      this.state.latitude !== latitude ||
-      this.state.longitude !== longitude
+      familyData.latitude !== latitude ||
+      familyData.longitude !== longitude
     ) {
       this.setState({
-        accuracy: 0
+        draft: {
+          ...draft,
+          familyData: {
+            ...familyData,
+            latitude,
+            longitude,
+            accuracy: 0
+          }
+        }
       })
-      this.addSurveyData(latitude, 'latitude')
-      this.addSurveyData(longitude, 'longitude')
-      this.addSurveyData(0, 'accuracy')
     }
   }
 
   // if the user has draged the map and the draft has stored some coordinates
-  setCoordinatesFromDraft = (isOnline, draft) => {
+  setCoordinatesFromDraft = isOnline => {
+    const { draft } = this.state
+    const { familyData } = draft
     this.setState({
-      latitude: parseFloat(this.getFieldValue(draft, 'latitude')),
-      longitude: parseFloat(this.getFieldValue(draft, 'longitude')),
-      accuracy: parseFloat(this.getFieldValue(draft, 'accuracy')),
       loading: false,
       centeringMap: false
     })
@@ -109,8 +100,8 @@ export class Location extends Component {
     if (!isOnline) {
       const isLocationInBoundaries = this.state.cachedMapPacks.length
         ? this.isUserLocationWithinMapPackBounds(
-            parseFloat(this.getFieldValue(draft, 'longitude')),
-            parseFloat(this.getFieldValue(draft, 'latitude')),
+            parseFloat(familyData.longitude),
+            parseFloat(familyData.latitude),
             this.state.cachedMapPacks.map(pack => pack.bounds)
           )
         : false
@@ -123,6 +114,9 @@ export class Location extends Component {
   }
 
   getCoordinatesOnline = survey => {
+    const { draft } = this.state
+    const { familyData } = draft
+
     Geolocation.getCurrentPosition(
       // if location is available and we are online center on it
       position => {
@@ -130,29 +124,35 @@ export class Location extends Component {
         this.setState({
           loading: false,
           centeringMap: false,
-          latitude,
-          longitude,
-          accuracy
+          draft: {
+            ...draft,
+            familyData: {
+              ...familyData,
+              latitude,
+              longitude,
+              accuracy
+            }
+          }
         })
-        this.addSurveyData(latitude, 'latitude')
-        this.addSurveyData(longitude, 'longitude')
-        this.addSurveyData(accuracy, 'accuracy')
       },
       () => {
         // if no location available reset to survey location only when
         // no location comes from the draft
-        if (!this.getFieldValue(this.state.draft, 'latitude')) {
+        if (!familyData.latitude) {
           const position = survey.surveyConfig.surveyLocation
           this.setState({
             loading: false,
             centeringMap: false,
-            latitude: position.latitude,
-            longitude: position.longitude,
-            accuracy: 0
+            draft: {
+              ...draft,
+              familyData: {
+                ...familyData,
+                latitude: position.latitude,
+                longitude: position.longitude,
+                accuracy: 0
+              }
+            }
           })
-          this.addSurveyData(position.latitude, 'latitude')
-          this.addSurveyData(position.longitude, 'longitude')
-          this.addSurveyData(0, 'accuracy')
         } else {
           this.setState({
             centeringMap: false
@@ -168,6 +168,9 @@ export class Location extends Component {
   }
 
   getCoordinatesOffline = () => {
+    const { draft } = this.state
+    const { familyData } = draft
+
     Geolocation.getCurrentPosition(
       // if no offline map is available, but there is location save it
       position => {
@@ -184,13 +187,16 @@ export class Location extends Component {
           loading: false,
           centeringMap: false,
           showForm: isLocationInBoundaries ? false : true,
-          latitude,
-          longitude,
-          accuracy
+          draft: {
+            ...draft,
+            familyData: {
+              ...familyData,
+              latitude,
+              longitude,
+              accuracy
+            }
+          }
         })
-        this.addSurveyData(latitude, 'latitude')
-        this.addSurveyData(longitude, 'longitude')
-        this.addSurveyData(accuracy, 'accuracy')
       },
       // otherwise ask for more details
       () => {
@@ -280,6 +286,7 @@ export class Location extends Component {
     )
 
     const { draft } = this.state
+    const { familyData } = draft
 
     // the there is no save country in the draft, set it to the survey one
     if (!draft.familyData.country) {
@@ -302,7 +309,7 @@ export class Location extends Component {
 
       const isOnline = conncection.type === 'none' ? false : true
 
-      if (!this.getFieldValue(draft, 'latitude')) {
+      if (!familyData.latitude) {
         if (!this.props.nav.readonly) {
           this.getDeviceCoordinates(isOnline)
         } else {
@@ -312,13 +319,13 @@ export class Location extends Component {
           })
         }
       } else {
-        this.setCoordinatesFromDraft(isOnline, draft)
+        this.setCoordinatesFromDraft(isOnline)
       }
     })
 
     // check if online first
     NetInfo.isConnected.fetch().then(isOnline => {
-      if (!this.getFieldValue(draft, 'latitude')) {
+      if (!familyData.latitude) {
         if (!this.props.nav.readonly) {
           this.getDeviceCoordinates(isOnline)
         } else {
@@ -329,14 +336,22 @@ export class Location extends Component {
           })
         }
       } else {
-        this.setCoordinatesFromDraft(isOnline, draft)
+        this.setCoordinatesFromDraft(isOnline)
       }
     })
 
-    this.props.addDraftProgress(draft.draftId, {
-      screen: 'Location',
-      total: getTotalScreens(survey)
-    })
+    if (!this.props.nav.readonly && draft.progress.screen !== 'Location') {
+      this.setState({
+        draft: {
+          ...draft,
+          progress: {
+            ...draft.progress,
+            screen: 'Location',
+            total: getTotalScreens(survey)
+          }
+        }
+      })
+    }
 
     if (!this.props.nav.readonly) {
       this.props.navigation.setParams({
@@ -375,21 +390,59 @@ export class Location extends Component {
   }
 
   handleClick = () => {
+    const { draft } = this.state
     if (this.errorsDetected.length) {
       this.setState({
         showErrors: true
       })
     } else {
+      this.props.updateDraft(draft.draftId, draft)
       this.props.navigation.replace('SocioEconomicQuestion')
     }
   }
+
+  updateFamilyData = (value, field) => {
+    const { draft } = this.state
+
+    this.setState({
+      draft: {
+        ...draft,
+        familyData: {
+          ...draft.familyData,
+          [field]: value
+        }
+      }
+    })
+  }
+
+  goToSearch = (data, details = null) => {
+    const { draft } = this.state
+
+    this.setState({
+      showList: false,
+      draft: {
+        ...draft,
+        familyData: {
+          ...draft.familyData,
+          latitude: details.geometry.location.lat,
+          longitude: details.geometry.location.lng
+        }
+      }
+    })
+  }
+
+  componentDidUpdate(prevProps, prevState) {
+    // update nav draft param if the data changes
+    // so the exit modal can access it
+    if (prevState.draft.familyData !== this.state.draft.familyData) {
+      this.props.navigation.setParams({ draft: this.state.draft })
+    }
+  }
+
   render() {
     const { t } = this.props
     const { survey, readonly } = this.props.nav
     const {
-      latitude,
-      longitude,
-      accuracy,
       centeringMap,
       loading,
       showErrors,
@@ -397,6 +450,8 @@ export class Location extends Component {
       showForm,
       draft
     } = this.state
+
+    const familyData = draft.familyData
 
     if (loading) {
       return (
@@ -437,13 +492,7 @@ export class Location extends Component {
               autoFocus={false}
               returnKeyType={'default'}
               fetchDetails={true}
-              onPress={(data, details = null) => {
-                this.setState({
-                  latitude: details.geometry.location.lat,
-                  longitude: details.geometry.location.lng,
-                  showList: false
-                })
-              }}
+              onPress={this.goToSearch}
               query={{
                 key: 'AIzaSyBLGYYy86_7QPT-dKgUnFMIJyhUE6AGVwM',
                 language: 'en', // language of the results
@@ -465,7 +514,7 @@ export class Location extends Component {
             />
           )}
           <MapboxGL.MapView
-            centerCoordinate={[longitude, latitude]}
+            centerCoordinate={[familyData.longitude, familyData.latitude]}
             zoomLevel={15}
             style={{ width: '100%', flexGrow: 2 }}
             logoEnabled={false}
@@ -514,7 +563,7 @@ export class Location extends Component {
         >
           {!readonly && (
             <View>
-              {latitude ? (
+              {familyData.latitude ? (
                 <View style={[styles.placeholder, styles.map]}>
                   <Image
                     source={happy}
@@ -524,12 +573,12 @@ export class Location extends Component {
                     {t('views.family.weFoundYou')}
                   </Text>
                   <Text style={[globalStyles.h3, { textAlign: 'center' }]}>
-                    lat: {latitude}, long: {longitude}
+                    lat: {familyData.latitude}, long: {familyData.longitude}
                   </Text>
                   <Text style={[globalStyles.h4, { marginBottom: 20 }]}>
                     {`${t('views.family.gpsAccurate').replace(
                       '%n',
-                      Math.round(accuracy)
+                      Math.round(familyData.accuracy)
                     )}`}
                   </Text>
                   <Text style={[globalStyles.h3, { textAlign: 'center' }]}>
@@ -557,7 +606,7 @@ export class Location extends Component {
             id="countrySelect"
             required
             showErrors={showErrors}
-            onChange={this.addSurveyData}
+            onChange={this.updateFamilyData}
             label={t('views.family.country')}
             countrySelect
             placeholder={
@@ -576,7 +625,7 @@ export class Location extends Component {
           />
           <TextInput
             id="postCode"
-            onChangeText={this.addSurveyData}
+            onChangeText={this.updateFamilyData}
             field="postCode"
             value={draft.familyData.postCode || ''}
             placeholder={t('views.family.postcode')}
@@ -585,7 +634,7 @@ export class Location extends Component {
           />
           <TextInput
             id="address"
-            onChangeText={this.addSurveyData}
+            onChangeText={this.updateFamilyData}
             field="address"
             value={draft.familyData.address || ''}
             placeholder={t('views.family.streetOrHouseDescription')}
@@ -602,15 +651,13 @@ export class Location extends Component {
 
 Location.propTypes = {
   t: PropTypes.func.isRequired,
+  updateDraft: PropTypes.func.isRequired,
   navigation: PropTypes.object.isRequired,
-  nav: PropTypes.object.isRequired,
-  addSurveyData: PropTypes.func.isRequired,
-  addDraftProgress: PropTypes.func.isRequired
+  nav: PropTypes.object.isRequired
 }
 
 const mapDispatchToProps = {
-  addSurveyData,
-  addDraftProgress
+  updateDraft
 }
 
 const mapStateToProps = ({ nav }) => ({

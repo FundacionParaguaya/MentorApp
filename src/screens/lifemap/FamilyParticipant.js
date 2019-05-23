@@ -3,14 +3,7 @@ import { StyleSheet, Text } from 'react-native'
 import { connect } from 'react-redux'
 import PropTypes from 'prop-types'
 import uuid from 'uuid/v1'
-import {
-  createDraft,
-  addSurveyFamilyMemberData,
-  addSurveyData,
-  removeFamilyMembers,
-  updateNav,
-  updateDraft
-} from '../../redux/actions'
+import { createDraft, updateDraft } from '../../redux/actions'
 import { withNamespaces } from 'react-i18next'
 import Icon from 'react-native-vector-icons/MaterialIcons'
 import StickyFooter from '../../components/StickyFooter'
@@ -33,6 +26,7 @@ export class FamilyParticipant extends Component {
     showErrors: false,
     draft: this.props.navigation.getParam('draft') ||
       this.props.navigation.getParam('family') || {
+        status: 'Draft',
         surveyId: this.props.nav.survey.id,
         surveyVersionId: this.props.nav.survey['surveyVersionId'],
         created: Date.now(),
@@ -70,6 +64,7 @@ export class FamilyParticipant extends Component {
 
   handleClick = () => {
     const { countFamilyMembers } = this.state.draft.familyData
+
     // check if form is valid
     if (this.errorsDetected.length) {
       this.setState({
@@ -78,7 +73,7 @@ export class FamilyParticipant extends Component {
     } else {
       const { draft } = this.state
       // if this is a new draft, add it to the store
-      if (!this.props.navigation.getParam('draft')) {
+      if (this.props.navigation.getParam('isNewDraft')) {
         this.props.createDraft(draft)
       } else {
         this.props.updateDraft(draft.draftId, draft)
@@ -134,19 +129,6 @@ export class FamilyParticipant extends Component {
       value: -1
     }
   ]
-
-  getFieldValue = (draft, field) => {
-    if (!draft) {
-      return
-    } else if (typeof draft !== 'undefined' && draft !== 'null') {
-      if (
-        typeof draft.familyData !== 'undefined' &&
-        draft.familyData !== 'null'
-      ) {
-        return draft.familyData.familyMembersList[0][field]
-      }
-    }
-  }
 
   updateParticipant = (value, field) => {
     const { draft } = this.state
@@ -329,6 +311,7 @@ export class FamilyParticipant extends Component {
         />
         <Select
           id="familyMembersCount"
+          field="countFamilyMembers"
           required
           onChange={this.addFamilyCount}
           readonly={readonly}
@@ -379,28 +362,19 @@ const styles = StyleSheet.create({
 
 FamilyParticipant.propTypes = {
   t: PropTypes.func.isRequired,
-  drafts: PropTypes.array.isRequired,
+
   nav: PropTypes.object.isRequired,
   navigation: PropTypes.object.isRequired,
   createDraft: PropTypes.func.isRequired,
-  updateDraft: PropTypes.func.isRequired,
-  addSurveyFamilyMemberData: PropTypes.func.isRequired,
-  addSurveyData: PropTypes.func.isRequired,
-  removeFamilyMembers: PropTypes.func.isRequired,
-  updateNav: PropTypes.func.isRequired
+  updateDraft: PropTypes.func.isRequired
 }
 
 const mapDispatchToProps = {
   createDraft,
-  updateDraft,
-  addSurveyFamilyMemberData,
-  addSurveyData,
-  removeFamilyMembers,
-  updateNav
+  updateDraft
 }
 
-const mapStateToProps = ({ drafts, nav }) => ({
-  drafts,
+const mapStateToProps = ({ nav }) => ({
   nav
 })
 
