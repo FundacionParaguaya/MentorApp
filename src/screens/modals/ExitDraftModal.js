@@ -17,17 +17,20 @@ export class ExitDraftModal extends Component {
     const isNewDraft = navigation.getParam('isNewDraft')
     const screen = navigation.getParam('screen')
 
-    const resetAction = StackActions.reset({
-      index: 0,
-      actions: [NavigationActions.navigate({ routeName: 'drawerStack' })]
-    })
-
     // update draft in store on exit
     if (draft && !isNewDraft) {
       this.props.updateDraft(draft.draftId, draft)
     }
 
+    // reset stack
+    const resetAction = StackActions.reset({
+      index: 0,
+      actions: [NavigationActions.navigate({ routeName: 'drawerStack' })]
+    })
+
     this.props.navigation.dispatch(resetAction)
+
+    // navigate to appropriate screen if present in params
     if (screen) {
       this.props.navigation.navigate(screen)
     }

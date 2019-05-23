@@ -36,8 +36,13 @@ const createTestProps = props => ({
         return draft
       } else if (param === 'survey') {
         return {
+          surveyEconomicQuestions: [],
+          surveyStoplightQuestions: [],
+          title: 'Chile - Geco',
           surveyId: 100,
-          surveyConfig: { surveyLocation: { country: 'BG' } }
+          surveyConfig: {
+            surveyLocation: { country: 'BG', latitude: 10, longitude: 11 }
+          }
         }
       }
 
@@ -46,17 +51,7 @@ const createTestProps = props => ({
     isFocused: jest.fn(() => true)
   },
   nav: {
-    readonly: false,
-    draftId: 4,
-    survey: {
-      surveyEconomicQuestions: [],
-      surveyStoplightQuestions: [],
-      title: 'Chile - Geco',
-      surveyId: 100,
-      surveyConfig: {
-        surveyLocation: { country: 'BG', latitude: 10, longitude: 11 }
-      }
-    }
+    readonly: false
   },
   addSurveyData: jest.fn(),
   addDraftProgress: jest.fn(),

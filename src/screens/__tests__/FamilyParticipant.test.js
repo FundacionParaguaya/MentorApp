@@ -7,57 +7,55 @@ import TextInput from '../../components/TextInput'
 import draft from '../__mocks__/draftMock.json'
 import StickyFooter from '../../components/StickyFooter'
 
+const survey = {
+  id: 1,
+  title: 'Dev Demo',
+  survey_version_id: 2,
+  surveyStoplightQuestions: [],
+  surveyEconomicQuestions: [],
+  surveyConfig: {
+    surveyLocation: { country: 'BG' },
+    gender: [
+      {
+        text: 'Female',
+        value: 'F'
+      },
+      {
+        text: 'Male',
+        value: 'M'
+      },
+      {
+        text: 'Prefer not to disclose',
+        value: 'O',
+        otherOption: true
+      }
+    ],
+    documentType: [
+      {
+        text: 'National Insurance Number',
+        value: 'NATIONALINSURANCE',
+        otherOption: false
+      },
+      {
+        text: 'Organisation Reference Number',
+        value: 'ORGANISATIONALREFERENCENUMBER',
+        otherOption: false
+      },
+      {
+        text: 'Other identification',
+        value: 'OTHER',
+        otherOption: true
+      }
+    ]
+  }
+}
+
 const createTestProps = props => ({
   t: value => value,
   updateNav: jest.fn(),
   createDraft: jest.fn(),
   updateDraft: jest.fn(),
   deleteDraft: jest.fn(),
-  nav: {
-    draftId: 4,
-    survey: {
-      id: 1,
-      title: 'Dev Demo',
-      survey_version_id: 2,
-      surveyStoplightQuestions: [],
-      surveyEconomicQuestions: [],
-      surveyConfig: {
-        surveyLocation: { country: 'BG' },
-        gender: [
-          {
-            text: 'Female',
-            value: 'F'
-          },
-          {
-            text: 'Male',
-            value: 'M'
-          },
-          {
-            text: 'Prefer not to disclose',
-            value: 'O',
-            otherOption: true
-          }
-        ],
-        documentType: [
-          {
-            text: 'National Insurance Number',
-            value: 'NATIONALINSURANCE',
-            otherOption: false
-          },
-          {
-            text: 'Organisation Reference Number',
-            value: 'ORGANISATIONALREFERENCENUMBER',
-            otherOption: false
-          },
-          {
-            text: 'Other identification',
-            value: 'OTHER',
-            otherOption: true
-          }
-        ]
-      }
-    }
-  },
   addSurveyFamilyMemberData: jest.fn(),
   addDraftProgress: jest.fn(),
   addSurveyData: jest.fn(),
@@ -67,6 +65,8 @@ const createTestProps = props => ({
     getParam: jest.fn(param => {
       if (param === 'family') {
         return null
+      } else if (param === 'survey') {
+        return survey
       } else if (param === 'draft') {
         return draft
       } else {
@@ -102,6 +102,8 @@ describe('Family Participant View', () => {
             getParam: jest.fn(param => {
               if (param === 'draft') {
                 return draft
+              } else if (param === 'survey') {
+                return survey
               } else {
                 return null
               }
@@ -149,6 +151,8 @@ describe('Family Participant View', () => {
           getParam: jest.fn(param => {
             if (param === 'family') {
               return null
+            } else if (param === 'survey') {
+              return survey
             } else if (param === 'draft') {
               return draft
             } else {
@@ -245,6 +249,8 @@ describe('participant adding/removing data', () => {
         getParam: jest.fn(param => {
           if (param === 'draft') {
             return draft
+          } else if (param === 'survey') {
+            return survey
           } else {
             return null
           }

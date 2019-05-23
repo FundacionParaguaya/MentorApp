@@ -15,9 +15,9 @@ import colors from '../../theme.json'
 import globalStyles from '../../globalStyles'
 import { getTotalScreens } from './helpers'
 export class FamilyParticipant extends Component {
-  gender = this.props.nav.survey.surveyConfig.gender
+  survey = this.props.navigation.getParam('survey')
 
-  documentType = this.props.nav.survey.surveyConfig.documentType
+  readOnly = this.props.navigation.getParam('readOnly')
 
   errorsDetected = []
 
@@ -27,8 +27,10 @@ export class FamilyParticipant extends Component {
     draft: this.props.navigation.getParam('draft') ||
       this.props.navigation.getParam('family') || {
         status: 'Draft',
-        surveyId: this.props.nav.survey.id,
-        surveyVersionId: this.props.nav.survey['surveyVersionId'],
+        surveyId: this.survey.id,
+        surveyVersionId: this.props.navigation.getParam('survey')[
+          'surveyVersionId'
+        ],
         created: Date.now(),
         draftId: uuid(),
         economicSurveyDataList: [],
@@ -37,7 +39,7 @@ export class FamilyParticipant extends Component {
         achievements: [],
         progress: {
           screen: 'FamilyParticipant',
-          total: getTotalScreens(this.props.nav.survey)
+          total: getTotalScreens(this.props.navigation.getParam('survey'))
         },
         familyData: {
           familyMembersList: [
@@ -72,6 +74,7 @@ export class FamilyParticipant extends Component {
       })
     } else {
       const { draft } = this.state
+      const survey = this.survey
       // if this is a new draft, add it to the store
       if (this.props.navigation.getParam('isNewDraft')) {
         this.props.createDraft(draft)
@@ -81,11 +84,12 @@ export class FamilyParticipant extends Component {
       if (countFamilyMembers && countFamilyMembers > 1) {
         // if multiple family members navigate to members screens
         this.props.navigation.navigate('FamilyMembersNames', {
-          draft
+          draft,
+          survey
         })
       } else {
         // if only one family member, navigate directly to location
-        this.props.navigation.navigate('Location', { draft })
+        this.props.navigation.navigate('Location', { draft, survey })
       }
     }
   }
@@ -161,17 +165,14 @@ export class FamilyParticipant extends Component {
       navigation.setParams({ isNewDraft: true })
     }
 
-    if (
-      !this.props.nav.readonly &&
-      draft.progress.screen !== 'FamilyParticipant'
-    ) {
+    if (!this.readonly && draft.progress.screen !== 'FamilyParticipant') {
       this.setState({
         draft: {
           ...draft,
           progress: {
             ...draft.progress,
             screen: 'FamilyParticipant',
-            total: getTotalScreens(this.props.nav.survey)
+            total: getTotalScreens(this.survey)
           }
         }
       })
@@ -192,7 +193,6 @@ export class FamilyParticipant extends Component {
 
   render() {
     const { t } = this.props
-    const { survey, readonly } = this.props.nav
     const { showErrors, draft } = this.state
 
     const participant = draft.familyData.familyMembersList[0]
@@ -201,14 +201,14 @@ export class FamilyParticipant extends Component {
       <StickyFooter
         handleClick={this.handleClick}
         continueLabel={t('general.continue')}
-        readonly={readonly}
-        progress={!readonly && draft ? 1 / draft.progress.total : 0}
+        readonly={this.is}
+        progress={!this.is && draft ? 1 / draft.progress.total : 0}
       >
         <Decoration variation="primaryParticipant">
           <Icon name="face" color={colors.grey} size={61} style={styles.icon} />
-          {readonly !== true ? (
+          {this.is !== true ? (
             <Text
-              readonly={readonly}
+              readonly={this.is}
               style={[globalStyles.h2Bold, styles.heading]}
             >
               {t('views.family.primaryParticipantHeading')}
@@ -220,7 +220,7 @@ export class FamilyParticipant extends Component {
           autoFocus={!participant.firstName}
           validation="string"
           field="firstName"
-          readonly={readonly}
+          readonly={this.readonly}
           onChangeText={this.updateParticipant}
           placeholder={t('views.family.firstName')}
           value={participant.firstName || ''}
@@ -232,7 +232,7 @@ export class FamilyParticipant extends Component {
           field="lastName"
           validation="string"
           onChangeText={this.updateParticipant}
-          readonly={readonly}
+          readonly={this.readonly}
           placeholder={t('views.family.lastName')}
           value={participant.lastName || ''}
           required
@@ -246,14 +246,14 @@ export class FamilyParticipant extends Component {
           otherField="customGender"
           otherPlaceholder={t('views.family.specifyGender')}
           otherValue={participant.customGender}
-          readonly={readonly}
+          readonly={this.readonly}
           label={t('views.family.gender')}
           placeholder={t('views.family.selectGender')}
           field="gender"
           value={participant.gender || ''}
           detectError={this.detectError}
           showErrors={showErrors}
-          options={this.gender}
+          options={this.survey.surveyConfig.gender}
         />
         <DateInput
           required
@@ -263,7 +263,7 @@ export class FamilyParticipant extends Component {
           showErrors={showErrors}
           onValidDate={this.updateParticipant}
           value={participant.birthDate}
-          readonly={readonly}
+          readonly={this.readonly}
         />
 
         <Select
@@ -272,19 +272,19 @@ export class FamilyParticipant extends Component {
           otherPlaceholder={t('views.family.customDocumentType')}
           otherField="customDocumentType"
           otherValue={participant.customDocumentType}
-          readonly={readonly}
+          readonly={this.readonly}
           label={t('views.family.documentType')}
           placeholder={t('views.family.documentType')}
           field="documentType"
           value={participant.documentType || ''}
           detectError={this.detectError}
           showErrors={showErrors}
-          options={this.documentType}
+          options={this.survey.surveyConfig.documentType}
         />
 
         <TextInput
           onChangeText={this.updateParticipant}
-          readonly={readonly}
+          readonly={this.readonly}
           field="documentNumber"
           required
           value={participant.documentNumber}
@@ -296,15 +296,16 @@ export class FamilyParticipant extends Component {
           id="country"
           required
           onChange={this.updateParticipant}
-          readonly={readonly}
+          readonly={this.readonly}
           label={t('views.family.countryOfBirth')}
+          country={this.survey.surveyConfig.surveyLocation.country}
           countrySelect
-          country={survey.surveyConfig.surveyLocation.country}
+          countryOfBirth={this.survey.surveyConfig.countryOfBirth}
           placeholder={t('views.family.countryOfBirth')}
           field="birthCountry"
           value={
             participant.birthCountry ||
-            survey.surveyConfig.surveyLocation.country
+            this.survey.surveyConfig.surveyLocation.country
           }
           detectError={this.detectError}
           showErrors={showErrors}
@@ -314,7 +315,7 @@ export class FamilyParticipant extends Component {
           field="countFamilyMembers"
           required
           onChange={this.addFamilyCount}
-          readonly={readonly}
+          readonly={this.readonly}
           label={t('views.family.peopleLivingInThisHousehold')}
           placeholder={t('views.family.peopleLivingInThisHousehold')}
           value={draft.familyData.countFamilyMembers || ''}
@@ -324,7 +325,7 @@ export class FamilyParticipant extends Component {
         />
         <TextInput
           onChangeText={this.updateParticipant}
-          readonly={readonly}
+          readonly={this.readonly}
           field="email"
           value={participant.email}
           placeholder={t('views.family.email')}
@@ -334,7 +335,7 @@ export class FamilyParticipant extends Component {
         />
         <TextInput
           onChangeText={this.updateParticipant}
-          readonly={readonly}
+          readonly={this.readonly}
           field="phoneNumber"
           value={participant.phoneNumber}
           placeholder={t('views.family.phone')}
@@ -362,8 +363,6 @@ const styles = StyleSheet.create({
 
 FamilyParticipant.propTypes = {
   t: PropTypes.func.isRequired,
-
-  nav: PropTypes.object.isRequired,
   navigation: PropTypes.object.isRequired,
   createDraft: PropTypes.func.isRequired,
   updateDraft: PropTypes.func.isRequired
@@ -374,9 +373,7 @@ const mapDispatchToProps = {
   updateDraft
 }
 
-const mapStateToProps = ({ nav }) => ({
-  nav
-})
+const mapStateToProps = () => ({})
 
 export default withNamespaces()(
   connect(

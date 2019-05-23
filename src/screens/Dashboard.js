@@ -66,25 +66,18 @@ export class Dashboard extends Component {
   }
 
   navigateToDraft = draft => {
-    this.props.updateNav({
-      survey: this.props.surveys.find(survey => survey.id === draft.surveyId)
-    })
-
-    if (
-      draft.progress.screen !== 'Question' &&
-      draft.progress.screen !== 'Skipped' &&
-      draft.progress.screen !== 'Final' &&
-      draft.progress.screen !== 'Overview'
-    ) {
-      this.props.navigation.navigate(draft.progress.screen, {
-        draft,
-        step: draft.progress.step,
-        socioEconomics: draft.progress.socioEconomics
-      })
-    } else
+    if (draft.progress.showResume) {
       this.props.navigation.navigate('Overview', {
         resumeDraft: true,
-        draft
+        draft,
+        survey: this.props.surveys.find(survey => survey.id === draft.surveyId)
+      })
+    } else
+      this.props.navigation.navigate(draft.progress.screen, {
+        draft,
+        survey: this.props.surveys.find(survey => survey.id === draft.surveyId),
+        step: draft.progress.step,
+        socioEconomics: draft.progress.socioEconomics
       })
   }
   navigateToSynced = item => {

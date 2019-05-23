@@ -101,12 +101,13 @@ class Select extends Component {
       countrySelect,
       readonly,
       otherValue,
-      otherPlaceholder
+      otherPlaceholder,
+      countryOfBirth
     } = this.props
     const defaultCountry = this.props.country
       ? countryList.filter(item => item.code === this.props.country)[0]
       : ''
-    const { survey } = this.props.nav
+
     let countries = countryList.filter(
       country => country.code !== defaultCountry.code
     )
@@ -116,11 +117,8 @@ class Select extends Component {
 
     countriesArr.push(defaultCountry)
 
-    if (
-      typeof survey.surveyConfig.countryOfBirth !== 'undefined' &&
-      survey.surveyConfig.countryOfBirth !== null
-    ) {
-      survey.surveyConfig.countryOfBirth.forEach(e => {
+    if (countryOfBirth) {
+      countryOfBirth.forEach(e => {
         let addCountry = true
         let fixedObj = {
           code: '',
@@ -158,6 +156,8 @@ class Select extends Component {
     } else {
       text = ''
     }
+
+    console.log(countries)
 
     return (
       <View>
@@ -293,6 +293,7 @@ Select.propTypes = {
   countrySelect: PropTypes.bool,
   readonly: PropTypes.bool,
   showErrors: PropTypes.bool,
+  countryOfBirth: PropTypes.array,
   required: PropTypes.bool,
   nav: PropTypes.object.isRequired,
   detectError: PropTypes.func

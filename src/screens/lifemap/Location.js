@@ -31,6 +31,8 @@ import sad from '../../../assets/images/sad.png'
 import { getTotalScreens } from './helpers'
 
 export class Location extends Component {
+  survey = this.props.navigation.getParam('survey')
+
   state = {
     showList: false,
     showErrors: false,
@@ -216,13 +218,13 @@ export class Location extends Component {
 
   // try getting device location and set map state according to online state
   getDeviceCoordinates = isOnline => {
-    const { survey } = this.props.nav
-
     this.setState({
       centeringMap: true
     })
 
-    isOnline ? this.getCoordinatesOnline(survey) : this.getCoordinatesOffline()
+    isOnline
+      ? this.getCoordinatesOnline(this.survey)
+      : this.getCoordinatesOffline()
   }
 
   isUserLocationWithinMapPackBounds(longitude, latitude, packs) {
@@ -274,7 +276,7 @@ export class Location extends Component {
   componentDidMount() {
     AppState.addEventListener('change', this._handleAppStateChange)
     this.getMapOfflinePacks()
-    const { survey } = this.props.nav
+
     // set search location keyboard events
     this.keyboardDidShowListener = Keyboard.addListener(
       'keyboardDidShow',
@@ -295,7 +297,7 @@ export class Location extends Component {
           ...draft,
           familyData: {
             ...draft.familyData,
-            country: survey.surveyConfig.surveyLocation.country
+            country: this.survey.surveyConfig.surveyLocation.country
           }
         }
       })
@@ -347,7 +349,7 @@ export class Location extends Component {
           progress: {
             ...draft.progress,
             screen: 'Location',
-            total: getTotalScreens(survey)
+            total: getTotalScreens(this.survey)
           }
         }
       })
@@ -374,10 +376,12 @@ export class Location extends Component {
   onPressBack = () => {
     const { draft } = this.state
 
+    const survey = this.survey
+
     if (draft.familyData.familyMembersList.length > 1) {
-      this.props.navigation.navigate('FamilyMembersNames', { draft })
+      this.props.navigation.navigate('FamilyMembersNames', { draft, survey })
     } else {
-      this.props.navigation.navigate('FamilyParticipant', { draft })
+      this.props.navigation.navigate('FamilyParticipant', { draft, survey })
     }
   }
 
@@ -441,7 +445,7 @@ export class Location extends Component {
 
   render() {
     const { t } = this.props
-    const { survey, readonly } = this.props.nav
+    const { readonly } = this.props.nav
     const {
       centeringMap,
       loading,
@@ -617,10 +621,10 @@ export class Location extends Component {
             field="country"
             value={
               draft.familyData.country ||
-              survey.surveyConfig.surveyLocation.country
+              this.survey.surveyConfig.surveyLocation.country
             }
             detectError={this.detectError}
-            country={survey.surveyConfig.surveyLocation.country}
+            country={this.survey.surveyConfig.surveyLocation.country}
             readonly={readonly}
           />
           <TextInput
