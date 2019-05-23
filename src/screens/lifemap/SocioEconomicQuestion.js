@@ -46,15 +46,7 @@ export class SocioEconomicQuestion extends Component {
       const surveyQuestions = props.nav.survey.surveyEconomicQuestions.map(
         question =>
           question.options.length
-            ? {
-                ...question,
-                options: question.options.map(option => ({
-                  ...option,
-                  text: !/^[A-Za-z0-9]*$/.test(option.text.replace(/\s/g, '')) // check if the title contains spanish cahracters
-                    ? option.text
-                    : decodeURIComponent(escape(option.text))
-                }))
-              }
+            ? this.checkAndReplaceSpecialChars(question)
             : question
       )
 
@@ -206,6 +198,20 @@ export class SocioEconomicQuestion extends Component {
       })
     }
   }
+
+  checkAndReplaceSpecialChars = question => {
+    const LATIN_CHARS = /^[A-Za-z0-9]*$/
+    return {
+      ...question,
+      options: question.options.map(option => ({
+        ...option,
+        text: LATIN_CHARS.test(option.text.replace(/\s/g, '')) // check for strange chars and if found decode
+          ? option.text
+          : decodeURIComponent(escape(option.text))
+      }))
+    }
+  }
+
   addSurveyDataOtherField = (text, field) => {
     const draft = this.props.navigation.getParam('family') || getDraft()
     let value
@@ -464,7 +470,7 @@ export class SocioEconomicQuestion extends Component {
                   />
                 )
               } else {
-                <TextInput
+                ;<TextInput
                   multiline
                   key={question.codeName}
                   required={question.required}
