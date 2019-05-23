@@ -4,7 +4,6 @@ import PropTypes from 'prop-types'
 import SplashScreen from 'react-native-splash-screen'
 import { connect } from 'react-redux'
 import { setDimensions, updateNav } from '../redux/actions'
-import ExitDraftPopup from './ExitDraftPopup'
 import RootStack from './stacks'
 
 export class NavWrapper extends Component {
@@ -20,22 +19,12 @@ export class NavWrapper extends Component {
 
   // determine which stack to show based on synced property
   render() {
-    const { nav, hydration } = this.props
+    const { hydration } = this.props
 
+    // wait for store hydration to show the app
     return hydration ? (
       <View style={styles.container} testID="app-container">
         <RootStack />
-
-        {/* Modals */}
-        <ExitDraftPopup
-          isOpen={
-            nav.openModal &&
-            (nav.openModal === 'exitDraft' ||
-              nav.openModal === 'exitOnTerms' ||
-              nav.openModal === 'deleteDraft')
-          }
-          onClose={this.onCloseModal}
-        />
       </View>
     ) : (
       <View />

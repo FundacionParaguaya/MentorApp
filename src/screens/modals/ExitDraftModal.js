@@ -1,27 +1,50 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
-import { Text, StyleSheet, View, Platform } from 'react-native'
+import { StackActions, NavigationActions } from 'react-navigation'
 import { connect } from 'react-redux'
-import { deleteDraft, updateNav } from '../redux/actions'
-import store from '../redux/store'
-import Popup from '../components/Popup'
-import Button from '../components/Button'
-import i18n from '../i18n'
-import globalStyles from '../globalStyles'
-import colors from '../theme.json'
+import { Text, StyleSheet, View, Platform } from 'react-native'
+import { updateDraft } from '../../redux/actions'
+import Popup from '../../components/Popup'
+import Button from '../../components/Button'
+import i18n from '../../i18n'
+import globalStyles from '../../globalStyles'
+import colors from '../../theme.json'
 
 export class ExitDraftModal extends Component {
+  handleClickOnYes = () => {
+    const { navigation } = this.props
+    const draft = navigation.getParam('draft')
+    const isNewDraft = navigation.getParam('isNewDraft')
+
+    const resetAction = StackActions.reset({
+      index: 0,
+      actions: [NavigationActions.navigate({ routeName: 'drawerStack' })]
+    })
+
+    // update draft in store on exit
+    if (draft && !isNewDraft) {
+      this.props.updateDraft(draft.draftId, draft)
+    }
+
+    this.props.navigation.dispatch(resetAction)
+  }
+
+  onClose = () => {
+    this.props.navigation.goBack()
+  }
+
   render() {
-    const { isOpen, onClose, nav } = this.props
+    const { navigation } = this.props
+
+    const draft = navigation.getParam('draft')
+    const isNewDraft = navigation.getParam('isNewDraft')
 
     return (
-      <Popup isOpen={isOpen} onClose={onClose}>
-        {nav.deleteDraftOnExit ||
-        nav.openModal === 'exitOnTerms' ||
-        nav.openModal === 'deleteDraftOnExit' ? (
+      <Popup isOpen onClose={this.onClose}>
+        {!draft || isNewDraft ? (
           <View>
             <Text style={[globalStyles.centerText, globalStyles.h3]}>
-              {nav.deleteDraftOnExit
+              {isNewDraft
                 ? i18n.t('views.modals.lifeMapWillNotBeSaved')
                 : i18n.t('views.modals.weCannotContinueToCreateTheLifeMap')}
             </Text>
@@ -45,25 +68,13 @@ export class ExitDraftModal extends Component {
             outlined
             text={i18n.t('general.yes')}
             style={{ width: 107 }}
-            handleClick={() => {
-              // if not enough info for draft delete it
-              if (nav.deleteDraftOnExit) {
-                store.dispatch(deleteDraft(nav.draftId))
-              }
-
-              if (nav.beforeCloseModal) {
-                nav.beforeCloseModal()
-              }
-
-              // close modal
-              onClose()
-            }}
+            handleClick={this.handleClickOnYes}
           />
           <Button
             outlined
             text={i18n.t('general.no')}
             style={{ width: 107 }}
-            handleClick={onClose}
+            handleClick={this.onClose}
           />
         </View>
       </Popup>
@@ -72,11 +83,9 @@ export class ExitDraftModal extends Component {
 }
 
 ExitDraftModal.propTypes = {
-  nav: PropTypes.object,
-  isOpen: PropTypes.bool,
-  onClose: PropTypes.func,
-  routeName: PropTypes.string,
-  draftId: PropTypes.oneOfType([PropTypes.bool, PropTypes.string])
+  navigation: PropTypes.object.isRequired,
+  updateDraft: PropTypes.func.isRequired,
+  routeName: PropTypes.string
 }
 
 const styles = StyleSheet.create({
@@ -102,15 +111,11 @@ const styles = StyleSheet.create({
   }
 })
 
-const mapStateToProps = ({ nav }) => ({
-  nav
-})
-
 const mapDispatchToProps = {
-  updateNav
+  updateDraft
 }
 
 export default connect(
-  mapStateToProps,
+  () => ({}),
   mapDispatchToProps
 )(ExitDraftModal)

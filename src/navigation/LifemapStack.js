@@ -5,14 +5,26 @@ import SurveysView from '../screens/Surveys'
 import LifemapScreens from './LifemapScreens'
 import { generateNavStyles, addMenuIcon } from './helpers'
 
-export default createStackNavigator({
-  Surveys: {
-    screen: SurveysView,
-    navigationOptions: ({ navigation }) => ({
-      ...generateNavStyles({ navigation }),
-      ...addMenuIcon(navigation),
-      headerTitle: <Title title="views.createLifemap" />
-    })
+export default createStackNavigator(
+  {
+    Surveys: {
+      screen: SurveysView,
+      navigationOptions: ({ navigation }) => ({
+        ...addMenuIcon(navigation),
+        headerTitle: <Title title="views.createLifemap" />
+      })
+    },
+    ...LifemapScreens
   },
-  ...LifemapScreens
-})
+  {
+    defaultNavigationOptions: ({ navigation }) => ({
+      ...generateNavStyles({ navigation })
+    }),
+    transitionConfig: () => ({
+      screenInterpolator: () => null,
+      transitionSpec: {
+        duration: 0
+      }
+    })
+  }
+)

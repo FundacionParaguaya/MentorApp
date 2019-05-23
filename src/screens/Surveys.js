@@ -20,6 +20,7 @@ export class Surveys extends Component {
   acessibleComponent = React.createRef()
 
   componentDidMount() {
+    // this.props.navigation.popToTop()
     if (UIManager.AccessibilityEventTypes) {
       setTimeout(() => {
         UIManager.sendAccessibilityEvent(

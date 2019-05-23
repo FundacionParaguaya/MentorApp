@@ -1,5 +1,6 @@
 import { createStackNavigator, createAppContainer } from 'react-navigation'
 import DrawerNavigator from './DrawerNavigator'
+import ExitDraftPopup from '../screens/modals/ExitDraftModal'
 import LoginView from '../screens/Login'
 import LoadingView from '../screens/Loading'
 
@@ -10,16 +11,35 @@ const LoginStack = createStackNavigator(
   },
   {
     initialRouteName: 'Login',
-    headerMode: 'none'
+    headerMode: 'none',
+    transitionConfig: () => ({
+      screenInterpolator: () => null,
+      transitionSpec: {
+        duration: 0
+      }
+    })
   }
 )
 
 export const DrawerNavigation = createStackNavigator(
   {
-    DrawerStack: { screen: DrawerNavigator }
+    DrawerStack: { screen: DrawerNavigator },
+    ExitDraftModal: {
+      screen: ExitDraftPopup
+    }
   },
   {
-    headerMode: 'none'
+    headerMode: 'none',
+    cardStyle: {
+      backgroundColor: 'rgba(47,38,28, 0.2)',
+      opacity: 1
+    },
+    transitionConfig: () => ({
+      screenInterpolator: () => null,
+      transitionSpec: {
+        duration: 0
+      }
+    })
   }
 )
 
@@ -31,7 +51,13 @@ const MainNavigator = createStackNavigator(
   {
     // Default config for all screens
     headerMode: 'none',
-    initialRouteName: 'loginStack'
+    initialRouteName: 'loginStack',
+    transitionConfig: () => ({
+      screenInterpolator: () => null,
+      transitionSpec: {
+        duration: 0
+      }
+    })
   }
 )
 

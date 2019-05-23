@@ -109,6 +109,7 @@ export const loadFamilies = (env, token) => ({
 // Drafts
 
 export const CREATE_DRAFT = 'CREATE_DRAFT'
+export const UPDATE_DRAFT = 'UPDATE_DRAFT'
 export const DELETE_DRAFT = 'DELETE_DRAFT'
 export const ADD_SURVEY_DATA = 'ADD_SURVEY_DATA'
 export const ADD_SURVEY_PRIORITY_ACHEIVEMENT_DATA =
@@ -124,6 +125,12 @@ export const ADD_DRAFT_PROGRESS = 'ADD_DRAFT_PROGRESS'
 
 export const createDraft = payload => ({
   type: CREATE_DRAFT,
+  payload
+})
+
+export const updateDraft = (id, payload) => ({
+  type: UPDATE_DRAFT,
+  id,
   payload
 })
 

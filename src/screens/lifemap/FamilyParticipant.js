@@ -9,7 +9,8 @@ import {
   addDraftProgress,
   addSurveyData,
   removeFamilyMembers,
-  updateNav
+  updateNav,
+  updateDraft
 } from '../../redux/actions'
 import { withNamespaces } from 'react-i18next'
 import Icon from 'react-native-vector-icons/MaterialIcons'
@@ -22,14 +23,39 @@ import colors from '../../theme.json'
 import globalStyles from '../../globalStyles'
 import { getTotalScreens } from './helpers'
 export class FamilyParticipant extends Component {
-  //Get draft id from Redux store if it exists else create new draft id
-  draftId = this.props.nav.readonly
-    ? null
-    : this.props.navigation.getParam('draftId') || uuid()
+  gender = this.props.nav.survey.surveyConfig.gender
+
+  documentType = this.props.nav.survey.surveyConfig.documentType
 
   errorsDetected = []
 
-  state = { errorsDetected: [], showErrors: false }
+  state = {
+    errorsDetected: [],
+    showErrors: false,
+    draft: this.props.navigation.getParam('draft') ||
+      this.props.navigation.getParam('family') || {
+        surveyId: this.props.nav.survey.id,
+        surveyVersionId: this.props.nav.survey['surveyVersionId'],
+        created: Date.now(),
+        draftId: uuid(),
+        economicSurveyDataList: [],
+        indicatorSurveyDataList: [],
+        priorities: [],
+        achievements: [],
+        progress: {
+          screen: 'FamilyParticipant',
+          total: getTotalScreens(this.props.nav.survey)
+        },
+        familyData: {
+          familyMembersList: [
+            {
+              firstParticipant: true,
+              socioEconomicAnswers: []
+            }
+          ]
+        }
+      }
+  }
 
   detectError = (error, field) => {
     if (error && !this.errorsDetected.includes(field)) {
@@ -43,65 +69,22 @@ export class FamilyParticipant extends Component {
     })
   }
 
-  createDraft() {
-    const { survey } = this.props.nav
-    this.props.createDraft({
-      surveyId: survey.id,
-      surveyVersionId: survey['surveyVersionId'],
-      created: Date.now(),
-      draftId: this.draftId,
-      economicSurveyDataList: [],
-      indicatorSurveyDataList: [],
-      priorities: [],
-      achievements: [],
-      progress: {
-        screen: 'FamilyParticipant',
-        total: getTotalScreens(survey)
-      },
-      familyData: {
-        familyMembersList: [
-          {
-            firstParticipant: true,
-            socioEconomicAnswers: []
-          }
-        ]
-      }
-    })
-  }
-
-  componentDidMount() {
-    // create a new draft if not exising
-    if (
-      !this.props.nav.readonly &&
-      !this.props.navigation.getParam('family') &&
-      !this.props.navigation.getParam('draftId')
-    ) {
-      this.props.updateNav('draftId', this.draftId)
-      this.createDraft()
-    }
-
-    if (!this.props.nav.readonly && this.props.nav.draftId) {
-      this.props.addDraftProgress(this.draftId, {
-        screen: 'FamilyParticipant',
-        total: getTotalScreens(this.props.nav.survey)
-      })
-    }
-  }
-
   handleClick = () => {
-    const { draftId } = this.props.nav
-
-    const draft = this.props.drafts.find(draft => draft.draftId === draftId)
-
+    const { countFamilyMembers } = this.state.draft.familyData
     // check if form is valid
     if (this.errorsDetected.length) {
       this.setState({
         showErrors: true
       })
     } else {
-      // create drafts
-
-      if (this.getFamilyCount(draft) > 1) {
+      const { draft } = this.state
+      // if this is a new draft, add it to the store
+      if (!this.props.navigation.getParam('draft')) {
+        this.props.createDraft(draft)
+      } else {
+        this.props.updateDraft(draft.draftId, draft)
+      }
+      if (countFamilyMembers && countFamilyMembers > 1) {
         // if multiple family members navigate to members screens
         this.props.navigation.navigate('FamilyMembersNames')
       } else {
@@ -111,22 +94,11 @@ export class FamilyParticipant extends Component {
     }
   }
 
-  componentDidUpdate(prevProps, prevState) {
-    if (prevState.errorsDetected.length !== this.state.errorsDetected.length) {
-      this.props.updateNav(
-        'deleteDraftOnExit',
-        !!this.state.errorsDetected.length
-      )
-    }
-  }
-
   addFamilyCount = (text, field) => {
-    const draft = this.props.drafts.find(
-      draft => draft.draftId === this.draftId
-    )
+    const { countFamilyMembers } = this.state.draft.familyData
 
     // if reducing the number of family members remove the rest
-    if (text && this.getFamilyCount(draft) > text) {
+    if (text && countFamilyMembers && countFamilyMembers > text) {
       const index = text === -1 ? 1 : text
       this.props.removeFamilyMembers(this.draftId, index)
 
@@ -166,19 +138,6 @@ export class FamilyParticipant extends Component {
         draft.familyData !== 'null'
       ) {
         return draft.familyData.familyMembersList[0][field]
-      }
-    }
-  }
-
-  getFamilyCount = draft => {
-    if (!draft) {
-      return
-    } else if (typeof draft !== 'undefined' && draft !== 'null') {
-      if (
-        typeof draft.familyData !== 'undefined' &&
-        draft.familyData !== 'null'
-      ) {
-        return draft.familyData.countFamilyMembers
       }
     }
   }
@@ -238,17 +197,60 @@ export class FamilyParticipant extends Component {
             [field]: text
           }
         })
-
-        if (this.errorsDetected.length) {
-          this.props.updateNav('deleteDraftOnExit', true)
-        }
       }
     }
   }
 
-  gender = this.props.nav.survey.surveyConfig.gender
+  updateParticipant = (value, field) => {
+    const { draft } = this.state
 
-  documentType = this.props.nav.survey.surveyConfig.documentType
+    this.setState({
+      draft: {
+        ...draft,
+        familyData: {
+          ...draft.familyData,
+          familyMembersList: [
+            {
+              ...draft.familyData.familyMembersList[0],
+              ...{
+                [field]: value
+              }
+            },
+            ...draft.familyData.familyMembersList.slice(1)
+          ]
+        }
+      }
+    })
+  }
+
+  componentDidMount() {
+    const { navigation } = this.props
+    const { draft } = this.state
+
+    // if this is a new draft state it in navigation so the exit modal knows
+    if (!navigation.getParam('draft')) {
+      navigation.setParams({ isNewDraft: true })
+    }
+
+    if (
+      !this.props.nav.readonly &&
+      draft.progress.screen !== 'FamilyParticipant'
+    ) {
+      // set progrtess
+      this.props.addDraftProgress(draft.draftId, {
+        screen: 'FamilyParticipant',
+        total: getTotalScreens(this.props.nav.survey)
+      })
+    }
+  }
+
+  componentDidUpdate(prevProps, prevState) {
+    // update nav draft param if the data changes
+    // so the exit modal can access it
+    if (prevState.draft.familyData !== this.state.draft.familyData) {
+      this.props.navigation.setParams({ draft: this.state.draft })
+    }
+  }
 
   shouldComponentUpdate() {
     return this.props.navigation.isFocused()
@@ -257,16 +259,10 @@ export class FamilyParticipant extends Component {
   render() {
     const { t } = this.props
     const { survey, readonly } = this.props.nav
-    const { showErrors } = this.state
-    const draft =
-      this.props.navigation.getParam('family') ||
-      this.props.drafts.find(draft => draft.draftId === this.draftId)
-    let autofocusFirstName
-    if (this.getFieldValue(draft, 'firstName')) {
-      autofocusFirstName = false
-    } else {
-      autofocusFirstName = true
-    }
+    const { showErrors, draft } = this.state
+
+    const participant = draft.familyData.familyMembersList[0]
+
     let otherTypeDocumentNumber = 0
     let otherTypeGender = 0
     let docValues = survey.surveyConfig.documentType
@@ -286,6 +282,7 @@ export class FamilyParticipant extends Component {
         }
       }
     })
+
     return (
       <StickyFooter
         handleClick={this.handleClick}
@@ -306,13 +303,13 @@ export class FamilyParticipant extends Component {
         </Decoration>
 
         <TextInput
-          autoFocus={autofocusFirstName}
+          autoFocus={!participant.firstName}
           validation="string"
           field="firstName"
           readonly={readonly}
-          onChangeText={this.addSurveyData}
+          onChangeText={this.updateParticipant}
           placeholder={t('views.family.firstName')}
-          value={this.getFieldValue(draft, 'firstName') || ''}
+          value={participant.firstName || ''}
           required
           detectError={this.detectError}
           showErrors={showErrors}
@@ -320,10 +317,10 @@ export class FamilyParticipant extends Component {
         <TextInput
           field="lastName"
           validation="string"
-          onChangeText={this.addSurveyData}
+          onChangeText={this.updateParticipant}
           readonly={readonly}
           placeholder={t('views.family.lastName')}
-          value={this.getFieldValue(draft, 'lastName') || ''}
+          value={participant.lastName || ''}
           required
           detectError={this.detectError}
           showErrors={showErrors}
@@ -336,7 +333,7 @@ export class FamilyParticipant extends Component {
           label={t('views.family.gender')}
           placeholder={t('views.family.selectGender')}
           field="gender"
-          value={this.getFieldValue(draft, 'gender') || ''}
+          value={participant.gender || ''}
           detectError={this.detectError}
           showErrors={showErrors}
           options={this.gender}
@@ -348,7 +345,7 @@ export class FamilyParticipant extends Component {
             onChangeText={this.addSurveyData}
             readonly={readonly}
             placeholder={t('views.family.specifyGender')}
-            value={this.getFieldValue(draft, 'customGender') || ''}
+            value={participant.customGender || ''}
             required
             detectError={this.detectError}
             showErrors={showErrors}
@@ -361,7 +358,7 @@ export class FamilyParticipant extends Component {
           detectError={this.detectError}
           showErrors={showErrors}
           onValidDate={this.addSurveyData}
-          value={this.getFieldValue(draft, 'birthDate')}
+          value={participant.birthDate}
           readonly={readonly}
         />
 
@@ -372,7 +369,7 @@ export class FamilyParticipant extends Component {
           label={t('views.family.documentType')}
           placeholder={t('views.family.documentType')}
           field="documentType"
-          value={this.getFieldValue(draft, 'documentType') || ''}
+          value={participant.documentType || ''}
           detectError={this.detectError}
           showErrors={showErrors}
           options={this.documentType}
@@ -385,7 +382,7 @@ export class FamilyParticipant extends Component {
             onChangeText={this.addSurveyData}
             readonly={readonly}
             placeholder={t('views.family.customDocumentType')}
-            value={this.getFieldValue(draft, 'customDocumentType') || ''}
+            value={participant.customDocumentType || ''}
             required
             detectError={this.detectError}
             showErrors={showErrors}
@@ -397,7 +394,7 @@ export class FamilyParticipant extends Component {
           readonly={readonly}
           field="documentNumber"
           required
-          value={this.getFieldValue(draft, 'documentNumber')}
+          value={participant.documentNumber}
           placeholder={t('views.family.documentNumber')}
           detectError={this.detectError}
           showErrors={showErrors}
@@ -413,7 +410,7 @@ export class FamilyParticipant extends Component {
           placeholder={t('views.family.countryOfBirth')}
           field="birthCountry"
           value={
-            this.getFieldValue(draft, 'birthCountry') ||
+            participant.birthCountry ||
             survey.surveyConfig.surveyLocation.country
           }
           detectError={this.detectError}
@@ -427,7 +424,7 @@ export class FamilyParticipant extends Component {
           label={t('views.family.peopleLivingInThisHousehold')}
           placeholder={t('views.family.peopleLivingInThisHousehold')}
           field="countFamilyMembers"
-          value={this.getFamilyCount(draft) || ''}
+          value={draft.familyData.countFamilyMembers || ''}
           detectError={this.detectError}
           showErrors={showErrors}
           options={this.getFamilyMembersCountArray(t)}
@@ -436,7 +433,7 @@ export class FamilyParticipant extends Component {
           onChangeText={this.addSurveyData}
           readonly={readonly}
           field="email"
-          value={this.getFieldValue(draft, 'email')}
+          value={participant.email}
           placeholder={t('views.family.email')}
           validation="email"
           detectError={this.detectError}
@@ -446,7 +443,7 @@ export class FamilyParticipant extends Component {
           onChangeText={this.addSurveyData}
           readonly={readonly}
           field="phoneNumber"
-          value={this.getFieldValue(draft, 'phoneNumber')}
+          value={participant.phoneNumber}
           placeholder={t('views.family.phone')}
           validation="phoneNumber"
           detectError={this.detectError}
@@ -476,6 +473,7 @@ FamilyParticipant.propTypes = {
   nav: PropTypes.object.isRequired,
   navigation: PropTypes.object.isRequired,
   createDraft: PropTypes.func.isRequired,
+  updateDraft: PropTypes.func.isRequired,
   addSurveyFamilyMemberData: PropTypes.func.isRequired,
   addDraftProgress: PropTypes.func.isRequired,
   addSurveyData: PropTypes.func.isRequired,
@@ -485,6 +483,7 @@ FamilyParticipant.propTypes = {
 
 const mapDispatchToProps = {
   createDraft,
+  updateDraft,
   addSurveyFamilyMemberData,
   addDraftProgress,
   addSurveyData,

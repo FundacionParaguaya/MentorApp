@@ -91,10 +91,15 @@ export class Dashboard extends Component {
       draft.progress.screen !== 'Final' &&
       draft.progress.screen !== 'Overview'
     ) {
-      this.props.navigation.navigate('Location')
+      this.props.navigation.navigate(draft.progress.screen, {
+        draft,
+        step: draft.progress.step,
+        socioEconomics: draft.progress.socioEconomics
+      })
     } else
       this.props.navigation.navigate('Overview', {
-        resumeDraft: true
+        resumeDraft: true,
+        draft
       })
   }
   navigateToSynced = item => {

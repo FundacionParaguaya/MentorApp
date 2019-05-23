@@ -38,6 +38,12 @@ export default createDrawerNavigator(
         })
       },
       initialRouteName: 'Dashboard'
-    }
+    },
+    transitionConfig: () => ({
+      screenInterpolator: () => null,
+      transitionSpec: {
+        duration: 0
+      }
+    })
   }
 )
