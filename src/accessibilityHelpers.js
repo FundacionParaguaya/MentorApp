@@ -18,14 +18,6 @@ export const logoutMessage = (unsyncedDrafts, checkboxesVisible) => {
       )} ${i18n.t('general.no')}`
 }
 
-export const isTalkbackEnabled = () => {
-  AccessibilityInfo.fetch().done((enabled) => {
-    this.setState({
-      AccessibilityEnabled: enabled,
-    })
-  })
-} 
-
 export const setListOfLabeles = options => {
   return options
     ? options.map((item, index) => `Option ${index + 1}` + item.text).join()

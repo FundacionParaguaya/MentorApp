@@ -29,6 +29,10 @@ import center from '../../../assets/images/centerMap.png'
 import happy from '../../../assets/images/happy.png'
 import sad from '../../../assets/images/sad.png'
 import { getDraft, getTotalScreens } from './helpers'
+import Geocoder from 'react-native-geocoding'
+
+const GOOGLE_GEO_API_KEY = 'AIzaSyBLGYYy86_7QPT-dKgUnFMIJyhUE6AGVwM'
+Geocoder.init(GOOGLE_GEO_API_KEY )
 
 export class Location extends Component {
   state = {
@@ -44,7 +48,8 @@ export class Location extends Component {
     loading: true,
     showForm: false,
     cachedMapPacks: [],
-    appState: AppState.currentState
+    appState: AppState.currentState,
+    currentAddress: ""
   }
 
   errorsDetected = []
@@ -74,10 +79,20 @@ export class Location extends Component {
     return draft.familyData[field]
   }
 
+  getCurrentAddress = (latitude, longitude) => {
+    Geocoder.from(latitude, longitude)
+        .then(json => {
+          this.setState({ currentAddress: json.results[0].formatted_address })
+        })
+        .catch(error => console.warn(error))
+  }
+
   onDragMap = region => {
     const { coordinates } = region.geometry
     const longitude = coordinates[0]
     const latitude = coordinates[1]
+
+    this.getCurrentAddress(latitude, longitude)
 
     // prevent jumping of the marker by updating only when the region changes
     if (
@@ -375,6 +390,7 @@ export class Location extends Component {
       this.props.navigation.replace('SocioEconomicQuestion')
     }
   }
+
   render() {
     const { t } = this.props
     const { survey, readonly } = this.props.nav
@@ -437,7 +453,7 @@ export class Location extends Component {
                 })
               }}
               query={{
-                key: 'AIzaSyBLGYYy86_7QPT-dKgUnFMIJyhUE6AGVwM',
+                key: GOOGLE_GEO_API_KEY,
                 language: 'en', // language of the results
                 types: '(cities)' // default: 'geocode'
               }}
@@ -468,6 +484,8 @@ export class Location extends Component {
             onRegionDidChange={this.onDragMap}
             minZoomLevel={10}
             maxZoomLevel={15}
+            accessible={true}
+            accessibilityLabel={`Your current locations is ${this.state.currentAddress}`}
           />
           {!readonly && (
             <View>
