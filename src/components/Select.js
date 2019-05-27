@@ -157,8 +157,6 @@ class Select extends Component {
       text = ''
     }
 
-    console.log(countries)
-
     return (
       <View>
         <TouchableHighlight

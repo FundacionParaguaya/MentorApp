@@ -66,16 +66,20 @@ export class Dashboard extends Component {
   }
 
   navigateToDraft = draft => {
+    const survey = this.props.surveys.find(
+      survey => survey.id === draft.surveyId
+    )
+
     if (draft.progress.showResume) {
       this.props.navigation.navigate('Overview', {
         resumeDraft: true,
         draft,
-        survey: this.props.surveys.find(survey => survey.id === draft.surveyId)
+        survey
       })
     } else
       this.props.navigation.navigate(draft.progress.screen, {
         draft,
-        survey: this.props.surveys.find(survey => survey.id === draft.surveyId),
+        survey,
         step: draft.progress.step,
         socioEconomics: draft.progress.socioEconomics
       })

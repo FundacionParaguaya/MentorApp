@@ -9,7 +9,6 @@ import {
 import { connect } from 'react-redux'
 import PropTypes from 'prop-types'
 import { withNamespaces } from 'react-i18next'
-import { updateNav } from '../redux/actions'
 import globalStyles from '../globalStyles'
 import RoundImage from '../components/RoundImage'
 import LifemapListItem from '../components/LifemapListItem'
@@ -32,9 +31,9 @@ export class Surveys extends Component {
   }
 
   handleClickOnSurvey = survey => {
-    this.props.updateNav('survey', survey)
     this.props.navigation.navigate('Terms', {
-      page: 'terms'
+      page: 'terms',
+      survey
     })
   }
 
@@ -75,17 +74,14 @@ Surveys.propTypes = {
   surveys: PropTypes.array,
   navigation: PropTypes.object.isRequired,
   lng: PropTypes.string,
-  t: PropTypes.func,
-  updateNav: PropTypes.func.isRequired
+  t: PropTypes.func
 }
 
 const mapStateToProps = ({ surveys }) => ({
   surveys
 })
 
-const mapDispatchToProps = {
-  updateNav
-}
+const mapDispatchToProps = {}
 
 export default withNamespaces()(
   connect(

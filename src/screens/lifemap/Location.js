@@ -32,6 +32,7 @@ import { getTotalScreens } from './helpers'
 
 export class Location extends Component {
   survey = this.props.navigation.getParam('survey')
+  readOnly = this.props.navigation.getParam('readOnly')
 
   state = {
     showList: false,
@@ -274,6 +275,10 @@ export class Location extends Component {
   }
 
   componentDidMount() {
+    this.props.navigation.setParams({
+      getCurrentDraftState: () => this.state.draft
+    })
+
     AppState.addEventListener('change', this._handleAppStateChange)
     this.getMapOfflinePacks()
 
@@ -401,7 +406,10 @@ export class Location extends Component {
       })
     } else {
       this.props.updateDraft(draft.draftId, draft)
-      this.props.navigation.replace('SocioEconomicQuestion')
+      this.props.navigation.replace('SocioEconomicQuestion', {
+        draft,
+        survey: this.survey
+      })
     }
   }
 

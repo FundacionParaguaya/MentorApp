@@ -100,6 +100,16 @@ export class FamilyParticipant extends Component {
 
     const afterIndex = value === -1 ? 1 : value
 
+    let familyMembersList = this.state.draft.familyData.familyMembersList
+
+    if (countFamilyMembers > value) {
+      familyMembersList.slice(0, value)
+    } else if (countFamilyMembers < value) {
+      for (var i = 0; i < value - 1; i++) {
+        familyMembersList.push({ primaryParticipant: false })
+      }
+    }
+
     this.setState({
       draft: {
         ...draft,
@@ -160,10 +170,10 @@ export class FamilyParticipant extends Component {
     const { navigation } = this.props
     const { draft } = this.state
 
-    // if this is a new draft state it in navigation so the exit modal knows
-    if (!navigation.getParam('draft')) {
-      navigation.setParams({ isNewDraft: true })
-    }
+    navigation.setParams({
+      isNewDraft: !navigation.getParam('draft'),
+      getCurrentDraftState: () => this.state.draft
+    })
 
     if (!this.readonly && draft.progress.screen !== 'FamilyParticipant') {
       this.setState({
@@ -176,14 +186,6 @@ export class FamilyParticipant extends Component {
           }
         }
       })
-    }
-  }
-
-  componentDidUpdate(prevProps, prevState) {
-    // update nav draft param if the data changes
-    // so the exit modal can access it
-    if (prevState.draft.familyData !== this.state.draft.familyData) {
-      this.props.navigation.setParams({ draft: this.state.draft })
     }
   }
 
