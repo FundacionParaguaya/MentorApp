@@ -170,7 +170,7 @@ class Select extends Component {
                     }
                 ]}
                 accessibilityLabel={`${placeholder} ${
-                  required && !readonly ? ' This is a mandatory field.' : ''
+                  required && !readonly ? i18n.t('validation.fieldIsRequiredAccessibilityLabel') : ''
                 }`}
               >{`${placeholder}${required && !readonly ? ' *' : ''}`}</Text>
             )}
@@ -180,7 +180,7 @@ class Select extends Component {
                 errorMsg ? { color: colors.red } : {}
               ]}
               accessibilityLabel={`${placeholder}${
-                required ? ' This is a mandatory field.' : ''
+                required ? i18n.t('validation.fieldIsRequiredAccessibilityLabel') : ''
               }`}
             >
               {value ? text : `${placeholder}${required ? ' *' : ''}`}
