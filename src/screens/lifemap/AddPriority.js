@@ -10,16 +10,18 @@ import StickyFooter from '../../components/StickyFooter'
 import globalStyles from '../../globalStyles'
 import colors from '../../theme.json'
 import TextInput from '../../components/TextInput'
-import Counter from '../../components/Counter'
 import { getDraft } from './helpers'
-
+import Select from '../../components/Select'
 export class AddPriority extends Component {
+  errorsDetected = []
   state = {
     reason: '',
     action: '',
-    estimatedDate: 0,
+    estimatedDate: null,
     validationError: false,
-    indicator: this.props.navigation.getParam('indicator')
+    indicator: this.props.navigation.getParam('indicator'),
+    showErrors: false,
+    errorsDetected: []
   }
 
   shouldComponentUpdate() {
@@ -30,11 +32,8 @@ export class AddPriority extends Component {
     this.setState({
       validationError: false
     })
-    if (action === 'minus' && this.state.estimatedDate > 0) {
-      return this.setState({ estimatedDate: this.state.estimatedDate - 1 })
-    } else if (action === 'plus') {
-      return this.setState({ estimatedDate: this.state.estimatedDate + 1 })
-    }
+
+    return this.setState({ estimatedDate: action })
   }
 
   componentDidMount() {
@@ -45,6 +44,17 @@ export class AddPriority extends Component {
 
     this.props.navigation.setParams({
       withoutCloseButton: this.props.nav.draftId ? false : true
+    })
+  }
+  detectError = (error, field) => {
+    if (error && !this.errorsDetected.includes(field)) {
+      this.errorsDetected.push(field)
+    } else if (!error) {
+      this.errorsDetected = this.errorsDetected.filter(item => item !== field)
+    }
+
+    this.setState({
+      errorsDetected: this.errorsDetected
     })
   }
 
@@ -85,7 +95,11 @@ export class AddPriority extends Component {
     const data = this.getData()
     const priority = this.getPriorityValue(data)
     const { draftId, readonly } = this.props.nav
-
+    const { showErrors } = this.state
+    let allOptionsNums = []
+    for (let x = 1; x < 25; x++) {
+      allOptionsNums.push({ value: x, text: String(x) })
+    }
     return (
       <StickyFooter
         continueLabel={t('general.save')}
@@ -129,12 +143,19 @@ export class AddPriority extends Component {
           multiline
           readonly={readonly}
         />
-        <View style={{ padding: 15 }}>
-          <Counter
-            editCounter={this.editCounter}
-            count={estimatedDate}
-            text={t('views.lifemap.howManyMonthsWillItTake')}
+        <View>
+          <Select
+            id="howManyMonthsWillItTake"
+            required
+            onChange={this.editCounter}
             readonly={readonly}
+            label={t('views.lifemap.howManyMonthsWillItTake')}
+            placeholder={t('views.lifemap.howManyMonthsWillItTake')}
+            field="howManyMonthsWillItTake"
+            value={this.state.estimatedDate || ''}
+            detectError={this.detectError}
+            showErrors={showErrors}
+            options={allOptionsNums}
           />
         </View>
         {/* Error message */}

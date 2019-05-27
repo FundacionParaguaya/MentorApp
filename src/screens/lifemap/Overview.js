@@ -135,6 +135,7 @@ export class Overview extends Component {
     const data = this.props.familyLifemap || getDraft()
     const mandatoryPrioritiesCount = this.getMandatoryPrioritiesCount(data)
     const tipIsVisible = !this.resumeDraft && this.state.tipIsVisible
+    console.log(survey, data)
     const getTipDescription = () => {
       //no mandatory priotities
       if (
