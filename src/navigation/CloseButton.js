@@ -3,6 +3,7 @@ import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 import { updateNav } from '../redux/actions'
 import IconButton from '../components/IconButton'
+import i18n from '../i18n'
 
 class CloseButton extends Component {
   handlePress = () => {
@@ -35,7 +36,7 @@ class CloseButton extends Component {
         icon="close"
         size={25}
         accessible={true}
-        accessibilityLabel={'Exit'}
+        accessibilityLabel={`${i18n.t('general.exit')}`}
       />
     )
   }

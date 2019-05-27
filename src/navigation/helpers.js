@@ -5,6 +5,7 @@ import BackDraftPopup from './BackDraftPopup'
 import colors from '../theme.json'
 import IconButton from '../components/IconButton'
 import CloseButton from './CloseButton'
+import i18n from '../i18n'
 
 // Each of the major views has a stack that needs the same nav options.
 // These options handle the header styles and menu icon.
@@ -65,7 +66,7 @@ export const generateNavStyles = ({
           icon="arrow-back"
           size={25}
           accessible={true}
-          accessibilityLabel={'Go back'}
+          accessibilityLabel={`${i18n.t('general.goBack')}`}
         />
         <BackDraftPopup
           navigation={navigation}
@@ -89,7 +90,7 @@ export const addMenuIcon = navigation => ({
       size={30}
       badge
       accessible={true}
-      accessibilityLabel={'Navigation'}
+      accessibilityLabel={`${i18n.t('general.navigation')}`}
     />
   )
 })
