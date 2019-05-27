@@ -1,14 +1,9 @@
 import React, { Component } from 'react'
-import { connect } from 'react-redux'
 import PropTypes from 'prop-types'
 import { StyleSheet, View, Text } from 'react-native'
 import Icon from 'react-native-vector-icons/MaterialIcons'
 import colors from '../../theme.json'
 import { withNamespaces } from 'react-i18next'
-import {
-  addSurveyFamilyMemberData,
-  addDraftProgress
-} from '../../redux/actions'
 import StickyFooter from '../../components/StickyFooter'
 import TextInput from '../../components/TextInput'
 import Decoration from '../../components/decoration/Decoration'
@@ -235,9 +230,7 @@ export class FamilyMembersNames extends Component {
 
 FamilyMembersNames.propTypes = {
   t: PropTypes.func.isRequired,
-  navigation: PropTypes.object.isRequired,
-  addSurveyFamilyMemberData: PropTypes.func.isRequired,
-  addDraftProgress: PropTypes.func.isRequired
+  navigation: PropTypes.object.isRequired
 }
 
 const styles = StyleSheet.create({
@@ -271,16 +264,4 @@ const styles = StyleSheet.create({
   }
 })
 
-const mapDispatchToProps = {
-  addSurveyFamilyMemberData,
-  addDraftProgress
-}
-
-const mapStateToProps = () => ({})
-
-export default withNamespaces()(
-  connect(
-    mapStateToProps,
-    mapDispatchToProps
-  )(FamilyMembersNames)
-)
+export default withNamespaces()(FamilyMembersNames)

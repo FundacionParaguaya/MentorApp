@@ -77,7 +77,7 @@ describe('Family Location component', () => {
 
       wrapper.setProps({ nav: { readonly: true } })
 
-      expect(wrapper.find(Text)).toHaveLength(0)
+      expect(wrapper.find(Text)).toHaveLength(1)
     })
   })
   describe('showing the map', () => {

@@ -8,13 +8,19 @@ import globalStyles from '../../globalStyles'
 import RoundImage from '../../components/RoundImage'
 import StickyFooter from '../../components/StickyFooter'
 import { addDraftProgress } from '../../redux/actions'
-import { getDraft, getTotalEconomicScreens } from './helpers'
+import { getTotalEconomicScreens } from './helpers'
 
 export class BeginLifemap extends Component {
-  numberOfQuestions = this.props.nav.survey.surveyStoplightQuestions.length
+  survey = this.props.navigation.getParam('survey')
+  draft = this.props.navigation.getParam('draft')
+  readOnly = this.props.navigation.getParam('readOnly')
 
   componentDidMount() {
-    this.props.addDraftProgress(this.props.nav.draftId, {
+    this.props.navigation.setParams({
+      getCurrentDraftState: () => this.draft
+    })
+
+    this.props.addDraftProgress(this.draft.draftId, {
       screen: 'BeginLifemap'
     })
 
@@ -25,28 +31,31 @@ export class BeginLifemap extends Component {
 
   onPressBack = () => {
     this.props.navigation.replace('SocioEconomicQuestion', {
-      fromBeginLifemap: true
+      fromBeginLifemap: true,
+      survey: this.survey,
+      draft: this.draft
     })
   }
 
   handleClick = () => {
     this.props.navigation.navigate('Question', {
-      step: 0
+      step: 0,
+      survey: this.survey,
+      draft: this.draft
     })
   }
 
   render() {
     const { t } = this.props
-    const draft = getDraft()
     return (
       <StickyFooter
         handleClick={this.handleClick}
         continueLabel={t('general.continue')}
         progress={
-          draft
-            ? ((draft.familyData.countFamilyMembers > 1 ? 4 : 3) +
-                getTotalEconomicScreens(this.props.nav.survey)) /
-              draft.progress.total
+          this.draft
+            ? ((this.draft.familyData.countFamilyMembers > 1 ? 4 : 3) +
+                getTotalEconomicScreens(this.survey)) /
+              this.draft.progress.total
             : 0
         }
       >
@@ -59,7 +68,7 @@ export class BeginLifemap extends Component {
           <Text style={{ ...globalStyles.h3, ...styles.text }}>
             {t('views.lifemap.thisLifeMapHas').replace(
               '%n',
-              this.numberOfQuestions
+              this.survey.surveyStoplightQuestions.length
             )}
           </Text>
           <Decoration variation="terms">
@@ -84,7 +93,6 @@ const styles = StyleSheet.create({
 BeginLifemap.propTypes = {
   t: PropTypes.func.isRequired,
   navigation: PropTypes.object.isRequired,
-  nav: PropTypes.object.isRequired,
   addDraftProgress: PropTypes.func.isRequired
 }
 
