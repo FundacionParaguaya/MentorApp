@@ -1,5 +1,6 @@
 import React from 'react'
 import { shallow } from 'enzyme'
+import draft from '../__mocks__/draftMock.json'
 import { Question } from '../lifemap/Question'
 import SliderComponent from '../../components/Slider'
 import IconButton from '../../components/IconButton'
@@ -7,21 +8,6 @@ import StickyFooter from '../../components/StickyFooter'
 
 const createTestProps = props => ({
   t: value => value,
-  nav: {
-    draftId: 4,
-    survey: {
-      id: 1,
-      title: 'Test survey 1',
-      surveyStoplightQuestions: [
-        {
-          stoplightColors: [{ codeName: 'phoneNumber' }],
-          required: false,
-          dimension: 'Dimension'
-        }
-      ],
-      surveyEconomicQuestions: []
-    }
-  },
   navigation: {
     navigate: jest.fn(),
     replace: jest.fn(),
@@ -30,6 +16,21 @@ const createTestProps = props => ({
     getParam: jest.fn(param => {
       if (param === 'step') {
         return 0
+      } else if (param === 'survey') {
+        return {
+          id: 1,
+          title: 'Test survey 1',
+          surveyStoplightQuestions: [
+            {
+              stoplightColors: [{ codeName: 'phoneNumber' }],
+              required: false,
+              dimension: 'Dimension'
+            }
+          ],
+          surveyEconomicQuestions: []
+        }
+      } else if (param === 'draft') {
+        return draft
       }
     }),
     state: { params: { headerHeight: 100 } }
@@ -68,16 +69,6 @@ describe('Question View', () => {
   })
 
   describe('functionality', () => {
-    it('calls selectAnswer when slide is clicked', () => {
-      const spy = jest.spyOn(wrapper.instance(), 'selectAnswer')
-      wrapper
-        .find(SliderComponent)
-        .props()
-        .selectAnswer()
-
-      expect(spy).toHaveBeenCalledTimes(1)
-    })
-
     it('calls selectAnswer with argument 0 when link is clicked', () => {
       const spy = jest.spyOn(wrapper.instance(), 'selectAnswer')
       wrapper
@@ -106,7 +97,7 @@ describe('Render optimization', () => {
       drafts: [...wrapper.instance().props.drafts, { draftId: 5 }]
     })
     expect(wrapper.instance().props.navigation.isFocused).toHaveBeenCalledTimes(
-      1
+      2
     )
   })
   it('updates screen if focused', () => {
@@ -129,9 +120,6 @@ describe('Render optimization', () => {
     expect(wrapper.instance().props.navigation.setParams).toHaveBeenCalledTimes(
       1
     )
-  })
-  it('calls addDraftProgress on mount', () => {
-    expect(wrapper.instance().props.addDraftProgress).toHaveBeenCalledTimes(1)
   })
   it('calls onPressBack', () => {
     const spy = jest.spyOn(wrapper.instance(), 'onPressBack')

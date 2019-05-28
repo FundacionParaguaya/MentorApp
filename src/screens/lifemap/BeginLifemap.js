@@ -1,28 +1,37 @@
 import React, { Component } from 'react'
 import { StyleSheet, View, Text } from 'react-native'
-import { connect } from 'react-redux'
 import PropTypes from 'prop-types'
 import { withNamespaces } from 'react-i18next'
 import Decoration from '../../components/decoration/Decoration'
 import globalStyles from '../../globalStyles'
 import RoundImage from '../../components/RoundImage'
 import StickyFooter from '../../components/StickyFooter'
-import { addDraftProgress } from '../../redux/actions'
 import { getTotalEconomicScreens } from './helpers'
 
 export class BeginLifemap extends Component {
   survey = this.props.navigation.getParam('survey')
-  draft = this.props.navigation.getParam('draft')
   readOnly = this.props.navigation.getParam('readOnly')
+  state = {
+    draft: this.props.navigation.getParam('draft')
+  }
 
   componentDidMount() {
+    const { draft } = this.state
     this.props.navigation.setParams({
-      getCurrentDraftState: () => this.draft
+      getCurrentDraftState: () => this.state.draft
     })
 
-    this.props.addDraftProgress(this.draft.draftId, {
-      screen: 'BeginLifemap'
-    })
+    if (draft.progress.screen !== 'BeginLifemap') {
+      this.setState({
+        draft: {
+          ...draft,
+          progress: {
+            ...draft.progress,
+            screen: 'BeginLifemap'
+          }
+        }
+      })
+    }
 
     this.props.navigation.setParams({
       onPressBack: this.onPressBack
@@ -33,7 +42,7 @@ export class BeginLifemap extends Component {
     this.props.navigation.replace('SocioEconomicQuestion', {
       fromBeginLifemap: true,
       survey: this.survey,
-      draft: this.draft
+      draft: this.state.draft
     })
   }
 
@@ -41,21 +50,22 @@ export class BeginLifemap extends Component {
     this.props.navigation.navigate('Question', {
       step: 0,
       survey: this.survey,
-      draft: this.draft
+      draft: this.state.draft
     })
   }
 
   render() {
+    const { draft } = this.state
     const { t } = this.props
     return (
       <StickyFooter
         handleClick={this.handleClick}
         continueLabel={t('general.continue')}
         progress={
-          this.draft
-            ? ((this.draft.familyData.countFamilyMembers > 1 ? 4 : 3) +
+          draft
+            ? ((draft.familyData.countFamilyMembers > 1 ? 4 : 3) +
                 getTotalEconomicScreens(this.survey)) /
-              this.draft.progress.total
+              draft.progress.total
             : 0
         }
       >
@@ -92,21 +102,7 @@ const styles = StyleSheet.create({
 
 BeginLifemap.propTypes = {
   t: PropTypes.func.isRequired,
-  navigation: PropTypes.object.isRequired,
-  addDraftProgress: PropTypes.func.isRequired
+  navigation: PropTypes.object.isRequired
 }
 
-const mapDispatchToProps = {
-  addDraftProgress
-}
-
-const mapStateToProps = ({ nav }) => ({
-  nav
-})
-
-export default withNamespaces()(
-  connect(
-    mapStateToProps,
-    mapDispatchToProps
-  )(BeginLifemap)
-)
+export default withNamespaces()(BeginLifemap)

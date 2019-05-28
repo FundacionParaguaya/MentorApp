@@ -129,6 +129,7 @@ export class SocioEconomicQuestion extends Component {
 
     if (!this.readonly) {
       this.props.addDraftProgress(this.draftId, {
+        showResume: false,
         screen: 'SocioEconomicQuestion'
       })
 

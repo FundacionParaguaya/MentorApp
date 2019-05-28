@@ -57,9 +57,6 @@ describe('BeginLifemap View', () => {
         wrapper.instance().props.navigation.setParams
       ).toHaveBeenCalledTimes(2)
     })
-    it('calls addDraftProgress on mount', () => {
-      expect(wrapper.instance().props.addDraftProgress).toHaveBeenCalledTimes(1)
-    })
     it('calls onPressBack', () => {
       const spy = jest.spyOn(wrapper.instance(), 'onPressBack')
 

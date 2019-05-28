@@ -70,7 +70,12 @@ export class Dashboard extends Component {
       survey => survey.id === draft.surveyId
     )
 
-    if (draft.progress.showResume) {
+    if (
+      draft.progress.screen === 'Question' ||
+      draft.progress.screen === 'Skipped' ||
+      draft.progress.screen === 'Final' ||
+      draft.progress.screen === 'Overview'
+    ) {
       this.props.navigation.navigate('Overview', {
         resumeDraft: true,
         draft,
