@@ -7,7 +7,7 @@ import RoundImage from '../../components/RoundImage'
 import LifemapVisual from '../../components/LifemapVisual'
 import Button from '../../components/Button'
 import globalStyles from '../../globalStyles'
-import { submitDraft } from '../../redux/actions'
+import { updateDraft, submitDraft } from '../../redux/actions'
 import { url } from '../../config'
 
 export class Final extends Component {
@@ -17,6 +17,7 @@ export class Final extends Component {
     return this.props.navigation.isFocused()
   }
   componentDidMount() {
+    this.props.updateDraft(this.draft.draftId, this.draft)
     this.props.navigation.setParams({
       onPressBack: this.onPressBack
     })
@@ -98,6 +99,7 @@ const styles = StyleSheet.create({
 Final.propTypes = {
   t: PropTypes.func.isRequired,
   navigation: PropTypes.object.isRequired,
+  updateDraft: PropTypes.func.isRequired,
   submitDraft: PropTypes.func.isRequired,
   env: PropTypes.string.isRequired,
   user: PropTypes.object.isRequired
@@ -108,7 +110,8 @@ const mapStateToProps = ({ env, user }) => ({
   user
 })
 const mapDispatchToProps = {
-  submitDraft
+  submitDraft,
+  updateDraft
 }
 
 export default withNamespaces()(

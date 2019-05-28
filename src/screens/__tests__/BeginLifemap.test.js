@@ -8,6 +8,7 @@ import draft from '../__mocks__/draftMock.json'
 
 const createTestProps = props => ({
   t: value => value,
+  updateDraft: jest.fn(),
   navigation: {
     navigate: jest.fn(),
     replace: jest.fn(),

@@ -2,11 +2,13 @@ import React, { Component } from 'react'
 import { StyleSheet, View, Text } from 'react-native'
 import PropTypes from 'prop-types'
 import { withNamespaces } from 'react-i18next'
+import { connect } from 'react-redux'
 import Decoration from '../../components/decoration/Decoration'
 import globalStyles from '../../globalStyles'
 import RoundImage from '../../components/RoundImage'
 import StickyFooter from '../../components/StickyFooter'
 import { getTotalEconomicScreens } from './helpers'
+import { updateDraft } from '../../redux/actions'
 
 export class BeginLifemap extends Component {
   survey = this.props.navigation.getParam('survey')
@@ -17,6 +19,7 @@ export class BeginLifemap extends Component {
 
   componentDidMount() {
     const { draft } = this.state
+    this.props.updateDraft(draft.draftId, draft)
     this.props.navigation.setParams({
       getCurrentDraftState: () => this.state.draft
     })
@@ -102,7 +105,19 @@ const styles = StyleSheet.create({
 
 BeginLifemap.propTypes = {
   t: PropTypes.func.isRequired,
+  updateDraft: PropTypes.func.isRequired,
   navigation: PropTypes.object.isRequired
 }
 
-export default withNamespaces()(BeginLifemap)
+const mapDispatchToProps = {
+  updateDraft
+}
+
+const mapStateToProps = () => ({})
+
+export default withNamespaces()(
+  connect(
+    mapStateToProps,
+    mapDispatchToProps
+  )(BeginLifemap)
+)

@@ -106,7 +106,7 @@ export class FamilyParticipant extends Component {
       familyMembersList.slice(0, value)
     } else if (countFamilyMembers < value) {
       for (var i = 0; i < value - 1; i++) {
-        familyMembersList.push({ primaryParticipant: false })
+        familyMembersList.push({ firstParticipant: false })
       }
     }
 

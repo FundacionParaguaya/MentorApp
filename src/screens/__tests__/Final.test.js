@@ -12,6 +12,7 @@ const createTestProps = props => ({
   user: { token: 'token' },
   env: 'env',
   submitDraft: jest.fn(),
+  updateDraft: jest.fn(),
   addDraftProgress: jest.fn(),
   navigation: {
     navigate: jest.fn(),
