@@ -281,7 +281,7 @@ class Select extends Component {
 Select.propTypes = {
   onChange: PropTypes.func.isRequired,
   options: PropTypes.array,
-  value: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
+  value: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
   otherValue: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
   placeholder: PropTypes.string.isRequired,
   otherPlaceholder: PropTypes.string,

@@ -320,7 +320,7 @@ export class Location extends Component {
       const isOnline = conncection.type === 'none' ? false : true
 
       if (!familyData.latitude) {
-        if (!this.readonly) {
+        if (!this.readOnly) {
           this.getDeviceCoordinates(isOnline)
         } else {
           this.setState({
@@ -337,7 +337,7 @@ export class Location extends Component {
     // check if online first
     NetInfo.isConnected.fetch().then(isOnline => {
       if (!familyData.latitude) {
-        if (!this.readonly) {
+        if (!this.readOnly) {
           this.getDeviceCoordinates(isOnline)
         } else {
           this.setState({
@@ -352,13 +352,13 @@ export class Location extends Component {
       }
     })
 
-    if (!this.readonly && draft.progress.screen !== 'Location') {
+    if (!this.readOnly && draft.progress.screen !== 'Location') {
       this.setState({
         draft: updatedDraft
       })
     }
 
-    if (!this.readonly) {
+    if (!this.readOnly) {
       this.props.navigation.setParams({
         onPressBack: this.onPressBack
       })
@@ -471,7 +471,7 @@ export class Location extends Component {
             size="large"
             color={colors.palered}
           />
-          {!this.readonly && (
+          {!this.readOnly && (
             <Text style={globalStyles.h2}>
               {t('views.family.gettingYourLocation')}
             </Text>
@@ -482,10 +482,10 @@ export class Location extends Component {
       return (
         <StickyFooter
           handleClick={this.handleClick}
-          readonly={this.readonly}
+          readonly={this.readOnly}
           continueLabel={t('general.continue')}
           progress={
-            !this.readonly && draft
+            !this.readOnly && draft
               ? (draft.familyData.countFamilyMembers > 1 ? 3 : 2) /
                 draft.progress.total
               : 0
@@ -495,7 +495,7 @@ export class Location extends Component {
           <View pointerEvents="none" style={styles.fakeMarker}>
             <Image source={marker} />
           </View>
-          {!this.readonly && showSearch && (
+          {!this.readOnly && showSearch && (
             <GooglePlacesAutocomplete
               keyboardShouldPersistTaps={'handled'}
               placeholder={t('views.family.searchByStreetOrPostalCode')}
@@ -524,19 +524,19 @@ export class Location extends Component {
             />
           )}
           <MapboxGL.MapView
-            centerCoordinate={[familyData.longitude, familyData.latitude]}
+            centerCoordinate={[+familyData.longitude, +familyData.latitude]}
             zoomLevel={15}
             style={{ width: '100%', flexGrow: 2 }}
             logoEnabled={false}
-            zoomEnabled={!this.readonly}
+            zoomEnabled={!this.readOnly}
             rotateEnabled={false}
-            scrollEnabled={!this.readonly}
+            scrollEnabled={!this.readOnly}
             pitchEnabled={false}
             onRegionDidChange={this.onDragMap}
             minZoomLevel={10}
             maxZoomLevel={15}
           />
-          {!this.readonly && (
+          {!this.readOnly && (
             <View>
               {centeringMap ? (
                 <ActivityIndicator
@@ -563,15 +563,15 @@ export class Location extends Component {
       return (
         <StickyFooter
           handleClick={this.handleClick}
-          readonly={this.readonly}
+          readonly={this.readOnly}
           continueLabel={t('general.continue')}
           progress={
-            !this.readonly && draft
+            !this.readOnly && draft
               ? draft.progress.current / draft.progress.total
               : 0
           }
         >
-          {!this.readonly && (
+          {!this.readOnly && (
             <View>
               {familyData.latitude ? (
                 <View style={[styles.placeholder, styles.map]}>
@@ -620,7 +620,7 @@ export class Location extends Component {
             label={t('views.family.country')}
             countrySelect
             placeholder={
-              this.readonly
+              this.readOnly
                 ? t('views.family.country')
                 : t('views.family.selectACountry')
             }
@@ -631,7 +631,7 @@ export class Location extends Component {
             }
             detectError={this.detectError}
             country={this.survey.surveyConfig.surveyLocation.country}
-            readonly={this.readonly}
+            readonly={this.readOnly}
           />
           <TextInput
             id="postCode"
@@ -640,7 +640,7 @@ export class Location extends Component {
             value={draft.familyData.postCode || ''}
             placeholder={t('views.family.postcode')}
             detectError={this.detectError}
-            readonly={this.readonly}
+            readonly={this.readOnly}
           />
           <TextInput
             id="address"
@@ -650,7 +650,7 @@ export class Location extends Component {
             placeholder={t('views.family.streetOrHouseDescription')}
             validation="long-string"
             detectError={this.detectError}
-            readonly={this.readonly}
+            readonly={this.readOnly}
             multiline
           />
         </StickyFooter>

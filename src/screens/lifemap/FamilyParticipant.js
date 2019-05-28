@@ -175,7 +175,7 @@ export class FamilyParticipant extends Component {
       getCurrentDraftState: () => this.state.draft
     })
 
-    if (!this.readonly && draft.progress.screen !== 'FamilyParticipant') {
+    if (!this.readOnly && draft.progress.screen !== 'FamilyParticipant') {
       this.setState({
         draft: {
           ...draft,
@@ -203,14 +203,14 @@ export class FamilyParticipant extends Component {
       <StickyFooter
         handleClick={this.handleClick}
         continueLabel={t('general.continue')}
-        readonly={this.is}
-        progress={!this.is && draft ? 1 / draft.progress.total : 0}
+        readonly={this.readOnly}
+        progress={!this.readOnly && draft ? 1 / draft.progress.total : 0}
       >
         <Decoration variation="primaryParticipant">
           <Icon name="face" color={colors.grey} size={61} style={styles.icon} />
-          {this.is !== true ? (
+          {this.readOnly !== true ? (
             <Text
-              readonly={this.is}
+              readonly={this.readOnly}
               style={[globalStyles.h2Bold, styles.heading]}
             >
               {t('views.family.primaryParticipantHeading')}
@@ -222,7 +222,7 @@ export class FamilyParticipant extends Component {
           autoFocus={!participant.firstName}
           validation="string"
           field="firstName"
-          readonly={this.readonly}
+          readonly={this.readOnly}
           onChangeText={this.updateParticipant}
           placeholder={t('views.family.firstName')}
           value={participant.firstName || ''}
@@ -234,7 +234,7 @@ export class FamilyParticipant extends Component {
           field="lastName"
           validation="string"
           onChangeText={this.updateParticipant}
-          readonly={this.readonly}
+          readonly={this.readOnly}
           placeholder={t('views.family.lastName')}
           value={participant.lastName || ''}
           required
@@ -248,7 +248,7 @@ export class FamilyParticipant extends Component {
           otherField="customGender"
           otherPlaceholder={t('views.family.specifyGender')}
           otherValue={participant.customGender}
-          readonly={this.readonly}
+          readonly={this.readOnly}
           label={t('views.family.gender')}
           placeholder={t('views.family.selectGender')}
           field="gender"
@@ -265,7 +265,7 @@ export class FamilyParticipant extends Component {
           showErrors={showErrors}
           onValidDate={this.updateParticipant}
           value={participant.birthDate}
-          readonly={this.readonly}
+          readonly={this.readOnly}
         />
 
         <Select
@@ -274,7 +274,7 @@ export class FamilyParticipant extends Component {
           otherPlaceholder={t('views.family.customDocumentType')}
           otherField="customDocumentType"
           otherValue={participant.customDocumentType}
-          readonly={this.readonly}
+          readonly={this.readOnly}
           label={t('views.family.documentType')}
           placeholder={t('views.family.documentType')}
           field="documentType"
@@ -286,7 +286,7 @@ export class FamilyParticipant extends Component {
 
         <TextInput
           onChangeText={this.updateParticipant}
-          readonly={this.readonly}
+          readonly={this.readOnly}
           field="documentNumber"
           required
           value={participant.documentNumber}
@@ -298,7 +298,7 @@ export class FamilyParticipant extends Component {
           id="country"
           required
           onChange={this.updateParticipant}
-          readonly={this.readonly}
+          readonly={this.readOnly}
           label={t('views.family.countryOfBirth')}
           country={this.survey.surveyConfig.surveyLocation.country}
           countrySelect
@@ -317,7 +317,7 @@ export class FamilyParticipant extends Component {
           field="countFamilyMembers"
           required
           onChange={this.addFamilyCount}
-          readonly={this.readonly}
+          readonly={this.readOnly}
           label={t('views.family.peopleLivingInThisHousehold')}
           placeholder={t('views.family.peopleLivingInThisHousehold')}
           value={draft.familyData.countFamilyMembers || ''}
@@ -327,7 +327,7 @@ export class FamilyParticipant extends Component {
         />
         <TextInput
           onChangeText={this.updateParticipant}
-          readonly={this.readonly}
+          readonly={this.readOnly}
           field="email"
           value={participant.email}
           placeholder={t('views.family.email')}
@@ -337,7 +337,7 @@ export class FamilyParticipant extends Component {
         />
         <TextInput
           onChangeText={this.updateParticipant}
-          readonly={this.readonly}
+          readonly={this.readOnly}
           field="phoneNumber"
           value={participant.phoneNumber}
           placeholder={t('views.family.phone')}

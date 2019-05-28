@@ -315,7 +315,7 @@ describe('Render optimization', () => {
       drafts: [...wrapper.instance().props.drafts, { draftId: 5 }]
     })
     expect(wrapper.instance().props.navigation.isFocused).toHaveBeenCalledTimes(
-      2
+      1
     )
   })
   it('updates screen if focused', () => {

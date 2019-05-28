@@ -28,7 +28,9 @@ export class SocioEconomicQuestion extends Component {
   }
 
   survey = this.props.navigation.getParam('survey')
-  draftId = this.props.navigation.getParam('draft').draftId
+  draftId = this.props.navigation.getParam('draft')
+    ? this.props.navigation.getParam('draft').draftId
+    : null
   readOnly = this.props.navigation.getParam('readOnly')
 
   errorsDetected = []
@@ -120,6 +122,7 @@ export class SocioEconomicQuestion extends Component {
   }
 
   getDraft = () =>
+    this.props.navigation.getParam('family') ||
     this.props.drafts.find(draft => draft.draftId === this.draftId)
 
   componentDidMount() {
@@ -127,7 +130,7 @@ export class SocioEconomicQuestion extends Component {
       getCurrentDraftState: () => this.getDraft()
     })
 
-    if (!this.readonly) {
+    if (!this.readOnly) {
       this.props.addDraftProgress(this.draftId, {
         showResume: false,
         screen: 'SocioEconomicQuestion'
@@ -363,9 +366,9 @@ export class SocioEconomicQuestion extends Component {
       <StickyFooter
         handleClick={this.submitForm}
         continueLabel={t('general.continue')}
-        readonly={this.readonly}
+        readonly={this.readOnly}
         progress={
-          !this.readonly && draft
+          !this.readOnly && draft
             ? ((draft.familyData.countFamilyMembers > 1 ? 3 : 2) +
                 (socioEconomics ? socioEconomics.currentScreen : 1)) /
               draft.progress.total
@@ -407,7 +410,7 @@ export class SocioEconomicQuestion extends Component {
                           this.getFieldValue(draft, question.codeName) || ''
                         }
                         detectError={this.detectError}
-                        readonly={this.readonly}
+                        readonly={this.readOnly}
                         options={question.options}
                       />
                       {this.getFieldValue(draft, question.codeName) ===
@@ -417,7 +420,7 @@ export class SocioEconomicQuestion extends Component {
                           field={question.codeName}
                           validation="string"
                           onChangeText={this.addSurveyDataOtherField}
-                          readonly={this.readonly}
+                          readonly={this.readOnly}
                           placeholder={t('views.family.specifyQuestionAbove')}
                           value={
                             this.getOtherFieldValue(draft, question.codeName) ||
@@ -441,7 +444,7 @@ export class SocioEconomicQuestion extends Component {
                       field={question.codeName}
                       value={this.getFieldValue(draft, question.codeName) || ''}
                       detectError={this.detectError}
-                      readonly={this.readonly}
+                      readonly={this.readOnly}
                       options={question.options}
                     />
                   )
@@ -458,7 +461,7 @@ export class SocioEconomicQuestion extends Component {
                     field={question.codeName}
                     value={this.getFieldValue(draft, question.codeName) || ''}
                     detectError={this.detectError}
-                    readonly={this.readonly}
+                    readonly={this.readOnly}
                     validation="number"
                     keyboardType="numeric"
                   />
@@ -474,7 +477,7 @@ export class SocioEconomicQuestion extends Component {
                   field={question.codeName}
                   value={this.getFieldValue(draft, question.codeName) || ''}
                   detectError={this.detectError}
-                  readonly={this.readonly}
+                  readonly={this.readOnly}
                 />
               }
             })
@@ -516,7 +519,7 @@ export class SocioEconomicQuestion extends Component {
                           ) || ''
                         }
                         detectError={this.detectError}
-                        readonly={this.readonly}
+                        readonly={this.readOnly}
                         options={question.options}
                       />
                     ) : (
@@ -538,7 +541,7 @@ export class SocioEconomicQuestion extends Component {
                           ) || ''
                         }
                         detectError={this.detectError}
-                        readonly={this.readonly}
+                        readonly={this.readOnly}
                       />
                     )
                   )}

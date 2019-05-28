@@ -13,7 +13,7 @@ import globalStyles from '../../globalStyles'
 import colors from '../../theme.json'
 export class Overview extends Component {
   survey = this.props.navigation.getParam('survey')
-  readOnly = this.props.navigation.getParam('readOnly')
+  familyLifemap = this.props.navigation.getParam('familyLifemap')
 
   state = {
     filterModalIsOpen: false,
@@ -43,7 +43,7 @@ export class Overview extends Component {
       })
     }
 
-    if (!this.isDraftResuming && !this.readOnly) {
+    if (!this.isDraftResuming && !this.familyLifemap) {
       this.setState({
         draft: {
           ...draft,
@@ -65,7 +65,7 @@ export class Overview extends Component {
     const { draft } = this.state
     const survey = this.survey
     //If we do not arrive to this screen from the families screen
-    if (!this.readOnly) {
+    if (!this.familyLifemap) {
       const skippedQuestions = this.state.draft.indicatorSurveyDataList.filter(
         question => question.value === 0
       )
@@ -183,13 +183,13 @@ export class Overview extends Component {
       <StickyFooter
         continueLabel={t('general.continue')}
         handleClick={() => this.handleContinue(mandatoryPrioritiesCount, draft)}
-        visible={!this.isDraftResuming && !this.readOnly}
+        visible={!this.isDraftResuming && !this.familyLifemap}
         type={tipIsVisible ? 'tip' : 'button'}
         tipTitle={t('views.lifemap.toComplete')}
         onTipClose={this.onTipClose}
         tipDescription={getTipDescription()}
         progress={
-          !this.isDraftResuming && !this.readOnly
+          !this.isDraftResuming && !this.familyLifemap
             ? (draft.progress.total - 1) / draft.progress.total
             : 0
         }
@@ -233,7 +233,7 @@ export class Overview extends Component {
               surveyData={this.survey.surveyStoplightQuestions}
               draftData={draft}
               navigateToScreen={this.navigateToScreen}
-              draftOverview={!this.isDraftResuming && !this.readOnly}
+              draftOverview={!this.isDraftResuming && !this.familyLifemap}
               selectedFilter={selectedFilter}
             />
           </View>

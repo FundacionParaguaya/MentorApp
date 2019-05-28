@@ -27,6 +27,7 @@ import marker from '../../assets/images/marker.png'
 import mapPlaceholderLarge from '../../assets/images/map_placeholder_1000.png'
 
 export class Family extends Component {
+  survey = this.props.navigation.getParam('survey')
   // set the title of the screen to the family name
   static navigationOptions = ({ navigation }) => {
     return {
@@ -79,7 +80,7 @@ export class Family extends Component {
           item => item.id === this.familyLifemap.surveyId
         ),
         draftId: navigation.getParam('draftId'),
-        readonly: true
+        readOnly: true
       })
     }
   }
@@ -149,7 +150,9 @@ export class Family extends Component {
                     maxZoomLevel={15}
                     onPress={() => {
                       navigation.navigate('Location', {
-                        family: this.familyLifemap
+                        survey: this.survey,
+                        family: this.familyLifemap,
+                        readOnly: true
                       })
                     }}
                   />
@@ -159,7 +162,9 @@ export class Family extends Component {
                 <TouchableHighlight
                   onPress={() => {
                     navigation.navigate('Location', {
-                      family: this.familyLifemap
+                      survey: this.survey,
+                      family: this.familyLifemap,
+                      readOnly: true
                     })
                   }}
                 >
@@ -213,11 +218,15 @@ export class Family extends Component {
                       handleClick={() => {
                         if (!index) {
                           navigation.navigate('FamilyParticipant', {
-                            family: this.familyLifemap
+                            survey: this.survey,
+                            family: this.familyLifemap,
+                            readOnly: true
                           })
                         } else {
                           navigation.navigate('FamilyMember', {
-                            member: item
+                            survey: this.survey,
+                            member: item,
+                            readOnly: true
                           })
                         }
                       }}
@@ -235,7 +244,9 @@ export class Family extends Component {
                   text={t('views.location')}
                   handleClick={() => {
                     navigation.navigate('Location', {
-                      family: this.familyLifemap
+                      survey: this.survey,
+                      family: this.familyLifemap,
+                      readOnly: true
                     })
                   }}
                 />
@@ -246,8 +257,11 @@ export class Family extends Component {
                         text={item}
                         handleClick={() => {
                           navigation.navigate('SocioEconomicQuestion', {
+                            title: item,
+                            survey: this.survey,
                             family: this.familyLifemap,
-                            page: index
+                            page: index,
+                            readOnly: true
                           })
                         }}
                       />
