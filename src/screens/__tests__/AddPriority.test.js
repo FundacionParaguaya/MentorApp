@@ -6,13 +6,10 @@ import StickyFooter from '../../components/StickyFooter'
 import { AddPriority } from '../lifemap/AddPriority'
 import TextInput from '../../components/TextInput'
 import Counter from '../../components/Counter'
+import draft from '../__mocks__/draftMock.json'
 
 const createTestProps = props => ({
   t: value => value,
-  nav: {
-    draftId: 4,
-    survey: {}
-  },
   navigation: {
     navigate: jest.fn(),
     replace: jest.fn(),
@@ -21,10 +18,12 @@ const createTestProps = props => ({
     getParam: jest.fn(param => {
       if (param === 'indicator') {
         return 'income'
-      } else if (param === 'draftId') {
-        return 2
-      } else if (param === 'familyLifemap') {
-        return
+      }
+      if (param === 'draft') {
+        return draft
+      }
+      if (param === 'survey') {
+        return {}
       }
     })
   },
@@ -73,25 +72,15 @@ describe('AddPriority View', () => {
         wrapper.instance().props.addSurveyPriorityAcheivementData
       ).toHaveBeenCalledTimes(0)
     })
-    it('saves the priority if valid', () => {
-      wrapper.instance().setState({ estimatedDate: 2 })
 
-      wrapper
-        .find(StickyFooter)
-        .props()
-        .handleClick()
-
-      expect(
-        wrapper.instance().props.addSurveyPriorityAcheivementData
-      ).toHaveBeenCalledTimes(1)
-    })
     it('has correct initial state', () => {
       expect(wrapper.instance().state).toEqual({
         action: '',
         estimatedDate: 0,
         indicator: 'income',
         reason: '',
-        validationError: false
+        validationError: false,
+        draft: expect.any(Object)
       })
     })
     it('increases count correctly', () => {

@@ -295,23 +295,26 @@ export class Location extends Component {
     const { draft } = this.state
     const { familyData } = draft
 
-    // the there is no save country in the draft, set it to the survey one
-    if (!draft.familyData.country) {
-      this.setState({
-        draft: {
-          ...draft,
-          familyData: {
-            ...draft.familyData,
-            country: this.survey.surveyConfig.surveyLocation.country
-          }
-        }
-      })
+    const updatedDraft = {
+      ...draft,
+      progress: {
+        ...draft.progress,
+        screen: 'Location',
+        total: getTotalScreens(this.survey)
+      },
+      familyData: {
+        ...draft.familyData,
+        country:
+          draft.familyData.country ||
+          this.survey.surveyConfig.surveyLocation.country
+      }
     }
 
     // monitor for connection changes
     NetInfo.addEventListener('connectionChange', conncection => {
       this.setState({
-        loading: true
+        loading: true,
+        draft: updatedDraft
       })
 
       const isOnline = conncection.type === 'none' ? false : true
@@ -322,7 +325,8 @@ export class Location extends Component {
         } else {
           this.setState({
             loading: false,
-            showForm: true
+            showForm: true,
+            draft: updatedDraft
           })
         }
       } else {
@@ -339,7 +343,8 @@ export class Location extends Component {
           this.setState({
             isOnline,
             loading: false,
-            showForm: true
+            showForm: true,
+            draft: updatedDraft
           })
         }
       } else {
@@ -349,14 +354,7 @@ export class Location extends Component {
 
     if (!this.readonly && draft.progress.screen !== 'Location') {
       this.setState({
-        draft: {
-          ...draft,
-          progress: {
-            ...draft.progress,
-            screen: 'Location',
-            total: getTotalScreens(this.survey)
-          }
-        }
+        draft: updatedDraft
       })
     }
 
@@ -366,6 +364,7 @@ export class Location extends Component {
       })
     }
   }
+
   componentWillUnmount() {
     AppState.removeEventListener('change', this._handleAppStateChange)
     this.keyboardDidShowListener.remove()

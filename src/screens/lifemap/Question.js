@@ -61,12 +61,31 @@ export class Question extends Component {
     )
     const fieldValue = this.getFieldValue(this.indicator.codeName)
 
-    const indicators = [
-      ...draft.indicatorSurveyDataList,
-      { key: this.indicator.codeName, value: answer }
-    ]
+    let updatedIndicators
 
-    const updatedIndicators = [...new Set(indicators.map(item => item))]
+    if (
+      draft.indicatorSurveyDataList.find(
+        item => item.key === this.indicator.codeName
+      )
+    ) {
+      updatedIndicators = draft.indicatorSurveyDataList.map(item => {
+        if (item.key === this.indicator.codeName) {
+          return { ...item, value: answer }
+        } else {
+          return item
+        }
+      })
+    } else {
+      updatedIndicators = [
+        ...draft.indicatorSurveyDataList,
+        { key: this.indicator.codeName, value: answer }
+      ]
+    }
+
+    let updatedDraft = {
+      ...draft,
+      indicatorSurveyDataList: updatedIndicators
+    }
 
     //When the user changes the answer of a question
     if (fieldValue !== answer) {
@@ -74,34 +93,34 @@ export class Question extends Component {
 
       if (answer === 3 || answer === 0) {
         //delete priority
-        this.setState({
-          draft: {
-            ...draft,
-            indicatorSurveyDataList: updatedIndicators,
-            priorities: [
-              ...draft.priorities.filter(
-                item => item.indicator !== this.indicator.codeName
-              )
-            ]
-          }
-        })
+        updatedDraft = {
+          ...draft,
+          indicatorSurveyDataList: updatedIndicators,
+          priorities: [
+            ...draft.priorities.filter(
+              item => item.indicator !== this.indicator.codeName
+            )
+          ]
+        }
       }
       //If indicator is yellow, red or skipped
       if (answer < 3) {
         //Delete achievements
-        this.setState({
-          draft: {
-            ...draft,
-            indicatorSurveyDataList: updatedIndicators,
-            achievements: [
-              ...draft.achievements.filter(
-                item => item.indicator !== this.indicator.codeName
-              )
-            ]
-          }
-        })
+        updatedDraft = {
+          ...draft,
+          indicatorSurveyDataList: updatedIndicators,
+          achievements: [
+            ...draft.achievements.filter(
+              item => item.indicator !== this.indicator.codeName
+            )
+          ]
+        }
       }
     }
+
+    this.setState({
+      draft: updatedDraft
+    })
 
     if (
       this.step + 1 < this.indicators.length &&
@@ -109,12 +128,12 @@ export class Question extends Component {
     ) {
       return this.props.navigation.replace('Question', {
         step: this.step + 1,
-        draft: this.state.draft,
+        draft: updatedDraft,
         survey: this.survey
       })
     } else if (this.step + 1 >= this.indicators.length && answer === 0) {
       return this.props.navigation.navigate('Skipped', {
-        draft: this.state.draft,
+        draft: updatedDraft,
         survey: this.survey
       })
     } else if (
@@ -125,12 +144,12 @@ export class Question extends Component {
     ) {
       return this.props.navigation.navigate('Overview', {
         resumeDraft: false,
-        draft: this.state.draft,
+        draft: updatedDraft,
         survey: this.survey
       })
     } else {
       return this.props.navigation.replace('Skipped', {
-        draft: this.state.draft,
+        draft: updatedDraft,
         survey: this.survey
       })
     }

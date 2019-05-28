@@ -89,7 +89,8 @@ export class Overview extends Component {
       familyLifemap: this.state.draft,
       survey: this.survey,
       indicator,
-      indicatorText
+      indicatorText,
+      draft: this.state.draft
     })
 
   shouldComponentUpdate() {
@@ -136,7 +137,7 @@ export class Overview extends Component {
         tipIsVisible: true
       })
     } else {
-      this.navigateToScreen('Final', { draft, survey: this.survey })
+      this.navigateToScreen('Final')
     }
   }
 
