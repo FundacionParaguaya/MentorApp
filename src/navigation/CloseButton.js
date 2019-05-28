@@ -6,25 +6,14 @@ import IconButton from '../components/IconButton'
 
 class CloseButton extends Component {
   handlePress = () => {
-    // navigation comes from react-navigation, nav comes from redux
-    const { navigation, nav } = this.props
+    const { navigation } = this.props
+    const draft = navigation.getParam('getCurrentDraftState')()
+    const isNewDraft = navigation.getParam('isNewDraft')
 
-    if (nav.deleteDraftOnExit) {
-      this.props.updateNav('openModal', 'deleteDraft')
-    } else if (
-      navigation.state.routeName === 'Terms' ||
-      navigation.state.routeName === 'Privacy'
-    ) {
-      this.props.updateNav('openModal', 'exitOnTerms')
-    } else {
-      this.props.updateNav('openModal', 'exitDraft')
-    }
-
-    this.props.updateNav('beforeCloseModal', () => {
-      // reset navigation
-      navigation.popToTop()
-      navigation.navigate('Dashboard')
-      this.props.updateNav('beforeCloseModal', null)
+    // open the exit modal with the params it needs
+    this.props.navigation.navigate('ExitDraftModal', {
+      draft,
+      isNewDraft
     })
   }
   render() {

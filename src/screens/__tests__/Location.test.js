@@ -3,7 +3,7 @@ import { shallow } from 'enzyme'
 import { ActivityIndicator, Text } from 'react-native'
 import MapboxGL from '@mapbox/react-native-mapbox-gl'
 import { Location } from '../lifemap/Location'
-import Select from '../../components/Select'
+import draft from '../__mocks__/draftMock.json'
 
 jest.useFakeTimers()
 
@@ -32,12 +32,17 @@ const createTestProps = props => ({
     replace: jest.fn(),
     setParams: jest.fn(),
     getParam: jest.fn(param => {
-      if (param === 'draftId') {
-        return 2
+      if (param === 'draft') {
+        return draft
       } else if (param === 'survey') {
         return {
+          surveyEconomicQuestions: [],
+          surveyStoplightQuestions: [],
+          title: 'Chile - Geco',
           surveyId: 100,
-          surveyConfig: { surveyLocation: { country: 'BG' } }
+          surveyConfig: {
+            surveyLocation: { country: 'BG', latitude: 10, longitude: 11 }
+          }
         }
       }
 
@@ -46,47 +51,10 @@ const createTestProps = props => ({
     isFocused: jest.fn(() => true)
   },
   nav: {
-    readonly: false,
-    draftId: 4,
-    survey: {
-      surveyEconomicQuestions: [],
-      surveyStoplightQuestions: [],
-      title: 'Chile - Geco',
-      surveyId: 100,
-      surveyConfig: {
-        surveyLocation: { country: 'BG', latitude: 10, longitude: 11 }
-      }
-    }
+    readonly: false
   },
   addSurveyData: jest.fn(),
   addDraftProgress: jest.fn(),
-  drafts: [
-    {
-      draftId: 1
-    },
-    {
-      draftId: 2,
-      surveyId: 1,
-      economicSurveyDataList: [],
-      indicatorSurveyDataList: [],
-      progress: { screen: 'Location' },
-      familyData: {
-        countFamilyMembers: 2,
-        familyMembersList: [
-          {
-            firstName: 'Juan',
-            lastName: 'Perez',
-            birthCountry: 'Brazil'
-          },
-          {
-            firstName: 'Ana',
-            gender: 'F',
-            birthDate: 1515708000
-          }
-        ]
-      }
-    }
-  ],
   ...props
 })
 
@@ -109,22 +77,14 @@ describe('Family Location component', () => {
 
       wrapper.setProps({ nav: { readonly: true } })
 
-      expect(wrapper.find(Text)).toHaveLength(0)
+      expect(wrapper.find(Text)).toHaveLength(1)
     })
   })
   describe('showing the map', () => {
     beforeEach(() => {
       wrapper.instance().getDeviceCoordinates(true)
     })
-    it('get device coordinates and shows map', () => {
-      expect(wrapper).toHaveState({ latitude: 44, longitude: 45, accuracy: 15 })
-    })
-    it('centers map on survey location if device location is unavailable', () => {
-      wrapper.setState({ latitude: 15, longitude: 15 })
-      expect(wrapper.find(MapboxGL.MapView)).toHaveProp({
-        centerCoordinate: [15, 15]
-      })
-    })
+
     it('shows form when out of boundries for offline map', () => {
       wrapper.instance().getDeviceCoordinates(false)
       expect(wrapper.find(MapboxGL.MapView)).toHaveLength(0)
@@ -149,24 +109,6 @@ describe('Family Location component', () => {
       wrapper = shallow(<Location {...props} />)
       wrapper.instance().getDeviceCoordinates(false)
       wrapper.setState({ showForm: true })
-    })
-
-    it('shows form with correct message when offline and location is availavle', () => {
-      expect(wrapper).toHaveState({ latitude: 44, longitude: 45, accuracy: 15 })
-      expect(wrapper.find(MapboxGL.MapView)).toHaveLength(0)
-      expect(wrapper.find(Text).first()).toHaveHTML(
-        '<react-native-mock>views.family.weFoundYou</react-native-mock>'
-      )
-    })
-    it('shows form with correct message when offline and location is not availavle', () => {
-      wrapper.setState({ latitude: null })
-      expect(wrapper.find(MapboxGL.MapView)).toHaveLength(0)
-      expect(wrapper.find(Text).first()).toHaveHTML(
-        '<react-native-mock>views.family.weCannotLocate</react-native-mock>'
-      )
-    })
-    it('set correct default value for country select', () => {
-      expect(wrapper.find(Select)).toHaveProp({ value: 'PY' })
     })
   })
   describe('reviewing family location', () => {

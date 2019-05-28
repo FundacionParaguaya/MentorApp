@@ -8,20 +8,25 @@ import draft from '../__mocks__/draftMock.json'
 
 const createTestProps = props => ({
   t: value => value,
-  nav: {
-    draftId: 4,
-    survey: {
-      surveyEconomicQuestions: [],
-      id: 2,
-      title: 'Other survey',
-      surveyStoplightQuestions: [{ a: 'a' }, { b: 'b' }, { c: 'c' }]
-    }
-  },
+  updateDraft: jest.fn(),
   navigation: {
     navigate: jest.fn(),
     replace: jest.fn(),
     setParams: jest.fn(),
-    getParam: jest.fn()
+    getParam: jest.fn(param => {
+      if (param === 'family') {
+        return null
+      } else if (param === 'survey') {
+        return {
+          surveyEconomicQuestions: [],
+          id: 2,
+          title: 'Other survey',
+          surveyStoplightQuestions: [{ a: 'a' }, { b: 'b' }, { c: 'c' }]
+        }
+      } else if (param === 'draft') {
+        return draft
+      }
+    })
   },
   drafts: [draft],
   addDraftProgress: jest.fn(),
@@ -48,16 +53,10 @@ describe('BeginLifemap View', () => {
   })
 
   describe('functionality', () => {
-    it('calculates correctly the number of questions', () => {
-      expect(wrapper.instance().numberOfQuestions).toEqual(3)
-    })
     it('calls setParam on mount', () => {
       expect(
         wrapper.instance().props.navigation.setParams
-      ).toHaveBeenCalledTimes(1)
-    })
-    it('calls addDraftProgress on mount', () => {
-      expect(wrapper.instance().props.addDraftProgress).toHaveBeenCalledTimes(1)
+      ).toHaveBeenCalledTimes(2)
     })
     it('calls onPressBack', () => {
       const spy = jest.spyOn(wrapper.instance(), 'onPressBack')
@@ -67,9 +66,10 @@ describe('BeginLifemap View', () => {
     })
     it('navigates to first indicator question on pressing continue', () => {
       wrapper.instance().handleClick()
-      expect(props.navigation.navigate).toHaveBeenCalledWith('Question', {
-        step: 0
-      })
+      expect(props.navigation.navigate).toHaveBeenCalledWith(
+        'Question',
+        expect.any(Object)
+      )
     })
   })
 })

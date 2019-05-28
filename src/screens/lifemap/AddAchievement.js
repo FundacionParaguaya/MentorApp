@@ -1,25 +1,27 @@
 import React, { Component } from 'react'
 import { View, Text } from 'react-native'
-import { connect } from 'react-redux'
 import PropTypes from 'prop-types'
 import Icon from 'react-native-vector-icons/MaterialIcons'
 import { Divider } from 'react-native-elements'
 import { withNamespaces } from 'react-i18next'
 import StickyFooter from '../../components/StickyFooter'
-import { addSurveyPriorityAcheivementData } from '../../redux/actions'
 import globalStyles from '../../globalStyles'
 import colors from '../../theme.json'
 import TextInput from '../../components/TextInput'
-import { getDraft } from './helpers'
 
 export class AddAchievement extends Component {
   errorsDetected = []
+  survey = this.props.navigation.getParam('survey')
+  readOnly = this.props.navigation.getParam('readOnly')
   state = {
     action: '',
     roadmap: '',
     errorsDetected: [],
     showErrors: false,
-    indicator: this.props.navigation.getParam('indicator')
+    indicator: this.props.navigation.getParam('indicator'),
+    draft:
+      this.props.navigation.getParam('familyLifemap') ||
+      this.props.navigation.getParam('draft')
   }
   detectError = (error, field) => {
     if (error && !this.errorsDetected.includes(field)) {
@@ -34,12 +36,12 @@ export class AddAchievement extends Component {
   }
 
   componentDidMount() {
-    const data = this.getData()
-    const achievement = this.getAchievementValue(data)
+    const achievement = this.getAchievementValue(this.state.draft)
     this.setState(achievement)
 
     this.props.navigation.setParams({
-      withoutCloseButton: this.props.nav.draftId ? false : true
+      getCurrentDraftState: () => this.state.draft,
+      withoutCloseButton: this.readOnly ? false : true
     })
   }
 
@@ -47,25 +49,45 @@ export class AddAchievement extends Component {
     return this.props.navigation.isFocused()
   }
 
-  getData = () =>
-    this.props.nav.draftId
-      ? getDraft()
-      : this.props.navigation.getParam('familyLifemap')
-
   addAchievement = () => {
     if (this.errorsDetected.length) {
       this.setState({
         showErrors: true
       })
     } else {
-      const { action, roadmap, indicator } = this.state
-      this.props.addSurveyPriorityAcheivementData({
-        id: this.props.nav.draftId,
-        category: 'achievements',
-        payload: { action, roadmap, indicator }
-      })
+      const { action, roadmap, indicator, draft } = this.state
+
+      const achievements = draft.achievements
+
+      const item = achievements.filter(
+        item => item.indicator === action.payload.indicator
+      )[0]
+
+      let updatedDraft = draft
+
+      // If item exists update it
+      if (item) {
+        const index = achievements.indexOf(item)
+        updatedDraft = {
+          ...draft,
+          achievements: [
+            ...achievements.slice(0, index),
+            { action, roadmap, indicator },
+            ...achievements.slice(index + 1)
+          ]
+        }
+      } else {
+        // If item does not exist create it
+        updatedDraft = {
+          ...draft,
+          achievements: [...achievements, { action, roadmap, indicator }]
+        }
+      }
+
       this.props.navigation.replace('Overview', {
-        resumeDraft: false
+        resumeDraft: false,
+        draft: updatedDraft,
+        survey: this.survey
       })
     }
   }
@@ -80,16 +102,14 @@ export class AddAchievement extends Component {
 
   render() {
     const { t } = this.props
-    const { draftId, readonly } = this.props.nav
-    const { showErrors } = this.state
-    const data = this.getData()
-    const achievement = this.getAchievementValue(data)
+    const { showErrors, draft } = this.state
+    const achievement = this.getAchievementValue(draft)
 
     return (
       <StickyFooter
         continueLabel={t('general.save')}
         handleClick={this.addAchievement}
-        visible={!!draftId}
+        visible={!this.readOnly}
       >
         <View style={globalStyles.container}>
           <Text style={globalStyles.h2}>
@@ -117,7 +137,7 @@ export class AddAchievement extends Component {
         <TextInput
           field="action"
           required
-          readonly={readonly}
+          readonly={this.readonly}
           showErrors={showErrors}
           detectError={this.detectError}
           onChangeText={text => this.setState({ action: text })}
@@ -134,7 +154,7 @@ export class AddAchievement extends Component {
           placeholder={
             this.state.roadmap ? '' : t('views.lifemap.writeYourAnswerHere')
           }
-          readonly={readonly}
+          readonly={this.readonly}
           value={achievement ? achievement.roadmap : ''}
           multiline
         />
@@ -145,22 +165,7 @@ export class AddAchievement extends Component {
 
 AddAchievement.propTypes = {
   t: PropTypes.func.isRequired,
-  nav: PropTypes.object.isRequired,
-  navigation: PropTypes.object.isRequired,
-  addSurveyPriorityAcheivementData: PropTypes.func.isRequired
+  navigation: PropTypes.object.isRequired
 }
 
-const mapDispatchToProps = {
-  addSurveyPriorityAcheivementData
-}
-
-const mapStateToProps = ({ nav }) => ({
-  nav
-})
-
-export default withNamespaces()(
-  connect(
-    mapStateToProps,
-    mapDispatchToProps
-  )(AddAchievement)
-)
+export default withNamespaces()(AddAchievement)

@@ -31,7 +31,7 @@ export class DrawerContent extends Component {
     showErrors: false,
     logingOut: false,
     activeTab: 'Dashboard',
-    drawerContentWidth: 320
+    drawerContentWidth: 304
   }
 
   changeLanguage = lng => {
@@ -80,28 +80,24 @@ export class DrawerContent extends Component {
   }
   navigateToScreen = (screen, currentStack) => {
     // navigation comes from react-navigation, nav comes from redux
-    const { navigation, nav } = this.props
+    const { navigation } = this.props
 
     this.setState({ activeTab: screen })
     navigation.toggleDrawer()
 
     if (currentStack.key === 'Surveys' && currentStack.index) {
-      if (nav.deleteDraftOnExit) {
-        this.props.updateNav('openModal', 'deleteDraft')
-      } else if (
-        navigation.state.routeName === 'Terms' ||
-        navigation.state.routeName === 'Privacy'
-      ) {
-        this.props.updateNav('openModal', 'exitOnTerms')
-      } else {
-        this.props.updateNav('openModal', 'exitDraft')
-      }
+      const { navigation } = this.props
 
-      this.props.updateNav('beforeCloseModal', () => {
-        // reset navigation
-        navigation.popToTop()
-        navigation.navigate(this.state.activeTab)
-        this.props.updateNav('beforeCloseModal', null)
+      const draft = currentStack.routes[
+        currentStack.index
+      ].params.getCurrentDraftState()
+      const isNewDraft = navigation.getParam('isNewDraft')
+
+      // open the exit modal with the params it needs
+      this.props.navigation.navigate('ExitDraftModal', {
+        draft,
+        isNewDraft,
+        screen
       })
     } else {
       navigation.navigate(screen)

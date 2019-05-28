@@ -10,20 +10,7 @@ import draftMock from '../__mocks__/draftMock'
 
 const createTestProps = props => ({
   t: value => value,
-  nav: {
-    draftId: 4,
-    survey: {
-      id: 2,
-      title: 'Other survey',
-      minimumPriorities: 5,
-      surveyEconomicQuestions: [],
-      surveyStoplightQuestions: [
-        { phoneNumber: 'phoneNumber' },
-        { education: 'education' },
-        { c: 'c' }
-      ]
-    }
-  },
+
   addDraftProgress: jest.fn(),
   navigation: {
     navigate: jest.fn(),
@@ -32,6 +19,20 @@ const createTestProps = props => ({
     getParam: jest.fn(param => {
       if (param === 'resumeDraft') {
         return false
+      } else if (param === 'survey') {
+        return {
+          id: 2,
+          title: 'Other survey',
+          minimumPriorities: 5,
+          surveyEconomicQuestions: [],
+          surveyStoplightQuestions: [
+            { phoneNumber: 'phoneNumber' },
+            { education: 'education' },
+            { c: 'c' }
+          ]
+        }
+      } else if (param === 'draft') {
+        return draftMock
       }
     })
   },
@@ -90,6 +91,20 @@ describe('Overview', () => {
           getParam: jest.fn(param => {
             if (param === 'resumeDraft') {
               return true
+            } else if (param === 'survey') {
+              return {
+                id: 2,
+                title: 'Other survey',
+                minimumPriorities: 5,
+                surveyEconomicQuestions: [],
+                surveyStoplightQuestions: [
+                  { phoneNumber: 'phoneNumber' },
+                  { education: 'education' },
+                  { c: 'c' }
+                ]
+              }
+            } else if (param === 'draft') {
+              return draftMock
             }
           })
         }
@@ -112,19 +127,6 @@ describe('Overview', () => {
 
     it('resumes the draft when Resume is clicked', () => {
       props = createTestProps({
-        nav: {
-          draftId: 4,
-          survey: {
-            id: 2,
-            title: 'Other survey',
-            minimumPriorities: 5,
-            surveyStoplightQuestions: [
-              { phoneNumber: 'phoneNumber' },
-              { education: 'education' },
-              { c: 'c' }
-            ]
-          }
-        },
         navigation: {
           navigate: jest.fn(),
           isFocused: jest.fn(),
@@ -133,6 +135,19 @@ describe('Overview', () => {
           getParam: jest.fn(param => {
             if (param === 'resumeDraft') {
               return true
+            } else if (param === 'survey') {
+              return {
+                id: 2,
+                title: 'Other survey',
+                minimumPriorities: 5,
+                surveyStoplightQuestions: [
+                  { phoneNumber: 'phoneNumber' },
+                  { education: 'education' },
+                  { c: 'c' }
+                ]
+              }
+            } else if (param === 'draft') {
+              return draftMock
             }
           })
         }
@@ -144,10 +159,10 @@ describe('Overview', () => {
         .props()
         .handleClick()
       expect(props.navigation.replace).toHaveBeenCalledTimes(1)
-      expect(props.navigation.replace).toHaveBeenCalledWith('Overview', {
-        socioEconomics: undefined,
-        step: undefined
-      })
+      expect(props.navigation.replace).toHaveBeenCalledWith(
+        'Overview',
+        expect.any(Object)
+      )
     })
   })
 })
@@ -159,15 +174,7 @@ describe('Render optimization', () => {
     props = createTestProps()
     wrapper = shallow(<Overview {...props} />)
   })
-  it('checks if screen is focused before updating', () => {
-    wrapper.setProps({
-      drafts: [...wrapper.instance().props.drafts, { draftId: 5 }]
-    })
-    //chnaged it to 2 because of changes in Overview.js  #580
-    expect(wrapper.instance().props.navigation.isFocused).toHaveBeenCalledTimes(
-      2
-    )
-  })
+
   it('updates screen if focused', () => {
     wrapper.setProps({
       drafts: [...wrapper.instance().props.drafts, { draftId: 5 }]
@@ -184,19 +191,14 @@ describe('Render optimization', () => {
     wrapper = shallow(<Overview {...props} />)
     expect(wrapper.instance().props.drafts[1]).toBeFalsy()
   })
-  it('calls setParam on mount', () => {
-    expect(wrapper.instance().props.navigation.setParams).toHaveBeenCalledTimes(
-      1
-    )
-  })
-  it('calls addDraftProgress on mount', () => {
-    expect(wrapper.instance().props.addDraftProgress).toHaveBeenCalledTimes(1)
-  })
 
   it('navigates back to skipped screen if there are skipped questions', () => {
     wrapper.instance().onPressBack()
 
-    expect(props.navigation.navigate).toHaveBeenCalledWith('Skipped')
+    expect(props.navigation.navigate).toHaveBeenCalledWith(
+      'Skipped',
+      expect.any(Object)
+    )
   })
 
   it('navigates to Question screen when there are no skipped questions', () => {
@@ -220,7 +222,10 @@ describe('Render optimization', () => {
     wrapper = shallow(<Overview {...props} />)
     wrapper.instance().onPressBack()
 
-    expect(props.navigation.navigate).toHaveBeenCalledWith('Skipped')
+    expect(props.navigation.navigate).toHaveBeenCalledWith(
+      'Skipped',
+      expect.any(Object)
+    )
   })
 
   it('can filter by colors', () => {
