@@ -46,10 +46,18 @@ export class SocioEconomicQuestion extends Component {
       let currentDimension = ''
       let questionsPerScreen = []
       let totalScreens = 0
+      // this loops through the survey questions and replaces the values for text with decoded
+      // ones, which fixes problem encoding
+      const surveyQuestions = this.survey.surveyEconomicQuestions.map(
+        question =>
+          question.options.length
+            ? this.checkAndReplaceSpecialChars(question)
+            : question
+      )
 
       // go trough all questions and separate them by screen
       // filter method - checks if family members meet the conditions based on age
-      this.survey.surveyEconomicQuestions
+      surveyQuestions
         .filter(question =>
           !!question.conditions &&
           question.conditions.length &&
@@ -205,6 +213,20 @@ export class SocioEconomicQuestion extends Component {
       })
     }
   }
+
+  checkAndReplaceSpecialChars = question => {
+    const LATIN_CHARS = /^[A-Za-z0-9]*$/
+    return {
+      ...question,
+      options: question.options.map(option => ({
+        ...option,
+        text: LATIN_CHARS.test(option.text.replace(/\s/g, '')) // check for strange chars and if found decode
+          ? option.text
+          : decodeURIComponent(escape(option.text))
+      }))
+    }
+  }
+
   addSurveyDataOtherField = (text, field) => {
     const draft = this.props.navigation.getParam('family') || this.getDraft()
     let value
@@ -467,18 +489,20 @@ export class SocioEconomicQuestion extends Component {
                   />
                 )
               } else {
-                ;<TextInput
-                  multiline
-                  key={question.codeName}
-                  required={question.required}
-                  onChangeText={this.addSurveyData}
-                  placeholder={question.questionText}
-                  showErrors={showErrors}
-                  field={question.codeName}
-                  value={this.getFieldValue(draft, question.codeName) || ''}
-                  detectError={this.detectError}
-                  readonly={this.readOnly}
-                />
+                return (
+                  <TextInput
+                    multiline
+                    key={question.codeName}
+                    required={question.required}
+                    onChangeText={this.addSurveyData}
+                    placeholder={question.questionText}
+                    showErrors={showErrors}
+                    field={question.codeName}
+                    value={this.getFieldValue(draft, question.codeName) || ''}
+                    detectError={this.detectError}
+                    readonly={this.readOnly}
+                  />
+                )
               }
             })
         ) : (

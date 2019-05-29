@@ -225,7 +225,7 @@ export class FamilyParticipant extends Component {
           readonly={this.readOnly}
           onChangeText={this.updateParticipant}
           placeholder={t('views.family.firstName')}
-          value={participant.firstName || ''}
+          value={decodeURIComponent(participant.firstName || '')}
           required
           detectError={this.detectError}
           showErrors={showErrors}
@@ -236,7 +236,7 @@ export class FamilyParticipant extends Component {
           onChangeText={this.updateParticipant}
           readonly={this.readOnly}
           placeholder={t('views.family.lastName')}
-          value={participant.lastName || ''}
+          value={decodeURIComponent(participant.lastName || '')}
           required
           detectError={this.detectError}
           showErrors={showErrors}
