@@ -130,7 +130,7 @@ describe('surveys actions', () => {
           commit: { type: 'LOAD_SURVEYS_COMMIT' },
           effect: {
             body:
-              '{"query":"query { surveysByUser { title id minimumPriorities privacyPolicy { title  text } termsConditions{ title text }  surveyConfig { documentType {text value otherOption} gender { text value otherOption} countryOfBirth{text value} surveyLocation { country latitude longitude} }  surveyEconomicQuestions { questionText codeName answerType topic required forFamilyMember options {text value otherOption} conditions{codeName type value operator} } surveyStoplightQuestions { questionText codeName dimension id stoplightColors { url value description } required } } }"}',
+              '{"query":"query { surveysByUser { title id minimumPriorities privacyPolicy { title  text } termsConditions{ title text }  surveyConfig { documentType {text value otherOption} gender { text value otherOption} countryOfBirth{text value} surveyLocation { country latitude longitude} offlineMaps { from, to, center, name } }  surveyEconomicQuestions { questionText codeName answerType topic required forFamilyMember options {text value otherOption} conditions{codeName type value operator} } surveyStoplightQuestions { questionText codeName dimension id stoplightColors { url value description } required } } }"}',
             headers: { Authorization: 'Bearer token' },
             method: 'POST',
             url: 'https://mock/env/graphql'
