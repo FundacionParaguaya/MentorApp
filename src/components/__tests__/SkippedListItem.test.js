@@ -30,14 +30,6 @@ describe('SkippedListItem Component', () => {
     it('renders Icon', () => {
       expect(wrapper.find(Icon)).toHaveLength(1)
     })
-    it('renders the correct indicator name', () => {
-      expect(
-        wrapper
-          .find(Text)
-          .first()
-          .props().children
-      ).toEqual('Indicator name')
-    })
 
     describe('functionality', () => {
       it('should call handleClick onPress', () => {

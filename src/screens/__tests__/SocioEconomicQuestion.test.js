@@ -33,17 +33,20 @@ const draft = {
 
 const createTestProps = props => ({
   t: value => value,
-  nav: {
-    draftId: 4,
-    survey: data
-  },
   navigation: {
     navigate: jest.fn(),
     push: jest.fn(),
-    getParam: jest.fn(),
+    getParam: jest.fn(param => {
+      if (param === 'survey') {
+        return data
+      } else if (param === 'draft') {
+        return draft
+      }
+    }),
     setParams: jest.fn(),
     isFocused: jest.fn(() => true)
   },
+  drafts: [draft],
   addSurveyData: jest.fn(),
   addDraftProgress: jest.fn(),
   addSurveyFamilyMemberData: jest.fn(),
@@ -62,7 +65,7 @@ describe('SocioEconomicQuestion screens', () => {
     it('sets navigation socioEconomics param', () => {
       expect(
         wrapper.instance().props.navigation.setParams
-      ).toHaveBeenCalledTimes(2)
+      ).toHaveBeenCalledTimes(3)
 
       expect(
         wrapper.instance().props.navigation.setParams
@@ -106,10 +109,11 @@ describe('SocioEconomicQuestion screens', () => {
                   }
                 ]
               }
-            } else if (param === 'draftId') {
-              return 2
-            } else {
-              return null
+            }
+            if (param === 'survey') {
+              return data
+            } else if (param === 'draft') {
+              return draft
             }
           }),
           setParams: jest.fn()
@@ -196,7 +200,7 @@ describe('SocioEconomicQuestion screens', () => {
         .onChange('PHYSICAL', 'health')
 
       expect(wrapper.instance().props.addSurveyData).toHaveBeenCalledWith(
-        4,
+        2,
         'economicSurveyDataList',
         { health: 'PHYSICAL' }
       )
@@ -292,8 +296,8 @@ describe('SocioEconomicQuestion screens', () => {
                   }
                 ]
               }
-            } else if (param === 'draftId') {
-              return 2
+            } else if (param === 'draft') {
+              return draft
             }
 
             return null
@@ -306,14 +310,13 @@ describe('SocioEconomicQuestion screens', () => {
     })
 
     it('renders a TextInput for each text question for each family member', () => {
-      expect(wrapper.find(TextInput)).toHaveLength(2)
+      expect(wrapper.find(TextInput)).toHaveLength(3)
     })
 
     it('sets the correct TextInput props', () => {
       expect(wrapper.find(TextInput).first()).toHaveProp({
-        required: true,
-        placeholder:
-          'Please estimate your gross monthly household income (i.e, before taxes National Insurance contributions or other deductions)'
+        required: false,
+        placeholder: 'Please state household income'
       })
     })
 
@@ -356,7 +359,8 @@ describe('SocioEconomicQuestion screens', () => {
       ).toHaveBeenCalledTimes(1)
 
       expect(wrapper.instance().props.navigation.navigate).toHaveBeenCalledWith(
-        'BeginLifemap'
+        'BeginLifemap',
+        expect.any(Object)
       )
     })
   })
@@ -377,12 +381,7 @@ describe('Render optimization', () => {
       1
     )
   })
-  it('updates screen if focused', () => {
-    wrapper.setProps({
-      nav: { ...props.nav, draftId: 5 }
-    })
-    expect(props.nav).toEqual({ ...props.nav, draftId: 4 })
-  })
+
   it('does not update screen if not focused', () => {
     wrapper.setProps({
       test: true

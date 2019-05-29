@@ -6,15 +6,15 @@ import RoundImage from '../../components/RoundImage'
 import Button from '../../components/Button'
 
 const createTestProps = props => ({
-  nav: {
-    survey: {
-      id: 1,
-      termsConditions: { text: 'text', title: 'title' },
-      privacyPolicy: { text: 'text', title: 'title' }
-    }
-  },
   navigation: {
-    getParam: param => (param === 'survey' ? 1 : 'privacy'),
+    getParam: param =>
+      param === 'survey'
+        ? {
+            id: 1,
+            termsConditions: { text: 'text', title: 'title' },
+            privacyPolicy: { text: 'text', title: 'title' }
+          }
+        : 'privacy',
     navigate: jest.fn(),
     setParams: jest.fn()
   },

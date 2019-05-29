@@ -6,13 +6,10 @@ import StickyFooter from '../../components/StickyFooter'
 import { AddPriority } from '../lifemap/AddPriority'
 import TextInput from '../../components/TextInput'
 import Counter from '../../components/Counter'
+import draft from '../__mocks__/draftMock.json'
 
 const createTestProps = props => ({
   t: value => value,
-  nav: {
-    draftId: 4,
-    survey: {}
-  },
   navigation: {
     navigate: jest.fn(),
     replace: jest.fn(),
@@ -21,10 +18,12 @@ const createTestProps = props => ({
     getParam: jest.fn(param => {
       if (param === 'indicator') {
         return 'income'
-      } else if (param === 'draftId') {
-        return 2
-      } else if (param === 'familyLifemap') {
-        return
+      }
+      if (param === 'draft') {
+        return draft
+      }
+      if (param === 'survey') {
+        return {}
       }
     })
   },
@@ -57,9 +56,6 @@ describe('AddPriority View', () => {
     it('renders Text', () => {
       expect(wrapper.find(Text)).toHaveLength(2)
     })
-    it('renders Counter', () => {
-      expect(wrapper.find(Counter)).toHaveLength(1)
-    })
   })
 
   describe('functionality', () => {
@@ -73,48 +69,18 @@ describe('AddPriority View', () => {
         wrapper.instance().props.addSurveyPriorityAcheivementData
       ).toHaveBeenCalledTimes(0)
     })
-    it('saves the priority if valid', () => {
-      wrapper.instance().setState({ estimatedDate: 2 })
 
-      wrapper
-        .find(StickyFooter)
-        .props()
-        .handleClick()
-
-      expect(
-        wrapper.instance().props.addSurveyPriorityAcheivementData
-      ).toHaveBeenCalledTimes(1)
-    })
     it('has correct initial state', () => {
       expect(wrapper.instance().state).toEqual({
         action: '',
-        estimatedDate: 0,
+        estimatedDate: null,
         indicator: 'income',
         reason: '',
-        validationError: false
+        errorsDetected: [],
+        validationError: false,
+        showErrors: false,
+        draft: expect.any(Object)
       })
-    })
-    it('increases count correctly', () => {
-      wrapper
-        .find(Counter)
-        .props()
-        .editCounter('plus')
-      expect(wrapper.instance().state.estimatedDate).toEqual(1)
-    })
-    it('decreases count correctly', () => {
-      wrapper.setState({ estimatedDate: 5 })
-      wrapper
-        .find(Counter)
-        .props()
-        .editCounter('minus')
-      expect(wrapper.instance().state.estimatedDate).toEqual(4)
-    })
-    it('does not decrease estimatedDate when it is already 0', () => {
-      wrapper
-        .find(Counter)
-        .props()
-        .editCounter('minus')
-      expect(wrapper.instance().state.estimatedDate).toEqual(0)
     })
     it('gets reason value', () => {
       wrapper

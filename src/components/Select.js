@@ -15,6 +15,7 @@ import RadioForm, {
 } from 'react-native-simple-radio-button'
 import BottomModal from './BottomModal'
 import ListItem from './ListItem'
+import TextInput from './TextInput'
 import countries from 'localized-countries'
 import arrow from '../../assets/images/selectArrow.png'
 import colors from '../theme.json'
@@ -28,7 +29,8 @@ class Select extends Component {
   state = {
     isOpen: false,
     errorMsg: '',
-    radioChecked: null
+    radioChecked: null,
+    showOther: false
   }
 
   toggleDropdown = () => {
@@ -47,9 +49,10 @@ class Select extends Component {
     })
   }
 
-  validateInput = value => {
+  validateInput = (value, otherOption) => {
     this.setState({
-      isOpen: false
+      isOpen: false,
+      showOther: otherOption
     })
     if (this.props.required && !value) {
       this.handleError(i18n.t('validation.fieldIsRequired'))
@@ -57,13 +60,18 @@ class Select extends Component {
         errorMsg: i18n.t('validation.fieldIsRequired')
       })
     } else {
-      this.props.onChange(value, this.props.field)
+      this.props.onChange(value, this.props.field, otherOption)
       this.setState({
         errorMsg: null
       })
       this.props.field ? this.props.detectError(false, this.props.field) : ''
     }
   }
+
+  onChangeOther = value => {
+    this.props.onChange(value, this.props.otherField)
+  }
+
   validateInputRadio = (value, i) => {
     this.setState({
       isOpen: false,
@@ -82,6 +90,7 @@ class Select extends Component {
       this.props.field ? this.props.detectError(false, this.props.field) : ''
     }
   }
+
   componentDidMount() {
     // on mount validate empty required fields without showing an errors message
     if (this.props.required && !this.props.value) {
@@ -124,19 +133,22 @@ class Select extends Component {
   }
 
   render() {
-    const { errorMsg, isOpen } = this.state
+    const { errorMsg, isOpen, showOther } = this.state
     const {
       value,
       placeholder,
       required,
       options,
       countrySelect,
-      readonly
+      readonly,
+      otherValue,
+      otherPlaceholder,
+      countryOfBirth
     } = this.props
     const defaultCountry = this.props.country
       ? countryList.filter(item => item.code === this.props.country)[0]
       : ''
-    const { survey } = this.props.nav
+
     let countries = countryList.filter(
       country => country.code !== defaultCountry.code
     )
@@ -145,11 +157,8 @@ class Select extends Component {
 
     countriesArr.push(defaultCountry)
 
-    if (
-      typeof survey.surveyConfig.countryOfBirth !== 'undefined' &&
-      survey.surveyConfig.countryOfBirth !== null
-    ) {
-      survey.surveyConfig.countryOfBirth.forEach(e => {
+    if (countryOfBirth) {
+      countryOfBirth.forEach(e => {
         let addCountry = true
         let fixedObj = {
           code: '',
@@ -198,162 +207,177 @@ class Select extends Component {
       }
     }
     return (
-      <TouchableHighlight
-        underlayColor={'transparent'}
-        activeOpacity={1}
-        onPress={this.toggleDropdown}
-      >
-        <View style={styles.wrapper}>
-          {radio ? (
-            <View
-              style={{
-                justifyContent: 'center',
-                alignItems: 'center'
-              }}
-            >
-              <RadioForm formHorizontal={true} animation={false}>
-                <View
-                  style={{
-                    flexDirection: 'row',
-                    justifyContent: 'space-around',
-                    alignItems: 'space-around',
-                    flexWrap: 'wrap'
-                  }}
-                >
-                  {radio_props.map((obj, i) => {
-                    return (
-                      <RadioButton labelHorizontal={true} key={i}>
-                        <RadioButtonInput
-                          obj={obj}
-                          index={i}
-                          isSelected={this.state.radioChecked === i}
-                          onPress={value => this.validateInputRadio(value, i)}
-                          borderWidth={2}
-                          buttonInnerColor={'#50AA47'}
-                          buttonOuterColor={
-                            this.state.radioChecked === i
-                              ? '#50AA47'
-                              : '#50AA47'
-                          }
-                          buttonSize={20}
-                          buttonOuterSize={30}
-                          buttonStyle={{}}
-                          buttonWrapStyle={{ marginLeft: 10 }}
-                        />
-                        <RadioButtonLabel
-                          obj={obj}
-                          index={i}
-                          labelHorizontal={true}
-                          onPress={value => this.validateInputRadio(value, i)}
-                          labelStyle={{ fontSize: 17, color: '#4a4a4a' }}
-                          labelWrapStyle={{}}
-                        />
-                      </RadioButton>
-                    )
-                  })}
-                </View>
-              </RadioForm>
-            </View>
-          ) : (
-            <View
-              style={[
-                styles.container,
-                !value && styles.withoutValue,
-                errorMsg && styles.error,
-                isOpen && styles.active
-              ]}
-            >
-              {!!value && (
-                <Text
-                  style={[
-                    styles.title,
-                    isOpen &&
-                      !errorMsg && {
-                        color: colors.palegreen
-                      }
-                  ]}
-                  accessibilityLabel={`${placeholder} ${
-                    required && !readonly ? ' This is a mandatory field.' : ''
-                  }`}
-                >{`${placeholder}${required && !readonly ? ' *' : ''}`}</Text>
-              )}
-
-              <Text
-                style={[
-                  styles.placeholder,
-                  errorMsg ? { color: colors.red } : {}
-                ]}
-                accessibilityLabel={`${placeholder}${
-                  required ? ' This is a mandatory field.' : ''
-                }`}
-              >
-                {value ? text : `${placeholder}${required ? ' *' : ''}`}
-              </Text>
-              {!readonly ? <Image source={arrow} style={styles.arrow} /> : null}
-
-              <BottomModal
-                isOpen={isOpen}
-                onRequestClose={this.toggleDropdown}
-                onEmptyClose={() => {
-                  this.validateInput('')
-                  this.toggleDropdown()
+      <View>
+        <TouchableHighlight
+          underlayColor={'transparent'}
+          activeOpacity={1}
+          onPress={this.toggleDropdown}
+        >
+          <View style={styles.wrapper}>
+            {radio ? (
+              <View
+                style={{
+                  justifyContent: 'center',
+                  alignItems: 'center'
                 }}
               >
-                <View style={styles.dropdown}>
-                  {countrySelect ? (
-                    <ScrollView>
-                      {countries.map(item => (
-                        <ListItem
-                          key={item.code}
-                          onPress={() => this.validateInput(item.code)}
-                        >
-                          <Text
-                            style={[
-                              styles.option,
-                              value === item.code && styles.selected
-                            ]}
-                            accessibilityLabel={`${item.label}`}
-                          >
-                            {item.label}
-                          </Text>
-                        </ListItem>
-                      ))}
-                    </ScrollView>
-                  ) : (
-                    <ScrollView>
-                      {options.map(item => (
-                        <ListItem
-                          underlayColor={'transparent'}
-                          activeOpacity={1}
-                          key={item.value}
-                          onPress={() => this.validateInput(item.value)}
-                        >
-                          <Text
-                            style={[
-                              styles.option,
-                              value === item.value && styles.selected
-                            ]}
-                            accessibilityLabel={`${item.text}`}
-                          >
-                            {item.text}
-                          </Text>
-                        </ListItem>
-                      ))}
-                    </ScrollView>
-                  )}
-                </View>
-              </BottomModal>
-            </View>
-          )}
+                <RadioForm formHorizontal={true} animation={false}>
+                  <View
+                    style={{
+                      flexDirection: 'row',
+                      justifyContent: 'space-around',
+                      alignItems: 'space-around',
+                      flexWrap: 'wrap'
+                    }}
+                  >
+                    {radio_props.map((obj, i) => {
+                      return (
+                        <RadioButton labelHorizontal={true} key={i}>
+                          <RadioButtonInput
+                            obj={obj}
+                            index={i}
+                            isSelected={this.state.radioChecked === i}
+                            onPress={value => this.validateInputRadio(value, i)}
+                            borderWidth={2}
+                            buttonInnerColor={'#50AA47'}
+                            buttonOuterColor={
+                              this.state.radioChecked === i
+                                ? '#50AA47'
+                                : '#50AA47'
+                            }
+                            buttonSize={20}
+                            buttonOuterSize={30}
+                            buttonStyle={{}}
+                            buttonWrapStyle={{ marginLeft: 10 }}
+                          />
+                          <RadioButtonLabel
+                            obj={obj}
+                            index={i}
+                            labelHorizontal={true}
+                            onPress={value => this.validateInputRadio(value, i)}
+                            labelStyle={{ fontSize: 17, color: '#4a4a4a' }}
+                            labelWrapStyle={{}}
+                          />
+                        </RadioButton>
+                      )
+                    })}
+                  </View>
+                </RadioForm>
+              </View>
+            ) : (
+              <View
+                style={[
+                  styles.container,
+                  !value && styles.withoutValue,
+                  errorMsg && styles.error,
+                  isOpen && styles.active
+                ]}
+              >
+                {!!value && (
+                  <Text
+                    style={[
+                      styles.title,
+                      isOpen &&
+                        !errorMsg && {
+                          color: colors.palegreen
+                        }
+                    ]}
+                    accessibilityLabel={`${placeholder} ${
+                      required && !readonly ? ' This is a mandatory field.' : ''
+                    }`}
+                  >{`${placeholder}${required && !readonly ? ' *' : ''}`}</Text>
+                )}
+                <Text
+                  style={[
+                    styles.placeholder,
+                    errorMsg ? { color: colors.red } : {}
+                  ]}
+                  accessibilityLabel={`${placeholder}${
+                    required ? ' This is a mandatory field.' : ''
+                  }`}
+                >
+                  {value ? text : `${placeholder}${required ? ' *' : ''}`}
+                </Text>
+                {!readonly ? (
+                  <Image source={arrow} style={styles.arrow} />
+                ) : null}
 
-          {/* Error message */}
-          {!!errorMsg && (
-            <View style={{ marginLeft: 30 }}>
-              <Text style={{ color: colors.red }}>{errorMsg}</Text>
-            </View>
-          )}
-        </View>
-      </TouchableHighlight>
+                <BottomModal
+                  isOpen={isOpen}
+                  onRequestClose={this.toggleDropdown}
+                  onEmptyClose={() => {
+                    this.validateInput('')
+                    this.toggleDropdown()
+                  }}
+                >
+                  <View style={styles.dropdown}>
+                    {countrySelect ? (
+                      <ScrollView>
+                        {countries.map(item => (
+                          <ListItem
+                            key={item.code}
+                            onPress={() => this.validateInput(item.code)}
+                          >
+                            <Text
+                              style={[
+                                styles.option,
+                                value === item.code && styles.selected
+                              ]}
+                              accessibilityLabel={`${item.label}`}
+                            >
+                              {item.label}
+                            </Text>
+                          </ListItem>
+                        ))}
+                      </ScrollView>
+                    ) : (
+                      <ScrollView>
+                        {options.map(item => (
+                          <ListItem
+                            underlayColor={'transparent'}
+                            activeOpacity={1}
+                            key={item.value}
+                            onPress={() =>
+                              this.validateInput(item.value, item.otherOption)
+                            }
+                          >
+                            <Text
+                              style={[
+                                styles.option,
+                                value === item.value && styles.selected
+                              ]}
+                              accessibilityLabel={`${item.text}`}
+                            >
+                              {item.text}
+                            </Text>
+                          </ListItem>
+                        ))}
+                      </ScrollView>
+                    )}
+                  </View>
+                </BottomModal>
+              </View>
+            )}
+
+            {/* Error message */}
+            {!!errorMsg && (
+              <View style={{ marginLeft: 30 }}>
+                <Text style={{ color: colors.red }}>{errorMsg}</Text>
+              </View>
+            )}
+          </View>
+        </TouchableHighlight>
+        {/* Other field */}
+        {showOther && (
+          <TextInput
+            field="otherField"
+            onChangeText={this.onChangeOther}
+            readonly={readonly}
+            placeholder={otherPlaceholder}
+            value={otherValue}
+          />
+        )}
+      </View>
     )
   }
 }
@@ -361,14 +385,18 @@ class Select extends Component {
 Select.propTypes = {
   onChange: PropTypes.func.isRequired,
   options: PropTypes.array,
-  value: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
+  value: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+  otherValue: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
   placeholder: PropTypes.string.isRequired,
+  otherPlaceholder: PropTypes.string,
   field: PropTypes.string,
   radio: PropTypes.bool,
+  otherField: PropTypes.string,
   country: PropTypes.string,
   countrySelect: PropTypes.bool,
   readonly: PropTypes.bool,
   showErrors: PropTypes.bool,
+  countryOfBirth: PropTypes.array,
   required: PropTypes.bool,
   nav: PropTypes.object.isRequired,
   detectError: PropTypes.func,

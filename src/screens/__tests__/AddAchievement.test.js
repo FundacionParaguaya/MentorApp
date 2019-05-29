@@ -3,13 +3,10 @@ import { shallow } from 'enzyme'
 import { AddAchievement } from '../lifemap/AddAchievement'
 import TextInput from '../../components/TextInput'
 import StickyFooter from '../../components/StickyFooter'
+import draft from '../__mocks__/draftMock.json'
 
 const createTestProps = props => ({
   t: value => value,
-  nav: {
-    draftId: 4,
-    survey: {}
-  },
   navigation: {
     navigate: jest.fn(),
     replace: jest.fn(),
@@ -19,11 +16,11 @@ const createTestProps = props => ({
       if (param === 'indicator') {
         return 'income'
       }
-      if (param === 'draftId') {
-        return 2
+      if (param === 'draft') {
+        return draft
       }
-      if (param === 'familyLifemap') {
-        return
+      if (param === 'survey') {
+        return {}
       }
     })
   },
@@ -73,7 +70,8 @@ describe('AddAchievement View', () => {
         action: '',
         roadmap: '',
         showErrors: false,
-        indicator: 'income'
+        indicator: 'income',
+        draft: expect.any(Object)
       })
     })
 
@@ -137,16 +135,5 @@ describe('Render optimization', () => {
     })
     wrapper = shallow(<AddAchievement {...props} />)
     expect(wrapper.instance().props.drafts[1]).toBeFalsy()
-  })
-
-  it('saves the achievement', () => {
-    wrapper
-      .find(StickyFooter)
-      .props()
-      .handleClick()
-
-    expect(
-      wrapper.instance().props.addSurveyPriorityAcheivementData
-    ).toHaveBeenCalledTimes(1)
   })
 })

@@ -1,22 +1,40 @@
 import React, { Component } from 'react'
 import { StyleSheet, View, Text } from 'react-native'
-import { connect } from 'react-redux'
 import PropTypes from 'prop-types'
 import { withNamespaces } from 'react-i18next'
+import { connect } from 'react-redux'
 import Decoration from '../../components/decoration/Decoration'
 import globalStyles from '../../globalStyles'
 import RoundImage from '../../components/RoundImage'
 import StickyFooter from '../../components/StickyFooter'
-import { addDraftProgress } from '../../redux/actions'
-import { getDraft, getTotalEconomicScreens } from './helpers'
+import { getTotalEconomicScreens } from './helpers'
+import { updateDraft } from '../../redux/actions'
 
 export class BeginLifemap extends Component {
-  numberOfQuestions = this.props.nav.survey.surveyStoplightQuestions.length
+  survey = this.props.navigation.getParam('survey')
+  readOnly = this.props.navigation.getParam('readOnly')
+  state = {
+    draft: this.props.navigation.getParam('draft')
+  }
 
   componentDidMount() {
-    this.props.addDraftProgress(this.props.nav.draftId, {
-      screen: 'BeginLifemap'
+    const { draft } = this.state
+    this.props.updateDraft(draft.draftId, draft)
+    this.props.navigation.setParams({
+      getCurrentDraftState: () => this.state.draft
     })
+
+    if (draft.progress.screen !== 'BeginLifemap') {
+      this.setState({
+        draft: {
+          ...draft,
+          progress: {
+            ...draft.progress,
+            screen: 'BeginLifemap'
+          }
+        }
+      })
+    }
 
     this.props.navigation.setParams({
       onPressBack: this.onPressBack
@@ -25,19 +43,23 @@ export class BeginLifemap extends Component {
 
   onPressBack = () => {
     this.props.navigation.replace('SocioEconomicQuestion', {
-      fromBeginLifemap: true
+      fromBeginLifemap: true,
+      survey: this.survey,
+      draft: this.state.draft
     })
   }
 
   handleClick = () => {
     this.props.navigation.navigate('Question', {
-      step: 0
+      step: 0,
+      survey: this.survey,
+      draft: this.state.draft
     })
   }
 
   render() {
+    const { draft } = this.state
     const { t } = this.props
-    const draft = getDraft()
     return (
       <StickyFooter
         handleClick={this.handleClick}
@@ -45,7 +67,7 @@ export class BeginLifemap extends Component {
         progress={
           draft
             ? ((draft.familyData.countFamilyMembers > 1 ? 4 : 3) +
-                getTotalEconomicScreens(this.props.nav.survey)) /
+                getTotalEconomicScreens(this.survey)) /
               draft.progress.total
             : 0
         }
@@ -59,7 +81,7 @@ export class BeginLifemap extends Component {
           <Text style={{ ...globalStyles.h3, ...styles.text }}>
             {t('views.lifemap.thisLifeMapHas').replace(
               '%n',
-              this.numberOfQuestions
+              this.survey.surveyStoplightQuestions.length
             )}
           </Text>
           <Decoration variation="terms">
@@ -83,18 +105,15 @@ const styles = StyleSheet.create({
 
 BeginLifemap.propTypes = {
   t: PropTypes.func.isRequired,
-  navigation: PropTypes.object.isRequired,
-  nav: PropTypes.object.isRequired,
-  addDraftProgress: PropTypes.func.isRequired
+  updateDraft: PropTypes.func.isRequired,
+  navigation: PropTypes.object.isRequired
 }
 
 const mapDispatchToProps = {
-  addDraftProgress
+  updateDraft
 }
 
-const mapStateToProps = ({ nav }) => ({
-  nav
-})
+const mapStateToProps = () => ({})
 
 export default withNamespaces()(
   connect(

@@ -24,12 +24,16 @@ export class Dashboard extends Component {
   acessibleComponent = React.createRef()
 
   componentDidMount() {
-    this.props.updateNav({
-      survey: null,
-      readonly: false,
-      draftId: null,
-      deleteDraftOnExit: false
-    })
+    const { survey, readonly, draftId } = this.props.nav
+
+    // clear nav state if it's set to something
+    if (survey || readonly || draftId) {
+      this.props.updateNav({
+        survey: null,
+        readonly: false,
+        draftId: null
+      })
+    }
 
     if (UIManager.AccessibilityEventTypes) {
       setTimeout(() => {
@@ -62,25 +66,27 @@ export class Dashboard extends Component {
   }
 
   navigateToDraft = draft => {
-    this.props.updateNav({
-      survey: this.props.surveys.find(survey => survey.id === draft.surveyId),
-      draftId: draft.draftId
-    })
+    const survey = this.props.surveys.find(
+      survey => survey.id === draft.surveyId
+    )
 
     if (
-      draft.progress.screen !== 'Question' &&
-      draft.progress.screen !== 'Skipped' &&
-      draft.progress.screen !== 'Final' &&
-      draft.progress.screen !== 'Overview'
+      draft.progress.screen === 'Question' ||
+      draft.progress.screen === 'Skipped' ||
+      draft.progress.screen === 'Final' ||
+      draft.progress.screen === 'Overview'
     ) {
-      this.props.navigation.navigate(draft.progress.screen, {
-        draftId: draft.draftId,
-        step: draft.progress.step,
-        socioEconomics: draft.progress.socioEconomics
+      this.props.navigation.navigate('Overview', {
+        resumeDraft: true,
+        draft,
+        survey
       })
     } else
-      this.props.navigation.navigate('Overview', {
-        resumeDraft: true
+      this.props.navigation.navigate(draft.progress.screen, {
+        draft,
+        survey,
+        step: draft.progress.step,
+        socioEconomics: draft.progress.socioEconomics
       })
   }
   navigateToSynced = item => {
@@ -104,9 +110,16 @@ export class Dashboard extends Component {
       case 'Pending sync':
         this.navigateToPendingSync(item)
         break
+      case 'Synced':
+        this.navigateToSynced(item)
+        break
       default:
         this.navigateToDraft(item)
     }
+  }
+
+  navigateToCreateLifemap = () => {
+    this.props.navigation.navigate('Surveys')
   }
 
   render() {
@@ -115,69 +128,48 @@ export class Dashboard extends Component {
     return (
       <ScrollView style={globalStyles.background}>
         <View ref={this.acessibleComponent} accessible={true}>
-          {this.props.offline.outbox.length ? null : (
-            <View>
-              <View style={globalStyles.container}>
-                <View
-                  style={{ alignItems: 'center', justifyContent: 'center' }}
-                >
-                  <Decoration>
-                    <RoundImage source="family" />
-                  </Decoration>
-                  <View style={styles.familiesIcon}>
-                    <Icon
-                      name="face"
-                      style={styles.familiesIconIcon}
-                      size={60}
-                    />
-                  </View>
-
-                  <Text style={{ ...styles.familiesCount }}>
-                    {this.props.families.length} {t('views.families')}
-                  </Text>
+          <View>
+            <View style={globalStyles.container}>
+              <View style={{ alignItems: 'center', justifyContent: 'center' }}>
+                <Decoration>
+                  <RoundImage source="family" />
+                </Decoration>
+                <View style={styles.familiesIcon}>
+                  <Icon name="face" style={styles.familiesIconIcon} size={60} />
                 </View>
 
-                <Button
-                  id="create-lifemap"
-                  text={t('views.createLifemap')}
-                  colored
-                  handleClick={() => this.props.navigation.navigate('Surveys')}
-                />
+                <Text style={{ ...styles.familiesCount }}>
+                  {this.props.families.length} {t('views.families')}
+                </Text>
               </View>
-              {drafts.length ? (
-                <View style={styles.borderBottom}>
-                  <Text
-                    style={{ ...globalStyles.subline, ...styles.listTitle }}
-                  >
-                    {t('views.latestDrafts')}
-                  </Text>
-                </View>
-              ) : null}
-              <FlatList
-                style={{ ...styles.background }}
-                data={list}
-                keyExtractor={(item, index) => index.toString()}
-                renderItem={({ item }) => (
-                  <DraftListItem
-                    item={item}
-                    handleClick={() => {
-                      switch (item.status) {
-                        case 'Pending sync':
-                          this.navigateToPendingSync(item)
-                          break
-                        case 'Synced':
-                          this.navigateToSynced(item)
-                          break
-                        default:
-                          this.navigateToDraft(item)
-                      }
-                    }}
-                    lng={this.props.lng}
-                  />
-                )}
+
+              <Button
+                id="create-lifemap"
+                text={t('views.createLifemap')}
+                colored
+                handleClick={this.navigateToCreateLifemap}
               />
             </View>
-          )}
+            {drafts.length ? (
+              <View style={styles.borderBottom}>
+                <Text style={{ ...globalStyles.subline, ...styles.listTitle }}>
+                  {t('views.latestDrafts')}
+                </Text>
+              </View>
+            ) : null}
+            <FlatList
+              style={{ ...styles.background }}
+              data={list}
+              keyExtractor={(item, index) => index.toString()}
+              renderItem={({ item }) => (
+                <DraftListItem
+                  item={item}
+                  handleClick={this.handleClickOnListItem}
+                  lng={this.props.lng}
+                />
+              )}
+            />
+          </View>
         </View>
       </ScrollView>
     )
@@ -225,6 +217,7 @@ Dashboard.propTypes = {
   drafts: PropTypes.array.isRequired,
   env: PropTypes.oneOf(['production', 'demo', 'testing', 'development']),
   user: PropTypes.object.isRequired,
+  nav: PropTypes.object,
   offline: PropTypes.object,
   lng: PropTypes.string.isRequired,
   surveys: PropTypes.array,
@@ -238,7 +231,8 @@ export const mapStateToProps = ({
   offline,
   string,
   surveys,
-  families
+  families,
+  nav
 }) => ({
   env,
   user,
@@ -246,7 +240,8 @@ export const mapStateToProps = ({
   offline,
   string,
   surveys,
-  families
+  families,
+  nav
 })
 
 const mapDispatchToProps = {

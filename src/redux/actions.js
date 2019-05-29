@@ -73,7 +73,7 @@ export const loadSurveys = (env, token) => ({
         headers: { Authorization: `Bearer ${token}` },
         body: JSON.stringify({
           query:
-            'query { surveysByUser { title id minimumPriorities privacyPolicy { title  text } termsConditions{ title text }  surveyConfig { documentType {text value otherOption} gender { text value otherOption} countryOfBirth{text value} surveyLocation { country latitude longitude} }  surveyEconomicQuestions { questionText codeName answerType topic required forFamilyMember options {text value otherOption} conditions{codeName type value operator} } surveyStoplightQuestions { questionText codeName dimension id stoplightColors { url value description } required } } }'
+            'query { surveysByUser { title id minimumPriorities privacyPolicy { title  text } termsConditions{ title text }  surveyConfig { documentType {text value otherOption} gender { text value otherOption} countryOfBirth{text value} surveyLocation { country latitude longitude} offlineMaps { from, to, center, name } }  surveyEconomicQuestions { questionText codeName answerType topic required forFamilyMember options {text value otherOption} conditions{codeName type value operator} } surveyStoplightQuestions { questionText codeName dimension id stoplightColors { url value description } required } } }'
         })
       },
       commit: { type: LOAD_SURVEYS_COMMIT }
@@ -109,6 +109,7 @@ export const loadFamilies = (env, token) => ({
 // Drafts
 
 export const CREATE_DRAFT = 'CREATE_DRAFT'
+export const UPDATE_DRAFT = 'UPDATE_DRAFT'
 export const DELETE_DRAFT = 'DELETE_DRAFT'
 export const ADD_SURVEY_DATA_CHECKBOX = 'ADD_SURVEY_DATA_CHECKBOX'
 export const ADD_SURVEY_DATA = 'ADD_SURVEY_DATA'
@@ -125,6 +126,12 @@ export const ADD_DRAFT_PROGRESS = 'ADD_DRAFT_PROGRESS'
 
 export const createDraft = payload => ({
   type: CREATE_DRAFT,
+  payload
+})
+
+export const updateDraft = (id, payload) => ({
+  type: UPDATE_DRAFT,
+  id,
   payload
 })
 

@@ -24,6 +24,7 @@ export default createDrawerNavigator(
   },
   {
     contentComponent: DrawerContentComponent,
+    drawerWidth: 304,
     contentOptions: {
       labelStyle: {
         ...Platform.select({
@@ -36,8 +37,13 @@ export default createDrawerNavigator(
           }
         })
       },
-      initialRouteName: 'Dashboard',
-      drawerWidth: 304
-    }
+      initialRouteName: 'Dashboard'
+    },
+    transitionConfig: () => ({
+      screenInterpolator: () => null,
+      transitionSpec: {
+        duration: 0
+      }
+    })
   }
 )

@@ -1,32 +1,47 @@
 import React, { Component } from 'react'
-import { connect } from 'react-redux'
 import PropTypes from 'prop-types'
 import { StyleSheet, View, Text } from 'react-native'
 import Icon from 'react-native-vector-icons/MaterialIcons'
 import colors from '../../theme.json'
 import { withNamespaces } from 'react-i18next'
-import {
-  addSurveyFamilyMemberData,
-  addDraftProgress
-} from '../../redux/actions'
 import StickyFooter from '../../components/StickyFooter'
 import TextInput from '../../components/TextInput'
 import Decoration from '../../components/decoration/Decoration'
 import globalStyles from '../../globalStyles'
 import Select from '../../components/Select'
 import DateInput from '../../components/DateInput'
-import { getDraft, getTotalScreens } from './helpers'
+import { getTotalScreens } from './helpers'
 
 export class FamilyMembersNames extends Component {
-  gender = this.props.nav.survey.surveyConfig.gender
+  survey = this.props.navigation.getParam('survey')
+  readOnly = this.props.navigation.getParam('readOnly')
+
   errorsDetected = []
-  state = { errorsDetected: [], showErrors: false }
+  state = {
+    errorsDetected: [],
+    showErrors: false,
+    draft: this.props.navigation.getParam('draft') || {}
+  }
 
   componentDidMount() {
-    this.props.addDraftProgress(this.props.nav.draftId, {
-      screen: 'FamilyMembersNames',
-      total: getTotalScreens(this.props.nav.survey)
+    const { draft } = this.state
+
+    this.props.navigation.setParams({
+      getCurrentDraftState: () => this.state.draft
     })
+
+    if (!this.readonly && draft.progress.screen !== 'FamilyMembersNames') {
+      this.setState({
+        draft: {
+          ...draft,
+          progress: {
+            ...draft.progress,
+            screen: 'FamilyMembersNames',
+            total: getTotalScreens(this.survey)
+          }
+        }
+      })
+    }
 
     this.props.navigation.setParams({
       onPressBack: this.onPressBack
@@ -35,9 +50,11 @@ export class FamilyMembersNames extends Component {
 
   onPressBack = () => {
     this.props.navigation.navigate('FamilyParticipant', {
-      draftId: this.props.nav.draftId
+      draft: this.state.draft,
+      survey: this.survey
     })
   }
+
   shouldComponentUpdate() {
     return this.props.navigation.isFocused()
   }
@@ -60,69 +77,46 @@ export class FamilyMembersNames extends Component {
         showErrors: true
       })
     } else {
-      this.props.navigation.navigate('Location')
+      this.props.navigation.navigate('Location', {
+        draft: this.state.draft,
+        survey: this.survey
+      })
     }
   }
 
-  getFieldValue = field => {
-    const draft = getDraft()
-    if (!draft) {
-      return
-    }
+  updateMember = (value, field) => {
+    const { draft } = this.state
 
-    return draft.familyData[field]
-  }
+    // [0] is the index, [1] is the field
+    const split = field.split('.')
 
-  addFamilyMemberName(name, index) {
-    this.props.addSurveyFamilyMemberData({
-      id: this.props.nav.draftId,
-      index,
-      payload: {
-        firstName: name,
-        firstParticipant: false
-      }
-    })
-  }
-
-  addFamilyMemberGender(gender, index) {
-    const draft = getDraft()
-    const familyMemberDraft = draft.familyData.familyMembersList[index]
-
-    if (familyMemberDraft.gender === 'O' && gender !== 'O') {
-      delete familyMemberDraft.customGender
-    }
-    this.props.addSurveyFamilyMemberData({
-      id: this.props.nav.draftId,
-      index,
-      payload: {
-        gender
-      }
-    })
-  }
-  addFamilyMemberSpecifyGender(gender, index) {
-    this.props.addSurveyFamilyMemberData({
-      id: this.props.nav.draftId,
-      index,
-      payload: {
-        customGender: gender
-      }
-    })
-  }
-  addFamilyMemberBirthdate(birthDate, index) {
-    this.props.addSurveyFamilyMemberData({
-      id: this.props.nav.draftId,
-      index,
-      payload: {
-        birthDate
+    this.setState({
+      draft: {
+        ...draft,
+        familyData: {
+          ...draft.familyData,
+          familyMembersList: draft.familyData.familyMembersList.map(
+            (item, index) => {
+              if (parseInt(split[0], 10) + 1 === index) {
+                return {
+                  ...item,
+                  [split[1]]: value
+                }
+              }
+              return item
+            }
+          )
+        }
       }
     })
   }
 
   render() {
     const { t } = this.props
-    const { showErrors } = this.state
-    const draft = getDraft()
+    const { showErrors, draft } = this.state
     let onlyOneAutoFocusCheck = false
+
+    const { familyMembersList } = draft.familyData
 
     const familyMembersCount =
       draft.familyData.countFamilyMembers &&
@@ -155,8 +149,8 @@ export class FamilyMembersNames extends Component {
 
         {familyMembersCount.map((item, i) => {
           let firstNameAutoFocus
-          if (this.getFieldValue('familyMembersList')[i + 1]) {
-            if (this.getFieldValue('familyMembersList')[i + 1].firstName) {
+          if (familyMembersList[i + 1]) {
+            if (familyMembersList[i + 1].firstName) {
               firstNameAutoFocus = false
             } else {
               if (!onlyOneAutoFocusCheck) {
@@ -197,67 +191,34 @@ export class FamilyMembersNames extends Component {
                 autoFocus={firstNameAutoFocus}
                 key={i}
                 validation="string"
-                field={i.toString()}
-                onChangeText={text => this.addFamilyMemberName(text, i + 1)}
+                field={`${i}.firstName`}
+                onChangeText={this.updateMember}
                 placeholder={`${t('views.family.firstName')}`}
-                value={
-                  (this.getFieldValue('familyMembersList')[i + 1] || {})
-                    .firstName || ''
-                }
+                value={(familyMembersList[i + 1] || {}).firstName || ''}
                 required
                 detectError={this.detectError}
                 showErrors={showErrors}
               />
               <Select
-                field={i.toString()}
-                onChange={text => this.addFamilyMemberGender(text, i + 1)}
+                field={`${i}.gender`}
+                onChange={this.updateMember}
                 label={t('views.family.gender')}
                 placeholder={t('views.family.selectGender')}
-                value={
-                  (this.getFieldValue('familyMembersList')[i + 1] || {})
-                    .gender || ''
-                }
+                value={(familyMembersList[i + 1] || {}).gender || ''}
                 detectError={this.detectError}
-                options={this.gender}
+                options={this.survey.surveyConfig.gender}
+                otherField={`${i}.customGender`}
+                otherPlaceholder={t('views.family.specifyGender')}
+                otherValue={(familyMembersList[i + 1] || {}).customGender || ''}
               />
-              {draft.familyData.familyMembersList[i + 1] !== undefined ? (
-                <View>
-                  {draft.familyData.familyMembersList[i + 1].gender !==
-                  undefined ? (
-                    <View>
-                      {draft.familyData.familyMembersList[i + 1].gender ===
-                      'O' ? (
-                        <TextInput
-                          validation="string"
-                          field={i.toString()}
-                          onChangeText={text =>
-                            this.addFamilyMemberSpecifyGender(text, i + 1)
-                          }
-                          placeholder={t('views.family.specifyGender')}
-                          value={
-                            (
-                              this.getFieldValue('familyMembersList')[i + 1] ||
-                              {}
-                            ).customGender || ''
-                          }
-                          detectError={this.detectError}
-                          showErrors={showErrors}
-                        />
-                      ) : null}
-                    </View>
-                  ) : null}
-                </View>
-              ) : null}
+
               <DateInput
-                field={i.toString()}
+                field={`${i}.birthDate`}
                 label={t('views.family.dateOfBirth')}
                 detectError={this.detectError}
                 showErrors={this.state.showErrors}
-                onValidDate={date => this.addFamilyMemberBirthdate(date, i + 1)}
-                value={
-                  (this.getFieldValue('familyMembersList')[i + 1] || {})
-                    .birthDate
-                }
+                onValidDate={this.updateMember}
+                value={(familyMembersList[i + 1] || {}).birthDate}
               />
             </View>
           )
@@ -269,10 +230,7 @@ export class FamilyMembersNames extends Component {
 
 FamilyMembersNames.propTypes = {
   t: PropTypes.func.isRequired,
-  navigation: PropTypes.object.isRequired,
-  nav: PropTypes.object.isRequired,
-  addSurveyFamilyMemberData: PropTypes.func.isRequired,
-  addDraftProgress: PropTypes.func.isRequired
+  navigation: PropTypes.object.isRequired
 }
 
 const styles = StyleSheet.create({
@@ -306,18 +264,4 @@ const styles = StyleSheet.create({
   }
 })
 
-const mapDispatchToProps = {
-  addSurveyFamilyMemberData,
-  addDraftProgress
-}
-
-const mapStateToProps = ({ nav }) => ({
-  nav
-})
-
-export default withNamespaces()(
-  connect(
-    mapStateToProps,
-    mapDispatchToProps
-  )(FamilyMembersNames)
-)
+export default withNamespaces()(FamilyMembersNames)
