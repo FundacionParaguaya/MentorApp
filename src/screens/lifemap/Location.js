@@ -183,10 +183,12 @@ export class Location extends Component {
       !this.state.showOfflineMapsList
     ) {
       this.setState({
+        loading: false,
         showOfflineMapsList: true
       })
     } else {
       this.setState({
+        loading: false,
         showOfflineMapsList: false
       })
       Geolocation.getCurrentPosition(
@@ -301,57 +303,37 @@ export class Location extends Component {
     }
 
     if (!familyData.latitude) {
-      if (!this.readOnly) {
-        this.setState({
-          isOnline,
-          loading: false,
-          showForm: true,
-          draft: {
-            ...draft,
-            progress: {
-              ...draft.progress,
-              screen: 'Location',
-              total: getTotalScreens(this.survey)
-            },
-            familyData: {
-              ...draft.familyData,
-              country:
-                draft.familyData.country ||
-                this.survey.surveyConfig.surveyLocation.country
-            }
-          }
-        })
-        this.getDeviceCoordinates(isOnline)
-      } else {
-        this.setState({
-          isOnline,
-          draft: {
-            ...draft,
-            progress: {
-              ...draft.progress,
-              screen: 'Location',
-              total: getTotalScreens(this.survey)
-            },
-            familyData: {
-              ...draft.familyData,
-              country:
-                draft.familyData.country ||
-                this.survey.surveyConfig.surveyLocation.country
-            }
-          },
-          loading: false,
-          showForm: true
-        })
-      }
+      this.getDeviceCoordinates(isOnline)
     } else {
       this.setCoordinatesFromDraft(isOnline)
     }
   }
 
   componentDidMount() {
-    this.setState({
-      loading: true
-    })
+    const { draft } = this.state
+    if (!this.readOnly) {
+      this.setState({
+        draft: {
+          ...draft,
+          progress: {
+            ...draft.progress,
+            screen: 'Location',
+            total: getTotalScreens(this.survey)
+          },
+          familyData: {
+            ...draft.familyData,
+            country:
+              draft.familyData.country ||
+              this.survey.surveyConfig.surveyLocation.country
+          }
+        },
+        loading: true
+      })
+    } else {
+      this.setState({
+        loading: true
+      })
+    }
 
     this.props.navigation.setParams({
       getCurrentDraftState: () => this.state.draft
@@ -469,7 +451,9 @@ export class Location extends Component {
 
   goToOfflineLocation = () => {
     this.setState({
-      hasShownList: true
+      hasShownList: true,
+      loading: true,
+      showSearch: false
     })
     this.getCoordinatesOffline()
   }
