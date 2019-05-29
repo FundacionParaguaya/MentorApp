@@ -88,9 +88,9 @@ export class DrawerContent extends Component {
     if (currentStack.key === 'Surveys' && currentStack.index) {
       const { navigation } = this.props
 
-      const draft = currentStack.routes[
-        currentStack.index
-      ].params.getCurrentDraftState()
+      const draft =
+        currentStack.routes[currentStack.index].params.getCurrentDraftState &&
+        currentStack.routes[currentStack.index].params.getCurrentDraftState()
       const isNewDraft = navigation.getParam('isNewDraft')
 
       // open the exit modal with the params it needs
