@@ -109,6 +109,8 @@
       "gettingYourLocation": "Getting your location...",
       "mapUnavailavleOffline": "Unfortunately we cannot load the map because you are offline.",
       "weHaveLocation": "However we were able to get your device location.",
+      "mapsEnabled": "Maps enabled for this survey",
+      "mapNotListedAbove": "My location is not listed above",
       "neitherMapNorLocation": "Unfortunately we cannot load the map nor can we get your device location.",
       "describeLocation": "Could you describe your location as accurate as possible below?",
       "error": "Cannot display family profile",

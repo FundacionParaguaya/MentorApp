@@ -7,56 +7,55 @@ import TextInput from '../../components/TextInput'
 import draft from '../__mocks__/draftMock.json'
 import StickyFooter from '../../components/StickyFooter'
 
+const survey = {
+  id: 1,
+  title: 'Dev Demo',
+  survey_version_id: 2,
+  surveyStoplightQuestions: [],
+  surveyEconomicQuestions: [],
+  surveyConfig: {
+    surveyLocation: { country: 'BG' },
+    gender: [
+      {
+        text: 'Female',
+        value: 'F'
+      },
+      {
+        text: 'Male',
+        value: 'M'
+      },
+      {
+        text: 'Prefer not to disclose',
+        value: 'O',
+        otherOption: true
+      }
+    ],
+    documentType: [
+      {
+        text: 'National Insurance Number',
+        value: 'NATIONALINSURANCE',
+        otherOption: false
+      },
+      {
+        text: 'Organisation Reference Number',
+        value: 'ORGANISATIONALREFERENCENUMBER',
+        otherOption: false
+      },
+      {
+        text: 'Other identification',
+        value: 'OTHER',
+        otherOption: true
+      }
+    ]
+  }
+}
+
 const createTestProps = props => ({
   t: value => value,
   updateNav: jest.fn(),
   createDraft: jest.fn(),
+  updateDraft: jest.fn(),
   deleteDraft: jest.fn(),
-  nav: {
-    draftId: 4,
-    survey: {
-      id: 1,
-      title: 'Dev Demo',
-      survey_version_id: 2,
-      surveyStoplightQuestions: [],
-      surveyEconomicQuestions: [],
-      surveyConfig: {
-        surveyLocation: { country: 'BG' },
-        gender: [
-          {
-            text: 'Female',
-            value: 'F'
-          },
-          {
-            text: 'Male',
-            value: 'M'
-          },
-          {
-            text: 'Prefer not to disclose',
-            value: 'O',
-            otherOption: true
-          }
-        ],
-        documentType: [
-          {
-            text: 'National Insurance Number',
-            value: 'NATIONALINSURANCE',
-            otherOption: false
-          },
-          {
-            text: 'Organisation Reference Number',
-            value: 'ORGANISATIONALREFERENCENUMBER',
-            otherOption: false
-          },
-          {
-            text: 'Other identification',
-            value: 'OTHER',
-            otherOption: true
-          }
-        ]
-      }
-    }
-  },
   addSurveyFamilyMemberData: jest.fn(),
   addDraftProgress: jest.fn(),
   addSurveyData: jest.fn(),
@@ -66,8 +65,10 @@ const createTestProps = props => ({
     getParam: jest.fn(param => {
       if (param === 'family') {
         return null
-      } else if (param === 'draftId') {
-        return null
+      } else if (param === 'survey') {
+        return survey
+      } else if (param === 'draft') {
+        return draft
       } else {
         return 1
       }
@@ -93,40 +94,27 @@ describe('Family Participant View', () => {
   })
 
   describe('lifecycle', () => {
-    describe('no saved draft', () => {
-      it('creates universally unique draft identifier if there is no draftId', () => {
-        expect(wrapper.instance().draftId).toEqual(
-          expect.stringMatching(/[a-z0-9_.-].*/)
-        )
-      })
-
-      it('creates a new draft on componentDidMount if such does not exist', () => {
-        expect(wrapper.instance().props.createDraft).toHaveBeenCalledTimes(1)
-      })
-    })
-
     describe('created from a draft', () => {
       beforeEach(() => {
         const props = createTestProps({
           navigation: {
             navigate: jest.fn(),
             getParam: jest.fn(param => {
-              if (param === 'draftId') {
-                return 4
+              if (param === 'draft') {
+                return draft
+              } else if (param === 'survey') {
+                return survey
               } else {
                 return null
               }
             }),
             setParams: jest.fn(),
-            reset: jest.fn()
+            reset: jest.fn(),
+            isFocused: jest.fn()
           },
           ...props
         })
         wrapper = shallow(<FamilyParticipant {...props} />)
-      })
-
-      it('sets draftId', () => {
-        expect(wrapper.instance().draftId).toBe(4)
       })
 
       it('does not create a new draft on componentDidMount if such exists', () => {
@@ -152,18 +140,21 @@ describe('Family Participant View', () => {
     })
 
     it('country select has preselected default country', () => {
-      expect(wrapper.find('#country')).toHaveProp({ value: 'BG' })
+      expect(wrapper.find('#country')).toHaveProp({ value: 'Paraguay' })
     })
 
     it('sets proper TextInput value from draft', () => {
       const props = createTestProps({
         navigation: {
+          isFocused: jest.fn(),
           navigate: jest.fn(),
           getParam: jest.fn(param => {
             if (param === 'family') {
               return null
-            } else if (param === 'draftId') {
-              return 4
+            } else if (param === 'survey') {
+              return survey
+            } else if (param === 'draft') {
+              return draft
             } else {
               return 1
             }
@@ -185,7 +176,6 @@ describe('Family Participant View', () => {
   })
 
   describe('changing fields', () => {
-    let wrapper
     let props
     beforeEach(() => {
       props = createTestProps({
@@ -194,50 +184,18 @@ describe('Family Participant View', () => {
           getParam: jest.fn(param => {
             if (param === 'family') {
               return null
-            } else if (param === 'draftId') {
-              return 4
+            } else if (param === 'draft') {
+              return draft
             } else {
               return 1
             }
           }),
           setParams: jest.fn(),
-          reset: jest.fn()
+          reset: jest.fn(),
+          isFocused: jest.fn()
         }
       })
       wrapper = shallow(<FamilyParticipant {...props} />)
-    })
-
-    it('calls addSurveyFamilyMemberData on input change', () => {
-      wrapper
-        .find(TextInput)
-        .first()
-        .props()
-        .onChangeText()
-
-      expect(
-        wrapper.instance().props.addSurveyFamilyMemberData
-      ).toHaveBeenCalledTimes(1)
-    })
-    it('calls addSurveyFamilyMemberData on select change', () => {
-      wrapper
-        .find(Select)
-        .first()
-        .props()
-        .onChange()
-
-      expect(
-        wrapper.instance().props.addSurveyFamilyMemberData
-      ).toHaveBeenCalledTimes(1)
-    })
-
-    it('calls addSurveyFamilyMemberData on valid date input', () => {
-      wrapper
-        .find(DateInput)
-        .props()
-        .onValidDate('January 21 1999')
-      expect(
-        wrapper.instance().props.addSurveyFamilyMemberData
-      ).toHaveBeenCalledTimes(1)
     })
   })
 
@@ -257,14 +215,18 @@ describe('Family Participant View', () => {
       wrapper.instance().handleClick()
 
       expect(props.navigation.navigate).toHaveBeenCalledWith(
-        'FamilyMembersNames'
+        'FamilyMembersNames',
+        expect.any(Object)
       )
 
       props.drafts[0].familyData.countFamilyMembers = 1
 
       wrapper.instance().handleClick()
 
-      expect(props.navigation.navigate).toHaveBeenCalledWith('Location')
+      expect(props.navigation.navigate).toHaveBeenCalledWith(
+        'Location',
+        expect.any(Object)
+      )
     })
 
     it('shows errors if detected', () => {
@@ -285,8 +247,10 @@ describe('participant adding/removing data', () => {
       navigation: {
         navigate: jest.fn(),
         getParam: jest.fn(param => {
-          if (param === 'draftId') {
-            return 4
+          if (param === 'draft') {
+            return draft
+          } else if (param === 'survey') {
+            return survey
           } else {
             return null
           }
@@ -335,56 +299,7 @@ describe('participant adding/removing data', () => {
     wrapper = shallow(<FamilyParticipant {...props} />)
   })
   it('gives Select the proper value', () => {
-    expect(wrapper.find('#familyMembersCount').props().value).toBe(2)
-  })
-  it('changes family members count', () => {
-    wrapper
-      .find('#familyMembersCount')
-      .props()
-      .onChange(4, 'familyMembersCount')
-
-    expect(wrapper.instance().props.addSurveyData).toHaveBeenCalledTimes(1)
-    expect(wrapper.instance().props.addSurveyData).toHaveBeenCalledWith(
-      4,
-      'familyData',
-      {
-        familyMembersCount: 4
-      }
-    )
-  })
-  it('remove excess family members when count is lowered', () => {
-    wrapper
-      .find('#familyMembersCount')
-      .props()
-      .onChange(1, 'familyMembersCount')
-
-    expect(wrapper.instance().props.removeFamilyMembers).toHaveBeenCalledTimes(
-      1
-    )
-    expect(wrapper.instance().props.removeFamilyMembers).toHaveBeenCalledWith(
-      4,
-      1
-    )
-  })
-
-  it('deletes drafts on exit if not sufficient data in the form', () => {
-    wrapper.instance().errorsDetected = ['field']
-
-    wrapper.instance().addSurveyData('first', 'name')
-
-    expect(props.updateNav).toHaveBeenCalledWith('deleteDraftOnExit', true)
-  })
-
-  it('sets other gender and document type', () => {
-    wrapper.instance().addSurveyData('note', 'documentType')
-
-    expect(
-      props.drafts[0].familyData.familyMembersList[0].documentType
-    ).toEqual('OTHER')
-
-    wrapper.instance().addSurveyData('tree', 'gender')
-
-    expect(props.drafts[0].familyData.familyMembersList[0].gender).toEqual('O')
+    expect(wrapper.find('#familyMembersCount').props().value).toBe(1)
   })
 })
 

@@ -7,19 +7,17 @@ import RoundImage from '../../components/RoundImage'
 import LifemapVisual from '../../components/LifemapVisual'
 import Button from '../../components/Button'
 import globalStyles from '../../globalStyles'
-import { submitDraft, addDraftProgress } from '../../redux/actions'
+import { updateDraft, submitDraft } from '../../redux/actions'
 import { url } from '../../config'
-import { getDraft } from './helpers'
 
 export class Final extends Component {
+  survey = this.props.navigation.getParam('survey')
+  draft = this.props.navigation.getParam('draft')
   shouldComponentUpdate() {
     return this.props.navigation.isFocused()
   }
   componentDidMount() {
-    this.props.addDraftProgress(this.props.nav.draftId, {
-      screen: 'Final'
-    })
-
+    this.props.updateDraft(this.draft.draftId, this.draft)
     this.props.navigation.setParams({
       onPressBack: this.onPressBack
     })
@@ -31,9 +29,19 @@ export class Final extends Component {
     })
   }
 
+  saveDraft = () => {
+    this.props.submitDraft(
+      url[this.props.env],
+      this.props.user.token,
+      this.draft.draftId,
+      this.draft
+    )
+    this.props.navigation.popToTop()
+    this.props.navigation.navigate('Dashboard')
+  }
+
   render() {
     const { t } = this.props
-    const draft = getDraft()
 
     return (
       <ScrollView
@@ -60,28 +68,17 @@ export class Final extends Component {
           <RoundImage source="partner" />
           <LifemapVisual
             bigMargin
-            questions={draft.indicatorSurveyDataList}
-            questionsLength={
-              this.props.nav.survey.surveyStoplightQuestions.length
-            }
-            priorities={draft.priorities}
-            achievements={draft.achievements}
+            questions={this.draft.indicatorSurveyDataList}
+            questionsLength={this.survey.surveyStoplightQuestions.length}
+            priorities={this.draft.priorities}
+            achievements={this.draft.achievements}
           />
         </View>
         <View style={{ height: 50 }}>
           <Button
             colored
             text={t('general.close')}
-            handleClick={() => {
-              this.props.submitDraft(
-                url[this.props.env],
-                this.props.user.token,
-                this.props.nav.draftId,
-                draft
-              )
-              this.props.navigation.popToTop()
-              this.props.navigation.navigate('Dashboard')
-            }}
+            handleClick={this.saveDraft}
           />
         </View>
       </ScrollView>
@@ -101,22 +98,20 @@ const styles = StyleSheet.create({
 
 Final.propTypes = {
   t: PropTypes.func.isRequired,
-  nav: PropTypes.object.isRequired,
   navigation: PropTypes.object.isRequired,
+  updateDraft: PropTypes.func.isRequired,
   submitDraft: PropTypes.func.isRequired,
-  addDraftProgress: PropTypes.func.isRequired,
   env: PropTypes.string.isRequired,
   user: PropTypes.object.isRequired
 }
 
-const mapStateToProps = ({ nav, env, user }) => ({
+const mapStateToProps = ({ env, user }) => ({
   env,
-  nav,
   user
 })
 const mapDispatchToProps = {
   submitDraft,
-  addDraftProgress
+  updateDraft
 }
 
 export default withNamespaces()(

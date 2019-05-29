@@ -3,29 +3,33 @@ import { shallow } from 'enzyme'
 import { Image, FlatList } from 'react-native'
 import { Skipped } from '../lifemap/Skipped'
 import StickyFooter from '../../components/StickyFooter'
+import draft from '../__mocks__/draftMock.json'
 
 const createTestProps = props => ({
   t: value => value,
   addDraftProgress: jest.fn(),
-  nav: {
-    draftId: 4,
-    survey: {
-      id: 2,
-      title: 'Other survey',
-      surveyEconomicQuestions: [],
-      surveyStoplightQuestions: [
-        { phoneNumber: 'phoneNumber' },
-        { education: 'education' },
-        { c: 'c' }
-      ]
-    }
-  },
   navigation: {
     navigate: jest.fn(),
     isFocused: jest.fn(),
     setParams: jest.fn(),
     replace: jest.fn(),
-    getParam: jest.fn()
+    getParam: jest.fn(param => {
+      if (param === 'draft') {
+        return draft
+      }
+      if (param === 'survey') {
+        return {
+          id: 2,
+          title: 'Other survey',
+          surveyEconomicQuestions: [],
+          surveyStoplightQuestions: [
+            { phoneNumber: 'phoneNumber' },
+            { education: 'education' },
+            { c: 'c' }
+          ]
+        }
+      }
+    })
   },
 
   ...props
@@ -68,7 +72,10 @@ describe('Skipped Questions View when questions are skipped', () => {
       ])
     })
     it('has correct initial state', () => {
-      expect(wrapper.instance().state).toEqual({ tipIsVisible: true })
+      expect(wrapper.instance().state).toEqual({
+        tipIsVisible: true,
+        draft: expect.any(Object)
+      })
     })
     it('changes tipVisible state when tip is closed', () => {
       wrapper
@@ -85,7 +92,7 @@ describe('Skipped Questions View when questions are skipped', () => {
       })
       expect(
         wrapper.instance().props.navigation.isFocused
-      ).toHaveBeenCalledTimes(1)
+      ).toHaveBeenCalledTimes(2)
     })
 
     it('calls setParam on mount', () => {
@@ -93,9 +100,7 @@ describe('Skipped Questions View when questions are skipped', () => {
         wrapper.instance().props.navigation.setParams
       ).toHaveBeenCalledTimes(1)
     })
-    it('calls addDraftProgress on mount', () => {
-      expect(wrapper.instance().props.addDraftProgress).toHaveBeenCalledTimes(1)
-    })
+
     it('calls onPressBack', () => {
       const spy = jest.spyOn(wrapper.instance(), 'onPressBack')
 

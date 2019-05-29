@@ -8,14 +8,17 @@ import colors from '../theme.json'
 import globalStyles from '../globalStyles'
 
 class SkippedListItem extends Component {
+  handleClick = () => {
+    this.props.handleClick(this.props.item)
+  }
   render() {
     return (
       <ListItem
         style={{ ...styles.listItem, ...styles.borderBottom }}
-        onPress={this.props.handleClick}
+        onPress={this.handleClick}
       >
         <Text style={{ ...globalStyles.p, ...styles.text }}>
-          {this.props.item}
+          {this.props.item.questionText}
         </Text>
         <Icon name="navigate-next" size={23} color={colors.lightdark} />
       </ListItem>
@@ -24,7 +27,7 @@ class SkippedListItem extends Component {
 }
 
 SkippedListItem.propTypes = {
-  item: PropTypes.string.isRequired,
+  item: PropTypes.object.isRequired,
   handleClick: PropTypes.func.isRequired
 }
 

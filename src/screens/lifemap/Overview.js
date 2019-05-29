@@ -1,10 +1,7 @@
 import React, { Component } from 'react'
 import { StyleSheet, View, Text, Image, TouchableHighlight } from 'react-native'
-import { connect } from 'react-redux'
 import PropTypes from 'prop-types'
 import { withNamespaces } from 'react-i18next'
-import { getDraft } from './helpers'
-import { addDraftProgress } from '../../redux/actions'
 import StickyFooter from '../../components/StickyFooter'
 import LifemapVisual from '../../components/LifemapVisual'
 import Button from '../../components/Button'
@@ -15,67 +12,85 @@ import arrow from '../../../assets/images/selectArrow.png'
 import globalStyles from '../../globalStyles'
 import colors from '../../theme.json'
 export class Overview extends Component {
+  survey = this.props.navigation.getParam('survey')
+  familyLifemap = this.props.navigation.getParam('familyLifemap')
+
   state = {
     filterModalIsOpen: false,
     selectedFilter: false,
     filterLabel: false,
-    tipIsVisible: false
+    tipIsVisible: false,
+    draft:
+      this.props.navigation.getParam('draft') ||
+      this.props.navigation.getParam('familyLifemap')
   }
 
-  resumeDraft = this.props.navigation.getParam('resumeDraft')
+  isDraftResuming = this.props.navigation.getParam('resumeDraft')
   componentDidMount() {
-    const draft = getDraft()
-    const data = this.props.familyLifemap
-      ? this.props.familyLifemap
-      : getDraft()
+    const { draft } = this.state
+
+    this.props.navigation.setParams({
+      getCurrentDraftState: () => draft
+    })
 
     // show priorities message if no priorities are made or they are not enough
     if (
       !draft.priorities.length ||
-      this.getMandatoryPrioritiesCount(data) > draft.priorities.length
+      this.getMandatoryPrioritiesCount(draft) > draft.priorities.length
     ) {
       this.setState({
         tipIsVisible: true
       })
     }
-    const { draftId } = this.props.nav
-    if (!this.resumeDraft && !this.props.familyLifemap) {
-      this.props.addDraftProgress(draftId, {
-        screen: 'Overview'
+
+    if (!this.isDraftResuming && !this.familyLifemap) {
+      this.setState({
+        draft: {
+          ...draft,
+          progress: {
+            ...draft.progress,
+            screen: 'Overview'
+          }
+        }
       })
 
       this.props.navigation.setParams({
         onPressBack: this.onPressBack,
-        withoutCloseButton: draftId ? false : true
+        withoutCloseButton: draft.draftId ? false : true
       })
     }
   }
 
   onPressBack = () => {
+    const { draft } = this.state
+    const survey = this.survey
     //If we do not arrive to this screen from the families screen
-    if (!this.props.familyLifemap) {
-      const draft = getDraft()
-      const skippedQuestions = draft.indicatorSurveyDataList.filter(
+    if (!this.familyLifemap) {
+      const skippedQuestions = this.state.draft.indicatorSurveyDataList.filter(
         question => question.value === 0
       )
 
       // If there are no skipped questions
       if (skippedQuestions.length > 0) {
-        this.props.navigation.navigate('Skipped')
+        this.props.navigation.navigate('Skipped', { draft, survey })
       } else
         this.props.navigation.navigate('Question', {
-          step: this.props.nav.survey.surveyStoplightQuestions.length - 1
+          step: this.survey.surveyStoplightQuestions.length - 1,
+          draft,
+          survey
         })
     }
     // If we arrive to this screen from the families screen
-    else this.props.navigation.navigate('Families')
+    else this.props.navigation.navigate('Families', { draft, survey })
   }
 
   navigateToScreen = (screen, indicator, indicatorText) =>
     this.props.navigation.navigate(screen, {
-      familyLifemap: this.props.familyLifemap,
+      familyLifemap: this.state.draft,
+      survey: this.survey,
       indicator,
-      indicatorText
+      indicatorText,
+      draft: this.state.draft
     })
 
   shouldComponentUpdate() {
@@ -96,18 +111,17 @@ export class Overview extends Component {
     })
   }
 
-  getPotentialPrioritiesCount(draft) {
-    return draft.indicatorSurveyDataList.filter(
+  getPotentialPrioritiesCount() {
+    return this.state.draft.indicatorSurveyDataList.filter(
       question => question.value === 1 || question.value === 2
     ).length
   }
 
-  getMandatoryPrioritiesCount(draft) {
-    const { survey } = this.props.nav
-    const potentialPrioritiesCount = this.getPotentialPrioritiesCount(draft)
+  getMandatoryPrioritiesCount() {
+    const potentialPrioritiesCount = this.getPotentialPrioritiesCount()
 
-    return potentialPrioritiesCount > survey.minimumPriorities
-      ? survey.minimumPriorities
+    return potentialPrioritiesCount > this.survey.minimumPriorities
+      ? this.survey.minimumPriorities
       : potentialPrioritiesCount
   }
 
@@ -127,31 +141,39 @@ export class Overview extends Component {
     }
   }
 
-  render() {
-    const { survey } = this.props.nav
-    const { t } = this.props
-    const { filterModalIsOpen, selectedFilter, filterLabel } = this.state
+  resumeDraft = () => {
+    const { draft } = this.state
 
-    const data = this.props.familyLifemap || getDraft()
-    const mandatoryPrioritiesCount = this.getMandatoryPrioritiesCount(data)
-    const tipIsVisible = !this.resumeDraft && this.state.tipIsVisible
+    this.props.navigation.replace(draft.progress.screen, {
+      draft,
+      survey: this.survey,
+      step: draft.progress.step
+    })
+  }
+
+  render() {
+    const { t } = this.props
+    const { filterModalIsOpen, selectedFilter, filterLabel, draft } = this.state
+
+    const mandatoryPrioritiesCount = this.getMandatoryPrioritiesCount(draft)
+    const tipIsVisible = !this.isDraftResuming && this.state.tipIsVisible
     const getTipDescription = () => {
       //no mandatory priotities
       if (
         !mandatoryPrioritiesCount ||
-        mandatoryPrioritiesCount - data.priorities.length <= 0
+        mandatoryPrioritiesCount - draft.priorities.length <= 0
       ) {
         return `${t('general.create')} ${t(
           'views.lifemap.priorities'
         ).toLowerCase()}!`
         //only one mandatory priority
-      } else if (mandatoryPrioritiesCount - data.priorities.length === 1) {
+      } else if (mandatoryPrioritiesCount - draft.priorities.length === 1) {
         return t('views.lifemap.youNeedToAddPriotity')
       }
       //more than one mandatory priority
       else {
         return `${t('general.create')} ${mandatoryPrioritiesCount -
-          data.priorities.length} ${t(
+          draft.priorities.length} ${t(
           'views.lifemap.priorities'
         ).toLowerCase()}!`
       }
@@ -160,15 +182,15 @@ export class Overview extends Component {
     return (
       <StickyFooter
         continueLabel={t('general.continue')}
-        handleClick={() => this.handleContinue(mandatoryPrioritiesCount, data)}
-        visible={!this.resumeDraft && !this.props.familyLifemap}
+        handleClick={() => this.handleContinue(mandatoryPrioritiesCount, draft)}
+        visible={!this.isDraftResuming && !this.familyLifemap}
         type={tipIsVisible ? 'tip' : 'button'}
         tipTitle={t('views.lifemap.toComplete')}
         onTipClose={this.onTipClose}
         tipDescription={getTipDescription()}
         progress={
-          !this.resumeDraft && !this.props.familyLifemap
-            ? (data.progress.total - 1) / data.progress.total
+          !this.isDraftResuming && !this.familyLifemap
+            ? (draft.progress.total - 1) / draft.progress.total
             : 0
         }
       >
@@ -176,12 +198,12 @@ export class Overview extends Component {
           <View style={styles.indicatorsContainer}>
             <LifemapVisual
               large
-              questions={data.indicatorSurveyDataList}
-              priorities={data.priorities}
-              achievements={data.achievements}
-              questionsLength={survey.surveyStoplightQuestions.length}
+              questions={draft.indicatorSurveyDataList}
+              priorities={draft.priorities}
+              achievements={draft.achievements}
+              questionsLength={this.survey.surveyStoplightQuestions.length}
             />
-            {this.resumeDraft ? (
+            {this.isDraftResuming ? (
               <Button
                 id="resume-draft"
                 style={{
@@ -189,12 +211,7 @@ export class Overview extends Component {
                 }}
                 colored
                 text={t('general.resumeDraft')}
-                handleClick={() => {
-                  this.props.navigation.replace(data.progress.screen, {
-                    step: data.progress.step,
-                    socioEconomics: data.progress.socioEconomics
-                  })
-                }}
+                handleClick={this.resumeDraft}
               />
             ) : null}
           </View>
@@ -213,10 +230,10 @@ export class Overview extends Component {
               </View>
             </TouchableHighlight>
             <LifemapOverview
-              surveyData={survey.surveyStoplightQuestions}
-              draftData={data}
+              surveyData={this.survey.surveyStoplightQuestions}
+              draftData={draft}
               navigateToScreen={this.navigateToScreen}
-              draftOverview={!this.resumeDraft && !this.props.familyLifemap}
+              draftOverview={!this.isDraftResuming && !this.familyLifemap}
               selectedFilter={selectedFilter}
             />
           </View>
@@ -238,7 +255,7 @@ export class Overview extends Component {
                 onPress={() => this.selectFilter(false)}
                 color={'#EAD1AF'}
                 text={t('views.lifemap.allIndicators')}
-                amount={data.indicatorSurveyDataList.length}
+                amount={draft.indicatorSurveyDataList.length}
               />
 
               {/* Green */}
@@ -248,7 +265,7 @@ export class Overview extends Component {
                 color={colors.palegreen}
                 text={t('views.lifemap.green')}
                 amount={
-                  data.indicatorSurveyDataList.filter(item => item.value === 3)
+                  draft.indicatorSurveyDataList.filter(item => item.value === 3)
                     .length
                 }
               />
@@ -260,7 +277,7 @@ export class Overview extends Component {
                 color={colors.gold}
                 text={t('views.lifemap.yellow')}
                 amount={
-                  data.indicatorSurveyDataList.filter(item => item.value === 2)
+                  draft.indicatorSurveyDataList.filter(item => item.value === 2)
                     .length
                 }
               />
@@ -272,7 +289,7 @@ export class Overview extends Component {
                 color={colors.red}
                 text={t('views.lifemap.red')}
                 amount={
-                  data.indicatorSurveyDataList.filter(item => item.value === 1)
+                  draft.indicatorSurveyDataList.filter(item => item.value === 1)
                     .length
                 }
               />
@@ -292,7 +309,7 @@ export class Overview extends Component {
                 text={`${t('views.lifemap.priorities')} & ${t(
                   'views.lifemap.achievements'
                 )}`}
-                amount={data.priorities.length + data.achievements.length}
+                amount={draft.priorities.length + draft.achievements.length}
               />
 
               {/* Skipped */}
@@ -304,7 +321,7 @@ export class Overview extends Component {
                 color={colors.palegrey}
                 text={t('views.skippedIndicators')}
                 amount={
-                  data.indicatorSurveyDataList.filter(item => item.value === 0)
+                  draft.indicatorSurveyDataList.filter(item => item.value === 0)
                     .length
                 }
               />
@@ -356,25 +373,9 @@ const styles = StyleSheet.create({
   }
 })
 
-const mapDispatchToProps = {
-  addDraftProgress
-}
-
 Overview.propTypes = {
   t: PropTypes.func.isRequired,
-  nav: PropTypes.object.isRequired,
-  navigation: PropTypes.object.isRequired,
-  familyLifemap: PropTypes.object,
-  addDraftProgress: PropTypes.func.isRequired
+  navigation: PropTypes.object.isRequired
 }
 
-const mapStateToProps = ({ nav }) => ({
-  nav
-})
-
-export default withNamespaces()(
-  connect(
-    mapStateToProps,
-    mapDispatchToProps
-  )(Overview)
-)
+export default withNamespaces()(Overview)

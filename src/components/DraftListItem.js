@@ -48,6 +48,10 @@ class DraftListItem extends Component {
     return string.charAt(0).toUpperCase() + string.slice(1)
   }
 
+  handleClick = () => {
+    this.props.handleClick(this.props.item)
+  }
+
   render() {
     const { item, lng } = this.props
     const itemCreateDateWithLocale = moment(item.created)
@@ -57,7 +61,7 @@ class DraftListItem extends Component {
     return (
       <ListItem
         style={{ ...styles.listItem, ...styles.borderBottom }}
-        onPress={this.props.handleClick}
+        onPress={this.handleClick}
       >
         <View>
           <Text

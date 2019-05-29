@@ -5,16 +5,14 @@ import { Final } from '../lifemap/Final'
 import RoundImage from '../../components/RoundImage'
 import Button from '../../components/Button'
 import LifemapVisual from '../../components/LifemapVisual'
+import draft from '../__mocks__/draftMock.json'
 
 const createTestProps = props => ({
   t: value => value,
-  nav: {
-    draftId: 4,
-    survey: { surveyStoplightQuestions: [], surveyEconomicQuestions: [] }
-  },
   user: { token: 'token' },
   env: 'env',
   submitDraft: jest.fn(),
+  updateDraft: jest.fn(),
   addDraftProgress: jest.fn(),
   navigation: {
     navigate: jest.fn(),
@@ -24,8 +22,8 @@ const createTestProps = props => ({
     reset: jest.fn(),
 
     getParam: jest.fn(param => {
-      if (param === 'draftId') {
-        return 1
+      if (param === 'draft') {
+        return draft
       } else if (param === 'survey') {
         return { surveyStoplightQuestions: [] }
       }
@@ -85,9 +83,6 @@ describe('Final Lifemap View when no questions are skipped', () => {
     expect(wrapper.instance().props.navigation.setParams).toHaveBeenCalledTimes(
       1
     )
-  })
-  it('calls addDraftProgress on mount', () => {
-    expect(wrapper.instance().props.addDraftProgress).toHaveBeenCalledTimes(1)
   })
   it('calls onPressBack', () => {
     const spy = jest.spyOn(wrapper.instance(), 'onPressBack')

@@ -3,14 +3,7 @@ import { StyleSheet, Text } from 'react-native'
 import { connect } from 'react-redux'
 import PropTypes from 'prop-types'
 import uuid from 'uuid/v1'
-import {
-  createDraft,
-  addSurveyFamilyMemberData,
-  addDraftProgress,
-  addSurveyData,
-  removeFamilyMembers,
-  updateNav
-} from '../../redux/actions'
+import { createDraft, updateDraft } from '../../redux/actions'
 import { withNamespaces } from 'react-i18next'
 import Icon from 'react-native-vector-icons/MaterialIcons'
 import StickyFooter from '../../components/StickyFooter'
@@ -22,14 +15,42 @@ import colors from '../../theme.json'
 import globalStyles from '../../globalStyles'
 import { getTotalScreens } from './helpers'
 export class FamilyParticipant extends Component {
-  //Get draft id from Redux store if it exists else create new draft id
-  draftId = this.props.nav.readonly
-    ? null
-    : this.props.navigation.getParam('draftId') || uuid()
+  survey = this.props.navigation.getParam('survey')
+
+  readOnly = this.props.navigation.getParam('readOnly')
 
   errorsDetected = []
 
-  state = { errorsDetected: [], showErrors: false }
+  state = {
+    errorsDetected: [],
+    showErrors: false,
+    draft: this.props.navigation.getParam('draft') ||
+      this.props.navigation.getParam('family') || {
+        status: 'Draft',
+        surveyId: this.survey.id,
+        surveyVersionId: this.props.navigation.getParam('survey')[
+          'surveyVersionId'
+        ],
+        created: Date.now(),
+        draftId: uuid(),
+        economicSurveyDataList: [],
+        indicatorSurveyDataList: [],
+        priorities: [],
+        achievements: [],
+        progress: {
+          screen: 'FamilyParticipant',
+          total: getTotalScreens(this.props.navigation.getParam('survey'))
+        },
+        familyData: {
+          familyMembersList: [
+            {
+              firstParticipant: true,
+              socioEconomicAnswers: []
+            }
+          ]
+        }
+      }
+  }
 
   detectError = (error, field) => {
     if (error && !this.errorsDetected.includes(field)) {
@@ -43,55 +64,8 @@ export class FamilyParticipant extends Component {
     })
   }
 
-  createDraft() {
-    const { survey } = this.props.nav
-    this.props.createDraft({
-      surveyId: survey.id,
-      surveyVersionId: survey['surveyVersionId'],
-      created: Date.now(),
-      draftId: this.draftId,
-      economicSurveyDataList: [],
-      indicatorSurveyDataList: [],
-      priorities: [],
-      achievements: [],
-      progress: {
-        screen: 'FamilyParticipant',
-        total: getTotalScreens(survey)
-      },
-      familyData: {
-        familyMembersList: [
-          {
-            firstParticipant: true,
-            socioEconomicAnswers: []
-          }
-        ]
-      }
-    })
-  }
-
-  componentDidMount() {
-    // create a new draft if not exising
-    if (
-      !this.props.nav.readonly &&
-      !this.props.navigation.getParam('family') &&
-      !this.props.navigation.getParam('draftId')
-    ) {
-      this.props.updateNav('draftId', this.draftId)
-      this.createDraft()
-    }
-
-    if (!this.props.nav.readonly && this.props.nav.draftId) {
-      this.props.addDraftProgress(this.draftId, {
-        screen: 'FamilyParticipant',
-        total: getTotalScreens(this.props.nav.survey)
-      })
-    }
-  }
-
   handleClick = () => {
-    const { draftId } = this.props.nav
-
-    const draft = this.props.drafts.find(draft => draft.draftId === draftId)
+    const { countFamilyMembers } = this.state.draft.familyData
 
     // check if form is valid
     if (this.errorsDetected.length) {
@@ -99,48 +73,61 @@ export class FamilyParticipant extends Component {
         showErrors: true
       })
     } else {
-      // create drafts
-
-      if (this.getFamilyCount(draft) > 1) {
+      const { draft } = this.state
+      const survey = this.survey
+      // if this is a new draft, add it to the store
+      if (this.props.navigation.getParam('isNewDraft')) {
+        this.props.createDraft(draft)
+      } else {
+        this.props.updateDraft(draft.draftId, draft)
+      }
+      if (countFamilyMembers && countFamilyMembers > 1) {
         // if multiple family members navigate to members screens
-        this.props.navigation.navigate('FamilyMembersNames')
+        this.props.navigation.navigate('FamilyMembersNames', {
+          draft,
+          survey
+        })
       } else {
         // if only one family member, navigate directly to location
-        this.props.navigation.navigate('Location')
+        this.props.navigation.navigate('Location', { draft, survey })
       }
     }
   }
 
-  componentDidUpdate(prevProps, prevState) {
-    if (prevState.errorsDetected.length !== this.state.errorsDetected.length) {
-      this.props.updateNav(
-        'deleteDraftOnExit',
-        !!this.state.errorsDetected.length
-      )
-    }
-  }
+  addFamilyCount = value => {
+    const { draft } = this.state
+    const { countFamilyMembers } = this.state.draft.familyData
 
-  addFamilyCount = (text, field) => {
-    const draft = this.props.drafts.find(
-      draft => draft.draftId === this.draftId
-    )
+    const afterIndex = value === -1 ? 1 : value
 
-    // if reducing the number of family members remove the rest
-    if (text && this.getFamilyCount(draft) > text) {
-      const index = text === -1 ? 1 : text
-      this.props.removeFamilyMembers(this.draftId, index)
+    let familyMembersList = this.state.draft.familyData.familyMembersList
 
-      this.setState({
-        errorsDetected: this.errorsDetected
-      })
+    if (countFamilyMembers > value) {
+      familyMembersList.slice(0, value)
+    } else if (countFamilyMembers < value) {
+      for (var i = 0; i < value - 1; i++) {
+        familyMembersList.push({ firstParticipant: false })
+      }
     }
 
     this.setState({
-      showErrors: false
+      draft: {
+        ...draft,
+        familyData: {
+          ...draft.familyData,
+          countFamilyMembers: value,
+          familyMembersList:
+            value && countFamilyMembers && countFamilyMembers > value
+              ? draft.familyData.familyMembersList.filter(
+                  (item, index) => index < afterIndex
+                )
+              : draft.familyData.familyMembersList
+        }
+      }
     })
 
-    this.props.addSurveyData(this.draftId, 'familyData', {
-      [field]: text
+    this.setState({
+      showErrors: false
     })
   }
 
@@ -157,98 +144,50 @@ export class FamilyParticipant extends Component {
     }
   ]
 
-  getFieldValue = (draft, field) => {
-    if (!draft) {
-      return
-    } else if (typeof draft !== 'undefined' && draft !== 'null') {
-      if (
-        typeof draft.familyData !== 'undefined' &&
-        draft.familyData !== 'null'
-      ) {
-        return draft.familyData.familyMembersList[0][field]
-      }
-    }
-  }
+  updateParticipant = (value, field) => {
+    const { draft } = this.state
 
-  getFamilyCount = draft => {
-    if (!draft) {
-      return
-    } else if (typeof draft !== 'undefined' && draft !== 'null') {
-      if (
-        typeof draft.familyData !== 'undefined' &&
-        draft.familyData !== 'null'
-      ) {
-        return draft.familyData.countFamilyMembers
-      }
-    }
-  }
-
-  addSurveyData = (text, field) => {
-    let draft = this.props.drafts.find(draft => draft.draftId === this.draftId)
-    if (typeof draft !== 'undefined' && draft !== 'null') {
-      if (
-        typeof draft.familyData !== 'undefined' &&
-        draft.familyData !== 'null'
-      ) {
-        let primaryParticipantDraft = draft.familyData.familyMembersList[0]
-        const { survey } = this.props.nav
-        let genderValues = survey.surveyConfig.gender
-        if (field === 'gender') {
-          let otherTypeGender
-          genderValues.forEach(ele => {
-            if (typeof ele.otherOption !== undefined) {
-              if (ele.otherOption) {
-                otherTypeGender = ele.value
+    this.setState({
+      draft: {
+        ...draft,
+        familyData: {
+          ...draft.familyData,
+          familyMembersList: [
+            {
+              ...draft.familyData.familyMembersList[0],
+              ...{
+                [field]: value
               }
-            }
-          })
-
-          if (
-            otherTypeGender === this.getFieldValue(draft, 'gender') &&
-            text !== 'O'
-          ) {
-            delete primaryParticipantDraft.customGender
-          }
-        }
-
-        if (field === 'documentType') {
-          let otherTypeDocumentNumber
-          let docValues = survey.surveyConfig.documentType
-          docValues.forEach(ele => {
-            if (typeof ele.otherOption !== undefined) {
-              if (ele.otherOption) {
-                otherTypeDocumentNumber = ele.value
-              }
-            }
-          })
-
-          if (
-            otherTypeDocumentNumber ===
-              this.getFieldValue(draft, 'documentType') &&
-            text !== this.getFieldValue(draft, 'documentType')
-          ) {
-            delete primaryParticipantDraft.customDocumentType
-          }
-        }
-
-        this.props.addSurveyFamilyMemberData({
-          id: this.draftId,
-          index: 0,
-          payload: {
-            [field]: text
-          }
-        })
-
-        if (this.errorsDetected.length) {
-          this.props.updateNav('deleteDraftOnExit', true)
+            },
+            ...draft.familyData.familyMembersList.slice(1)
+          ]
         }
       }
-    }
+    })
   }
 
-  gender = this.props.nav.survey.surveyConfig.gender
+  componentDidMount() {
+    const { navigation } = this.props
+    const { draft } = this.state
 
-  documentType = this.props.nav.survey.surveyConfig.documentType
+    navigation.setParams({
+      isNewDraft: !navigation.getParam('draft'),
+      getCurrentDraftState: () => this.state.draft
+    })
+
+    if (!this.readOnly && draft.progress.screen !== 'FamilyParticipant') {
+      this.setState({
+        draft: {
+          ...draft,
+          progress: {
+            ...draft.progress,
+            screen: 'FamilyParticipant',
+            total: getTotalScreens(this.survey)
+          }
+        }
+      })
+    }
+  }
 
   shouldComponentUpdate() {
     return this.props.navigation.isFocused()
@@ -256,48 +195,22 @@ export class FamilyParticipant extends Component {
 
   render() {
     const { t } = this.props
-    const { survey, readonly } = this.props.nav
-    const { showErrors } = this.state
-    const draft =
-      this.props.navigation.getParam('family') ||
-      this.props.drafts.find(draft => draft.draftId === this.draftId)
-    let autofocusFirstName
-    if (this.getFieldValue(draft, 'firstName')) {
-      autofocusFirstName = false
-    } else {
-      autofocusFirstName = true
-    }
-    let otherTypeDocumentNumber = 0
-    let otherTypeGender = 0
-    let docValues = survey.surveyConfig.documentType
-    let genderValues = survey.surveyConfig.gender
-    docValues.forEach(ele => {
-      if (typeof ele.otherOption !== undefined) {
-        if (ele.otherOption) {
-          otherTypeDocumentNumber = ele.value
-        }
-      }
-    })
+    const { showErrors, draft } = this.state
 
-    genderValues.forEach(ele => {
-      if (typeof ele.otherOption !== undefined) {
-        if (ele.otherOption) {
-          otherTypeGender = ele.value
-        }
-      }
-    })
+    const participant = draft.familyData.familyMembersList[0]
+
     return (
       <StickyFooter
         handleClick={this.handleClick}
         continueLabel={t('general.continue')}
-        readonly={readonly}
-        progress={!readonly && draft ? 1 / draft.progress.total : 0}
+        readonly={this.readOnly}
+        progress={!this.readOnly && draft ? 1 / draft.progress.total : 0}
       >
         <Decoration variation="primaryParticipant">
           <Icon name="face" color={colors.grey} size={61} style={styles.icon} />
-          {readonly !== true ? (
+          {this.readOnly !== true ? (
             <Text
-              readonly={readonly}
+              readonly={this.readOnly}
               style={[globalStyles.h2Bold, styles.heading]}
             >
               {t('views.family.primaryParticipantHeading')}
@@ -306,15 +219,13 @@ export class FamilyParticipant extends Component {
         </Decoration>
 
         <TextInput
-          autoFocus={autofocusFirstName}
+          autoFocus={!participant.firstName}
           validation="string"
           field="firstName"
-          readonly={readonly}
-          onChangeText={this.addSurveyData}
+          readonly={this.readOnly}
+          onChangeText={this.updateParticipant}
           placeholder={t('views.family.firstName')}
-          value={decodeURIComponent(
-            escape(this.getFieldValue(draft, 'firstName') || '')
-          )}
+          value={decodeURIComponent(participant.firstName || '')}
           required
           detectError={this.detectError}
           showErrors={showErrors}
@@ -322,12 +233,10 @@ export class FamilyParticipant extends Component {
         <TextInput
           field="lastName"
           validation="string"
-          onChangeText={this.addSurveyData}
-          readonly={readonly}
+          onChangeText={this.updateParticipant}
+          readonly={this.readOnly}
           placeholder={t('views.family.lastName')}
-          value={decodeURIComponent(
-            escape(this.getFieldValue(draft, 'lastName') || '')
-          )}
+          value={decodeURIComponent(participant.lastName || '')}
           required
           detectError={this.detectError}
           showErrors={showErrors}
@@ -335,73 +244,52 @@ export class FamilyParticipant extends Component {
         <Select
           id="gender"
           required
-          onChange={this.addSurveyData}
-          readonly={readonly}
+          onChange={this.updateParticipant}
+          otherField="customGender"
+          otherPlaceholder={t('views.family.specifyGender')}
+          otherValue={participant.customGender}
+          readonly={this.readOnly}
           label={t('views.family.gender')}
           placeholder={t('views.family.selectGender')}
           field="gender"
-          value={this.getFieldValue(draft, 'gender') || ''}
+          value={participant.gender || ''}
           detectError={this.detectError}
           showErrors={showErrors}
-          options={this.gender}
+          options={this.survey.surveyConfig.gender}
         />
-        {otherTypeGender === this.getFieldValue(draft, 'gender') ? (
-          <TextInput
-            field="customGender"
-            validation="string"
-            onChangeText={this.addSurveyData}
-            readonly={readonly}
-            placeholder={t('views.family.specifyGender')}
-            value={this.getFieldValue(draft, 'customGender') || ''}
-            required
-            detectError={this.detectError}
-            showErrors={showErrors}
-          />
-        ) : null}
         <DateInput
           required
           label={t('views.family.dateOfBirth')}
           field="birthDate"
           detectError={this.detectError}
           showErrors={showErrors}
-          onValidDate={this.addSurveyData}
-          value={this.getFieldValue(draft, 'birthDate')}
-          readonly={readonly}
+          onValidDate={this.updateParticipant}
+          value={participant.birthDate}
+          readonly={this.readOnly}
         />
 
         <Select
           required
-          onChange={this.addSurveyData}
-          readonly={readonly}
+          onChange={this.updateParticipant}
+          otherPlaceholder={t('views.family.customDocumentType')}
+          otherField="customDocumentType"
+          otherValue={participant.customDocumentType}
+          readonly={this.readOnly}
           label={t('views.family.documentType')}
           placeholder={t('views.family.documentType')}
           field="documentType"
-          value={this.getFieldValue(draft, 'documentType') || ''}
+          value={participant.documentType || ''}
           detectError={this.detectError}
           showErrors={showErrors}
-          options={this.documentType}
+          options={this.survey.surveyConfig.documentType}
         />
-        {otherTypeDocumentNumber ===
-        this.getFieldValue(draft, 'documentType') ? (
-          <TextInput
-            field="customDocumentType"
-            validation="string"
-            onChangeText={this.addSurveyData}
-            readonly={readonly}
-            placeholder={t('views.family.customDocumentType')}
-            value={this.getFieldValue(draft, 'customDocumentType') || ''}
-            required
-            detectError={this.detectError}
-            showErrors={showErrors}
-          />
-        ) : null}
 
         <TextInput
-          onChangeText={this.addSurveyData}
-          readonly={readonly}
+          onChangeText={this.updateParticipant}
+          readonly={this.readOnly}
           field="documentNumber"
           required
-          value={this.getFieldValue(draft, 'documentNumber')}
+          value={participant.documentNumber}
           placeholder={t('views.family.documentNumber')}
           detectError={this.detectError}
           showErrors={showErrors}
@@ -409,48 +297,49 @@ export class FamilyParticipant extends Component {
         <Select
           id="country"
           required
-          onChange={this.addSurveyData}
-          readonly={readonly}
+          onChange={this.updateParticipant}
+          readonly={this.readOnly}
           label={t('views.family.countryOfBirth')}
+          country={this.survey.surveyConfig.surveyLocation.country}
           countrySelect
-          country={survey.surveyConfig.surveyLocation.country}
+          countryOfBirth={this.survey.surveyConfig.countryOfBirth}
           placeholder={t('views.family.countryOfBirth')}
           field="birthCountry"
           value={
-            this.getFieldValue(draft, 'birthCountry') ||
-            survey.surveyConfig.surveyLocation.country
+            participant.birthCountry ||
+            this.survey.surveyConfig.surveyLocation.country
           }
           detectError={this.detectError}
           showErrors={showErrors}
         />
         <Select
           id="familyMembersCount"
+          field="countFamilyMembers"
           required
           onChange={this.addFamilyCount}
-          readonly={readonly}
+          readonly={this.readOnly}
           label={t('views.family.peopleLivingInThisHousehold')}
           placeholder={t('views.family.peopleLivingInThisHousehold')}
-          field="countFamilyMembers"
-          value={this.getFamilyCount(draft) || ''}
+          value={draft.familyData.countFamilyMembers || ''}
           detectError={this.detectError}
           showErrors={showErrors}
           options={this.getFamilyMembersCountArray(t)}
         />
         <TextInput
-          onChangeText={this.addSurveyData}
-          readonly={readonly}
+          onChangeText={this.updateParticipant}
+          readonly={this.readOnly}
           field="email"
-          value={this.getFieldValue(draft, 'email')}
+          value={participant.email}
           placeholder={t('views.family.email')}
           validation="email"
           detectError={this.detectError}
           showErrors={showErrors}
         />
         <TextInput
-          onChangeText={this.addSurveyData}
-          readonly={readonly}
+          onChangeText={this.updateParticipant}
+          readonly={this.readOnly}
           field="phoneNumber"
-          value={this.getFieldValue(draft, 'phoneNumber')}
+          value={participant.phoneNumber}
           placeholder={t('views.family.phone')}
           validation="phoneNumber"
           detectError={this.detectError}
@@ -476,30 +365,17 @@ const styles = StyleSheet.create({
 
 FamilyParticipant.propTypes = {
   t: PropTypes.func.isRequired,
-  drafts: PropTypes.array.isRequired,
-  nav: PropTypes.object.isRequired,
   navigation: PropTypes.object.isRequired,
   createDraft: PropTypes.func.isRequired,
-  addSurveyFamilyMemberData: PropTypes.func.isRequired,
-  addDraftProgress: PropTypes.func.isRequired,
-  addSurveyData: PropTypes.func.isRequired,
-  removeFamilyMembers: PropTypes.func.isRequired,
-  updateNav: PropTypes.func.isRequired
+  updateDraft: PropTypes.func.isRequired
 }
 
 const mapDispatchToProps = {
   createDraft,
-  addSurveyFamilyMemberData,
-  addDraftProgress,
-  addSurveyData,
-  removeFamilyMembers,
-  updateNav
+  updateDraft
 }
 
-const mapStateToProps = ({ drafts, nav }) => ({
-  drafts,
-  nav
-})
+const mapStateToProps = () => ({})
 
 export default withNamespaces()(
   connect(
