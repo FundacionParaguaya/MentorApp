@@ -111,6 +111,7 @@ export const loadFamilies = (env, token) => ({
 export const CREATE_DRAFT = 'CREATE_DRAFT'
 export const UPDATE_DRAFT = 'UPDATE_DRAFT'
 export const DELETE_DRAFT = 'DELETE_DRAFT'
+export const ADD_SURVEY_DATA_CHECKBOX = 'ADD_SURVEY_DATA_CHECKBOX'
 export const ADD_SURVEY_DATA = 'ADD_SURVEY_DATA'
 export const ADD_SURVEY_PRIORITY_ACHEIVEMENT_DATA =
   'ADD_SURVEY_PRIORITY_ACHEIVEMENT_DATA'
@@ -186,6 +187,12 @@ export const removeFamilyMembers = (id, afterIndex) => ({
   afterIndex
 })
 
+export const addSurveyDataCheckBox = (id, category, payload) => ({
+  type: ADD_SURVEY_DATA_CHECKBOX,
+  category,
+  id,
+  payload
+})
 export const addSurveyData = (id, category, payload) => ({
   type: ADD_SURVEY_DATA,
   category,

@@ -6,10 +6,12 @@ import { withNamespaces } from 'react-i18next'
 import StickyFooter from '../../components/StickyFooter'
 import TextInput from '../../components/TextInput'
 import Select from '../../components/Select'
+import Checkbox from '../../components/Checkbox'
 import {
   addSurveyData,
   addSurveyFamilyMemberData,
-  addDraftProgress
+  addDraftProgress,
+  addSurveyDataCheckBox
 } from '../../redux/actions'
 import colors from '../../theme.json'
 
@@ -360,7 +362,32 @@ export class SocioEconomicQuestion extends Component {
       )
     }
   }
+  onPressCheckbox = (text, field) => {
+    const draft = this.props.navigation.getParam('family') || this.getDraft()
 
+    let deleteVal = false
+    draft.economicSurveyDataList.forEach(e => {
+      if (e.key === field) {
+        if (typeof e.multipleValue !== 'undefined') {
+          e.multipleValue.forEach((el, i) => {
+            if (el === text) {
+              deleteVal = true
+              e.multipleValue.splice(i, 1)
+            }
+          })
+        }
+      }
+    })
+    if (!deleteVal) {
+      this.props.addSurveyDataCheckBox(
+        draft.draftId,
+        'economicSurveyDataList',
+        {
+          [field]: text
+        }
+      )
+    }
+  }
   calculateAge = timestamp => {
     const dataOfBirth = new Date(timestamp * 1000).getFullYear()
     const today = new Date().getFullYear()
@@ -410,7 +437,10 @@ export class SocioEconomicQuestion extends Component {
                 : question
             )
             .map(question => {
-              if (question.answerType === 'select') {
+              if (
+                question.answerType === 'select' ||
+                question.answerType === 'radio'
+              ) {
                 let otherOptionDetected = false
                 let otherOptionValue
                 question.options.forEach(e => {
@@ -423,7 +453,14 @@ export class SocioEconomicQuestion extends Component {
                 if (otherOptionDetected) {
                   return (
                     <React.Fragment key={question.codeName}>
+                      {question.answerType === 'radio' ? (
+                        <Text style={{ marginLeft: 10, marginBottom: 15 }}>
+                          {question.questionText}
+                        </Text>
+                      ) : null}
                       <Select
+                        draft={draft}
+                        radio={question.answerType === 'radio' ? true : false}
                         required={question.required}
                         onChange={this.addSurveyData}
                         placeholder={question.questionText}
@@ -458,19 +495,30 @@ export class SocioEconomicQuestion extends Component {
                   )
                 } else {
                   return (
-                    <Select
-                      key={question.codeName}
-                      required={question.required}
-                      onChange={this.addSurveyData}
-                      placeholder={question.questionText}
-                      showErrors={showErrors}
-                      label={question.questionText}
-                      field={question.codeName}
-                      value={this.getFieldValue(draft, question.codeName) || ''}
-                      detectError={this.detectError}
-                      readonly={this.readOnly}
-                      options={question.options}
-                    />
+                    <React.Fragment>
+                      {question.answerType === 'radio' ? (
+                        <Text style={{ marginLeft: 10, marginBottom: 15 }}>
+                          {question.questionText}
+                        </Text>
+                      ) : null}
+                      <Select
+                        draft={draft}
+                        radio={question.answerType === 'radio' ? true : false}
+                        key={question.codeName}
+                        required={question.required}
+                        onChange={this.addSurveyData}
+                        placeholder={question.questionText}
+                        showErrors={showErrors}
+                        label={question.questionText}
+                        field={question.codeName}
+                        value={
+                          this.getFieldValue(draft, question.codeName) || ''
+                        }
+                        detectError={this.detectError}
+                        readonly={this.readOnly}
+                        options={question.options}
+                      />
+                    </React.Fragment>
                   )
                 }
               } else if (question.answerType === 'number') {
@@ -489,6 +537,31 @@ export class SocioEconomicQuestion extends Component {
                     validation="number"
                     keyboardType="numeric"
                   />
+                )
+              } else if (question.answerType === 'checkbox') {
+                return (
+                  <View key={question.codeName}>
+                    <Text style={{ marginLeft: 10 }}>
+                      {question.questionText}
+                    </Text>
+                    {question.options.map(e => {
+                      return (
+                        <View key={e.value}>
+                          <Checkbox
+                            containerStyle={styles.checkbox}
+                            checkboxColor={colors.green}
+                            showErrors={showErrors}
+                            onIconPress={() =>
+                              this.onPressCheckbox(e.value, question.codeName)
+                            }
+                            title={e.text}
+                            value={e.value}
+                            codeName={question.codeName}
+                          />
+                        </View>
+                      )
+                    })}
+                  </View>
                 )
               } else {
                 return (
@@ -526,8 +599,10 @@ export class SocioEconomicQuestion extends Component {
                       : question
                   )
                   .map(question =>
-                    question.answerType === 'select' ? (
+                    question.answerType === 'select' ||
+                    question.answerType === 'radio' ? (
                       <Select
+                        radio={question.answerType === 'radio' ? true : false}
                         key={question.codeName}
                         required={question.required}
                         onChange={(text, field) =>
@@ -587,6 +662,7 @@ export class SocioEconomicQuestion extends Component {
 SocioEconomicQuestion.propTypes = {
   t: PropTypes.func.isRequired,
   navigation: PropTypes.object.isRequired,
+  addSurveyDataCheckBox: PropTypes.func,
   addSurveyData: PropTypes.func.isRequired,
   addSurveyFamilyMemberData: PropTypes.func.isRequired,
   addDraftProgress: PropTypes.func.isRequired,
@@ -623,7 +699,8 @@ const styles = StyleSheet.create({
 const mapDispatchToProps = {
   addSurveyData,
   addSurveyFamilyMemberData,
-  addDraftProgress
+  addDraftProgress,
+  addSurveyDataCheckBox
 }
 
 const mapStateToProps = ({ drafts }) => ({ drafts })
