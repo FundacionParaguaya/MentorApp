@@ -126,7 +126,6 @@ export class Loading extends Component {
           bounds: [[-70.6626, -24.1093], [-69.7407, -22.7571]]
         }
         mapsArray.push({ name: 'Cerrito', statue: 0, options })
-        // this.downloadOfflineMapPack(options, 'Cerrito')
       }
 
       this.setState({ maps: mapsArray }, this.downloadMapData)
