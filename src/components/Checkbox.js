@@ -4,7 +4,6 @@ import { TouchableHighlight, StyleSheet } from 'react-native'
 import { CheckBox } from 'react-native-elements'
 import colors from '../theme.json'
 import { getDraft } from '../screens/lifemap/helpers'
-import globalStyles from '../globalStyles'
 
 class Checkbox extends Component {
   state = { checked: false }
