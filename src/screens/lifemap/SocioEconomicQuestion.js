@@ -489,18 +489,20 @@ export class SocioEconomicQuestion extends Component {
                   />
                 )
               } else {
-                ;<TextInput
-                  multiline
-                  key={question.codeName}
-                  required={question.required}
-                  onChangeText={this.addSurveyData}
-                  placeholder={question.questionText}
-                  showErrors={showErrors}
-                  field={question.codeName}
-                  value={this.getFieldValue(draft, question.codeName) || ''}
-                  detectError={this.detectError}
-                  readonly={this.readOnly}
-                />
+                return (
+                  <TextInput
+                    multiline
+                    key={question.codeName}
+                    required={question.required}
+                    onChangeText={this.addSurveyData}
+                    placeholder={question.questionText}
+                    showErrors={showErrors}
+                    field={question.codeName}
+                    value={this.getFieldValue(draft, question.codeName) || ''}
+                    detectError={this.detectError}
+                    readonly={this.readOnly}
+                  />
+                )
               }
             })
         ) : (

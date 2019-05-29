@@ -310,14 +310,13 @@ describe('SocioEconomicQuestion screens', () => {
     })
 
     it('renders a TextInput for each text question for each family member', () => {
-      expect(wrapper.find(TextInput)).toHaveLength(2)
+      expect(wrapper.find(TextInput)).toHaveLength(3)
     })
 
     it('sets the correct TextInput props', () => {
       expect(wrapper.find(TextInput).first()).toHaveProp({
-        required: true,
-        placeholder:
-          'Please estimate your gross monthly household income (i.e, before taxes National Insurance contributions or other deductions)'
+        required: false,
+        placeholder: 'Please state household income'
       })
     })
 
