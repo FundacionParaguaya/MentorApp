@@ -2,7 +2,6 @@ import React, { Component } from 'react'
 import { ScrollView, View, Text, StyleSheet } from 'react-native'
 import PropTypes from 'prop-types'
 import { withNamespaces } from 'react-i18next'
-import { connect } from 'react-redux'
 import globalStyles from '../../globalStyles'
 import colors from '../../theme.json'
 import RoundImage from '../../components/RoundImage'
@@ -23,7 +22,7 @@ const navigationRules = {
 export class Terms extends Component {
   render() {
     const { t, navigation } = this.props
-    const { survey } = this.props.nav
+    const survey = navigation.getParam('survey')
 
     const page = navigation.getParam('page')
 
@@ -66,7 +65,8 @@ export class Terms extends Component {
               navigation.navigate(
                 navigationRules[navigation.getParam('page')].nextPage,
                 {
-                  page: navigationRules[navigation.getParam('page')].param
+                  page: navigationRules[navigation.getParam('page')].param,
+                  survey
                 }
               )
             }
@@ -79,15 +79,10 @@ export class Terms extends Component {
 
 Terms.propTypes = {
   t: PropTypes.func.isRequired,
-  navigation: PropTypes.object.isRequired,
-  nav: PropTypes.object.isRequired
+  navigation: PropTypes.object.isRequired
 }
 
-const mapStateToProps = ({ nav }) => ({
-  nav
-})
-
-export default withNamespaces()(connect(mapStateToProps)(Terms))
+export default withNamespaces()(Terms)
 
 const styles = StyleSheet.create({
   contentContainer: {

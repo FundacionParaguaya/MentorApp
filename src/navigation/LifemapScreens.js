@@ -21,7 +21,6 @@ export default {
   Terms: {
     screen: TermsView,
     navigationOptions: ({ navigation }) => ({
-      ...generateNavStyles({ navigation }),
       ...addCloseIcon(navigation),
       headerTitle: (
         <Title title="views.termsConditions" style={{ marginLeft: 20 }} />
@@ -31,7 +30,6 @@ export default {
   Privacy: {
     screen: TermsView,
     navigationOptions: ({ navigation }) => ({
-      ...generateNavStyles({ navigation }),
       ...addCloseIcon(navigation),
       headerTitle: (
         <Title title="views.privacyPolicy" style={{ marginLeft: 20 }} />
@@ -137,7 +135,6 @@ export default {
   AddPriority: {
     screen: AddPriorityView,
     navigationOptions: ({ navigation }) => ({
-      ...generateNavStyles({ navigation }),
       ...addCloseIcon(navigation),
       headerTitle: (
         <Title title="views.yourLifeMap" style={{ marginLeft: 20 }} />
@@ -147,7 +144,6 @@ export default {
   AddAchievement: {
     screen: AddAchievementView,
     navigationOptions: ({ navigation }) => ({
-      ...generateNavStyles({ navigation }),
       ...addCloseIcon(navigation),
       headerTitle: (
         <Title title="views.yourLifeMap" style={{ marginLeft: 20 }} />
@@ -157,7 +153,6 @@ export default {
   Final: {
     screen: FinalView,
     navigationOptions: ({ navigation }) => ({
-      ...generateNavStyles({ navigation }),
       ...addCloseIcon(navigation),
       headerTitle: <Title title="general.thankYou" style={{ marginLeft: 20 }} />
     })

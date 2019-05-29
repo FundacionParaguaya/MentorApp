@@ -1,8 +1,11 @@
 import React from 'react'
 import { shallow } from 'enzyme'
-import { AddAchievement } from '../lifemap/AddAchievement'
-import TextInput from '../../components/TextInput'
+import { Text } from 'react-native'
+import Icon from 'react-native-vector-icons/MaterialCommunityIcons'
 import StickyFooter from '../../components/StickyFooter'
+import { AddPriority } from '../lifemap/AddPriority'
+import TextInput from '../../components/TextInput'
+import Counter from '../../components/Counter'
 import draft from '../__mocks__/draftMock.json'
 
 const createTestProps = props => ({
@@ -29,18 +32,17 @@ const createTestProps = props => ({
     {
       draftId: 2,
       surveyId: 1,
-      achievements: [{ indicator: 'income' }]
+      priorities: []
     }
   ],
   ...props
 })
 
-describe('AddAchievement View', () => {
+describe('AddPriority View', () => {
   let wrapper
-  let props
   beforeEach(() => {
-    props = createTestProps()
-    wrapper = shallow(<AddAchievement {...props} />)
+    const props = createTestProps()
+    wrapper = shallow(<AddPriority {...props} />)
   })
   describe('rendering', () => {
     it('renders the continue button with proper label', () => {
@@ -48,59 +50,54 @@ describe('AddAchievement View', () => {
         continueLabel: 'general.save'
       })
     })
+    it('renders Icon', () => {
+      expect(wrapper.find(Icon)).toHaveLength(1)
+    })
+    it('renders Text', () => {
+      expect(wrapper.find(Text)).toHaveLength(2)
+    })
+  })
 
-    it('shows errors if form is incorrect', () => {
-      wrapper.instance().errorsDetected = ['country']
-
+  describe('functionality', () => {
+    it('does not save the priority if no months entered', () => {
       wrapper
         .find(StickyFooter)
         .props()
         .handleClick()
 
-      expect(wrapper).toHaveState({
-        showErrors: true
-      })
+      expect(
+        wrapper.instance().props.addSurveyPriorityAcheivementData
+      ).toHaveBeenCalledTimes(0)
     })
-  })
 
-  describe('functionality', () => {
     it('has correct initial state', () => {
       expect(wrapper.instance().state).toEqual({
-        errorsDetected: [],
         action: '',
-        roadmap: '',
-        showErrors: false,
+        estimatedDate: null,
         indicator: 'income',
+        reason: '',
+        errorsDetected: [],
+        validationError: false,
+        showErrors: false,
         draft: expect.any(Object)
       })
     })
-
-    it('records action to state', () => {
+    it('gets reason value', () => {
       wrapper
         .find(TextInput)
         .first()
         .props()
-        .onChangeText('Some action')
-      expect(wrapper.instance().state.action).toEqual('Some action')
+        .onChangeText('Some reason')
+      expect(wrapper.instance().state.reason).toEqual('Some reason')
     })
-
-    it('records roadmap to state', () => {
+    it('gets action value', () => {
       wrapper
         .find(TextInput)
         .last()
         .props()
-        .onChangeText('Some roadmap')
-      expect(wrapper.instance().state.roadmap).toEqual('Some roadmap')
+        .onChangeText('Some action')
+      expect(wrapper.instance().state.action).toEqual('Some action')
     })
-  })
-
-  it('detects an error', () => {
-    wrapper.instance().detectError(true, 'phoneNumber')
-    wrapper.instance().detectError(true, 'months')
-    expect(wrapper.instance().errorsDetected).toEqual(['phoneNumber', 'months'])
-
-    wrapper.instance().detectError(false, 'phoneNumber')
-    expect(wrapper.instance().errorsDetected).toEqual(['months'])
   })
 })
 
@@ -109,7 +106,7 @@ describe('Render optimization', () => {
   let props
   beforeEach(() => {
     props = createTestProps()
-    wrapper = shallow(<AddAchievement {...props} />)
+    wrapper = shallow(<AddPriority {...props} />)
   })
   it('checks if screen is focused before updating', () => {
     wrapper.setProps({
@@ -133,7 +130,7 @@ describe('Render optimization', () => {
     props = createTestProps({
       navigation: { ...props.navigation, isFocused: jest.fn(() => false) }
     })
-    wrapper = shallow(<AddAchievement {...props} />)
+    wrapper = shallow(<AddPriority {...props} />)
     expect(wrapper.instance().props.drafts[1]).toBeFalsy()
   })
 })

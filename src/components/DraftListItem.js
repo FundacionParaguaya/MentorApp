@@ -1,5 +1,6 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
+import Icon from 'react-native-vector-icons/MaterialIcons'
 import { Text, StyleSheet, View } from 'react-native'
 import moment from 'moment'
 import 'moment/locale/es'
@@ -47,6 +48,10 @@ class DraftListItem extends Component {
     return string.charAt(0).toUpperCase() + string.slice(1)
   }
 
+  handleClick = () => {
+    this.props.handleClick(this.props.item)
+  }
+
   render() {
     const { item, lng } = this.props
     const itemCreateDateWithLocale = moment(item.created)
@@ -56,7 +61,7 @@ class DraftListItem extends Component {
     return (
       <ListItem
         style={{ ...styles.listItem, ...styles.borderBottom }}
-        onPress={this.props.handleClick}
+        onPress={this.handleClick}
       >
         <View>
           <Text
@@ -82,6 +87,7 @@ class DraftListItem extends Component {
             {this.setStatusTitle(this.props.item.status)}
           </Text>
         </View>
+        <Icon name="navigate-next" size={23} color={colors.lightdark} />
       </ListItem>
     )
   }

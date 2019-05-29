@@ -1,27 +1,30 @@
 import React, { Component } from 'react'
 import { View, Text } from 'react-native'
-import { connect } from 'react-redux'
 import PropTypes from 'prop-types'
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons'
 import { Divider } from 'react-native-elements'
 import { withNamespaces } from 'react-i18next'
-import { addSurveyPriorityAcheivementData } from '../../redux/actions'
 import StickyFooter from '../../components/StickyFooter'
 import globalStyles from '../../globalStyles'
 import colors from '../../theme.json'
 import TextInput from '../../components/TextInput'
-import { getDraft } from './helpers'
 import Select from '../../components/Select'
+
 export class AddPriority extends Component {
+  survey = this.props.navigation.getParam('survey')
+  readOnly = this.props.navigation.getParam('readOnly')
   errorsDetected = []
   state = {
     reason: '',
     action: '',
     estimatedDate: null,
     validationError: false,
-    indicator: this.props.navigation.getParam('indicator'),
     showErrors: false,
-    errorsDetected: []
+    errorsDetected: [],
+    indicator: this.props.navigation.getParam('indicator'),
+    draft:
+      this.props.navigation.getParam('familyLifemap') ||
+      this.props.navigation.getParam('draft')
   }
 
   shouldComponentUpdate() {
@@ -37,13 +40,14 @@ export class AddPriority extends Component {
   }
 
   componentDidMount() {
-    const draft = this.getData()
+    const { draft } = this.state
     const priority = this.getPriorityValue(draft)
 
     this.setState(priority)
 
     this.props.navigation.setParams({
-      withoutCloseButton: this.props.nav.draftId ? false : true
+      getCurrentDraftState: () => this.state.draft,
+      withoutCloseButton: this.readOnly ? false : true
     })
   }
   detectError = (error, field) => {
@@ -58,24 +62,47 @@ export class AddPriority extends Component {
     })
   }
 
-  getData = () =>
-    this.props.nav.draftId
-      ? getDraft()
-      : this.props.navigation.getParam('familyLifemap')
-
   addPriority = () => {
     if (!this.state.estimatedDate) {
       this.setState({
         validationError: true
       })
     } else {
-      const { reason, action, estimatedDate, indicator } = this.state
-      this.props.addSurveyPriorityAcheivementData({
-        id: this.props.nav.draftId,
-        category: 'priorities',
-        payload: { reason, action, estimatedDate, indicator }
-      })
+      const { reason, action, estimatedDate, indicator, draft } = this.state
+
+      const priorities = draft.priorities
+
+      const item = priorities.filter(
+        item => item.indicator === action.payload.indicator
+      )[0]
+
+      let updatedDraft = draft
+
+      // If item exists update it
+      if (item) {
+        const index = priorities.indexOf(item)
+        updatedDraft = {
+          ...draft,
+          priorities: [
+            ...priorities.slice(0, index),
+            { reason, action, estimatedDate, indicator },
+            ...priorities.slice(index + 1)
+          ]
+        }
+      } else {
+        // If item does not exist create it
+        updatedDraft = {
+          ...draft,
+          priorities: [
+            ...priorities,
+            { reason, action, estimatedDate, indicator }
+          ]
+        }
+      }
+
       this.props.navigation.replace('Overview', {
+        draft: updatedDraft,
+        survey: this.survey,
         resumeDraft: false
       })
     }
@@ -91,10 +118,8 @@ export class AddPriority extends Component {
 
   render() {
     const { t } = this.props
-    const { validationError, reason, action, estimatedDate } = this.state
-    const data = this.getData()
-    const priority = this.getPriorityValue(data)
-    const { draftId, readonly } = this.props.nav
+    const { validationError, reason, action, estimatedDate, draft } = this.state
+    const priority = this.getPriorityValue(draft)
     const { showErrors } = this.state
     let allOptionsNums = []
     for (let x = 1; x < 25; x++) {
@@ -104,7 +129,7 @@ export class AddPriority extends Component {
       <StickyFooter
         continueLabel={t('general.save')}
         handleClick={this.addPriority}
-        visible={!!draftId}
+        visible={!this.readOnly}
       >
         <View style={globalStyles.container}>
           <Text style={globalStyles.h2}>
@@ -133,7 +158,7 @@ export class AddPriority extends Component {
           label={t('views.lifemap.whyDontYouHaveIt')}
           value={priority ? priority.reason : ''}
           multiline
-          readonly={readonly}
+          readonly={this.readonly}
         />
         <TextInput
           label={t('views.lifemap.whatWillYouDoToGetIt')}
@@ -141,18 +166,18 @@ export class AddPriority extends Component {
           placeholder={action ? '' : t('views.lifemap.writeYourAnswerHere')}
           value={priority ? priority.action : ''}
           multiline
-          readonly={readonly}
+          readonly={this.readonly}
         />
         <View>
           <Select
             id="howManyMonthsWillItTake"
             required
             onChange={this.editCounter}
-            readonly={readonly}
+            readonly={this.readOnly}
             label={t('views.lifemap.howManyMonthsWillItTake')}
             placeholder={t('views.lifemap.howManyMonthsWillItTake')}
             field="howManyMonthsWillItTake"
-            value={this.state.estimatedDate || ''}
+            value={estimatedDate || ''}
             detectError={this.detectError}
             showErrors={showErrors}
             options={allOptionsNums}
@@ -173,22 +198,7 @@ export class AddPriority extends Component {
 
 AddPriority.propTypes = {
   t: PropTypes.func.isRequired,
-  navigation: PropTypes.object.isRequired,
-  nav: PropTypes.object.isRequired,
-  addSurveyPriorityAcheivementData: PropTypes.func.isRequired
+  navigation: PropTypes.object.isRequired
 }
 
-const mapDispatchToProps = {
-  addSurveyPriorityAcheivementData
-}
-
-const mapStateToProps = ({ nav }) => ({
-  nav
-})
-
-export default withNamespaces()(
-  connect(
-    mapStateToProps,
-    mapDispatchToProps
-  )(AddPriority)
-)
+export default withNamespaces()(AddPriority)

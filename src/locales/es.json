@@ -110,6 +110,8 @@
       "gettingYourLocation": "Obteniendo tu ubicación...",
       "mapUnavailavleOffline": "Desafortunadamente, no podemos cargar el mapa porque estás sin conexión.",
       "weHaveLocation": "Sin embargo, pudimos obtener la ubicación de su dispositivo.",
+      "mapsEnabled": "Mapas habilitados para esta encuesta",
+      "mapNotListedAbove": "Mi ubicación no está incluida arriba",
       "neitherMapNorLocation": "Desafortunadamente, no podemos cargar el mapa ni obtener la ubicación de su dispositivo.",
       "describeLocation": "¿Podría describir su ubicación de la forma más precisa posible a continuación?",
       "error": "No se puede visualizar el perfil de familia",

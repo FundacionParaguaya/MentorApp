@@ -6,20 +6,30 @@ import FamilyView from '../screens/Family'
 import Title from './Title'
 import { generateNavStyles, addMenuIcon } from './helpers'
 
-export default createStackNavigator({
-  Families: {
-    screen: FamiliesView,
-    navigationOptions: ({ navigation }) => ({
-      ...generateNavStyles({ navigation }),
-      ...addMenuIcon(navigation),
-      headerTitle: <Title title="views.families" />
-    })
+export default createStackNavigator(
+  {
+    Families: {
+      screen: FamiliesView,
+      navigationOptions: ({ navigation }) => ({
+        ...generateNavStyles({ navigation }),
+        ...addMenuIcon(navigation),
+        headerTitle: <Title title="views.families" />
+      })
+    },
+    Family: {
+      screen: FamilyView,
+      navigationOptions: ({ navigation }) => ({
+        ...generateNavStyles({ navigation })
+      })
+    },
+    ...LifemapScreens
   },
-  Family: {
-    screen: FamilyView,
-    navigationOptions: ({ navigation }) => ({
-      ...generateNavStyles({ navigation })
+  {
+    transitionConfig: () => ({
+      screenInterpolator: () => null,
+      transitionSpec: {
+        duration: 0
+      }
     })
-  },
-  ...LifemapScreens
-})
+  }
+)

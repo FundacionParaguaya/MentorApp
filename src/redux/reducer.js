@@ -8,6 +8,7 @@ import {
   LOAD_SURVEYS_COMMIT,
   LOAD_FAMILIES_COMMIT,
   CREATE_DRAFT,
+  UPDATE_DRAFT,
   ADD_SURVEY_DATA,
   ADD_SURVEY_PRIORITY_ACHEIVEMENT_DATA,
   DELETE_SURVEY_PRIORITY_ACHEIVEMENT_DATA,
@@ -99,7 +100,17 @@ const nodeEnv = process.env
 export const drafts = (state = [], action) => {
   switch (action.type) {
     case CREATE_DRAFT:
-      return [...state, { ...action.payload, status: 'Draft' }]
+      return [...state, action.payload]
+
+    case UPDATE_DRAFT:
+      return state.map(draft => {
+        // if this is the draft we are editing
+        if (draft.draftId === action.id) {
+          return action.payload
+        } else {
+          return draft
+        }
+      })
 
     case ADD_SURVEY_PRIORITY_ACHEIVEMENT_DATA:
       return state.map(draft => {
@@ -487,12 +498,9 @@ export const sync = (
 // Navigation
 export const nav = (
   state = {
-    openModal: null,
-    beforeCloseModal: null,
     readonly: false,
     draftId: null,
-    survey: null,
-    deleteDraftOnExit: false
+    survey: null
   },
   action
 ) => {
@@ -584,12 +592,9 @@ export const rootReducer = (state, action) => {
         }
       },
       nav: {
-        openModal: null,
-        beforeCloseModal: null,
         readonly: false,
         draftId: null,
-        survey: null,
-        deleteDraftOnExit: false
+        survey: null
       }
     }
   }

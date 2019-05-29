@@ -22,8 +22,7 @@ export class Loading extends Component {
     syncingServerData: false, // know when to show that data is synced
     cachingImages: false,
     downloadingMap: false,
-    offlineRegionStatus: null,
-    mapDownloadError: null
+    maps: []
   }
 
   syncSurveys = resync => {
@@ -57,7 +56,7 @@ export class Loading extends Component {
   syncFamilies = () => {
     // if families are synced skip to caching images
     if (this.props.sync.families) {
-      this.downloadMapData()
+      this.checkOfflineMaps()
     } else {
       this.props.loadFamilies(url[this.props.env], this.props.user.token)
     }
@@ -67,43 +66,56 @@ export class Loading extends Component {
     this.props.surveys.some(survey => survey.title && survey.title === title)
 
   downloadOfflineMapPack = (options, name) => {
-    MapboxGL.offlineManager.getPack(name).then(pack => {
-      if (!pack) {
-        MapboxGL.offlineManager.createPack(
-          {
-            name,
-            styleURL: MapboxGL.StyleURL.Street,
-            ...options
-          },
-          this.onMapDownloadProgress,
-          this.onMapDownloadError
-        )
-      } else {
-        this.setState({
-          offlineRegionStatus: { percentage: 100 }
-        })
+    MapboxGL.offlineManager.getPack(name).then(async pack => {
+      // if pack exists delete it and re-download it
+      if (pack) {
+        await MapboxGL.offlineManager.deletePack(name)
       }
+
+      MapboxGL.offlineManager.createPack(
+        {
+          name,
+          styleURL: MapboxGL.StyleURL.Street,
+          ...options
+        },
+        this.onMapDownloadProgress,
+        this.onMapDownloadError
+      )
     })
   }
 
-  downloadMapData = () => {
+  downloadMapData() {
+    this.state.maps.forEach(map =>
+      this.downloadOfflineMapPack(map.options, map.name)
+    )
+  }
+
+  checkOfflineMaps = () => {
     this.setState({
       downloadingMap: true
     })
 
-    // download GECO map is that survey is in the synced ones
+    const mapsArray = []
+
+    const surveysWithOfflineMaps = this.props.surveys.filter(
+      survey => survey.surveyConfig.offlineMaps
+    )
+
     if (
-      this.isSurveyInSynced('Chile - Geco') ||
+      surveysWithOfflineMaps ||
       this.isSurveyInSynced('Paraguay - Activate, FUPA')
     ) {
-      // check for the GECO pack
-      if (this.isSurveyInSynced('Chile - Geco')) {
-        const options = {
-          minZoom: 10,
-          maxZoom: 13,
-          bounds: [[-70.6626, -24.1093], [-69.7407, -22.7571]]
-        }
-        this.downloadOfflineMapPack(options, 'GECO')
+      if (surveysWithOfflineMaps) {
+        surveysWithOfflineMaps.forEach(survey => {
+          survey.surveyConfig.offlineMaps.forEach(map => {
+            const options = {
+              minZoom: 10,
+              maxZoom: 13,
+              bounds: [map.from, map.to]
+            }
+            mapsArray.push({ name: map.name, statue: 0, options })
+          })
+        })
       }
 
       // check for Cerrito pack
@@ -113,8 +125,10 @@ export class Loading extends Component {
           maxZoom: 13,
           bounds: [[-70.6626, -24.1093], [-69.7407, -22.7571]]
         }
-        this.downloadOfflineMapPack(options, 'Cerrito')
+        mapsArray.push({ name: 'Cerrito', statue: 0, options })
       }
+
+      this.setState({ maps: mapsArray }, this.downloadMapData)
     } else {
       this.handleImageCaching()
     }
@@ -122,23 +136,19 @@ export class Loading extends Component {
 
   // update map download progress
   onMapDownloadProgress = (offlineRegion, offlineRegionStatus) => {
-    if (!this.state.offlineRegionStatus) {
-      this.setState({
-        offlineRegionStatus: { percentage: 0 }
-      })
-    } else if (
-      offlineRegionStatus.percentage > this.state.offlineRegionStatus.percentage
-    ) {
-      this.setState({
-        offlineRegionStatus
-      })
-    }
+    const updatedMaps = this.state.maps
+
+    updatedMaps.find(
+      map => map.name === offlineRegionStatus.name
+    ).status = Math.trunc(offlineRegionStatus.percentage)
+
+    this.setState({
+      maps: updatedMaps
+    })
   }
 
   onMapDownloadError = (offlineRegion, mapDownloadError) => {
-    this.setState({
-      mapDownloadError
-    })
+    console.log('error', offlineRegion, mapDownloadError)
   }
 
   componentDidMount() {
@@ -179,20 +189,17 @@ export class Loading extends Component {
 
     // if families are synced check for map data
     if (!prevProps.sync.families && this.props.sync.families) {
-      this.downloadMapData()
+      this.checkOfflineMaps()
     }
 
     if (
       this.props.surveys.length &&
       !this.props.offline.outbox.lenght &&
-      this.state.offlineRegionStatus &&
-      this.state.offlineRegionStatus.percentage === 100 &&
+      this.state.maps.every(map => map.status === 100) &&
       !this.state.cachingImages
     ) {
       this.setState({ cachingImages: true })
-      setTimeout(() => {
-        this.handleImageCaching()
-      }, 1000)
+      this.handleImageCaching()
     }
 
     // if everything is synced navigate to home
@@ -209,9 +216,9 @@ export class Loading extends Component {
     const { sync, surveys, families } = this.props
     const {
       syncingServerData,
-      offlineRegionStatus,
       cachingImages,
-      downloadingMap
+      downloadingMap,
+      maps
     } = this.state
 
     return (
@@ -256,21 +263,19 @@ export class Loading extends Component {
               )}
 
               {downloadingMap && (
-                <View style={{ flexDirection: 'row' }}>
-                  {cachingImages && (
-                    <Icon name="check" color={colors.palegreen} size={18} />
+                <View style={styles.mapWrapper}>
+                  {maps.map(map =>
+                    map.status ? (
+                      <Text
+                        key={map.name}
+                        style={
+                          map.status === 100 ? { color: colors.palegreen } : {}
+                        }
+                      >
+                        {`${map.name} map (${map.status}%)`}
+                      </Text>
+                    ) : null
                   )}
-                  <Text
-                    style={cachingImages ? { color: colors.palegreen } : {}}
-                  >
-                    {offlineRegionStatus
-                      ? `Downloading offline maps ${
-                          cachingImages
-                            ? 100
-                            : offlineRegionStatus.percentage.toFixed(0)
-                        } %`
-                      : 'Checking for offline maps'}
-                  </Text>
                 </View>
               )}
 
@@ -326,6 +331,10 @@ const styles = StyleSheet.create({
   view: {
     alignItems: 'center',
     flex: 1,
+    justifyContent: 'center'
+  },
+  mapWrapper: {
+    alignItems: 'center',
     justifyContent: 'center'
   }
 })

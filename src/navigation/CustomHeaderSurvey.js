@@ -7,7 +7,8 @@ import { connect } from 'react-redux'
 
 export class CustomHeaderSurveyComponent extends Component {
   render() {
-    const { navigation, nav } = this.props
+    const { navigation } = this.props
+    const survey = navigation.getParam('survey')
 
     return (
       <View
@@ -21,13 +22,13 @@ export class CustomHeaderSurveyComponent extends Component {
         accessibilityLiveRegion="assertive"
       >
         <Text style={styles.dimension}>
-          {nav.survey.surveyStoplightQuestions[
+          {survey.surveyStoplightQuestions[
             navigation.state.params.step
           ].dimension.toUpperCase()}
         </Text>
         <Text style={styles.title}>
           {
-            nav.survey.surveyStoplightQuestions[navigation.state.params.step]
+            survey.surveyStoplightQuestions[navigation.state.params.step]
               .questionText
           }
         </Text>
