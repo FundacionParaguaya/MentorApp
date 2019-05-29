@@ -87,7 +87,7 @@ describe('Family Location component', () => {
 
     it('shows form when out of boundries for offline map', () => {
       wrapper.instance().getDeviceCoordinates(false)
-      expect(wrapper.find(MapboxGL.MapView)).toHaveLength(0)
+      expect(wrapper.find(MapboxGL.MapView)).toHaveLength(1)
     })
   })
   describe('showing the form instead of the map', () => {
