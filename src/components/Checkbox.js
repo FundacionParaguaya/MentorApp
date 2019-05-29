@@ -5,6 +5,7 @@ import { CheckBox } from 'react-native-elements'
 import colors from '../theme.json'
 import { getDraft } from '../screens/lifemap/helpers'
 import globalStyles from '../globalStyles'
+
 class Checkbox extends Component {
   state = { checked: false }
 
@@ -52,7 +53,7 @@ class Checkbox extends Component {
           checked={checked}
           containerStyle={containerStyle || styles.containerStyle}
           textStyle={[
-            textStyle || globalStyles.subline,
+            textStyle || styles.label,
             showErrors && !checked ? styles.error : {}
           ]}
           accessibilityLabel={`${this.props.title}${
@@ -78,12 +79,19 @@ Checkbox.propTypes = {
 export default Checkbox
 
 const styles = StyleSheet.create({
+  label: {
+    color: colors.grey,
+    fontWeight: 'normal'
+  },
   touchable: {
-    justifyContent: 'center'
+    justifyContent: 'center',
+    marginBottom: 0
   },
   containerStyle: {
     backgroundColor: 'transparent',
-    borderWidth: 0
+    borderWidth: 0,
+    marginBottom: 0,
+    paddingBottom: 0
   },
   error: {
     color: colors.palered,

@@ -550,7 +550,6 @@ export class SocioEconomicQuestion extends Component {
                           <Checkbox
                             containerStyle={styles.checkbox}
                             checkboxColor={colors.green}
-                            textStyle={styles.checkboxText}
                             showErrors={showErrors}
                             onIconPress={() =>
                               this.onPressCheckbox(e.value, question.codeName)

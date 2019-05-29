@@ -21,7 +21,6 @@ import arrow from '../../assets/images/selectArrow.png'
 import colors from '../theme.json'
 import globalStyles from '../globalStyles'
 import i18n from '../i18n'
-import { getDraft } from '../screens/lifemap/helpers'
 import { connect } from 'react-redux'
 const countryList = countries(require('localized-countries/data/en')).array()
 
@@ -72,10 +71,11 @@ class Select extends Component {
     this.props.onChange(value, this.props.otherField)
   }
 
-  validateInputRadio = (value, i) => {
+  validateInputRadio = value => {
+    console.log(value)
     this.setState({
       isOpen: false,
-      radioChecked: i
+      radioChecked: value
     })
     if (this.props.required && !value) {
       this.handleError(i18n.t('validation.fieldIsRequired'))
@@ -97,24 +97,9 @@ class Select extends Component {
       this.props.detectError(true, this.props.field)
     }
 
-    const draft = getDraft()
-    if (this.state.radioChecked === null) {
-      this.props.surveys.forEach(e => {
-        if (e.id === draft.surveyId) {
-          e.surveyEconomicQuestions.forEach(ele => {
-            if (ele.answerType === 'radio') {
-              draft.economicSurveyDataList.forEach(e => {
-                if (e.key === ele.codeName) {
-                  ele.options.forEach((el, i) => {
-                    if (el.value === e.value) {
-                      this.setState({ radioChecked: i })
-                    }
-                  })
-                }
-              })
-            }
-          })
-        }
+    if (this.props.radio) {
+      this.setState({
+        radioChecked: this.props.value
       })
     }
 
@@ -206,6 +191,7 @@ class Select extends Component {
         })
       }
     }
+
     return (
       <View>
         <TouchableHighlight
@@ -215,55 +201,44 @@ class Select extends Component {
         >
           <View style={styles.wrapper}>
             {radio ? (
-              <View
-                style={{
-                  justifyContent: 'center',
-                  alignItems: 'center'
-                }}
-              >
-                <RadioForm formHorizontal={true} animation={false}>
-                  <View
-                    style={{
-                      flexDirection: 'row',
-                      justifyContent: 'space-around',
-                      alignItems: 'space-around',
-                      flexWrap: 'wrap'
-                    }}
-                  >
-                    {radio_props.map((obj, i) => {
-                      return (
-                        <RadioButton labelHorizontal={true} key={i}>
-                          <RadioButtonInput
-                            obj={obj}
-                            index={i}
-                            isSelected={this.state.radioChecked === i}
-                            onPress={value => this.validateInputRadio(value, i)}
-                            borderWidth={2}
-                            buttonInnerColor={'#50AA47'}
-                            buttonOuterColor={
-                              this.state.radioChecked === i
-                                ? '#50AA47'
-                                : '#50AA47'
-                            }
-                            buttonSize={20}
-                            buttonOuterSize={30}
-                            buttonStyle={{}}
-                            buttonWrapStyle={{ marginLeft: 10 }}
-                          />
-                          <RadioButtonLabel
-                            obj={obj}
-                            index={i}
-                            labelHorizontal={true}
-                            onPress={value => this.validateInputRadio(value, i)}
-                            labelStyle={{ fontSize: 17, color: '#4a4a4a' }}
-                            labelWrapStyle={{}}
-                          />
-                        </RadioButton>
-                      )
-                    })}
-                  </View>
-                </RadioForm>
-              </View>
+              <RadioForm formHorizontal={true} animation={false}>
+                <View
+                  style={{
+                    width: '100%',
+                    paddingHorizontal: 10,
+                    flexDirection: 'row',
+                    justifyContent: 'space-around',
+                    flexWrap: 'wrap'
+                  }}
+                >
+                  {radio_props.map((obj, i) => {
+                    return (
+                      <RadioButton labelHorizontal={true} key={i}>
+                        <RadioButtonInput
+                          obj={obj}
+                          index={i}
+                          isSelected={this.state.radioChecked === obj.value}
+                          onPress={this.validateInputRadio}
+                          borderWidth={2}
+                          buttonInnerColor={colors.palegreen}
+                          buttonOuterColor={colors.palegrey}
+                          buttonSize={12}
+                          buttonOuterSize={20}
+                          buttonStyle={{}}
+                        />
+                        <RadioButtonLabel
+                          obj={obj}
+                          index={i}
+                          labelHorizontal={true}
+                          onPress={this.validateInputRadio}
+                          labelStyle={{ fontSize: 17, color: '#4a4a4a' }}
+                          labelWrapStyle={{}}
+                        />
+                      </RadioButton>
+                    )
+                  })}
+                </View>
+              </RadioForm>
             ) : (
               <View
                 style={[
