@@ -1,11 +1,6 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
-import {
-  View,
-  Text,
-  StyleSheet,
-  TouchableHighlight
-} from 'react-native'
+import { View, Text, StyleSheet, TouchableHighlight } from 'react-native'
 import Icon from 'react-native-vector-icons/MaterialIcons'
 import colors from '../theme.json'
 import Image from './CachedImage'
@@ -35,7 +30,11 @@ export default class SliderItem extends Component {
         activeOpacity={1}
         underlayColor={'transparent'}
         style={styles.slide}
-        onPress={this.props.onPress}
+        onPress={() =>
+          setTimeout(() => {
+            this.props.onPress()
+          }, 0)
+        }
         onHideUnderlay={() => this.togglePressedState(false)}
         onShowUnderlay={() => this.togglePressedState(true)}
         accessibilityLabel={value === slide.value ? 'selected' : 'deselected'}

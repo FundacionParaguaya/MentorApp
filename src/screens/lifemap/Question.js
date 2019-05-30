@@ -172,7 +172,7 @@ export class Question extends Component {
   render() {
     const { draft } = this.state
 
-    const { t, dimensions, navigation } = this.props
+    const { t } = this.props
     return (
       <StickyFooter
         handleClick={this.handleClick}
