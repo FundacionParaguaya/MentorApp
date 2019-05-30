@@ -3,7 +3,7 @@ import PropTypes from 'prop-types'
 import { TouchableHighlight, StyleSheet } from 'react-native'
 import { CheckBox } from 'react-native-elements'
 import colors from '../theme.json'
-import globalStyles from '../globalStyles'
+import { getDraft } from '../screens/lifemap/helpers'
 
 class Checkbox extends Component {
   state = { checked: false }
@@ -12,11 +12,30 @@ class Checkbox extends Component {
     this.props.onIconPress(!this.state.checked)
     this.setState({ checked: !this.state.checked })
   }
-
+  componentDidMount() {
+    const draft = getDraft()
+    if (
+      typeof this.props.value !== 'undefined' &&
+      this.props.value !== null &&
+      this.props.codeName !== 'undefined' &&
+      this.props.codeName !== null
+    ) {
+      draft.economicSurveyDataList.forEach(e => {
+        if (e.key === this.props.codeName) {
+          if (typeof e.multipleValue !== 'undefined') {
+            e.multipleValue.forEach(el => {
+              if (el === this.props.value) {
+                this.setState({ checked: true })
+              }
+            })
+          }
+        }
+      })
+    }
+  }
   render() {
     const { checked } = this.state
     const { containerStyle, textStyle, checkboxColor, showErrors } = this.props
-
     return (
       <TouchableHighlight
         underlayColor={'transparent'}
@@ -33,7 +52,7 @@ class Checkbox extends Component {
           checked={checked}
           containerStyle={containerStyle || styles.containerStyle}
           textStyle={[
-            textStyle || globalStyles.subline,
+            textStyle || styles.label,
             showErrors && !checked ? styles.error : {}
           ]}
           accessibilityLabel={`${this.props.title}${
@@ -49,6 +68,8 @@ Checkbox.propTypes = {
   title: PropTypes.string.isRequired,
   onIconPress: PropTypes.func.isRequired,
   containerStyle: PropTypes.object,
+  value: PropTypes.string,
+  codeName: PropTypes.string,
   checkboxColor: PropTypes.string,
   showErrors: PropTypes.bool,
   textStyle: PropTypes.object
@@ -57,12 +78,19 @@ Checkbox.propTypes = {
 export default Checkbox
 
 const styles = StyleSheet.create({
+  label: {
+    color: colors.grey,
+    fontWeight: 'normal'
+  },
   touchable: {
-    justifyContent: 'center'
+    justifyContent: 'center',
+    marginBottom: 0
   },
   containerStyle: {
     backgroundColor: 'transparent',
-    borderWidth: 0
+    borderWidth: 0,
+    marginBottom: 0,
+    paddingBottom: 0
   },
   error: {
     color: colors.palered,
