@@ -173,13 +173,6 @@ export class Question extends Component {
     const { draft } = this.state
 
     const { t, dimensions, navigation } = this.props
-    const { navigationHeight } = navigation.state.params
-    const headerHeight = navigationHeight ? navigationHeight : 95
-    const paddingOfStickyFooter = 15
-    const portrait = !!dimensions && isPortrait(dimensions)
-    const tablet = !!dimensions && isTablet(dimensions)
-    const bodyHeight = dimensions.height - headerHeight - paddingOfStickyFooter
-
     return (
       <StickyFooter
         handleClick={this.handleClick}
@@ -194,29 +187,13 @@ export class Question extends Component {
         }
         currentScreen="Question"
       >
-        <View
-          style={[
-            { height: bodyHeight },
-            tablet && portrait ? { marginTop: 30 } : {}
-          ]}
-        >
           <SliderComponent
             slides={this.slides}
             value={this.getFieldValue(this.indicator.codeName)}
             selectAnswer={this.selectAnswer}
-            bodyHeight={bodyHeight}
-            tablet={tablet}
-            portrait={portrait}
           />
           <View
-            style={[
-              styles.skip,
-              !tablet && !portrait
-                ? { height: 40 }
-                : tablet && portrait
-                ? { height: 120 }
-                : { height: 60 }
-            ]}
+            style={styles.skip}
           >
             {this.indicator.required ? (
               <Text>{t('views.lifemap.responseRequired')}</Text>
@@ -228,7 +205,6 @@ export class Question extends Component {
               />
             )}
           </View>
-        </View>
       </StickyFooter>
     )
   }
@@ -236,10 +212,10 @@ export class Question extends Component {
 
 const styles = StyleSheet.create({
   skip: {
-    alignItems: 'flex-end',
     justifyContent: 'center',
-    marginRight: 30
-    // marginTop: 0
+    alignItems: 'center',
+    paddingTop: 40,
+    paddingBottom: 30
   },
   link: {
     color: colors.palegreen
