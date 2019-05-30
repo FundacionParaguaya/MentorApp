@@ -364,7 +364,6 @@ export class SocioEconomicQuestion extends Component {
   }
   onPressCheckbox = (text, field) => {
     const draft = this.props.navigation.getParam('family') || this.getDraft()
-
     let deleteVal = false
     draft.economicSurveyDataList.forEach(e => {
       if (e.key === field) {
@@ -378,6 +377,7 @@ export class SocioEconomicQuestion extends Component {
         }
       }
     })
+
     if (!deleteVal) {
       this.props.addSurveyDataCheckBox(
         draft.draftId,
@@ -539,6 +539,17 @@ export class SocioEconomicQuestion extends Component {
                   />
                 )
               } else if (question.answerType === 'checkbox') {
+               let  multipleValue = []
+               //passing multipleValues from the checkbox question
+                draft.economicSurveyDataList.forEach(elem=>{
+                  if(elem.key === question.codeName){
+                    if(typeof elem.multipleValue !== 'undefined'){
+                      if(elem.multipleValue.length){
+                        multipleValue = elem.multipleValue
+                      }
+                    }
+                  }
+                })
                 return (
                   <View key={question.codeName}>
                     <Text style={{ marginLeft: 10 }}>
@@ -548,12 +559,14 @@ export class SocioEconomicQuestion extends Component {
                       return (
                         <View key={e.value}>
                           <Checkbox
+                            multipleValue={multipleValue}
                             containerStyle={styles.checkbox}
                             checkboxColor={colors.green}
                             showErrors={showErrors}
                             onIconPress={() =>
                               this.onPressCheckbox(e.value, question.codeName)
                             }
+                            readonly={this.readOnly}
                             title={e.text}
                             value={e.value}
                             codeName={question.codeName}

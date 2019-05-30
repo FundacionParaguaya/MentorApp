@@ -1,9 +1,8 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
-import { TouchableHighlight, StyleSheet } from 'react-native'
+import { TouchableHighlight, StyleSheet, View } from 'react-native'
 import { CheckBox } from 'react-native-elements'
 import colors from '../theme.json'
-import { getDraft } from '../screens/lifemap/helpers'
 
 class Checkbox extends Component {
   state = { checked: false }
@@ -13,22 +12,15 @@ class Checkbox extends Component {
     this.setState({ checked: !this.state.checked })
   }
   componentDidMount() {
-    const draft = getDraft()
     if (
       typeof this.props.value !== 'undefined' &&
       this.props.value !== null &&
       this.props.codeName !== 'undefined' &&
       this.props.codeName !== null
     ) {
-      draft.economicSurveyDataList.forEach(e => {
-        if (e.key === this.props.codeName) {
-          if (typeof e.multipleValue !== 'undefined') {
-            e.multipleValue.forEach(el => {
-              if (el === this.props.value) {
-                this.setState({ checked: true })
-              }
-            })
-          }
+      this.props.multipleValue.forEach(e => {
+        if (e === this.props.value) {
+          this.setState({ checked: true })
         }
       })
     }
@@ -36,43 +28,86 @@ class Checkbox extends Component {
   render() {
     const { checked } = this.state
     const { containerStyle, textStyle, checkboxColor, showErrors } = this.props
+    let renderOnlySelected = false
+    if (typeof this.props.readonly !== 'undefined') {
+      if (this.props.readonly) {
+        renderOnlySelected = true
+      }
+    }
     return (
-      <TouchableHighlight
-        underlayColor={'transparent'}
-        style={styles.touchable}
-        onPress={this.onIconPress}
-      >
-        <CheckBox
-          disabled
-          title={`${this.props.title}${showErrors && !checked ? ' *' : ''}`}
-          iconType="material"
-          checkedColor={checkboxColor || colors.palegreen}
-          checkedIcon="check-box"
-          uncheckedIcon="check-box-outline-blank"
-          checked={checked}
-          containerStyle={containerStyle || styles.containerStyle}
-          textStyle={[
-            textStyle || styles.label,
-            showErrors && !checked ? styles.error : {}
-          ]}
-          accessibilityLabel={`${this.props.title}${
-            showErrors && !checked ? ' *' : ''
-          } ${checked === true ? 'checked' : 'unchecked'}`}
-        />
-      </TouchableHighlight>
+      <View>
+        {renderOnlySelected ? (
+          <View>
+            {this.state.checked ? (
+              <TouchableHighlight
+                underlayColor={'transparent'}
+                style={styles.touchable}
+                
+              >
+                <CheckBox
+                  disabled
+                  title={`${this.props.title}${
+                    showErrors && !checked ? ' *' : ''
+                  }`}
+                  iconType="material"
+                  checkedColor={checkboxColor || colors.palegreen}
+                  checkedIcon="check-box"
+                  uncheckedIcon="check-box-outline-blank"
+                  checked={checked}
+                  containerStyle={containerStyle || styles.containerStyle}
+                  textStyle={[
+                    textStyle || styles.label,
+                    showErrors && !checked ? styles.error : {}
+                  ]}
+                  accessibilityLabel={`${this.props.title}${
+                    showErrors && !checked ? ' *' : ''
+                  } ${checked === true ? 'checked' : 'unchecked'}`}
+                />
+              </TouchableHighlight>
+            ) : null}
+          </View>
+        ) : (
+          <TouchableHighlight
+            underlayColor={'transparent'}
+            style={styles.touchable}
+            onPress={this.onIconPress}
+          >
+            <CheckBox
+              disabled
+              title={`${this.props.title}${showErrors && !checked ? ' *' : ''}`}
+              iconType="material"
+              checkedColor={checkboxColor || colors.palegreen}
+              checkedIcon="check-box"
+              uncheckedIcon="check-box-outline-blank"
+              checked={checked}
+              containerStyle={containerStyle || styles.containerStyle}
+              textStyle={[
+                textStyle || styles.label,
+                showErrors && !checked ? styles.error : {}
+              ]}
+              accessibilityLabel={`${this.props.title}${
+                showErrors && !checked ? ' *' : ''
+              } ${checked === true ? 'checked' : 'unchecked'}`}
+            />
+          </TouchableHighlight>
+        )}
+      </View>
     )
   }
 }
 
 Checkbox.propTypes = {
+  multipleValue: PropTypes.array,
   title: PropTypes.string.isRequired,
   onIconPress: PropTypes.func.isRequired,
   containerStyle: PropTypes.object,
+  navigation: PropTypes.object,
   value: PropTypes.string,
   codeName: PropTypes.string,
   checkboxColor: PropTypes.string,
   showErrors: PropTypes.bool,
-  textStyle: PropTypes.object
+  textStyle: PropTypes.object,
+  readonly: PropTypes.bool
 }
 
 export default Checkbox

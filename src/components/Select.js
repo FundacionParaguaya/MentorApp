@@ -72,7 +72,6 @@ class Select extends Component {
   }
 
   validateInputRadio = value => {
-    console.log(value)
     this.setState({
       isOpen: false,
       radioChecked: value
@@ -212,30 +211,62 @@ class Select extends Component {
                   }}
                 >
                   {radio_props.map((obj, i) => {
-                    return (
-                      <RadioButton labelHorizontal={true} key={i}>
-                        <RadioButtonInput
-                          obj={obj}
-                          index={i}
-                          isSelected={this.state.radioChecked === obj.value}
-                          onPress={this.validateInputRadio}
-                          borderWidth={2}
-                          buttonInnerColor={colors.palegreen}
-                          buttonOuterColor={colors.palegrey}
-                          buttonSize={12}
-                          buttonOuterSize={20}
-                          buttonStyle={{}}
-                        />
-                        <RadioButtonLabel
-                          obj={obj}
-                          index={i}
-                          labelHorizontal={true}
-                          onPress={this.validateInputRadio}
-                          labelStyle={{ fontSize: 17, color: '#4a4a4a' }}
-                          labelWrapStyle={{}}
-                        />
-                      </RadioButton>
-                    )
+                    if(readonly){
+                      if(this.state.radioChecked === obj.value){
+                        return (
+                          <RadioButton labelHorizontal={true} key={i}>
+                            <RadioButtonInput
+                              disabled={true}
+                              obj={obj}
+                              index={i}
+                              isSelected={this.state.radioChecked === obj.value}
+                              onPress={this.validateInputRadio}
+                              borderWidth={2}
+                              buttonInnerColor={colors.palegreen}
+                              buttonOuterColor={colors.palegrey}
+                              buttonSize={12}
+                              buttonOuterSize={20}
+                              buttonStyle={{}}
+                            />
+                            <RadioButtonLabel
+                              obj={obj}
+                              index={i}
+                              labelHorizontal={true}
+                              onPress={this.validateInputRadio}
+                              labelStyle={{ fontSize: 17, color: '#4a4a4a' }}
+                              labelWrapStyle={{}}
+                            />
+                          </RadioButton>
+                        )
+                      }
+                      
+                    }else{
+                      return (
+                        <RadioButton labelHorizontal={true} key={i}>
+                          <RadioButtonInput
+                            obj={obj}
+                            index={i}
+                            isSelected={this.state.radioChecked === obj.value}
+                            onPress={this.validateInputRadio}
+                            borderWidth={2}
+                            buttonInnerColor={colors.palegreen}
+                            buttonOuterColor={colors.palegrey}
+                            buttonSize={12}
+                            buttonOuterSize={20}
+                            buttonStyle={{}}
+                          />
+                          <RadioButtonLabel
+                            obj={obj}
+                            index={i}
+                            labelHorizontal={true}
+                            onPress={this.validateInputRadio}
+                            labelStyle={{ fontSize: 17, color: '#4a4a4a' }}
+                            labelWrapStyle={{}}
+                          />
+                        </RadioButton>
+                      )
+                    }
+                   
                   })}
                 </View>
               </RadioForm>
