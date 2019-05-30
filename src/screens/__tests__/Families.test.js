@@ -13,7 +13,8 @@ const createTestProps = props => ({
   t: value => value,
   navigation: {
     navigate: jest.fn(),
-    setParams: jest.fn()
+    setParams: jest.fn(),
+    getParam: jest.fn()
   },
   families: [
     {

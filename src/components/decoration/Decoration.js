@@ -86,6 +86,45 @@ export default class Decoration extends Component {
             <View style={styles.childContainer}>{this.props.children}</View>
           </View>
         )}
+        {variation === 'theFamily' && (
+          <View style={{ zIndex: -1, marginTop: 5 }}>
+            <View style={[styles.ballsContainer, { zIndex: 1 }]}>
+              <View>
+                <Orb
+                  size={25}
+                  color={colors.palered}
+                  position={{ x: -130, y: -60 }}
+                />
+                <Orb
+                  size={15}
+                  color={colors.palered}
+                  position={{ x: 130, y: 60 }}
+                />
+                <Orb
+                  size={35}
+                  color={colors.palegreen}
+                  position={{ x: -110, y: 55 }}
+                />
+                <Orb
+                  size={40}
+                  color={colors.palegold}
+                  position={{ x: -200, y: 10 }}
+                />
+                <Orb
+                  size={45}
+                  color={colors.palegreen}
+                  position={{ x: 155, y: -38 }}
+                />
+                <Orb
+                  size={35}
+                  color={colors.palegold}
+                  position={{ x: 40, y: -50 }}
+                />
+              </View>
+            </View>
+            <View style={styles.childContainer}>{this.props.children}</View>
+          </View>
+        )}
         {variation === 'familyMemberNamesBody' && (
           <View style={{ zIndex: -1 }}>
             <View style={[styles.ballsContainer, { zIndex: -1 }]}>

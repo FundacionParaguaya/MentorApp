@@ -46,7 +46,7 @@ describe('FamiliesListItem Component', () => {
       expect(wrapper.find(Text)).toHaveLength(2)
     })
     it('renders <Icon />', () => {
-      expect(wrapper.find(Icon)).toHaveLength(1)
+      expect(wrapper.find(Icon)).toHaveLength(2)
     })
     it('renders the correct date in second Text component', () => {
       expect(

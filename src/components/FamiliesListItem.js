@@ -39,7 +39,7 @@ class FamiliesListItem extends Component {
         disabled={family.snapshotList && !family.snapshotList.length}
       >
         <View>
-          { family.snapshotList &&
+          {family.snapshotList &&
             family.snapshotList[0] &&
             family.snapshotList[0].familyData.countFamilyMembers &&
             family.snapshotList[0].familyData.countFamilyMembers > 1 && (
@@ -86,6 +86,12 @@ class FamiliesListItem extends Component {
             </Text>
           )}
         </View>
+        <Icon
+          name="navigate-next"
+          style={{ position: 'relative', right: 20 }}
+          size={27}
+          color={colors.lightdark}
+        />
       </ListItem>
     )
   }

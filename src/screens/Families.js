@@ -4,6 +4,7 @@ import {
   ScrollView,
   ActivityIndicator,
   FlatList,
+  Image,
   View,
   Text,
   UIManager,
@@ -18,13 +19,12 @@ import colors from '../theme.json'
 import globalStyles from '../globalStyles'
 import SearchBar from '../components/SearchBar'
 import FamiliesListItem from '../components/FamiliesListItem'
+import mapPlaceholderLarge from '../../assets/images/map_placeholder_1000.png'
 
 export class Families extends Component {
-  static navigationOptions = ({ navigation }) => {
-    return {
-      title: navigation.getParam('title', 'Families')
-    }
-  }
+  static navigationOptions = ({ navigation }) => ({
+    title: navigation.getParam('title', 'Families')
+  })
 
   state = { search: '' }
   acessibleComponent = React.createRef()
@@ -90,7 +90,8 @@ export class Families extends Component {
         family.snapshotList
           ? survey.id === family.snapshotList[0].surveyId
           : survey.id === family.draft.surveyId
-      )
+          ),
+      retakeLifeMap: this.props.navigation.getParam('retakeLifeMap')
     })
   }
 
@@ -129,6 +130,7 @@ export class Families extends Component {
 
     return (
       <View style={[globalStyles.background, styles.container]}>
+        <Image style={styles.imagePlaceholder} source={mapPlaceholderLarge} />
         <SearchBar
           id="searchAddress"
           style={styles.search}
@@ -191,7 +193,11 @@ const styles = StyleSheet.create({
   spinner: {
     marginVertical: 5
   },
-  search: { margin: 10 },
+  search: {
+    marginHorizontal: 10,
+    marginBottom: 10,
+    marginTop: -70
+  },
   bar: {
     paddingLeft: 30,
     justifyContent: 'center',
@@ -200,6 +206,10 @@ const styles = StyleSheet.create({
   },
   familiesCount: {
     fontWeight: '600'
+  },
+  imagePlaceholder: {
+    width: '100%',
+    height: 170
   }
 })
 

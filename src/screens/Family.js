@@ -21,6 +21,7 @@ import FamilyTab from '../components/FamilyTab'
 import OverviewComponent from './lifemap/Overview'
 import RoundImage from '../components/RoundImage'
 import Button from '../components/Button'
+import StickyFooter from '../components/StickyFooter'
 import { updateNav } from '../redux/actions'
 import MapboxGL from '@mapbox/react-native-mapbox-gl'
 import marker from '../../assets/images/marker.png'
@@ -28,6 +29,7 @@ import mapPlaceholderLarge from '../../assets/images/map_placeholder_1000.png'
 
 export class Family extends Component {
   survey = this.props.navigation.getParam('survey')
+  isRetakeLifeMap = this.props.navigation.getParam('retakeLifeMap')
   // set the title of the screen to the family name
   static navigationOptions = ({ navigation }) => {
     return {
@@ -100,27 +102,36 @@ export class Family extends Component {
   survey = this.props.surveys.find(
     item => item.id === this.familyLifemap.surveyId
   )
+
   render() {
     const { activeTab } = this.state
     const { t, navigation } = this.props
     const { familyData } = this.familyLifemap
+    console.log(this.props.navigation.state)
     return (
+      <StickyFooter
+      handleClick={() => ({})}
+      continueLabel={'Choose this family'}
+      visible={!!this.isRetakeLifeMap}
+    >
       <ScrollView
         style={globalStyles.background}
         contentContainerStyle={styles.container}
       >
-        <View style={styles.tabs}>
-          <FamilyTab
-            title={t('views.family.details')}
-            onPress={() => this.setState({ activeTab: 'Details' })}
-            active={activeTab === 'Details'}
-          />
-          <FamilyTab
-            title={t('views.family.lifemap')}
-            onPress={() => this.setState({ activeTab: 'LifeMap' })}
-            active={activeTab === 'LifeMap'}
-          />
-        </View>
+        {!this.isRetakeLifeMap && (
+          <View style={styles.tabs}>
+            <FamilyTab
+              title={t('views.family.details')}
+              onPress={() => this.setState({ activeTab: 'Details' })}
+              active={activeTab === 'Details'}
+            />
+            <FamilyTab
+              title={t('views.family.lifemap')}
+              onPress={() => this.setState({ activeTab: 'LifeMap' })}
+              active={activeTab === 'LifeMap'}
+            />
+          </View>
+        )}
 
         {/* Details tab */}
         {activeTab === 'Details' ? (
@@ -140,7 +151,7 @@ export class Family extends Component {
                       +familyData.latitude
                     ]}
                     zoomLevel={15}
-                    style={{ width: '100%', height: 189 }}
+                    style={{ width: '100%', height: 219 }}
                     logoEnabled={false}
                     zoomEnabled={false}
                     rotateEnabled={false}
@@ -335,6 +346,7 @@ export class Family extends Component {
           </ScrollView>
         ) : null}
       </ScrollView>
+        </StickyFooter>
     )
   }
 }
@@ -420,7 +432,7 @@ const styles = StyleSheet.create({
     alignSelf: 'center',
     backgroundColor: 'white'
   },
-  imagePlaceholder: { width: '100%', height: 139 }
+  imagePlaceholder: { width: '100%', height: 169 }
 })
 const mapDispatchToProps = {
   updateNav

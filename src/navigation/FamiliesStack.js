@@ -4,17 +4,35 @@ import FamiliesView from '../screens/Families'
 import LifemapScreens from './LifemapScreens'
 import FamilyView from '../screens/Family'
 import Title from './Title'
-import { generateNavStyles, addMenuIcon } from './helpers'
+import { generateNavStyles, addMenuIcon, addCloseIcon } from './helpers'
+import TheFamilyView from '../screens/TheFamily'
 
 export default createStackNavigator(
   {
-    Families: {
-      screen: FamiliesView,
+    TheFamily: {
+      screen: TheFamilyView,
       navigationOptions: ({ navigation }) => ({
         ...generateNavStyles({ navigation }),
-        ...addMenuIcon(navigation),
-        headerTitle: <Title title="views.families" />
+        ...addCloseIcon(navigation),
+        headerTitle: <Title title="The family" />
       })
+    },
+    Families: {
+      screen: FamiliesView,
+      navigationOptions: ({ navigation }) => {
+        return navigation.getParam('retakeLifeMap')
+          ? {
+              ...generateNavStyles({ navigation }),
+              ...addCloseIcon(navigation),
+
+              headerTitle: <Title title="Choose family" />
+            }
+          : {
+              ...generateNavStyles({ navigation }),
+              ...addMenuIcon(navigation),
+              headerTitle: <Title title="views.families" />
+            }
+      }
     },
     Family: {
       screen: FamilyView,
