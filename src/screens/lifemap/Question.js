@@ -214,8 +214,9 @@ const styles = StyleSheet.create({
   skip: {
     justifyContent: 'center',
     alignItems: 'center',
-    paddingTop: 40,
-    paddingBottom: 30
+    paddingTop: 20,
+    paddingBottom: 30,
+    marginBottom: 30
   },
   link: {
     color: colors.palegreen
