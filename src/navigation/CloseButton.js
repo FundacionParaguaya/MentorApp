@@ -32,7 +32,6 @@ class CloseButton extends Component {
 }
 
 CloseButton.propTypes = {
-  nav: PropTypes.object.isRequired,
   style: PropTypes.object,
   navigation: PropTypes.object.isRequired
 }
