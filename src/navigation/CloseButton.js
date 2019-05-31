@@ -1,7 +1,5 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
-import { connect } from 'react-redux'
-import { updateNav } from '../redux/actions'
 import IconButton from '../components/IconButton'
 
 class CloseButton extends Component {
@@ -36,19 +34,6 @@ class CloseButton extends Component {
 CloseButton.propTypes = {
   nav: PropTypes.object.isRequired,
   style: PropTypes.object,
-  updateNav: PropTypes.func.isRequired,
   navigation: PropTypes.object.isRequired
 }
-
-const mapStateToProps = ({ nav }) => ({
-  nav
-})
-
-const mapDispatchToProps = {
-  updateNav
-}
-
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(CloseButton)
+export default CloseButton
