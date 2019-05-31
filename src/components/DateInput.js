@@ -117,7 +117,9 @@ export class DateInputComponent extends React.Component {
               label={this.props.label}
               placeholder={
                 readonly
-                  ? ''
+                  ? this.state.date
+                    ? ''
+                    : `${this.props.label}`
                   : `${this.props.label} ${required && !readonly ? '*' : ''}`
               }
               field=""
