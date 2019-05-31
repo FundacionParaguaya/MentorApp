@@ -72,7 +72,6 @@ class Select extends Component {
   }
 
   validateInputRadio = value => {
-    console.log(value)
     this.setState({
       isOpen: false,
       radioChecked: value
