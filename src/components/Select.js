@@ -373,18 +373,10 @@ Select.propTypes = {
   showErrors: PropTypes.bool,
   countryOfBirth: PropTypes.array,
   required: PropTypes.bool,
-  nav: PropTypes.object.isRequired,
-  detectError: PropTypes.func,
-  draft: PropTypes.object.isRequired,
-  surveys: PropTypes.array
+  detectError: PropTypes.func
 }
 
-const mapStateToProps = ({ nav, surveys }) => ({
-  nav,
-  surveys
-})
-
-export default connect(mapStateToProps)(Select)
+export default Select
 
 const styles = StyleSheet.create({
   wrapper: {
