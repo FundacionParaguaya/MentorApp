@@ -81,6 +81,7 @@ export class FamilyParticipant extends Component {
       } else {
         this.props.updateDraft(draft.draftId, draft)
       }
+
       if (countFamilyMembers && countFamilyMembers > 1) {
         // if multiple family members navigate to members screens
         this.props.navigation.navigate('FamilyMembersNames', {
@@ -98,17 +99,17 @@ export class FamilyParticipant extends Component {
     const { draft } = this.state
     const { countFamilyMembers } = this.state.draft.familyData
 
-    const afterIndex = value === -1 ? 1 : value
-
     let familyMembersList
 
     if (countFamilyMembers > value) {
-      familyMembersList = this.state.draft.familyData.familyMembersList.slice(0, value)
+      familyMembersList = this.state.draft.familyData.familyMembersList.slice(
+        0,
+        value
+      )
     } else if (countFamilyMembers < value) {
       const arr = this.state.draft.familyData.familyMembersList
       for (var i = 0; i < value - countFamilyMembers; i++) {
         arr.push({ firstParticipant: false })
-        
       }
       familyMembersList = arr
     }
@@ -196,7 +197,6 @@ export class FamilyParticipant extends Component {
     const { showErrors, draft } = this.state
 
     const participant = draft.familyData.familyMembersList[0]
-    
 
     return (
       <StickyFooter

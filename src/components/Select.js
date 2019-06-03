@@ -21,7 +21,6 @@ import arrow from '../../assets/images/selectArrow.png'
 import colors from '../theme.json'
 import globalStyles from '../globalStyles'
 import i18n from '../i18n'
-import { connect } from 'react-redux'
 const countryList = countries(require('localized-countries/data/en')).array()
 
 class Select extends Component {
