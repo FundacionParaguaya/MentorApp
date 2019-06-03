@@ -147,9 +147,7 @@ export class Loading extends Component {
     })
   }
 
-  onMapDownloadError = (offlineRegion, mapDownloadError) => {
-    console.log('error', offlineRegion, mapDownloadError)
-  }
+  onMapDownloadError = (offlineRegion, mapDownloadError) => {}
 
   componentDidMount() {
     const { families, surveys, images, appVersion } = this.props.sync

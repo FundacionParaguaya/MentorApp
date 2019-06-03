@@ -81,6 +81,7 @@ export class FamilyParticipant extends Component {
       } else {
         this.props.updateDraft(draft.draftId, draft)
       }
+
       if (countFamilyMembers && countFamilyMembers > 1) {
         // if multiple family members navigate to members screens
         this.props.navigation.navigate('FamilyMembersNames', {
@@ -103,9 +104,9 @@ export class FamilyParticipant extends Component {
     let familyMembersList = this.state.draft.familyData.familyMembersList
 
     if (countFamilyMembers > value) {
-      familyMembersList.slice(0, value)
+      familyMembersList.splice(value, familyMembersList.length - 1)
     } else if (countFamilyMembers < value) {
-      for (var i = 0; i < value - 1; i++) {
+      for (var i = 0; i < value - countFamilyMembers; i++) {
         familyMembersList.push({ firstParticipant: false })
       }
     }

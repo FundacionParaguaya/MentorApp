@@ -72,7 +72,6 @@ class Select extends Component {
   }
 
   validateInputRadio = value => {
-    console.log(value)
     this.setState({
       isOpen: false,
       radioChecked: value
@@ -375,7 +374,6 @@ Select.propTypes = {
   required: PropTypes.bool,
   nav: PropTypes.object.isRequired,
   detectError: PropTypes.func,
-  draft: PropTypes.object.isRequired,
   surveys: PropTypes.array
 }
 
