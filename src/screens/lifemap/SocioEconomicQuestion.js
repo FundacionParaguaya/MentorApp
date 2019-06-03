@@ -396,7 +396,7 @@ export class SocioEconomicQuestion extends Component {
 
   render() {
     const { t } = this.props
-    
+
     const { showErrors } = this.state
     const draft = this.props.navigation.getParam('family') || this.getDraft()
     const socioEconomics = this.props.navigation.getParam('socioEconomics')
@@ -449,15 +449,26 @@ export class SocioEconomicQuestion extends Component {
                     otherOptionValue = e.value
                   }
                 })
-
+                let radioQuestionSelected = false
+                //passing multipleValues from the checkbox question
+                draft.economicSurveyDataList.forEach(elem => {
+                  if (elem.key === question.codeName) {
+                    radioQuestionSelected = true
+                  }
+                })
                 if (otherOptionDetected) {
                   return (
                     <React.Fragment key={question.codeName}>
-                      {question.answerType === 'radio' ? (
-                        <Text style={{ marginLeft: 10, marginBottom: 15 }}>
-                          {question.questionText}
-                        </Text>
+                    { radioQuestionSelected ? (
+                        <View>
+                          {question.answerType === 'radio' ? (
+                            <Text style={{ marginLeft: 10, marginBottom: 15 }}>
+                              {question.questionText}
+                            </Text>
+                          ) : null}
+                        </View>
                       ) : null}
+
                       <Select
                         draft={draft}
                         radio={question.answerType === 'radio' ? true : false}
@@ -495,12 +506,18 @@ export class SocioEconomicQuestion extends Component {
                   )
                 } else {
                   return (
-                    <React.Fragment>
-                      {question.answerType === 'radio' ? (
-                        <Text style={{ marginLeft: 10, marginBottom: 15 }}>
-                          {question.questionText}
-                        </Text>
+                    <React.Fragment key={question.codeName}>
+                      
+                      { radioQuestionSelected ? (
+                        <View>
+                          {question.answerType === 'radio' ? (
+                            <Text style={{ marginLeft: 10, marginBottom: 15 }}>
+                              {question.questionText}
+                            </Text>
+                          ) : null}
+                        </View>
                       ) : null}
+
                       <Select
                         draft={draft}
                         radio={question.answerType === 'radio' ? true : false}
@@ -552,9 +569,12 @@ export class SocioEconomicQuestion extends Component {
                 })
                 return (
                   <View key={question.codeName}>
-                    <Text style={{ marginLeft: 10 }}>
-                      {question.questionText}
-                    </Text>
+                    {multipleValue.length ? (
+                      <Text style={{ marginLeft: 10 }}>
+                        {question.questionText}
+                      </Text>
+                    ) : null}
+
                     {question.options.map(e => {
                       return (
                         <View key={e.value}>
