@@ -14,6 +14,10 @@ import {
   addSurveyDataCheckBox
 } from '../../redux/actions'
 import colors from '../../theme.json'
+import {
+  shouldShowQuestion,
+  familyMemberWillHaveQuestions
+} from '../utils/conditional_logic'
 
 export class SocioEconomicQuestion extends Component {
   static navigationOptions = ({ navigation }) => {
@@ -66,7 +70,8 @@ export class SocioEconomicQuestion extends Component {
           !!question.forFamilyMember &&
           question.conditions[0].codeName.toLocaleLowerCase() === 'birthdate'
             ? draft.familyData.familyMembersList.filter(
-                member => !!this.isConditionMet(question, member)
+                (member, index) =>
+                  !!shouldShowQuestion(question, this.getDraft(), index)
               ).length
               ? question
               : false
@@ -292,6 +297,7 @@ export class SocioEconomicQuestion extends Component {
       index
     ].socioEconomicAnswers.filter(item => item.key === field)[0].value
   }
+
   detectError = (error, field) => {
     if (error && !this.errorsDetected.includes(field)) {
       this.errorsDetected.push(field)
@@ -303,6 +309,7 @@ export class SocioEconomicQuestion extends Component {
       errorsDetected: this.errorsDetected
     })
   }
+  
   submitForm = () => {
     if (this.errorsDetected.length) {
       this.setState({
@@ -328,40 +335,6 @@ export class SocioEconomicQuestion extends Component {
     }
   }
 
-  checkCondition = (selectedVal, conditionVal, operator) => {
-    switch (operator) {
-      case 'above':
-        return selectedVal > conditionVal
-      case 'equals':
-        return selectedVal === conditionVal
-      case 'greater_than_eq':
-        return selectedVal >= conditionVal
-      default:
-        return false
-    }
-  }
-
-  isConditionMet = (question, familyMember = false) => {
-    const { codeName, value, operator } = question.conditions[0]
-    const draft = this.getDraft()
-    if (codeName.toLocaleLowerCase() === 'birthdate' && familyMember) {
-      return familyMember.birthDate
-        ? this.checkCondition(
-            parseInt(this.calculateAge(familyMember.birthDate)),
-            parseInt(value),
-            operator
-          )
-        : true
-    } else {
-      const answeredQuestions = draft.economicSurveyDataList || []
-      const userAnswer = answeredQuestions.find(
-        answer => answer.key === codeName
-      )
-      return (
-        userAnswer && this.checkCondition(userAnswer.value, value, operator)
-      )
-    }
-  }
   onPressCheckbox = (text, field) => {
     const draft = this.props.navigation.getParam('family') || this.getDraft()
 
@@ -388,10 +361,19 @@ export class SocioEconomicQuestion extends Component {
       )
     }
   }
-  calculateAge = timestamp => {
-    const dataOfBirth = new Date(timestamp * 1000).getFullYear()
-    const today = new Date().getFullYear()
-    return today - dataOfBirth
+
+  shoulShowOtherOption = (question, draft) => {
+    const { options, codeName } = question
+    const questionWithOtherOption =
+      options.find(
+        option =>
+          option.hasOwnProperty('otherOption') && option.otherOption === true
+      ) || {}
+
+    const showOtherOption =
+      Object.keys(questionWithOtherOption).length &&
+      this.getFieldValue(draft, codeName) === questionWithOtherOption.value
+    return showOtherOption ? true : false
   }
 
   render() {
@@ -403,16 +385,15 @@ export class SocioEconomicQuestion extends Component {
       ? socioEconomics.questionsPerScreen[socioEconomics.currentScreen - 1]
       : {}
 
-    const showMemberName = (member, questionsForFamilyMember) => {
-      const questionsForThisMember = questionsForFamilyMember.filter(question =>
-        !!question.conditions && question.conditions.length
-          ? this.isConditionMet(question, member)
-          : true
-      )
-      return questionsForThisMember.length ? (
+    const showMemberName = (member, memberIndex, questionsForFamilyMember) => {
+      const memberHasQuestions = questionsForFamilyMember.filter(question =>
+        shouldShowQuestion(question, draft, memberIndex)
+      ).length
+      return memberHasQuestions ? (
         <Text style={styles.memberName}>{member.firstName}</Text>
       ) : null
     }
+
     return (
       <StickyFooter
         handleClick={this.submitForm}
@@ -431,7 +412,7 @@ export class SocioEconomicQuestion extends Component {
           questionsForThisScreen.forFamily
             .filter(question =>
               question.conditions && question.conditions.length
-                ? this.isConditionMet(question)
+                ? shouldShowQuestion(question, draft)
                   ? question
                   : false
                 : question
@@ -441,86 +422,45 @@ export class SocioEconomicQuestion extends Component {
                 question.answerType === 'select' ||
                 question.answerType === 'radio'
               ) {
-                let otherOptionDetected = false
-                let otherOptionValue
-                question.options.forEach(e => {
-                  if (e.otherOption) {
-                    otherOptionDetected = true
-                    otherOptionValue = e.value
-                  }
-                })
-
-                if (otherOptionDetected) {
-                  return (
-                    <React.Fragment key={question.codeName}>
-                      {question.answerType === 'radio' ? (
-                        <Text style={{ marginLeft: 10, marginBottom: 15 }}>
-                          {question.questionText}
-                        </Text>
-                      ) : null}
-                      <Select
-                        draft={draft}
-                        radio={question.answerType === 'radio' ? true : false}
+                return (
+                  <React.Fragment key={question.codeName}>
+                    {question.answerType === 'radio' ? (
+                      <Text style={{ marginLeft: 10, marginBottom: 15 }}>
+                        {question.questionText}
+                      </Text>
+                    ) : null}
+                    <Select
+                      draft={draft}
+                      radio={question.answerType === 'radio' ? true : false}
+                      required={question.required}
+                      onChange={this.addSurveyData}
+                      placeholder={question.questionText}
+                      showErrors={showErrors}
+                      label={question.questionText}
+                      field={question.codeName}
+                      value={this.getFieldValue(draft, question.codeName) || ''}
+                      detectError={this.detectError}
+                      readonly={this.readOnly}
+                      options={question.options}
+                    />
+                    {this.shoulShowOtherOption(question, draft) ? (
+                      <TextInput
                         required={question.required}
-                        onChange={this.addSurveyData}
-                        placeholder={question.questionText}
-                        showErrors={showErrors}
-                        label={question.questionText}
                         field={question.codeName}
+                        validation="string"
+                        onChangeText={this.addSurveyDataOtherField}
+                        readonly={this.readOnly}
+                        placeholder={t('views.family.specifyQuestionAbove')}
                         value={
-                          this.getFieldValue(draft, question.codeName) || ''
+                          this.getOtherFieldValue(draft, question.codeName) ||
+                          ''
                         }
                         detectError={this.detectError}
-                        readonly={this.readOnly}
-                        options={question.options}
-                      />
-                      {this.getFieldValue(draft, question.codeName) ===
-                      otherOptionValue ? (
-                        <TextInput
-                          required={question.required}
-                          field={question.codeName}
-                          validation="string"
-                          onChangeText={this.addSurveyDataOtherField}
-                          readonly={this.readOnly}
-                          placeholder={t('views.family.specifyQuestionAbove')}
-                          value={
-                            this.getOtherFieldValue(draft, question.codeName) ||
-                            ''
-                          }
-                          detectError={this.detectError}
-                          showErrors={showErrors}
-                        />
-                      ) : null}
-                    </React.Fragment>
-                  )
-                } else {
-                  return (
-                    <React.Fragment>
-                      {question.answerType === 'radio' ? (
-                        <Text style={{ marginLeft: 10, marginBottom: 15 }}>
-                          {question.questionText}
-                        </Text>
-                      ) : null}
-                      <Select
-                        draft={draft}
-                        radio={question.answerType === 'radio' ? true : false}
-                        key={question.codeName}
-                        required={question.required}
-                        onChange={this.addSurveyData}
-                        placeholder={question.questionText}
                         showErrors={showErrors}
-                        label={question.questionText}
-                        field={question.codeName}
-                        value={
-                          this.getFieldValue(draft, question.codeName) || ''
-                        }
-                        detectError={this.detectError}
-                        readonly={this.readOnly}
-                        options={question.options}
                       />
-                    </React.Fragment>
-                  )
-                }
+                    ) : null}
+                  </React.Fragment>
+                )
               } else if (question.answerType === 'number') {
                 return (
                   <TextInput
@@ -589,11 +529,15 @@ export class SocioEconomicQuestion extends Component {
           questionsForThisScreen.forFamilyMember.length ? (
             draft.familyData.familyMembersList.map((member, i) => (
               <View key={member.firstName}>
-                {showMemberName(member, questionsForThisScreen.forFamilyMember)}
+                {showMemberName(
+                  member,
+                  i,
+                  questionsForThisScreen.forFamilyMember
+                )}
                 {questionsForThisScreen.forFamilyMember
                   .filter(question =>
                     question.conditions && question.conditions.length
-                      ? this.isConditionMet(question, member)
+                      ? shouldShowQuestion(question, draft, i)
                         ? question
                         : false
                       : question
