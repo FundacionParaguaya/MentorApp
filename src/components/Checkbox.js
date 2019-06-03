@@ -11,6 +11,7 @@ class Checkbox extends Component {
     this.props.onIconPress(!this.state.checked)
     this.setState({ checked: !this.state.checked })
   }
+
   componentDidMount() {
     if (
       typeof this.props.value !== 'undefined' &&
@@ -42,7 +43,6 @@ class Checkbox extends Component {
               <TouchableHighlight
                 underlayColor={'transparent'}
                 style={styles.touchable}
-                
               >
                 <CheckBox
                   disabled

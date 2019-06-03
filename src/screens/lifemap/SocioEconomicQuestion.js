@@ -396,13 +396,13 @@ export class SocioEconomicQuestion extends Component {
 
   render() {
     const { t } = this.props
+    
     const { showErrors } = this.state
     const draft = this.props.navigation.getParam('family') || this.getDraft()
     const socioEconomics = this.props.navigation.getParam('socioEconomics')
     const questionsForThisScreen = socioEconomics
       ? socioEconomics.questionsPerScreen[socioEconomics.currentScreen - 1]
       : {}
-
     const showMemberName = (member, questionsForFamilyMember) => {
       const questionsForThisMember = questionsForFamilyMember.filter(question =>
         !!question.conditions && question.conditions.length
@@ -539,12 +539,12 @@ export class SocioEconomicQuestion extends Component {
                   />
                 )
               } else if (question.answerType === 'checkbox') {
-               let  multipleValue = []
-               //passing multipleValues from the checkbox question
-                draft.economicSurveyDataList.forEach(elem=>{
-                  if(elem.key === question.codeName){
-                    if(typeof elem.multipleValue !== 'undefined'){
-                      if(elem.multipleValue.length){
+                let multipleValue = []
+                //passing multipleValues from the checkbox question
+                draft.economicSurveyDataList.forEach(elem => {
+                  if (elem.key === question.codeName) {
+                    if (typeof elem.multipleValue !== 'undefined') {
+                      if (elem.multipleValue.length) {
                         multipleValue = elem.multipleValue
                       }
                     }
