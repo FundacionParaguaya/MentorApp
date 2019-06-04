@@ -91,7 +91,10 @@ export class FamilyMembersNames extends Component {
     let familyMembersArray = draft.familyData.familyMembersList
     if (parseInt(split[0], 10) + 1 > familyMembersArray.length - 1) {
       let newFamilyMember = draft
-      newFamilyMember.familyData.familyMembersList.push({ [split[1]]: value })
+      newFamilyMember.familyData.familyMembersList.push({
+        firstParticipant: false,
+        [split[1]]: value
+      })
       this.setState({ draft: newFamilyMember })
     }
     this.setState({
@@ -104,6 +107,7 @@ export class FamilyMembersNames extends Component {
               if (parseInt(split[0], 10) + 1 === index) {
                 return {
                   ...item,
+                  firstParticipant: false,
                   [split[1]]: value
                 }
               }
