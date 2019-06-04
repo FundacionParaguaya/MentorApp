@@ -16,8 +16,13 @@ import {
 import colors from '../../theme.json'
 import {
   shouldShowQuestion,
-  familyMemberWillHaveQuestions
+  familyMemberWillHaveQuestions,
+  getConditionalOptions,
+  getDraftWithUpdatedEconomic,
+  getDraftWithUpdatedFamilyEconomics,
+  getDraftWithUpdatedQuestionsCascading
 } from '../utils/conditional_logic'
+import { checkAndReplaceSpecialChars } from '../utils/helpers'
 
 export class SocioEconomicQuestion extends Component {
   static navigationOptions = ({ navigation }) => {
@@ -57,7 +62,7 @@ export class SocioEconomicQuestion extends Component {
       const surveyQuestions = this.survey.surveyEconomicQuestions.map(
         question =>
           question.options.length
-            ? this.checkAndReplaceSpecialChars(question)
+            ? checkAndReplaceSpecialChars(question)
             : question
       )
 
@@ -221,34 +226,16 @@ export class SocioEconomicQuestion extends Component {
     }
   }
 
-  checkAndReplaceSpecialChars = question => {
-    const LATIN_CHARS = /^[A-Za-z0-9]*$/
-    return {
-      ...question,
-      options: question.options.map(option => {
-        return {
-          ...option,
-          text: LATIN_CHARS.test(option.text.replace(/\s/g, '')) // check for strange chars and if found decode
-            ? option.text
-            : decodeURIComponent(option.text)
-        }
-      })
-    }
-  }
-
   addSurveyDataOtherField = (text, field) => {
     const draft = this.props.navigation.getParam('family') || this.getDraft()
-    let value
-    draft.economicSurveyDataList.forEach(e => {
-      if (e.key === field) {
-        value = e.value
-      }
-    })
+    
     this.props.addSurveyData(this.draftId, 'economicSurveyDataList', {
-      [field]: value,
+      [field]: draft.economicSurveyDataList.find(answer => answer.key === filed)
+        .value,
       other: text
     })
   }
+
   addSurveyFamilyMemberData = (text, field, index) => {
     this.props.addSurveyFamilyMemberData({
       id: this.draftId,
@@ -259,7 +246,8 @@ export class SocioEconomicQuestion extends Component {
       }
     })
   }
-  getFieldValue = (draft, field) => {
+  
+  getFieldValue = (draft, field, propertyName) => {
     if (
       !draft ||
       !draft.economicSurveyDataList ||
@@ -267,21 +255,11 @@ export class SocioEconomicQuestion extends Component {
     ) {
       return
     }
+    return draft.economicSurveyDataList.filter(item => item.key === field)[0][
+      propertyName
+    ]
+  }
 
-    return draft.economicSurveyDataList.filter(item => item.key === field)[0]
-      .value
-  }
-  getOtherFieldValue = (draft, field) => {
-    if (
-      !draft ||
-      !draft.economicSurveyDataList ||
-      !draft.economicSurveyDataList.filter(item => item.key === field)[0]
-    ) {
-      return
-    }
-    return draft.economicSurveyDataList.filter(item => item.key === field)[0]
-      .other
-  }
   getFamilyMemberFieldValue = (draft, field, index) => {
     if (
       !draft ||
@@ -309,7 +287,7 @@ export class SocioEconomicQuestion extends Component {
       errorsDetected: this.errorsDetected
     })
   }
-  
+
   submitForm = () => {
     if (this.errorsDetected.length) {
       this.setState({
@@ -372,7 +350,8 @@ export class SocioEconomicQuestion extends Component {
 
     const showOtherOption =
       Object.keys(questionWithOtherOption).length &&
-      this.getFieldValue(draft, codeName) === questionWithOtherOption.value
+      this.getFieldValue(draft, codeName, 'value') ===
+        questionWithOtherOption.value
     return showOtherOption ? true : false
   }
 
@@ -438,7 +417,10 @@ export class SocioEconomicQuestion extends Component {
                       showErrors={showErrors}
                       label={question.questionText}
                       field={question.codeName}
-                      value={this.getFieldValue(draft, question.codeName) || ''}
+                      value={
+                        this.getFieldValue(draft, question.codeName, 'value') ||
+                        ''
+                      }
                       detectError={this.detectError}
                       readonly={this.readOnly}
                       options={question.options}
@@ -452,8 +434,11 @@ export class SocioEconomicQuestion extends Component {
                         readonly={this.readOnly}
                         placeholder={t('views.family.specifyQuestionAbove')}
                         value={
-                          this.getOtherFieldValue(draft, question.codeName) ||
-                          ''
+                          this.getFieldValue(
+                            draft,
+                            question.codeName,
+                            'other'
+                          ) || ''
                         }
                         detectError={this.detectError}
                         showErrors={showErrors}
@@ -471,7 +456,10 @@ export class SocioEconomicQuestion extends Component {
                     placeholder={question.questionText}
                     showErrors={showErrors}
                     field={question.codeName}
-                    value={this.getFieldValue(draft, question.codeName) || ''}
+                    value={
+                      this.getFieldValue(draft, question.codeName, 'value') ||
+                      ''
+                    }
                     detectError={this.detectError}
                     readonly={this.readOnly}
                     validation="number"
@@ -513,7 +501,10 @@ export class SocioEconomicQuestion extends Component {
                     placeholder={question.questionText}
                     showErrors={showErrors}
                     field={question.codeName}
-                    value={this.getFieldValue(draft, question.codeName) || ''}
+                    value={
+                      this.getFieldValue(draft, question.codeName, 'value') ||
+                      ''
+                    }
                     detectError={this.detectError}
                     readonly={this.readOnly}
                   />
@@ -647,7 +638,7 @@ const mapDispatchToProps = {
   addSurveyDataCheckBox
 }
 
-const mapStateToProps = ({ drafts }) => ({ drafts })
+const mapStateToProps = ({ drafts, nav }) => ({ drafts, nav })
 
 export default withNamespaces()(
   connect(
