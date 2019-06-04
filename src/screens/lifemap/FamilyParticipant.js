@@ -52,16 +52,26 @@ export class FamilyParticipant extends Component {
       }
   }
 
-  detectError = (error, field) => {
+  detectError = async (error, field) => {
     if (error && !this.errorsDetected.includes(field)) {
       this.errorsDetected.push(field)
     } else if (!error) {
       this.errorsDetected = this.errorsDetected.filter(item => item !== field)
     }
+    const { navigation } = this.props
 
-    this.setState({
+    await this.setState({
       errorsDetected: this.errorsDetected
     })
+    if (this.state.errorsDetected.length) {
+      navigation.setParams({
+        isNewDraft: true
+      })
+    } else {
+      navigation.setParams({
+        isNewDraft: !navigation.getParam('draft')
+      })
+    }
   }
 
   handleClick = () => {
