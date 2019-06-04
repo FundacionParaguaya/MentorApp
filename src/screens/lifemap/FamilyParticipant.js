@@ -52,16 +52,26 @@ export class FamilyParticipant extends Component {
       }
   }
 
-  detectError = (error, field) => {
+  detectError = async (error, field) => {
     if (error && !this.errorsDetected.includes(field)) {
       this.errorsDetected.push(field)
     } else if (!error) {
       this.errorsDetected = this.errorsDetected.filter(item => item !== field)
     }
+    const { navigation } = this.props
 
-    this.setState({
+    await this.setState({
       errorsDetected: this.errorsDetected
     })
+    if (this.state.errorsDetected.length) {
+      navigation.setParams({
+        isNewDraft: true
+      })
+    } else {
+      navigation.setParams({
+        isNewDraft: !navigation.getParam('draft')
+      })
+    }
   }
 
   handleClick = () => {
@@ -81,6 +91,7 @@ export class FamilyParticipant extends Component {
       } else {
         this.props.updateDraft(draft.draftId, draft)
       }
+
       if (countFamilyMembers && countFamilyMembers > 1) {
         // if multiple family members navigate to members screens
         this.props.navigation.navigate('FamilyMembersNames', {
@@ -98,16 +109,19 @@ export class FamilyParticipant extends Component {
     const { draft } = this.state
     const { countFamilyMembers } = this.state.draft.familyData
 
-    const afterIndex = value === -1 ? 1 : value
-
-    let familyMembersList = this.state.draft.familyData.familyMembersList
+    let familyMembersList
 
     if (countFamilyMembers > value) {
-      familyMembersList.slice(0, value)
+      familyMembersList = this.state.draft.familyData.familyMembersList.slice(
+        0,
+        value
+      )
     } else if (countFamilyMembers < value) {
-      for (var i = 0; i < value - 1; i++) {
-        familyMembersList.push({ firstParticipant: false })
+      const arr = this.state.draft.familyData.familyMembersList
+      for (var i = 0; i < value - countFamilyMembers; i++) {
+        arr.push({ firstParticipant: false })
       }
+      familyMembersList = arr
     }
 
     this.setState({
@@ -116,12 +130,7 @@ export class FamilyParticipant extends Component {
         familyData: {
           ...draft.familyData,
           countFamilyMembers: value,
-          familyMembersList:
-            value && countFamilyMembers && countFamilyMembers > value
-              ? draft.familyData.familyMembersList.filter(
-                  (item, index) => index < afterIndex
-                )
-              : draft.familyData.familyMembersList
+          familyMembersList
         }
       }
     })

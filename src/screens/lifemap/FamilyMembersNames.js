@@ -115,9 +115,7 @@ export class FamilyMembersNames extends Component {
     const { t } = this.props
     const { showErrors, draft } = this.state
     let onlyOneAutoFocusCheck = false
-
     const { familyMembersList } = draft.familyData
-
     const familyMembersCount =
       draft.familyData.countFamilyMembers &&
       draft.familyData.countFamilyMembers !== -1

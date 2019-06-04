@@ -29,6 +29,7 @@ export const DrawerNavigation = createStackNavigator(
     }
   },
   {
+    initialRouteName: 'DrawerStack',
     headerMode: 'none',
     cardStyle: {
       backgroundColor: 'rgba(47,38,28, 0.2)',
