@@ -364,7 +364,6 @@ export class SocioEconomicQuestion extends Component {
   }
   onPressCheckbox = (text, field) => {
     const draft = this.props.navigation.getParam('family') || this.getDraft()
-
     let deleteVal = false
     draft.economicSurveyDataList.forEach(e => {
       if (e.key === field) {
@@ -378,6 +377,7 @@ export class SocioEconomicQuestion extends Component {
         }
       }
     })
+
     if (!deleteVal) {
       this.props.addSurveyDataCheckBox(
         draft.draftId,
@@ -396,13 +396,13 @@ export class SocioEconomicQuestion extends Component {
 
   render() {
     const { t } = this.props
+
     const { showErrors } = this.state
     const draft = this.props.navigation.getParam('family') || this.getDraft()
     const socioEconomics = this.props.navigation.getParam('socioEconomics')
     const questionsForThisScreen = socioEconomics
       ? socioEconomics.questionsPerScreen[socioEconomics.currentScreen - 1]
       : {}
-
     const showMemberName = (member, questionsForFamilyMember) => {
       const questionsForThisMember = questionsForFamilyMember.filter(question =>
         !!question.conditions && question.conditions.length
@@ -449,15 +449,26 @@ export class SocioEconomicQuestion extends Component {
                     otherOptionValue = e.value
                   }
                 })
-
+                let radioQuestionSelected = false
+                //passing multipleValues from the checkbox question
+                draft.economicSurveyDataList.forEach(elem => {
+                  if (elem.key === question.codeName) {
+                    radioQuestionSelected = true
+                  }
+                })
                 if (otherOptionDetected) {
                   return (
                     <React.Fragment key={question.codeName}>
-                      {question.answerType === 'radio' ? (
-                        <Text style={{ marginLeft: 10, marginBottom: 15 }}>
-                          {question.questionText}
-                        </Text>
-                      ) : null}
+                      {this.readOnly && !radioQuestionSelected ? null : (
+                        <View>
+                          {question.answerType === 'radio' ? (
+                            <Text style={{ marginLeft: 10, marginBottom: 15 }}>
+                              {question.questionText}
+                            </Text>
+                          ) : null}
+                        </View>
+                      )}
+
                       <Select
                         draft={draft}
                         radio={question.answerType === 'radio' ? true : false}
@@ -495,12 +506,17 @@ export class SocioEconomicQuestion extends Component {
                   )
                 } else {
                   return (
-                    <React.Fragment>
-                      {question.answerType === 'radio' ? (
-                        <Text style={{ marginLeft: 10, marginBottom: 15 }}>
-                          {question.questionText}
-                        </Text>
-                      ) : null}
+                    <React.Fragment key={question.codeName}>
+                      {this.readOnly && !radioQuestionSelected ? null : (
+                        <View>
+                          {question.answerType === 'radio' ? (
+                            <Text style={{ marginLeft: 10, marginBottom: 15 }}>
+                              {question.questionText}
+                            </Text>
+                          ) : null}
+                        </View>
+                      )}
+
                       <Select
                         draft={draft}
                         radio={question.answerType === 'radio' ? true : false}
@@ -539,21 +555,37 @@ export class SocioEconomicQuestion extends Component {
                   />
                 )
               } else if (question.answerType === 'checkbox') {
+                let multipleValue = []
+                //passing multipleValues from the checkbox question
+                draft.economicSurveyDataList.forEach(elem => {
+                  if (elem.key === question.codeName) {
+                    if (typeof elem.multipleValue !== 'undefined') {
+                      if (elem.multipleValue.length) {
+                        multipleValue = elem.multipleValue
+                      }
+                    }
+                  }
+                })
                 return (
                   <View key={question.codeName}>
-                    <Text style={{ marginLeft: 10 }}>
-                      {question.questionText}
-                    </Text>
+                    {this.readOnly && !multipleValue.length ? null : (
+                      <Text style={{ marginLeft: 10 }}>
+                        {question.questionText}
+                      </Text>
+                    )}
+
                     {question.options.map(e => {
                       return (
                         <View key={e.value}>
                           <Checkbox
+                            multipleValue={multipleValue}
                             containerStyle={styles.checkbox}
                             checkboxColor={colors.green}
                             showErrors={showErrors}
                             onIconPress={() =>
                               this.onPressCheckbox(e.value, question.codeName)
                             }
+                            readonly={this.readOnly}
                             title={e.text}
                             value={e.value}
                             codeName={question.codeName}

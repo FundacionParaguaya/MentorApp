@@ -64,6 +64,7 @@ export class Overview extends Component {
   onPressBack = () => {
     const { draft } = this.state
     const survey = this.survey
+   
     //If we do not arrive to this screen from the families screen
     if (!this.familyLifemap) {
       const skippedQuestions = this.state.draft.indicatorSurveyDataList.filter(
@@ -154,7 +155,6 @@ export class Overview extends Component {
   render() {
     const { t } = this.props
     const { filterModalIsOpen, selectedFilter, filterLabel, draft } = this.state
-
     const mandatoryPrioritiesCount = this.getMandatoryPrioritiesCount(draft)
     const tipIsVisible = !this.isDraftResuming && this.state.tipIsVisible
     const getTipDescription = () => {
