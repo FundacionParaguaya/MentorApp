@@ -211,36 +211,44 @@ class Select extends Component {
                   }}
                 >
                   {radio_props.map((obj, i) => {
-                    if(readonly){
-                      if(this.state.radioChecked === obj.value){
+                    if (readonly) {
+                      if (this.state.radioChecked === obj.value) {
                         return (
-                          <RadioButton labelHorizontal={true} key={i}>
-                            <RadioButtonInput
-                              disabled={true}
-                              obj={obj}
-                              index={i}
-                              isSelected={this.state.radioChecked === obj.value}
-                              onPress={this.validateInputRadio}
-                              borderWidth={2}
-                              buttonInnerColor={colors.palegreen}
-                              buttonOuterColor={colors.palegrey}
-                              buttonSize={12}
-                              buttonOuterSize={20}
-                              buttonStyle={{}}
-                            />
-                            <RadioButtonLabel
-                              obj={obj}
-                              index={i}
-                              labelHorizontal={true}
-                              onPress={this.validateInputRadio}
-                              labelStyle={{ fontSize: 17, color: '#4a4a4a' }}
-                              labelWrapStyle={{}}
-                            />
-                          </RadioButton>
+                          <View
+                            key={i}
+                            style={{ marginRight: 'auto' }}
+                          >
+                            <View style={{ marginLeft: 12 }}>
+                            <RadioButton labelHorizontal={true}>
+                              <RadioButtonInput
+                                disabled={true}
+                                obj={obj}
+                                index={i}
+                                isSelected={
+                                  this.state.radioChecked === obj.value
+                                }
+                                onPress={this.validateInputRadio}
+                                borderWidth={2}
+                                buttonInnerColor={colors.palegreen}
+                                buttonOuterColor={colors.palegrey}
+                                buttonSize={12}
+                                buttonOuterSize={20}
+                                buttonStyle={{}}
+                              />
+                              <RadioButtonLabel
+                                obj={obj}
+                                index={i}
+                                labelHorizontal={true}
+                                onPress={this.validateInputRadio}
+                                labelStyle={{ fontSize: 17, color: '#4a4a4a' }}
+                                labelWrapStyle={{}}
+                              />
+                            </RadioButton>
+                            </View>
+                          </View>
                         )
                       }
-                      
-                    }else{
+                    } else {
                       return (
                         <RadioButton labelHorizontal={true} key={i}>
                           <RadioButtonInput
@@ -266,7 +274,6 @@ class Select extends Component {
                         </RadioButton>
                       )
                     }
-                   
                   })}
                 </View>
               </RadioForm>

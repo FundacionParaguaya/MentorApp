@@ -507,7 +507,7 @@ export class SocioEconomicQuestion extends Component {
                 } else {
                   return (
                     <React.Fragment key={question.codeName}>
-                        {this.readOnly && !radioQuestionSelected ? null : (
+                      {this.readOnly && !radioQuestionSelected ? null : (
                         <View>
                           {question.answerType === 'radio' ? (
                             <Text style={{ marginLeft: 10, marginBottom: 15 }}>
