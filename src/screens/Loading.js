@@ -85,16 +85,13 @@ export class Loading extends Component {
   }
 
   downloadMapData() {
+    console.log('downloadMapData', this.state.maps)
     this.state.maps.forEach(map =>
       this.downloadOfflineMapPack(map.options, map.name)
     )
   }
 
   checkOfflineMaps = () => {
-    this.setState({
-      downloadingMap: true
-    })
-
     const mapsArray = []
 
     const surveysWithOfflineMaps = this.props.surveys.filter(
@@ -132,6 +129,10 @@ export class Loading extends Component {
     } else {
       this.handleImageCaching()
     }
+
+    this.setState({
+      downloadingMap: true
+    })
   }
 
   // update map download progress
@@ -193,6 +194,7 @@ export class Loading extends Component {
     if (
       this.props.surveys.length &&
       !this.props.offline.outbox.lenght &&
+      this.state.downloadingMap &&
       this.state.maps.every(map => map.status === 100) &&
       !this.state.cachingImages
     ) {
