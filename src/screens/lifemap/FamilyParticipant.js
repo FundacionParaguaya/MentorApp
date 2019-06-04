@@ -94,7 +94,7 @@ export class FamilyParticipant extends Component {
 
       if (countFamilyMembers && countFamilyMembers > 1) {
         // if multiple family members navigate to members screens
-        this.props.navigation.navigate('FamilyMembersNames', {
+        this.props.navigation.push('FamilyMembersNames', {
           draft,
           survey
         })

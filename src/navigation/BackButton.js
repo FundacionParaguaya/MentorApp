@@ -7,7 +7,7 @@ import { View } from 'react-native'
 class BackButton extends Component {
   handlePress = () => {
     const { navigation } = this.props
-    
+
     const draft =
       navigation.state.params.getCurrentDraftState &&
       navigation.getParam('getCurrentDraftState')()
@@ -41,7 +41,7 @@ class BackButton extends Component {
   render() {
     const { navigation } = this.props
     return (
-      <AndroidBackHandler onBackPress={this.handleBackHandlerPress}>
+      <AndroidBackHandler onBackPress={navigation.goBack}>
         <View>
           <IconButton
             style={this.props.style}

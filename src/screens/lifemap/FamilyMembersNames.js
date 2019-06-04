@@ -49,7 +49,7 @@ export class FamilyMembersNames extends Component {
   }
 
   onPressBack = () => {
-    this.props.navigation.navigate('FamilyParticipant', {
+    this.props.navigation.push('FamilyParticipant', {
       draft: this.state.draft,
       survey: this.survey
     })

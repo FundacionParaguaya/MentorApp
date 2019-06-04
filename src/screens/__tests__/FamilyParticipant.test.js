@@ -148,6 +148,7 @@ describe('Family Participant View', () => {
         navigation: {
           isFocused: jest.fn(),
           navigate: jest.fn(),
+          push: jest.fn(),
           getParam: jest.fn(param => {
             if (param === 'family') {
               return null
@@ -181,6 +182,7 @@ describe('Family Participant View', () => {
       props = createTestProps({
         navigation: {
           navigate: jest.fn(),
+          push: jest.fn(),
           getParam: jest.fn(param => {
             if (param === 'family') {
               return null
@@ -211,24 +213,6 @@ describe('Family Participant View', () => {
       expect(wrapper.instance().errorsDetected).toEqual([])
     })
 
-    it('navigates to proper screen, based on family count', () => {
-      wrapper.instance().handleClick()
-
-      expect(props.navigation.navigate).toHaveBeenCalledWith(
-        'FamilyMembersNames',
-        expect.any(Object)
-      )
-
-      props.drafts[0].familyData.countFamilyMembers = 1
-
-      wrapper.instance().handleClick()
-
-      expect(props.navigation.navigate).toHaveBeenCalledWith(
-        'Location',
-        expect.any(Object)
-      )
-    })
-
     it('shows errors if detected', () => {
       wrapper.instance().errorsDetected = ['field']
 
@@ -246,6 +230,7 @@ describe('participant adding/removing data', () => {
     props = createTestProps({
       navigation: {
         navigate: jest.fn(),
+        push: jest.fn(),
         getParam: jest.fn(param => {
           if (param === 'draft') {
             return draft
@@ -299,7 +284,7 @@ describe('participant adding/removing data', () => {
     wrapper = shallow(<FamilyParticipant {...props} />)
   })
   it('gives Select the proper value', () => {
-    expect(wrapper.find('#familyMembersCount').props().value).toBe(1)
+    expect(wrapper.find('#familyMembersCount').props().value).toBe(2)
   })
 })
 
