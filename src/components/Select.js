@@ -384,7 +384,7 @@ const styles = StyleSheet.create({
     borderBottomWidth: 1,
     marginHorizontal: 15,
     justifyContent: 'center',
-    height: 65,
+    minHeight: 65,
     paddingBottom: 6,
     borderBottomColor: colors.grey,
     borderTopLeftRadius: 8,
@@ -393,8 +393,9 @@ const styles = StyleSheet.create({
   placeholder: {
     paddingHorizontal: 15,
     ...globalStyles.subline,
-    lineHeight: 50,
-    height: 50
+    // lineHeight: 50,
+    paddingTop:20,
+    minHeight: 50
   },
   withoutValue: {
     backgroundColor: colors.primary,
