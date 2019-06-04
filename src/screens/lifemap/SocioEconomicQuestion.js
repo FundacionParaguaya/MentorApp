@@ -230,7 +230,7 @@ export class SocioEconomicQuestion extends Component {
     const draft = this.props.navigation.getParam('family') || this.getDraft()
     
     this.props.addSurveyData(this.draftId, 'economicSurveyDataList', {
-      [field]: draft.economicSurveyDataList.find(answer => answer.key === filed)
+      [field]: draft.economicSurveyDataList.find(answer => answer.key === field)
         .value,
       other: text
     })
