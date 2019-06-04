@@ -21,7 +21,6 @@ import arrow from '../../assets/images/selectArrow.png'
 import colors from '../theme.json'
 import globalStyles from '../globalStyles'
 import i18n from '../i18n'
-import { connect } from 'react-redux'
 const countryList = countries(require('localized-countries/data/en')).array()
 
 class Select extends Component {
@@ -372,17 +371,10 @@ Select.propTypes = {
   showErrors: PropTypes.bool,
   countryOfBirth: PropTypes.array,
   required: PropTypes.bool,
-  nav: PropTypes.object.isRequired,
-  detectError: PropTypes.func,
-  surveys: PropTypes.array
+  detectError: PropTypes.func
 }
 
-const mapStateToProps = ({ nav, surveys }) => ({
-  nav,
-  surveys
-})
-
-export default connect(mapStateToProps)(Select)
+export default Select
 
 const styles = StyleSheet.create({
   wrapper: {

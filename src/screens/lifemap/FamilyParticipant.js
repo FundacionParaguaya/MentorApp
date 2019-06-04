@@ -99,16 +99,19 @@ export class FamilyParticipant extends Component {
     const { draft } = this.state
     const { countFamilyMembers } = this.state.draft.familyData
 
-    const afterIndex = value === -1 ? 1 : value
-
-    let familyMembersList = this.state.draft.familyData.familyMembersList
+    let familyMembersList
 
     if (countFamilyMembers > value) {
-      familyMembersList.splice(value, familyMembersList.length - 1)
+      familyMembersList = this.state.draft.familyData.familyMembersList.slice(
+        0,
+        value
+      )
     } else if (countFamilyMembers < value) {
+      const arr = this.state.draft.familyData.familyMembersList
       for (var i = 0; i < value - countFamilyMembers; i++) {
-        familyMembersList.push({ firstParticipant: false })
+        arr.push({ firstParticipant: false })
       }
+      familyMembersList = arr
     }
 
     this.setState({
@@ -117,12 +120,7 @@ export class FamilyParticipant extends Component {
         familyData: {
           ...draft.familyData,
           countFamilyMembers: value,
-          familyMembersList:
-            value && countFamilyMembers && countFamilyMembers > value
-              ? draft.familyData.familyMembersList.filter(
-                  (item, index) => index < afterIndex
-                )
-              : draft.familyData.familyMembersList
+          familyMembersList
         }
       }
     })
