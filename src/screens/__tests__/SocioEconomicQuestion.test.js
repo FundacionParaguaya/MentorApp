@@ -174,13 +174,13 @@ describe('SocioEconomicQuestion screens', () => {
       expect(spy).toHaveBeenCalledTimes(1)
     })
 
-    it('gets family member field value', () => {
-      expect(
-        wrapper.instance().getFieldValue(draft, 'educationPersonMostStudied')
-      ).toEqual('SCHOOL-COMPLETE')
+    // it('gets family member field value', () => {
+    //   expect(
+    //     wrapper.instance().getFieldValue(draft, 'educationPersonMostStudied')
+    //   ).toEqual('SCHOOL-COMPLETE')
 
-      expect(wrapper.instance().getFieldValue(draft, '3')).toEqual(undefined)
-    })
+    //   expect(wrapper.instance().getFieldValue(draft, '3')).toEqual(undefined)
+    // })
 
     it('gets non family member field value', () => {
       expect(
