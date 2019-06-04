@@ -94,7 +94,7 @@ export class FamilyParticipant extends Component {
 
       if (countFamilyMembers && countFamilyMembers > 1) {
         // if multiple family members navigate to members screens
-        this.props.navigation.navigate('FamilyMembersNames', {
+        this.props.navigation.push('FamilyMembersNames', {
           draft,
           survey
         })
@@ -109,19 +109,16 @@ export class FamilyParticipant extends Component {
     const { draft } = this.state
     const { countFamilyMembers } = this.state.draft.familyData
 
-    let familyMembersList
+    const afterIndex = value === -1 ? 1 : value
+
+    let familyMembersList = this.state.draft.familyData.familyMembersList
 
     if (countFamilyMembers > value) {
-      familyMembersList = this.state.draft.familyData.familyMembersList.slice(
-        0,
-        value
-      )
+      familyMembersList.splice(value, familyMembersList.length - 1)
     } else if (countFamilyMembers < value) {
-      const arr = this.state.draft.familyData.familyMembersList
       for (var i = 0; i < value - countFamilyMembers; i++) {
-        arr.push({ firstParticipant: false })
+        familyMembersList.push({ firstParticipant: false })
       }
-      familyMembersList = arr
     }
 
     this.setState({
@@ -130,7 +127,12 @@ export class FamilyParticipant extends Component {
         familyData: {
           ...draft.familyData,
           countFamilyMembers: value,
-          familyMembersList
+          familyMembersList:
+            value && countFamilyMembers && countFamilyMembers > value
+              ? draft.familyData.familyMembersList.filter(
+                  (item, index) => index < afterIndex
+                )
+              : draft.familyData.familyMembersList
         }
       }
     })

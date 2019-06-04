@@ -305,7 +305,8 @@ export const drafts = (state = [], action) => {
                           ...familyMember.socioEconomicAnswers.slice(0, index),
                           {
                             key: Object.keys(action.payload)[0],
-                            value: Object.values(action.payload)[0]
+                            value: Object.values(action.payload)[0],
+                            multipleValue: []
                           },
                           ...familyMember.socioEconomicAnswers.slice(index + 1)
                         ]
@@ -333,7 +334,8 @@ export const drafts = (state = [], action) => {
                           ...familyMember.socioEconomicAnswers,
                           {
                             key: Object.keys(action.payload)[0],
-                            value: Object.values(action.payload)[0]
+                            value: Object.values(action.payload)[0],
+                            multipleValue: []
                           }
                         ]
                       },
@@ -360,7 +362,8 @@ export const drafts = (state = [], action) => {
                       socioEconomicAnswers: [
                         {
                           key: Object.keys(action.payload)[0],
-                          value: Object.values(action.payload)[0]
+                          value: Object.values(action.payload)[0],
+                          multipleValue: []
                         }
                       ]
                     },

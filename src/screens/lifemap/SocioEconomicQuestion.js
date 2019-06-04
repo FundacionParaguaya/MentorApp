@@ -228,14 +228,17 @@ export class SocioEconomicQuestion extends Component {
 
   addSurveyDataOtherField = (text, field) => {
     const draft = this.props.navigation.getParam('family') || this.getDraft()
-    
+    let value
+    draft.economicSurveyDataList.forEach(e => {
+      if (e.key === field) {
+        value = e.value
+      }
+    })
     this.props.addSurveyData(this.draftId, 'economicSurveyDataList', {
-      [field]: draft.economicSurveyDataList.find(answer => answer.key === field)
-        .value,
+      [field]: value,
       other: text
     })
   }
-
   addSurveyFamilyMemberData = (text, field, index) => {
     this.props.addSurveyFamilyMemberData({
       id: this.draftId,
@@ -246,8 +249,7 @@ export class SocioEconomicQuestion extends Component {
       }
     })
   }
-  
-  getFieldValue = (draft, field, propertyName) => {
+  getFieldValue = (draft, field) => {
     if (
       !draft ||
       !draft.economicSurveyDataList ||
@@ -255,11 +257,21 @@ export class SocioEconomicQuestion extends Component {
     ) {
       return
     }
-    return draft.economicSurveyDataList.filter(item => item.key === field)[0][
-      propertyName
-    ]
-  }
 
+    return draft.economicSurveyDataList.filter(item => item.key === field)[0]
+      .value
+  }
+  getOtherFieldValue = (draft, field) => {
+    if (
+      !draft ||
+      !draft.economicSurveyDataList ||
+      !draft.economicSurveyDataList.filter(item => item.key === field)[0]
+    ) {
+      return
+    }
+    return draft.economicSurveyDataList.filter(item => item.key === field)[0]
+      .other
+  }
   getFamilyMemberFieldValue = (draft, field, index) => {
     if (
       !draft ||
@@ -275,7 +287,6 @@ export class SocioEconomicQuestion extends Component {
       index
     ].socioEconomicAnswers.filter(item => item.key === field)[0].value
   }
-
   detectError = (error, field) => {
     if (error && !this.errorsDetected.includes(field)) {
       this.errorsDetected.push(field)
@@ -287,7 +298,6 @@ export class SocioEconomicQuestion extends Component {
       errorsDetected: this.errorsDetected
     })
   }
-
   submitForm = () => {
     if (this.errorsDetected.length) {
       this.setState({
@@ -340,20 +350,6 @@ export class SocioEconomicQuestion extends Component {
     }
   }
 
-  shoulShowOtherOption = (question, draft) => {
-    const { options, codeName } = question
-    const questionWithOtherOption =
-      options.find(
-        option =>
-          option.hasOwnProperty('otherOption') && option.otherOption === true
-      ) || {}
-
-    const showOtherOption =
-      Object.keys(questionWithOtherOption).length &&
-      this.getFieldValue(draft, codeName, 'value') ===
-        questionWithOtherOption.value
-    return showOtherOption ? true : false
-  }
 
   render() {
     const { t } = this.props
@@ -372,6 +368,8 @@ export class SocioEconomicQuestion extends Component {
         <Text style={styles.memberName}>{member.firstName}</Text>
       ) : null
     }
+
+    console.log(draft)
 
     return (
       <StickyFooter
@@ -401,51 +399,102 @@ export class SocioEconomicQuestion extends Component {
                 question.answerType === 'select' ||
                 question.answerType === 'radio'
               ) {
-                return (
-                  <React.Fragment key={question.codeName}>
-                    {question.answerType === 'radio' ? (
-                      <Text style={{ marginLeft: 10, marginBottom: 15 }}>
-                        {question.questionText}
-                      </Text>
-                    ) : null}
-                    <Select
-                      draft={draft}
-                      radio={question.answerType === 'radio' ? true : false}
-                      required={question.required}
-                      onChange={this.addSurveyData}
-                      placeholder={question.questionText}
-                      showErrors={showErrors}
-                      label={question.questionText}
-                      field={question.codeName}
-                      value={
-                        this.getFieldValue(draft, question.codeName, 'value') ||
-                        ''
-                      }
-                      detectError={this.detectError}
-                      readonly={this.readOnly}
-                      options={question.options}
-                    />
-                    {this.shoulShowOtherOption(question, draft) ? (
-                      <TextInput
+                let otherOptionDetected = false
+                let otherOptionValue
+                question.options.forEach(e => {
+                  if (e.otherOption) {
+                    otherOptionDetected = true
+                    otherOptionValue = e.value
+                  }
+                })
+                let radioQuestionSelected = false
+                //passing multipleValues from the checkbox question
+                draft.economicSurveyDataList.forEach(elem => {
+                  if (elem.key === question.codeName) {
+                    radioQuestionSelected = true
+                  }
+                })
+                if (otherOptionDetected) {
+                  return (
+                    <React.Fragment key={question.codeName}>
+                      {this.readOnly && !radioQuestionSelected ? null : (
+                        <View>
+                          {question.answerType === 'radio' ? (
+                            <Text style={{ marginLeft: 10, marginBottom: 15 }}>
+                              {question.questionText}
+                            </Text>
+                          ) : null}
+                        </View>
+                      )}
+
+                      <Select
+                        draft={draft}
+                        radio={question.answerType === 'radio' ? true : false}
                         required={question.required}
+                        onChange={this.addSurveyData}
+                        placeholder={question.questionText}
+                        showErrors={showErrors}
+                        label={question.questionText}
                         field={question.codeName}
-                        validation="string"
-                        onChangeText={this.addSurveyDataOtherField}
-                        readonly={this.readOnly}
-                        placeholder={t('views.family.specifyQuestionAbove')}
                         value={
-                          this.getFieldValue(
-                            draft,
-                            question.codeName,
-                            'other'
-                          ) || ''
+                          this.getFieldValue(draft, question.codeName) || ''
                         }
                         detectError={this.detectError}
-                        showErrors={showErrors}
+                        readonly={this.readOnly}
+                        options={question.options}
                       />
-                    ) : null}
-                  </React.Fragment>
-                )
+                      {this.getFieldValue(draft, question.codeName) ===
+                      otherOptionValue ? (
+                        <TextInput
+                          required={question.required}
+                          field={question.codeName}
+                          validation="string"
+                          onChangeText={this.addSurveyDataOtherField}
+                          readonly={this.readOnly}
+                          placeholder={t('views.family.specifyQuestionAbove')}
+                          value={
+                            this.getOtherFieldValue(draft, question.codeName) ||
+                            ''
+                          }
+                          detectError={this.detectError}
+                          showErrors={showErrors}
+                        />
+                      ) : null}
+                    </React.Fragment>
+                  )
+                } else {
+                  return (
+                    <React.Fragment key={question.codeName}>
+                      {this.readOnly && !radioQuestionSelected ? null : (
+                        <View>
+                          {question.answerType === 'radio' ? (
+                            <Text style={{ marginLeft: 10, marginBottom: 15 }}>
+                              {question.questionText}
+                            </Text>
+                          ) : null}
+                        </View>
+                      )}
+
+                      <Select
+                        draft={draft}
+                        radio={question.answerType === 'radio' ? true : false}
+                        key={question.codeName}
+                        required={question.required}
+                        onChange={this.addSurveyData}
+                        placeholder={question.questionText}
+                        showErrors={showErrors}
+                        label={question.questionText}
+                        field={question.codeName}
+                        value={
+                          this.getFieldValue(draft, question.codeName) || ''
+                        }
+                        detectError={this.detectError}
+                        readonly={this.readOnly}
+                        options={question.options}
+                      />
+                    </React.Fragment>
+                  )
+                }
               } else if (question.answerType === 'number') {
                 return (
                   <TextInput
@@ -456,10 +505,7 @@ export class SocioEconomicQuestion extends Component {
                     placeholder={question.questionText}
                     showErrors={showErrors}
                     field={question.codeName}
-                    value={
-                      this.getFieldValue(draft, question.codeName, 'value') ||
-                      ''
-                    }
+                    value={this.getFieldValue(draft, question.codeName) || ''}
                     detectError={this.detectError}
                     readonly={this.readOnly}
                     validation="number"
@@ -467,21 +513,37 @@ export class SocioEconomicQuestion extends Component {
                   />
                 )
               } else if (question.answerType === 'checkbox') {
+                let multipleValue = []
+                //passing multipleValues from the checkbox question
+                draft.economicSurveyDataList.forEach(elem => {
+                  if (elem.key === question.codeName) {
+                    if (typeof elem.multipleValue !== 'undefined') {
+                      if (elem.multipleValue.length) {
+                        multipleValue = elem.multipleValue
+                      }
+                    }
+                  }
+                })
                 return (
                   <View key={question.codeName}>
-                    <Text style={{ marginLeft: 10 }}>
-                      {question.questionText}
-                    </Text>
+                    {this.readOnly && !multipleValue.length ? null : (
+                      <Text style={{ marginLeft: 10 }}>
+                        {question.questionText}
+                      </Text>
+                    )}
+
                     {question.options.map(e => {
                       return (
                         <View key={e.value}>
                           <Checkbox
+                            multipleValue={multipleValue}
                             containerStyle={styles.checkbox}
                             checkboxColor={colors.green}
                             showErrors={showErrors}
                             onIconPress={() =>
                               this.onPressCheckbox(e.value, question.codeName)
                             }
+                            readonly={this.readOnly}
                             title={e.text}
                             value={e.value}
                             codeName={question.codeName}
@@ -501,10 +563,7 @@ export class SocioEconomicQuestion extends Component {
                     placeholder={question.questionText}
                     showErrors={showErrors}
                     field={question.codeName}
-                    value={
-                      this.getFieldValue(draft, question.codeName, 'value') ||
-                      ''
-                    }
+                    value={this.getFieldValue(draft, question.codeName) || ''}
                     detectError={this.detectError}
                     readonly={this.readOnly}
                   />
@@ -638,7 +697,7 @@ const mapDispatchToProps = {
   addSurveyDataCheckBox
 }
 
-const mapStateToProps = ({ drafts, nav }) => ({ drafts, nav })
+const mapStateToProps = ({ drafts }) => ({ drafts })
 
 export default withNamespaces()(
   connect(
