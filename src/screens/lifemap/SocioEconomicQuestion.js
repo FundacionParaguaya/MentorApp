@@ -459,7 +459,7 @@ export class SocioEconomicQuestion extends Component {
                 if (otherOptionDetected) {
                   return (
                     <React.Fragment key={question.codeName}>
-                    { radioQuestionSelected ? (
+                      {this.readOnly && !radioQuestionSelected ? null : (
                         <View>
                           {question.answerType === 'radio' ? (
                             <Text style={{ marginLeft: 10, marginBottom: 15 }}>
@@ -467,7 +467,7 @@ export class SocioEconomicQuestion extends Component {
                             </Text>
                           ) : null}
                         </View>
-                      ) : null}
+                      )}
 
                       <Select
                         draft={draft}
@@ -507,8 +507,7 @@ export class SocioEconomicQuestion extends Component {
                 } else {
                   return (
                     <React.Fragment key={question.codeName}>
-                      
-                      { radioQuestionSelected ? (
+                        {this.readOnly && !radioQuestionSelected ? null : (
                         <View>
                           {question.answerType === 'radio' ? (
                             <Text style={{ marginLeft: 10, marginBottom: 15 }}>
@@ -516,7 +515,7 @@ export class SocioEconomicQuestion extends Component {
                             </Text>
                           ) : null}
                         </View>
-                      ) : null}
+                      )}
 
                       <Select
                         draft={draft}
@@ -569,11 +568,11 @@ export class SocioEconomicQuestion extends Component {
                 })
                 return (
                   <View key={question.codeName}>
-                    {multipleValue.length ? (
+                    {this.readOnly && !multipleValue.length ? null : (
                       <Text style={{ marginLeft: 10 }}>
                         {question.questionText}
                       </Text>
-                    ) : null}
+                    )}
 
                     {question.options.map(e => {
                       return (
