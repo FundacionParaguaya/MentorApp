@@ -204,7 +204,8 @@ export class Loading extends Component {
     if (
       !!this.props.sync.images.total &&
       prevProps.sync.images.total !== prevProps.sync.images.synced &&
-      this.props.sync.images.total === this.props.sync.images.synced
+      this.props.sync.images.total === this.props.sync.images.synced &&
+      this.state.maps.every(map => map.status === 100)
     ) {
       this.props.navigation.navigate('DrawerStack')
     }
