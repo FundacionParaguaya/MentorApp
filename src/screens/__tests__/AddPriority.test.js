@@ -56,9 +56,6 @@ describe('AddPriority View', () => {
     it('renders Text', () => {
       expect(wrapper.find(Text)).toHaveLength(2)
     })
-    it('renders Counter', () => {
-      expect(wrapper.find(Counter)).toHaveLength(1)
-    })
   })
 
   describe('functionality', () => {
@@ -76,34 +73,14 @@ describe('AddPriority View', () => {
     it('has correct initial state', () => {
       expect(wrapper.instance().state).toEqual({
         action: '',
-        estimatedDate: 0,
+        estimatedDate: null,
         indicator: 'income',
         reason: '',
+        errorsDetected: [],
         validationError: false,
+        showErrors: false,
         draft: expect.any(Object)
       })
-    })
-    it('increases count correctly', () => {
-      wrapper
-        .find(Counter)
-        .props()
-        .editCounter('plus')
-      expect(wrapper.instance().state.estimatedDate).toEqual(1)
-    })
-    it('decreases count correctly', () => {
-      wrapper.setState({ estimatedDate: 5 })
-      wrapper
-        .find(Counter)
-        .props()
-        .editCounter('minus')
-      expect(wrapper.instance().state.estimatedDate).toEqual(4)
-    })
-    it('does not decrease estimatedDate when it is already 0', () => {
-      wrapper
-        .find(Counter)
-        .props()
-        .editCounter('minus')
-      expect(wrapper.instance().state.estimatedDate).toEqual(0)
     })
     it('gets reason value', () => {
       wrapper

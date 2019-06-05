@@ -9,6 +9,7 @@ import {
 } from 'react-native'
 import SliderItem from './SliderItem'
 import colors from '../theme.json'
+import { isPortrait } from '../responsivenessHelpers'
 
 const VIBRATION_DURATION = 120
 
@@ -75,38 +76,41 @@ export class Slider extends Component {
   }
 
   render() {
-    const width = Dimensions.get('window').width
+    const { width, height } = Dimensions.get('window')
 
     return (
-      <View style={!this.props.portrait ? { paddingHorizontal: 15 } : {}}>
+      <View>
         <ScrollView
           horizontal
           showsHorizontalScrollIndicator={false}
           snapToAlignment="center"
           snapToInterval={width - (1 / 10) * width}
           contentContainerStyle={{
-            width: this.props.portrait ? '280%' : '90%',
-            ...styles.slideWrapper
+            width: isPortrait({width, height}) ? '280%' : '90%',
+            flexGrow: 1,
+            flexDirection: 'row',
+            flexWrap: 'wrap',
+            justifyContent: 'space-between',
+            padding: '0.66%'
           }}
           ref={ref => {
             this.scrollView = ref
           }}
+          snapToAlignment="center"
+          snapToInterval={width - (1 / 10) * width}
         >
           {this.props.slides.map((slide, i) => (
             <View
               key={i}
               style={{
-                backgroundColor: colors[slideColors[slide.value]],
-                ...styles.slideItem
+                width: '33%',
+                backgroundColor: colors[slideColors[slide.value]]
               }}
             >
               <SliderItem
                 slide={slide}
                 onPress={() => this.onSlidePress(slide)}
                 value={this.props.value}
-                bodyHeight={this.props.bodyHeight}
-                portrait={this.props.portrait}
-                tablet={this.props.tablet}
               />
             </View>
           ))}
@@ -116,26 +120,10 @@ export class Slider extends Component {
   }
 }
 
-const styles = StyleSheet.create({
-  slideWrapper: {
-    flexGrow: 1,
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    justifyContent: 'space-evenly'
-  },
-  slideItem: {
-    width: '31%',
-    borderRadius: 3
-  }
-})
-
 Slider.propTypes = {
   slides: PropTypes.array.isRequired,
   value: PropTypes.number,
   selectAnswer: PropTypes.func.isRequired,
-  bodyHeight: PropTypes.number.isRequired,
-  tablet: PropTypes.bool,
-  portrait: PropTypes.bool
 }
 
 export default Slider

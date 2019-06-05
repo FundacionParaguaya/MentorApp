@@ -11,6 +11,8 @@ import {
   AppState
 } from 'react-native'
 import Geolocation from '@react-native-community/geolocation'
+import Icon from 'react-native-vector-icons/MaterialIcons'
+import CommunityIcon from 'react-native-vector-icons/MaterialCommunityIcons'
 /* eslint-disable import/named */
 import { GooglePlacesAutocomplete } from 'react-native-google-places-autocomplete'
 /* eslint-enable import/named */
@@ -43,7 +45,10 @@ export class Location extends Component {
     centeringMap: false, // while map is centering we show a different spinner
     loading: true,
     showForm: false,
+    showOfflineMapsList: false,
+    hasShownList: false, // back button needs this
     cachedMapPacks: [],
+    zoom: 15,
     appState: AppState.currentState,
     draft:
       this.props.navigation.getParam('draft') ||
@@ -65,12 +70,13 @@ export class Location extends Component {
     })
   }
 
-  onDragMap = region => {
+  onDragMap = async region => {
     const { draft } = this.state
     const { familyData } = draft
     const { coordinates } = region.geometry
     const longitude = coordinates[0]
     const latitude = coordinates[1]
+    let zoom = await this._map.getZoom()
 
     // prevent jumping of the marker by updating only when the region changes
     if (
@@ -78,6 +84,7 @@ export class Location extends Component {
       familyData.longitude !== longitude
     ) {
       this.setState({
+        zoom: zoom,
         draft: {
           ...draft,
           familyData: {
@@ -174,47 +181,61 @@ export class Location extends Component {
     const { draft } = this.state
     const { familyData } = draft
 
-    Geolocation.getCurrentPosition(
-      // if no offline map is available, but there is location save it
-      position => {
-        const { longitude, latitude, accuracy } = position.coords
-        const isLocationInBoundaries = this.state.cachedMapPacks.length
-          ? this.isUserLocationWithinMapPackBounds(
-              longitude,
-              latitude,
-              this.state.cachedMapPacks.map(pack => pack.bounds)
-            )
-          : false
+    if (
+      this.survey.surveyConfig.offlineMaps &&
+      !this.state.showOfflineMapsList
+    ) {
+      this.setState({
+        loading: false,
+        showOfflineMapsList: true
+      })
+    } else {
+      this.setState({
+        loading: false,
+        showOfflineMapsList: false
+      })
+      Geolocation.getCurrentPosition(
+        // if no offline map is available, but there is location save it
+        position => {
+          const { longitude, latitude, accuracy } = position.coords
+          const isLocationInBoundaries = this.state.cachedMapPacks.length
+            ? this.isUserLocationWithinMapPackBounds(
+                longitude,
+                latitude,
+                this.state.cachedMapPacks.map(pack => pack.bounds)
+              )
+            : false
 
-        this.setState({
-          loading: false,
-          centeringMap: false,
-          showForm: isLocationInBoundaries ? false : true,
-          draft: {
-            ...draft,
-            familyData: {
-              ...familyData,
-              latitude,
-              longitude,
-              accuracy
+          this.setState({
+            loading: false,
+            centeringMap: false,
+            showForm: isLocationInBoundaries ? false : true,
+            draft: {
+              ...draft,
+              familyData: {
+                ...familyData,
+                latitude,
+                longitude,
+                accuracy
+              }
             }
-          }
-        })
-      },
-      // otherwise ask for more details
-      () => {
-        this.setState({
-          loading: false,
-          centeringMap: false,
-          showForm: true
-        })
-      },
-      {
-        enableHighAccuracy: false,
-        timeout: 10000,
-        maximumAge: 0
-      }
-    )
+          })
+        },
+        // otherwise ask for more details
+        () => {
+          this.setState({
+            loading: false,
+            centeringMap: false,
+            showForm: true
+          })
+        },
+        {
+          enableHighAccuracy: false,
+          timeout: 10000,
+          maximumAge: 0
+        }
+      )
+    }
   }
 
   // try getting device location and set map state according to online state
@@ -269,12 +290,57 @@ export class Location extends Component {
       this.state.appState.match(/inactive|background/) &&
       nextAppState === 'active'
     ) {
-      this.props.navigation.replace('Location')
+      this.props.navigation.replace('Location', {
+        draft: this.state.draft,
+        survey: this.survey
+      })
     }
     this.setState({ appState: nextAppState })
   }
 
+  determineScreenState(isOnline) {
+    const { draft } = this.state
+    const { familyData } = draft
+
+    if (!this.readOnly) {
+      this.props.navigation.setParams({
+        onPressBack: this.onPressBack
+      })
+    }
+
+    if (!familyData.latitude) {
+      this.getDeviceCoordinates(isOnline)
+    } else {
+      this.setCoordinatesFromDraft(isOnline)
+    }
+  }
+
   componentDidMount() {
+    const { draft } = this.state
+    if (!this.readOnly) {
+      this.setState({
+        draft: {
+          ...draft,
+          progress: {
+            ...draft.progress,
+            screen: 'Location',
+            total: getTotalScreens(this.survey)
+          },
+          familyData: {
+            ...draft.familyData,
+            country:
+              draft.familyData.country ||
+              this.survey.surveyConfig.surveyLocation.country
+          }
+        },
+        loading: true
+      })
+    } else {
+      this.setState({
+        loading: true
+      })
+    }
+
     this.props.navigation.setParams({
       getCurrentDraftState: () => this.state.draft
     })
@@ -292,77 +358,17 @@ export class Location extends Component {
       this._keyboardDidHide
     )
 
-    const { draft } = this.state
-    const { familyData } = draft
-
-    const updatedDraft = {
-      ...draft,
-      progress: {
-        ...draft.progress,
-        screen: 'Location',
-        total: getTotalScreens(this.survey)
-      },
-      familyData: {
-        ...draft.familyData,
-        country:
-          draft.familyData.country ||
-          this.survey.surveyConfig.surveyLocation.country
-      }
-    }
-
     // monitor for connection changes
     NetInfo.addEventListener('connectionChange', conncection => {
-      this.setState({
-        loading: true,
-        draft: updatedDraft
-      })
-
       const isOnline = conncection.type === 'none' ? false : true
 
-      if (!familyData.latitude) {
-        if (!this.readOnly) {
-          this.getDeviceCoordinates(isOnline)
-        } else {
-          this.setState({
-            loading: false,
-            showForm: true,
-            draft: updatedDraft
-          })
-        }
-      } else {
-        this.setCoordinatesFromDraft(isOnline)
-      }
+      this.determineScreenState(isOnline)
     })
 
     // check if online first
     NetInfo.isConnected.fetch().then(isOnline => {
-      if (!familyData.latitude) {
-        if (!this.readOnly) {
-          this.getDeviceCoordinates(isOnline)
-        } else {
-          this.setState({
-            isOnline,
-            loading: false,
-            showForm: true,
-            draft: updatedDraft
-          })
-        }
-      } else {
-        this.setCoordinatesFromDraft(isOnline)
-      }
+      this.determineScreenState(isOnline)
     })
-
-    if (!this.readOnly && draft.progress.screen !== 'Location') {
-      this.setState({
-        draft: updatedDraft
-      })
-    }
-
-    if (!this.readOnly) {
-      this.props.navigation.setParams({
-        onPressBack: this.onPressBack
-      })
-    }
   }
 
   componentWillUnmount() {
@@ -378,14 +384,21 @@ export class Location extends Component {
   }
 
   onPressBack = () => {
-    const { draft } = this.state
+    const { draft, hasShownList } = this.state
 
-    const survey = this.survey
-
-    if (draft.familyData.familyMembersList.length > 1) {
-      this.props.navigation.navigate('FamilyMembersNames', { draft, survey })
+    if (hasShownList) {
+      this.setState({
+        showOfflineMapsList: true,
+        hasShownList: false
+      })
     } else {
-      this.props.navigation.navigate('FamilyParticipant', { draft, survey })
+      const survey = this.survey
+
+      if (draft.familyData.countFamilyMembers > 1) {
+        this.props.navigation.navigate('FamilyMembersNames', { draft, survey })
+      } else {
+        this.props.navigation.replace('FamilyParticipant', { draft, survey })
+      }
     }
   }
 
@@ -442,6 +455,36 @@ export class Location extends Component {
     })
   }
 
+  goToOfflineLocation = () => {
+    this.setState({
+      hasShownList: true,
+      loading: true,
+      showSearch: false
+    })
+    this.getCoordinatesOffline()
+  }
+
+  centerOnOfflineMap = map => {
+    const { draft } = this.state
+
+    this.setState({
+      hasShownList: true,
+      loading: false,
+      centeringMap: false,
+      showForm: false,
+      showSearch: false,
+      showOfflineMapsList: false,
+      draft: {
+        ...draft,
+        familyData: {
+          ...draft.familyData,
+          latitude: map.center[0],
+          longitude: map.center[1]
+        }
+      }
+    })
+  }
+
   componentDidUpdate(prevProps, prevState) {
     // update nav draft param if the data changes
     // so the exit modal can access it
@@ -458,7 +501,8 @@ export class Location extends Component {
       showErrors,
       showSearch,
       showForm,
-      draft
+      draft,
+      showOfflineMapsList
     } = this.state
 
     const familyData = draft.familyData
@@ -477,6 +521,96 @@ export class Location extends Component {
             </Text>
           )}
         </View>
+      )
+    } else if (showOfflineMapsList) {
+      return (
+        <StickyFooter
+          handleClick={this.handleClick}
+          readonly={this.readOnly}
+          visible={false}
+          progress={
+            !this.readOnly && draft
+              ? (draft.familyData.countFamilyMembers > 1 ? 3 : 2) /
+                draft.progress.total
+              : 0
+          }
+          fullHeight
+        >
+          <View style={[styles.placeholder, { height: '100%' }]}>
+            <Text style={[globalStyles.h2, { marginBottom: 30 }]}>
+              {t('views.sync.offline')}
+            </Text>
+            <CommunityIcon
+              style={styles.icon}
+              name="wifi-off"
+              size={60}
+              color={colors.palegrey}
+            />
+            <Text style={[globalStyles.h3, { marginTop: 10 }]}>
+              {t('views.family.mapsEnabled')}
+            </Text>
+            <View
+              style={{
+                width: '100%',
+                maxWidth: 400,
+                paddingHorizontal: 30,
+                marginVertical: 30
+              }}
+            >
+              <View
+                style={{
+                  borderTopWidth: 1,
+                  borderTopColor: colors.palegrey
+                }}
+              >
+                {this.survey.surveyConfig.offlineMaps.map(map => (
+                  <TouchableHighlight
+                    underlayColor={colors.primary}
+                    onPress={() => this.centerOnOfflineMap(map)}
+                    style={{
+                      borderBottomWidth: 1,
+                      borderBottomColor: colors.palegrey,
+                      paddingVertical: 15
+                    }}
+                    key={map.name}
+                  >
+                    <View
+                      style={{
+                        flexDirection: 'row',
+                        justifyContent: 'space-between'
+                      }}
+                    >
+                      <View style={{ flexDirection: 'row' }}>
+                        <Icon
+                          style={[styles.icon, { marginRight: 10 }]}
+                          name="location-on"
+                          size={20}
+                          color={colors.palegrey}
+                        />
+                        <Text style={{ fontSize: 15 }}>{map.name}</Text>
+                      </View>
+                      <Icon
+                        style={styles.icon}
+                        name="navigate-next"
+                        size={25}
+                        color={colors.palegrey}
+                      />
+                    </View>
+                  </TouchableHighlight>
+                ))}
+              </View>
+            </View>
+
+            <TouchableHighlight
+              underlayColor={'transparent'}
+              onPress={this.goToOfflineLocation}
+            >
+              <Text style={[globalStyles.h3, styles.locationLink]}>
+                {t('views.family.mapNotListedAbove')}
+              </Text>
+            </TouchableHighlight>
+          </View>
+        </StickyFooter>
       )
     } else if (!showForm) {
       return (
@@ -524,8 +658,11 @@ export class Location extends Component {
             />
           )}
           <MapboxGL.MapView
+            ref={map => {
+              this._map = map
+            }}
             centerCoordinate={[+familyData.longitude, +familyData.latitude]}
-            zoomLevel={15}
+            zoomLevel={this.state.zoom}
             style={{ width: '100%', flexGrow: 2 }}
             logoEnabled={false}
             zoomEnabled={!this.readOnly}
@@ -534,7 +671,7 @@ export class Location extends Component {
             pitchEnabled={false}
             onRegionDidChange={this.onDragMap}
             minZoomLevel={10}
-            maxZoomLevel={15}
+            maxZoomLevel={16}
           />
           {!this.readOnly && (
             <View>
@@ -751,5 +888,10 @@ const styles = StyleSheet.create({
     backgroundColor: colors.white,
     marginHorizontal: 9,
     marginTop: 8
+  },
+  locationLink: {
+    color: colors.green,
+    textDecorationLine: 'underline',
+    backgroundColor: 'transparent'
   }
 })

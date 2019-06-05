@@ -124,68 +124,146 @@ export class Dashboard extends Component {
 
   render() {
     const { t, drafts } = this.props
+    let valGreen = 0
+    let valYellow = 0
+    let valRed = 0
+    if (typeof this.props.families !== 'undefined') {
+      if (this.props.families.length) {
+        this.props.families.forEach(el => {
+          el.snapshotList[0].indicatorSurveyDataList.forEach(e => {
+            if (e.value === 1) {
+              valRed++
+            } else if (e.value === 2) {
+              valYellow++
+            } else if (e.value === 3) {
+              valGreen++
+            }
+          })
+        })
+      }
+    }
+
     const list = drafts.slice().reverse()
     return (
       <ScrollView style={globalStyles.background}>
         <View ref={this.acessibleComponent} accessible={true}>
-          {this.props.offline.outbox.length ? null : (
-            <View>
-              <View style={globalStyles.container}>
-                <View
-                  style={{ alignItems: 'center', justifyContent: 'center' }}
-                >
-                  <Decoration>
-                    <RoundImage source="family" />
-                  </Decoration>
-                  <View style={styles.familiesIcon}>
-                    <Icon
-                      name="face"
-                      style={styles.familiesIconIcon}
-                      size={60}
-                    />
-                  </View>
-
-                  <Text style={{ ...styles.familiesCount }}>
-                    {this.props.families.length} {t('views.families')}
-                  </Text>
+          <View>
+            <View style={globalStyles.container}>
+              <View style={{ alignItems: 'center', justifyContent: 'center' }}>
+                <Decoration>
+                  <RoundImage source="family" />
+                </Decoration>
+                <View style={styles.familiesIcon}>
+                  <Icon name="face" style={styles.familiesIconIcon} size={60} />
                 </View>
 
-                <Button
-                  id="create-lifemap"
-                  text={t('views.createLifemap')}
-                  colored
-                  handleClick={this.navigateToCreateLifemap}
-                />
+                <Text style={{ ...styles.familiesCount }}>
+                  {this.props.families.length} {t('views.families')}
+                </Text>
               </View>
-              {drafts.length ? (
-                <View style={styles.borderBottom}>
-                  <Text
-                    style={{ ...globalStyles.subline, ...styles.listTitle }}
-                  >
-                    {t('views.latestDrafts')}
-                  </Text>
+              <View
+                style={{
+                  width: '100%',
+                  paddingHorizontal: 10,
+                  flexDirection: 'row',
+                  justifyContent: 'space-around'
+                }}
+              >
+                <View style={styles.circleAndTextContainer}>
+                  <View style={styles.circleContainer}>
+                    <View style={styles.circleGreen} />
+                  </View>
+                  <Text style={styles.numberIndicator}>{valGreen}</Text>
+                  <Text style={styles.colorIndicator}>Green</Text>
                 </View>
-              ) : null}
-              <FlatList
-                style={{ ...styles.background }}
-                data={list}
-                keyExtractor={(item, index) => index.toString()}
-                renderItem={({ item }) => (
-                  <DraftListItem
-                    item={item}
-                    handleClick={this.handleClickOnListItem}
-                    lng={this.props.lng}
-                  />
-                )}
+
+                <View style={styles.circleAndTextContainer}>
+                  <View style={styles.circleContainer}>
+                    <View style={styles.circleYellow} />
+                  </View>
+                  <Text style={styles.numberIndicator}>{valYellow}</Text>
+                  <Text style={styles.colorIndicator}>Yellow</Text>
+                </View>
+
+                <View style={styles.circleAndTextContainer}>
+                  <View style={styles.circleContainer}>
+                    <View style={styles.circleRed} />
+                  </View>
+                  <Text style={styles.numberIndicator}>{valRed}</Text>
+                  <Text style={styles.colorIndicator}>Red</Text>
+                </View>
+              </View>
+
+              <Button
+                id="create-lifemap"
+                text={t('views.createLifemap')}
+                colored
+                handleClick={this.navigateToCreateLifemap}
               />
             </View>
-          )}
+            {drafts.length ? (
+              <View style={styles.borderBottom}>
+                <Text style={{ ...globalStyles.subline, ...styles.listTitle }}>
+                  {t('views.latestDrafts')}
+                </Text>
+              </View>
+            ) : null}
+            <FlatList
+              style={{ ...styles.background }}
+              data={list}
+              keyExtractor={(item, index) => index.toString()}
+              renderItem={({ item }) => (
+                <DraftListItem
+                  item={item}
+                  handleClick={this.handleClickOnListItem}
+                  lng={this.props.lng}
+                />
+              )}
+            />
+          </View>
         </View>
       </ScrollView>
     )
   }
 }
 const styles = StyleSheet.create({
+  numberIndicator: {
+    fontSize: 25,
+    fontWeight:"bold",
+    marginTop:4,
+  },
+  colorIndicator: {
+    fontSize: 17,
+    fontWeight:"bold",
+    marginBottom:10,
+  },
+  circleAndTextContainer: {
+    justifyContent: 'center',
+    alignItems: 'center'
+  },
+  circleContainer: {
+    height: 50,
+    justifyContent: 'center',
+    alignItems: 'center'
+  },
+  circleGreen: {
+    backgroundColor: colors.palegreen,
+    width: 50,
+    height: 50,
+    borderRadius: 50
+  },
+  circleYellow: {
+    backgroundColor: colors.palegold,
+    width: 35,
+    height: 35,
+    borderRadius: 50
+  },
+  circleRed: {
+    backgroundColor: colors.palered,
+    width: 20,
+    height: 20,
+    borderRadius: 50
+  },
   familiesIconIcon: {
     margin: 'auto'
   },

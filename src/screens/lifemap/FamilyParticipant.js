@@ -52,16 +52,26 @@ export class FamilyParticipant extends Component {
       }
   }
 
-  detectError = (error, field) => {
+  detectError = async (error, field) => {
     if (error && !this.errorsDetected.includes(field)) {
       this.errorsDetected.push(field)
     } else if (!error) {
       this.errorsDetected = this.errorsDetected.filter(item => item !== field)
     }
+    const { navigation } = this.props
 
-    this.setState({
+    await this.setState({
       errorsDetected: this.errorsDetected
     })
+    if (this.state.errorsDetected.length) {
+      navigation.setParams({
+        isNewDraft: true
+      })
+    } else {
+      navigation.setParams({
+        isNewDraft: !navigation.getParam('draft')
+      })
+    }
   }
 
   handleClick = () => {
@@ -81,9 +91,10 @@ export class FamilyParticipant extends Component {
       } else {
         this.props.updateDraft(draft.draftId, draft)
       }
+
       if (countFamilyMembers && countFamilyMembers > 1) {
         // if multiple family members navigate to members screens
-        this.props.navigation.navigate('FamilyMembersNames', {
+        this.props.navigation.push('FamilyMembersNames', {
           draft,
           survey
         })
@@ -103,9 +114,9 @@ export class FamilyParticipant extends Component {
     let familyMembersList = this.state.draft.familyData.familyMembersList
 
     if (countFamilyMembers > value) {
-      familyMembersList.slice(0, value)
+      familyMembersList.splice(value, familyMembersList.length - 1)
     } else if (countFamilyMembers < value) {
-      for (var i = 0; i < value - 1; i++) {
+      for (var i = 0; i < value - countFamilyMembers; i++) {
         familyMembersList.push({ firstParticipant: false })
       }
     }
@@ -225,10 +236,11 @@ export class FamilyParticipant extends Component {
           readonly={this.readOnly}
           onChangeText={this.updateParticipant}
           placeholder={t('views.family.firstName')}
-          value={participant.firstName || ''}
+          value={decodeURIComponent(participant.firstName || '')}
           required
           detectError={this.detectError}
           showErrors={showErrors}
+          upperCase={true}
         />
         <TextInput
           field="lastName"
@@ -236,10 +248,11 @@ export class FamilyParticipant extends Component {
           onChangeText={this.updateParticipant}
           readonly={this.readOnly}
           placeholder={t('views.family.lastName')}
-          value={participant.lastName || ''}
+          value={decodeURIComponent(participant.lastName || '')}
           required
           detectError={this.detectError}
           showErrors={showErrors}
+          upperCase={true}
         />
         <Select
           id="gender"

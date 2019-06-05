@@ -8,6 +8,11 @@ import {
   Image,
   ScrollView
 } from 'react-native'
+import RadioForm, {
+  RadioButton,
+  RadioButtonInput,
+  RadioButtonLabel
+} from 'react-native-simple-radio-button'
 import BottomModal from './BottomModal'
 import ListItem from './ListItem'
 import TextInput from './TextInput'
@@ -16,13 +21,13 @@ import arrow from '../../assets/images/selectArrow.png'
 import colors from '../theme.json'
 import globalStyles from '../globalStyles'
 import i18n from '../i18n'
-import { connect } from 'react-redux'
 const countryList = countries(require('localized-countries/data/en')).array()
 
 class Select extends Component {
   state = {
     isOpen: false,
     errorMsg: '',
+    radioChecked: null,
     showOther: false
   }
 
@@ -65,15 +70,34 @@ class Select extends Component {
     this.props.onChange(value, this.props.otherField)
   }
 
+  validateInputRadio = value => {
+    this.setState({
+      isOpen: false,
+      radioChecked: value
+    })
+    if (this.props.required && !value) {
+      this.handleError(i18n.t('validation.fieldIsRequired'))
+      this.setState({
+        errorMsg: i18n.t('validation.fieldIsRequired')
+      })
+    } else {
+      this.props.onChange(value, this.props.field)
+      this.setState({
+        errorMsg: null
+      })
+      this.props.field ? this.props.detectError(false, this.props.field) : ''
+    }
+  }
+
   componentDidMount() {
     // on mount validate empty required fields without showing an errors message
     if (this.props.required && !this.props.value) {
       this.props.detectError(true, this.props.field)
     }
 
-    if (this.props.otherValue) {
+    if (this.props.radio) {
       this.setState({
-        showOther: true
+        radioChecked: this.props.value
       })
     }
 
@@ -111,7 +135,6 @@ class Select extends Component {
     let countries = countryList.filter(
       country => country.code !== defaultCountry.code
     )
-
     // Add default country to the beginning of the list
     let countriesArr = []
 
@@ -156,6 +179,16 @@ class Select extends Component {
     } else {
       text = ''
     }
+    let radio = false
+    let radio_props = []
+    if (typeof this.props.radio !== 'undefined') {
+      radio = this.props.radio
+      if (radio) {
+        this.props.options.forEach(e => {
+          radio_props.push({ label: e.text, value: e.value })
+        })
+      }
+    }
 
     return (
       <View>
@@ -165,96 +198,179 @@ class Select extends Component {
           onPress={this.toggleDropdown}
         >
           <View style={styles.wrapper}>
-            <View
-              style={[
-                styles.container,
-                !value && styles.withoutValue,
-                errorMsg && styles.error,
-                isOpen && styles.active
-              ]}
-            >
-              {!!value && (
+            {radio ? (
+              <RadioForm formHorizontal={true} animation={false}>
+                <View
+                  style={{
+                    width: '100%',
+                    paddingHorizontal: 10,
+                    flexDirection: 'row',
+                    justifyContent: 'space-around',
+                    flexWrap: 'wrap'
+                  }}
+                >
+                  {radio_props.map((obj, i) => {
+                    if (readonly) {
+                      if (this.state.radioChecked === obj.value) {
+                        return (
+                          <View
+                            key={i}
+                            style={{ marginRight: 'auto' }}
+                          >
+                            <View style={{ marginLeft: 12 }}>
+                            <RadioButton labelHorizontal={true}>
+                              <RadioButtonInput
+                                disabled={true}
+                                obj={obj}
+                                index={i}
+                                isSelected={
+                                  this.state.radioChecked === obj.value
+                                }
+                                onPress={this.validateInputRadio}
+                                borderWidth={2}
+                                buttonInnerColor={colors.palegreen}
+                                buttonOuterColor={colors.palegrey}
+                                buttonSize={12}
+                                buttonOuterSize={20}
+                                buttonStyle={{}}
+                              />
+                              <RadioButtonLabel
+                                obj={obj}
+                                index={i}
+                                labelHorizontal={true}
+                                onPress={this.validateInputRadio}
+                                labelStyle={{ fontSize: 17, color: '#4a4a4a' }}
+                                labelWrapStyle={{}}
+                              />
+                            </RadioButton>
+                            </View>
+                          </View>
+                        )
+                      }
+                    } else {
+                      return (
+                        <RadioButton labelHorizontal={true} key={i}>
+                          <RadioButtonInput
+                            obj={obj}
+                            index={i}
+                            isSelected={this.state.radioChecked === obj.value}
+                            onPress={this.validateInputRadio}
+                            borderWidth={2}
+                            buttonInnerColor={colors.palegreen}
+                            buttonOuterColor={colors.palegrey}
+                            buttonSize={12}
+                            buttonOuterSize={20}
+                            buttonStyle={{}}
+                          />
+                          <RadioButtonLabel
+                            obj={obj}
+                            index={i}
+                            labelHorizontal={true}
+                            onPress={this.validateInputRadio}
+                            labelStyle={{ fontSize: 17, color: '#4a4a4a' }}
+                            labelWrapStyle={{}}
+                          />
+                        </RadioButton>
+                      )
+                    }
+                  })}
+                </View>
+              </RadioForm>
+            ) : (
+              <View
+                style={[
+                  styles.container,
+                  !value && styles.withoutValue,
+                  errorMsg && styles.error,
+                  isOpen && styles.active
+                ]}
+              >
+                {!!value && (
+                  <Text
+                    style={[
+                      styles.title,
+                      isOpen &&
+                        !errorMsg && {
+                          color: colors.palegreen
+                        }
+                    ]}
+                    accessibilityLabel={`${placeholder} ${
+                      required && !readonly ? ' This is a mandatory field.' : ''
+                    }`}
+                  >{`${placeholder}${required && !readonly ? ' *' : ''}`}</Text>
+                )}
                 <Text
                   style={[
-                    styles.title,
-                    isOpen &&
-                      !errorMsg && {
-                        color: colors.palegreen
-                      }
+                    styles.placeholder,
+                    errorMsg ? { color: colors.red } : {}
                   ]}
-                  accessibilityLabel={`${placeholder} ${
-                    required && !readonly ? ' This is a mandatory field.' : ''
+                  accessibilityLabel={`${placeholder}${
+                    required ? ' This is a mandatory field.' : ''
                   }`}
-                >{`${placeholder}${required && !readonly ? ' *' : ''}`}</Text>
-              )}
-              <Text
-                style={[
-                  styles.placeholder,
-                  errorMsg ? { color: colors.red } : {}
-                ]}
-                accessibilityLabel={`${placeholder}${
-                  required ? ' This is a mandatory field.' : ''
-                }`}
-              >
-                {value ? text : `${placeholder}${required ? ' *' : ''}`}
-              </Text>
-              {!readonly ? <Image source={arrow} style={styles.arrow} /> : null}
+                >
+                  {value ? text : `${placeholder}${required ? ' *' : ''}`}
+                </Text>
+                {!readonly ? (
+                  <Image source={arrow} style={styles.arrow} />
+                ) : null}
 
-              <BottomModal
-                isOpen={isOpen}
-                onRequestClose={this.toggleDropdown}
-                onEmptyClose={() => {
-                  this.validateInput('')
-                  this.toggleDropdown()
-                }}
-              >
-                <View style={styles.dropdown}>
-                  {countrySelect ? (
-                    <ScrollView>
-                      {countries.map(item => (
-                        <ListItem
-                          key={item.code}
-                          onPress={() => this.validateInput(item.code)}
-                        >
-                          <Text
-                            style={[
-                              styles.option,
-                              value === item.code && styles.selected
-                            ]}
-                            accessibilityLabel={`${item.label}`}
+                <BottomModal
+                  isOpen={isOpen}
+                  onRequestClose={this.toggleDropdown}
+                  onEmptyClose={() => {
+                    this.validateInput('')
+                    this.toggleDropdown()
+                  }}
+                >
+                  <View style={styles.dropdown}>
+                    {countrySelect ? (
+                      <ScrollView>
+                        {countries.map(item => (
+                          <ListItem
+                            key={item.code}
+                            onPress={() => this.validateInput(item.code)}
                           >
-                            {item.label}
-                          </Text>
-                        </ListItem>
-                      ))}
-                    </ScrollView>
-                  ) : (
-                    <ScrollView>
-                      {options.map(item => (
-                        <ListItem
-                          underlayColor={'transparent'}
-                          activeOpacity={1}
-                          key={item.value}
-                          onPress={() =>
-                            this.validateInput(item.value, item.otherOption)
-                          }
-                        >
-                          <Text
-                            style={[
-                              styles.option,
-                              value === item.value && styles.selected
-                            ]}
-                            accessibilityLabel={`${item.text}`}
+                            <Text
+                              style={[
+                                styles.option,
+                                value === item.code && styles.selected
+                              ]}
+                              accessibilityLabel={`${item.label}`}
+                            >
+                              {item.label}
+                            </Text>
+                          </ListItem>
+                        ))}
+                      </ScrollView>
+                    ) : (
+                      <ScrollView>
+                        {options.map(item => (
+                          <ListItem
+                            underlayColor={'transparent'}
+                            activeOpacity={1}
+                            key={item.value}
+                            onPress={() =>
+                              this.validateInput(item.value, item.otherOption)
+                            }
                           >
-                            {item.text}
-                          </Text>
-                        </ListItem>
-                      ))}
-                    </ScrollView>
-                  )}
-                </View>
-              </BottomModal>
-            </View>
+                            <Text
+                              style={[
+                                styles.option,
+                                value === item.value && styles.selected
+                              ]}
+                              accessibilityLabel={`${item.text}`}
+                            >
+                              {item.text}
+                            </Text>
+                          </ListItem>
+                        ))}
+                      </ScrollView>
+                    )}
+                  </View>
+                </BottomModal>
+              </View>
+            )}
+
             {/* Error message */}
             {!!errorMsg && (
               <View style={{ marginLeft: 30 }}>
@@ -286,6 +402,7 @@ Select.propTypes = {
   placeholder: PropTypes.string.isRequired,
   otherPlaceholder: PropTypes.string,
   field: PropTypes.string,
+  radio: PropTypes.bool,
   otherField: PropTypes.string,
   country: PropTypes.string,
   countrySelect: PropTypes.bool,
@@ -293,25 +410,20 @@ Select.propTypes = {
   showErrors: PropTypes.bool,
   countryOfBirth: PropTypes.array,
   required: PropTypes.bool,
-  nav: PropTypes.object.isRequired,
   detectError: PropTypes.func
 }
 
-const mapStateToProps = ({ nav }) => ({
-  nav
-})
-
-export default connect(mapStateToProps)(Select)
+export default Select
 
 const styles = StyleSheet.create({
   wrapper: {
-    marginBottom: 15
+    marginBottom: 20
   },
   container: {
     borderBottomWidth: 1,
     marginHorizontal: 15,
     justifyContent: 'center',
-    height: 65,
+    minHeight: 65,
     paddingBottom: 6,
     borderBottomColor: colors.grey,
     borderTopLeftRadius: 8,
@@ -320,8 +432,9 @@ const styles = StyleSheet.create({
   placeholder: {
     paddingHorizontal: 15,
     ...globalStyles.subline,
-    lineHeight: 50,
-    height: 50
+    // lineHeight: 50,
+    paddingTop:20,
+    minHeight: 50
   },
   withoutValue: {
     backgroundColor: colors.primary,

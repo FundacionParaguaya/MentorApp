@@ -128,7 +128,8 @@ class TextInput extends Component {
       required,
       readonly,
       multiline,
-      autoFocus
+      autoFocus,
+      upperCase
     } = this.props
     const status = this.props.status || this.state.status
 
@@ -190,7 +191,7 @@ class TextInput extends Component {
                 {placeholder} {required && !label ? '*' : ''}
               </Text>
             ) : (
-              <Text style={styles.inputText}>{text}</Text>
+              <Text style={upperCase ? styles.inputTextUpperCase : styles.inputText}>{text}</Text>
             )}
           </FormInput>
         </View>
@@ -203,7 +204,6 @@ class TextInput extends Component {
     )
   }
 }
-
 /* eslint-disable react-native/no-unused-styles */
 const styles = StyleSheet.create({
   container: {
@@ -211,7 +211,7 @@ const styles = StyleSheet.create({
     borderBottomWidth: 1,
     marginHorizontal: 15,
     justifyContent: 'center',
-    height: 65,
+    minHeight: 65,
     borderTopLeftRadius: 8,
     borderTopRightRadius: 8
   },
@@ -224,6 +224,10 @@ const styles = StyleSheet.create({
     ...globalStyles.subline,
     fontFamily: 'Roboto',
     paddingRight: 30,
+    fontSize: 14
+  },
+  inputTextUpperCase:{
+    textTransform: 'capitalize',
     fontSize: 14
   },
   inputText: {
@@ -251,10 +255,11 @@ const styles = StyleSheet.create({
     borderBottomColor: colors.red
   },
   text: {
+ 
     marginLeft: 15,
     position: 'relative',
     // top: 10,
-    height: 30,
+    minHeight: 30,
     zIndex: 100
   }
 })
@@ -268,6 +273,7 @@ TextInput.propTypes = {
   readonly: PropTypes.bool,
   onChangeText: PropTypes.func.isRequired,
   autoFocus: PropTypes.bool,
+  upperCase: PropTypes.bool,
   multiline: PropTypes.bool,
   showErrors: PropTypes.bool,
   keyboardType: PropTypes.string,
