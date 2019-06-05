@@ -196,6 +196,7 @@ export class FamilyMembersNames extends Component {
               </View>
               <TextInput
                 autoFocus={firstNameAutoFocus}
+                upperCase={true}
                 key={i}
                 validation="string"
                 field={`${i}.firstName`}
