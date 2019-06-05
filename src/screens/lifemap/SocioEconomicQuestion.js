@@ -350,7 +350,6 @@ export class SocioEconomicQuestion extends Component {
     }
   }
 
-
   render() {
     const { t } = this.props
     const { showErrors } = this.state
@@ -397,102 +396,60 @@ export class SocioEconomicQuestion extends Component {
                 question.answerType === 'select' ||
                 question.answerType === 'radio'
               ) {
-                let otherOptionDetected = false
-                let otherOptionValue
-                question.options.forEach(e => {
-                  if (e.otherOption) {
-                    otherOptionDetected = true
-                    otherOptionValue = e.value
-                  }
-                })
-                let radioQuestionSelected = false
-                //passing multipleValues from the checkbox question
-                draft.economicSurveyDataList.forEach(elem => {
-                  if (elem.key === question.codeName) {
-                    radioQuestionSelected = true
-                  }
-                })
-                if (otherOptionDetected) {
-                  return (
-                    <React.Fragment key={question.codeName}>
-                      {this.readOnly && !radioQuestionSelected ? null : (
-                        <View>
-                          {question.answerType === 'radio' ? (
-                            <Text style={{ marginLeft: 10, marginBottom: 15 }}>
-                              {question.questionText}
-                            </Text>
-                          ) : null}
-                        </View>
-                      )}
+                const otherOptionDetected = question.options.find(
+                  option =>
+                    option.hasOwnProperty('otherOption') &&
+                    option.otherOption === true
+                )
+                const radioQuestionSelected = draft.economicSurveyDataList.some(
+                  answer => answer.key === question.codeName
+                )
+                return (
+                  <React.Fragment key={question.codeName}>
+                    {this.readOnly && !radioQuestionSelected ? null : (
+                      <View>
+                        {question.answerType === 'radio' ? (
+                          <Text style={{ marginLeft: 10, marginBottom: 15 }}>
+                            {question.questionText}
+                          </Text>
+                        ) : null}
+                      </View>
+                    )}
 
-                      <Select
-                        draft={draft}
-                        radio={question.answerType === 'radio' ? true : false}
+                    <Select
+                      draft={draft}
+                      radio={question.answerType === 'radio' ? true : false}
+                      required={question.required}
+                      onChange={this.addSurveyData}
+                      placeholder={question.questionText}
+                      showErrors={showErrors}
+                      label={question.questionText}
+                      field={question.codeName}
+                      value={this.getFieldValue(draft, question.codeName) || ''}
+                      detectError={this.detectError}
+                      readonly={this.readOnly}
+                      options={getConditionalOptions(question, draft)}
+                    />
+                    {Object.keys(otherOptionDetected).length &&
+                    this.getFieldValue(draft, question.codeName) ===
+                      otherOptionDetected.value ? (
+                      <TextInput
                         required={question.required}
-                        onChange={this.addSurveyData}
-                        placeholder={question.questionText}
-                        showErrors={showErrors}
-                        label={question.questionText}
                         field={question.codeName}
+                        validation="string"
+                        onChangeText={this.addSurveyDataOtherField}
+                        readonly={this.readOnly}
+                        placeholder={t('views.family.specifyQuestionAbove')}
                         value={
-                          this.getFieldValue(draft, question.codeName) || ''
+                          this.getOtherFieldValue(draft, question.codeName) ||
+                          ''
                         }
                         detectError={this.detectError}
-                        readonly={this.readOnly}
-                        options={getConditionalOptions(question, draft)}
-                      />
-                      {this.getFieldValue(draft, question.codeName) ===
-                      otherOptionValue ? (
-                        <TextInput
-                          required={question.required}
-                          field={question.codeName}
-                          validation="string"
-                          onChangeText={this.addSurveyDataOtherField}
-                          readonly={this.readOnly}
-                          placeholder={t('views.family.specifyQuestionAbove')}
-                          value={
-                            this.getOtherFieldValue(draft, question.codeName) ||
-                            ''
-                          }
-                          detectError={this.detectError}
-                          showErrors={showErrors}
-                        />
-                      ) : null}
-                    </React.Fragment>
-                  )
-                } else {
-                  return (
-                    <React.Fragment key={question.codeName}>
-                      {this.readOnly && !radioQuestionSelected ? null : (
-                        <View>
-                          {question.answerType === 'radio' ? (
-                            <Text style={{ marginLeft: 10, marginBottom: 15 }}>
-                              {question.questionText}
-                            </Text>
-                          ) : null}
-                        </View>
-                      )}
-
-                      <Select
-                        draft={draft}
-                        radio={question.answerType === 'radio' ? true : false}
-                        key={question.codeName}
-                        required={question.required}
-                        onChange={this.addSurveyData}
-                        placeholder={question.questionText}
                         showErrors={showErrors}
-                        label={question.questionText}
-                        field={question.codeName}
-                        value={
-                          this.getFieldValue(draft, question.codeName) || ''
-                        }
-                        detectError={this.detectError}
-                        readonly={this.readOnly}
-                        options={getConditionalOptions(question, draft)}
                       />
-                    </React.Fragment>
-                  )
-                }
+                    ) : null}
+                  </React.Fragment>
+                )
               } else if (question.answerType === 'number') {
                 return (
                   <TextInput
