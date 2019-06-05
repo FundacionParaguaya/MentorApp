@@ -128,58 +128,48 @@ export class Dashboard extends Component {
     return (
       <ScrollView style={globalStyles.background}>
         <View ref={this.acessibleComponent} accessible={true}>
-          {this.props.offline.outbox.length ? null : (
-            <View>
-              <View style={globalStyles.container}>
-                <View
-                  style={{ alignItems: 'center', justifyContent: 'center' }}
-                >
-                  <Decoration>
-                    <RoundImage source="family" />
-                  </Decoration>
-                  <View style={styles.familiesIcon}>
-                    <Icon
-                      name="face"
-                      style={styles.familiesIconIcon}
-                      size={60}
-                    />
-                  </View>
-
-                  <Text style={{ ...styles.familiesCount }}>
-                    {this.props.families.length} {t('views.families')}
-                  </Text>
+          <View>
+            <View style={globalStyles.container}>
+              <View style={{ alignItems: 'center', justifyContent: 'center' }}>
+                <Decoration>
+                  <RoundImage source="family" />
+                </Decoration>
+                <View style={styles.familiesIcon}>
+                  <Icon name="face" style={styles.familiesIconIcon} size={60} />
                 </View>
 
-                <Button
-                  id="create-lifemap"
-                  text={t('views.createLifemap')}
-                  colored
-                  handleClick={this.navigateToCreateLifemap}
-                />
+                <Text style={{ ...styles.familiesCount }}>
+                  {this.props.families.length} {t('views.families')}
+                </Text>
               </View>
-              {drafts.length ? (
-                <View style={styles.borderBottom}>
-                  <Text
-                    style={{ ...globalStyles.subline, ...styles.listTitle }}
-                  >
-                    {t('views.latestDrafts')}
-                  </Text>
-                </View>
-              ) : null}
-              <FlatList
-                style={{ ...styles.background }}
-                data={list}
-                keyExtractor={(item, index) => index.toString()}
-                renderItem={({ item }) => (
-                  <DraftListItem
-                    item={item}
-                    handleClick={this.handleClickOnListItem}
-                    lng={this.props.lng}
-                  />
-                )}
+
+              <Button
+                id="create-lifemap"
+                text={t('views.createLifemap')}
+                colored
+                handleClick={this.navigateToCreateLifemap}
               />
             </View>
-          )}
+            {drafts.length ? (
+              <View style={styles.borderBottom}>
+                <Text style={{ ...globalStyles.subline, ...styles.listTitle }}>
+                  {t('views.latestDrafts')}
+                </Text>
+              </View>
+            ) : null}
+            <FlatList
+              style={{ ...styles.background }}
+              data={list}
+              keyExtractor={(item, index) => index.toString()}
+              renderItem={({ item }) => (
+                <DraftListItem
+                  item={item}
+                  handleClick={this.handleClickOnListItem}
+                  lng={this.props.lng}
+                />
+              )}
+            />
+          </View>
         </View>
       </ScrollView>
     )

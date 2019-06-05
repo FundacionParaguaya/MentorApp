@@ -1,10 +1,9 @@
 import React from 'react'
 import { StyleSheet, View, Platform } from 'react-native'
-import { AndroidBackHandler } from 'react-navigation-backhandler'
-import BackDraftPopup from './BackDraftPopup'
 import colors from '../theme.json'
 import IconButton from '../components/IconButton'
 import CloseButton from './CloseButton'
+import BackButton from './BackButton'
 
 // Each of the major views has a stack that needs the same nav options.
 // These options handle the header styles and menu icon.
@@ -40,42 +39,7 @@ export const generateNavStyles = ({
   headerRightContainerStyle: {
     marginRight: -16
   },
-  headerLeft: (
-    <AndroidBackHandler
-      onBackPress={() => {
-        if (navigation.getParam('onPressBack')) {
-          navigation.getParam('onPressBack')()
-        }
-        return true
-      }}
-    >
-      <View>
-        <IconButton
-          style={styles.touchable}
-          onPress={() => {
-            if (navigation.getParam('deleteOnExit')) {
-              navigation.setParams({ backModalOpen: true })
-            } else {
-              navigation.setParams({ backModalOpen: false })
-              navigation.getParam('onPressBack')
-                ? navigation.getParam('onPressBack')()
-                : navigation.goBack()
-            }
-          }}
-          icon="arrow-back"
-          size={25}
-          accessible={true}
-          accessibilityLabel={'Go back'}
-        />
-        <BackDraftPopup
-          navigation={navigation}
-          isOpen={navigation.getParam('backModalOpen')}
-          onClose={() => navigation.setParams({ backModalOpen: false })}
-          routeName={navigation.state.routeName}
-        />
-      </View>
-    </AndroidBackHandler>
-  ),
+  headerLeft: <BackButton navigation={navigation} style={styles.touchable} />,
   // empty view to help center titles where there is no close icon
   headerRight: <View style={{ width: 25 }} />
 })

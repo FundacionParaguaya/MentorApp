@@ -17,6 +17,7 @@ export default createStackNavigator(
     ...LifemapScreens
   },
   {
+    initialRouteName: 'Surveys',
     defaultNavigationOptions: ({ navigation }) => ({
       ...generateNavStyles({ navigation })
     }),

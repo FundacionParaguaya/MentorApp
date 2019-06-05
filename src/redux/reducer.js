@@ -18,6 +18,7 @@ import {
   ADD_DRAFT_PROGRESS,
   SUBMIT_DRAFT,
   SUBMIT_DRAFT_COMMIT,
+  ADD_SURVEY_DATA_CHECKBOX,
   SUBMIT_DRAFT_ROLLBACK,
   SWITCH_LANGUAGE,
   SET_HYDRATED,
@@ -155,6 +156,51 @@ export const drafts = (state = [], action) => {
             }
           : draft
       )
+
+    case ADD_SURVEY_DATA_CHECKBOX:
+      return state.map(draft => {
+        // if this is the draft we are editing
+        if (draft.draftId === action.id) {
+          const draftCategory = draft[action.category]
+          const item = draftCategory.filter(
+            item => item.key === Object.keys(action.payload)[0]
+          )[0]
+
+          if (item) {
+            // if item exists in array update it
+            const index = draftCategory.indexOf(item)
+            let multipleValue = item.multipleValue
+            item.multipleValue.push(Object.values(action.payload)[0])
+            let obj = {
+              key: Object.keys(action.payload)[0],
+              value: null,
+              multipleValue: multipleValue
+            }
+            return {
+              ...draft,
+              [action.category]: [
+                ...draftCategory.slice(0, index),
+                obj,
+                ...draftCategory.slice(index + 1)
+              ]
+            }
+          } else {
+            // if item is not in array push it
+            let multipleValue = []
+            multipleValue.push(Object.values(action.payload)[0])
+            let obj2 = {
+              key: Object.keys(action.payload)[0],
+              value: null,
+              multipleValue: multipleValue
+            }
+            return {
+              ...draft,
+              [action.category]: [...draftCategory, obj2]
+            }
+          }
+        } else return draft
+      })
+
     case ADD_SURVEY_DATA:
       return state.map(draft => {
         // if this is the draft we are editing
@@ -175,7 +221,8 @@ export const drafts = (state = [], action) => {
                     {
                       key: Object.keys(action.payload)[0],
                       value: Object.values(action.payload)[0],
-                      other: Object.values(action.payload)[1]
+                      other: Object.values(action.payload)[1],
+                      multipleValue: []
                     },
                     ...draftCategory.slice(index + 1)
                   ]
@@ -191,7 +238,8 @@ export const drafts = (state = [], action) => {
                     ...draftCategory.slice(0, index),
                     {
                       key: Object.keys(action.payload)[0],
-                      value: Object.values(action.payload)[0]
+                      value: Object.values(action.payload)[0],
+                      multipleValue: []
                     },
                     ...draftCategory.slice(index + 1)
                   ]
@@ -204,7 +252,8 @@ export const drafts = (state = [], action) => {
                     ...draftCategory,
                     {
                       key: Object.keys(action.payload)[0],
-                      value: Object.values(action.payload)[0]
+                      value: Object.values(action.payload)[0],
+                      multipleValue: []
                     }
                   ]
                 }
@@ -256,7 +305,8 @@ export const drafts = (state = [], action) => {
                           ...familyMember.socioEconomicAnswers.slice(0, index),
                           {
                             key: Object.keys(action.payload)[0],
-                            value: Object.values(action.payload)[0]
+                            value: Object.values(action.payload)[0],
+                            multipleValue: []
                           },
                           ...familyMember.socioEconomicAnswers.slice(index + 1)
                         ]
@@ -284,7 +334,8 @@ export const drafts = (state = [], action) => {
                           ...familyMember.socioEconomicAnswers,
                           {
                             key: Object.keys(action.payload)[0],
-                            value: Object.values(action.payload)[0]
+                            value: Object.values(action.payload)[0],
+                            multipleValue: []
                           }
                         ]
                       },
@@ -311,7 +362,8 @@ export const drafts = (state = [], action) => {
                       socioEconomicAnswers: [
                         {
                           key: Object.keys(action.payload)[0],
-                          value: Object.values(action.payload)[0]
+                          value: Object.values(action.payload)[0],
+                          multipleValue: []
                         }
                       ]
                     },

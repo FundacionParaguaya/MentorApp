@@ -211,7 +211,7 @@ const styles = StyleSheet.create({
     borderBottomWidth: 1,
     marginHorizontal: 15,
     justifyContent: 'center',
-    height: 65,
+    minHeight: 65,
     borderTopLeftRadius: 8,
     borderTopRightRadius: 8
   },
@@ -259,7 +259,7 @@ const styles = StyleSheet.create({
     marginLeft: 15,
     position: 'relative',
     // top: 10,
-    height: 30,
+    minHeight: 30,
     zIndex: 100
   }
 })

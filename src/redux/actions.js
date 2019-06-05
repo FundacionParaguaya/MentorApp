@@ -98,7 +98,7 @@ export const loadFamilies = (env, token) => ({
         headers: { Authorization: `Bearer ${token}` },
         body: JSON.stringify({
           query:
-            'query { familiesNewStructure {familyId name code snapshotList { surveyId createdAt familyData { familyMembersList { birthCountry birthDate documentNumber documentType email familyId firstName firstParticipant gender id lastName memberIdentifier phoneNumber socioEconomicAnswers { key value}  }  countFamilyMembers latitude longitude country accuracy } economicSurveyDataList { key value } indicatorSurveyDataList { key value } achievements { action indicator roadmap } priorities { action estimatedDate indicator reason } } } }'
+            'query { familiesNewStructure {familyId name code snapshotList { surveyId createdAt familyData { familyMembersList { birthCountry birthDate documentNumber documentType email familyId firstName firstParticipant gender id lastName memberIdentifier phoneNumber socioEconomicAnswers { key value}  }  countFamilyMembers latitude longitude country accuracy } economicSurveyDataList { key value multipleValue } indicatorSurveyDataList { key value } achievements { action indicator roadmap } priorities { action estimatedDate indicator reason } } } }'
         })
       },
       commit: { type: LOAD_FAMILIES_COMMIT }
@@ -111,6 +111,7 @@ export const loadFamilies = (env, token) => ({
 export const CREATE_DRAFT = 'CREATE_DRAFT'
 export const UPDATE_DRAFT = 'UPDATE_DRAFT'
 export const DELETE_DRAFT = 'DELETE_DRAFT'
+export const ADD_SURVEY_DATA_CHECKBOX = 'ADD_SURVEY_DATA_CHECKBOX'
 export const ADD_SURVEY_DATA = 'ADD_SURVEY_DATA'
 export const ADD_SURVEY_PRIORITY_ACHEIVEMENT_DATA =
   'ADD_SURVEY_PRIORITY_ACHEIVEMENT_DATA'
@@ -186,6 +187,12 @@ export const removeFamilyMembers = (id, afterIndex) => ({
   afterIndex
 })
 
+export const addSurveyDataCheckBox = (id, category, payload) => ({
+  type: ADD_SURVEY_DATA_CHECKBOX,
+  category,
+  id,
+  payload
+})
 export const addSurveyData = (id, category, payload) => ({
   type: ADD_SURVEY_DATA,
   category,
@@ -208,7 +215,7 @@ export const submitDraft = (env, token, id, payload) => ({
         headers: { Authorization: `Bearer ${token}` },
         body: JSON.stringify({
           query:
-            'mutation addSnapshot($newSnapshot: NewSnapshotDTOInput) {addSnapshot(newSnapshot: $newSnapshot)  { surveyId surveyVersionId snapshotStoplightAchievements { action indicator roadmap } snapshotStoplightPriorities { reason action indicator estimatedDate } family { familyId } user { userId  username } indicatorSurveyDataList {key value} economicSurveyDataList {key value} familyDataDTO { latitude longitude accuracy familyMemberDTOList { firstName lastName socioEconomicAnswers {key value} } } } }',
+            'mutation addSnapshot($newSnapshot: NewSnapshotDTOInput) {addSnapshot(newSnapshot: $newSnapshot)  { surveyId surveyVersionId snapshotStoplightAchievements { action indicator roadmap } snapshotStoplightPriorities { reason action indicator estimatedDate } family { familyId } user { userId  username } indicatorSurveyDataList {key value} economicSurveyDataList {key value multipleValue} familyDataDTO { latitude longitude accuracy familyMemberDTOList { firstName lastName socioEconomicAnswers {key value } } } } }',
           variables: { newSnapshot: payload }
         })
       },
