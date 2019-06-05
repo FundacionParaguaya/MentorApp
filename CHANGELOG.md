@@ -1,5 +1,42 @@
 # Change Log
 
+## [v1.9.1](https://github.com/FundacionParaguaya/MentorApp/tree/v1.9.1) (2019-06-04)
+[Full Changelog](https://github.com/FundacionParaguaya/MentorApp/compare/v1.9.0...v1.9.1)
+
+**Implemented enhancements:**
+
+- Support new operators for conditional logic [\#692](https://github.com/FundacionParaguaya/MentorApp/issues/692)
+
+**Fixed bugs:**
+
+- Going back from family names to participant deletes data [\#724](https://github.com/FundacionParaguaya/MentorApp/issues/724)
+- App crashes on Create a new survey [\#718](https://github.com/FundacionParaguaya/MentorApp/issues/718)
+- Cut username when logging in [\#715](https://github.com/FundacionParaguaya/MentorApp/issues/715)
+- Overplaced text in socioeconomic question [\#714](https://github.com/FundacionParaguaya/MentorApp/issues/714)
+- Cut images of the indicators for UK  [\#713](https://github.com/FundacionParaguaya/MentorApp/issues/713)
+- Radio/checkboxes should not be editable in family review [\#710](https://github.com/FundacionParaguaya/MentorApp/issues/710)
+- Dashboard sometimes shows a white screen [\#707](https://github.com/FundacionParaguaya/MentorApp/issues/707)
+- Map update resets zoom and location [\#705](https://github.com/FundacionParaguaya/MentorApp/issues/705)
+- "Date of birth" not appearing in per family member profile screen [\#604](https://github.com/FundacionParaguaya/MentorApp/issues/604)
+- Saving of draft - Minimum requirements [\#480](https://github.com/FundacionParaguaya/MentorApp/issues/480)
+
+**Closed issues:**
+
+- Unable to scroll down in small devices [\#706](https://github.com/FundacionParaguaya/MentorApp/issues/706)
+- Change wording in Agree buttons \(SPANISH\) [\#419](https://github.com/FundacionParaguaya/MentorApp/issues/419)
+
+**Merged pull requests:**
+
+- fix \#718 fixed app crashing on older androidVer on CreateALifeMap [\#732](https://github.com/FundacionParaguaya/MentorApp/pull/732) ([zommerberg](https://github.com/zommerberg))
+- fix \#714 corrected the labels and placeholders [\#731](https://github.com/FundacionParaguaya/MentorApp/pull/731) ([zommerberg](https://github.com/zommerberg))
+- fix \#680 fixed saving survey when not matching requrments [\#729](https://github.com/FundacionParaguaya/MentorApp/pull/729) ([zommerberg](https://github.com/zommerberg))
+- fix \#705 fixed the map resetting correctly [\#727](https://github.com/FundacionParaguaya/MentorApp/pull/727) ([zommerberg](https://github.com/zommerberg))
+- Bugs internal test [\#725](https://github.com/FundacionParaguaya/MentorApp/pull/725) ([vasildimitroffhristoff](https://github.com/vasildimitroffhristoff))
+- fix \#715 fixed padding [\#721](https://github.com/FundacionParaguaya/MentorApp/pull/721) ([zommerberg](https://github.com/zommerberg))
+- fix \#604 fixed bug dateOfBirth not appearing [\#720](https://github.com/FundacionParaguaya/MentorApp/pull/720) ([zommerberg](https://github.com/zommerberg))
+- fix \#419 fixed translations [\#712](https://github.com/FundacionParaguaya/MentorApp/pull/712) ([zommerberg](https://github.com/zommerberg))
+- fix \#710 made checkboxes and radios read only in family [\#711](https://github.com/FundacionParaguaya/MentorApp/pull/711) ([zommerberg](https://github.com/zommerberg))
+
 ## [v1.9.0](https://github.com/FundacionParaguaya/MentorApp/tree/v1.9.0) (2019-05-29)
 [Full Changelog](https://github.com/FundacionParaguaya/MentorApp/compare/v1.8.3...v1.9.0)
 
