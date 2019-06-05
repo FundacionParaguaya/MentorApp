@@ -240,6 +240,7 @@ export class FamilyParticipant extends Component {
           required
           detectError={this.detectError}
           showErrors={showErrors}
+          upperCase={true}
         />
         <TextInput
           field="lastName"
@@ -251,6 +252,7 @@ export class FamilyParticipant extends Component {
           required
           detectError={this.detectError}
           showErrors={showErrors}
+          upperCase={true}
         />
         <Select
           id="gender"
