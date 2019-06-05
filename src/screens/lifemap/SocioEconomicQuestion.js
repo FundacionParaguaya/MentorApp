@@ -369,8 +369,6 @@ export class SocioEconomicQuestion extends Component {
       ) : null
     }
 
-    console.log(draft)
-
     return (
       <StickyFooter
         handleClick={this.submitForm}
@@ -441,7 +439,7 @@ export class SocioEconomicQuestion extends Component {
                         }
                         detectError={this.detectError}
                         readonly={this.readOnly}
-                        options={question.options}
+                        options={getConditionalOptions(question, draft)}
                       />
                       {this.getFieldValue(draft, question.codeName) ===
                       otherOptionValue ? (
@@ -490,7 +488,7 @@ export class SocioEconomicQuestion extends Component {
                         }
                         detectError={this.detectError}
                         readonly={this.readOnly}
-                        options={question.options}
+                        options={getConditionalOptions(question, draft)}
                       />
                     </React.Fragment>
                   )
@@ -615,7 +613,7 @@ export class SocioEconomicQuestion extends Component {
                         }
                         detectError={this.detectError}
                         readonly={this.readOnly}
-                        options={question.options}
+                        options={getConditionalOptions(question, draft)}
                       />
                     ) : (
                       <TextInput
