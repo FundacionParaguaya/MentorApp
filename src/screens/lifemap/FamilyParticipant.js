@@ -63,6 +63,7 @@ export class FamilyParticipant extends Component {
     await this.setState({
       errorsDetected: this.errorsDetected
     })
+
     if (this.state.errorsDetected.length) {
       navigation.setParams({
         isNewDraft: true
