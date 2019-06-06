@@ -125,14 +125,7 @@ export class Dashboard extends Component {
   render() {
     const { t, drafts } = this.props
     const list = drafts.slice().reverse()
-    // const surveyQuest = this.props.surveys.map(s => ({title: s.title, surveyQuestions: s.surveyEconomicQuestions}))
-    // surveyQuest.forEach(sur => {
-    //   console.log('DASHBOARD','********')
-    //   console.log('DASHBOARD',sur.title)
-    //   console.log('DASHBOARD', sur.surveyQuestions.filter(q => q.conditions.length))
-    // })
-
-
+   
     return (
       <ScrollView style={globalStyles.background}>
         <View ref={this.acessibleComponent} accessible={true}>

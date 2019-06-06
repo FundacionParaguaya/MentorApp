@@ -193,46 +193,6 @@ export class SocioEconomicQuestion extends Component {
     this.props.addSurveyData(this.draftId, 'economicSurveyDataList', {
       [field]: text
     })
-    // THIS MIGHT NOT BE WORKING !!!!
-    // const draft = this.props.navigation.getParam('family') || this.getDraft()
-
-    // const socioEconomics = this.props.navigation.getParam('socioEconomics')
-    // const questionsForThisScreen = socioEconomics
-    //   ? socioEconomics.questionsPerScreen[socioEconomics.currentScreen - 1]
-    //   : []
-    // // console.log(draft.economicSurveyDataList)
-    // // let qustionToFiler = []
-    // // if (draft.economicSurveyDataList.length) {
-    // //   questionsForThisScreen.forFamily.forEach(ele => {
-    // //     if (typeof ele.conditions !== 'undefined') {
-    // //       if (ele.conditions.length) {
-    // //         draft.economicSurveyDataList.forEach(element => {
-    // //           if (element.key === ele.codeName) {
-    // //             qustionToFiler.push(ele)
-    // //           }
-    // //         })
-    // //       }
-    // //     }
-    // //   })
-    // // }
-    // // if (qustionToFiler.length) {
-    // //   qustionToFiler.forEach(elem => {
-    // //     elem.conditions.forEach(ele => {
-    // //       if (ele.codeName === field) {
-    // //         if (ele.value !== text) {
-    // //           draft.economicSurveyDataList.forEach((element, index) => {
-    // //             if (elem.codeName === element.key) {
-    // //               // console.log('To be cleaned', draft.economicSurveyDataList)
-    // //               // console.log('cleaned')
-    // //               draft.economicSurveyDataList.splice(index, 1)
-    // //               // console.log('Should be cleaned',draft.economicSurveyDataList)
-    // //             }
-    // //           })
-    // //         }
-    // //       }
-    // //     })
-    // //   })
-    // // }
   }
 
   addSurveyDataOtherField = (text, field) => {
@@ -356,12 +316,6 @@ export class SocioEconomicQuestion extends Component {
   }
 
   updateEconomicAnswer = (question, value, memberIndex, field) => {
-    console.log(question, value, memberIndex, field)
-
-    // this.props.addSurveyData(this.state.draftId, 'economicSurveyDataList', {
-    //   [field]: value
-    // })
-
     const {
       conditionalQuestions,
       elementsWithConditionsOnThem: { questionsWithConditionsOnThem }
@@ -394,7 +348,6 @@ export class SocioEconomicQuestion extends Component {
         false
       )
     }
-    console.log('CURRENT DRAFT', currentDraft)
     this.setState({ draft: currentDraft })
   }
 

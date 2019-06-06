@@ -224,12 +224,6 @@ export const shouldCleanUp = (
     )
   }
   if (!currentAnswer || !currentAnswer.value) {
-    // There's nothing to cleanUp, user has not answered the question yet
-    // console.log(
-    //   `Nothing to cleanUp for conditionalQuestion ${
-    //     conditionalQuestion.codeName
-    //   }`
-    // );
     return false
   }
   let cleanUp = false
@@ -260,13 +254,6 @@ export const shouldCleanUp = (
     )
     cleanUp = !availableOptions.find(
       option => option.value === currentAnswer.value
-    )
-  }
-  if (cleanUp) {
-    console.log(
-      `CleanUp needed for conditionalQuestion ${
-        conditionalQuestion.codeName
-      } member ${memberIndex}`
     )
   }
 
@@ -378,7 +365,6 @@ export const getDraftWithUpdatedQuestionsCascading = (
       // Checking if we have to cleanup familyMembers socioeconomic answers
       currentDraft.familyData.familyMembersList.forEach((member, index) => {
         if (shouldCleanUp(conditionalQuestion, currentDraft, member, index)) {
-          console.log('should clean applied')
           // Cleaning up socioeconomic answer for family member
           currentDraft = getDraftWithUpdatedFamilyEconomics(
             currentDraft,
