@@ -10,7 +10,6 @@ import Checkbox from '../../components/Checkbox'
 import {
   addSurveyData,
   addSurveyFamilyMemberData,
-  addDraftProgress,
   addSurveyDataCheckBox
 } from '../../redux/actions'
 import colors from '../../theme.json'
@@ -144,10 +143,6 @@ export class SocioEconomicQuestion extends Component {
     }
   }
 
-  getDraft = () =>
-    this.props.navigation.getParam('family') ||
-    this.props.drafts.find(draft => draft.draftId === this.draftId)
-
   componentDidMount() {
     const { draft } = this.state
     this.props.navigation.setParams({
@@ -155,10 +150,6 @@ export class SocioEconomicQuestion extends Component {
     })
 
     if (!this.readOnly) {
-      // this.props.addDraftProgress(this.draftId, {
-      //   showResume: false,
-      //   screen: 'SocioEconomicQuestion'
-      // })
       this.setState({
         draft: {
           ...draft,
@@ -166,8 +157,7 @@ export class SocioEconomicQuestion extends Component {
             ...draft.progress,
             screen: 'SocioEconomicQuestion',
             total: getTotalScreens(this.survey)
-          },
-          showResume: false
+          }
         }
       })
 
@@ -680,7 +670,6 @@ SocioEconomicQuestion.propTypes = {
   addSurveyDataCheckBox: PropTypes.func,
   addSurveyData: PropTypes.func.isRequired,
   addSurveyFamilyMemberData: PropTypes.func.isRequired,
-  addDraftProgress: PropTypes.func.isRequired,
   drafts: PropTypes.array,
   nav: PropTypes.object
 }
@@ -715,7 +704,6 @@ const styles = StyleSheet.create({
 const mapDispatchToProps = {
   addSurveyData,
   addSurveyFamilyMemberData,
-  addDraftProgress,
   addSurveyDataCheckBox
 }
 
