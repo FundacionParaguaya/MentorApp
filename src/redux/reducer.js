@@ -466,7 +466,8 @@ export const drafts = (state = [], action) => {
         draft.draftId === action.meta.id
           ? {
               ...draft,
-              status: 'Sync error'
+              status: 'Sync error',
+              errors: action.payload.response.errors
             }
           : draft
       )

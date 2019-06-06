@@ -12,41 +12,55 @@ class SyncListItem extends Component {
     const { item, status } = this.props
     const linkDisabled = status !== 'Sync error'
     return (
-      <ListItem
-        style={{ ...styles.listItem, ...styles.borderBottom }}
-        onPress={this.props.handleClick}
-        disabled={linkDisabled}
-      >
-        <View style={styles.view}>
-          <View style={styles.container}>
-            <Icon
-              name="swap-calls"
-              style={styles.icon}
-              size={30}
-              color={colors.lightdark}
-            />
+      <View>
+        <ListItem
+          style={{ ...styles.listItem, ...styles.borderBottom }}
+          onPress={this.props.handleClick}
+          disabled={linkDisabled}
+        >
+          <View style={styles.view}>
+            <View style={styles.container}>
+              <Icon
+                name="swap-calls"
+                style={styles.icon}
+                size={30}
+                color={colors.lightdark}
+              />
+            </View>
+            <View>
+              <Text style={globalStyles.p}>{`${
+                item.familyMembersList[0].firstName
+              } ${item.familyMembersList[0].lastName} ${
+                item.countFamilyMembers > 1
+                  ? `+ ${item.countFamilyMembers - 1}`
+                  : ''
+              }`}</Text>
+              {status === 'Pending sync' ? (
+                <Text style={[styles.label, styles.pendingSync]}>
+                  Sync Pending
+                </Text>
+              ) : (
+                <Text style={[styles.label, styles.error]}>Sync Error</Text>
+              )}
+            </View>
           </View>
-          <View>
-            <Text style={globalStyles.p}>{`${
-              item.familyMembersList[0].firstName
-            } ${item.familyMembersList[0].lastName} ${
-              item.countFamilyMembers > 1
-              ? `+ ${item.countFamilyMembers - 1}`
-              : ''
-            }`}</Text>
-            {status === 'Pending sync' ? (
-              <Text style={[styles.label, styles.pendingSync]}>Sync Pending</Text>
-            ) : (
-              <Text style={[styles.label, styles.error]}>Sync Error</Text>
-            )}
-          </View>
-        </View>
-        {!linkDisabled ? (
-          <Icon name="navigate-next" size={23} color={colors.lightdark} />
-        ) : (
-          <View />
-        )}
-      </ListItem>
+          {!linkDisabled ? (
+            <Icon name="navigate-next" size={23} color={colors.lightdark} />
+          ) : (
+            <View />
+          )}
+        </ListItem>
+
+        {this.props.errors.length
+          ? this.props.errors.map(ele => {
+              return (
+                <Text style={styles.errorText} key={ele.description}>
+                  {ele.description}
+                </Text>
+              )
+            })
+          : null}
+      </View>
     )
   }
 }
@@ -54,10 +68,17 @@ class SyncListItem extends Component {
 SyncListItem.propTypes = {
   item: PropTypes.object.isRequired,
   status: PropTypes.string.isRequired,
+  errors: PropTypes.array,
   handleClick: PropTypes.func.isRequired
 }
 
 const styles = StyleSheet.create({
+  errorText: {
+    marginTop: 5,
+    marginBottom: 5,
+    padding: 7,
+    backgroundColor: colors.errorLight
+  },
   view: {
     justifyContent: 'space-between',
     alignItems: 'center',
@@ -86,8 +107,8 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     marginTop: 5
   },
-  pendingSync: { 
-    backgroundColor: colors.palered, 
+  pendingSync: {
+    backgroundColor: colors.palered,
     color: colors.white
   },
   error: {

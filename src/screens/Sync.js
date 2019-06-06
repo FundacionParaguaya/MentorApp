@@ -5,7 +5,8 @@ import {
   FlatList,
   View,
   UIManager,
-  findNodeHandle
+  findNodeHandle,
+  Text
 } from 'react-native'
 import { connect } from 'react-redux'
 import PropTypes from 'prop-types'
@@ -78,7 +79,6 @@ export class Sync extends Component {
     const list = drafts.filter(
       draft => draft.status === 'Sync error' || draft.status === 'Pending sync'
     )
-
     return (
       <ScrollView contentContainerStyle={[globalStyles.container, styles.view]}>
         <View ref={this.acessibleComponent} accessible={true}>
@@ -119,6 +119,7 @@ export class Sync extends Component {
                 item={item.familyData}
                 status={item.status}
                 handleClick={() => this.navigateToDraft(item)}
+                errors={item.errors || []}
               />
             )}
           />
