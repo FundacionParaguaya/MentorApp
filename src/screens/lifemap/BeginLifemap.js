@@ -60,7 +60,6 @@ export class BeginLifemap extends Component {
   render() {
     const { draft } = this.state
     const { t } = this.props
-
     return (
       <StickyFooter
         handleClick={this.handleClick}

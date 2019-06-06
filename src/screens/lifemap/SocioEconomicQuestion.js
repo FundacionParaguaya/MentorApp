@@ -8,8 +8,6 @@ import TextInput from '../../components/TextInput'
 import Select from '../../components/Select'
 import Checkbox from '../../components/Checkbox'
 import {
-  addSurveyData,
-  addSurveyFamilyMemberData,
   addSurveyDataCheckBox
 } from '../../redux/actions'
 import colors from '../../theme.json'
@@ -192,17 +190,6 @@ export class SocioEconomicQuestion extends Component {
   addSurveyData = (text, field) => {
     this.props.addSurveyData(this.draftId, 'economicSurveyDataList', {
       [field]: text
-    })
-  }
-
-  addSurveyFamilyMemberData = (text, field, index) => {
-    this.props.addSurveyFamilyMemberData({
-      id: this.draftId,
-      index,
-      isSocioEconomicAnswer: true,
-      payload: {
-        [field]: text
-      }
     })
   }
 
@@ -485,7 +472,12 @@ export class SocioEconomicQuestion extends Component {
                     multiline
                     key={question.codeName}
                     required={question.required}
-                    onChangeText={this.addSurveyData}
+                    onChangeText={(value, field) => this.updateEconomicAnswer(
+                      question,
+                      value,
+                      false,
+                      field
+                    )}
                     placeholder={question.questionText}
                     showErrors={showErrors}
                     field={question.codeName}
@@ -548,8 +540,8 @@ export class SocioEconomicQuestion extends Component {
                         key={question.codeName}
                         multiline
                         required={question.required}
-                        onChangeText={(text, field) =>
-                          this.addSurveyFamilyMemberData(text, field, i)
+                        onChangeText={(value, field) =>
+                          this.updateEconomicAnswer(question, value, i, field)
                         }
                         placeholder={question.questionText}
                         showErrors={showErrors}
@@ -583,8 +575,6 @@ SocioEconomicQuestion.propTypes = {
   t: PropTypes.func.isRequired,
   navigation: PropTypes.object.isRequired,
   addSurveyDataCheckBox: PropTypes.func,
-  addSurveyData: PropTypes.func.isRequired,
-  addSurveyFamilyMemberData: PropTypes.func.isRequired,
   drafts: PropTypes.array,
   nav: PropTypes.object
 }
@@ -617,8 +607,6 @@ const styles = StyleSheet.create({
 })
 
 const mapDispatchToProps = {
-  addSurveyData,
-  addSurveyFamilyMemberData,
   addSurveyDataCheckBox
 }
 
