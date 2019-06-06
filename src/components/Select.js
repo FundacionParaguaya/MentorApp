@@ -21,7 +21,6 @@ import arrow from '../../assets/images/selectArrow.png'
 import colors from '../theme.json'
 import globalStyles from '../globalStyles'
 import i18n from '../i18n'
-import { connect } from 'react-redux'
 const countryList = countries(require('localized-countries/data/en')).array()
 
 class Select extends Component {
@@ -211,30 +210,69 @@ class Select extends Component {
                   }}
                 >
                   {radio_props.map((obj, i) => {
-                    return (
-                      <RadioButton labelHorizontal={true} key={i}>
-                        <RadioButtonInput
-                          obj={obj}
-                          index={i}
-                          isSelected={this.state.radioChecked === obj.value}
-                          onPress={this.validateInputRadio}
-                          borderWidth={2}
-                          buttonInnerColor={colors.palegreen}
-                          buttonOuterColor={colors.palegrey}
-                          buttonSize={12}
-                          buttonOuterSize={20}
-                          buttonStyle={{}}
-                        />
-                        <RadioButtonLabel
-                          obj={obj}
-                          index={i}
-                          labelHorizontal={true}
-                          onPress={this.validateInputRadio}
-                          labelStyle={{ fontSize: 17, color: '#4a4a4a' }}
-                          labelWrapStyle={{}}
-                        />
-                      </RadioButton>
-                    )
+                    if (readonly) {
+                      if (this.state.radioChecked === obj.value) {
+                        return (
+                          <View
+                            key={i}
+                            style={{ marginRight: 'auto' }}
+                          >
+                            <View style={{ marginLeft: 12 }}>
+                            <RadioButton labelHorizontal={true}>
+                              <RadioButtonInput
+                                disabled={true}
+                                obj={obj}
+                                index={i}
+                                isSelected={
+                                  this.state.radioChecked === obj.value
+                                }
+                                onPress={this.validateInputRadio}
+                                borderWidth={2}
+                                buttonInnerColor={colors.palegreen}
+                                buttonOuterColor={colors.palegrey}
+                                buttonSize={12}
+                                buttonOuterSize={20}
+                                buttonStyle={{}}
+                              />
+                              <RadioButtonLabel
+                                obj={obj}
+                                index={i}
+                                labelHorizontal={true}
+                                onPress={this.validateInputRadio}
+                                labelStyle={{ fontSize: 17, color: '#4a4a4a' }}
+                                labelWrapStyle={{}}
+                              />
+                            </RadioButton>
+                            </View>
+                          </View>
+                        )
+                      }
+                    } else {
+                      return (
+                        <RadioButton labelHorizontal={true} key={i}>
+                          <RadioButtonInput
+                            obj={obj}
+                            index={i}
+                            isSelected={this.state.radioChecked === obj.value}
+                            onPress={this.validateInputRadio}
+                            borderWidth={2}
+                            buttonInnerColor={colors.palegreen}
+                            buttonOuterColor={colors.palegrey}
+                            buttonSize={12}
+                            buttonOuterSize={20}
+                            buttonStyle={{}}
+                          />
+                          <RadioButtonLabel
+                            obj={obj}
+                            index={i}
+                            labelHorizontal={true}
+                            onPress={this.validateInputRadio}
+                            labelStyle={{ fontSize: 17, color: '#4a4a4a' }}
+                            labelWrapStyle={{}}
+                          />
+                        </RadioButton>
+                      )
+                    }
                   })}
                 </View>
               </RadioForm>
@@ -372,18 +410,10 @@ Select.propTypes = {
   showErrors: PropTypes.bool,
   countryOfBirth: PropTypes.array,
   required: PropTypes.bool,
-  nav: PropTypes.object.isRequired,
-  detectError: PropTypes.func,
-  draft: PropTypes.object.isRequired,
-  surveys: PropTypes.array
+  detectError: PropTypes.func
 }
 
-const mapStateToProps = ({ nav, surveys }) => ({
-  nav,
-  surveys
-})
-
-export default connect(mapStateToProps)(Select)
+export default Select
 
 const styles = StyleSheet.create({
   wrapper: {
@@ -393,7 +423,7 @@ const styles = StyleSheet.create({
     borderBottomWidth: 1,
     marginHorizontal: 15,
     justifyContent: 'center',
-    height: 65,
+    minHeight: 65,
     paddingBottom: 6,
     borderBottomColor: colors.grey,
     borderTopLeftRadius: 8,
@@ -402,8 +432,9 @@ const styles = StyleSheet.create({
   placeholder: {
     paddingHorizontal: 15,
     ...globalStyles.subline,
-    lineHeight: 50,
-    height: 50
+    // lineHeight: 50,
+    paddingTop:20,
+    minHeight: 50
   },
   withoutValue: {
     backgroundColor: colors.primary,

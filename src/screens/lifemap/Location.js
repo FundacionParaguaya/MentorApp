@@ -48,6 +48,7 @@ export class Location extends Component {
     showOfflineMapsList: false,
     hasShownList: false, // back button needs this
     cachedMapPacks: [],
+    zoom: 15,
     appState: AppState.currentState,
     draft:
       this.props.navigation.getParam('draft') ||
@@ -69,12 +70,13 @@ export class Location extends Component {
     })
   }
 
-  onDragMap = region => {
+  onDragMap = async region => {
     const { draft } = this.state
     const { familyData } = draft
     const { coordinates } = region.geometry
     const longitude = coordinates[0]
     const latitude = coordinates[1]
+    let zoom = await this._map.getZoom()
 
     // prevent jumping of the marker by updating only when the region changes
     if (
@@ -82,6 +84,7 @@ export class Location extends Component {
       familyData.longitude !== longitude
     ) {
       this.setState({
+        zoom: zoom,
         draft: {
           ...draft,
           familyData: {
@@ -287,7 +290,10 @@ export class Location extends Component {
       this.state.appState.match(/inactive|background/) &&
       nextAppState === 'active'
     ) {
-      this.props.navigation.replace('Location')
+      this.props.navigation.replace('Location', {
+        draft: this.state.draft,
+        survey: this.survey
+      })
     }
     this.setState({ appState: nextAppState })
   }
@@ -388,10 +394,10 @@ export class Location extends Component {
     } else {
       const survey = this.survey
 
-      if (draft.familyData.familyMembersList.length > 1) {
+      if (draft.familyData.countFamilyMembers > 1) {
         this.props.navigation.navigate('FamilyMembersNames', { draft, survey })
       } else {
-        this.props.navigation.navigate('FamilyParticipant', { draft, survey })
+        this.props.navigation.replace('FamilyParticipant', { draft, survey })
       }
     }
   }
@@ -652,8 +658,11 @@ export class Location extends Component {
             />
           )}
           <MapboxGL.MapView
+            ref={map => {
+              this._map = map
+            }}
             centerCoordinate={[+familyData.longitude, +familyData.latitude]}
-            zoomLevel={15}
+            zoomLevel={this.state.zoom}
             style={{ width: '100%', flexGrow: 2 }}
             logoEnabled={false}
             zoomEnabled={!this.readOnly}
@@ -662,7 +671,7 @@ export class Location extends Component {
             pitchEnabled={false}
             onRegionDidChange={this.onDragMap}
             minZoomLevel={10}
-            maxZoomLevel={15}
+            maxZoomLevel={16}
           />
           {!this.readOnly && (
             <View>

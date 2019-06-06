@@ -1,5 +1,6 @@
 import React, { Component } from 'react'
-import { Image, Platform } from 'react-native'
+import { Platform } from 'react-native'
+import FullWidthImage from 'react-native-fullwidth-image'
 import PropTypes from 'prop-types'
 import RNFetchBlob from 'rn-fetch-blob'
 
@@ -14,8 +15,10 @@ export class CachedImage extends Component {
     const { style, source } = this.props
 
     return (
-      <Image
+      <FullWidthImage
         style={style}
+        resizeMode="cover"
+        ratio={1}
         source={{
           uri: this.getProperSourceForOS(
             `${dirs.DocumentDir}/${source.replace(/https?:\/\//, '')}`
@@ -28,7 +31,7 @@ export class CachedImage extends Component {
 
 CachedImage.propTypes = {
   source: PropTypes.string,
-  style: PropTypes.oneOfType([PropTypes.object, PropTypes.array])
+  style: PropTypes.object
 }
 
 export default CachedImage

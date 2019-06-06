@@ -25,7 +25,6 @@ export class FamilyMembersNames extends Component {
 
   componentDidMount() {
     const { draft } = this.state
-
     this.props.navigation.setParams({
       getCurrentDraftState: () => this.state.draft
     })
@@ -49,7 +48,7 @@ export class FamilyMembersNames extends Component {
   }
 
   onPressBack = () => {
-    this.props.navigation.navigate('FamilyParticipant', {
+    this.props.navigation.push('FamilyParticipant', {
       draft: this.state.draft,
       survey: this.survey
     })
@@ -89,7 +88,15 @@ export class FamilyMembersNames extends Component {
 
     // [0] is the index, [1] is the field
     const split = field.split('.')
-
+    let familyMembersArray = draft.familyData.familyMembersList
+    if (parseInt(split[0], 10) + 1 > familyMembersArray.length - 1) {
+      let newFamilyMember = draft
+      newFamilyMember.familyData.familyMembersList.push({
+        firstParticipant: false,
+        [split[1]]: value
+      })
+      this.setState({ draft: newFamilyMember })
+    }
     this.setState({
       draft: {
         ...draft,
@@ -100,6 +107,7 @@ export class FamilyMembersNames extends Component {
               if (parseInt(split[0], 10) + 1 === index) {
                 return {
                   ...item,
+                  firstParticipant: false,
                   [split[1]]: value
                 }
               }
@@ -109,15 +117,14 @@ export class FamilyMembersNames extends Component {
         }
       }
     })
+    console.log(this.state)
   }
 
   render() {
     const { t } = this.props
     const { showErrors, draft } = this.state
     let onlyOneAutoFocusCheck = false
-
     const { familyMembersList } = draft.familyData
-
     const familyMembersCount =
       draft.familyData.countFamilyMembers &&
       draft.familyData.countFamilyMembers !== -1
@@ -189,6 +196,7 @@ export class FamilyMembersNames extends Component {
               </View>
               <TextInput
                 autoFocus={firstNameAutoFocus}
+                upperCase={true}
                 key={i}
                 validation="string"
                 field={`${i}.firstName`}
