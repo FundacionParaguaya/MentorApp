@@ -16,13 +16,13 @@ import {
 import colors from '../../theme.json'
 import {
   shouldShowQuestion,
-  familyMemberWillHaveQuestions,
   getConditionalOptions,
   getDraftWithUpdatedEconomic,
   getDraftWithUpdatedFamilyEconomics,
   getDraftWithUpdatedQuestionsCascading
 } from '../utils/conditional_logic'
 import { checkAndReplaceSpecialChars } from '../utils/helpers'
+import { getTotalScreens } from './helpers'
 
 export class SocioEconomicQuestion extends Component {
   static navigationOptions = ({ navigation }) => {
@@ -45,11 +45,15 @@ export class SocioEconomicQuestion extends Component {
   readOnly = this.props.navigation.getParam('readOnly')
 
   errorsDetected = []
-  state = { errorsDetected: [], showErrors: false }
+  state = {
+    errorsDetected: [],
+    showErrors: false,
+    draft: this.props.navigation.getParam('draft') || {}
+  }
 
   constructor(props) {
     super(props)
-    const draft = this.props.navigation.getParam('family') || this.getDraft()
+    const { draft } = this.state
     // If this is the first socio economics screen set the whole process
     // in the navigation. On every next screen it will know which questions
     // to ask and if it is done.
@@ -75,8 +79,7 @@ export class SocioEconomicQuestion extends Component {
           !!question.forFamilyMember &&
           question.conditions[0].codeName.toLocaleLowerCase() === 'birthdate'
             ? draft.familyData.familyMembersList.filter(
-                (member, index) =>
-                  !!shouldShowQuestion(question, this.getDraft(), index)
+                (member, index) => !!shouldShowQuestion(question, draft, index)
               ).length
               ? question
               : false
@@ -146,14 +149,26 @@ export class SocioEconomicQuestion extends Component {
     this.props.drafts.find(draft => draft.draftId === this.draftId)
 
   componentDidMount() {
+    const { draft } = this.state
     this.props.navigation.setParams({
-      getCurrentDraftState: () => this.getDraft()
+      getCurrentDraftState: () => this.state.draft
     })
 
     if (!this.readOnly) {
-      this.props.addDraftProgress(this.draftId, {
-        showResume: false,
-        screen: 'SocioEconomicQuestion'
+      // this.props.addDraftProgress(this.draftId, {
+      //   showResume: false,
+      //   screen: 'SocioEconomicQuestion'
+      // })
+      this.setState({
+        draft: {
+          ...draft,
+          progress: {
+            ...draft.progress,
+            screen: 'SocioEconomicQuestion',
+            total: getTotalScreens(this.survey)
+          },
+          showResume: false
+        }
       })
 
       this.props.navigation.setParams({
@@ -168,7 +183,7 @@ export class SocioEconomicQuestion extends Component {
     socioEconomics.currentScreen === 1
       ? this.props.navigation.navigate('Location', {
           survey: this.survey,
-          draft: this.getDraft()
+          draft: this.state.draft
         })
       : this.props.navigation.push('SocioEconomicQuestion', {
           socioEconomics: {
@@ -177,7 +192,7 @@ export class SocioEconomicQuestion extends Component {
             totalScreens: socioEconomics.totalScreens
           },
           survey: this.survey,
-          draft: this.getDraft()
+          draft: this.state.draft
         })
   }
 
@@ -188,42 +203,46 @@ export class SocioEconomicQuestion extends Component {
     this.props.addSurveyData(this.draftId, 'economicSurveyDataList', {
       [field]: text
     })
+    // THIS MIGHT NOT BE WORKING !!!!
+    // const draft = this.props.navigation.getParam('family') || this.getDraft()
 
-    const draft = this.props.navigation.getParam('family') || this.getDraft()
-    const socioEconomics = this.props.navigation.getParam('socioEconomics')
-    const questionsForThisScreen = socioEconomics
-      ? socioEconomics.questionsPerScreen[socioEconomics.currentScreen - 1]
-      : []
-
-    let qustionToFiler = []
-    if (draft.economicSurveyDataList.length) {
-      questionsForThisScreen.forFamily.forEach(ele => {
-        if (typeof ele.conditions !== 'undefined') {
-          if (ele.conditions.length) {
-            draft.economicSurveyDataList.forEach(element => {
-              if (element.key === ele.codeName) {
-                qustionToFiler.push(ele)
-              }
-            })
-          }
-        }
-      })
-    }
-    if (qustionToFiler.length) {
-      qustionToFiler.forEach(elem => {
-        elem.conditions.forEach(ele => {
-          if (ele.codeName === field) {
-            if (ele.value !== text) {
-              draft.economicSurveyDataList.forEach((element, index) => {
-                if (elem.codeName === element.key) {
-                  draft.economicSurveyDataList.splice(index, 1)
-                }
-              })
-            }
-          }
-        })
-      })
-    }
+    // const socioEconomics = this.props.navigation.getParam('socioEconomics')
+    // const questionsForThisScreen = socioEconomics
+    //   ? socioEconomics.questionsPerScreen[socioEconomics.currentScreen - 1]
+    //   : []
+    // // console.log(draft.economicSurveyDataList)
+    // // let qustionToFiler = []
+    // // if (draft.economicSurveyDataList.length) {
+    // //   questionsForThisScreen.forFamily.forEach(ele => {
+    // //     if (typeof ele.conditions !== 'undefined') {
+    // //       if (ele.conditions.length) {
+    // //         draft.economicSurveyDataList.forEach(element => {
+    // //           if (element.key === ele.codeName) {
+    // //             qustionToFiler.push(ele)
+    // //           }
+    // //         })
+    // //       }
+    // //     }
+    // //   })
+    // // }
+    // // if (qustionToFiler.length) {
+    // //   qustionToFiler.forEach(elem => {
+    // //     elem.conditions.forEach(ele => {
+    // //       if (ele.codeName === field) {
+    // //         if (ele.value !== text) {
+    // //           draft.economicSurveyDataList.forEach((element, index) => {
+    // //             if (elem.codeName === element.key) {
+    // //               // console.log('To be cleaned', draft.economicSurveyDataList)
+    // //               // console.log('cleaned')
+    // //               draft.economicSurveyDataList.splice(index, 1)
+    // //               // console.log('Should be cleaned',draft.economicSurveyDataList)
+    // //             }
+    // //           })
+    // //         }
+    // //       }
+    // //     })
+    // //   })
+    // // }
   }
 
   addSurveyDataOtherField = (text, field) => {
@@ -239,6 +258,7 @@ export class SocioEconomicQuestion extends Component {
       other: text
     })
   }
+
   addSurveyFamilyMemberData = (text, field, index) => {
     this.props.addSurveyFamilyMemberData({
       id: this.draftId,
@@ -249,7 +269,9 @@ export class SocioEconomicQuestion extends Component {
       }
     })
   }
-  getFieldValue = (draft, field) => {
+
+  getFieldValue = (field, propertyKey) => {
+    const { draft } = this.state
     if (
       !draft ||
       !draft.economicSurveyDataList ||
@@ -258,20 +280,11 @@ export class SocioEconomicQuestion extends Component {
       return
     }
 
-    return draft.economicSurveyDataList.filter(item => item.key === field)[0]
-      .value
+    return draft.economicSurveyDataList.filter(item => item.key === field)[0][
+      propertyKey
+    ]
   }
-  getOtherFieldValue = (draft, field) => {
-    if (
-      !draft ||
-      !draft.economicSurveyDataList ||
-      !draft.economicSurveyDataList.filter(item => item.key === field)[0]
-    ) {
-      return
-    }
-    return draft.economicSurveyDataList.filter(item => item.key === field)[0]
-      .other
-  }
+
   getFamilyMemberFieldValue = (draft, field, index) => {
     if (
       !draft ||
@@ -287,6 +300,7 @@ export class SocioEconomicQuestion extends Component {
       index
     ].socioEconomicAnswers.filter(item => item.key === field)[0].value
   }
+
   detectError = (error, field) => {
     if (error && !this.errorsDetected.includes(field)) {
       this.errorsDetected.push(field)
@@ -298,6 +312,7 @@ export class SocioEconomicQuestion extends Component {
       errorsDetected: this.errorsDetected
     })
   }
+
   submitForm = () => {
     if (this.errorsDetected.length) {
       this.setState({
@@ -309,11 +324,11 @@ export class SocioEconomicQuestion extends Component {
       socioEconomics.currentScreen === socioEconomics.totalScreens
         ? this.props.navigation.navigate('BeginLifemap', {
             survey: this.survey,
-            draft: this.getDraft()
+            draft: this.state.draft
           })
         : this.props.navigation.push('SocioEconomicQuestion', {
             survey: this.survey,
-            draft: this.getDraft(),
+            draft: this.state.draft,
             socioEconomics: {
               currentScreen: socioEconomics.currentScreen + 1,
               questionsPerScreen: socioEconomics.questionsPerScreen,
@@ -324,8 +339,7 @@ export class SocioEconomicQuestion extends Component {
   }
 
   onPressCheckbox = (text, field) => {
-    const draft = this.props.navigation.getParam('family') || this.getDraft()
-
+    const { draft } = this.state
     let deleteVal = false
     draft.economicSurveyDataList.forEach(e => {
       if (e.key === field) {
@@ -339,6 +353,7 @@ export class SocioEconomicQuestion extends Component {
         }
       }
     })
+
     if (!deleteVal) {
       this.props.addSurveyDataCheckBox(
         draft.draftId,
@@ -350,10 +365,52 @@ export class SocioEconomicQuestion extends Component {
     }
   }
 
+  updateEconomicAnswer = (question, value, memberIndex, field) => {
+    console.log(question, value, memberIndex, field)
+
+    // this.props.addSurveyData(this.state.draftId, 'economicSurveyDataList', {
+    //   [field]: value
+    // })
+
+    const {
+      conditionalQuestions,
+      elementsWithConditionsOnThem: { questionsWithConditionsOnThem }
+    } = this.props.nav
+
+    // We get a draft with updated answer
+    let currentDraft
+    const newAnswer = {
+      key: question.codeName,
+      value
+    }
+
+    if (question.forFamilyMember) {
+      currentDraft = getDraftWithUpdatedFamilyEconomics(
+        this.state.draft,
+        newAnswer,
+        memberIndex
+      )
+    } else {
+      currentDraft = getDraftWithUpdatedEconomic(this.state.draft, newAnswer)
+    }
+
+    if (questionsWithConditionsOnThem.includes(question.codeName)) {
+      currentDraft = getDraftWithUpdatedQuestionsCascading(
+        currentDraft,
+        conditionalQuestions.filter(
+          conditionalQuestion =>
+            conditionalQuestion.codeName !== question.codeName
+        ),
+        false
+      )
+    }
+    console.log('CURRENT DRAFT', currentDraft)
+    this.setState({ draft: currentDraft })
+  }
+
   render() {
     const { t } = this.props
-    const { showErrors } = this.state
-    const draft = this.props.navigation.getParam('family') || this.getDraft()
+    const { showErrors, draft } = this.state
     const socioEconomics = this.props.navigation.getParam('socioEconomics')
     const questionsForThisScreen = socioEconomics
       ? socioEconomics.questionsPerScreen[socioEconomics.currentScreen - 1]
@@ -396,14 +453,17 @@ export class SocioEconomicQuestion extends Component {
                 question.answerType === 'select' ||
                 question.answerType === 'radio'
               ) {
-                const otherOptionDetected = question.options.find(
-                  option =>
-                    option.hasOwnProperty('otherOption') &&
-                    option.otherOption === true
-                )
-                const radioQuestionSelected = draft.economicSurveyDataList.some(
-                  answer => answer.key === question.codeName
-                )
+                const otherOptionDetected =
+                  question.options.find(
+                    option =>
+                      option.hasOwnProperty('otherOption') &&
+                      option.otherOption === true
+                  ) || {}
+                const radioQuestionSelected =
+                  draft.economicSurveyDataList.some(
+                    answer => answer.key === question.codeName
+                  ) || false
+
                 return (
                   <React.Fragment key={question.codeName}>
                     {this.readOnly && !radioQuestionSelected ? null : (
@@ -417,21 +477,25 @@ export class SocioEconomicQuestion extends Component {
                     )}
 
                     <Select
-                      draft={draft}
                       radio={question.answerType === 'radio' ? true : false}
                       required={question.required}
-                      onChange={this.addSurveyData}
+                      onChange={(value, field) =>
+                        this.updateEconomicAnswer(question, value, false, field)
+                      }
                       placeholder={question.questionText}
                       showErrors={showErrors}
                       label={question.questionText}
                       field={question.codeName}
-                      value={this.getFieldValue(draft, question.codeName) || ''}
+                      value={
+                        this.getFieldValue(question.codeName, 'value') || ''
+                      }
                       detectError={this.detectError}
                       readonly={this.readOnly}
                       options={getConditionalOptions(question, draft)}
                     />
+
                     {Object.keys(otherOptionDetected).length &&
-                    this.getFieldValue(draft, question.codeName) ===
+                    this.getFieldValue(question.codeName, 'value') ===
                       otherOptionDetected.value ? (
                       <TextInput
                         required={question.required}
@@ -441,8 +505,7 @@ export class SocioEconomicQuestion extends Component {
                         readonly={this.readOnly}
                         placeholder={t('views.family.specifyQuestionAbove')}
                         value={
-                          this.getOtherFieldValue(draft, question.codeName) ||
-                          ''
+                          this.getFieldValue(question.codeName, 'other') || ''
                         }
                         detectError={this.detectError}
                         showErrors={showErrors}
@@ -456,11 +519,13 @@ export class SocioEconomicQuestion extends Component {
                     multiline
                     key={question.codeName}
                     required={question.required}
-                    onChangeText={this.addSurveyData}
+                    onChangeText={(value, field) =>
+                      this.updateEconomicAnswer(question, value, false, field)
+                    }
                     placeholder={question.questionText}
                     showErrors={showErrors}
                     field={question.codeName}
-                    value={this.getFieldValue(draft, question.codeName) || ''}
+                    value={this.getFieldValue(question.codeName, 'value') || ''}
                     detectError={this.detectError}
                     readonly={this.readOnly}
                     validation="number"
@@ -479,6 +544,7 @@ export class SocioEconomicQuestion extends Component {
                     }
                   }
                 })
+
                 return (
                   <View key={question.codeName}>
                     {this.readOnly && !multipleValue.length ? null : (
@@ -518,7 +584,7 @@ export class SocioEconomicQuestion extends Component {
                     placeholder={question.questionText}
                     showErrors={showErrors}
                     field={question.codeName}
-                    value={this.getFieldValue(draft, question.codeName) || ''}
+                    value={this.getFieldValue(question.codeName, 'value') || ''}
                     detectError={this.detectError}
                     readonly={this.readOnly}
                   />
@@ -554,8 +620,8 @@ export class SocioEconomicQuestion extends Component {
                         radio={question.answerType === 'radio' ? true : false}
                         key={question.codeName}
                         required={question.required}
-                        onChange={(text, field) =>
-                          this.addSurveyFamilyMemberData(text, field, i)
+                        onChange={(value, field) =>
+                          this.updateEconomicAnswer(question, value, i, field)
                         }
                         placeholder={question.questionText}
                         showErrors={showErrors}
@@ -615,7 +681,8 @@ SocioEconomicQuestion.propTypes = {
   addSurveyData: PropTypes.func.isRequired,
   addSurveyFamilyMemberData: PropTypes.func.isRequired,
   addDraftProgress: PropTypes.func.isRequired,
-  drafts: PropTypes.array
+  drafts: PropTypes.array,
+  nav: PropTypes.object
 }
 
 const styles = StyleSheet.create({
@@ -652,7 +719,7 @@ const mapDispatchToProps = {
   addSurveyDataCheckBox
 }
 
-const mapStateToProps = ({ drafts }) => ({ drafts })
+const mapStateToProps = ({ drafts, nav }) => ({ drafts, nav })
 
 export default withNamespaces()(
   connect(

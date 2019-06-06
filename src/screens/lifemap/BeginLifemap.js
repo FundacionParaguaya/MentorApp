@@ -60,6 +60,8 @@ export class BeginLifemap extends Component {
   render() {
     const { draft } = this.state
     const { t } = this.props
+    console.log('LOG DRAFT FROM BEGIN LIFEMAP', draft)
+
     return (
       <StickyFooter
         handleClick={this.handleClick}

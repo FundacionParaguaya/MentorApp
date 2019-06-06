@@ -378,6 +378,7 @@ export const getDraftWithUpdatedQuestionsCascading = (
       // Checking if we have to cleanup familyMembers socioeconomic answers
       currentDraft.familyData.familyMembersList.forEach((member, index) => {
         if (shouldCleanUp(conditionalQuestion, currentDraft, member, index)) {
+          console.log('should clean applied')
           // Cleaning up socioeconomic answer for family member
           currentDraft = getDraftWithUpdatedFamilyEconomics(
             currentDraft,

@@ -46,6 +46,10 @@ const createTestProps = props => ({
     setParams: jest.fn(),
     isFocused: jest.fn(() => true)
   },
+  nav: {
+    conditionalQuestions: [],
+    elementsWithConditionsOnThem: { questionsWithConditionsOnThem: [] }
+  },
   drafts: [draft],
   addSurveyData: jest.fn(),
   addDraftProgress: jest.fn(),
@@ -73,173 +77,159 @@ describe('SocioEconomicQuestion screens', () => {
     })
   })
 
-  // describe('after data is set', () => {
-  //   beforeEach(() => {
-  //     props = createTestProps({
-  //       navigation: {
-  //         push: jest.fn(),
-  //         navigate: jest.fn(),
-  //         isFocused: jest.fn(() => true),
-  //         getParam: jest.fn(param => {
-  //           if (param === 'socioEconomics') {
-  //             return {
-  //               currentScreen: 1,
-  //               totalScreens: 3,
-  //               questionsPerScreen: [
-  //                 {
-  //                   forFamily: [
-  //                     {
-  //                       questionText:
-  //                         'Is there any member with disabilities in your household? Please indicate the disability type',
-  //                       answerType: 'select',
-  //                       required: true,
-  //                       codeName: '1',
-  //                       options: [
-  //                         { value: 'PHYSICAL', text: 'Phisical' },
-  //                         { value: 'MENTAL', text: 'Mental' },
-  //                         { value: 'LEARNING', text: 'Learning' },
-  //                         {
-  //                           value: 'NO-MEMBER-DISABILITIES',
-  //                           text: 'No member with disabilities'
-  //                         }
-  //                       ]
-  //                     }
-  //                   ],
-  //                   forFamilyMember: []
-  //                 }
-  //               ]
-  //             }
-  //           }
-  //           if (param === 'survey') {
-  //             return data
-  //           } else if (param === 'draft') {
-  //             return draft
-  //           }
-  //         }),
-  //         setParams: jest.fn()
-  //       }
-  //     })
-  //     wrapper = shallow(<SocioEconomicQuestion {...props} />)
-  //   })
+  describe('after data is set', () => {
+    beforeEach(() => {
+      props = createTestProps({
+        navigation: {
+          push: jest.fn(),
+          navigate: jest.fn(),
+          isFocused: jest.fn(() => true),
+          getParam: jest.fn(param => {
+            if (param === 'socioEconomics') {
+              return {
+                currentScreen: 1,
+                totalScreens: 3,
+                questionsPerScreen: [
+                  {
+                    forFamily: [
+                      {
+                        questionText:
+                          'Is there any member with disabilities in your household? Please indicate the disability type',
+                        answerType: 'select',
+                        required: true,
+                        codeName: '1',
+                        options: [
+                          { value: 'PHYSICAL', text: 'Phisical' },
+                          { value: 'MENTAL', text: 'Mental' },
+                          { value: 'LEARNING', text: 'Learning' },
+                          {
+                            value: 'NO-MEMBER-DISABILITIES',
+                            text: 'No member with disabilities'
+                          }
+                        ]
+                      }
+                    ],
+                    forFamilyMember: []
+                  }
+                ]
+              }
+            }
+            if (param === 'survey') {
+              return data
+            } else if (param === 'draft') {
+              return draft
+            }
+          }),
+          setParams: jest.fn()
+        }
+      })
+      wrapper = shallow(<SocioEconomicQuestion {...props} />)
+    })
 
-  //   it('renders the continue button with proper label', () => {
-  //     expect(wrapper.find(StickyFooter)).toHaveProp({
-  //       continueLabel: 'general.continue'
-  //     })
-  //   })
+    it('renders the continue button with proper label', () => {
+      expect(wrapper.find(StickyFooter)).toHaveProp({
+        continueLabel: 'general.continue'
+      })
+    })
 
-  //   it('navigates to next socio-economics screen on pressing continue', () => {
-  //     wrapper
-  //       .find(StickyFooter)
-  //       .last()
-  //       .props()
-  //       .handleClick()
+    it('navigates to next socio-economics screen on pressing continue', () => {
+      wrapper
+        .find(StickyFooter)
+        .last()
+        .props()
+        .handleClick()
 
-  //     expect(wrapper.instance().props.navigation.push).toHaveBeenCalledTimes(1)
+      expect(wrapper.instance().props.navigation.push).toHaveBeenCalledTimes(1)
 
-  //     expect(wrapper.instance().props.navigation.push).toHaveBeenCalledWith(
-  //       'SocioEconomicQuestion',
-  //       expect.any(Object)
-  //     )
-  //   })
+      expect(wrapper.instance().props.navigation.push).toHaveBeenCalledWith(
+        'SocioEconomicQuestion',
+        expect.any(Object)
+      )
+    })
 
-  //   it('renders Select elements for each select question', () => {
-  //     expect(wrapper.find(Select)).toHaveLength(1)
-  //   })
+    it('renders Select elements for each select question', () => {
+      expect(wrapper.find(Select)).toHaveLength(1)
+    })
 
-  //   it('shows a select with all props', () => {
-  //     expect(wrapper.find(Select).first()).toHaveProp({
-  //       required: true,
-  //       label:
-  //         'Is there any member with disabilities in your household? Please indicate the disability type',
-  //       options: [
-  //         { value: 'PHYSICAL', text: 'Phisical' },
-  //         { value: 'MENTAL', text: 'Mental' },
-  //         { value: 'LEARNING', text: 'Learning' },
-  //         {
-  //           value: 'NO-MEMBER-DISABILITIES',
-  //           text: 'No member with disabilities'
-  //         }
-  //       ]
-  //     })
-  //   })
+    it('shows a select with all props', () => {
+      expect(wrapper.find(Select).first()).toHaveProp({
+        required: true,
+        label:
+          'Is there any member with disabilities in your household? Please indicate the disability type',
+        options: [
+          { value: 'PHYSICAL', text: 'Phisical' },
+          { value: 'MENTAL', text: 'Mental' },
+          { value: 'LEARNING', text: 'Learning' },
+          {
+            value: 'NO-MEMBER-DISABILITIES',
+            text: 'No member with disabilities'
+          }
+        ]
+      })
+    })
 
-  //   it('calls addDraftProgress on mount', () => {
-  //     expect(wrapper.instance().props.addDraftProgress).toHaveBeenCalledTimes(1)
-  //   })
-  //   it('calls onPressBack', () => {
-  //     const spy = jest.spyOn(wrapper.instance(), 'onPressBack')
+    it('calls onPressBack', () => {
+      const spy = jest.spyOn(wrapper.instance(), 'onPressBack')
 
-  //     wrapper.instance().onPressBack()
-  //     expect(spy).toHaveBeenCalledTimes(1)
-  //   })
+      wrapper.instance().onPressBack()
+      expect(spy).toHaveBeenCalledTimes(1)
+    })
 
-  //   // it('gets family member field value', () => {
-  //   //   expect(
-  //   //     wrapper.instance().getFieldValue(draft, 'educationPersonMostStudied')
-  //   //   ).toEqual('SCHOOL-COMPLETE')
+    // it('gets family member field value', () => {
+    //   expect(
+    //     wrapper.instance().getFieldValue(draft, 'educationPersonMostStudied')
+    //   ).toEqual('SCHOOL-COMPLETE')
 
-  //   //   expect(wrapper.instance().getFieldValue(draft, '3')).toEqual(undefined)
-  //   // })
+    //   expect(wrapper.instance().getFieldValue(draft, '3')).toEqual(undefined)
+    // })
 
-  //   it('gets non family member field value', () => {
-  //     expect(
-  //       wrapper.instance().getFamilyMemberFieldValue(draft, '1', 0)
-  //     ).toEqual('MENTAL')
+    it('gets non family member field value', () => {
+      expect(
+        wrapper.instance().getFamilyMemberFieldValue(draft, '1', 0)
+      ).toEqual('MENTAL')
 
-  //     expect(
-  //       wrapper.instance().getFamilyMemberFieldValue(draft, '3', 0)
-  //     ).toEqual(undefined)
-  //   })
+      expect(
+        wrapper.instance().getFamilyMemberFieldValue(draft, '3', 0)
+      ).toEqual(undefined)
+    })
 
-  //   it('adds survey data on field change', () => {
-  //     wrapper
-  //       .find(Select)
-  //       .first()
-  //       .props()
-  //       .onChange('PHYSICAL', 'health')
+    
 
-  //     expect(wrapper.instance().props.addSurveyData).toHaveBeenCalledWith(
-  //       2,
-  //       'economicSurveyDataList',
-  //       { health: 'PHYSICAL' }
-  //     )
-  //   })
+    it('displays errors on submit', () => {
+      wrapper
+        .find(Select)
+        .first()
+        .props()
+        .detectError(true, 'field')
 
-  //   it('displays errors on submit', () => {
-  //     wrapper
-  //       .find(Select)
-  //       .first()
-  //       .props()
-  //       .detectError(true, 'field')
+      wrapper.instance().submitForm()
+      expect(wrapper).toHaveState({ showErrors: true })
+    })
 
-  //     wrapper.instance().submitForm()
-  //     expect(wrapper).toHaveState({ showErrors: true })
-  //   })
+    it('removes fixed error messages', () => {
+      wrapper
+        .find(Select)
+        .first()
+        .props()
+        .detectError(true, 'field')
 
-  //   it('removes fixed error messages', () => {
-  //     wrapper
-  //       .find(Select)
-  //       .first()
-  //       .props()
-  //       .detectError(true, 'field')
+      wrapper.instance().submitForm()
 
-  //     wrapper.instance().submitForm()
+      wrapper
+        .find(Select)
+        .first()
+        .props()
+        .detectError(false, 'field')
 
-  //     wrapper
-  //       .find(Select)
-  //       .first()
-  //       .props()
-  //       .detectError(false, 'field')
-
-  //     expect(wrapper.instance().errorsDetected).toEqual([])
-  //   })
-  // })
+      expect(wrapper.instance().errorsDetected).toEqual([])
+    })
+  })
 
   describe('non-initial screen', () => {
     beforeEach(() => {
       props = createTestProps({
         navigation: {
+          isFocused: jest.fn(),
           navigate: jest.fn(),
           getParam: jest.fn(param => {
             if (param === 'survey') {
@@ -341,10 +331,6 @@ describe('SocioEconomicQuestion screens', () => {
       input.props().onChangeText('test', 'familyIncome')
 
       expect(spy).toHaveBeenCalledWith('test', 'familyIncome', 1)
-
-      select.props().onChange('PHYSICAL', 'health')
-
-      expect(spy).toHaveBeenCalledWith('PHYSICAL', 'health', 0)
     })
 
     it('navigates to next non-socio-economic screen after done with all questions', () => {
@@ -378,7 +364,7 @@ describe('Render optimization', () => {
       nav: { ...props.nav, draftId: 5 }
     })
     expect(wrapper.instance().props.navigation.isFocused).toHaveBeenCalledTimes(
-      1
+      2
     )
   })
 
