@@ -195,20 +195,6 @@ export class SocioEconomicQuestion extends Component {
     })
   }
 
-  addSurveyDataOtherField = (text, field) => {
-    const draft = this.props.navigation.getParam('family') || this.getDraft()
-    let value
-    draft.economicSurveyDataList.forEach(e => {
-      if (e.key === field) {
-        value = e.value
-      }
-    })
-    this.props.addSurveyData(this.draftId, 'economicSurveyDataList', {
-      [field]: value,
-      other: text
-    })
-  }
-
   addSurveyFamilyMemberData = (text, field, index) => {
     this.props.addSurveyFamilyMemberData({
       id: this.draftId,
@@ -396,12 +382,6 @@ export class SocioEconomicQuestion extends Component {
                 question.answerType === 'select' ||
                 question.answerType === 'radio'
               ) {
-                const otherOptionDetected =
-                  question.options.find(
-                    option =>
-                      option.hasOwnProperty('otherOption') &&
-                      option.otherOption === true
-                  ) || {}
                 const radioQuestionSelected =
                   draft.economicSurveyDataList.some(
                     answer => answer.key === question.codeName
@@ -436,24 +416,6 @@ export class SocioEconomicQuestion extends Component {
                       readonly={this.readOnly}
                       options={getConditionalOptions(question, draft)}
                     />
-
-                    {Object.keys(otherOptionDetected).length &&
-                    this.getFieldValue(question.codeName, 'value') ===
-                      otherOptionDetected.value ? (
-                      <TextInput
-                        required={question.required}
-                        field={question.codeName}
-                        validation="string"
-                        onChangeText={this.addSurveyDataOtherField}
-                        readonly={this.readOnly}
-                        placeholder={t('views.family.specifyQuestionAbove')}
-                        value={
-                          this.getFieldValue(question.codeName, 'other') || ''
-                        }
-                        detectError={this.detectError}
-                        showErrors={showErrors}
-                      />
-                    ) : null}
                   </React.Fragment>
                 )
               } else if (question.answerType === 'number') {
