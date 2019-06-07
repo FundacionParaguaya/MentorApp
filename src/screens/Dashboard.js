@@ -144,6 +144,7 @@ export class Dashboard extends Component {
     }
 
     const list = drafts.slice().reverse()
+   
     return (
       <View style={globalStyles.ViewMainContainer}>
         <ScrollView

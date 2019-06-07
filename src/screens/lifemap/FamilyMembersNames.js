@@ -117,7 +117,6 @@ export class FamilyMembersNames extends Component {
         }
       }
     })
-    console.log(this.state)
   }
 
   render() {
