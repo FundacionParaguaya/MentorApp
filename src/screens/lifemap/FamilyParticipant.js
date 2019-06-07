@@ -63,6 +63,7 @@ export class FamilyParticipant extends Component {
     await this.setState({
       errorsDetected: this.errorsDetected
     })
+
     if (this.state.errorsDetected.length) {
       navigation.setParams({
         isNewDraft: true
@@ -240,6 +241,7 @@ export class FamilyParticipant extends Component {
           required
           detectError={this.detectError}
           showErrors={showErrors}
+          upperCase={true}
         />
         <TextInput
           field="lastName"
@@ -251,6 +253,7 @@ export class FamilyParticipant extends Component {
           required
           detectError={this.detectError}
           showErrors={showErrors}
+          upperCase={true}
         />
         <Select
           id="gender"

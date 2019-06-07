@@ -14,7 +14,9 @@ export class SyncRetry extends Component {
     const { draftsWithError, retrySubmit } = this.props
     return (
       <View style={[styles.view, styles.borderBottom]}>
-        <Text style={globalStyles.h3}>{i18n.t('views.sync.syncErrProblem')}</Text>
+        <Text style={globalStyles.h3}>
+          {i18n.t('views.sync.syncErrProblem')}
+        </Text>
         <Icon
           style={styles.icon}
           name="exclamation"
@@ -30,13 +32,11 @@ export class SyncRetry extends Component {
           />
         </View>
         <Text style={globalStyles.p}>
-        {draftsWithError === 1
-            ? i18n
-                .t('views.sync.itemHasError')
-                .replace('%n', draftsWithError)
+          {draftsWithError === 1
+            ? i18n.t('views.sync.itemHasError').replace('%n', draftsWithError)
             : i18n
                 .t('views.sync.itemsHaveError')
-                .replace('%n', draftsWithError)}    
+                .replace('%n', draftsWithError)}
         </Text>
       </View>
     )
@@ -61,11 +61,11 @@ const styles = StyleSheet.create({
     paddingVertical: 20
   },
   buttonWrapper: {
-    height: 50, 
-    alignSelf: 'stretch', 
-    marginBottom: 10 
+    height: 50,
+    alignSelf: 'stretch',
+    marginBottom: 10
   },
-  button: { 
+  button: {
     backgroundColor: colors.palered
   }
 })
