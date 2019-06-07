@@ -193,6 +193,8 @@ export class Family extends Component {
                     maxZoomLevel={15}
                     onPress={() => {
                       navigation.navigate('Location', {
+                        readOnly: true,
+                        survey: this.survey,
                         family: this.familyLifemap
                       })
                     }}
@@ -203,6 +205,8 @@ export class Family extends Component {
                 <TouchableHighlight
                   onPress={() => {
                     navigation.navigate('Location', {
+                      readOnly: true,
+                      survey: this.survey,
                       family: this.familyLifemap
                     })
                   }}
@@ -284,10 +288,14 @@ export class Family extends Component {
                       handleClick={() => {
                         if (!index) {
                           navigation.navigate('FamilyParticipant', {
-                            family: this.familyLifemap
+                            survey: this.survey,
+                            family: this.familyLifemap,
+                            readOnly: true
                           })
                         } else {
                           navigation.navigate('FamilyMember', {
+                            survey: this.survey,
+                            readOnly: true,
                             member: item
                           })
                         }
@@ -306,6 +314,8 @@ export class Family extends Component {
                   text={t('views.location')}
                   handleClick={() => {
                     navigation.navigate('Location', {
+                      survey: this.survey,
+                      readOnly: true,
                       family: this.familyLifemap
                     })
                   }}
@@ -318,7 +328,10 @@ export class Family extends Component {
                         handleClick={() => {
                           navigation.navigate('SocioEconomicQuestion', {
                             family: this.familyLifemap,
-                            page: index
+                            page: index,
+                            readOnly: true,
+                            survey: this.survey,
+                            title: item
                           })
                         }}
                       />

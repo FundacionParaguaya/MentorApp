@@ -7,7 +7,7 @@ import { View } from 'react-native'
 class BackButton extends Component {
   handlePress = () => {
     const { navigation } = this.props
-
+    let readOnly = this.props.navigation.getParam('readOnly')
     const draft =
       navigation.state.params.getCurrentDraftState &&
       navigation.getParam('getCurrentDraftState')()
@@ -16,9 +16,13 @@ class BackButton extends Component {
     const firstLifeMapScreen =
       navigation.state.routeName &&
       navigation.state.routeName === 'FamilyParticipant'
-    // open the exit modal with the params it needs
 
-    if (isNewDraft || firstLifeMapScreen) {
+    // open the exit modal with the params it needs
+    if (readOnly) {
+      navigation.getParam('onPressBack')
+        ? navigation.getParam('onPressBack')()
+        : navigation.goBack()
+    } else if (isNewDraft || firstLifeMapScreen) {
       this.props.navigation.navigate('ExitDraftModal', {
         draft,
         isNewDraft
