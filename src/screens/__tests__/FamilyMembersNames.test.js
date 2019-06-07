@@ -11,6 +11,7 @@ const createTestProps = props => ({
   navigation: {
     isFocused: jest.fn(),
     navigate: jest.fn(),
+    push: jest.fn(),
     setParams: jest.fn(),
     getParam: jest.fn(param => {
       if (param === 'family') {

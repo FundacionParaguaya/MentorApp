@@ -7,7 +7,8 @@ import {
   FlatList,
   Image,
   TouchableHighlight,
-  NetInfo
+  NetInfo,
+  Linking
 } from 'react-native'
 import { connect } from 'react-redux'
 import PropTypes from 'prop-types'
@@ -82,8 +83,22 @@ export class Family extends Component {
           item => item.id === this.familyLifemap.surveyId
         ),
         draftId: navigation.getParam('draftId'),
-        readOnly: true
+        readonly: true
       })
+    }
+  }
+  sendEmail = async email => {
+    let url = `mailto:${email}`
+    const canOpen = await Linking.canOpenURL(url)
+    if (canOpen) {
+      Linking.openURL(url)
+    }
+  }
+  callPhone = async phone => {
+    let url = `tel:${phone}`
+    const canOpen = await Linking.canOpenURL(url)
+    if (canOpen) {
+      Linking.openURL(url)
     }
   }
   handleResumeClick = () => {
@@ -107,7 +122,24 @@ export class Family extends Component {
     const { activeTab } = this.state
     const { t, navigation } = this.props
     const { familyData } = this.familyLifemap
-    console.log(this.props.navigation.state)
+    let email = false
+    let phone = false
+    if (
+      typeof familyData.familyMembersList[0].email !== 'undefined' &&
+      familyData.familyMembersList[0].email !== null
+    ) {
+      if (familyData.familyMembersList[0].email.length) {
+        email = familyData.familyMembersList[0].email
+      }
+    }
+    if (
+      typeof familyData.familyMembersList[0].phoneNumber !== 'undefined' &&
+      familyData.familyMembersList[0].phoneNumber !== null
+    ) {
+      if (familyData.familyMembersList[0].phoneNumber.length) {
+        phone = familyData.familyMembersList[0].phoneNumber
+      }
+    }
     return (
       <StickyFooter
       handleClick={() => ({})}
@@ -161,9 +193,7 @@ export class Family extends Component {
                     maxZoomLevel={15}
                     onPress={() => {
                       navigation.navigate('Location', {
-                        survey: this.survey,
-                        family: this.familyLifemap,
-                        readOnly: true
+                        family: this.familyLifemap
                       })
                     }}
                   />
@@ -173,9 +203,7 @@ export class Family extends Component {
                 <TouchableHighlight
                   onPress={() => {
                     navigation.navigate('Location', {
-                      survey: this.survey,
-                      family: this.familyLifemap,
-                      readOnly: true
+                      family: this.familyLifemap
                     })
                   }}
                 >
@@ -207,12 +235,37 @@ export class Family extends Component {
                   />
                 </View>
               </View>
+
               <View style={styles.section}>
                 <Text style={globalStyles.h2}>
                   {navigation.getParam('familyName')}
                 </Text>
               </View>
             </View>
+            {phone || email ? (
+              <View style={styles.familiesIcon}>
+                {email ? (
+                  <View style={styles.familiesIconContainer}>
+                    <Icon
+                      onPress={() => this.sendEmail(email)}
+                      name="email"
+                      style={styles.familiesIconIcon}
+                      size={35}
+                    />
+                  </View>
+                ) : null}
+                {phone ? (
+                  <View style={styles.familiesIconContainer}>
+                    <Icon
+                      onPress={() => this.callPhone(phone)}
+                      name="phone"
+                      style={styles.familiesIconIcon}
+                      size={35}
+                    />
+                  </View>
+                ) : null}
+              </View>
+            ) : null}
 
             <View style={styles.section}>
               <View style={styles.content}>
@@ -231,15 +284,11 @@ export class Family extends Component {
                       handleClick={() => {
                         if (!index) {
                           navigation.navigate('FamilyParticipant', {
-                            survey: this.survey,
-                            family: this.familyLifemap,
-                            readOnly: true
+                            family: this.familyLifemap
                           })
                         } else {
                           navigation.navigate('FamilyMember', {
-                            survey: this.survey,
-                            member: item,
-                            readOnly: true
+                            member: item
                           })
                         }
                       }}
@@ -257,9 +306,7 @@ export class Family extends Component {
                   text={t('views.location')}
                   handleClick={() => {
                     navigation.navigate('Location', {
-                      survey: this.survey,
-                      family: this.familyLifemap,
-                      readOnly: true
+                      family: this.familyLifemap
                     })
                   }}
                 />
@@ -270,11 +317,8 @@ export class Family extends Component {
                         text={item}
                         handleClick={() => {
                           navigation.navigate('SocioEconomicQuestion', {
-                            title: item,
-                            survey: this.survey,
                             family: this.familyLifemap,
-                            page: index,
-                            readOnly: true
+                            page: index
                           })
                         }}
                       />
@@ -360,6 +404,27 @@ Family.propTypes = {
 }
 
 const styles = StyleSheet.create({
+  familiesIconContainer: {
+    backgroundColor: '#50AA47',
+    width: 55,
+    height: 55,
+    borderRadius: 50,
+    marginRight: 10,
+    marginLeft: 10,
+    justifyContent: 'center',
+    alignItems: 'center'
+  },
+  familiesIconIcon: {
+    margin: 'auto',
+    color: 'white'
+  },
+  familiesIcon: {
+    flex: 1,
+
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center'
+  },
   container: {
     flex: 1
   },

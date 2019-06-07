@@ -2,8 +2,8 @@
   "general": {
     "welcome": "¡Bienvenido!",
     "thankYou": "¡Gracias!",
-    "disagree": "Desacuerdo",
-    "agree": "De acuerdo",
+    "disagree": "No acepto",
+    "agree": "Acepto",
     "day": "Día",
     "month": "Mes",
     "year": "Año",

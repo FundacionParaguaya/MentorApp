@@ -214,6 +214,7 @@ const styles = StyleSheet.create({
     height: 48,
     marginBottom: 25,
     padding: 15,
+    paddingBottom: 12,
     color: colors.lightdark,
     backgroundColor: colors.white
   },

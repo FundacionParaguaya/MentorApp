@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { TouchableNativeFeedback, View } from 'react-native'
+import { TouchableHighlight, View } from 'react-native'
 import PropTypes from 'prop-types'
 import colors from '../theme.json'
 
@@ -7,15 +7,15 @@ export default class ListItem extends Component {
   state = { pressed: false }
   render() {
     return (
-      <TouchableNativeFeedback
-        background={TouchableNativeFeedback.Ripple(colors.primary)}
+      <TouchableHighlight
         onPress={this.props.onPress}
         activeOpacity={1}
+        underlayColor={colors.primary}
         disabled={this.props.disabled}
         accessible={true}
       >
         <View style={this.props.style || {}}>{this.props.children}</View>
-      </TouchableNativeFeedback>
+      </TouchableHighlight>
     )
   }
 }
