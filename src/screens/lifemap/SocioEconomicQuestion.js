@@ -45,7 +45,7 @@ export class SocioEconomicQuestion extends Component {
   state = {
     errorsDetected: [],
     showErrors: false,
-    draft: this.props.navigation.getParam('draft') || {}
+    draft: this.props.navigation.getParam('draft') || this.props.navigation.getParam('family') || {}
   }
 
   constructor(props) {
