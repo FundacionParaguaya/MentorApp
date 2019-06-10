@@ -1,7 +1,7 @@
 # Change Log
 
 ## [v1.9.4](https://github.com/FundacionParaguaya/MentorApp/tree/v1.9.4) (2019-06-10)
-[Full Changelog](https://github.com/FundacionParaguaya/MentorApp/compare/v1.9.2...v1.9.4)
+[Full Changelog](https://github.com/FundacionParaguaya/MentorApp/compare/v1.9.3...v1.9.4)
 
 **Implemented enhancements:**
 
@@ -13,7 +13,6 @@
 
 - GIT HUB Vulnerability [\#744](https://github.com/FundacionParaguaya/MentorApp/issues/744)
 - readOnly and back arrow in families [\#743](https://github.com/FundacionParaguaya/MentorApp/issues/743)
-- Sync error in 1.9.2 [\#737](https://github.com/FundacionParaguaya/MentorApp/issues/737)
 - Infinite logging out [\#730](https://github.com/FundacionParaguaya/MentorApp/issues/730)
 
 **Closed issues:**
@@ -38,6 +37,13 @@
 - fix \#281 displaying sync errors [\#719](https://github.com/FundacionParaguaya/MentorApp/pull/719) ([zommerberg](https://github.com/zommerberg))
 - fix \#424 added automatic uppercase [\#709](https://github.com/FundacionParaguaya/MentorApp/pull/709) ([zommerberg](https://github.com/zommerberg))
 - fix \#610 added calls and emails [\#699](https://github.com/FundacionParaguaya/MentorApp/pull/699) ([zommerberg](https://github.com/zommerberg))
+
+## [v1.9.3](https://github.com/FundacionParaguaya/MentorApp/tree/v1.9.3) (2019-06-04)
+[Full Changelog](https://github.com/FundacionParaguaya/MentorApp/compare/v1.9.2...v1.9.3)
+
+**Fixed bugs:**
+
+- Sync error in 1.9.2 [\#737](https://github.com/FundacionParaguaya/MentorApp/issues/737)
 
 ## [v1.9.2](https://github.com/FundacionParaguaya/MentorApp/tree/v1.9.2) (2019-06-04)
 [Full Changelog](https://github.com/FundacionParaguaya/MentorApp/compare/v1.9.1...v1.9.2)
