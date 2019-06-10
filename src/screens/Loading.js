@@ -41,8 +41,9 @@ export class Loading extends Component {
 
   handleImageCaching = () => {
     if (
-      !!this.props.sync.images.total &&
-      this.props.sync.images.total === this.props.sync.images.synced
+      !this.props.navigation.getParam('syncImages') ||
+      (!!this.props.sync.images.total &&
+        this.props.sync.images.total === this.props.sync.images.synced)
     ) {
       this.props.navigation.navigate('DrawerStack')
     } else {
@@ -92,6 +93,9 @@ export class Loading extends Component {
   }
 
   checkOfflineMaps = () => {
+    if (!this.props.navigation.getParam('syncMaps')) {
+      this.handleImageCaching()
+    }
     const mapsArray = []
 
     const surveysWithOfflineMaps = this.props.surveys.filter(
