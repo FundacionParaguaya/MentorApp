@@ -50,7 +50,7 @@ class SyncListItem extends Component {
             <View />
           )}
         </ListItem>
-
+        {/* Sync Errors Display
         {this.props.errors.length
           ? this.props.errors.map(ele => {
               return (
@@ -62,7 +62,7 @@ class SyncListItem extends Component {
                 </Text>
               )
             })
-          : null}
+          : null} */}
       </View>
     )
   }
