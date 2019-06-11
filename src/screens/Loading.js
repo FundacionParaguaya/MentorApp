@@ -86,7 +86,6 @@ export class Loading extends Component {
   }
 
   downloadMapData() {
-    console.log('downloadMapData', this.state.maps)
     this.state.maps.forEach(map =>
       this.downloadOfflineMapPack(map.options, map.name)
     )
