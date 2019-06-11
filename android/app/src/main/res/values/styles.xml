@@ -2,5 +2,7 @@
     <style name="AppTheme" parent="Theme.AppCompat.Light.NoActionBar">
          <item name="android:statusBarColor">@color/pale_green</item>
          <item name="colorAccent">@color/pale_green</item>
+         <item name="android:windowExitAnimation">@android:anim/fade_out</item>
+         <item name="android:editTextBackground">@android:color/transparent</item>
     </style>
 </resources>
