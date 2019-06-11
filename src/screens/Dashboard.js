@@ -9,6 +9,7 @@ import {
   findNodeHandle
 } from 'react-native'
 import { Sentry } from 'react-native-sentry'
+import { AndroidBackHandler } from 'react-navigation-backhandler'
 import { updateNav } from '../redux/actions'
 import { withNamespaces } from 'react-i18next'
 import PropTypes from 'prop-types'
@@ -144,109 +145,111 @@ export class Dashboard extends Component {
     }
 
     const list = drafts.slice().reverse()
-   
+
     return (
-      <View style={globalStyles.ViewMainContainer}>
-        <ScrollView
-          contentContainerStyle={
-            drafts.length
-              ? globalStyles.ScrollMainContainerNotCentered
-              : globalStyles.ScrollMainContainerCentered
-          }
-        >
-          <View ref={this.acessibleComponent} accessible={true}>
-            <View>
-              <View
-                style={
-                  drafts.length
-                    ? globalStyles.container
-                    : globalStyles.containerNoPadding
-                }
-              >
+      <AndroidBackHandler onBackPress={() => true}>
+        <View style={globalStyles.ViewMainContainer}>
+          <ScrollView
+            contentContainerStyle={
+              drafts.length
+                ? globalStyles.ScrollMainContainerNotCentered
+                : globalStyles.ScrollMainContainerCentered
+            }
+          >
+            <View ref={this.acessibleComponent} accessible={true}>
+              <View>
                 <View
-                  style={{ alignItems: 'center', justifyContent: 'center' }}
+                  style={
+                    drafts.length
+                      ? globalStyles.container
+                      : globalStyles.containerNoPadding
+                  }
                 >
-                  <Decoration>
-                    <RoundImage source="family" />
-                  </Decoration>
-                  <View style={styles.familiesIcon}>
-                    <Icon
-                      name="face"
-                      style={styles.familiesIconIcon}
-                      size={60}
+                  <View
+                    style={{ alignItems: 'center', justifyContent: 'center' }}
+                  >
+                    <Decoration>
+                      <RoundImage source="family" />
+                    </Decoration>
+                    <View style={styles.familiesIcon}>
+                      <Icon
+                        name="face"
+                        style={styles.familiesIconIcon}
+                        size={60}
+                      />
+                    </View>
+
+                    <Text style={{ ...styles.familiesCount }}>
+                      {this.props.families.length} {t('views.families')}
+                    </Text>
+                  </View>
+                  <View
+                    style={{
+                      width: '100%',
+                      paddingHorizontal: 10,
+                      flexDirection: 'row',
+                      justifyContent: 'space-around'
+                    }}
+                  >
+                    <View style={styles.circleAndTextContainer}>
+                      <View style={styles.circleContainer}>
+                        <View style={styles.circleGreen} />
+                      </View>
+                      <Text style={styles.numberIndicator}>{valGreen}</Text>
+                      <Text style={styles.colorIndicator}>Green</Text>
+                    </View>
+
+                    <View style={styles.circleAndTextContainer}>
+                      <View style={styles.circleContainer}>
+                        <View style={styles.circleYellow} />
+                      </View>
+                      <Text style={styles.numberIndicator}>{valYellow}</Text>
+                      <Text style={styles.colorIndicator}>Yellow</Text>
+                    </View>
+
+                    <View style={styles.circleAndTextContainer}>
+                      <View style={styles.circleContainer}>
+                        <View style={styles.circleRed} />
+                      </View>
+                      <Text style={styles.numberIndicator}>{valRed}</Text>
+                      <Text style={styles.colorIndicator}>Red</Text>
+                    </View>
+                  </View>
+
+                  <Button
+                    style={{ marginTop: 20 }}
+                    id="create-lifemap"
+                    text={t('views.createLifemap')}
+                    colored
+                    handleClick={this.navigateToCreateLifemap}
+                  />
+                </View>
+                {drafts.length ? (
+                  <View style={styles.borderBottom}>
+                    <Text
+                      style={{ ...globalStyles.subline, ...styles.listTitle }}
+                    >
+                      {t('views.latestDrafts')}
+                    </Text>
+                  </View>
+                ) : null}
+                <FlatList
+                  style={{ ...styles.background }}
+                  data={list}
+                  keyExtractor={(item, index) => index.toString()}
+                  renderItem={({ item }) => (
+                    <DraftListItem
+                      item={item}
+                      handleClick={this.handleClickOnListItem}
+                      lng={this.props.lng}
                     />
-                  </View>
-
-                  <Text style={{ ...styles.familiesCount }}>
-                    {this.props.families.length} {t('views.families')}
-                  </Text>
-                </View>
-                <View
-                  style={{
-                    width: '100%',
-                    paddingHorizontal: 10,
-                    flexDirection: 'row',
-                    justifyContent: 'space-around'
-                  }}
-                >
-                  <View style={styles.circleAndTextContainer}>
-                    <View style={styles.circleContainer}>
-                      <View style={styles.circleGreen} />
-                    </View>
-                    <Text style={styles.numberIndicator}>{valGreen}</Text>
-                    <Text style={styles.colorIndicator}>Green</Text>
-                  </View>
-
-                  <View style={styles.circleAndTextContainer}>
-                    <View style={styles.circleContainer}>
-                      <View style={styles.circleYellow} />
-                    </View>
-                    <Text style={styles.numberIndicator}>{valYellow}</Text>
-                    <Text style={styles.colorIndicator}>Yellow</Text>
-                  </View>
-
-                  <View style={styles.circleAndTextContainer}>
-                    <View style={styles.circleContainer}>
-                      <View style={styles.circleRed} />
-                    </View>
-                    <Text style={styles.numberIndicator}>{valRed}</Text>
-                    <Text style={styles.colorIndicator}>Red</Text>
-                  </View>
-                </View>
-
-                <Button
-                style={{marginTop:20}}
-                  id="create-lifemap"
-                  text={t('views.createLifemap')}
-                  colored
-                  handleClick={this.navigateToCreateLifemap}
+                  )}
                 />
               </View>
-              {drafts.length ? (
-                <View style={styles.borderBottom}>
-                  <Text
-                    style={{ ...globalStyles.subline, ...styles.listTitle }}
-                  >
-                    {t('views.latestDrafts')}
-                  </Text>
-                </View>
-              ) : null}
-              <FlatList
-                style={{ ...styles.background }}
-                data={list}
-                keyExtractor={(item, index) => index.toString()}
-                renderItem={({ item }) => (
-                  <DraftListItem
-                    item={item}
-                    handleClick={this.handleClickOnListItem}
-                    lng={this.props.lng}
-                  />
-                )}
-              />
             </View>
-          </View>
-        </ScrollView>
-      </View>
+          </ScrollView>
+        </View>
+      </AndroidBackHandler>
     )
   }
 }
