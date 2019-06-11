@@ -39,7 +39,7 @@ export class DrawerContent extends Component {
     this.props.switchLanguage(lng) // set the redux language for next app use
     this.props.navigation.toggleDrawer() // close drawer
   }
-  logUserOut = async () => {
+  logUserOut = () => {
     const { checkboxesVisible, ckeckedBoxes } = this.state
 
     // allow the user to logout only if he checks all boxes
@@ -51,9 +51,17 @@ export class DrawerContent extends Component {
 
       // delete the cached map packs
       if (MapboxGL.offlineManager) {
-        await MapboxGL.offlineManager.deletePack('GECO')
-        await MapboxGL.offlineManager.deletePack('Cerrito')
-        await MapboxGL.offlineManager.deletePack('Sofia')
+        MapboxGL.offlineManager
+          .getPacks()
+          .then(packs => {
+            packs.forEach(
+              async pack =>
+                await MapboxGL.offlineManager.deletePack(
+                  JSON.parse(pack.pack.metadata).name
+                )
+            )
+          })
+          .catch(() => {})
       }
 
       // clear the async storage and reset the store
