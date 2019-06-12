@@ -7,9 +7,7 @@ import StickyFooter from '../../components/StickyFooter'
 import TextInput from '../../components/TextInput'
 import Select from '../../components/Select'
 import Checkbox from '../../components/Checkbox'
-import {
-  addSurveyDataCheckBox
-} from '../../redux/actions'
+import { addSurveyDataCheckBox } from '../../redux/actions'
 import colors from '../../theme.json'
 import {
   shouldShowQuestion,
@@ -45,7 +43,10 @@ export class SocioEconomicQuestion extends Component {
   state = {
     errorsDetected: [],
     showErrors: false,
-    draft: this.props.navigation.getParam('draft') || this.props.navigation.getParam('family') || {}
+    draft:
+      this.props.navigation.getParam('draft') ||
+      this.props.navigation.getParam('family') ||
+      {}
   }
 
   constructor(props) {
@@ -354,218 +355,229 @@ export class SocioEconomicQuestion extends Component {
             : 0
         }
       >
-        {/* questions for entire family */}
-        {socioEconomics ? (
-          questionsForThisScreen.forFamily
-            .filter(question =>
-              question.conditions && question.conditions.length
-                ? shouldShowQuestion(question, draft)
-                  ? question
-                  : false
-                : question
-            )
-            .map(question => {
-              if (
-                question.answerType === 'select' ||
-                question.answerType === 'radio'
-              ) {
-                const radioQuestionSelected =
-                  draft.economicSurveyDataList.some(
-                    answer => answer.key === question.codeName
-                  ) || false
+        <View style={styles.SocialEconomicsContainer}>
+          <View style={styles.SocialEconomicsBallGreen1} />
+          <View style={styles.SocialEconomicsBallGreen2} />
+          <View style={styles.SocialEconomicsBallYellow1} />
+          {/* questions for entire family */}
+          {socioEconomics ? (
+            questionsForThisScreen.forFamily
+              .filter(question =>
+                question.conditions && question.conditions.length
+                  ? shouldShowQuestion(question, draft)
+                    ? question
+                    : false
+                  : question
+              )
+              .map(question => {
+                if (
+                  question.answerType === 'select' ||
+                  question.answerType === 'radio'
+                ) {
+                  const radioQuestionSelected =
+                    draft.economicSurveyDataList.some(
+                      answer => answer.key === question.codeName
+                    ) || false
 
-                return (
-                  <React.Fragment key={question.codeName}>
-                    {this.readOnly && !radioQuestionSelected ? null : (
-                      <View>
-                        {question.answerType === 'radio' ? (
-                          <Text style={{ marginLeft: 10, marginBottom: 15 }}>
-                            {question.questionText}
-                          </Text>
-                        ) : null}
-                      </View>
-                    )}
-
-                    <Select
-                      radio={question.answerType === 'radio' ? true : false}
-                      required={question.required}
-                      onChange={(value, field) =>
-                        this.updateEconomicAnswer(question, value, false, field)
-                      }
-                      placeholder={question.questionText}
-                      showErrors={showErrors}
-                      label={question.questionText}
-                      field={question.codeName}
-                      value={
-                        this.getFieldValue(question.codeName, 'value') || ''
-                      }
-                      detectError={this.detectError}
-                      readonly={this.readOnly}
-                      options={getConditionalOptions(question, draft)}
-                    />
-                  </React.Fragment>
-                )
-              } else if (question.answerType === 'number') {
-                return (
-                  <TextInput
-                    multiline
-                    key={question.codeName}
-                    required={question.required}
-                    onChangeText={(value, field) =>
-                      this.updateEconomicAnswer(question, value, false, field)
-                    }
-                    placeholder={question.questionText}
-                    showErrors={showErrors}
-                    field={question.codeName}
-                    value={this.getFieldValue(question.codeName, 'value') || ''}
-                    detectError={this.detectError}
-                    readonly={this.readOnly}
-                    validation="number"
-                    keyboardType="numeric"
-                  />
-                )
-              } else if (question.answerType === 'checkbox') {
-                let multipleValue = []
-                //passing multipleValues from the checkbox question
-                draft.economicSurveyDataList.forEach(elem => {
-                  if (elem.key === question.codeName) {
-                    if (typeof elem.multipleValue !== 'undefined') {
-                      if (elem.multipleValue.length) {
-                        multipleValue = elem.multipleValue
-                      }
-                    }
-                  }
-                })
-
-                return (
-                  <View key={question.codeName}>
-                    {this.readOnly && !multipleValue.length ? null : (
-                      <Text style={{ marginLeft: 10 }}>
-                        {question.questionText}
-                      </Text>
-                    )}
-
-                    {question.options.map(e => {
-                      return (
-                        <View key={e.value}>
-                          <Checkbox
-                            multipleValue={multipleValue}
-                            containerStyle={styles.checkbox}
-                            checkboxColor={colors.green}
-                            showErrors={showErrors}
-                            onIconPress={() =>
-                              this.onPressCheckbox(e.value, question.codeName)
-                            }
-                            readonly={this.readOnly}
-                            title={e.text}
-                            value={e.value}
-                            codeName={question.codeName}
-                          />
+                  return (
+                    <React.Fragment key={question.codeName}>
+                      {this.readOnly && !radioQuestionSelected ? null : (
+                        <View>
+                          {question.answerType === 'radio' ? (
+                            <Text style={{ marginLeft: 10, marginBottom: 15 }}>
+                              {question.questionText}
+                            </Text>
+                          ) : null}
                         </View>
-                      )
-                    })}
-                  </View>
-                )
-              } else {
-                return (
-                  <TextInput
-                    multiline
-                    key={question.codeName}
-                    required={question.required}
-                    onChangeText={(value, field) => this.updateEconomicAnswer(
-                      question,
-                      value,
-                      false,
-                      field
-                    )}
-                    placeholder={question.questionText}
-                    showErrors={showErrors}
-                    field={question.codeName}
-                    value={this.getFieldValue(question.codeName, 'value') || ''}
-                    detectError={this.detectError}
-                    readonly={this.readOnly}
-                  />
-                )
-              }
-            })
-        ) : (
-          <View />
-        )}
+                      )}
 
-        {/* questions for family members */}
-        {socioEconomics ? (
-          questionsForThisScreen.forFamilyMember.length ? (
-            draft.familyData.familyMembersList.map((member, i) => (
-              <View key={member.firstName}>
-                {showMemberName(
-                  member,
-                  i,
-                  questionsForThisScreen.forFamilyMember
-                )}
-                {questionsForThisScreen.forFamilyMember
-                  .filter(question =>
-                    question.conditions && question.conditions.length
-                      ? shouldShowQuestion(question, draft, i)
-                        ? question
-                        : false
-                      : question
-                  )
-                  .map(question =>
-                    question.answerType === 'select' ||
-                    question.answerType === 'radio' ? (
                       <Select
                         radio={question.answerType === 'radio' ? true : false}
-                        key={question.codeName}
                         required={question.required}
                         onChange={(value, field) =>
-                          this.updateEconomicAnswer(question, value, i, field)
+                          this.updateEconomicAnswer(
+                            question,
+                            value,
+                            false,
+                            field
+                          )
                         }
                         placeholder={question.questionText}
                         showErrors={showErrors}
                         label={question.questionText}
                         field={question.codeName}
                         value={
-                          this.getFamilyMemberFieldValue(
-                            draft,
-                            question.codeName,
-                            i
-                          ) || ''
+                          this.getFieldValue(question.codeName, 'value') || ''
                         }
                         detectError={this.detectError}
                         readonly={this.readOnly}
                         options={getConditionalOptions(question, draft)}
                       />
-                    ) : (
-                      <TextInput
-                        key={question.codeName}
-                        multiline
-                        required={question.required}
-                        onChangeText={(value, field) =>
-                          this.updateEconomicAnswer(question, value, i, field)
+                    </React.Fragment>
+                  )
+                } else if (question.answerType === 'number') {
+                  return (
+                    <TextInput
+                      multiline
+                      key={question.codeName}
+                      required={question.required}
+                      onChangeText={(value, field) =>
+                        this.updateEconomicAnswer(question, value, false, field)
+                      }
+                      placeholder={question.questionText}
+                      showErrors={showErrors}
+                      field={question.codeName}
+                      value={
+                        this.getFieldValue(question.codeName, 'value') || ''
+                      }
+                      detectError={this.detectError}
+                      readonly={this.readOnly}
+                      validation="number"
+                      keyboardType="numeric"
+                    />
+                  )
+                } else if (question.answerType === 'checkbox') {
+                  let multipleValue = []
+                  //passing multipleValues from the checkbox question
+                  draft.economicSurveyDataList.forEach(elem => {
+                    if (elem.key === question.codeName) {
+                      if (typeof elem.multipleValue !== 'undefined') {
+                        if (elem.multipleValue.length) {
+                          multipleValue = elem.multipleValue
                         }
-                        placeholder={question.questionText}
-                        showErrors={showErrors}
-                        field={question.codeName}
-                        value={
-                          this.getFamilyMemberFieldValue(
-                            draft,
-                            question.codeName,
-                            i
-                          ) || ''
-                        }
-                        detectError={this.detectError}
-                        readonly={this.readOnly}
-                      />
-                    )
-                  )}
-              </View>
-            ))
+                      }
+                    }
+                  })
+
+                  return (
+                    <View key={question.codeName}>
+                      {this.readOnly && !multipleValue.length ? null : (
+                        <Text style={{ marginLeft: 10 }}>
+                          {question.questionText}
+                        </Text>
+                      )}
+
+                      {question.options.map(e => {
+                        return (
+                          <View key={e.value}>
+                            <Checkbox
+                              multipleValue={multipleValue}
+                              containerStyle={styles.checkbox}
+                              checkboxColor={colors.green}
+                              showErrors={showErrors}
+                              onIconPress={() =>
+                                this.onPressCheckbox(e.value, question.codeName)
+                              }
+                              readonly={this.readOnly}
+                              title={e.text}
+                              value={e.value}
+                              codeName={question.codeName}
+                            />
+                          </View>
+                        )
+                      })}
+                    </View>
+                  )
+                } else {
+                  return (
+                    <TextInput
+                      multiline
+                      key={question.codeName}
+                      required={question.required}
+                      onChangeText={(value, field) =>
+                        this.updateEconomicAnswer(question, value, false, field)
+                      }
+                      placeholder={question.questionText}
+                      showErrors={showErrors}
+                      field={question.codeName}
+                      value={
+                        this.getFieldValue(question.codeName, 'value') || ''
+                      }
+                      detectError={this.detectError}
+                      readonly={this.readOnly}
+                    />
+                  )
+                }
+              })
           ) : (
             <View />
-          )
-        ) : (
-          <View />
-        )}
+          )}
+
+          {/* questions for family members */}
+          {socioEconomics ? (
+            questionsForThisScreen.forFamilyMember.length ? (
+              draft.familyData.familyMembersList.map((member, i) => (
+                <View key={member.firstName}>
+                  {showMemberName(
+                    member,
+                    i,
+                    questionsForThisScreen.forFamilyMember
+                  )}
+                  {questionsForThisScreen.forFamilyMember
+                    .filter(question =>
+                      question.conditions && question.conditions.length
+                        ? shouldShowQuestion(question, draft, i)
+                          ? question
+                          : false
+                        : question
+                    )
+                    .map(question =>
+                      question.answerType === 'select' ||
+                      question.answerType === 'radio' ? (
+                        <Select
+                          radio={question.answerType === 'radio' ? true : false}
+                          key={question.codeName}
+                          required={question.required}
+                          onChange={(value, field) =>
+                            this.updateEconomicAnswer(question, value, i, field)
+                          }
+                          placeholder={question.questionText}
+                          showErrors={showErrors}
+                          label={question.questionText}
+                          field={question.codeName}
+                          value={
+                            this.getFamilyMemberFieldValue(
+                              draft,
+                              question.codeName,
+                              i
+                            ) || ''
+                          }
+                          detectError={this.detectError}
+                          readonly={this.readOnly}
+                          options={getConditionalOptions(question, draft)}
+                        />
+                      ) : (
+                        <TextInput
+                          key={question.codeName}
+                          multiline
+                          required={question.required}
+                          onChangeText={(value, field) =>
+                            this.updateEconomicAnswer(question, value, i, field)
+                          }
+                          placeholder={question.questionText}
+                          showErrors={showErrors}
+                          field={question.codeName}
+                          value={
+                            this.getFamilyMemberFieldValue(
+                              draft,
+                              question.codeName,
+                              i
+                            ) || ''
+                          }
+                          detectError={this.detectError}
+                          readonly={this.readOnly}
+                        />
+                      )
+                    )}
+                </View>
+              ))
+            ) : (
+              <View />
+            )
+          ) : (
+            <View />
+          )}
+        </View>
       </StickyFooter>
     )
   }
@@ -580,6 +592,41 @@ SocioEconomicQuestion.propTypes = {
 }
 
 const styles = StyleSheet.create({
+  SocialEconomicsBallYellow1: {
+    backgroundColor: colors.palegold,
+    width: 40,
+    height: 40,
+    borderRadius: 50,
+    left: -17,
+    top: '72%',
+    position: 'absolute',
+    zIndex: -10
+  },
+  SocialEconomicsBallGreen2: {
+    right: -19,
+    top: '55%',
+    backgroundColor: colors.palegreen,
+    width: 50,
+    height: 50,
+    borderRadius: 50,
+    position: 'absolute',
+    zIndex: -10
+  },
+  SocialEconomicsBallGreen1: {
+    right: '55%',
+    top: '80%',
+    backgroundColor: colors.palegreen,
+    width: 50,
+    height: 50,
+    borderRadius: 50,
+    position: 'absolute',
+    zIndex: -10
+  },
+  SocialEconomicsContainer: {
+    flex: 1,
+    flexDirection: 'column',
+    position: 'relative'
+  },
   memberName: {
     marginHorizontal: 20,
     fontWeight: 'normal',

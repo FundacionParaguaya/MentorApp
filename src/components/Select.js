@@ -213,36 +213,36 @@ class Select extends Component {
                     if (readonly) {
                       if (this.state.radioChecked === obj.value) {
                         return (
-                          <View
-                            key={i}
-                            style={{ marginRight: 'auto' }}
-                          >
+                          <View key={i} style={{ marginRight: 'auto' }}>
                             <View style={{ marginLeft: 12 }}>
-                            <RadioButton labelHorizontal={true}>
-                              <RadioButtonInput
-                                disabled={true}
-                                obj={obj}
-                                index={i}
-                                isSelected={
-                                  this.state.radioChecked === obj.value
-                                }
-                                onPress={this.validateInputRadio}
-                                borderWidth={2}
-                                buttonInnerColor={colors.palegreen}
-                                buttonOuterColor={colors.palegrey}
-                                buttonSize={12}
-                                buttonOuterSize={20}
-                                buttonStyle={{}}
-                              />
-                              <RadioButtonLabel
-                                obj={obj}
-                                index={i}
-                                labelHorizontal={true}
-                                onPress={this.validateInputRadio}
-                                labelStyle={{ fontSize: 17, color: '#4a4a4a' }}
-                                labelWrapStyle={{}}
-                              />
-                            </RadioButton>
+                              <RadioButton labelHorizontal={true}>
+                                <RadioButtonInput
+                                  disabled={true}
+                                  obj={obj}
+                                  index={i}
+                                  isSelected={
+                                    this.state.radioChecked === obj.value
+                                  }
+                                  onPress={this.validateInputRadio}
+                                  borderWidth={2}
+                                  buttonInnerColor={colors.palegreen}
+                                  buttonOuterColor={colors.palegrey}
+                                  buttonSize={12}
+                                  buttonOuterSize={20}
+                                  buttonStyle={{}}
+                                />
+                                <RadioButtonLabel
+                                  obj={obj}
+                                  index={i}
+                                  labelHorizontal={true}
+                                  onPress={this.validateInputRadio}
+                                  labelStyle={{
+                                    fontSize: 17,
+                                    color: '#4a4a4a'
+                                  }}
+                                  labelWrapStyle={{}}
+                                />
+                              </RadioButton>
                             </View>
                           </View>
                         )
@@ -427,13 +427,14 @@ const styles = StyleSheet.create({
     paddingBottom: 6,
     borderBottomColor: colors.grey,
     borderTopLeftRadius: 8,
-    borderTopRightRadius: 8
+    borderTopRightRadius: 8,
+    backgroundColor: colors.white
   },
   placeholder: {
     paddingHorizontal: 15,
     ...globalStyles.subline,
     // lineHeight: 50,
-    paddingTop:20,
+    paddingTop: 20,
     minHeight: 50
   },
   withoutValue: {
