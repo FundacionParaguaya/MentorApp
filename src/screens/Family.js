@@ -7,9 +7,9 @@ import {
   FlatList,
   Image,
   TouchableHighlight,
-  NetInfo,
   Linking
 } from 'react-native'
+import NetInfo from '@react-native-community/netinfo'
 import { connect } from 'react-redux'
 import PropTypes from 'prop-types'
 import { withNamespaces } from 'react-i18next'
@@ -40,7 +40,7 @@ export class Family extends Component {
       }`
     }
   }
-
+  unsubscribeNetChange
   state = {
     activeTab: this.props.navigation.getParam('activeTab') || 'Details'
   }
@@ -59,14 +59,13 @@ export class Family extends Component {
     const { survey } = this.props.nav
     const { navigation } = this.props
 
-    // monitor for connection changes
-    NetInfo.addEventListener('connectionChange', conncection => {
-      const isOnline = conncection.type === 'none' ? false : true
+    // // monitor for connection changes
+    this.unsubscribeNetChange = NetInfo.addEventListener(isOnline => {
       this.setState({ isOnline })
     })
 
     // check if online first
-    NetInfo.isConnected.fetch().then(isOnline => {
+    NetInfo.fetch().then(isOnline => {
       this.setState({ isOnline })
     })
 
@@ -114,6 +113,11 @@ export class Family extends Component {
   survey = this.props.surveys.find(
     item => item.id === this.familyLifemap.surveyId
   )
+
+  componentWillUnmount() {
+    this.unsubscribeNetChange()
+  }
+
   render() {
     const { activeTab } = this.state
     const { t, navigation } = this.props

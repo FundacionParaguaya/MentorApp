@@ -7,11 +7,11 @@ import {
   Image,
   StyleSheet,
   View,
-  NetInfo,
   Dimensions
 } from 'react-native'
 import { connect } from 'react-redux'
 import { CheckBox } from 'react-native-elements'
+import NetInfo from '@react-native-community/netinfo'
 import { setEnv, login, setDimensions } from '../redux/actions'
 import logo from '../../assets/images/logo.png'
 import { url } from '../config'
@@ -23,6 +23,7 @@ import Button from '../components/Button'
 const nodeEnv = process.env
 
 export class Login extends Component {
+  unsubscribeNetChange
   state = {
     username: '',
     password: '',
@@ -37,14 +38,12 @@ export class Login extends Component {
       this.props.navigation.navigate('Loading')
     } else {
       this.setDimensions()
-      this.checkConnectivity().then(isConnected =>
+      NetInfo.fetch().then(isConnected =>
         this.setConnectivityState(isConnected)
       )
       this.onConnectivityChange()
     }
   }
-
-  checkConnectivity = () => NetInfo.isConnected.fetch()
 
   setConnectivityState = isConnected =>
     isConnected
@@ -52,12 +51,9 @@ export class Login extends Component {
       : this.setState({ connection: false, error: 'No connection' })
 
   onConnectivityChange = () => {
-    NetInfo.addEventListener('connectionChange', conncection =>
-      this.setState({
-        connection: conncection.type === 'none' ? false : true,
-        error: conncection.type === 'none' ? 'No connection' : false
-      })
-    )
+    this.unsubscribeNetChange = NetInfo.addEventListener(state => {
+      this.setConnectivityState(state)
+    })
   }
 
   setDimensions = () => {
@@ -113,6 +109,10 @@ export class Login extends Component {
         this.props.navigation.navigate('Loading', { syncMaps, syncImages })
       }
     })
+  }
+
+  componentWillUnmount() {
+    this.unsubscribeNetChange()
   }
 
   render() {

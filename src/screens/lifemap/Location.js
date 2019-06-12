@@ -7,10 +7,10 @@ import {
   Image,
   Keyboard,
   TouchableHighlight,
-  NetInfo,
   AppState
 } from 'react-native'
 import Geolocation from '@react-native-community/geolocation'
+import NetInfo from '@react-native-community/netinfo'
 import Icon from 'react-native-vector-icons/MaterialIcons'
 import CommunityIcon from 'react-native-vector-icons/MaterialCommunityIcons'
 /* eslint-disable import/named */
@@ -35,7 +35,7 @@ import { getTotalScreens } from './helpers'
 export class Location extends Component {
   survey = this.props.navigation.getParam('survey')
   readOnly = this.props.navigation.getParam('readOnly')
-
+  unsubscribeNetChange
   state = {
     showList: false,
     showErrors: false,
@@ -359,19 +359,18 @@ export class Location extends Component {
     )
 
     // monitor for connection changes
-    NetInfo.addEventListener('connectionChange', conncection => {
-      const isOnline = conncection.type === 'none' ? false : true
-
+    this.unsubscribeNetChange = NetInfo.addEventListener(isOnline => {
       this.determineScreenState(isOnline)
     })
 
     // check if online first
-    NetInfo.isConnected.fetch().then(isOnline => {
+    NetInfo.fetch().then(isOnline => {
       this.determineScreenState(isOnline)
     })
   }
 
   componentWillUnmount() {
+    this.unsubscribeNetChange()
     AppState.removeEventListener('change', this._handleAppStateChange)
     this.keyboardDidShowListener.remove()
     this.keyboardDidHideListener.remove()
