@@ -316,6 +316,11 @@ export class Location extends Component {
   }
 
   componentDidMount() {
+    // monitor for connection changes
+    this.unsubscribeNetChange = NetInfo.addEventListener(isOnline => {
+      this.determineScreenState(isOnline)
+    })
+
     const { draft } = this.state
     if (!this.readOnly) {
       this.setState({
@@ -358,11 +363,6 @@ export class Location extends Component {
       this._keyboardDidHide
     )
 
-    // monitor for connection changes
-    this.unsubscribeNetChange = NetInfo.addEventListener(isOnline => {
-      this.determineScreenState(isOnline)
-    })
-
     // check if online first
     NetInfo.fetch().then(isOnline => {
       this.determineScreenState(isOnline)
@@ -370,7 +370,9 @@ export class Location extends Component {
   }
 
   componentWillUnmount() {
-    this.unsubscribeNetChange()
+    if (this.unsubscribeNetChange) {
+      this.unsubscribeNetChange()
+    }
     AppState.removeEventListener('change', this._handleAppStateChange)
     this.keyboardDidShowListener.remove()
     this.keyboardDidHideListener.remove()

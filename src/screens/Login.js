@@ -41,7 +41,9 @@ export class Login extends Component {
       NetInfo.fetch().then(isConnected =>
         this.setConnectivityState(isConnected)
       )
-      this.onConnectivityChange()
+      this.unsubscribeNetChange = NetInfo.addEventListener(state => {
+        this.setConnectivityState(state)
+      })
     }
   }
 
@@ -49,12 +51,6 @@ export class Login extends Component {
     isConnected
       ? this.setState({ connection: true })
       : this.setState({ connection: false, error: 'No connection' })
-
-  onConnectivityChange = () => {
-    this.unsubscribeNetChange = NetInfo.addEventListener(state => {
-      this.setConnectivityState(state)
-    })
-  }
 
   setDimensions = () => {
     this.props.setDimensions({
@@ -112,7 +108,9 @@ export class Login extends Component {
   }
 
   componentWillUnmount() {
-    this.unsubscribeNetChange()
+    if (this.unsubscribeNetChange) {
+      this.unsubscribeNetChange()
+    }
   }
 
   render() {
