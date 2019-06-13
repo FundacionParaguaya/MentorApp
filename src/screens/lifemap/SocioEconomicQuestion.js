@@ -209,7 +209,8 @@ export class SocioEconomicQuestion extends Component {
     ]
   }
 
-  getFamilyMemberFieldValue = (draft, field, index) => {
+  getFamilyMemberFieldValue = (field, index) => {
+    const { draft } = this.state
     if (
       !draft ||
       !draft.familyData.familyMembersList[index].socioEconomicAnswers ||
@@ -225,11 +226,28 @@ export class SocioEconomicQuestion extends Component {
     ].socioEconomicAnswers.filter(item => item.key === field)[0].value
   }
 
-  detectError = (error, field) => {
-    if (error && !this.errorsDetected.includes(field)) {
-      this.errorsDetected.push(field)
+  detectError = (error, field, memberIndex) => {
+    // if the current Screen has members with one and the same question add index after the codeName of the question
+    const fieldName = memberIndex ? `${field}-${memberIndex}` : field
+    if (error && !this.errorsDetected.includes(fieldName)) {
+      this.errorsDetected.push(fieldName)
     } else if (!error) {
-      this.errorsDetected = this.errorsDetected.filter(item => item !== field)
+      this.errorsDetected = this.errorsDetected.filter(
+        item => item !== fieldName
+      )
+    }
+
+    this.setState({
+      errorsDetected: this.errorsDetected
+    })
+  }
+
+  cleanErrorsCodenamesOnUnmount = (field, memberIndex) => {
+    const fieldName = memberIndex ? `${field}-${memberIndex}` : field
+    if (fieldName) {
+      this.errorsDetected = this.errorsDetected.filter(
+        item => item !== fieldName
+      )
     }
 
     this.setState({
@@ -289,7 +307,7 @@ export class SocioEconomicQuestion extends Component {
     }
   }
 
-  updateEconomicAnswer = (question, value, memberIndex, field) => {
+  updateEconomicAnswer = (question, value, memberIndex) => {
     const {
       conditionalQuestions,
       elementsWithConditionsOnThem: { questionsWithConditionsOnThem }
@@ -390,8 +408,8 @@ export class SocioEconomicQuestion extends Component {
                     <Select
                       radio={question.answerType === 'radio' ? true : false}
                       required={question.required}
-                      onChange={(value, field) =>
-                        this.updateEconomicAnswer(question, value, false, field)
+                      onChange={value =>
+                        this.updateEconomicAnswer(question, value, false)
                       }
                       placeholder={question.questionText}
                       showErrors={showErrors}
@@ -401,6 +419,7 @@ export class SocioEconomicQuestion extends Component {
                         this.getFieldValue(question.codeName, 'value') || ''
                       }
                       detectError={this.detectError}
+                      cleanErrorsOnUnmount={this.cleanErrorsCodenamesOnUnmount}
                       readonly={this.readOnly}
                       options={getConditionalOptions(question, draft)}
                     />
@@ -412,8 +431,8 @@ export class SocioEconomicQuestion extends Component {
                     multiline
                     key={question.codeName}
                     required={question.required}
-                    onChangeText={(value, field) =>
-                      this.updateEconomicAnswer(question, value, false, field)
+                    onChangeText={value =>
+                      this.updateEconomicAnswer(question, value, false)
                     }
                     placeholder={question.questionText}
                     showErrors={showErrors}
@@ -473,8 +492,8 @@ export class SocioEconomicQuestion extends Component {
                     multiline
                     key={question.codeName}
                     required={question.required}
-                    onChangeText={(value, field) =>
-                      this.updateEconomicAnswer(question, value, false, field)
+                    onChangeText={value =>
+                      this.updateEconomicAnswer(question, value, false)
                     }
                     placeholder={question.questionText}
                     showErrors={showErrors}
@@ -515,8 +534,8 @@ export class SocioEconomicQuestion extends Component {
                         radio={question.answerType === 'radio' ? true : false}
                         key={question.codeName}
                         required={question.required}
-                        onChange={(value, field) =>
-                          this.updateEconomicAnswer(question, value, i, field)
+                        onChange={value =>
+                          this.updateEconomicAnswer(question, value, i)
                         }
                         placeholder={question.questionText}
                         showErrors={showErrors}
@@ -524,7 +543,6 @@ export class SocioEconomicQuestion extends Component {
                         field={question.codeName}
                         value={
                           this.getFamilyMemberFieldValue(
-                            draft,
                             question.codeName,
                             i
                           ) || ''
@@ -532,21 +550,24 @@ export class SocioEconomicQuestion extends Component {
                         detectError={this.detectError}
                         readonly={this.readOnly}
                         options={getConditionalOptions(question, draft)}
+                        memberIndex={i + 1}
+                        cleanErrorsOnUnmount={
+                          this.cleanErrorsCodenamesOnUnmount
+                        }
                       />
                     ) : (
                       <TextInput
                         key={question.codeName}
                         multiline
                         required={question.required}
-                        onChangeText={(value, field) =>
-                          this.updateEconomicAnswer(question, value, i, field)
+                        onChangeText={value =>
+                          this.updateEconomicAnswer(question, value, i)
                         }
                         placeholder={question.questionText}
                         showErrors={showErrors}
                         field={question.codeName}
                         value={
                           this.getFamilyMemberFieldValue(
-                            draft,
                             question.codeName,
                             i
                           ) || ''

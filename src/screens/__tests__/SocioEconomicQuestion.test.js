@@ -185,11 +185,11 @@ describe('SocioEconomicQuestion screens', () => {
 
     it('gets non family member field value', () => {
       expect(
-        wrapper.instance().getFamilyMemberFieldValue(draft, '1', 0)
+        wrapper.instance().getFamilyMemberFieldValue('1', 0)
       ).toEqual('MENTAL')
 
       expect(
-        wrapper.instance().getFamilyMemberFieldValue(draft, '3', 0)
+        wrapper.instance().getFamilyMemberFieldValue('3', 0)
       ).toEqual(undefined)
     })
 
