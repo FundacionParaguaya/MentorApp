@@ -73,7 +73,7 @@ export const loadSurveys = (env, token) => ({
         headers: { Authorization: `Bearer ${token}` },
         body: JSON.stringify({
           query:
-            'query { surveysByUser { title id createdAt description minimumPriorities privacyPolicy { title  text } termsConditions{ title text }  surveyConfig { documentType {text value} gender { text value} surveyLocation { country latitude longitude} offlineMaps { from, to, center, name } }  surveyEconomicQuestions { questionText codeName answerType topic required forFamilyMember options {text value conditions{codeName, type, values, operator, valueType, showIfNoData}}, conditions{codeName, type, value, operator} } surveyStoplightQuestions { questionText codeName dimension id stoplightColors { url value description } required } } }'
+            'query { surveysByUser { title id createdAt description minimumPriorities privacyPolicy { title  text } termsConditions{ title text }  surveyConfig { documentType {text value} gender { text value} surveyLocation { country latitude longitude}  offlineMaps { from, to, center, name } }  surveyEconomicQuestions { questionText codeName answerType topic required forFamilyMember options {text value conditions{codeName, type, values, operator, valueType, showIfNoData}}, conditions{codeName, type, value, operator}, conditionGroups{groupOperator, joinNextGroup, conditions{codeName, type, value, operator}} } surveyStoplightQuestions { questionText codeName dimension id stoplightColors { url value description } required } } }'
         })
       },
       commit: { type: LOAD_SURVEYS_COMMIT }
@@ -200,42 +200,56 @@ export const addSurveyData = (id, category, payload) => ({
   payload
 })
 
-export const submitDraft = (env, token, id, payload) => ({
-  type: SUBMIT_DRAFT,
-  env,
-  token,
-  id,
-  payload,
+export const submitDraft = (env, token, id, payload) => {
+  const sanitizedSnapshot = { ...payload }
+  let { economicSurveyDataList } = payload
+  const validEconomicIndicator = ec =>
+    ec.value !== null && ec.value !== undefined && ec.value !== ''
+  economicSurveyDataList = economicSurveyDataList.filter(validEconomicIndicator)
+  sanitizedSnapshot.economicSurveyDataList = economicSurveyDataList
+  sanitizedSnapshot.familyData.familyMembersList.forEach(member => {
+    let { socioEconomicAnswers = [] } = member
+    socioEconomicAnswers = socioEconomicAnswers.filter(validEconomicIndicator)
+    // eslint-disable-next-line no-param-reassign
+    member.socioEconomicAnswers = socioEconomicAnswers
+  })
+  return {
+    type: SUBMIT_DRAFT,
+    env,
+    token,
+    id,
+    payload,
 
-  meta: {
-    offline: {
-      effect: {
-        url: `${env}/graphql`,
-        method: 'POST',
-        headers: { Authorization: `Bearer ${token}` },
-        body: JSON.stringify({
-          query:
-            'mutation addSnapshot($newSnapshot: NewSnapshotDTOInput) {addSnapshot(newSnapshot: $newSnapshot)  { surveyId surveyVersionId snapshotStoplightAchievements { action indicator roadmap } snapshotStoplightPriorities { reason action indicator estimatedDate } family { familyId } user { userId  username } indicatorSurveyDataList {key value} economicSurveyDataList {key value multipleValue} familyDataDTO { latitude longitude accuracy familyMemberDTOList { firstName lastName socioEconomicAnswers {key value } } } } }',
-          variables: { newSnapshot: payload }
-        })
-      },
-      commit: {
-        type: SUBMIT_DRAFT_COMMIT,
-        meta: {
-          id,
-          payload
-        }
-      },
-      rollback: {
-        type: SUBMIT_DRAFT_ROLLBACK,
-        meta: {
-          id,
-          payload
+    meta: {
+      offline: {
+        effect: {
+          url: `${env}/graphql`,
+          method: 'POST',
+          headers: { Authorization: `Bearer ${token}` },
+          body: JSON.stringify({
+            query:
+              'mutation addSnapshot($newSnapshot: NewSnapshotDTOInput) {addSnapshot(newSnapshot: $newSnapshot)  { surveyId surveyVersionId snapshotStoplightAchievements { action indicator roadmap } snapshotStoplightPriorities { reason action indicator estimatedDate } family { familyId } user { userId  username } indicatorSurveyDataList {key value} economicSurveyDataList {key value multipleValue} familyDataDTO { latitude longitude accuracy familyMemberDTOList { firstName lastName socioEconomicAnswers {key value } } } } }',
+            variables: { newSnapshot: payload }
+          })
+        },
+        commit: {
+          type: SUBMIT_DRAFT_COMMIT,
+          meta: {
+            id,
+            payload
+          }
+        },
+        rollback: {
+          type: SUBMIT_DRAFT_ROLLBACK,
+          meta: {
+            id,
+            payload
+          }
         }
       }
     }
   }
-})
+}
 
 // Language
 export const SWITCH_LANGUAGE = 'SWITCH_LANGUAGE'
