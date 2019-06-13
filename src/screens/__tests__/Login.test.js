@@ -94,7 +94,7 @@ describe('Login View', () => {
       wrapper.instance().setConnectivityState(true)
       wrapper.update()
       expect(wrapper.instance().state.connection).toBe(true)
-      expect(wrapper.instance().state.error).toBe(false)
+      expect(wrapper.instance().state.error).toBe('')
     })
     it('sets the correct connectivity state when offline', async () => {
       wrapper.instance().setConnectivityState(false)

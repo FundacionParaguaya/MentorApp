@@ -364,8 +364,8 @@ export class Location extends Component {
     )
 
     // check if online first
-    NetInfo.fetch().then(isOnline => {
-      this.determineScreenState(isOnline)
+    NetInfo.fetch().then(state => {
+      this.determineScreenState(state.isConnected)
     })
   }
 
