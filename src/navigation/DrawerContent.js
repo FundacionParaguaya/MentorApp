@@ -5,9 +5,9 @@ import {
   Text,
   StyleSheet,
   View,
-  Platform,
-  AsyncStorage
+  Platform
 } from 'react-native'
+import AsyncStorage from '@react-native-community/async-storage'
 import MapboxGL from '@mapbox/react-native-mapbox-gl'
 import { withNamespaces } from 'react-i18next'
 import { connect } from 'react-redux'

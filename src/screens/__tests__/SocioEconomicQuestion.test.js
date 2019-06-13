@@ -193,8 +193,6 @@ describe('SocioEconomicQuestion screens', () => {
       ).toEqual(undefined)
     })
 
-    
-
     it('displays errors on submit', () => {
       wrapper
         .find(Select)

@@ -106,7 +106,7 @@
       "cannotFindLocation": "El mapa no puede encontrar la ubicación actual ",
       "checkLocationServicesTurnedOn": "¡Comprueba que los servicios de localización están activados en la configuración de tu dispositivo!",
       "giveDetailInTheFormBelow": "¡Alternativamente, dé tantos detalles como pueda con respecto a la ubicación en el siguiente formulario!",
-      "searchByStreetOrPostalCode": "Búsqueda por calle o código postal",
+      "searchByStreetOrPostalCode": "Búsqueda por calle",
       "gettingYourLocation": "Obteniendo tu ubicación...",
       "mapUnavailavleOffline": "Desafortunadamente, no podemos cargar el mapa porque estás sin conexión.",
       "weHaveLocation": "Sin embargo, pudimos obtener la ubicación de su dispositivo.",

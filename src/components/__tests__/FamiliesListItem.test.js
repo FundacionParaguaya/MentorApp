@@ -54,7 +54,7 @@ describe('FamiliesListItem Component', () => {
           .find(Text)
           .last()
           .props().children
-      ).toEqual('DOB: Oct 01, 2018')
+      ).toEqual('D.O.B: Oct 01, 2018')
     })
     it('renders the correct name in last Text component', () => {
       expect(

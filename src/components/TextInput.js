@@ -191,11 +191,7 @@ class TextInput extends Component {
                 {placeholder} {required && !label ? '*' : ''}
               </Text>
             ) : (
-              <Text
-                style={upperCase ? styles.inputTextUpperCase : styles.inputText}
-              >
-                {text}
-              </Text>
+              <Text>{text}</Text>
             )}
           </FormInput>
         </View>

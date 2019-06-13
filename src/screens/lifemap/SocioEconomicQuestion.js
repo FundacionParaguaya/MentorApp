@@ -170,7 +170,7 @@ export class SocioEconomicQuestion extends Component {
     const socioEconomics = this.props.navigation.getParam('socioEconomics')
 
     socioEconomics.currentScreen === 1
-      ? this.props.navigation.navigate('Location', {
+      ? this.props.navigation.push('Location', {
           survey: this.survey,
           draft: this.state.draft
         })
@@ -408,7 +408,7 @@ export class SocioEconomicQuestion extends Component {
                     <Select
                       radio={question.answerType === 'radio' ? true : false}
                       required={question.required}
-                      onChange={(value, field) =>
+                      onChange={value =>
                         this.updateEconomicAnswer(question, value, false)
                       }
                       placeholder={question.questionText}
@@ -431,7 +431,7 @@ export class SocioEconomicQuestion extends Component {
                     multiline
                     key={question.codeName}
                     required={question.required}
-                    onChangeText={(value, field) =>
+                    onChangeText={value =>
                       this.updateEconomicAnswer(question, value, false)
                     }
                     placeholder={question.questionText}
@@ -492,7 +492,7 @@ export class SocioEconomicQuestion extends Component {
                     multiline
                     key={question.codeName}
                     required={question.required}
-                    onChangeText={(value, field) =>
+                    onChangeText={value =>
                       this.updateEconomicAnswer(question, value, false)
                     }
                     placeholder={question.questionText}
@@ -534,7 +534,7 @@ export class SocioEconomicQuestion extends Component {
                         radio={question.answerType === 'radio' ? true : false}
                         key={question.codeName}
                         required={question.required}
-                        onChange={(value, field) =>
+                        onChange={value =>
                           this.updateEconomicAnswer(question, value, i)
                         }
                         placeholder={question.questionText}
@@ -560,7 +560,7 @@ export class SocioEconomicQuestion extends Component {
                         key={question.codeName}
                         multiline
                         required={question.required}
-                        onChangeText={(value, field) =>
+                        onChangeText={value =>
                           this.updateEconomicAnswer(question, value, i)
                         }
                         placeholder={question.questionText}

@@ -76,7 +76,7 @@ export class FamilyMembersNames extends Component {
         showErrors: true
       })
     } else {
-      this.props.navigation.navigate('Location', {
+      this.props.navigation.push('Location', {
         draft: this.state.draft,
         survey: this.survey
       })
