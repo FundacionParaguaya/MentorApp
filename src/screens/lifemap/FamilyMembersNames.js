@@ -102,6 +102,7 @@ export class FamilyMembersNames extends Component {
             {
               [memberIndex]: {
                 ...draft.familyData.familyMembersList[memberIndex],
+                firstParticipant: false,
                 [memberField]: value
               }
             }
