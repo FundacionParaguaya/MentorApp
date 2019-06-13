@@ -173,7 +173,7 @@ class TextInput extends Component {
           <FormInput
             autoFocus={autoFocus}
             keyboardType={showPlaceholder ? null : this.props.keyboardType}
-            autoCapitalize="none"
+            autoCapitalize={upperCase ? 'sentences' : 'none'}
             onFocus={() => this.onFocus()}
             onBlur={() => this.onBlur(text)}
             onChangeText={text => this.onChangeText(text)}
@@ -191,7 +191,7 @@ class TextInput extends Component {
                 {placeholder} {required && !label ? '*' : ''}
               </Text>
             ) : (
-              <Text style={upperCase ? styles.inputTextUpperCase : styles.inputText}>{text}</Text>
+              <Text>{text}</Text>
             )}
           </FormInput>
         </View>
@@ -226,7 +226,7 @@ const styles = StyleSheet.create({
     paddingRight: 30,
     fontSize: 14
   },
-  inputTextUpperCase:{
+  inputTextUpperCase: {
     textTransform: 'capitalize',
     fontSize: 14
   },
@@ -255,7 +255,6 @@ const styles = StyleSheet.create({
     borderBottomColor: colors.red
   },
   text: {
- 
     marginLeft: 15,
     position: 'relative',
     // top: 10,
