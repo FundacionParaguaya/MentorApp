@@ -131,6 +131,12 @@ class Select extends Component {
     }
   }
 
+  componentWillUnmount() {
+    if (this.props.cleanErrorsOnUnmount) {
+      this.props.cleanErrorsOnUnmount(this.props.field, this.props.memberIndex)
+    }
+  }
+
   render() {
     const { errorMsg, isOpen, showOther } = this.state
     const {
@@ -427,7 +433,8 @@ Select.propTypes = {
   countryOfBirth: PropTypes.array,
   required: PropTypes.bool,
   detectError: PropTypes.func,
-  memberIndex: PropTypes.oneOfType([PropTypes.bool, PropTypes.number])
+  memberIndex: PropTypes.oneOfType([PropTypes.bool, PropTypes.number]),
+  cleanErrorsOnUnmount: PropTypes.oneOfType([PropTypes.func, PropTypes.bool])
 }
 
 export default Select

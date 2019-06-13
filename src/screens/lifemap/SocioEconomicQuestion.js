@@ -229,11 +229,25 @@ export class SocioEconomicQuestion extends Component {
   detectError = (error, field, memberIndex) => {
     // if the current Screen has members with one and the same question add index after the codeName of the question
     const fieldName = memberIndex ? `${field}-${memberIndex}` : field
-
     if (error && !this.errorsDetected.includes(fieldName)) {
       this.errorsDetected.push(fieldName)
     } else if (!error) {
-      this.errorsDetected = this.errorsDetected.filter(item => item !== fieldName)
+      this.errorsDetected = this.errorsDetected.filter(
+        item => item !== fieldName
+      )
+    }
+
+    this.setState({
+      errorsDetected: this.errorsDetected
+    })
+  }
+
+  cleanErrorsCodenamesOnUnmount = (field, memberIndex) => {
+    const fieldName = memberIndex ? `${field}-${memberIndex}` : field
+    if (fieldName) {
+      this.errorsDetected = this.errorsDetected.filter(
+        item => item !== fieldName
+      )
     }
 
     this.setState({
@@ -395,7 +409,7 @@ export class SocioEconomicQuestion extends Component {
                       radio={question.answerType === 'radio' ? true : false}
                       required={question.required}
                       onChange={(value, field) =>
-                        this.updateEconomicAnswer(question, value, false, field)
+                        this.updateEconomicAnswer(question, value, false)
                       }
                       placeholder={question.questionText}
                       showErrors={showErrors}
@@ -405,6 +419,7 @@ export class SocioEconomicQuestion extends Component {
                         this.getFieldValue(question.codeName, 'value') || ''
                       }
                       detectError={this.detectError}
+                      cleanErrorsOnUnmount={this.cleanErrorsCodenamesOnUnmount}
                       readonly={this.readOnly}
                       options={getConditionalOptions(question, draft)}
                     />
@@ -417,7 +432,7 @@ export class SocioEconomicQuestion extends Component {
                     key={question.codeName}
                     required={question.required}
                     onChangeText={(value, field) =>
-                      this.updateEconomicAnswer(question, value, false, field)
+                      this.updateEconomicAnswer(question, value, false)
                     }
                     placeholder={question.questionText}
                     showErrors={showErrors}
@@ -478,7 +493,7 @@ export class SocioEconomicQuestion extends Component {
                     key={question.codeName}
                     required={question.required}
                     onChangeText={(value, field) =>
-                      this.updateEconomicAnswer(question, value, false, field)
+                      this.updateEconomicAnswer(question, value, false)
                     }
                     placeholder={question.questionText}
                     showErrors={showErrors}
@@ -520,7 +535,7 @@ export class SocioEconomicQuestion extends Component {
                         key={question.codeName}
                         required={question.required}
                         onChange={(value, field) =>
-                          this.updateEconomicAnswer(question, value, i, field)
+                          this.updateEconomicAnswer(question, value, i)
                         }
                         placeholder={question.questionText}
                         showErrors={showErrors}
@@ -535,7 +550,10 @@ export class SocioEconomicQuestion extends Component {
                         detectError={this.detectError}
                         readonly={this.readOnly}
                         options={getConditionalOptions(question, draft)}
-                        memberIndex={i+1}
+                        memberIndex={i + 1}
+                        cleanErrorsOnUnmount={
+                          this.cleanErrorsCodenamesOnUnmount
+                        }
                       />
                     ) : (
                       <TextInput
@@ -543,7 +561,7 @@ export class SocioEconomicQuestion extends Component {
                         multiline
                         required={question.required}
                         onChangeText={(value, field) =>
-                          this.updateEconomicAnswer(question, value, i, field)
+                          this.updateEconomicAnswer(question, value, i)
                         }
                         placeholder={question.questionText}
                         showErrors={showErrors}
