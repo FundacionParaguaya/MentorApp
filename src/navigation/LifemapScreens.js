@@ -152,8 +152,7 @@ export default {
   },
   Final: {
     screen: FinalView,
-    navigationOptions: ({ navigation }) => ({
-      ...addCloseIcon(navigation),
+    navigationOptions: () => ({
       headerTitle: <Title title="general.thankYou" style={{ marginLeft: 20 }} />
     })
   },
