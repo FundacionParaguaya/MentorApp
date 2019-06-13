@@ -7,9 +7,7 @@ import StickyFooter from '../../components/StickyFooter'
 import TextInput from '../../components/TextInput'
 import Select from '../../components/Select'
 import Checkbox from '../../components/Checkbox'
-import {
-  addSurveyDataCheckBox
-} from '../../redux/actions'
+import { addSurveyDataCheckBox } from '../../redux/actions'
 import colors from '../../theme.json'
 import {
   shouldShowQuestion,
@@ -45,7 +43,10 @@ export class SocioEconomicQuestion extends Component {
   state = {
     errorsDetected: [],
     showErrors: false,
-    draft: this.props.navigation.getParam('draft') || this.props.navigation.getParam('family') || {}
+    draft:
+      this.props.navigation.getParam('draft') ||
+      this.props.navigation.getParam('family') ||
+      {}
   }
 
   constructor(props) {
@@ -169,7 +170,7 @@ export class SocioEconomicQuestion extends Component {
     const socioEconomics = this.props.navigation.getParam('socioEconomics')
 
     socioEconomics.currentScreen === 1
-      ? this.props.navigation.navigate('Location', {
+      ? this.props.navigation.push('Location', {
           survey: this.survey,
           draft: this.state.draft
         })
@@ -472,12 +473,9 @@ export class SocioEconomicQuestion extends Component {
                     multiline
                     key={question.codeName}
                     required={question.required}
-                    onChangeText={(value, field) => this.updateEconomicAnswer(
-                      question,
-                      value,
-                      false,
-                      field
-                    )}
+                    onChangeText={(value, field) =>
+                      this.updateEconomicAnswer(question, value, false, field)
+                    }
                     placeholder={question.questionText}
                     showErrors={showErrors}
                     field={question.codeName}

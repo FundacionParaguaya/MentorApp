@@ -5,7 +5,6 @@ import StickyFooter from '../../components/StickyFooter'
 import { connect } from 'react-redux'
 import PropTypes from 'prop-types'
 import { withNamespaces } from 'react-i18next'
-import { isPortrait, isTablet } from '../../responsivenessHelpers'
 import { getTotalEconomicScreens } from './helpers'
 import colors from '../../theme.json'
 import SliderComponent from '../../components/Slider'
@@ -187,24 +186,22 @@ export class Question extends Component {
         }
         currentScreen="Question"
       >
-          <SliderComponent
-            slides={this.slides}
-            value={this.getFieldValue(this.indicator.codeName)}
-            selectAnswer={this.selectAnswer}
-          />
-          <View
-            style={styles.skip}
-          >
-            {this.indicator.required ? (
-              <Text>{t('views.lifemap.responseRequired')}</Text>
-            ) : (
-              <IconButton
-                text={t('views.lifemap.skipThisQuestion')}
-                textStyle={styles.link}
-                onPress={() => this.selectAnswer(0)}
-              />
-            )}
-          </View>
+        <SliderComponent
+          slides={this.slides}
+          value={this.getFieldValue(this.indicator.codeName)}
+          selectAnswer={this.selectAnswer}
+        />
+        <View style={styles.skip}>
+          {this.indicator.required ? (
+            <Text>{t('views.lifemap.responseRequired')}</Text>
+          ) : (
+            <IconButton
+              text={t('views.lifemap.skipThisQuestion')}
+              textStyle={styles.link}
+              onPress={() => this.selectAnswer(0)}
+            />
+          )}
+        </View>
       </StickyFooter>
     )
   }
