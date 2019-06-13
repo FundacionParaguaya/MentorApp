@@ -44,7 +44,9 @@ export default class StickyFooter extends Component {
       <View
         style={[
           globalStyles.background,
-          !!this.props.currentScreen && this.props.currentScreen === 'Question' ? {paddingTop: 15} : {...styles.contentContainer},
+          !!this.props.currentScreen && this.props.currentScreen === 'Question'
+            ? { paddingTop: 15 }
+            : { ...styles.contentContainer },
           { marginTop: this.setMarginTop() }
         ]}
       >
