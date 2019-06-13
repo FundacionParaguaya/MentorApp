@@ -129,7 +129,7 @@ export const conditionMet = (condition, currentDraft, memberIndex) => {
   } else if (scope === CONDITION_TYPES.MEMBER_SOCIOEONOMIC) {
     const {
       socioEconomicAnswers: memberSocioEconomicAnswers = []
-    } = familyMembersList[memberIndex]
+    } = familyMembersList[memberIndex] || []
     targetQuestion = memberSocioEconomicAnswers.find(
       element => element.key === condition.codeName
     )
