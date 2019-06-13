@@ -2,9 +2,13 @@ import moment from 'moment'
 
 // Alternative to get() in lodash
 const get = (obj, path, defaultValue = null) =>
-  String.prototype.split.call(path, /[,[\].]+?/)
+  String.prototype.split
+    .call(path, /[,[\].]+?/)
     .filter(Boolean)
-    .reduce((a, c) => (Object.hasOwnProperty.call(a,c) ? a[c] : defaultValue), obj)
+    .reduce(
+      (a, c) => (Object.hasOwnProperty.call(a, c) ? a[c] : defaultValue),
+      obj
+    )
 
 export const CONDITION_TYPES = {
   SOCIOECONOMIC: 'socioEconomic',
@@ -116,7 +120,10 @@ export const conditionMet = (condition, currentDraft, memberIndex) => {
         return true
       }
     } else {
-      value = familyMember[condition.codeName]
+      value =
+        condition && condition.codeName
+          ? familyMember[condition.codeName]
+          : null
     }
     targetQuestion = { value }
   } else if (scope === CONDITION_TYPES.MEMBER_SOCIOEONOMIC) {
@@ -150,7 +157,6 @@ export const conditionMet = (condition, currentDraft, memberIndex) => {
   }
   return evaluateCondition(condition, targetQuestion)
 }
-
 
 /**
  * Decides whether a question should be shown to the user or not
