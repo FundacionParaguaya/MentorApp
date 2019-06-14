@@ -40,9 +40,9 @@ export default {
   TheFamily: {
     screen: TheFamilyView,
     navigationOptions: ({ navigation }) => ({
-      ...generateNavStyles({ navigation }),
+      ...generateNavStyles({ navigation, shadowHeader: false }),
       ...addCloseIcon(navigation),
-      headerTitle: <Title title="The family" />
+      headerTitle: <Title title="The family" centered />
     })
   },
   FamilyParticipant: {

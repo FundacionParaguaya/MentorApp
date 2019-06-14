@@ -24,11 +24,12 @@ export const getTotalEconomicScreens = survey => {
 
 export const getTotalScreens = survey => {
   const draft = getDraft()
+  const ALWAYS_APPEARING_SCREENS = 5
 
   // there are 5 screens each snapshot always has:
   // participant, location, begin lifemap, overview and final
   return (
-    5 +
+    ALWAYS_APPEARING_SCREENS +
     survey.surveyStoplightQuestions.length +
     getTotalEconomicScreens(survey) +
     (draft && draft.familyData.countFamilyMembers > 1 ? 1 : 0) +

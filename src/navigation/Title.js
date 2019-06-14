@@ -10,7 +10,11 @@ export class DynamicTitle extends React.Component {
     return (
       <Text
         accessibilityLiveRegion="assertive"
-        style={[styles.headerTitleStyle, this.props.style]}
+        style={[
+          styles.headerTitleStyle,
+          this.props.style,
+          this.props.centered ? styles.centered : { marginLeft: 20 }
+        ]}
       >
         {this.props.t(this.props.title)}
       </Text>
@@ -21,6 +25,7 @@ export class DynamicTitle extends React.Component {
 DynamicTitle.propTypes = {
   style: PropTypes.object,
   title: PropTypes.string,
+  centered: PropTypes.bool,
   lng: PropTypes.string,
   t: PropTypes.func
 }
@@ -38,8 +43,12 @@ const styles = StyleSheet.create({
     fontSize: 18,
     fontWeight: '200',
     lineHeight: 26,
-    marginLeft: 20,
     color: colors.black
+  },
+  centered: {
+    marginLeft: 'auto',
+    marginRight: 'auto',
+    textAlign: 'center'
   }
 })
 

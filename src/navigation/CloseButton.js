@@ -11,11 +11,18 @@ class CloseButton extends Component {
     const isNewDraft =
       navigation.state.params.isNewDraft && navigation.getParam('isNewDraft')
 
-    // open the exit modal with the params it needs
-    this.props.navigation.navigate('ExitDraftModal', {
-      draft,
-      isNewDraft
-    })
+    if (
+      navigation.getParam('retakeSurvey') ||
+      navigation.getParam('page') === 'TheFamily'
+    ) {
+      this.props.navigation.navigate('Dashboard')
+    } else {
+      // open the exit modal with the params it needs
+      this.props.navigation.navigate('ExitDraftModal', {
+        draft,
+        isNewDraft
+      })
+    }
   }
   render() {
     return (

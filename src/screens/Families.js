@@ -20,6 +20,7 @@ import globalStyles from '../globalStyles'
 import SearchBar from '../components/SearchBar'
 import FamiliesListItem from '../components/FamiliesListItem'
 import mapPlaceholderLarge from '../../assets/images/map_placeholder_1000.png'
+import StickyFooter from '../components/StickyFooter'
 
 export class Families extends Component {
   static navigationOptions = ({ navigation }) => ({
@@ -74,7 +75,7 @@ export class Families extends Component {
     if (this.props.navigation.getParam('retakeSurvey')) {
       this.props.navigation.navigate('Family', {
         familyName: family.name,
-        familyID:family.familyId,
+        familyID: family.familyId,
         familyLifemap: family.snapshotList
           ? family.snapshotList[0]
           : family.draft,
@@ -91,7 +92,7 @@ export class Families extends Component {
         draftId: !family.snapshotList ? family.draft.draftId : null,
         readonly: true
       })
-      
+
       this.props.navigation.navigate('Family', {
         familyName: family.name,
         familyLifemap: family.snapshotList
@@ -140,45 +141,51 @@ export class Families extends Component {
     )
 
     return (
-      <View style={[globalStyles.background, styles.container]}>
-        <Image style={styles.imagePlaceholder} source={mapPlaceholderLarge} />
-        <SearchBar
-          id="searchAddress"
-          style={styles.search}
-          placeholder={'Search by name'}
-          onChangeText={search => this.setState({ search })}
-          value={this.state.search}
-        />
-        <View style={styles.bar}>
-          <Text style={{ ...globalStyles.subline, ...styles.familiesCount }}>
-            {filteredFamilies.length} {t('views.families').toLowerCase()}
-          </Text>
-        </View>
-        <ScrollView>
-          <View ref={this.acessibleComponent} accessible={true}>
-            {familiesToSync ? (
-              <ActivityIndicator
-                size="small"
-                color={colors.palered}
-                style={styles.spinner}
-              />
-            ) : null}
-
-            <FlatList
-              data={this.sortByName(filteredFamilies)}
-              keyExtractor={(item, index) => index.toString()}
-              renderItem={({ item }) => (
-                <FamiliesListItem
-                  error={t('views.family.error')}
-                  lng={this.props.lng}
-                  handleClick={() => this.handleClickOnFamily(item)}
-                  family={item}
-                />
-              )}
-            />
+      <StickyFooter
+        style={{ ...globalStyles.container, padding: 0 }}
+        progress={this.props.navigation.getParam('retakeSurvey') ? 2 / 50 : 0}
+        visible={false}
+      >
+        <View style={[globalStyles.background, styles.container]}>
+          <Image style={styles.imagePlaceholder} source={mapPlaceholderLarge} />
+          <SearchBar
+            id="searchAddress"
+            style={styles.search}
+            placeholder={'Search by name'}
+            onChangeText={search => this.setState({ search })}
+            value={this.state.search}
+          />
+          <View style={styles.bar}>
+            <Text style={{ ...globalStyles.subline, ...styles.familiesCount }}>
+              {filteredFamilies.length} {t('views.families').toLowerCase()}
+            </Text>
           </View>
-        </ScrollView>
-      </View>
+          <ScrollView>
+            <View ref={this.acessibleComponent} accessible={true}>
+              {familiesToSync ? (
+                <ActivityIndicator
+                  size="small"
+                  color={colors.palered}
+                  style={styles.spinner}
+                />
+              ) : null}
+
+              <FlatList
+                data={this.sortByName(filteredFamilies)}
+                keyExtractor={(item, index) => index.toString()}
+                renderItem={({ item }) => (
+                  <FamiliesListItem
+                    error={t('views.family.error')}
+                    lng={this.props.lng}
+                    handleClick={() => this.handleClickOnFamily(item)}
+                    family={item}
+                  />
+                )}
+              />
+            </View>
+          </ScrollView>
+        </View>
+      </StickyFooter>
     )
   }
 }

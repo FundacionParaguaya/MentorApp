@@ -168,6 +168,7 @@ export class Family extends Component {
       <StickyFooter
         handleClick={this.retakeSurveyWithThisFamily}
         continueLabel={'Choose this family'}
+        progress={this.props.navigation.getParam('retakeSurvey') ? 3 / 50 : 0}
         visible={!!this.isRetakeSurvey}
       >
         <ScrollView

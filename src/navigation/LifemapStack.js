@@ -2,7 +2,6 @@ import React from 'react'
 import { createStackNavigator } from 'react-navigation'
 import Title from './Title'
 import SurveysView from '../screens/Surveys'
-import TheFamilyView from '../screens/TheFamily'
 import FamiliesView from '../screens/Families'
 import LifemapScreens from './LifemapScreens'
 import { generateNavStyles, addMenuIcon, addCloseIcon } from './helpers'
@@ -21,9 +20,9 @@ export default createStackNavigator(
       navigationOptions: ({ navigation }) => {
         return navigation.getParam('retakeSurvey')
           ? {
-              ...generateNavStyles({ navigation }),
+              ...generateNavStyles({ navigation, shadowHeader: false }),
               ...addCloseIcon(navigation),
-              headerTitle: <Title title="Choose family" />
+              headerTitle: <Title title="Choose family" centered />
             }
           : {
               ...generateNavStyles({ navigation }),

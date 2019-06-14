@@ -18,6 +18,8 @@ export class FamilyParticipant extends Component {
   survey = this.props.navigation.getParam('survey')
   readOnly = this.props.navigation.getParam('readOnly')
   isRetakeSurvey = this.props.navigation.getParam('isRetakeSurvey')
+  CURRENT_SCREEN_NUMBER = this.isRetakeSurvey ? 4 : 2
+
   errorsDetected = []
 
   state = {
@@ -98,12 +100,17 @@ export class FamilyParticipant extends Component {
       if (countFamilyMembers && countFamilyMembers > 1) {
         // if multiple family members navigate to members screens
         this.props.navigation.push('FamilyMembersNames', {
+          currentScreenNumber: this.CURRENT_SCREEN_NUMBER,
           draft,
           survey
         })
       } else {
         // if only one family member, navigate directly to location
-        this.props.navigation.navigate('Location', { draft, survey })
+        this.props.navigation.navigate('Location', {
+          currentScreenNumber: this.CURRENT_SCREEN_NUMBER,
+          draft,
+          survey
+        })
       }
     }
   }
@@ -216,8 +223,8 @@ export class FamilyParticipant extends Component {
   render() {
     const { t } = this.props
     const { showErrors, draft } = this.state
-
     const participant = draft.familyData.familyMembersList[0]
+
     return (
       <StickyFooter
         handleClick={this.handleClick}
@@ -228,7 +235,11 @@ export class FamilyParticipant extends Component {
         tipDescription={''}
         continueLabel={t('general.continue')}
         readonly={this.readOnly}
-        progress={!this.readOnly && draft ? 1 / draft.progress.total : 0}
+        progress={
+          !this.readOnly && draft
+            ? this.CURRENT_SCREEN_NUMBER / draft.progress.total
+            : 0
+        }
       >
         <Decoration variation="primaryParticipant">
           <Icon name="face" color={colors.grey} size={61} style={styles.icon} />

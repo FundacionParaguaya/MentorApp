@@ -3,12 +3,12 @@ import { StyleSheet, ScrollView, Text, View } from 'react-native'
 import { connect } from 'react-redux'
 import PropTypes from 'prop-types'
 import { withNamespaces } from 'react-i18next'
-import { updateNav } from '../redux/actions'
 import globalStyles from '../globalStyles'
 import Decoration from '../components/decoration/Decoration'
 import colors from '../theme.json'
 import Icon from 'react-native-vector-icons/MaterialIcons'
 import Button from '../components/Button'
+import StickyFooter from '../components/StickyFooter'
 
 export class TheFamily extends Component {
   componentDidMount() {
@@ -30,10 +30,10 @@ export class TheFamily extends Component {
 
   render() {
     return (
-      <ScrollView
-        ref={this.acessibleComponent}
-        accessible={true}
+      <StickyFooter
         style={{ ...globalStyles.container, padding: 0 }}
+        progress={1 / 50}
+        visible={false}
       >
         <Text style={[globalStyles.h2, styles.heading]}>
           Is it the first time that this family makes a life map?{' '}
@@ -73,7 +73,7 @@ export class TheFamily extends Component {
             }
           />
         </View>
-      </ScrollView>
+      </StickyFooter>
     )
   }
 }
