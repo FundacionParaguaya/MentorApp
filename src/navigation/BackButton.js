@@ -43,9 +43,8 @@ class BackButton extends Component {
   }
 
   render() {
-    const { navigation } = this.props
     return (
-      <AndroidBackHandler onBackPress={navigation.goBack}>
+      <AndroidBackHandler onBackPress={this.handlePress}>
         <View>
           <IconButton
             style={this.props.style}

@@ -1,11 +1,107 @@
 # Change Log
 
+## [v1.9.5](https://github.com/FundacionParaguaya/MentorApp/tree/v1.9.5) (2019-06-13)
+[Full Changelog](https://github.com/FundacionParaguaya/MentorApp/compare/v1.9.4...v1.9.5)
+
+**Implemented enhancements:**
+
+- Remove the "X" button on last screen [\#609](https://github.com/FundacionParaguaya/MentorApp/issues/609)
+- Little more height in the sticky continue buttons [\#606](https://github.com/FundacionParaguaya/MentorApp/issues/606)
+- DOB should be D.O.B. [\#602](https://github.com/FundacionParaguaya/MentorApp/issues/602)
+
+**Fixed bugs:**
+
+- Family member data disappears when navigating back from Location [\#772](https://github.com/FundacionParaguaya/MentorApp/issues/772)
+- Resetting of socio-economic data [\#770](https://github.com/FundacionParaguaya/MentorApp/issues/770)
+- Multiple offline maps not downloading on demo [\#768](https://github.com/FundacionParaguaya/MentorApp/issues/768)
+- Using back button from Dashboard goes into loading [\#767](https://github.com/FundacionParaguaya/MentorApp/issues/767)
+- App crashes in Geco survey \(internal track\) [\#762](https://github.com/FundacionParaguaya/MentorApp/issues/762)
+- familyMemberDraft.gender - undefined is not an object [\#758](https://github.com/FundacionParaguaya/MentorApp/issues/758)
+- Indicator slider jumping [\#752](https://github.com/FundacionParaguaya/MentorApp/issues/752)
+- Ghost family member introduces sync error [\#751](https://github.com/FundacionParaguaya/MentorApp/issues/751)
+- App crash when offline and tapping My location is not listed [\#740](https://github.com/FundacionParaguaya/MentorApp/issues/740)
+- Socioeconomic questions are not completely visible [\#728](https://github.com/FundacionParaguaya/MentorApp/issues/728)
+- The sync circle doesn't stop loading in families screen [\#716](https://github.com/FundacionParaguaya/MentorApp/issues/716)
+
+**Closed issues:**
+
+- TypeError appeared when taking Argentina - Fundacion Irradia [\#774](https://github.com/FundacionParaguaya/MentorApp/issues/774)
+- Congratulations Message Changes + Implications [\#756](https://github.com/FundacionParaguaya/MentorApp/issues/756)
+- Conditional logic - Add dynamic required validation [\#741](https://github.com/FundacionParaguaya/MentorApp/issues/741)
+- Intercom Screens - Design and Implementation [\#370](https://github.com/FundacionParaguaya/MentorApp/issues/370)
+
+**Merged pull requests:**
+
+- fix close icon final [\#783](https://github.com/FundacionParaguaya/MentorApp/pull/783) ([zommerberg](https://github.com/zommerberg))
+- 741 required validation [\#782](https://github.com/FundacionParaguaya/MentorApp/pull/782) ([vasildimitroffhristoff](https://github.com/vasildimitroffhristoff))
+- fix \#747 changed the translations [\#777](https://github.com/FundacionParaguaya/MentorApp/pull/777) ([zommerberg](https://github.com/zommerberg))
+- set socioEconomicAnswers object to empty array if property is missing… [\#775](https://github.com/FundacionParaguaya/MentorApp/pull/775) ([vasildimitroffhristoff](https://github.com/vasildimitroffhristoff))
+- fix \#606 make continue button larger [\#765](https://github.com/FundacionParaguaya/MentorApp/pull/765) ([zommerberg](https://github.com/zommerberg))
+- fix \#602 DOB to D.O.B [\#764](https://github.com/FundacionParaguaya/MentorApp/pull/764) ([zommerberg](https://github.com/zommerberg))
+- fix \#752 fixed jumping images [\#757](https://github.com/FundacionParaguaya/MentorApp/pull/757) ([zommerberg](https://github.com/zommerberg))
+
+## [v1.9.4](https://github.com/FundacionParaguaya/MentorApp/tree/v1.9.4) (2019-06-10)
+[Full Changelog](https://github.com/FundacionParaguaya/MentorApp/compare/v1.9.3...v1.9.4)
+
+**Implemented enhancements:**
+
+- Add Iquique and Arica maps to Geco [\#738](https://github.com/FundacionParaguaya/MentorApp/issues/738)
+- Conditional Logic - Update 'type' and 'value' keys.  [\#695](https://github.com/FundacionParaguaya/MentorApp/issues/695)
+- Conditional Logic - Support null Fallback. [\#693](https://github.com/FundacionParaguaya/MentorApp/issues/693)
+
+**Fixed bugs:**
+
+- GIT HUB Vulnerability [\#744](https://github.com/FundacionParaguaya/MentorApp/issues/744)
+- readOnly and back arrow in families [\#743](https://github.com/FundacionParaguaya/MentorApp/issues/743)
+- Infinite logging out [\#730](https://github.com/FundacionParaguaya/MentorApp/issues/730)
+
+**Closed issues:**
+
+- Conditional Logic - Support conditions over member socioeconomics [\#703](https://github.com/FundacionParaguaya/MentorApp/issues/703)
+- Conditional Logic - Add operator notEquals [\#702](https://github.com/FundacionParaguaya/MentorApp/issues/702)
+- Show static map image in Dashboard\>Families  [\#697](https://github.com/FundacionParaguaya/MentorApp/issues/697)
+- Conditional logic - Add support for conditional options [\#696](https://github.com/FundacionParaguaya/MentorApp/issues/696)
+- Taking a photo in the App [\#624](https://github.com/FundacionParaguaya/MentorApp/issues/624)
+- Height on the Dashboard and other screens [\#557](https://github.com/FundacionParaguaya/MentorApp/issues/557)
+- Zoom out is very limited in MAP [\#543](https://github.com/FundacionParaguaya/MentorApp/issues/543)
+- Ability to delete users [\#421](https://github.com/FundacionParaguaya/MentorApp/issues/421)
+- Testcases [\#114](https://github.com/FundacionParaguaya/MentorApp/issues/114)
+
+**Merged pull requests:**
+
+- hide sync errors text [\#753](https://github.com/FundacionParaguaya/MentorApp/pull/753) ([zommerberg](https://github.com/zommerberg))
+- Conditional [\#748](https://github.com/FundacionParaguaya/MentorApp/pull/748) ([vasildimitroffhristoff](https://github.com/vasildimitroffhristoff))
+- fix-center dashboard [\#746](https://github.com/FundacionParaguaya/MentorApp/pull/746) ([zommerberg](https://github.com/zommerberg))
+- fix \#743 readOnly bugs [\#745](https://github.com/FundacionParaguaya/MentorApp/pull/745) ([zommerberg](https://github.com/zommerberg))
+- fix \#678 display total amount of indicators [\#722](https://github.com/FundacionParaguaya/MentorApp/pull/722) ([zommerberg](https://github.com/zommerberg))
+- fix \#281 displaying sync errors [\#719](https://github.com/FundacionParaguaya/MentorApp/pull/719) ([zommerberg](https://github.com/zommerberg))
+- fix \#424 added automatic uppercase [\#709](https://github.com/FundacionParaguaya/MentorApp/pull/709) ([zommerberg](https://github.com/zommerberg))
+- fix \#610 added calls and emails [\#699](https://github.com/FundacionParaguaya/MentorApp/pull/699) ([zommerberg](https://github.com/zommerberg))
+
+## [v1.9.3](https://github.com/FundacionParaguaya/MentorApp/tree/v1.9.3) (2019-06-04)
+[Full Changelog](https://github.com/FundacionParaguaya/MentorApp/compare/v1.9.2...v1.9.3)
+
+**Fixed bugs:**
+
+- Sync error in 1.9.2 [\#737](https://github.com/FundacionParaguaya/MentorApp/issues/737)
+
+## [v1.9.2](https://github.com/FundacionParaguaya/MentorApp/tree/v1.9.2) (2019-06-04)
+[Full Changelog](https://github.com/FundacionParaguaya/MentorApp/compare/v1.9.1...v1.9.2)
+
+**Fixed bugs:**
+
+- Can't see socio economic question for family members [\#736](https://github.com/FundacionParaguaya/MentorApp/issues/736)
+- Changing gender for family members does nothing [\#735](https://github.com/FundacionParaguaya/MentorApp/issues/735)
+- Can't zoom map in [\#734](https://github.com/FundacionParaguaya/MentorApp/issues/734)
+- Login takes forever [\#733](https://github.com/FundacionParaguaya/MentorApp/issues/733)
+
 ## [v1.9.1](https://github.com/FundacionParaguaya/MentorApp/tree/v1.9.1) (2019-06-04)
 [Full Changelog](https://github.com/FundacionParaguaya/MentorApp/compare/v1.9.0...v1.9.1)
 
 **Implemented enhancements:**
 
 - Support new operators for conditional logic [\#692](https://github.com/FundacionParaguaya/MentorApp/issues/692)
+- Display total amount of indicators by color in the dashboard [\#678](https://github.com/FundacionParaguaya/MentorApp/issues/678)
 
 **Fixed bugs:**
 
@@ -45,6 +141,7 @@
 - Conditinal questions based on Age - Mobile App [\#670](https://github.com/FundacionParaguaya/MentorApp/issues/670)
 - Local Detox e2e setup [\#629](https://github.com/FundacionParaguaya/MentorApp/issues/629)
 - Replace Form Element on Months required to make a priority [\#626](https://github.com/FundacionParaguaya/MentorApp/issues/626)
+- Email and Phone Number in the family profile page [\#610](https://github.com/FundacionParaguaya/MentorApp/issues/610)
 - Select and Text Input performance [\#575](https://github.com/FundacionParaguaya/MentorApp/issues/575)
 - Radio Buttons and Check boxes [\#478](https://github.com/FundacionParaguaya/MentorApp/issues/478)
 - Maps in the Family Profile Screen [\#461](https://github.com/FundacionParaguaya/MentorApp/issues/461)
@@ -645,6 +742,7 @@
 - Fix images bug [\#316](https://github.com/FundacionParaguaya/MentorApp/pull/316) ([IvaKop](https://github.com/IvaKop))
 - Auto select country [\#313](https://github.com/FundacionParaguaya/MentorApp/pull/313) ([Danman7](https://github.com/Danman7))
 - Logout confirmation [\#312](https://github.com/FundacionParaguaya/MentorApp/pull/312) ([Danman7](https://github.com/Danman7))
+- Form validation [\#285](https://github.com/FundacionParaguaya/MentorApp/pull/285) ([Danman7](https://github.com/Danman7))
 
 ## [v1.3.1](https://github.com/FundacionParaguaya/MentorApp/tree/v1.3.1) (2019-01-24)
 [Full Changelog](https://github.com/FundacionParaguaya/MentorApp/compare/v1.3.0...v1.3.1)
@@ -715,7 +813,6 @@
 - Fix birthdate [\#294](https://github.com/FundacionParaguaya/MentorApp/pull/294) ([IvaKop](https://github.com/IvaKop))
 - Show families sync on loading screen without blocking app [\#291](https://github.com/FundacionParaguaya/MentorApp/pull/291) ([Danman7](https://github.com/Danman7))
 - Map offline coords [\#290](https://github.com/FundacionParaguaya/MentorApp/pull/290) ([Danman7](https://github.com/Danman7))
-- Form validation [\#285](https://github.com/FundacionParaguaya/MentorApp/pull/285) ([Danman7](https://github.com/Danman7))
 - Restart draft [\#274](https://github.com/FundacionParaguaya/MentorApp/pull/274) ([IvaKop](https://github.com/IvaKop))
 - Fix saving validation error to draft [\#271](https://github.com/FundacionParaguaya/MentorApp/pull/271) ([Danman7](https://github.com/Danman7))
 - Formfields cut content [\#270](https://github.com/FundacionParaguaya/MentorApp/pull/270) ([Danman7](https://github.com/Danman7))

@@ -69,7 +69,7 @@ class FamiliesListItem extends Component {
               }
             >
               {birthDate
-                ? `DOB: ${this.capitalize(
+                ? `D.O.B: ${this.capitalize(
                     birthDateWithLocale.utc().format('MMM DD, YYYY')
                   )}`
                 : ''}

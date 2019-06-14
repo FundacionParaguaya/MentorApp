@@ -40,7 +40,7 @@ class Select extends Component {
   }
 
   handleError(errorMsg) {
-    this.props.detectError(true, this.props.field)
+    this.props.detectError(true, this.props.field, this.props.memberIndex)
     this.props.onChange('', this.props.field)
     this.setState({
       errorMsg
@@ -62,7 +62,13 @@ class Select extends Component {
       this.setState({
         errorMsg: null
       })
-      this.props.field ? this.props.detectError(false, this.props.field) : ''
+      this.props.field
+        ? this.props.detectError(
+            false,
+            this.props.field,
+            this.props.memberIndex
+          )
+        : ''
     }
   }
 
@@ -85,14 +91,24 @@ class Select extends Component {
       this.setState({
         errorMsg: null
       })
-      this.props.field ? this.props.detectError(false, this.props.field) : ''
+      this.props.field
+        ? this.props.detectError(
+            false,
+            this.props.field,
+            this.props.memberIndex
+          )
+        : ''
     }
   }
 
   componentDidMount() {
+    // on mount of new Select and if the passed showErrors value is true validate
+    if (this.props.showErrors) {
+      this.validateInput(this.props.value || '')
+    }
     // on mount validate empty required fields without showing an errors message
     if (this.props.required && !this.props.value) {
-      this.props.detectError(true, this.props.field)
+      this.props.detectError(true, this.props.field, this.props.memberIndex)
     }
 
     if (this.props.radio) {
@@ -112,6 +128,12 @@ class Select extends Component {
   componentDidUpdate(prevProps) {
     if (prevProps.showErrors !== this.props.showErrors) {
       this.validateInput(this.props.value || '')
+    }
+  }
+
+  componentWillUnmount() {
+    if (this.props.cleanErrorsOnUnmount) {
+      this.props.cleanErrorsOnUnmount(this.props.field, this.props.memberIndex)
     }
   }
 
@@ -213,36 +235,36 @@ class Select extends Component {
                     if (readonly) {
                       if (this.state.radioChecked === obj.value) {
                         return (
-                          <View
-                            key={i}
-                            style={{ marginRight: 'auto' }}
-                          >
+                          <View key={i} style={{ marginRight: 'auto' }}>
                             <View style={{ marginLeft: 12 }}>
-                            <RadioButton labelHorizontal={true}>
-                              <RadioButtonInput
-                                disabled={true}
-                                obj={obj}
-                                index={i}
-                                isSelected={
-                                  this.state.radioChecked === obj.value
-                                }
-                                onPress={this.validateInputRadio}
-                                borderWidth={2}
-                                buttonInnerColor={colors.palegreen}
-                                buttonOuterColor={colors.palegrey}
-                                buttonSize={12}
-                                buttonOuterSize={20}
-                                buttonStyle={{}}
-                              />
-                              <RadioButtonLabel
-                                obj={obj}
-                                index={i}
-                                labelHorizontal={true}
-                                onPress={this.validateInputRadio}
-                                labelStyle={{ fontSize: 17, color: '#4a4a4a' }}
-                                labelWrapStyle={{}}
-                              />
-                            </RadioButton>
+                              <RadioButton labelHorizontal={true}>
+                                <RadioButtonInput
+                                  disabled={true}
+                                  obj={obj}
+                                  index={i}
+                                  isSelected={
+                                    this.state.radioChecked === obj.value
+                                  }
+                                  onPress={this.validateInputRadio}
+                                  borderWidth={2}
+                                  buttonInnerColor={colors.palegreen}
+                                  buttonOuterColor={colors.palegrey}
+                                  buttonSize={12}
+                                  buttonOuterSize={20}
+                                  buttonStyle={{}}
+                                />
+                                <RadioButtonLabel
+                                  obj={obj}
+                                  index={i}
+                                  labelHorizontal={true}
+                                  onPress={this.validateInputRadio}
+                                  labelStyle={{
+                                    fontSize: 17,
+                                    color: '#4a4a4a'
+                                  }}
+                                  labelWrapStyle={{}}
+                                />
+                              </RadioButton>
                             </View>
                           </View>
                         )
@@ -410,7 +432,9 @@ Select.propTypes = {
   showErrors: PropTypes.bool,
   countryOfBirth: PropTypes.array,
   required: PropTypes.bool,
-  detectError: PropTypes.func
+  detectError: PropTypes.func,
+  memberIndex: PropTypes.oneOfType([PropTypes.bool, PropTypes.number]),
+  cleanErrorsOnUnmount: PropTypes.oneOfType([PropTypes.func, PropTypes.bool])
 }
 
 export default Select
@@ -433,7 +457,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 15,
     ...globalStyles.subline,
     // lineHeight: 50,
-    paddingTop:20,
+    paddingTop: 20,
     minHeight: 50
   },
   withoutValue: {

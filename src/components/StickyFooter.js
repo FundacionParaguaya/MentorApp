@@ -44,7 +44,9 @@ export default class StickyFooter extends Component {
       <View
         style={[
           globalStyles.background,
-          !!this.props.currentScreen && this.props.currentScreen === 'Question' ? {paddingTop: 15} : {...styles.contentContainer},
+          !!this.props.currentScreen && this.props.currentScreen === 'Question'
+            ? { paddingTop: 15 }
+            : { ...styles.contentContainer },
           { marginTop: this.setMarginTop() }
         ]}
       >
@@ -69,7 +71,7 @@ export default class StickyFooter extends Component {
         (this.props.visible && this.state.continueVisible) ? (
           <View>
             {this.props.type === 'button' ? (
-              <View style={{ height: 50 }}>
+              <View style={{ height: 60 }}>
                 <Button
                   id="continue"
                   colored

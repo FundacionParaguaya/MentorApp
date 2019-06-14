@@ -7,10 +7,11 @@ import {
   Image,
   StyleSheet,
   View,
-  NetInfo,
   Dimensions
 } from 'react-native'
 import { connect } from 'react-redux'
+import { CheckBox } from 'react-native-elements'
+import NetInfo from '@react-native-community/netinfo'
 import { setEnv, login, setDimensions } from '../redux/actions'
 import logo from '../../assets/images/logo.png'
 import { url } from '../config'
@@ -18,41 +19,38 @@ import globalStyles from '../globalStyles'
 import colors from '../theme.json'
 import Button from '../components/Button'
 
+// get env
+const nodeEnv = process.env
+
 export class Login extends Component {
+  unsubscribeNetChange
   state = {
     username: '',
     password: '',
     error: false,
     connection: false,
-    loading: false
+    loading: false,
+    syncMaps: true,
+    syncImages: true
   }
   componentDidMount() {
     if (this.props.user.token) {
       this.props.navigation.navigate('Loading')
     } else {
       this.setDimensions()
-      this.checkConnectivity().then(isConnected =>
-        this.setConnectivityState(isConnected)
+      NetInfo.fetch().then(state =>
+        this.setConnectivityState(state.isConnected)
       )
-      this.onConnectivityChange()
+      this.unsubscribeNetChange = NetInfo.addEventListener(state => {
+        this.setConnectivityState(state.isConnected)
+      })
     }
   }
 
-  checkConnectivity = () => NetInfo.isConnected.fetch()
-
   setConnectivityState = isConnected =>
     isConnected
-      ? this.setState({ connection: true })
+      ? this.setState({ connection: true, error: '' })
       : this.setState({ connection: false, error: 'No connection' })
-
-  onConnectivityChange = () => {
-    NetInfo.addEventListener('connectionChange', conncection =>
-      this.setState({
-        connection: conncection.type === 'none' ? false : true,
-        error: conncection.type === 'none' ? 'No connection' : false
-      })
-    )
-  }
 
   setDimensions = () => {
     this.props.setDimensions({
@@ -62,32 +60,22 @@ export class Login extends Component {
     })
   }
 
+  checkDevOption = devProp => {
+    this.setState({
+      [devProp]: !this.state[devProp]
+    })
+  }
+
   onLogin = () => {
+    this.setState({
+      loading: true
+    })
+
     let env = this.state.username.trim() === 'demo' ? 'demo' : 'production'
+    let username = this.state.username.trim()
     let envCheck = this.state.username.trim().substring(0, 2)
 
-    if (envCheck !== 't/' && envCheck !== 'd/' && envCheck !== 'p/') {
-      this.props.setEnv(env)
-      this.setState({
-        loading: true
-      })
-      this.props
-        .login(this.state.username.trim(), this.state.password, url[env])
-        .then(() => {
-          if (this.props.user.status === 401) {
-            this.setState({
-              loading: false
-            })
-            this.setState({ error: 'Wrong username or password' })
-          } else {
-            this.setState({
-              loading: false,
-              error: false
-            })
-            this.props.navigation.navigate('Loading')
-          }
-        })
-    } else {
+    if (envCheck === 't/' || envCheck === 'd/' || envCheck === 'p/') {
       if (envCheck === 't/') {
         env = 'testing'
       } else if (envCheck === 'd/') {
@@ -95,29 +83,33 @@ export class Login extends Component {
       } else if (envCheck === 'p/') {
         env = 'production'
       }
-      let userNameClean = this.state.username
+
+      username = this.state.username
         .trim()
         .substring(2, this.state.username.trim().length)
-      this.props.setEnv(env)
-      this.setState({
-        loading: true
-      })
-      this.props
-        .login(userNameClean, this.state.password, url[env])
-        .then(() => {
-          if (this.props.user.status === 401) {
-            this.setState({
-              loading: false
-            })
-            this.setState({ error: 'Wrong username or password' })
-          } else {
-            this.setState({
-              loading: false,
-              error: false
-            })
-            this.props.navigation.navigate('Loading')
-          }
+    }
+
+    this.props.setEnv(env)
+    this.props.login(username, this.state.password, url[env]).then(() => {
+      if (this.props.user.status === 401) {
+        this.setState({
+          loading: false
         })
+        this.setState({ error: 'Wrong username or password' })
+      } else {
+        const { syncMaps, syncImages } = this.state
+        this.setState({
+          loading: false,
+          error: false
+        })
+        this.props.navigation.navigate('Loading', { syncMaps, syncImages })
+      }
+    })
+  }
+
+  componentWillUnmount() {
+    if (this.unsubscribeNetChange) {
+      this.unsubscribeNetChange()
     }
   }
 
@@ -190,6 +182,25 @@ export class Login extends Component {
               disabled={this.state.error === 'No connection' ? true : false}
             />
           )}
+          {nodeEnv.NODE_ENV === 'development' && (
+            <View style={{ marginTop: 20 }}>
+              <Text>Dev options</Text>
+              <CheckBox
+                containerStyle={styles.checkbox}
+                onPress={() => this.checkDevOption('syncMaps')}
+                title="Sync maps?"
+                checked={this.state.syncMaps}
+                textStyle={{ fontWeight: 'normal' }}
+              />
+              <CheckBox
+                containerStyle={styles.checkbox}
+                onPress={() => this.checkDevOption('syncImages')}
+                title="Sync images?"
+                checked={this.state.syncImages}
+                textStyle={{ fontWeight: 'normal' }}
+              />
+            </View>
+          )}
         </ScrollView>
       </View>
     )
@@ -217,6 +228,12 @@ const styles = StyleSheet.create({
     paddingBottom: 12,
     color: colors.lightdark,
     backgroundColor: colors.white
+  },
+  checkbox: {
+    marginLeft: 0,
+    padding: 0,
+    borderWidth: 0,
+    backgroundColor: 'transparent'
   },
   logo: { width: 42, height: 42, marginBottom: 8 },
   error: { color: colors.red, lineHeight: 15, marginBottom: 10 }

@@ -84,12 +84,6 @@ describe('Login View', () => {
       expect(wrapper.instance().props.login).toHaveBeenCalledTimes(1)
     })
 
-    it('calls check connectivity function', () => {
-      const spy = jest.spyOn(wrapper.instance(), 'checkConnectivity')
-      wrapper.instance().checkConnectivity()
-      expect(spy).toHaveBeenCalledTimes(1)
-    })
-
     it('calls set connectivity state function', async () => {
       const spy = jest.spyOn(wrapper.instance(), 'setConnectivityState')
       wrapper.instance().setConnectivityState()
@@ -100,27 +94,13 @@ describe('Login View', () => {
       wrapper.instance().setConnectivityState(true)
       wrapper.update()
       expect(wrapper.instance().state.connection).toBe(true)
-      expect(wrapper.instance().state.error).toBe(false)
+      expect(wrapper.instance().state.error).toBe('')
     })
     it('sets the correct connectivity state when offline', async () => {
       wrapper.instance().setConnectivityState(false)
       wrapper.update()
       expect(wrapper.instance().state.connection).toBe(false)
       expect(wrapper.instance().state.error).toBe('No connection')
-    })
-    it('changes error state to correct message when user status is 401', async () => {
-      props = createTestProps({ user: { status: 401 } })
-      wrapper = shallow(<Login {...props} />)
-      await wrapper.instance().checkConnectivity()
-      await wrapper.instance().onLogin()
-      expect(wrapper.instance().state.error).toBe('Wrong username or password')
-    })
-    it('changes error state to false when user status is 200', async () => {
-      props = createTestProps({ user: { status: 200 } })
-      wrapper = shallow(<Login {...props} />)
-      await wrapper.instance().checkConnectivity()
-      await wrapper.instance().onLogin()
-      expect(wrapper.instance().state.error).toBe(false)
     })
   })
 })

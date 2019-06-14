@@ -76,7 +76,7 @@ export class FamilyMembersNames extends Component {
         showErrors: true
       })
     } else {
-      this.props.navigation.navigate('Location', {
+      this.props.navigation.push('Location', {
         draft: this.state.draft,
         survey: this.survey
       })
@@ -88,30 +88,23 @@ export class FamilyMembersNames extends Component {
 
     // [0] is the index, [1] is the field
     const split = field.split('.')
-    let familyMembersArray = draft.familyData.familyMembersList
-    if (parseInt(split[0], 10) + 1 > familyMembersArray.length - 1) {
-      let newFamilyMember = draft
-      newFamilyMember.familyData.familyMembersList.push({
-        firstParticipant: false,
-        [split[1]]: value
-      })
-      this.setState({ draft: newFamilyMember })
-    }
+    const memberIndex = split[0]
+    const memberField = split[1]
+
     this.setState({
       draft: {
         ...draft,
         familyData: {
           ...draft.familyData,
-          familyMembersList: draft.familyData.familyMembersList.map(
-            (item, index) => {
-              if (parseInt(split[0], 10) + 1 === index) {
-                return {
-                  ...item,
-                  firstParticipant: false,
-                  [split[1]]: value
-                }
+          familyMembersList: Object.assign(
+            [],
+            draft.familyData.familyMembersList,
+            {
+              [memberIndex]: {
+                ...draft.familyData.familyMembersList[memberIndex],
+                firstParticipant: false,
+                [memberField]: value
               }
-              return item
             }
           )
         }
@@ -122,6 +115,7 @@ export class FamilyMembersNames extends Component {
   render() {
     const { t } = this.props
     const { showErrors, draft } = this.state
+
     let onlyOneAutoFocusCheck = false
     const { familyMembersList } = draft.familyData
     const familyMembersCount =
@@ -195,10 +189,10 @@ export class FamilyMembersNames extends Component {
               </View>
               <TextInput
                 autoFocus={firstNameAutoFocus}
-                upperCase={true}
+                upperCase
                 key={i}
                 validation="string"
-                field={`${i}.firstName`}
+                field={`${i + 1}.firstName`}
                 onChangeText={this.updateMember}
                 placeholder={`${t('views.family.firstName')}`}
                 value={(familyMembersList[i + 1] || {}).firstName || ''}
@@ -207,7 +201,7 @@ export class FamilyMembersNames extends Component {
                 showErrors={showErrors}
               />
               <Select
-                field={`${i}.gender`}
+                field={`${i + 1}.gender`}
                 onChange={this.updateMember}
                 label={t('views.family.gender')}
                 placeholder={t('views.family.selectGender')}
@@ -220,7 +214,7 @@ export class FamilyMembersNames extends Component {
               />
 
               <DateInput
-                field={`${i}.birthDate`}
+                field={`${i + 1}.birthDate`}
                 label={t('views.family.dateOfBirth')}
                 detectError={this.detectError}
                 showErrors={this.state.showErrors}
