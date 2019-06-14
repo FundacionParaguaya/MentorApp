@@ -119,7 +119,7 @@ export class Dashboard extends Component {
   }
 
   navigateToCreateLifemap = () => {
-    this.props.navigation.navigate('TheFamily')
+    this.props.navigation.navigate('Surveys')
   }
 
   render() {

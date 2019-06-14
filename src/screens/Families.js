@@ -70,31 +70,42 @@ export class Families extends Component {
   sortByName = families => families.sort((a, b) => a.name.localeCompare(b.name))
 
   handleClickOnFamily = family => {
-    this.props.updateNav({
-      survey: this.props.surveys.find(survey =>
-        family.snapshotList
-          ? survey.id === family.snapshotList[0].surveyId
-          : survey.id === family.draft.surveyId
-      ),
-      draftId: !family.snapshotList ? family.draft.draftId : null,
-      readonly: true
-    })
-
-    this.props.navigation.navigate('Family', {
-      familyName: family.name,
-      familyLifemap: family.snapshotList
-        ? family.snapshotList[0]
-        : family.draft,
-      isDraft: !family.snapshotList,
-      survey: this.props.surveys.find(survey =>
-        family.snapshotList
-          ? survey.id === family.snapshotList[0].surveyId
-          : survey.id === family.draft.surveyId
-          ),
-      retakeLifeMap: this.props.navigation.getParam('retakeLifeMap')
-    })
+    // UPDATE NAV with readonly, draft, isDraft ???
+    if (this.props.navigation.getParam('retakeSurvey')) {
+      this.props.navigation.navigate('Family', {
+        familyName: family.name,
+        familyID:family.familyId,
+        familyLifemap: family.snapshotList
+          ? family.snapshotList[0]
+          : family.draft,
+        survey: this.props.navigation.getParam('survey'),
+        retakeSurvey: this.props.navigation.getParam('retakeSurvey')
+      })
+    } else {
+      this.props.updateNav({
+        survey: this.props.surveys.find(survey =>
+          family.snapshotList
+            ? survey.id === family.snapshotList[0].surveyId
+            : survey.id === family.draft.surveyId
+        ),
+        draftId: !family.snapshotList ? family.draft.draftId : null,
+        readonly: true
+      })
+      
+      this.props.navigation.navigate('Family', {
+        familyName: family.name,
+        familyLifemap: family.snapshotList
+          ? family.snapshotList[0]
+          : family.draft,
+        isDraft: !family.snapshotList,
+        survey: this.props.surveys.find(survey =>
+          family.snapshotList
+            ? survey.id === family.snapshotList[0].surveyId
+            : survey.id === family.draft.surveyId
+        )
+      })
+    }
   }
-
   render() {
     const { t } = this.props
 

@@ -23,7 +23,9 @@ class FamilyListItem extends Component {
             {this.props.text}
           </Text>
         </View>
-        <Icon name="navigate-next" size={23} color={colors.grey} />
+        {!this.props.isRetakeSurvey && (
+          <Icon name="navigate-next" size={23} color={colors.grey} />
+        )}
       </ListItem>
     )
   }
@@ -32,7 +34,8 @@ class FamilyListItem extends Component {
 FamilyListItem.propTypes = {
   icon: PropTypes.bool,
   text: PropTypes.string.isRequired,
-  handleClick: PropTypes.func.isRequired
+  handleClick: PropTypes.func.isRequired,
+  isRetakeSurvey: PropTypes.bool
 }
 
 const styles = StyleSheet.create({

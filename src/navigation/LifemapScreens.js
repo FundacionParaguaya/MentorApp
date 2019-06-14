@@ -15,6 +15,7 @@ import FamilyMemberView from '../screens/lifemap/FamilyMember'
 import Title from './Title'
 import { generateNavStyles, addCloseIcon } from './helpers'
 import CustomHeaderSurvey from './CustomHeaderSurvey'
+import TheFamilyView from '../screens/TheFamily'
 
 // Reusable object for all screens related to a draft
 export default {
@@ -36,6 +37,14 @@ export default {
       )
     })
   },
+  TheFamily: {
+    screen: TheFamilyView,
+    navigationOptions: ({ navigation }) => ({
+      ...generateNavStyles({ navigation }),
+      ...addCloseIcon(navigation),
+      headerTitle: <Title title="The family" />
+    })
+  },
   FamilyParticipant: {
     screen: FamilyParticipantView,
     navigationOptions: ({ navigation }) => ({
@@ -52,7 +61,7 @@ export default {
   FamilyMembersNames: {
     screen: FamilyMembersNamesView,
     navigationOptions: ({ navigation }) => ({
-      ...generateNavStyles({ navigation, hadowHeader: false }),
+      ...generateNavStyles({ navigation, shadowHeader: false }),
       ...addCloseIcon(navigation),
       headerTitle: (
         <Title

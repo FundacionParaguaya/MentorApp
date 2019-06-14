@@ -16,14 +16,14 @@ import globalStyles from '../../globalStyles'
 import { getTotalScreens } from './helpers'
 export class FamilyParticipant extends Component {
   survey = this.props.navigation.getParam('survey')
-
   readOnly = this.props.navigation.getParam('readOnly')
-
+  isRetakeSurvey = this.props.navigation.getParam('isRetakeSurvey')
   errorsDetected = []
 
   state = {
     errorsDetected: [],
     showErrors: false,
+    tipVisible: false,
     draft: this.props.navigation.getParam('draft') ||
       this.props.navigation.getParam('family') || {
         status: 'Draft',
@@ -41,14 +41,16 @@ export class FamilyParticipant extends Component {
           screen: 'FamilyParticipant',
           total: getTotalScreens(this.props.navigation.getParam('survey'))
         },
-        familyData: {
-          familyMembersList: [
-            {
-              firstParticipant: true,
-              socioEconomicAnswers: []
+        familyData: this.isRetakeSurvey
+          ? this.props.navigation.getParam('familyData')
+          : {
+              familyMembersList: [
+                {
+                  firstParticipant: true,
+                  socioEconomicAnswers: []
+                }
+              ]
             }
-          ]
-        }
       }
   }
 
@@ -182,6 +184,12 @@ export class FamilyParticipant extends Component {
     const { navigation } = this.props
     const { draft } = this.state
 
+    if (navigation.getParam('isRetakeSurvey')) {
+      this.setState({
+        tipIsVisible: true
+      })
+    }
+
     navigation.setParams({
       isNewDraft: !navigation.getParam('draft'),
       getCurrentDraftState: () => this.state.draft
@@ -201,6 +209,12 @@ export class FamilyParticipant extends Component {
     }
   }
 
+  onTipClose = () => {
+    this.setState({
+      tipIsVisible: false
+    })
+  }
+
   shouldComponentUpdate() {
     return this.props.navigation.isFocused()
   }
@@ -210,10 +224,14 @@ export class FamilyParticipant extends Component {
     const { showErrors, draft } = this.state
 
     const participant = draft.familyData.familyMembersList[0]
-
     return (
       <StickyFooter
         handleClick={this.handleClick}
+        type={this.state.tipIsVisible ? 'tip' : 'button'}
+        tipTitle={'Update the details with any changes!'}
+        tipHeading={this.props.navigation.getParam('isRetakeSurvey')}
+        onTipClose={this.onTipClose}
+        tipDescription={''}
         continueLabel={t('general.continue')}
         readonly={this.readOnly}
         progress={!this.readOnly && draft ? 1 / draft.progress.total : 0}

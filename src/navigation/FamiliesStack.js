@@ -9,18 +9,10 @@ import TheFamilyView from '../screens/TheFamily'
 
 export default createStackNavigator(
   {
-    TheFamily: {
-      screen: TheFamilyView,
-      navigationOptions: ({ navigation }) => ({
-        ...generateNavStyles({ navigation }),
-        ...addCloseIcon(navigation),
-        headerTitle: <Title title="The family" />
-      })
-    },
     Families: {
       screen: FamiliesView,
       navigationOptions: ({ navigation }) => {
-        return navigation.getParam('retakeLifeMap')
+        return navigation.getParam('retakeSurvey')
           ? {
               ...generateNavStyles({ navigation }),
               ...addCloseIcon(navigation),

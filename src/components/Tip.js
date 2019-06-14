@@ -10,10 +10,20 @@ class Tip extends Component {
   render() {
     return (
       <View style={styles.tipview}>
-        <Text style={[globalStyles.h3, styles.text]}>{this.props.title}</Text>
-        <Text style={[globalStyles.p, styles.text]}>
-          {this.props.description}
-        </Text>
+        {this.props.tipHeading ? (
+          <Text style={[globalStyles.h2, styles.heading]}>
+            {this.props.title}
+          </Text>
+        ) : (
+          <React.Fragment>
+            <Text style={[globalStyles.h3, styles.text]}>
+              {this.props.title}
+            </Text>
+            <Text style={[globalStyles.p, styles.text]}>
+              {this.props.description}
+            </Text>
+          </React.Fragment>
+        )}
         <View
           style={{
             height: 48
@@ -33,7 +43,8 @@ class Tip extends Component {
 Tip.propTypes = {
   title: PropTypes.string.isRequired,
   description: PropTypes.string.isRequired,
-  onTipClose: PropTypes.func
+  onTipClose: PropTypes.func,
+  tipHeading: PropTypes.bool
 }
 
 const styles = StyleSheet.create({
@@ -46,6 +57,12 @@ const styles = StyleSheet.create({
     marginBottom: 16,
     color: colors.white,
     alignSelf: 'center'
+  },
+  heading: {
+    marginBottom: 16,
+    color: colors.white,
+    alignSelf: 'center',
+    textAlign: 'center'
   }
 })
 

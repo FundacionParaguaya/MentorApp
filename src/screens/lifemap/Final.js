@@ -17,6 +17,7 @@ export class Final extends Component {
     return this.props.navigation.isFocused()
   }
   componentDidMount() {
+    console.log(JSON.stringify(this.draft))
     this.props.updateDraft(this.draft.draftId, this.draft)
     this.props.navigation.setParams({
       onPressBack: this.onPressBack

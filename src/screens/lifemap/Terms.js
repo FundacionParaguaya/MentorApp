@@ -15,7 +15,7 @@ const navigationRules = {
     param: 'privacy'
   },
   privacy: {
-    nextPage: 'FamilyParticipant'
+    nextPage: 'TheFamily'
   }
 }
 

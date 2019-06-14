@@ -83,6 +83,7 @@ export default class StickyFooter extends Component {
                 title={this.props.tipTitle}
                 onTipClose={this.props.onTipClose}
                 description={this.props.tipDescription}
+                tipHeading={this.props.tipHeading}
               />
             )}
           </View>
@@ -105,7 +106,8 @@ StickyFooter.propTypes = {
   onTipClose: PropTypes.func,
   readonly: PropTypes.bool,
   progress: PropTypes.number,
-  currentScreen: PropTypes.string
+  currentScreen: PropTypes.string,
+  tipHeading: PropTypes.bool
 }
 
 StickyFooter.defaultProps = {
