@@ -1,5 +1,15 @@
 # Change Log
 
+## [v1.9.6](https://github.com/FundacionParaguaya/MentorApp/tree/v1.9.6) (2019-06-17)
+[Full Changelog](https://github.com/FundacionParaguaya/MentorApp/compare/v1.9.5...v1.9.6)
+
+**Fixed bugs:**
+
+- Prevent duplicate api calls on Final screen [\#786](https://github.com/FundacionParaguaya/MentorApp/issues/786)
+- Disappearing priorities/achievements [\#773](https://github.com/FundacionParaguaya/MentorApp/issues/773)
+- Emprender sync error - receivedAmount Conditinal inconsistency [\#771](https://github.com/FundacionParaguaya/MentorApp/issues/771)
+- Hitting Enter on numeric text field doesn't blur the field [\#742](https://github.com/FundacionParaguaya/MentorApp/issues/742)
+
 ## [v1.9.5](https://github.com/FundacionParaguaya/MentorApp/tree/v1.9.5) (2019-06-13)
 [Full Changelog](https://github.com/FundacionParaguaya/MentorApp/compare/v1.9.4...v1.9.5)
 
@@ -742,7 +752,6 @@
 - Fix images bug [\#316](https://github.com/FundacionParaguaya/MentorApp/pull/316) ([IvaKop](https://github.com/IvaKop))
 - Auto select country [\#313](https://github.com/FundacionParaguaya/MentorApp/pull/313) ([Danman7](https://github.com/Danman7))
 - Logout confirmation [\#312](https://github.com/FundacionParaguaya/MentorApp/pull/312) ([Danman7](https://github.com/Danman7))
-- Form validation [\#285](https://github.com/FundacionParaguaya/MentorApp/pull/285) ([Danman7](https://github.com/Danman7))
 
 ## [v1.3.1](https://github.com/FundacionParaguaya/MentorApp/tree/v1.3.1) (2019-01-24)
 [Full Changelog](https://github.com/FundacionParaguaya/MentorApp/compare/v1.3.0...v1.3.1)
@@ -813,6 +822,7 @@
 - Fix birthdate [\#294](https://github.com/FundacionParaguaya/MentorApp/pull/294) ([IvaKop](https://github.com/IvaKop))
 - Show families sync on loading screen without blocking app [\#291](https://github.com/FundacionParaguaya/MentorApp/pull/291) ([Danman7](https://github.com/Danman7))
 - Map offline coords [\#290](https://github.com/FundacionParaguaya/MentorApp/pull/290) ([Danman7](https://github.com/Danman7))
+- Form validation [\#285](https://github.com/FundacionParaguaya/MentorApp/pull/285) ([Danman7](https://github.com/Danman7))
 - Restart draft [\#274](https://github.com/FundacionParaguaya/MentorApp/pull/274) ([IvaKop](https://github.com/IvaKop))
 - Fix saving validation error to draft [\#271](https://github.com/FundacionParaguaya/MentorApp/pull/271) ([Danman7](https://github.com/Danman7))
 - Formfields cut content [\#270](https://github.com/FundacionParaguaya/MentorApp/pull/270) ([Danman7](https://github.com/Danman7))
