@@ -175,6 +175,7 @@ class TextInput extends Component {
             autoCapitalize={upperCase ? 'sentences' : 'none'}
             blurOnSubmit
             onSubmitEditing={this.onEndEditing}
+            onBlur={this.onEndEditing}
             onFocus={() => this.onFocus()}
             onChangeText={text => this.onChangeText(text)}
             inputStyle={[
