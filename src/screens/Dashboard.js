@@ -13,7 +13,6 @@ import { AndroidBackHandler } from 'react-navigation-backhandler'
 import { updateNav } from '../redux/actions'
 import { withNamespaces } from 'react-i18next'
 import PropTypes from 'prop-types'
-import DeviceInfo from 'react-native-device-info'
 import Button from '../components/Button'
 import Decoration from '../components/decoration/Decoration'
 import RoundImage from '../components/RoundImage'
@@ -144,7 +143,6 @@ export class Dashboard extends Component {
         })
       }
     }
-    let TabletWidth = DeviceInfo.getDeviceType() === 'Tablet' ? true : false
     const list = drafts.slice().reverse()
     return (
       <AndroidBackHandler onBackPress={() => true}>
@@ -221,7 +219,7 @@ export class Dashboard extends Component {
                     <Button
                       style={{
                         marginTop: 20,
-                        width: TabletWidth ? '60%' : '100%'
+                        width: 400
                       }}
                       id="create-lifemap"
                       text={t('views.createLifemap')}
