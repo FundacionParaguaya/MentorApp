@@ -229,21 +229,21 @@ export const submitDraft = (env, token, id, payload) => {
           body: JSON.stringify({
             query:
               'mutation addSnapshot($newSnapshot: NewSnapshotDTOInput) {addSnapshot(newSnapshot: $newSnapshot)  { surveyId surveyVersionId snapshotStoplightAchievements { action indicator roadmap } snapshotStoplightPriorities { reason action indicator estimatedDate } family { familyId } user { userId  username } indicatorSurveyDataList {key value} economicSurveyDataList {key value multipleValue} familyDataDTO { latitude longitude accuracy familyMemberDTOList { firstName lastName socioEconomicAnswers {key value } } } } }',
-            variables: { newSnapshot: payload }
+            variables: { newSnapshot: sanitizedSnapshot }
           })
         },
         commit: {
           type: SUBMIT_DRAFT_COMMIT,
           meta: {
             id,
-            payload
+            sanitizedSnapshot
           }
         },
         rollback: {
           type: SUBMIT_DRAFT_ROLLBACK,
           meta: {
             id,
-            payload
+            sanitizedSnapshot
           }
         }
       }
