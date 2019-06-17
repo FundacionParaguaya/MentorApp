@@ -213,20 +213,19 @@ export class Dashboard extends Component {
                       <Text style={styles.colorIndicator}>Red</Text>
                     </View>
                   </View>
-                  <View
-                    style={{ justifyContent: 'center', alignItems: 'center' }}
-                  >
-                    <Button
-                      style={{
-                        marginTop: 20,
-                        width: 400
-                      }}
-                      id="create-lifemap"
-                      text={t('views.createLifemap')}
-                      colored
-                      handleClick={this.navigateToCreateLifemap}
-                    />
-                  </View>
+
+                  <Button
+                    style={{
+                      marginTop: 20,
+                      marginLeft: 'auto',
+                      marginRight: 'auto',
+                      width: 400
+                    }}
+                    id="create-lifemap"
+                    text={t('views.createLifemap')}
+                    colored
+                    handleClick={this.navigateToCreateLifemap}
+                  />
                 </View>
                 {drafts.length ? (
                   <View style={styles.borderBottom}>
