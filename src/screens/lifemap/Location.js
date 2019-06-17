@@ -364,8 +364,8 @@ export class Location extends Component {
     )
 
     // check if online first
-    NetInfo.fetch().then(isOnline => {
-      this.determineScreenState(isOnline)
+    NetInfo.fetch().then(state => {
+      this.determineScreenState(state.isConnected)
     })
   }
 
@@ -396,7 +396,7 @@ export class Location extends Component {
       const survey = this.survey
 
       if (draft.familyData.countFamilyMembers > 1) {
-        this.props.navigation.navigate('FamilyMembersNames', { draft, survey })
+        this.props.navigation.push('FamilyMembersNames', { draft, survey })
       } else {
         this.props.navigation.replace('FamilyParticipant', { draft, survey })
       }
@@ -419,6 +419,7 @@ export class Location extends Component {
       })
     } else {
       this.props.updateDraft(draft.draftId, draft)
+
       this.props.navigation.replace('SocioEconomicQuestion', {
         draft,
         survey: this.survey
