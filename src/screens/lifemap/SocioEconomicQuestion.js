@@ -356,7 +356,7 @@ export class SocioEconomicQuestion extends Component {
             : 0
         }
       >
-        <View style={styles.SocialEconomicsContainer}>
+    
           <View style={styles.ballsContainer}>
             <Orb
               size={45}
@@ -594,7 +594,7 @@ export class SocioEconomicQuestion extends Component {
           ) : (
             <View />
           )}
-        </View>
+ 
       </StickyFooter>
     )
   }
@@ -617,11 +617,6 @@ const styles = StyleSheet.create({
     left: 0,
     right: 0,
     bottom: 0
-  },
-  SocialEconomicsContainer: {
-    flex: 1,
-    flexDirection: 'column',
-    position: 'relative'
   },
   memberName: {
     marginHorizontal: 20,
