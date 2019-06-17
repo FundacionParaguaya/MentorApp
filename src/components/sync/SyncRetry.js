@@ -24,10 +24,7 @@ export class SyncRetry extends Component {
         <View style={styles.buttonWrapper}>
           <Button
             id="retry"
-            style={{
-              width: 400,
-              backgroundColor: colors.palered
-            }}
+            style={styles.button}
             text="Retry"
             handleClick={retrySubmit}
           />
@@ -49,6 +46,10 @@ SyncRetry.propTypes = {
   retrySubmit: PropTypes.func.isRequired
 }
 const styles = StyleSheet.create({
+  button: {
+    width: 400,
+    backgroundColor: colors.palered
+  },
   view: {
     justifyContent: 'center',
     alignItems: 'center',
