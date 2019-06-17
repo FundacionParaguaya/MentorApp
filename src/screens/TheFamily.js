@@ -21,12 +21,17 @@ export class TheFamily extends Component {
   //   this.props.navigation.navigate('Surveys')
   // }
 
-  navigateToScreen = (screen, params) => {
-    this.props.navigation.navigate(
-      screen,
-      !!params && Object.keys(params).length ? { ...params } : {}
-    )
-  }
+  createNewLifeMap = () =>
+    this.props.navigation.navigate('FamilyParticipant', {
+      page: 'terms',
+      survey: this.props.navigation.getParam('survey')
+    })
+
+  retakeLifeMap = () =>
+    this.props.navigation.navigate('ChooseFamily', {
+      retakeSurvey: true,
+      survey: this.props.navigation.getParam('survey')
+    })
 
   render() {
     return (
@@ -54,23 +59,13 @@ export class TheFamily extends Component {
             outlined
             text={this.props.t('general.yes')}
             style={{ width: 107, marginRight: 10 }}
-            handleClick={() =>
-              this.props.navigation.navigate('FamilyParticipant', {
-                page: 'terms',
-                survey: this.props.navigation.getParam('survey')
-              })
-            }
+            handleClick={this.createNewLifeMap}
           />
           <Button
             outlined
             text={this.props.t('general.no')}
             style={{ width: 107, marginLeft: 10 }}
-            handleClick={() =>
-              this.props.navigation.navigate('ChooseFamily', {
-                retakeSurvey: true,
-                survey: this.props.navigation.getParam('survey')
-              })
-            }
+            handleClick={this.retakeLifeMap}
           />
         </View>
       </StickyFooter>

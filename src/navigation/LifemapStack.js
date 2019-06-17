@@ -18,17 +18,24 @@ export default createStackNavigator(
     ChooseFamily: {
       screen: FamiliesView,
       navigationOptions: ({ navigation }) => {
-        return navigation.getParam('retakeSurvey')
-          ? {
-              ...generateNavStyles({ navigation, shadowHeader: false }),
-              ...addCloseIcon(navigation),
-              headerTitle: <Title title="Choose family" centered />
-            }
-          : {
-              ...generateNavStyles({ navigation }),
-              ...addMenuIcon(navigation),
-              headerTitle: <Title title="views.families" />
-            }
+        return {
+          ...generateNavStyles({
+            navigation,
+            shadowHeader: navigation.getParam('retakeSurvey') ? false : true
+          }),
+          ...(navigation.getParam('retakeSurvey')
+            ? addCloseIcon(navigation)
+            : addMenuIcon(navigation)),
+          headerTitle: (
+            <Title
+              title={
+                navigation.getParam('retakeSurvey')
+                  ? 'Choose family'
+                  : 'views.families'
+              }
+            />
+          )
+        }
       }
     },
     ...LifemapScreens
