@@ -134,11 +134,24 @@ export class Families extends Component {
       family => ({ ...family, name: decodeURIComponent(escape(family.name)) })
     )
 
-    const filteredFamilies = allFamilies.filter(
-      family =>
-        family.name.toLowerCase().includes(this.state.search.toLowerCase()) ||
-        (family.code && family.code.includes(this.state.search))
-    )
+    const filteredFamilies = this.props.navigation.getParam('retakeSurvey')
+      ? this.props.families.filter(
+          family =>
+            family.snapshotList &&
+            family.snapshotList.length &&
+            family.snapshotList.some(
+              snapshot =>
+                snapshot.surveyId ===
+                this.props.navigation.getParam('survey').id
+            )
+        )
+      : allFamilies.filter(
+          family =>
+            family.name
+              .toLowerCase()
+              .includes(this.state.search.toLowerCase()) ||
+            (family.code && family.code.includes(this.state.search))
+        )
 
     return (
       <StickyFooter
