@@ -6,8 +6,8 @@ import { withNamespaces } from 'react-i18next'
 import StickyFooter from '../../components/StickyFooter'
 import TextInput from '../../components/TextInput'
 import Select from '../../components/Select'
-import Orb from '../../components/decoration/Orb'
 import Checkbox from '../../components/Checkbox'
+import Decoration from '../../components/decoration/Decoration'
 import { addSurveyDataCheckBox } from '../../redux/actions'
 import colors from '../../theme.json'
 import {
@@ -357,25 +357,9 @@ export class SocioEconomicQuestion extends Component {
         }
       >
     
-          <View style={styles.ballsContainer}>
-            <Orb
-              size={45}
-              color={colors.palegreen}
-              position={{ x: -45, y: 140 }}
-            />
-
-            <Orb
-              size={45}
-              color={colors.palegreen}
-              position={{ x: 200, y:-30 }}
-            />
-
-            <Orb
-              size={40}
-              color={colors.palegold}
-              position={{ x: -205, y: 52 }}
-            />
-          </View>
+    <Decoration variation="socioEconomicQuestion">
+         
+        </Decoration>
           {/* questions for entire family */}
           {socioEconomics ? (
             questionsForThisScreen.forFamily
@@ -609,15 +593,6 @@ SocioEconomicQuestion.propTypes = {
 }
 
 const styles = StyleSheet.create({
-  ballsContainer: {
-    justifyContent: 'center',
-    alignItems: 'center',
-    position: 'absolute',
-    top: 0,
-    left: 0,
-    right: 0,
-    bottom: 0
-  },
   memberName: {
     marginHorizontal: 20,
     fontWeight: 'normal',
