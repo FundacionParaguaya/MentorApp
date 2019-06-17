@@ -6,6 +6,7 @@ import { withNamespaces } from 'react-i18next'
 import StickyFooter from '../../components/StickyFooter'
 import TextInput from '../../components/TextInput'
 import Select from '../../components/Select'
+import Orb from '../../components/decoration/Orb'
 import Checkbox from '../../components/Checkbox'
 import { addSurveyDataCheckBox } from '../../redux/actions'
 import colors from '../../theme.json'
@@ -356,9 +357,25 @@ export class SocioEconomicQuestion extends Component {
         }
       >
         <View style={styles.SocialEconomicsContainer}>
-          <View style={styles.SocialEconomicsBallGreen1} />
-          <View style={styles.SocialEconomicsBallGreen2} />
-          <View style={styles.SocialEconomicsBallYellow1} />
+          <View style={styles.ballsContainer}>
+            <Orb
+              size={45}
+              color={colors.palegreen}
+              position={{ x: -45, y: 140 }}
+            />
+
+            <Orb
+              size={45}
+              color={colors.palegreen}
+              position={{ x: 200, y:-30 }}
+            />
+
+            <Orb
+              size={40}
+              color={colors.palegold}
+              position={{ x: -205, y: 52 }}
+            />
+          </View>
           {/* questions for entire family */}
           {socioEconomics ? (
             questionsForThisScreen.forFamily
@@ -592,35 +609,14 @@ SocioEconomicQuestion.propTypes = {
 }
 
 const styles = StyleSheet.create({
-  SocialEconomicsBallYellow1: {
-    backgroundColor: colors.palegold,
-    width: 40,
-    height: 40,
-    borderRadius: 50,
-    left: -17,
-    top: '72%',
+  ballsContainer: {
+    justifyContent: 'center',
+    alignItems: 'center',
     position: 'absolute',
-    zIndex: -10
-  },
-  SocialEconomicsBallGreen2: {
-    right: -19,
-    top: '55%',
-    backgroundColor: colors.palegreen,
-    width: 50,
-    height: 50,
-    borderRadius: 50,
-    position: 'absolute',
-    zIndex: -10
-  },
-  SocialEconomicsBallGreen1: {
-    right: '55%',
-    top: '80%',
-    backgroundColor: colors.palegreen,
-    width: 50,
-    height: 50,
-    borderRadius: 50,
-    position: 'absolute',
-    zIndex: -10
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0
   },
   SocialEconomicsContainer: {
     flex: 1,
