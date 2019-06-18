@@ -10,10 +10,9 @@ import draftMock from '../__mocks__/draftMock'
 
 const createTestProps = props => ({
   t: value => value,
-
-  addDraftProgress: jest.fn(),
   navigation: {
     navigate: jest.fn(),
+    push: jest.fn(),
     isFocused: jest.fn(),
     setParams: jest.fn(),
     getParam: jest.fn(param => {
@@ -51,7 +50,6 @@ const createTestProps = props => ({
       ]
     }
   ],
-
   ...props
 })
 
@@ -195,7 +193,7 @@ describe('Render optimization', () => {
   it('navigates back to skipped screen if there are skipped questions', () => {
     wrapper.instance().onPressBack()
 
-    expect(props.navigation.navigate).toHaveBeenCalledWith(
+    expect(props.navigation.push).toHaveBeenCalledWith(
       'Skipped',
       expect.any(Object)
     )
@@ -222,7 +220,7 @@ describe('Render optimization', () => {
     wrapper = shallow(<Overview {...props} />)
     wrapper.instance().onPressBack()
 
-    expect(props.navigation.navigate).toHaveBeenCalledWith(
+    expect(props.navigation.push).toHaveBeenCalledWith(
       'Skipped',
       expect.any(Object)
     )

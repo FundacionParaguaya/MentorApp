@@ -2,14 +2,23 @@ import moment from 'moment'
 
 // Alternative to get() in lodash
 const get = (obj, path, defaultValue = null) =>
-  String.prototype.split.call(path, /[,[\].]+?/)
+  String.prototype.split
+    .call(path, /[,[\].]+?/)
     .filter(Boolean)
-    .reduce((a, c) => (Object.hasOwnProperty.call(a,c) ? a[c] : defaultValue), obj)
+    .reduce(
+      (a, c) => (Object.hasOwnProperty.call(a, c) ? a[c] : defaultValue),
+      obj
+    )
 
 export const CONDITION_TYPES = {
   SOCIOECONOMIC: 'socioEconomic',
   FAMILY: 'family',
   MEMBER_SOCIOEONOMIC: 'memberSocioEconomic'
+}
+
+export const JOIN_OPERATIONS = {
+  AND: 'AND',
+  OR: 'OR'
 }
 
 /**
@@ -116,13 +125,12 @@ export const conditionMet = (condition, currentDraft, memberIndex) => {
         return true
       }
     } else {
-      value = familyMember[condition.codeName]
+      return null
     }
     targetQuestion = { value }
   } else if (scope === CONDITION_TYPES.MEMBER_SOCIOEONOMIC) {
-    const {
-      socioEconomicAnswers: memberSocioEconomicAnswers = []
-    } = familyMembersList[memberIndex]
+    const { socioEconomicAnswers: memberSocioEconomicAnswers = [] } =
+      familyMembersList[memberIndex] || []
     targetQuestion = memberSocioEconomicAnswers.find(
       element => element.key === condition.codeName
     )
@@ -151,6 +159,8 @@ export const conditionMet = (condition, currentDraft, memberIndex) => {
   return evaluateCondition(condition, targetQuestion)
 }
 
+const applyBooleanOperations = (op1, op2, operator) =>
+  operator === JOIN_OPERATIONS.AND ? op1 && op2 : op1 || op2
 
 /**
  * Decides whether a question should be shown to the user or not
@@ -159,12 +169,31 @@ export const conditionMet = (condition, currentDraft, memberIndex) => {
  */
 export const shouldShowQuestion = (question, currentDraft, memberIndex) => {
   let shouldShow = true
-  if (question.conditions && question.conditions.length > 0) {
-    question.conditions.forEach(condition => {
-      if (!conditionMet(condition, currentDraft, memberIndex)) {
-        shouldShow = false
-      }
-    })
+  if (question.conditionGroups && question.conditionGroups.length > 0) {
+    ;({ result: shouldShow } = question.conditionGroups.reduce(
+      (acc, current) => {
+        const { conditions, groupOperator, joinNextGroup } = current
+        const groupResult = conditions.reduce(
+          (accGroup, currentFromGroup) =>
+            applyBooleanOperations(
+              accGroup,
+              conditionMet(currentFromGroup, currentDraft, memberIndex),
+              groupOperator
+            ),
+          groupOperator === JOIN_OPERATIONS.AND
+        )
+        return {
+          result: applyBooleanOperations(acc.result, groupResult, acc.joinPrev),
+          joinPrev: joinNextGroup
+        }
+      },
+      { result: true, joinPrev: JOIN_OPERATIONS.AND }
+    ))
+  } else if (question.conditions && question.conditions.length > 0) {
+    shouldShow = question.conditions.reduce(
+      (acc, current) => acc && conditionMet(current, currentDraft, memberIndex),
+      true
+    )
   }
   return shouldShow
 }

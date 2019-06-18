@@ -48,36 +48,7 @@ export class Surveys extends Component {
       // if there is object for n screen create one
       if (!questionsPerScreen[totalScreens - 1]) {
         questionsPerScreen[totalScreens - 1] = {
-          forFamilyMember: [
-            // DO NOT COMMIT!!!
-            // {
-            //   questionText: 'What is your highest educational level?',
-            //   answerType: 'number',
-            //   dimension: 'Education',
-            //   codeName: 3,
-            //   required: true,
-            //   forFamilyMember: true
-            // },
-            // {
-            //   questionText:
-            //     'What is the property title situation of your household?',
-            //   answerType: 'select',
-            //   dimension: 'Education',
-            //   required: false,
-            //   codeName: 2,
-            //   forFamilyMember: false,
-            //   options: [
-            //     { value: 'OWNER', text: 'Owner' },
-            //     {
-            //       value: 'COUNCIL-HOUSING-ASSOCIATION',
-            //       text: 'Council/Housing Association'
-            //     },
-            //     { value: 'PRIVATE-RENTAL', text: 'Private rental' },
-            //     { value: 'LIVING-WITH-PARENTS', text: 'Living with Parents' },
-            //     { value: 'PREFER-NOT-TO-SAY', text: 'Prefer not to say' }
-            //   ]
-            // }
-          ],
+          forFamilyMember: [],
           forFamily: []
         }
       }
@@ -98,7 +69,10 @@ export class Surveys extends Component {
     const surveyEconomicQuestions = survey.surveyEconomicQuestions || []
     const conditionalQuestions = []
     surveyEconomicQuestions.forEach(eq => {
-      if (eq.conditions && eq.conditions.length > 0) {
+      if (
+        (eq.conditions && eq.conditions.length > 0) ||
+        (eq.conditionGroups && eq.conditionGroups.length > 0)
+      ) {
         conditionalQuestions.push(eq)
       } else {
         // Checking conditional options only if needed
@@ -136,7 +110,16 @@ export class Surveys extends Component {
     }
 
     conditionalQuestions.forEach(conditionalQuestion => {
-      const { conditions = [] } = conditionalQuestion
+      let conditions = []
+      const { conditionGroups } = conditionalQuestion
+      if (conditionGroups && conditionGroups.length > 0) {
+        conditionGroups.forEach(conditionGroup => {
+          conditions = [...conditions, ...conditionGroup.conditions]
+        })
+      } else {
+        ;({ conditions = [] } = conditionalQuestion)
+      }
+
       conditions.forEach(addTargetIfApplies)
 
       // Checking conditional options only if needed
@@ -204,7 +187,8 @@ Surveys.propTypes = {
   surveys: PropTypes.array,
   navigation: PropTypes.object.isRequired,
   lng: PropTypes.string,
-  t: PropTypes.func
+  t: PropTypes.func,
+  updateNav: PropTypes.func
 }
 
 const mapStateToProps = ({ surveys }) => ({

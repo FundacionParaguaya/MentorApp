@@ -54,7 +54,6 @@ const createTestProps = props => ({
     readonly: false
   },
   addSurveyData: jest.fn(),
-  addDraftProgress: jest.fn(),
   ...props
 })
 

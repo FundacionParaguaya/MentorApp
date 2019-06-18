@@ -38,23 +38,19 @@ export class Login extends Component {
       this.props.navigation.navigate('Loading')
     } else {
       this.setDimensions()
-      NetInfo.fetch().then(isConnected =>
-        this.setConnectivityState(isConnected)
+      NetInfo.fetch().then(state =>
+        this.setConnectivityState(state.isConnected)
       )
-      this.onConnectivityChange()
+      this.unsubscribeNetChange = NetInfo.addEventListener(state => {
+        this.setConnectivityState(state.isConnected)
+      })
     }
   }
 
   setConnectivityState = isConnected =>
     isConnected
-      ? this.setState({ connection: true })
+      ? this.setState({ connection: true, error: '' })
       : this.setState({ connection: false, error: 'No connection' })
-
-  onConnectivityChange = () => {
-    this.unsubscribeNetChange = NetInfo.addEventListener(state => {
-      this.setConnectivityState(state)
-    })
-  }
 
   setDimensions = () => {
     this.props.setDimensions({
@@ -112,7 +108,9 @@ export class Login extends Component {
   }
 
   componentWillUnmount() {
-    this.unsubscribeNetChange()
+    if (this.unsubscribeNetChange) {
+      this.unsubscribeNetChange()
+    }
   }
 
   render() {

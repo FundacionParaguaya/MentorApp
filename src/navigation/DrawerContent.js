@@ -16,7 +16,7 @@ import globalStyles from '../globalStyles'
 import IconButton from '../components/IconButton'
 import i18n from '../i18n'
 import colors from '../theme.json'
-import { switchLanguage, logout, updateNav } from '../redux/actions'
+import { switchLanguage, logout } from '../redux/actions'
 import LogoutPopup from './LogoutPopup'
 import dashboardIcon from '../../assets/images/icon_dashboard.png'
 import familyNavIcon from '../../assets/images/icon_family_nav.png'
@@ -287,7 +287,6 @@ DrawerContent.propTypes = {
   nav: PropTypes.object.isRequired,
   lng: PropTypes.string,
   switchLanguage: PropTypes.func.isRequired,
-  updateNav: PropTypes.func.isRequired,
   logout: PropTypes.func.isRequired,
   navigation: PropTypes.object.isRequired,
   user: PropTypes.object.isRequired,
@@ -308,8 +307,7 @@ const mapStateToProps = ({ env, user, drafts, nav, dimensions, sync }) => ({
 
 const mapDispatchToProps = {
   switchLanguage,
-  logout,
-  updateNav
+  logout
 }
 
 export default withNamespaces()(

@@ -1,5 +1,55 @@
 # Change Log
 
+## [v1.9.6](https://github.com/FundacionParaguaya/MentorApp/tree/v1.9.6) (2019-06-17)
+[Full Changelog](https://github.com/FundacionParaguaya/MentorApp/compare/v1.9.5...v1.9.6)
+
+**Fixed bugs:**
+
+- Prevent duplicate api calls on Final screen [\#786](https://github.com/FundacionParaguaya/MentorApp/issues/786)
+- Disappearing priorities/achievements [\#773](https://github.com/FundacionParaguaya/MentorApp/issues/773)
+- Emprender sync error - receivedAmount Conditinal inconsistency [\#771](https://github.com/FundacionParaguaya/MentorApp/issues/771)
+- Hitting Enter on numeric text field doesn't blur the field [\#742](https://github.com/FundacionParaguaya/MentorApp/issues/742)
+
+## [v1.9.5](https://github.com/FundacionParaguaya/MentorApp/tree/v1.9.5) (2019-06-13)
+[Full Changelog](https://github.com/FundacionParaguaya/MentorApp/compare/v1.9.4...v1.9.5)
+
+**Implemented enhancements:**
+
+- Remove the "X" button on last screen [\#609](https://github.com/FundacionParaguaya/MentorApp/issues/609)
+- Little more height in the sticky continue buttons [\#606](https://github.com/FundacionParaguaya/MentorApp/issues/606)
+- DOB should be D.O.B. [\#602](https://github.com/FundacionParaguaya/MentorApp/issues/602)
+
+**Fixed bugs:**
+
+- Family member data disappears when navigating back from Location [\#772](https://github.com/FundacionParaguaya/MentorApp/issues/772)
+- Resetting of socio-economic data [\#770](https://github.com/FundacionParaguaya/MentorApp/issues/770)
+- Multiple offline maps not downloading on demo [\#768](https://github.com/FundacionParaguaya/MentorApp/issues/768)
+- Using back button from Dashboard goes into loading [\#767](https://github.com/FundacionParaguaya/MentorApp/issues/767)
+- App crashes in Geco survey \(internal track\) [\#762](https://github.com/FundacionParaguaya/MentorApp/issues/762)
+- familyMemberDraft.gender - undefined is not an object [\#758](https://github.com/FundacionParaguaya/MentorApp/issues/758)
+- Indicator slider jumping [\#752](https://github.com/FundacionParaguaya/MentorApp/issues/752)
+- Ghost family member introduces sync error [\#751](https://github.com/FundacionParaguaya/MentorApp/issues/751)
+- App crash when offline and tapping My location is not listed [\#740](https://github.com/FundacionParaguaya/MentorApp/issues/740)
+- Socioeconomic questions are not completely visible [\#728](https://github.com/FundacionParaguaya/MentorApp/issues/728)
+- The sync circle doesn't stop loading in families screen [\#716](https://github.com/FundacionParaguaya/MentorApp/issues/716)
+
+**Closed issues:**
+
+- TypeError appeared when taking Argentina - Fundacion Irradia [\#774](https://github.com/FundacionParaguaya/MentorApp/issues/774)
+- Congratulations Message Changes + Implications [\#756](https://github.com/FundacionParaguaya/MentorApp/issues/756)
+- Conditional logic - Add dynamic required validation [\#741](https://github.com/FundacionParaguaya/MentorApp/issues/741)
+- Intercom Screens - Design and Implementation [\#370](https://github.com/FundacionParaguaya/MentorApp/issues/370)
+
+**Merged pull requests:**
+
+- fix close icon final [\#783](https://github.com/FundacionParaguaya/MentorApp/pull/783) ([zommerberg](https://github.com/zommerberg))
+- 741 required validation [\#782](https://github.com/FundacionParaguaya/MentorApp/pull/782) ([vasildimitroffhristoff](https://github.com/vasildimitroffhristoff))
+- fix \#747 changed the translations [\#777](https://github.com/FundacionParaguaya/MentorApp/pull/777) ([zommerberg](https://github.com/zommerberg))
+- set socioEconomicAnswers object to empty array if property is missing… [\#775](https://github.com/FundacionParaguaya/MentorApp/pull/775) ([vasildimitroffhristoff](https://github.com/vasildimitroffhristoff))
+- fix \#606 make continue button larger [\#765](https://github.com/FundacionParaguaya/MentorApp/pull/765) ([zommerberg](https://github.com/zommerberg))
+- fix \#602 DOB to D.O.B [\#764](https://github.com/FundacionParaguaya/MentorApp/pull/764) ([zommerberg](https://github.com/zommerberg))
+- fix \#752 fixed jumping images [\#757](https://github.com/FundacionParaguaya/MentorApp/pull/757) ([zommerberg](https://github.com/zommerberg))
+
 ## [v1.9.4](https://github.com/FundacionParaguaya/MentorApp/tree/v1.9.4) (2019-06-10)
 [Full Changelog](https://github.com/FundacionParaguaya/MentorApp/compare/v1.9.3...v1.9.4)
 
@@ -62,7 +112,6 @@
 
 - Support new operators for conditional logic [\#692](https://github.com/FundacionParaguaya/MentorApp/issues/692)
 - Display total amount of indicators by color in the dashboard [\#678](https://github.com/FundacionParaguaya/MentorApp/issues/678)
-- Sync Screen  - Errors [\#281](https://github.com/FundacionParaguaya/MentorApp/issues/281)
 
 **Fixed bugs:**
 

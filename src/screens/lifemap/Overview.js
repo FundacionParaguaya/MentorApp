@@ -64,7 +64,7 @@ export class Overview extends Component {
   onPressBack = () => {
     const { draft } = this.state
     const survey = this.survey
-   
+
     //If we do not arrive to this screen from the families screen
     if (!this.familyLifemap) {
       const skippedQuestions = this.state.draft.indicatorSurveyDataList.filter(
@@ -73,9 +73,9 @@ export class Overview extends Component {
 
       // If there are no skipped questions
       if (skippedQuestions.length > 0) {
-        this.props.navigation.navigate('Skipped', { draft, survey })
+        this.props.navigation.push('Skipped', { draft, survey })
       } else
-        this.props.navigation.navigate('Question', {
+        this.props.navigation.push('Question', {
           step: this.survey.surveyStoplightQuestions.length - 1,
           draft,
           survey

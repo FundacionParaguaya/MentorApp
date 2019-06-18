@@ -65,8 +65,8 @@ export class Family extends Component {
     })
 
     // check if online first
-    NetInfo.fetch().then(isOnline => {
-      this.setState({ isOnline })
+    NetInfo.fetch().then(state => {
+      this.setState({ isOnline: state.isConnected })
     })
 
     this.props.navigation.setParams({

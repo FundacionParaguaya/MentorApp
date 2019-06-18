@@ -43,9 +43,6 @@ const createTestProps = props => ({
     })
   },
   addSurveyData: jest.fn(),
-  removeFamilyMembers: jest.fn(),
-  addSurveyFamilyMemberData: jest.fn(),
-  addDraftProgress: jest.fn(),
   ...props
 })
 
@@ -72,9 +69,7 @@ describe('FamilyMembersNames View', () => {
       .props()
       .handleClick()
 
-    expect(wrapper.instance().props.navigation.navigate).toHaveBeenCalledTimes(
-      1
-    )
+    expect(wrapper.instance().props.navigation.push).toHaveBeenCalledTimes(1)
   })
   it('calls setParam on mount', () => {
     expect(wrapper.instance().props.navigation.setParams).toHaveBeenCalledTimes(

@@ -316,6 +316,11 @@ export class Location extends Component {
   }
 
   componentDidMount() {
+    // monitor for connection changes
+    this.unsubscribeNetChange = NetInfo.addEventListener(isOnline => {
+      this.determineScreenState(isOnline)
+    })
+
     const { draft } = this.state
     if (!this.readOnly) {
       this.setState({
@@ -358,19 +363,16 @@ export class Location extends Component {
       this._keyboardDidHide
     )
 
-    // monitor for connection changes
-    this.unsubscribeNetChange = NetInfo.addEventListener(isOnline => {
-      this.determineScreenState(isOnline)
-    })
-
     // check if online first
-    NetInfo.fetch().then(isOnline => {
-      this.determineScreenState(isOnline)
+    NetInfo.fetch().then(state => {
+      this.determineScreenState(state.isConnected)
     })
   }
 
   componentWillUnmount() {
-    this.unsubscribeNetChange()
+    if (this.unsubscribeNetChange) {
+      this.unsubscribeNetChange()
+    }
     AppState.removeEventListener('change', this._handleAppStateChange)
     this.keyboardDidShowListener.remove()
     this.keyboardDidHideListener.remove()
@@ -394,7 +396,7 @@ export class Location extends Component {
       const survey = this.survey
 
       if (draft.familyData.countFamilyMembers > 1) {
-        this.props.navigation.navigate('FamilyMembersNames', { draft, survey })
+        this.props.navigation.push('FamilyMembersNames', { draft, survey })
       } else {
         this.props.navigation.replace('FamilyParticipant', { draft, survey })
       }
@@ -417,6 +419,7 @@ export class Location extends Component {
       })
     } else {
       this.props.updateDraft(draft.draftId, draft)
+
       this.props.navigation.replace('SocioEconomicQuestion', {
         draft,
         survey: this.survey
