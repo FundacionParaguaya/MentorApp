@@ -162,7 +162,6 @@ dependencies {
     implementation project(':react-native-vector-icons')
     implementation project(':react-native-languages')
     implementation project(':rn-fetch-blob')
-    implementation project(':mapbox-react-native-mapbox-gl')
     implementation fileTree(dir: "libs", include: ["*.jar"])
     implementation 'androidx.appcompat:appcompat:1.0.0'
     implementation "com.facebook.react:react-native:+"  // From node_modules
