@@ -200,7 +200,12 @@ export class Dashboard extends Component {
                   </View>
 
                   <Button
-                    style={{ marginTop: 20 }}
+                    style={{
+                      marginTop: 20,
+                      marginLeft: 'auto',
+                      marginRight: 'auto',
+                      maxWidth: 400
+                    }}
                     id="create-lifemap"
                     text={t('views.createLifemap')}
                     colored

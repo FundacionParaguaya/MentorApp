@@ -63,9 +63,11 @@ const styles = StyleSheet.create({
   buttonWrapper: {
     height: 50,
     alignSelf: 'stretch',
-    marginBottom: 10
+    marginBottom: 10,
+    alignItems: 'center'
   },
   button: {
+    maxWidth: 400,
     backgroundColor: colors.palered
   }
 })
