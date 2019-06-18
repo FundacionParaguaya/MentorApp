@@ -5,12 +5,10 @@ import PropTypes from 'prop-types'
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons'
 import Button from '../Button'
 import i18n from '../../i18n'
-import DeviceInfo from 'react-native-device-info'
 import colors from '../../theme.json'
 import globalStyles from '../../globalStyles'
 export class SyncRetry extends Component {
   render() {
-    let TabletWidth = DeviceInfo.getDeviceType() === 'Tablet' ? true : false
     const { draftsWithError, retrySubmit } = this.props
     return (
       <View style={[styles.view, styles.borderBottom]}>
@@ -26,10 +24,7 @@ export class SyncRetry extends Component {
         <View style={styles.buttonWrapper}>
           <Button
             id="retry"
-            style={{
-              width: TabletWidth ? '60%' : '100%',
-              backgroundColor: colors.palered
-            }}
+            style={styles.button}
             text="Retry"
             handleClick={retrySubmit}
           />
@@ -51,6 +46,10 @@ SyncRetry.propTypes = {
   retrySubmit: PropTypes.func.isRequired
 }
 const styles = StyleSheet.create({
+  button: {
+    width: 400,
+    backgroundColor: colors.palered
+  },
   view: {
     justifyContent: 'center',
     alignItems: 'center',
