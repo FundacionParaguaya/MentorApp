@@ -5,14 +5,13 @@ import {
   FlatList,
   View,
   UIManager,
-  findNodeHandle,
-  Text
+  findNodeHandle
 } from 'react-native'
 import { connect } from 'react-redux'
 import PropTypes from 'prop-types'
 import globalStyles from '../globalStyles'
 import { withNamespaces } from 'react-i18next'
-import { submitDraft, updateNav } from '../redux/actions'
+import { submitDraft } from '../redux/actions'
 import { url } from '../config'
 
 import SyncUpToDate from '../components/sync/SyncUpToDate'
@@ -36,11 +35,6 @@ export class Sync extends Component {
   }
 
   navigateToDraft = draft => {
-    this.props.updateNav({
-      survey: this.props.surveys.find(survey => survey.id === draft.surveyId),
-      draftId: draft.draftId
-    })
-
     if (
       draft.progress.screen !== 'Question' &&
       draft.progress.screen !== 'Skipped' &&
@@ -48,14 +42,14 @@ export class Sync extends Component {
       draft.progress.screen !== 'Overview'
     ) {
       this.props.navigation.navigate(draft.progress.screen, {
-        draftId: draft.draftId,
+        draft,
         survey: this.props.surveys.find(survey => survey.id === draft.surveyId),
         step: draft.progress.step,
         socioEconomics: draft.progress.socioEconomics
       })
     } else
       this.props.navigation.navigate('Overview', {
-        draftId: draft.draftId,
+        draft,
         survey: this.props.surveys.find(survey => survey.id === draft.surveyId),
         resumeDraft: true
       })
@@ -137,8 +131,7 @@ Sync.propTypes = {
   env: PropTypes.oneOf(['production', 'demo', 'testing', 'development']),
   user: PropTypes.object.isRequired,
   surveys: PropTypes.array,
-  submitDraft: PropTypes.func.isRequired,
-  updateNav: PropTypes.func.isRequired
+  submitDraft: PropTypes.func.isRequired
 }
 
 const styles = StyleSheet.create({
@@ -157,8 +150,7 @@ const mapStateToProps = ({ drafts, offline, env, user, surveys }) => ({
 })
 
 const mapDispatchToProps = {
-  submitDraft,
-  updateNav
+  submitDraft
 }
 
 export default withNamespaces()(

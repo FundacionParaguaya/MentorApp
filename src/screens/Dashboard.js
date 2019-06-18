@@ -10,7 +10,6 @@ import {
 } from 'react-native'
 import { Sentry } from 'react-native-sentry'
 import { AndroidBackHandler } from 'react-navigation-backhandler'
-import { updateNav } from '../redux/actions'
 import { withNamespaces } from 'react-i18next'
 import PropTypes from 'prop-types'
 import Button from '../components/Button'
@@ -25,17 +24,6 @@ export class Dashboard extends Component {
   acessibleComponent = React.createRef()
 
   componentDidMount() {
-    const { survey, readonly, draftId } = this.props.nav
-
-    // clear nav state if it's set to something
-    if (survey || readonly || draftId) {
-      this.props.updateNav({
-        survey: null,
-        readonly: false,
-        draftId: null
-      })
-    }
-
     if (UIManager.AccessibilityEventTypes) {
       setTimeout(() => {
         UIManager.sendAccessibilityEvent(
@@ -91,11 +79,6 @@ export class Dashboard extends Component {
       })
   }
   navigateToSynced = item => {
-    this.props.updateNav({
-      survey: this.props.surveys.find(survey => survey.id === item.surveyId),
-      draftId: item.draftId,
-      readonly: true
-    })
     this.props.navigation.navigate('Family', {
       familyName: item.familyData.familyMembersList[0].firstName,
       familyLifemap: item,
@@ -328,7 +311,6 @@ const styles = StyleSheet.create({
 Dashboard.propTypes = {
   navigation: PropTypes.object.isRequired,
   t: PropTypes.func.isRequired,
-  updateNav: PropTypes.func.isRequired,
   drafts: PropTypes.array.isRequired,
   env: PropTypes.oneOf(['production', 'demo', 'testing', 'development']),
   user: PropTypes.object.isRequired,
@@ -359,9 +341,7 @@ export const mapStateToProps = ({
   nav
 })
 
-const mapDispatchToProps = {
-  updateNav
-}
+const mapDispatchToProps = {}
 
 export default withNamespaces()(
   connect(

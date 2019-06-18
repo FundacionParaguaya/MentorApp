@@ -3,7 +3,7 @@ import { View, StyleSheet, Dimensions } from 'react-native'
 import PropTypes from 'prop-types'
 import SplashScreen from 'react-native-splash-screen'
 import { connect } from 'react-redux'
-import { setDimensions, updateNav } from '../redux/actions'
+import { setDimensions } from '../redux/actions'
 import RootStack from './stacks'
 
 export class NavWrapper extends Component {
@@ -24,10 +24,6 @@ export class NavWrapper extends Component {
       width: Dimensions.get('window').width,
       scale: Dimensions.get('window').scale
     })
-  }
-
-  onCloseModal = () => {
-    this.props.updateNav('openModal', null)
   }
 
   // determine which stack to show based on synced property
@@ -56,8 +52,7 @@ NavWrapper.propTypes = {
   user: PropTypes.object.isRequired,
   sync: PropTypes.object.isRequired,
   hydration: PropTypes.bool.isRequired,
-  setDimensions: PropTypes.func.isRequired,
-  updateNav: PropTypes.func.isRequired
+  setDimensions: PropTypes.func.isRequired
 }
 
 const mapStateToProps = ({ user, sync, dimensions, hydration, nav }) => ({
@@ -69,8 +64,7 @@ const mapStateToProps = ({ user, sync, dimensions, hydration, nav }) => ({
 })
 
 const mapDispatchToProps = {
-  setDimensions,
-  updateNav
+  setDimensions
 }
 
 export default connect(

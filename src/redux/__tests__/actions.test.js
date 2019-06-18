@@ -154,16 +154,7 @@ describe('drafts actions', () => {
     }
     expect(action.createDraft(payload)).toEqual(expectedAction)
   })
-  it('should create an action to add draft progress', () => {
-    const id = 1
-    const progress = { screen: 'FamilyMembersNames' }
-    const expectedAction = {
-      type: action.ADD_DRAFT_PROGRESS,
-      id,
-      progress
-    }
-    expect(action.addDraftProgress(id, progress)).toEqual(expectedAction)
-  })
+
   it('should create an action to delete a draft', () => {
     const id = 1
     const expectedAction = {
@@ -171,17 +162,6 @@ describe('drafts actions', () => {
       id
     }
     expect(action.deleteDraft(id)).toEqual(expectedAction)
-  })
-  it('should create an action to remove family memvers from draft', () => {
-    const id = 1
-    const afterIndex = 2
-
-    const expectedAction = {
-      type: action.REMOVE_FAMILY_MEMBERS,
-      id,
-      afterIndex
-    }
-    expect(action.removeFamilyMembers(id, afterIndex)).toEqual(expectedAction)
   })
   it('should create an action to add survey data to draft', () => {
     const id = 1
@@ -196,110 +176,6 @@ describe('drafts actions', () => {
     expect(action.addSurveyData(id, category, payload)).toEqual(expectedAction)
   })
 
-  it('should create an action to add priority or achievement to draft', () => {
-    const id = 1
-    const category = 'priority'
-    const payload = {
-      reason: 'reason',
-      action: 'action',
-      indicator: 'indicator'
-    }
-    const expectedAction = {
-      type: action.ADD_SURVEY_PRIORITY_ACHEIVEMENT_DATA,
-      id,
-      category,
-      payload
-    }
-    expect(
-      action.addSurveyPriorityAcheivementData({ id, category, payload })
-    ).toEqual(expectedAction)
-  })
-
-  it('should create an action to delete priority or achievement to draft', () => {
-    const id = 1
-    const category = 'priority'
-    const indicator = 'indicator'
-
-    const expectedAction = {
-      type: action.DELETE_SURVEY_PRIORITY_ACHEIVEMENT_DATA,
-      id,
-      category,
-      indicator
-    }
-    expect(
-      action.deleteSurveyPriorityAcheivementData({ id, category, indicator })
-    ).toEqual(expectedAction)
-  })
-
-  it('should create an action to add surcey data to a family member', () => {
-    const id = 1
-    const index = 2
-    const payload = {
-      reason: 'reason',
-      action: 'action',
-      indicator: 'indicator'
-    }
-    const isSocioEconomicAnswer = false
-    const expectedAction = {
-      type: action.ADD_SURVEY_FAMILY_MEMBER_DATA,
-      id,
-      index,
-      payload,
-      isSocioEconomicAnswer
-    }
-    expect(
-      action.addSurveyFamilyMemberData({
-        id,
-        index,
-        payload,
-        isSocioEconomicAnswer
-      })
-    ).toEqual(expectedAction)
-  })
-
-  // it('should create an action to post a draft', () => {
-  //   const env = 'https://mock/env'
-  //   const token = 'token'
-  //   const payload = {}
-  //   const id = 1
-
-  //   const expectedAction = {
-  //     type: action.SUBMIT_DRAFT,
-  //     env,
-  //     token,
-  //     payload,
-  //     id,
-  //     meta: {
-  //       offline: {
-  //         effect: {
-  //           url: `${env}/graphql`,
-  //           method: 'POST',
-  //           headers: { Authorization: `Bearer ${token}` },
-  //           body: JSON.stringify({
-  //             query:
-  //               'mutation addSnapshot($newSnapshot: NewSnapshotDTOInput) {addSnapshot(newSnapshot: $newSnapshot)  { surveyId surveyVersionId snapshotStoplightAchievements { action indicator roadmap } snapshotStoplightPriorities { reason action indicator estimatedDate } family { familyId } user { userId  username } indicatorSurveyDataList {key value} economicSurveyDataList {key value multipleValue} familyDataDTO { latitude longitude accuracy familyMemberDTOList { firstName lastName socioEconomicAnswers {key value } } } } }',
-  //             variables: { newSnapshot: payload }
-  //           })
-  //         },
-  //         commit: {
-  //           type: action.SUBMIT_DRAFT_COMMIT,
-  //           meta: {
-  //             id,
-  //             payload
-  //           }
-  //         },
-  //         rollback: {
-  //           type: action.SUBMIT_DRAFT_ROLLBACK,
-  //           meta: {
-  //             id,
-  //             payload
-  //           }
-  //         }
-  //       }
-  //     }
-  //   }
-  //   expect(action.submitDraft(env, token, id, payload)).toEqual(expectedAction)
-  // })
   describe('language actions', () => {
     it('should create an action to switch the app language', () => {
       const language = 'es'
