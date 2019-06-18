@@ -119,7 +119,8 @@ export class Family extends Component {
   retakeSurveyWithThisFamily = () => {
     const { navigation } = this.props
     this.props.updateNav({
-      readonly: false
+      readonly: false,
+      oldIndicators: this.props.navigation.getParam('oldIndicators')
       // familyRetakeOldIndicators: this.familyLifemap.indicatorSurveyDataList
     })
     navigation.push('FamilyParticipant', {

@@ -10,6 +10,7 @@ const createTestProps = props => ({
   addDraftProgress: jest.fn(),
   navigation: {
     navigate: jest.fn(),
+    push: jest.fn(),
     isFocused: jest.fn(),
     setParams: jest.fn(),
     replace: jest.fn(),

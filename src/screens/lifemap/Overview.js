@@ -11,6 +11,8 @@ import BottomModal from '../../components/BottomModal'
 import arrow from '../../../assets/images/selectArrow.png'
 import globalStyles from '../../globalStyles'
 import colors from '../../theme.json'
+import { connect } from 'react-redux'
+
 export class Overview extends Component {
   survey = this.props.navigation.getParam('survey')
   familyLifemap = this.props.navigation.getParam('familyLifemap')
@@ -64,7 +66,7 @@ export class Overview extends Component {
   onPressBack = () => {
     const { draft } = this.state
     const survey = this.survey
-   
+
     //If we do not arrive to this screen from the families screen
     if (!this.familyLifemap) {
       const skippedQuestions = this.state.draft.indicatorSurveyDataList.filter(
@@ -73,9 +75,9 @@ export class Overview extends Component {
 
       // If there are no skipped questions
       if (skippedQuestions.length > 0) {
-        this.props.navigation.navigate('Skipped', { draft, survey })
+        this.props.navigation.push('Skipped', { draft, survey })
       } else
-        this.props.navigation.navigate('Question', {
+        this.props.navigation.push('Question', {
           step: this.survey.surveyStoplightQuestions.length - 1,
           draft,
           survey
@@ -157,6 +159,7 @@ export class Overview extends Component {
     const { filterModalIsOpen, selectedFilter, filterLabel, draft } = this.state
     const mandatoryPrioritiesCount = this.getMandatoryPrioritiesCount(draft)
     const tipIsVisible = !this.isDraftResuming && this.state.tipIsVisible
+    const previousIndicators = this.props.nav.oldIndicators || []
     const getTipDescription = () => {
       //no mandatory priotities
       if (
@@ -235,6 +238,7 @@ export class Overview extends Component {
               navigateToScreen={this.navigateToScreen}
               draftOverview={!this.isDraftResuming && !this.familyLifemap}
               selectedFilter={selectedFilter}
+              previousIndicators={previousIndicators}
             />
           </View>
 
@@ -378,4 +382,11 @@ Overview.propTypes = {
   navigation: PropTypes.object.isRequired
 }
 
-export default withNamespaces()(Overview)
+const mapDispatchToProps = {}
+
+const mapStateToProps = ({nav}) => ({nav})
+
+export default withNamespaces()( connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(Overview))

@@ -6,7 +6,8 @@ import {
   TouchableHighlight,
   StyleSheet,
   Platform,
-  View
+  View,
+  ActivityIndicator
 } from 'react-native'
 import colors from '../theme.json'
 
@@ -32,7 +33,8 @@ class Button extends Component {
       underlined,
       text,
       style,
-      testID
+      testID,
+      loading
     } = this.props
 
     const { pressed } = this.state
@@ -42,9 +44,9 @@ class Button extends Component {
         testID={testID}
         style={[
           styles.buttonStyle,
-          !colored && !disabled && !outlined && styles.transparent,
+          !colored && !disabled && !loading && !outlined && styles.transparent,
           style,
-          ['colored', 'disabled', 'outlined'].map(item =>
+          ['colored', 'disabled', 'outlined', 'loading'].map(item =>
             this.props[item] ? styles[item] : {}
           ),
           {
@@ -65,12 +67,12 @@ class Button extends Component {
         underlayColor={colored ? colors.palegreen : colors.white}
         activeOpacity={1}
         onPress={handleClick}
-        disabled={disabled}
+        disabled={disabled || loading}
         onHideUnderlay={this.togglePressedState}
         onShowUnderlay={this.togglePressedState}
         accessibilityRole="button"
         accessibilityLabel={text}
-        accessibilityHint={disabled ? 'disabled' : ''}
+        accessibilityHint={disabled || loading ? 'disabled' : ''}
       >
         <View style={{ flexDirection: 'row' }}>
           {icon ? (
@@ -82,6 +84,13 @@ class Button extends Component {
             />
           ) : (
             <View />
+          )}
+          {loading && (
+            <ActivityIndicator
+              size="small"
+              color={colors.white}
+              style={{ marginRight: 10 }}
+            />
           )}
           <Text
             style={[
@@ -123,6 +132,7 @@ Button.propTypes = {
   colored: PropTypes.bool,
   underlined: PropTypes.bool,
   outlined: PropTypes.bool,
+  loading: PropTypes.bool,
   icon: PropTypes.string,
   testID: PropTypes.string,
   disabled: PropTypes.bool,
@@ -168,6 +178,9 @@ const styles = StyleSheet.create({
     backgroundColor: colors.white
   },
   disabled: {
+    backgroundColor: colors.palegrey
+  },
+  loading: {
     backgroundColor: colors.palegrey
   },
   greenText: {

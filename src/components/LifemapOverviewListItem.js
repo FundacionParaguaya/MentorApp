@@ -52,6 +52,15 @@ class LifemapOverviewListItem extends Component {
         style={styles.container}
         disabled={disabledButton}
       >
+        {this.props.previousIndicators && <View>
+          <Icon
+            name="brightness-1"
+            color={this.defineColor(this.props.previousIndicators.value)}
+            size={35}
+            style={{ marginRight: -10 }}
+          />
+        </View>}
+
         <View>
           {this.props.achievement ? (
             <Icon
@@ -85,9 +94,15 @@ class LifemapOverviewListItem extends Component {
           )}
           <Icon
             name="brightness-1"
-            color={this.defineColor(this.props.color)}
-            size={40}
-            style={{ marginRight: 15 }}
+            size={45}
+            color={'transparent'}
+            style={{
+              backgroundColor: this.defineColor(this.props.color),
+              marginRight: 15,
+              borderWidth: 3,
+              borderColor: 'white',
+              borderRadius: 45
+            }}
           />
         </View>
         <View style={[styles.listItem, styles.borderBottom]}>

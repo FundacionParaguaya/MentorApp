@@ -44,7 +44,7 @@ export class Skipped extends Component {
   }
 
   onPressBack = () => {
-    this.props.navigation.navigate('Question', {
+    this.props.navigation.push('Question', {
       step: this.survey.surveyStoplightQuestions.length - 1,
       draft: this.state.draft,
       survey: this.survey

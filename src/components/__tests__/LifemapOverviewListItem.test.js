@@ -55,14 +55,14 @@ describe('LifemapOverviewListItem Component', () => {
       expect(wrapper.find(Text).props().children).toEqual('Family Savings')
     })
 
-    it('renders icon in correct color', () => {
-      expect(
-        wrapper
-          .find(Icon)
-          .first()
-          .props().color
-      ).toEqual(colors.gold)
-    })
+    // it('renders icon in correct color', () => {
+    //   expect(
+    //     wrapper
+    //       .find(Icon)
+    //       .first()
+    //       .props().color
+    //   ).toEqual(colors.gold)
+    // })
     it('disables button when indicator is grey', () => {
       props = createTestProps({ color: 0 })
       wrapper = shallow(<LifemapOverviewListItem {...props} />)

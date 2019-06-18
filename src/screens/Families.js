@@ -80,7 +80,13 @@ export class Families extends Component {
           ? family.snapshotList[0]
           : family.draft,
         survey: this.props.navigation.getParam('survey'),
-        retakeSurvey: this.props.navigation.getParam('retakeSurvey')
+        retakeSurvey: this.props.navigation.getParam('retakeSurvey'),
+        oldIndicators:
+          family.snapshotList &&
+          family.snapshotList.length &&
+          family.snapshotList
+            .map(snapshot => snapshot.indicatorSurveyDataList)
+            .pop()
       })
     } else {
       this.props.updateNav({

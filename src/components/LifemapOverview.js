@@ -83,6 +83,12 @@ class LifemapOverview extends Component {
                 draftOverview={this.props.draftOverview}
                 priority={priorities.includes(indicator.codeName)}
                 achievement={achievements.includes(indicator.codeName)}
+                previousIndicators={
+                  this.props.previousIndicators.find(
+                    previousIndicator =>
+                      previousIndicator.key === indicator.codeName
+                  ) || false
+                }
                 handleClick={() =>
                   this.handleClick(
                     this.getColor(indicator.codeName),

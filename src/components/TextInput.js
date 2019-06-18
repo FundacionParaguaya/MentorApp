@@ -21,6 +21,17 @@ class TextInput extends Component {
   }
 
   onEndEditing = () => {
+    const { text } = this.state
+
+    this.setState({
+      text: text.trim(),
+      status: text ? 'filled' : 'blur'
+    })
+
+    this.props.validation || this.props.required
+      ? this.validateInput(text.trim())
+      : ''
+
     this.props.onChangeText(this.state.text.trim(), this.props.field)
   }
 
@@ -28,18 +39,6 @@ class TextInput extends Component {
     this.setState({
       status: 'active'
     })
-  }
-
-  onBlur() {
-    const { text } = this.state
-
-    this.setState({
-      text: text.trim(),
-      status: text ? 'filled' : 'blur'
-    })
-    this.props.validation || this.props.required
-      ? this.validateInput(text.trim())
-      : ''
   }
 
   handleError(errorMsg) {
@@ -174,10 +173,11 @@ class TextInput extends Component {
             autoFocus={autoFocus}
             keyboardType={showPlaceholder ? null : this.props.keyboardType}
             autoCapitalize={upperCase ? 'sentences' : 'none'}
+            blurOnSubmit
+            onSubmitEditing={this.onEndEditing}
+            onBlur={this.onEndEditing}
             onFocus={() => this.onFocus()}
-            onBlur={() => this.onBlur(text)}
             onChangeText={text => this.onChangeText(text)}
-            onEndEditing={this.onEndEditing}
             inputStyle={[
               styles.inputStyle,
               !showPlaceholder ? styles.activeInput : {}

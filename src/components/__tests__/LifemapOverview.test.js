@@ -50,6 +50,7 @@ const createTestProps = props => ({
   },
   selectedFilter: false,
   navigateToScreen: jest.fn(),
+  previousIndicators: [{key: "householdIncome", value: 3}],
   ...props
 })
 
