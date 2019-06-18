@@ -13,7 +13,7 @@ import {
 import { connect } from 'react-redux'
 import PropTypes from 'prop-types'
 import { withNamespaces } from 'react-i18next'
-import { loadFamilies, updateNav } from '../redux/actions'
+import { loadFamilies } from '../redux/actions'
 import { url } from '../config'
 import colors from '../theme.json'
 import globalStyles from '../globalStyles'
@@ -36,13 +36,6 @@ export class Families extends Component {
     })
 
   componentDidMount() {
-    this.props.updateNav({
-      survey: null,
-      readonly: false,
-      draftId: null,
-      deleteDraftOnExit: false
-    })
-
     if (UIManager.AccessibilityEventTypes) {
       setTimeout(() => {
         UIManager.sendAccessibilityEvent(
@@ -89,16 +82,6 @@ export class Families extends Component {
             .pop()
       })
     } else {
-      this.props.updateNav({
-        survey: this.props.surveys.find(survey =>
-          family.snapshotList
-            ? survey.id === family.snapshotList[0].surveyId
-            : survey.id === family.draft.surveyId
-        ),
-        draftId: !family.snapshotList ? family.draft.draftId : null,
-        readonly: true
-      })
-
       this.props.navigation.navigate('Family', {
         familyName: family.name,
         familyLifemap: family.snapshotList
@@ -215,7 +198,6 @@ Families.propTypes = {
   drafts: PropTypes.array,
   navigation: PropTypes.object.isRequired,
   loadFamilies: PropTypes.func.isRequired,
-  updateNav: PropTypes.func.isRequired,
   env: PropTypes.oneOf(['production', 'demo', 'testing', 'development']),
   user: PropTypes.object.isRequired,
   offline: PropTypes.object,
@@ -267,8 +249,7 @@ export const mapStateToProps = ({
 })
 
 const mapDispatchToProps = {
-  loadFamilies,
-  updateNav
+  loadFamilies
 }
 
 export default withNamespaces()(

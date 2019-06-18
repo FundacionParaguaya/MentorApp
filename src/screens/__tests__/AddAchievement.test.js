@@ -24,7 +24,7 @@ const createTestProps = props => ({
       }
     })
   },
-  addSurveyPriorityAcheivementData: jest.fn(),
+
   drafts: [
     {
       draftId: 2,

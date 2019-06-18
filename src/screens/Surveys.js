@@ -187,7 +187,8 @@ Surveys.propTypes = {
   surveys: PropTypes.array,
   navigation: PropTypes.object.isRequired,
   lng: PropTypes.string,
-  t: PropTypes.func
+  t: PropTypes.func,
+  updateNav: PropTypes.func
 }
 
 const mapStateToProps = ({ surveys }) => ({

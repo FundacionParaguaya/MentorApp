@@ -113,16 +113,9 @@ export const UPDATE_DRAFT = 'UPDATE_DRAFT'
 export const DELETE_DRAFT = 'DELETE_DRAFT'
 export const ADD_SURVEY_DATA_CHECKBOX = 'ADD_SURVEY_DATA_CHECKBOX'
 export const ADD_SURVEY_DATA = 'ADD_SURVEY_DATA'
-export const ADD_SURVEY_PRIORITY_ACHEIVEMENT_DATA =
-  'ADD_SURVEY_PRIORITY_ACHEIVEMENT_DATA'
-export const DELETE_SURVEY_PRIORITY_ACHEIVEMENT_DATA =
-  'DELETE_SURVEY_PRIORITY_ACHEIVEMENT_DATA'
-export const ADD_SURVEY_FAMILY_MEMBER_DATA = 'ADD_SURVEY_FAMILY_MEMBER_DATA'
 export const SUBMIT_DRAFT = 'SUBMIT_DRAFT'
 export const SUBMIT_DRAFT_COMMIT = 'SUBMIT_DRAFT_COMMIT'
 export const SUBMIT_DRAFT_ROLLBACK = 'SUBMIT_DRAFT_ROLLBACK'
-export const REMOVE_FAMILY_MEMBERS = 'REMOVE_FAMILY_MEMBERS'
-export const ADD_DRAFT_PROGRESS = 'ADD_DRAFT_PROGRESS'
 
 export const createDraft = payload => ({
   type: CREATE_DRAFT,
@@ -138,53 +131,6 @@ export const updateDraft = (id, payload) => ({
 export const deleteDraft = id => ({
   type: DELETE_DRAFT,
   id
-})
-
-export const addDraftProgress = (id, progress) => ({
-  type: ADD_DRAFT_PROGRESS,
-  id,
-  progress
-})
-
-export const addSurveyPriorityAcheivementData = ({
-  id,
-  category,
-  payload
-}) => ({
-  type: ADD_SURVEY_PRIORITY_ACHEIVEMENT_DATA,
-  id,
-  category,
-  payload
-})
-
-export const deleteSurveyPriorityAcheivementData = ({
-  id,
-  category,
-  indicator
-}) => ({
-  type: DELETE_SURVEY_PRIORITY_ACHEIVEMENT_DATA,
-  id,
-  category,
-  indicator
-})
-
-export const addSurveyFamilyMemberData = ({
-  id,
-  index,
-  payload,
-  isSocioEconomicAnswer
-}) => ({
-  type: ADD_SURVEY_FAMILY_MEMBER_DATA,
-  id,
-  index,
-  isSocioEconomicAnswer,
-  payload
-})
-
-export const removeFamilyMembers = (id, afterIndex) => ({
-  type: REMOVE_FAMILY_MEMBERS,
-  id,
-  afterIndex
 })
 
 export const addSurveyDataCheckBox = (id, category, payload) => ({

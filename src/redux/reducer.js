@@ -10,12 +10,7 @@ import {
   CREATE_DRAFT,
   UPDATE_DRAFT,
   ADD_SURVEY_DATA,
-  ADD_SURVEY_PRIORITY_ACHEIVEMENT_DATA,
-  DELETE_SURVEY_PRIORITY_ACHEIVEMENT_DATA,
-  ADD_SURVEY_FAMILY_MEMBER_DATA,
-  REMOVE_FAMILY_MEMBERS,
   DELETE_DRAFT,
-  ADD_DRAFT_PROGRESS,
   SUBMIT_DRAFT,
   SUBMIT_DRAFT_COMMIT,
   ADD_SURVEY_DATA_CHECKBOX,
@@ -112,50 +107,6 @@ export const drafts = (state = [], action) => {
           return draft
         }
       })
-
-    case ADD_SURVEY_PRIORITY_ACHEIVEMENT_DATA:
-      return state.map(draft => {
-        // if this is the draft we are editing
-        if (draft.draftId === action.id) {
-          const draftCategory = draft[action.category]
-          const item = draftCategory.filter(
-            item => item.indicator === action.payload.indicator
-          )[0]
-          // If item exists update it
-          if (item) {
-            const index = draftCategory.indexOf(item)
-            return {
-              ...draft,
-              [action.category]: [
-                ...draftCategory.slice(0, index),
-                action.payload,
-                ...draftCategory.slice(index + 1)
-              ]
-            }
-          } else {
-            // If item does not exist create it
-            return {
-              ...draft,
-              [action.category]: [...draftCategory, action.payload]
-            }
-          }
-        } else {
-          return draft
-        }
-      })
-    case DELETE_SURVEY_PRIORITY_ACHEIVEMENT_DATA:
-      return state.map(draft =>
-        draft.draftId === action.id
-          ? {
-              ...draft,
-              [action.category]: [
-                ...draft[action.category].filter(
-                  item => item.indicator !== action.indicator
-                )
-              ]
-            }
-          : draft
-      )
 
     case ADD_SURVEY_DATA_CHECKBOX:
       return state.map(draft => {
@@ -273,166 +224,6 @@ export const drafts = (state = [], action) => {
         } else return draft
       })
 
-    case ADD_SURVEY_FAMILY_MEMBER_DATA:
-      return state.map(draft => {
-        // if this is the draft we are editing
-        if (draft.draftId === action.id) {
-          const familyMember = draft.familyData.familyMembersList[action.index]
-
-          if (action.isSocioEconomicAnswer) {
-            if (familyMember.socioEconomicAnswers) {
-              // if its a socio economic edition
-              const item = familyMember.socioEconomicAnswers.filter(
-                item => item.key === Object.keys(action.payload)[0]
-              )[0]
-
-              if (item) {
-                // if updating an existing answer
-                const index = familyMember.socioEconomicAnswers.indexOf(item)
-
-                return {
-                  ...draft,
-                  familyData: {
-                    ...draft.familyData,
-                    familyMembersList: [
-                      ...draft.familyData.familyMembersList.slice(
-                        0,
-                        action.index
-                      ),
-                      {
-                        ...familyMember,
-                        socioEconomicAnswers: [
-                          ...familyMember.socioEconomicAnswers.slice(0, index),
-                          {
-                            key: Object.keys(action.payload)[0],
-                            value: Object.values(action.payload)[0],
-                            multipleValue: []
-                          },
-                          ...familyMember.socioEconomicAnswers.slice(index + 1)
-                        ]
-                      },
-                      ...draft.familyData.familyMembersList.slice(
-                        action.index + 1
-                      )
-                    ]
-                  }
-                }
-              } else {
-                // if adding a new answer
-                return {
-                  ...draft,
-                  familyData: {
-                    ...draft.familyData,
-                    familyMembersList: [
-                      ...draft.familyData.familyMembersList.slice(
-                        0,
-                        action.index
-                      ),
-                      {
-                        ...familyMember,
-                        socioEconomicAnswers: [
-                          ...familyMember.socioEconomicAnswers,
-                          {
-                            key: Object.keys(action.payload)[0],
-                            value: Object.values(action.payload)[0],
-                            multipleValue: []
-                          }
-                        ]
-                      },
-                      ...draft.familyData.familyMembersList.slice(
-                        action.index + 1
-                      )
-                    ]
-                  }
-                }
-              }
-            } else {
-              // adding socioEconomicAnswers for the first time
-              return {
-                ...draft,
-                familyData: {
-                  ...draft.familyData,
-                  familyMembersList: [
-                    ...draft.familyData.familyMembersList.slice(
-                      0,
-                      action.index
-                    ),
-                    {
-                      ...familyMember,
-                      socioEconomicAnswers: [
-                        {
-                          key: Object.keys(action.payload)[0],
-                          value: Object.values(action.payload)[0],
-                          multipleValue: []
-                        }
-                      ]
-                    },
-                    ...draft.familyData.familyMembersList.slice(
-                      action.index + 1
-                    )
-                  ]
-                }
-              }
-            }
-          } else {
-            // NON SOCIO ECONOMIC ANSSER
-            if (typeof action.index !== 'undefined') {
-              // if family member exists
-              const payload = action.payload
-              return {
-                ...draft,
-                familyData: {
-                  ...draft.familyData,
-                  familyMembersList: [
-                    ...draft.familyData.familyMembersList.slice(
-                      0,
-                      action.index
-                    ),
-                    {
-                      ...familyMember,
-                      ...payload
-                    },
-                    ...draft.familyData.familyMembersList.slice(
-                      action.index + 1
-                    )
-                  ]
-                }
-              }
-            } else {
-              // if family member doesn't exists
-              const payload = action.payload
-              return {
-                ...draft,
-                familyData: {
-                  ...draft.familyData,
-                  familyMembersList: [
-                    ...draft.familyData.familyMembersList,
-                    ...payload
-                  ]
-                }
-              }
-            }
-          }
-        } else {
-          return draft
-        }
-      })
-
-    case REMOVE_FAMILY_MEMBERS:
-      return state.map(draft =>
-        draft.draftId === action.id
-          ? {
-              ...draft,
-              familyData: {
-                ...draft.familyData,
-                familyMembersList: draft.familyData.familyMembersList.filter(
-                  (item, index) => index < action.afterIndex
-                )
-              }
-            }
-          : draft
-      )
-
     case SUBMIT_DRAFT:
       return state.map(draft =>
         draft.draftId === action.id
@@ -442,15 +233,7 @@ export const drafts = (state = [], action) => {
             }
           : draft
       )
-    case ADD_DRAFT_PROGRESS:
-      return state.map(draft =>
-        draft.draftId === action.id
-          ? {
-              ...draft,
-              progress: { ...draft.progress, ...action.progress }
-            }
-          : draft
-      )
+
     case SUBMIT_DRAFT_COMMIT:
       return state.map(draft =>
         draft.draftId === action.meta.id

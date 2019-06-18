@@ -52,14 +52,10 @@ const survey = {
 
 const createTestProps = props => ({
   t: value => value,
-  updateNav: jest.fn(),
   createDraft: jest.fn(),
   updateDraft: jest.fn(),
   deleteDraft: jest.fn(),
-  addSurveyFamilyMemberData: jest.fn(),
-  addDraftProgress: jest.fn(),
   addSurveyData: jest.fn(),
-  removeFamilyMembers: jest.fn(),
   navigation: {
     navigate: jest.fn(),
     getParam: jest.fn(param => {

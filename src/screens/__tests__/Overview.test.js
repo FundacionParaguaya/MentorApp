@@ -10,8 +10,6 @@ import draftMock from '../__mocks__/draftMock'
 
 const createTestProps = props => ({
   t: value => value,
-
-  addDraftProgress: jest.fn(),
   navigation: {
     navigate: jest.fn(),
     push: jest.fn(),

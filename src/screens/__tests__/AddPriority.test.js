@@ -5,7 +5,6 @@ import Icon from 'react-native-vector-icons/MaterialCommunityIcons'
 import StickyFooter from '../../components/StickyFooter'
 import { AddPriority } from '../lifemap/AddPriority'
 import TextInput from '../../components/TextInput'
-import Counter from '../../components/Counter'
 import draft from '../__mocks__/draftMock.json'
 
 const createTestProps = props => ({
@@ -27,7 +26,6 @@ const createTestProps = props => ({
       }
     })
   },
-  addSurveyPriorityAcheivementData: jest.fn(),
   drafts: [
     {
       draftId: 2,
@@ -59,17 +57,6 @@ describe('AddPriority View', () => {
   })
 
   describe('functionality', () => {
-    it('does not save the priority if no months entered', () => {
-      wrapper
-        .find(StickyFooter)
-        .props()
-        .handleClick()
-
-      expect(
-        wrapper.instance().props.addSurveyPriorityAcheivementData
-      ).toHaveBeenCalledTimes(0)
-    })
-
     it('has correct initial state', () => {
       expect(wrapper.instance().state).toEqual({
         action: '',
