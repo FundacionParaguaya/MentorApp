@@ -663,7 +663,10 @@ export class Location extends Component {
             ref={map => {
               this._map = map
             }}
-            centerCoordinate={[+familyData.longitude, +familyData.latitude]}
+            centerCoordinate={[
+              +familyData.longitude || 0,
+              +familyData.latitude || 0
+            ]}
             zoomLevel={this.state.zoom}
             style={{ width: '100%', flexGrow: 2 }}
             logoEnabled={false}
