@@ -100,9 +100,7 @@ export class Families extends Component {
         }
       })
 
-    const allFamilies = [...draftFamilies, ...this.props.families].map(
-      family => ({ ...family, name: decodeURIComponent(escape(family.name)) })
-    )
+    const allFamilies = [...draftFamilies, ...this.props.families]
 
     const filteredFamilies = allFamilies.filter(
       family =>
