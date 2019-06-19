@@ -141,7 +141,7 @@ export class Question extends Component {
         answer !== 0) ||
       skippedQuestions.length === 0
     ) {
-      return this.props.navigation.navigate('Overview', {
+      return this.props.navigation.push('Overview', {
         resumeDraft: false,
         draft: updatedDraft,
         survey: this.survey
@@ -174,7 +174,7 @@ export class Question extends Component {
     const { t } = this.props
     return (
       <StickyFooter
-        handleClick={this.handleClick}
+        handleClick={() => ({})}
         readonly
         progress={
           draft
