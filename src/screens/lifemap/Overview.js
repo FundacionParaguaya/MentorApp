@@ -22,7 +22,8 @@ export class Overview extends Component {
     tipIsVisible: false,
     draft:
       this.props.navigation.getParam('draft') ||
-      this.props.navigation.getParam('familyLifemap')
+      this.props.navigation.getParam('familyLifemap') ||
+      {}
   }
 
   isDraftResuming = this.props.navigation.getParam('resumeDraft')
@@ -86,7 +87,7 @@ export class Overview extends Component {
   }
 
   navigateToScreen = (screen, indicator, indicatorText) =>
-    this.props.navigation.navigate(screen, {
+    this.props.navigation.push(screen, {
       familyLifemap: this.state.draft,
       survey: this.survey,
       indicator,
@@ -113,16 +114,23 @@ export class Overview extends Component {
   }
 
   getPotentialPrioritiesCount() {
-    return this.state.draft.indicatorSurveyDataList.filter(
-      question => question.value === 1 || question.value === 2
-    ).length
+    const { draft } = this.state
+    return (
+      draft &&
+      draft.indicatorSurveyDataList &&
+      draft.indicatorSurveyDataList.filter(
+        question => question.value === 1 || question.value === 2
+      ).length
+    )
   }
 
   getMandatoryPrioritiesCount() {
-    const potentialPrioritiesCount = this.getPotentialPrioritiesCount()
+    const potentialPrioritiesCount = this.getPotentialPrioritiesCount() || 0
+    const mimimumPriorities =
+      (this.survey && this.survey.minimumPriorities) || 0
 
-    return potentialPrioritiesCount > this.survey.minimumPriorities
-      ? this.survey.minimumPriorities
+    return potentialPrioritiesCount > mimimumPriorities
+      ? mimimumPriorities
       : potentialPrioritiesCount
   }
 
