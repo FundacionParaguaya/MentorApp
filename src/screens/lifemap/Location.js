@@ -71,20 +71,21 @@ export class Location extends Component {
   }
 
   onDragMap = async region => {
-    const { draft } = this.state
+    const { draft, zoom } = this.state
     const { familyData } = draft
     const { coordinates } = region.geometry
     const longitude = coordinates[0]
     const latitude = coordinates[1]
-    let zoom = await this._map.getZoom()
 
     // prevent jumping of the marker by updating only when the region changes
     if (
       familyData.latitude !== latitude ||
-      familyData.longitude !== longitude
+      familyData.longitude !== longitude ||
+      zoom !== region.properties.zoomLevel
     ) {
+      console.log('onDragMap', region)
       this.setState({
-        zoom: zoom,
+        zoom: region.properties.zoomLevel || 15,
         draft: {
           ...draft,
           familyData: {
