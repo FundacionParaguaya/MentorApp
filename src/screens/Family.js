@@ -122,24 +122,26 @@ export class Family extends Component {
     const { activeTab } = this.state
     const { t, navigation } = this.props
     const { familyData } = this.familyLifemap
-    let email = false
-    let phone = false
-    if (
-      typeof familyData.familyMembersList[0].email !== 'undefined' &&
-      familyData.familyMembersList[0].email !== null
-    ) {
-      if (familyData.familyMembersList[0].email.length) {
-        email = familyData.familyMembersList[0].email
-      }
-    }
-    if (
-      typeof familyData.familyMembersList[0].phoneNumber !== 'undefined' &&
-      familyData.familyMembersList[0].phoneNumber !== null
-    ) {
-      if (familyData.familyMembersList[0].phoneNumber.length) {
-        phone = familyData.familyMembersList[0].phoneNumber
-      }
-    }
+    const email =
+      familyData &&
+      familyData.familyMembersList &&
+      familyData.familyMembersList.length &&
+      !!familyData.familyMembersList[0].email &&
+      familyData.familyMembersList[0].email !== null &&
+      familyData.familyMembersList[0].email.length
+        ? familyData.familyMembersList[0].email
+        : false
+
+    const phone =
+      familyData &&
+      familyData.familyMembersList &&
+      familyData.familyMembersList.length &&
+      !!familyData.familyMembersList[0].phoneNumber &&
+      familyData.familyMembersList[0].phoneNumber !== null &&
+      familyData.familyMembersList[0].phoneNumber.length
+        ? familyData.familyMembersList[0].phoneNumber
+        : false
+
     return (
       <ScrollView
         style={globalStyles.background}
@@ -172,8 +174,8 @@ export class Family extends Component {
                   </View>
                   <MapboxGL.MapView
                     centerCoordinate={[
-                      +familyData.longitude,
-                      +familyData.latitude
+                      +familyData.longitude || 0,
+                      +familyData.latitude || 0
                     ]}
                     zoomLevel={15}
                     style={{ width: '100%', height: 189 }}
