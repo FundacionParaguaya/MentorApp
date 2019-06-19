@@ -12,6 +12,7 @@ const createTestProps = props => ({
     setParams: jest.fn()
   },
   showErrors: false,
+  logingOut: false,
   checkboxesVisible: false,
   unsyncedDrafts: 0,
   logUserOut: jest.fn(),

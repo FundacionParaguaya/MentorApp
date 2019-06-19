@@ -7,6 +7,7 @@ import { SyncUpToDate } from '../sync/SyncUpToDate'
 
 const createTestProps = props => ({
   date: 12345,
+  lng: 'en',
   ...props
 })
 

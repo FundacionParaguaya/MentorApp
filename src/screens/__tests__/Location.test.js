@@ -53,7 +53,7 @@ const createTestProps = props => ({
   nav: {
     readonly: false
   },
-  addSurveyData: jest.fn(),
+  updateDraft: jest.fn(),
   ...props
 })
 

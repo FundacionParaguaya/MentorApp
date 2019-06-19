@@ -13,9 +13,9 @@ import globalStyles from '../../globalStyles'
 import i18n from '../../i18n'
 
 export class SyncUpToDate extends Component {
-  capitalize = (s) => {
+  capitalize = s => {
     if (typeof s !== 'string') return ''
-    const string = s.split('.').join("")
+    const string = s.split('.').join('')
     return string.charAt(0).toUpperCase() + string.slice(1)
   }
 
@@ -27,12 +27,20 @@ export class SyncUpToDate extends Component {
     return (
       <View style={styles.view}>
         <Text style={globalStyles.h3}>{i18n.t('views.sync.upToDate')}</Text>
-        <Icon style={styles.icon} name="done" size={60} color={colors.palegreen} />
+        <Icon
+          style={styles.icon}
+          name="done"
+          size={60}
+          color={colors.palegreen}
+        />
         {this.props.date ? (
           <Text
-            accessibilityLabel={
-              `${i18n.t('views.sync.lastSync')}${lastSyncDateWithLocale.format('MMMM DD, YYYY')}`}
-          >{`${i18n.t('views.sync.lastSync')}${this.capitalize(lastSyncDateWithLocale.format('MMM DD, YYYY'))}`}</Text>
+            accessibilityLabel={`${i18n.t(
+              'views.sync.lastSync'
+            )}${lastSyncDateWithLocale.format('MMMM DD, YYYY')}`}
+          >{`${i18n.t('views.sync.lastSync')}${this.capitalize(
+            lastSyncDateWithLocale.format('MMM DD, YYYY')
+          )}`}</Text>
         ) : null}
       </View>
     )
