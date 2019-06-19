@@ -113,14 +113,14 @@ export class AddPriority extends Component {
 
   render() {
     const { t } = this.props
-    const { reason, action, estimatedDate, draft } = this.state
+    const { validationError, reason, action, estimatedDate, draft } = this.state
     const priority = this.getPriorityValue(draft)
     const { showErrors } = this.state
     let allOptionsNums = []
     for (let x = 1; x < 25; x++) {
       allOptionsNums.push({ value: x, text: String(x) })
     }
-
+    
     return (
       <StickyFooter
         continueLabel={t('general.save')}
@@ -179,6 +179,14 @@ export class AddPriority extends Component {
             options={allOptionsNums}
           />
         </View>
+        {/* Error message */}
+        {validationError && !this.state.errorsDetected.length ? (
+          <Text style={{ paddingHorizontal: 15, color: colors.red }}>
+            {t('validation.fieldIsRequired')}
+          </Text>
+        ) : (
+          <View />
+        )}
       </StickyFooter>
     )
   }
