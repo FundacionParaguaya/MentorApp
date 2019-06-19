@@ -263,6 +263,7 @@ export class SocioEconomicQuestion extends Component {
     } else {
       const socioEconomics = this.props.navigation.getParam('socioEconomics')
 
+      !socioEconomics ||
       socioEconomics.currentScreen === socioEconomics.totalScreens
         ? this.props.navigation.navigate('BeginLifemap', {
             survey: this.survey,
