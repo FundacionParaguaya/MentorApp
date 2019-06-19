@@ -6,6 +6,7 @@
     "start": "node node_modules/react-native/local-cli/cli.js start -- --reset-cache",
     "start-ios": "react-native run-ios",
     "start-android": "react-native run-android",
+    "convert-androidx": "npx jetify",
     "test": "jest",
     "lint-staged": "lint-staged",
     "test:coverage": "jest --coverage"
@@ -47,6 +48,7 @@
   "devDependencies": {
     "@babel/polyfill": "^7.4.4",
     "babel-eslint": "^10.0.1",
+    "jetifier": "^1.0.1",
     "babel-jest": "23.6.0",
     "babel-plugin-transform-inline-environment-variables": "^0.4.3",
     "babel-plugin-transform-remove-console": "^6.9.4",
