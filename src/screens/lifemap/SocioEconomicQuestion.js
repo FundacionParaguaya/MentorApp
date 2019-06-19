@@ -541,7 +541,7 @@ export class SocioEconomicQuestion extends Component {
                         }
                         detectError={this.detectError}
                         readonly={this.readOnly}
-                        options={getConditionalOptions(question, draft)}
+                        options={getConditionalOptions(question, draft, i)}
                         memberIndex={i + 1}
                         cleanErrorsOnUnmount={
                           this.cleanErrorsCodenamesOnUnmount
