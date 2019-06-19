@@ -16,7 +16,6 @@ import {
   getDraftWithUpdatedFamilyEconomics,
   getDraftWithUpdatedQuestionsCascading
 } from '../utils/conditional_logic'
-import { checkAndReplaceSpecialChars } from '../utils/helpers'
 import { getTotalScreens } from './helpers'
 
 export class SocioEconomicQuestion extends Component {
@@ -59,18 +58,10 @@ export class SocioEconomicQuestion extends Component {
       let currentDimension = ''
       let questionsPerScreen = []
       let totalScreens = 0
-      // this loops through the survey questions and replaces the values for text with decoded
-      // ones, which fixes problem encoding
-      const surveyQuestions = this.survey.surveyEconomicQuestions.map(
-        question =>
-          question.options.length
-            ? checkAndReplaceSpecialChars(question)
-            : question
-      )
 
       // go trough all questions and separate them by screen
       // filter method - checks if family members meet the conditions based on age
-      surveyQuestions
+      this.survey.surveyEconomicQuestions
         .filter(question =>
           !!question.conditions &&
           question.conditions.length &&
