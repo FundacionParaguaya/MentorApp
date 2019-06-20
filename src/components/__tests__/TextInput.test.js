@@ -86,7 +86,7 @@ describe('TextInput Component', () => {
       wrapper
         .find(FormInput)
         .props()
-        .onSubmitEditing()
+        .onBlur()
       expect(wrapper.instance().state.status).toEqual('blur')
     })
   })
@@ -99,7 +99,7 @@ describe('TextInput Component', () => {
       wrapper
         .find(FormInput)
         .props()
-        .onSubmitEditing()
+        .onBlur()
 
       expect(
         wrapper
@@ -134,7 +134,7 @@ describe('TextInput Component', () => {
     wrapper
       .find(FormInput)
       .props()
-      .onSubmitEditing()
+      .onBlur()
 
     expect(
       wrapper
@@ -153,7 +153,7 @@ describe('TextInput Component', () => {
     wrapper
       .find(FormInput)
       .props()
-      .onSubmitEditing()
+      .onBlur()
 
     expect(
       wrapper
@@ -172,7 +172,7 @@ describe('TextInput Component', () => {
     wrapper
       .find(FormInput)
       .props()
-      .onSubmitEditing()
+      .onBlur()
 
     expect(
       wrapper
