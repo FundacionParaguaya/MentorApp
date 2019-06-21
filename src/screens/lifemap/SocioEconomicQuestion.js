@@ -7,6 +7,7 @@ import StickyFooter from '../../components/StickyFooter'
 import TextInput from '../../components/TextInput'
 import Select from '../../components/Select'
 import Checkbox from '../../components/Checkbox'
+import Decoration from '../../components/decoration/Decoration'
 import { addSurveyDataCheckBox } from '../../redux/actions'
 import colors from '../../theme.json'
 import {
@@ -16,7 +17,6 @@ import {
   getDraftWithUpdatedFamilyEconomics,
   getDraftWithUpdatedQuestionsCascading
 } from '../utils/conditional_logic'
-import { checkAndReplaceSpecialChars } from '../utils/helpers'
 import { getTotalScreens } from './helpers'
 
 export class SocioEconomicQuestion extends Component {
@@ -59,18 +59,10 @@ export class SocioEconomicQuestion extends Component {
       let currentDimension = ''
       let questionsPerScreen = []
       let totalScreens = 0
-      // this loops through the survey questions and replaces the values for text with decoded
-      // ones, which fixes problem encoding
-      const surveyQuestions = this.survey.surveyEconomicQuestions.map(
-        question =>
-          question.options.length
-            ? checkAndReplaceSpecialChars(question)
-            : question
-      )
 
       // go trough all questions and separate them by screen
       // filter method - checks if family members meet the conditions based on age
-      surveyQuestions
+      this.survey.surveyEconomicQuestions
         .filter(question =>
           !!question.conditions &&
           question.conditions.length &&
@@ -263,6 +255,7 @@ export class SocioEconomicQuestion extends Component {
     } else {
       const socioEconomics = this.props.navigation.getParam('socioEconomics')
 
+      !socioEconomics ||
       socioEconomics.currentScreen === socioEconomics.totalScreens
         ? this.props.navigation.navigate('BeginLifemap', {
             survey: this.survey,
@@ -373,6 +366,7 @@ export class SocioEconomicQuestion extends Component {
             : 0
         }
       >
+        <Decoration variation="socioEconomicQuestion" />
         {/* questions for entire family */}
         {socioEconomics ? (
           questionsForThisScreen.forFamily
@@ -549,7 +543,7 @@ export class SocioEconomicQuestion extends Component {
                         }
                         detectError={this.detectError}
                         readonly={this.readOnly}
-                        options={getConditionalOptions(question, draft)}
+                        options={getConditionalOptions(question, draft, i)}
                         memberIndex={i + 1}
                         cleanErrorsOnUnmount={
                           this.cleanErrorsCodenamesOnUnmount

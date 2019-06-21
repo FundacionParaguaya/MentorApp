@@ -29,7 +29,6 @@ const createTestProps = props => ({
     })
   },
   drafts: [draft],
-  addDraftProgress: jest.fn(),
   ...props
 })
 

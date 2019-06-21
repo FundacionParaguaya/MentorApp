@@ -101,8 +101,8 @@ android {
         applicationId "com.povertystoplightapp"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
-        versionCode 48
-        versionName "1.9.6"
+        versionCode 52
+        versionName "1.9.10"
         ndk {
             abiFilters "armeabi-v7a", "x86"
         }
@@ -157,14 +157,13 @@ dependencies {
     implementation project(':@mapbox_react-native-mapbox-gl')
     implementation project(':react-native-device-info')
     implementation project(':@delightfulstudio_react-native-wheel-picker-android')
-    compile project(':react-native-sentry')
-    compile project(':react-native-splash-screen')
-    compile project(':react-native-vector-icons')
-    compile project(':react-native-languages')
-    compile project(':rn-fetch-blob')
-    implementation project(':mapbox-react-native-mapbox-gl')
+    implementation project(':react-native-sentry')
+    implementation project(':react-native-splash-screen')
+    implementation project(':react-native-vector-icons')
+    implementation project(':react-native-languages')
+    implementation project(':rn-fetch-blob')
     implementation fileTree(dir: "libs", include: ["*.jar"])
-    implementation "com.android.support:appcompat-v7:${rootProject.ext.supportLibVersion}"
+    implementation 'androidx.appcompat:appcompat:1.0.0'
     implementation "com.facebook.react:react-native:+"  // From node_modules
     androidTestImplementation('com.wix:detox:+') { transitive = true }
     androidTestImplementation 'junit:junit:4.12'

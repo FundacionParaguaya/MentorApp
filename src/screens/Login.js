@@ -128,7 +128,16 @@ export class Login extends Component {
           >
             Let&lsquo;s get started...
           </Text>
-          <Text style={globalStyles.h5}>USERNAME</Text>
+          <View
+            style={{
+              width: '100%',
+              maxWidth: 400,
+              marginLeft: 'auto',
+              marginRight: 'auto'
+            }}
+          >
+            <Text style={globalStyles.h5}>USERNAME</Text>
+          </View>
           <TextInput
             id="username"
             testID="username-input"
@@ -139,7 +148,17 @@ export class Login extends Component {
             }}
             onChangeText={username => this.setState({ username })}
           />
-          <Text style={globalStyles.h5}>PASSWORD</Text>
+          <View
+            style={{
+              width: '100%',
+              maxWidth: 400,
+              marginLeft: 'auto',
+              marginRight: 'auto'
+            }}
+          >
+            <Text style={globalStyles.h5}>PASSWORD</Text>
+          </View>
+
           <TextInput
             id="password"
             testID="password-input"
@@ -163,17 +182,27 @@ export class Login extends Component {
             <View />
           )}
           {this.state.loading ? (
-            <React.Fragment>
-              <Button
-                id="login-button"
-                handleClick={() => this.onLogin()}
-                text="Logging in ..."
-                disabled={true}
-                colored
-              />
-            </React.Fragment>
+            <Button
+              style={{
+                maxWidth: 400,
+                width: '100%',
+                marginLeft: 'auto',
+                marginRight: 'auto'
+              }}
+              id="login-button"
+              handleClick={() => this.onLogin()}
+              text="Logging in ..."
+              disabled={true}
+              colored
+            />
           ) : (
             <Button
+              style={{
+                maxWidth: 400,
+                width: '100%',
+                marginLeft: 'auto',
+                marginRight: 'auto'
+              }}
               id="login-button"
               testID="login-button"
               handleClick={() => this.onLogin()}
@@ -218,6 +247,10 @@ Login.propTypes = {
 
 const styles = StyleSheet.create({
   input: {
+    marginLeft: 'auto',
+    marginRight: 'auto',
+    maxWidth: 400,
+    width: '100%',
     fontSize: 16,
     fontFamily: 'Roboto',
     borderWidth: 1,

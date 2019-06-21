@@ -13,7 +13,7 @@ const createTestProps = props => ({
   env: 'env',
   submitDraft: jest.fn(),
   updateDraft: jest.fn(),
-  addDraftProgress: jest.fn(),
+  
   navigation: {
     navigate: jest.fn(),
     replace: jest.fn(),

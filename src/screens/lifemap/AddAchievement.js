@@ -18,10 +18,11 @@ export class AddAchievement extends Component {
     roadmap: '',
     errorsDetected: [],
     showErrors: false,
-    indicator: this.props.navigation.getParam('indicator'),
+    indicator: this.props.navigation.getParam('indicator') || '',
     draft:
       this.props.navigation.getParam('familyLifemap') ||
-      this.props.navigation.getParam('draft')
+      this.props.navigation.getParam('draft') ||
+      {}
   }
   detectError = (error, field) => {
     if (error && !this.errorsDetected.includes(field)) {
@@ -59,9 +60,7 @@ export class AddAchievement extends Component {
 
       const achievements = draft.achievements
 
-      const item = achievements.filter(
-        item => item.indicator === action.payload.indicator
-      )[0]
+      const item = achievements.find(item => item.indicator === indicator)
 
       let updatedDraft = draft
 
@@ -93,11 +92,11 @@ export class AddAchievement extends Component {
   }
 
   getAchievementValue = data => {
-    const achievement = data.achievements.filter(
-      achievement =>
-        achievement.indicator === this.props.navigation.getParam('indicator')
+    const achievement = data.achievements.find(
+      achievement => achievement.indicator === this.state.indicator
     )
-    return achievement[0] ? achievement[0] : {}
+
+    return achievement || this.state
   }
 
   render() {
