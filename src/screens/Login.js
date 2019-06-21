@@ -164,7 +164,7 @@ export class Login extends Component {
           )}
           {this.state.loading ? (
             <Button
-              style={{ width: 400, marginLeft: 'auto', marginRight: 'auto' }}
+              style={{ maxWidth: 400, marginLeft: 'auto', marginRight: 'auto' }}
               id="login-button"
               handleClick={() => this.onLogin()}
               text="Logging in ..."
@@ -173,7 +173,7 @@ export class Login extends Component {
             />
           ) : (
             <Button
-              style={{ width: 400, marginLeft: 'auto', marginRight: 'auto' }}
+              style={{ maxWidth: 400, marginLeft: 'auto', marginRight: 'auto' }}
               id="login-button"
               testID="login-button"
               handleClick={() => this.onLogin()}

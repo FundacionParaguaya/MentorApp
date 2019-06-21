@@ -65,8 +65,8 @@ const styles = StyleSheet.create({
   buttonWrapper: {
     height: 50,
     alignSelf: 'stretch',
-    alignItems: 'center',
-    marginBottom: 10
+    marginBottom: 10,
+    alignItems: 'center'
   }
 })
 

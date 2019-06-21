@@ -202,7 +202,7 @@ export class Dashboard extends Component {
                       marginTop: 20,
                       marginLeft: 'auto',
                       marginRight: 'auto',
-                      width: 400
+                      maxWidth: 400
                     }}
                     id="create-lifemap"
                     text={t('views.createLifemap')}
