@@ -225,6 +225,7 @@ export class Dashboard extends Component {
                       marginTop: 20,
                       marginLeft: 'auto',
                       marginRight: 'auto',
+                      width: '100%',
                       maxWidth: 400
                     }}
                     id="create-lifemap"

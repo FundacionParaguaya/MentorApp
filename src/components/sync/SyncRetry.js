@@ -47,7 +47,8 @@ SyncRetry.propTypes = {
 }
 const styles = StyleSheet.create({
   button: {
-    width: 400,
+    width: '100%',
+    maxWidth: 400,
     backgroundColor: colors.palered
   },
   view: {
