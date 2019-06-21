@@ -119,6 +119,32 @@ export default class Decoration extends Component {
             </View>
           </View>
         )}
+        {variation === 'socioEconomicQuestion' && (
+          <View style={{ zIndex: -1 }}>
+            <View style={[styles.ballsContainer, { zIndex: 1 }]}>
+              <View>
+                <Orb
+                  size={45}
+                  color={colors.palegreen}
+                  position={{ x: -55, y: 270 }}
+                />
+
+                <Orb
+                  size={45}
+                  color={colors.palegreen}
+                  position={{ x: 190, y: 100 }}
+                />
+
+                <Orb
+                  size={40}
+                  color={colors.palegold}
+                  position={{ x: -225, y: 205 }}
+                />
+              </View>
+            </View>
+          </View>
+        )}
+
         {variation === 'primaryParticipant' && (
           <View style={{ zIndex: -1 }}>
             <View style={[styles.ballsContainer, { zIndex: 1 }]}>
