@@ -13,11 +13,12 @@ const createTestProps = props => ({
   env: 'env',
   submitDraft: jest.fn(),
   updateDraft: jest.fn(),
-  addDraftProgress: jest.fn(),
+  
   navigation: {
     navigate: jest.fn(),
     replace: jest.fn(),
     setParams: jest.fn(),
+    isFocused: jest.fn(),
     popToTop: jest.fn(),
     reset: jest.fn(),
 

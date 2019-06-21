@@ -7,9 +7,9 @@ import {
   FlatList,
   Image,
   TouchableHighlight,
-  NetInfo,
   Linking
 } from 'react-native'
+import NetInfo from '@react-native-community/netinfo'
 import { connect } from 'react-redux'
 import PropTypes from 'prop-types'
 import { withNamespaces } from 'react-i18next'
@@ -40,7 +40,7 @@ export class Family extends Component {
       }`
     }
   }
-
+  unsubscribeNetChange
   state = {
     activeTab: this.props.navigation.getParam('activeTab') || 'Details'
   }
@@ -59,15 +59,14 @@ export class Family extends Component {
     const { survey } = this.props.nav
     const { navigation } = this.props
 
-    // monitor for connection changes
-    NetInfo.addEventListener('connectionChange', conncection => {
-      const isOnline = conncection.type === 'none' ? false : true
+    // // monitor for connection changes
+    this.unsubscribeNetChange = NetInfo.addEventListener(isOnline => {
       this.setState({ isOnline })
     })
 
     // check if online first
-    NetInfo.isConnected.fetch().then(isOnline => {
-      this.setState({ isOnline })
+    NetInfo.fetch().then(state => {
+      this.setState({ isOnline: state.isConnected })
     })
 
     this.props.navigation.setParams({
@@ -114,28 +113,35 @@ export class Family extends Component {
   survey = this.props.surveys.find(
     item => item.id === this.familyLifemap.surveyId
   )
+
+  componentWillUnmount() {
+    this.unsubscribeNetChange()
+  }
+
   render() {
     const { activeTab } = this.state
     const { t, navigation } = this.props
     const { familyData } = this.familyLifemap
-    let email = false
-    let phone = false
-    if (
-      typeof familyData.familyMembersList[0].email !== 'undefined' &&
-      familyData.familyMembersList[0].email !== null
-    ) {
-      if (familyData.familyMembersList[0].email.length) {
-        email = familyData.familyMembersList[0].email
-      }
-    }
-    if (
-      typeof familyData.familyMembersList[0].phoneNumber !== 'undefined' &&
-      familyData.familyMembersList[0].phoneNumber !== null
-    ) {
-      if (familyData.familyMembersList[0].phoneNumber.length) {
-        phone = familyData.familyMembersList[0].phoneNumber
-      }
-    }
+    const email =
+      familyData &&
+      familyData.familyMembersList &&
+      familyData.familyMembersList.length &&
+      !!familyData.familyMembersList[0].email &&
+      familyData.familyMembersList[0].email !== null &&
+      familyData.familyMembersList[0].email.length
+        ? familyData.familyMembersList[0].email
+        : false
+
+    const phone =
+      familyData &&
+      familyData.familyMembersList &&
+      familyData.familyMembersList.length &&
+      !!familyData.familyMembersList[0].phoneNumber &&
+      familyData.familyMembersList[0].phoneNumber !== null &&
+      familyData.familyMembersList[0].phoneNumber.length
+        ? familyData.familyMembersList[0].phoneNumber
+        : false
+
     return (
       <ScrollView
         style={globalStyles.background}
@@ -168,8 +174,8 @@ export class Family extends Component {
                   </View>
                   <MapboxGL.MapView
                     centerCoordinate={[
-                      +familyData.longitude,
-                      +familyData.latitude
+                      +familyData.longitude || 0,
+                      +familyData.latitude || 0
                     ]}
                     zoomLevel={15}
                     style={{ width: '100%', height: 189 }}
@@ -271,9 +277,7 @@ export class Family extends Component {
                   renderItem={({ item, index }) => (
                     <FamilyListItem
                       icon
-                      text={`${decodeURIComponent(escape(item.firstName))} ${
-                        !index ? decodeURIComponent(escape(item.lastName)) : ''
-                      }`}
+                      text={`${item.firstName} ${!index ? item.lastName : ''}`}
                       handleClick={() => {
                         if (!index) {
                           navigation.navigate('FamilyParticipant', {

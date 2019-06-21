@@ -13,6 +13,9 @@ import { url } from '../../config'
 export class Final extends Component {
   survey = this.props.navigation.getParam('survey')
   draft = this.props.navigation.getParam('draft')
+  state = {
+    loading: false
+  }
   shouldComponentUpdate() {
     return this.props.navigation.isFocused()
   }
@@ -25,16 +28,64 @@ export class Final extends Component {
 
   onPressBack = () => {
     this.props.navigation.replace('Overview', {
-      resumeDraft: false
+      resumeDraft: false,
+      draft: this.draft,
+      survey: this.survey
     })
   }
 
+  prepareDraftForSubmit = draft => {
+    // remove unnecessary for sync properties from saved draft
+    const { progress, errors, status, ...result } = Object.assign({}, draft)
+
+    // check for frequent sync errors
+
+    // set country to survey country if not set
+    if (!result.familyData.country) {
+      result.familyData.country = this.survey.surveyConfig.surveyLocation.country
+    }
+
+    // filter out ghost family members
+    result.familyData.familyMembersList = result.familyData.familyMembersList.filter(
+      member => member.firstName
+    )
+
+    result.familyData.countFamilyMembers =
+      result.familyData.familyMembersList.length
+
+    // check for family members with no firstParticipant property
+    if (
+      result.familyData.familyMembersList.some(
+        member => !member.firstParticipant
+      )
+    ) {
+      result.familyData.familyMembersList.map(member => {
+        if (!member.firstParticipant) {
+          return {
+            ...member,
+            firstParticipant: false
+          }
+        } else {
+          return member
+        }
+      })
+    }
+
+    return result
+  }
+
   saveDraft = () => {
+    this.setState({
+      loading: true
+    })
+
+    const draft = this.prepareDraftForSubmit(this.draft)
+
     this.props.submitDraft(
       url[this.props.env],
       this.props.user.token,
-      this.draft.draftId,
-      this.draft
+      draft.draftId,
+      draft
     )
     this.props.navigation.popToTop()
     this.props.navigation.navigate('Dashboard')
@@ -77,6 +128,7 @@ export class Final extends Component {
         <View style={{ height: 50 }}>
           <Button
             colored
+            loading={this.state.loading}
             text={t('general.close')}
             handleClick={this.saveDraft}
           />

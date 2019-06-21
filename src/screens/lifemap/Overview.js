@@ -22,7 +22,8 @@ export class Overview extends Component {
     tipIsVisible: false,
     draft:
       this.props.navigation.getParam('draft') ||
-      this.props.navigation.getParam('familyLifemap')
+      this.props.navigation.getParam('familyLifemap') ||
+      {}
   }
 
   isDraftResuming = this.props.navigation.getParam('resumeDraft')
@@ -64,7 +65,7 @@ export class Overview extends Component {
   onPressBack = () => {
     const { draft } = this.state
     const survey = this.survey
-   
+
     //If we do not arrive to this screen from the families screen
     if (!this.familyLifemap) {
       const skippedQuestions = this.state.draft.indicatorSurveyDataList.filter(
@@ -73,9 +74,9 @@ export class Overview extends Component {
 
       // If there are no skipped questions
       if (skippedQuestions.length > 0) {
-        this.props.navigation.navigate('Skipped', { draft, survey })
+        this.props.navigation.push('Skipped', { draft, survey })
       } else
-        this.props.navigation.navigate('Question', {
+        this.props.navigation.push('Question', {
           step: this.survey.surveyStoplightQuestions.length - 1,
           draft,
           survey
@@ -86,7 +87,7 @@ export class Overview extends Component {
   }
 
   navigateToScreen = (screen, indicator, indicatorText) =>
-    this.props.navigation.navigate(screen, {
+    this.props.navigation.push(screen, {
       familyLifemap: this.state.draft,
       survey: this.survey,
       indicator,
@@ -113,16 +114,23 @@ export class Overview extends Component {
   }
 
   getPotentialPrioritiesCount() {
-    return this.state.draft.indicatorSurveyDataList.filter(
-      question => question.value === 1 || question.value === 2
-    ).length
+    const { draft } = this.state
+    return (
+      draft &&
+      draft.indicatorSurveyDataList &&
+      draft.indicatorSurveyDataList.filter(
+        question => question.value === 1 || question.value === 2
+      ).length
+    )
   }
 
   getMandatoryPrioritiesCount() {
-    const potentialPrioritiesCount = this.getPotentialPrioritiesCount()
+    const potentialPrioritiesCount = this.getPotentialPrioritiesCount() || 0
+    const mimimumPriorities =
+      (this.survey && this.survey.minimumPriorities) || 0
 
-    return potentialPrioritiesCount > this.survey.minimumPriorities
-      ? this.survey.minimumPriorities
+    return potentialPrioritiesCount > mimimumPriorities
+      ? mimimumPriorities
       : potentialPrioritiesCount
   }
 

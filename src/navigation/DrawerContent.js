@@ -5,9 +5,9 @@ import {
   Text,
   StyleSheet,
   View,
-  Platform,
-  AsyncStorage
+  Platform
 } from 'react-native'
+import AsyncStorage from '@react-native-community/async-storage'
 import MapboxGL from '@mapbox/react-native-mapbox-gl'
 import { withNamespaces } from 'react-i18next'
 import { connect } from 'react-redux'
@@ -16,7 +16,7 @@ import globalStyles from '../globalStyles'
 import IconButton from '../components/IconButton'
 import i18n from '../i18n'
 import colors from '../theme.json'
-import { switchLanguage, logout, updateNav } from '../redux/actions'
+import { switchLanguage, logout } from '../redux/actions'
 import LogoutPopup from './LogoutPopup'
 import dashboardIcon from '../../assets/images/icon_dashboard.png'
 import familyNavIcon from '../../assets/images/icon_family_nav.png'
@@ -284,10 +284,8 @@ export class DrawerContent extends Component {
 }
 
 DrawerContent.propTypes = {
-  nav: PropTypes.object.isRequired,
   lng: PropTypes.string,
   switchLanguage: PropTypes.func.isRequired,
-  updateNav: PropTypes.func.isRequired,
   logout: PropTypes.func.isRequired,
   navigation: PropTypes.object.isRequired,
   user: PropTypes.object.isRequired,
@@ -297,19 +295,17 @@ DrawerContent.propTypes = {
   sync: PropTypes.object.isRequired
 }
 
-const mapStateToProps = ({ env, user, drafts, nav, dimensions, sync }) => ({
+const mapStateToProps = ({ env, user, drafts, dimensions, sync }) => ({
   env,
   user,
   drafts,
-  nav,
   dimensions,
   sync
 })
 
 const mapDispatchToProps = {
   switchLanguage,
-  logout,
-  updateNav
+  logout
 }
 
 export default withNamespaces()(

@@ -76,7 +76,7 @@ export class FamilyMembersNames extends Component {
         showErrors: true
       })
     } else {
-      this.props.navigation.navigate('Location', {
+      this.props.navigation.push('Location', {
         draft: this.state.draft,
         survey: this.survey
       })
@@ -102,6 +102,7 @@ export class FamilyMembersNames extends Component {
             {
               [memberIndex]: {
                 ...draft.familyData.familyMembersList[memberIndex],
+                firstParticipant: false,
                 [memberField]: value
               }
             }

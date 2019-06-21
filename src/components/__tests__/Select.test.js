@@ -11,7 +11,7 @@ const createTestProps = props => ({
   value: '',
   placeholder: 'This is a select',
   field: 'test',
-  countrySelect: true,
+  countrySelect: false,
   required: false,
   detectError: jest.fn(),
   ...props
@@ -31,7 +31,7 @@ describe('Select dropdown', () => {
     })
   })
   it('renders all necessary text fields', () => {
-    expect(wrapper.find(Text)).toHaveLength(5)
+    expect(wrapper.find(Text)).toHaveLength(1)
   })
 
   it('opens a modal when pressed', () => {
@@ -45,19 +45,6 @@ describe('Select dropdown', () => {
     expect(wrapper.find(BottomModal)).toHaveProp({ isOpen: true })
   })
 
-  it('selects an option when one is pressed', () => {
-    const spy = jest.spyOn(wrapper.instance(), 'validateInput')
-
-    wrapper
-      .find(BottomModal)
-      .find(ListItem)
-      .at(1)
-      .props()
-      .onPress()
-
-    expect(spy).toHaveBeenCalledTimes(1)
-    expect(spy).toHaveBeenCalledWith('bg')
-  })
   it('selects NONE if the last option is pressed', () => {
     const spy = jest.spyOn(wrapper.instance(), 'validateInput')
     wrapper
@@ -71,7 +58,10 @@ describe('Select dropdown', () => {
   it('render a list of items when passed options', () => {
     props = createTestProps({
       value: '2',
-      options: [{ value: 1, text: '1' }, { value: 2, text: '2' }],
+      options: [
+        { value: 1, text: '1', code: 1 },
+        { value: 2, text: '2', code: 2 }
+      ],
       countrySelect: false
     })
     wrapper = shallow(<Select {...props} />)
@@ -98,8 +88,7 @@ describe('Select dropdown', () => {
       .props()
       .onPress()
 
-    // expect(spy).toHaveBeenCalledTimes(2)
-    // expect(spy).toHaveBeenCalledWith(2)
+    expect(spy).toHaveBeenCalledTimes(2)
   })
 
   it('shows required error message when parent form is submitted', () => {

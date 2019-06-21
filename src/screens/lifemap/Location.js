@@ -7,10 +7,10 @@ import {
   Image,
   Keyboard,
   TouchableHighlight,
-  NetInfo,
   AppState
 } from 'react-native'
 import Geolocation from '@react-native-community/geolocation'
+import NetInfo from '@react-native-community/netinfo'
 import Icon from 'react-native-vector-icons/MaterialIcons'
 import CommunityIcon from 'react-native-vector-icons/MaterialCommunityIcons'
 /* eslint-disable import/named */
@@ -35,7 +35,7 @@ import { getTotalScreens } from './helpers'
 export class Location extends Component {
   survey = this.props.navigation.getParam('survey')
   readOnly = this.props.navigation.getParam('readOnly')
-
+  unsubscribeNetChange
   state = {
     showList: false,
     showErrors: false,
@@ -71,20 +71,21 @@ export class Location extends Component {
   }
 
   onDragMap = async region => {
-    const { draft } = this.state
+    const { draft, zoom } = this.state
     const { familyData } = draft
     const { coordinates } = region.geometry
     const longitude = coordinates[0]
     const latitude = coordinates[1]
-    let zoom = await this._map.getZoom()
 
     // prevent jumping of the marker by updating only when the region changes
     if (
       familyData.latitude !== latitude ||
-      familyData.longitude !== longitude
+      familyData.longitude !== longitude ||
+      zoom !== region.properties.zoomLevel
     ) {
+      console.log('onDragMap', region)
       this.setState({
-        zoom: zoom,
+        zoom: region.properties.zoomLevel || 15,
         draft: {
           ...draft,
           familyData: {
@@ -316,6 +317,11 @@ export class Location extends Component {
   }
 
   componentDidMount() {
+    // monitor for connection changes
+    this.unsubscribeNetChange = NetInfo.addEventListener(isOnline => {
+      this.determineScreenState(isOnline)
+    })
+
     const { draft } = this.state
     if (!this.readOnly) {
       this.setState({
@@ -358,20 +364,16 @@ export class Location extends Component {
       this._keyboardDidHide
     )
 
-    // monitor for connection changes
-    NetInfo.addEventListener('connectionChange', conncection => {
-      const isOnline = conncection.type === 'none' ? false : true
-
-      this.determineScreenState(isOnline)
-    })
-
     // check if online first
-    NetInfo.isConnected.fetch().then(isOnline => {
-      this.determineScreenState(isOnline)
+    NetInfo.fetch().then(state => {
+      this.determineScreenState(state.isConnected)
     })
   }
 
   componentWillUnmount() {
+    if (this.unsubscribeNetChange) {
+      this.unsubscribeNetChange()
+    }
     AppState.removeEventListener('change', this._handleAppStateChange)
     this.keyboardDidShowListener.remove()
     this.keyboardDidHideListener.remove()
@@ -395,7 +397,7 @@ export class Location extends Component {
       const survey = this.survey
 
       if (draft.familyData.countFamilyMembers > 1) {
-        this.props.navigation.navigate('FamilyMembersNames', { draft, survey })
+        this.props.navigation.push('FamilyMembersNames', { draft, survey })
       } else {
         this.props.navigation.replace('FamilyParticipant', { draft, survey })
       }
@@ -418,6 +420,7 @@ export class Location extends Component {
       })
     } else {
       this.props.updateDraft(draft.draftId, draft)
+
       this.props.navigation.replace('SocioEconomicQuestion', {
         draft,
         survey: this.survey
@@ -661,7 +664,10 @@ export class Location extends Component {
             ref={map => {
               this._map = map
             }}
-            centerCoordinate={[+familyData.longitude, +familyData.latitude]}
+            centerCoordinate={[
+              +familyData.longitude || 0,
+              +familyData.latitude || 0
+            ]}
             zoomLevel={this.state.zoom}
             style={{ width: '100%', flexGrow: 2 }}
             logoEnabled={false}

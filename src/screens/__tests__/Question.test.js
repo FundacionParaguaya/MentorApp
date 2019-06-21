@@ -37,8 +37,6 @@ const createTestProps = props => ({
   },
   dimensions: { height: 100 },
   addSurveyData: jest.fn(),
-  addDraftProgress: jest.fn(),
-  deleteSurveyPriorityAcheivementData: jest.fn(),
   drafts: [
     {
       draftId: 1,

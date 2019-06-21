@@ -10,7 +10,6 @@ import {
 } from 'react-native'
 import { Sentry } from 'react-native-sentry'
 import { AndroidBackHandler } from 'react-navigation-backhandler'
-import { updateNav } from '../redux/actions'
 import { withNamespaces } from 'react-i18next'
 import PropTypes from 'prop-types'
 import Button from '../components/Button'
@@ -23,19 +22,12 @@ import colors from '../theme.json'
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons'
 export class Dashboard extends Component {
   acessibleComponent = React.createRef()
-
+  state = {
+    green: 0,
+    yellow: 0,
+    red: 0
+  }
   componentDidMount() {
-    const { survey, readonly, draftId } = this.props.nav
-
-    // clear nav state if it's set to something
-    if (survey || readonly || draftId) {
-      this.props.updateNav({
-        survey: null,
-        readonly: false,
-        draftId: null
-      })
-    }
-
     if (UIManager.AccessibilityEventTypes) {
       setTimeout(() => {
         UIManager.sendAccessibilityEvent(
@@ -52,6 +44,8 @@ export class Dashboard extends Component {
         env: this.props.env
       }
     })
+
+    this.calculateIndicators()
   }
 
   navigateToPendingSync = draft => {
@@ -91,11 +85,6 @@ export class Dashboard extends Component {
       })
   }
   navigateToSynced = item => {
-    this.props.updateNav({
-      survey: this.props.surveys.find(survey => survey.id === item.surveyId),
-      draftId: item.draftId,
-      readonly: true
-    })
     this.props.navigation.navigate('Family', {
       familyName: item.familyData.familyMembersList[0].firstName,
       familyLifemap: item,
@@ -123,26 +112,42 @@ export class Dashboard extends Component {
     this.props.navigation.navigate('Surveys')
   }
 
-  render() {
-    const { t, drafts } = this.props
-    let valGreen = 0
-    let valYellow = 0
-    let valRed = 0
+  calculateIndicators() {
+    let green = 0
+    let yellow = 0
+    let red = 0
     if (typeof this.props.families !== 'undefined') {
       if (this.props.families.length) {
         this.props.families.forEach(el => {
-          el.snapshotList[0].indicatorSurveyDataList.forEach(e => {
-            if (e.value === 1) {
-              valRed++
-            } else if (e.value === 2) {
-              valYellow++
-            } else if (e.value === 3) {
-              valGreen++
-            }
-          })
+          if (
+            el.snapshotList &&
+            el.snapshotList.length &&
+            el.snapshotList[0].indicatorSurveyDataList
+          ) {
+            el.snapshotList[0].indicatorSurveyDataList.forEach(e => {
+              if (e.value === 1) {
+                red++
+              } else if (e.value === 2) {
+                yellow++
+              } else if (e.value === 3) {
+                green++
+              }
+            })
+          }
         })
       }
     }
+
+    this.setState({
+      green,
+      yellow,
+      red
+    })
+  }
+
+  render() {
+    const { t, drafts } = this.props
+    const { green, yellow, red } = this.state
 
     const list = drafts.slice().reverse()
 
@@ -195,7 +200,7 @@ export class Dashboard extends Component {
                       <View style={styles.circleContainer}>
                         <View style={styles.circleGreen} />
                       </View>
-                      <Text style={styles.numberIndicator}>{valGreen}</Text>
+                      <Text style={styles.numberIndicator}>{green}</Text>
                       <Text style={styles.colorIndicator}>Green</Text>
                     </View>
 
@@ -203,7 +208,7 @@ export class Dashboard extends Component {
                       <View style={styles.circleContainer}>
                         <View style={styles.circleYellow} />
                       </View>
-                      <Text style={styles.numberIndicator}>{valYellow}</Text>
+                      <Text style={styles.numberIndicator}>{yellow}</Text>
                       <Text style={styles.colorIndicator}>Yellow</Text>
                     </View>
 
@@ -211,7 +216,7 @@ export class Dashboard extends Component {
                       <View style={styles.circleContainer}>
                         <View style={styles.circleRed} />
                       </View>
-                      <Text style={styles.numberIndicator}>{valRed}</Text>
+                      <Text style={styles.numberIndicator}>{red}</Text>
                       <Text style={styles.colorIndicator}>Red</Text>
                     </View>
                   </View>
@@ -328,7 +333,6 @@ const styles = StyleSheet.create({
 Dashboard.propTypes = {
   navigation: PropTypes.object.isRequired,
   t: PropTypes.func.isRequired,
-  updateNav: PropTypes.func.isRequired,
   drafts: PropTypes.array.isRequired,
   env: PropTypes.oneOf(['production', 'demo', 'testing', 'development']),
   user: PropTypes.object.isRequired,
@@ -359,9 +363,7 @@ export const mapStateToProps = ({
   nav
 })
 
-const mapDispatchToProps = {
-  updateNav
-}
+const mapDispatchToProps = {}
 
 export default withNamespaces()(
   connect(
