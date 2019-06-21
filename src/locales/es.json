@@ -155,7 +155,10 @@
       "weCannotContinueToCreateTheLifeMap": "Si no estás de acuerdo, ¡no podremos seguir creando el mapa de vida!",
       "areYouSureYouWantToExit": "¿Estás seguro de que quieres salir?",
       "yourLifemapIsNotComplete": "Tu Mapa de Vida no está completo. ¿Estás seguro de que quieres salir?",
-      "thisWillBeSavedAsADraft": "Esto se guardará como un borrador."
+      "thisWillBeSavedAsADraft": "Esto se guardará como un borrador.",
+      "deviceMemoryFull": "¡la memoria de tu dispositivo está llena!",
+      "freeUpSpace": "Por favor, libere",
+      "toContinueUsingTheApp": "de espacio para continuar usando Stoplight Mobile."
     },
     "logout": {
       "logout": "Cerrar sesión",
