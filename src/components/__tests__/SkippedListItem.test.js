@@ -8,7 +8,8 @@ import ListItem from '../ListItem'
 
 const createTestProps = props => ({
   handleClick: jest.fn(),
-  item: 'Indicator name',
+  lng: {},
+  item: { questionText: 'Indicator name' },
   ...props
 })
 

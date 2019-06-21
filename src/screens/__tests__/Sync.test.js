@@ -9,9 +9,11 @@ import SyncInProgress from '../../components/sync/SyncInProgress'
 const createTestProps = props => ({
   t: value => value,
   navigation: { setParams: jest.fn() },
+  user: { token: '1234' },
   lng: 'en',
   drafts: [{ syncedAt: 1 }, { syncedAt: 2 }],
   offline: { outbox: [], online: true },
+  submitDraft: jest.fn(),
   ...props
 })
 

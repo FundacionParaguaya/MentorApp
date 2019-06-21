@@ -21,10 +21,11 @@ export class AddPriority extends Component {
     validationError: false,
     showErrors: false,
     errorsDetected: [],
-    indicator: this.props.navigation.getParam('indicator'),
+    indicator: this.props.navigation.getParam('indicator') || '',
     draft:
       this.props.navigation.getParam('familyLifemap') ||
-      this.props.navigation.getParam('draft')
+      this.props.navigation.getParam('draft') ||
+      {}
   }
 
   shouldComponentUpdate() {
@@ -69,13 +70,8 @@ export class AddPriority extends Component {
       })
     } else {
       const { reason, action, estimatedDate, indicator, draft } = this.state
-
       const priorities = draft.priorities
-
-      const item = priorities.filter(
-        item => item.indicator === action.payload.indicator
-      )[0]
-
+      const item = priorities.find(item => item.indicator === indicator)
       let updatedDraft = draft
 
       // If item exists update it
@@ -109,11 +105,10 @@ export class AddPriority extends Component {
   }
 
   getPriorityValue = data => {
-    const priority = data.priorities.filter(
-      priority =>
-        priority.indicator === this.props.navigation.getParam('indicator')
+    const priority = data.priorities.find(
+      priority => priority.indicator === this.state.indicator
     )
-    return priority[0] ? priority[0] : this.state
+    return priority ? priority : this.state
   }
 
   render() {
@@ -125,6 +120,7 @@ export class AddPriority extends Component {
     for (let x = 1; x < 25; x++) {
       allOptionsNums.push({ value: x, text: String(x) })
     }
+    
     return (
       <StickyFooter
         continueLabel={t('general.save')}
@@ -184,7 +180,7 @@ export class AddPriority extends Component {
           />
         </View>
         {/* Error message */}
-        {validationError ? (
+        {validationError && !this.state.errorsDetected.length ? (
           <Text style={{ paddingHorizontal: 15, color: colors.red }}>
             {t('validation.fieldIsRequired')}
           </Text>

@@ -284,7 +284,6 @@ export class DrawerContent extends Component {
 }
 
 DrawerContent.propTypes = {
-  nav: PropTypes.object.isRequired,
   lng: PropTypes.string,
   switchLanguage: PropTypes.func.isRequired,
   logout: PropTypes.func.isRequired,
@@ -296,11 +295,10 @@ DrawerContent.propTypes = {
   sync: PropTypes.object.isRequired
 }
 
-const mapStateToProps = ({ env, user, drafts, nav, dimensions, sync }) => ({
+const mapStateToProps = ({ env, user, drafts, dimensions, sync }) => ({
   env,
   user,
   drafts,
-  nav,
   dimensions,
   sync
 })

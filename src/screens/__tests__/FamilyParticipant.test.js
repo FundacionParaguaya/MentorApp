@@ -65,6 +65,8 @@ const createTestProps = props => ({
         return survey
       } else if (param === 'draft') {
         return draft
+      } else if (param === 'readOnly') {
+        return false
       } else {
         return 1
       }
@@ -100,6 +102,8 @@ describe('Family Participant View', () => {
                 return draft
               } else if (param === 'survey') {
                 return survey
+              } else if (param === 'readOnly') {
+                return false
               } else {
                 return null
               }
@@ -152,6 +156,8 @@ describe('Family Participant View', () => {
               return survey
             } else if (param === 'draft') {
               return draft
+            } else if (param === 'readOnly') {
+              return false
             } else {
               return 1
             }
@@ -296,7 +302,7 @@ describe('Render optimization', () => {
       drafts: [...wrapper.instance().props.drafts, { draftId: 5 }]
     })
     expect(wrapper.instance().props.navigation.isFocused).toHaveBeenCalledTimes(
-      1
+      2
     )
   })
   it('updates screen if focused', () => {

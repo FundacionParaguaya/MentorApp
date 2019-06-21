@@ -15,6 +15,7 @@ const createTestProps = props => ({
   setSyncedState: jest.fn(),
   user: { username: 'Test' },
   drafts: [{ id: 1 }],
+  dimensions: {},
   sync: { appVersion: '1.7.4' },
   ...props
 })
