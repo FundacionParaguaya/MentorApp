@@ -21,7 +21,8 @@ Enzyme.configure({ adapter: new Adapter() })
 // mock device info
 jest.mock('react-native-device-info', () => {
   return {
-    getModel: jest.fn()
+    getModel: jest.fn(),
+    getFreeDiskStorage: jest.fn()
   }
 })
 
