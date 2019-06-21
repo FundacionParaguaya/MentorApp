@@ -5,10 +5,8 @@ import PropTypes from 'prop-types'
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons'
 import Button from '../Button'
 import i18n from '../../i18n'
-
 import colors from '../../theme.json'
 import globalStyles from '../../globalStyles'
-
 export class SyncRetry extends Component {
   render() {
     const { draftsWithError, retrySubmit } = this.props
@@ -48,6 +46,11 @@ SyncRetry.propTypes = {
   retrySubmit: PropTypes.func.isRequired
 }
 const styles = StyleSheet.create({
+  button: {
+    width: '100%',
+    maxWidth: 400,
+    backgroundColor: colors.palered
+  },
   view: {
     justifyContent: 'center',
     alignItems: 'center',
@@ -63,10 +66,8 @@ const styles = StyleSheet.create({
   buttonWrapper: {
     height: 50,
     alignSelf: 'stretch',
-    marginBottom: 10
-  },
-  button: {
-    backgroundColor: colors.palered
+    marginBottom: 10,
+    alignItems: 'center'
   }
 })
 

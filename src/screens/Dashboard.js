@@ -150,7 +150,6 @@ export class Dashboard extends Component {
     const { green, yellow, red } = this.state
 
     const list = drafts.slice().reverse()
-
     return (
       <AndroidBackHandler onBackPress={() => true}>
         <View style={globalStyles.ViewMainContainer}>
@@ -222,7 +221,13 @@ export class Dashboard extends Component {
                   </View>
 
                   <Button
-                    style={{ marginTop: 20 }}
+                    style={{
+                      marginTop: 20,
+                      marginLeft: 'auto',
+                      marginRight: 'auto',
+                      width: '100%',
+                      maxWidth: 400
+                    }}
                     id="create-lifemap"
                     text={t('views.createLifemap')}
                     colored
