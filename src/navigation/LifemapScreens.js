@@ -23,7 +23,10 @@ export default {
     navigationOptions: ({ navigation }) => ({
       ...addCloseIcon(navigation),
       headerTitle: (
-        <Title title="views.termsConditions" style={{ marginLeft: 20 }} />
+        <Title
+          title="views.termsConditions"
+          style={{ marginLeft: 'auto', marginRight: 'auto' }}
+        />
       )
     })
   },
@@ -32,7 +35,10 @@ export default {
     navigationOptions: ({ navigation }) => ({
       ...addCloseIcon(navigation),
       headerTitle: (
-        <Title title="views.privacyPolicy" style={{ marginLeft: 20 }} />
+        <Title
+          title="views.privacyPolicy"
+          style={{ marginLeft: 'auto', marginRight: 'auto' }}
+        />
       )
     })
   },
@@ -45,7 +51,10 @@ export default {
       }),
       ...addCloseIcon(navigation),
       headerTitle: (
-        <Title title="views.primaryParticipant" style={{ marginLeft: 20 }} />
+        <Title
+          title="views.primaryParticipant"
+          style={{ marginLeft: 'auto', marginRight: 'auto' }}
+        />
       )
     })
   },
