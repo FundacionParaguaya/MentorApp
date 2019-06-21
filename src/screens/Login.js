@@ -87,7 +87,7 @@ export class Login extends Component {
       loading: true
     })
 
-    let env = this.state.username.trim() === 'demo' ? 'demo' : 'production'
+    let env = this.state.username.trim() === 'demo' ? 'testing' : 'production'
     let username = this.state.username.trim()
     let envCheck = this.state.username.trim().substring(0, 2)
 
