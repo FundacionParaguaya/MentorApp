@@ -7,6 +7,7 @@ import StickyFooter from '../../components/StickyFooter'
 import TextInput from '../../components/TextInput'
 import Select from '../../components/Select'
 import Checkbox from '../../components/Checkbox'
+import Decoration from '../../components/decoration/Decoration'
 import { addSurveyDataCheckBox } from '../../redux/actions'
 import colors from '../../theme.json'
 import {
@@ -365,6 +366,7 @@ export class SocioEconomicQuestion extends Component {
             : 0
         }
       >
+        <Decoration variation="socioEconomicQuestion" />
         {/* questions for entire family */}
         {socioEconomics ? (
           questionsForThisScreen.forFamily

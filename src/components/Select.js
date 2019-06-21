@@ -451,7 +451,8 @@ const styles = StyleSheet.create({
     paddingBottom: 6,
     borderBottomColor: colors.grey,
     borderTopLeftRadius: 8,
-    borderTopRightRadius: 8
+    borderTopRightRadius: 8,
+    backgroundColor: colors.white
   },
   placeholder: {
     paddingHorizontal: 15,
