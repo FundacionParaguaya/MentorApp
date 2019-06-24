@@ -37,7 +37,7 @@ export class DrawerContent extends Component {
   changeLanguage = lng => {
     i18n.changeLanguage(lng) // change the currently uses i18n language
     this.props.switchLanguage(lng) // set the redux language for next app use
-    this.props.navigation.toggleDrawer() // close drawer
+    this.props.navigation.closeDrawer() // close drawer
   }
   logUserOut = () => {
     const { checkboxesVisible, ckeckedBoxes } = this.state
@@ -91,7 +91,7 @@ export class DrawerContent extends Component {
     const { navigation } = this.props
 
     this.setState({ activeTab: screen })
-    navigation.toggleDrawer()
+    navigation.closeDrawer()
 
     if (currentStack.key === 'Surveys' && currentStack.index) {
       const draft =
@@ -250,7 +250,7 @@ export class DrawerContent extends Component {
           id="logout"
           style={styles.navItem}
           onPress={() => {
-            this.props.navigation.toggleDrawer()
+            this.props.navigation.closeDrawer()
             navigation.setParams({ logoutModalOpen: true })
           }}
           communityIcon="login-variant"

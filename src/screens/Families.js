@@ -2,7 +2,6 @@ import React, { Component } from 'react'
 import {
   StyleSheet,
   ScrollView,
-  ActivityIndicator,
   FlatList,
   View,
   Text,
@@ -20,45 +19,8 @@ import SearchBar from '../components/SearchBar'
 import FamiliesListItem from '../components/FamiliesListItem'
 
 export class Families extends Component {
-  static navigationOptions = ({ navigation }) => {
-    return {
-      title: navigation.getParam('title', 'Families')
-    }
-  }
-
   state = { search: '' }
   acessibleComponent = React.createRef()
-
-  updateTitle = () =>
-    this.props.navigation.setParams({
-      title: this.props.t('views.families')
-    })
-
-  componentDidMount() {
-    if (UIManager.AccessibilityEventTypes) {
-      setTimeout(() => {
-        UIManager.sendAccessibilityEvent(
-          findNodeHandle(this.acessibleComponent.current),
-          UIManager.AccessibilityEventTypes.typeViewFocused
-        )
-      }, 1)
-    }
-
-    this.updateTitle()
-    if (
-      this.props.offline.online &&
-      !this.props.offline.outbox.filter(item => item.type === 'LOAD_FAMILIES')
-        .length
-    ) {
-      this.props.loadFamilies(url[this.props.env], this.props.user.token)
-    }
-  }
-
-  componentDidUpdate(prevProps) {
-    if (prevProps.lng !== this.props.lng) {
-      this.updateTitle()
-    }
-  }
 
   sortByName = families => families.sort((a, b) => a.name.localeCompare(b.name))
 
@@ -77,12 +39,23 @@ export class Families extends Component {
     })
   }
 
+  fetchFamilies = () => {
+    this.props.loadFamilies(url[this.props.env], this.props.user.token)
+  }
+
+  componentDidMount() {
+    if (UIManager.AccessibilityEventTypes) {
+      setTimeout(() => {
+        UIManager.sendAccessibilityEvent(
+          findNodeHandle(this.acessibleComponent.current),
+          UIManager.AccessibilityEventTypes.typeViewFocused
+        )
+      }, 1)
+    }
+  }
+
   render() {
     const { t } = this.props
-
-    const familiesToSync =
-      this.props.offline.online &&
-      this.props.offline.outbox.find(item => item.type === 'LOAD_FAMILIES')
 
     // show not synced families from drafts
     const draftFamilies = this.props.drafts
@@ -124,15 +97,14 @@ export class Families extends Component {
         </View>
         <ScrollView>
           <View ref={this.acessibleComponent} accessible={true}>
-            {familiesToSync ? (
-              <ActivityIndicator
-                size="small"
-                color={colors.palered}
-                style={styles.spinner}
-              />
-            ) : null}
-
             <FlatList
+              refreshing={
+                !!this.props.offline.online &&
+                !!this.props.offline.outbox.find(
+                  item => item.type === 'LOAD_FAMILIES'
+                )
+              }
+              onRefresh={this.fetchFamilies}
               data={this.sortByName(filteredFamilies)}
               keyExtractor={(item, index) => index.toString()}
               renderItem={({ item }) => (
@@ -143,6 +115,7 @@ export class Families extends Component {
                   family={item}
                 />
               )}
+              initialNumToRender={7}
             />
           </View>
         </ScrollView>
@@ -168,9 +141,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1
   },
-  spinner: {
-    marginVertical: 5
-  },
+
   search: { margin: 10 },
   bar: {
     paddingLeft: 30,
