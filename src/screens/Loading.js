@@ -50,6 +50,9 @@ export class Loading extends Component {
       (!!this.props.sync.images.total &&
         this.props.sync.images.total === this.props.sync.images.synced)
     ) {
+      if (this.unsubscribeNetChange) {
+        this.unsubscribeNetChange()
+      }
       this.props.navigation.navigate('DrawerStack')
     } else {
       this.setState({
@@ -151,13 +154,14 @@ export class Loading extends Component {
   }
 
   onMapDownloadError = () => {
-    this.showError()
+    this.showError('We seem to have a problem downloading your offline maps.')
   }
 
   reload = () => {
     this.setState({
       error: null
     })
+    this.props.resetSyncState()
     this.checkState()
   }
 
@@ -198,6 +202,9 @@ export class Loading extends Component {
       !!images.total &&
       images.total === images.synced
     ) {
+      if (this.unsubscribeNetChange) {
+        this.unsubscribeNetChange()
+      }
       // if everything is synced navigate to Dashboard
       this.props.navigation.navigate('DrawerStack')
     } else {
@@ -249,7 +256,25 @@ export class Loading extends Component {
       this.props.sync.images.total === this.props.sync.images.synced &&
       this.state.maps.every(map => map.status === 100)
     ) {
+      if (this.unsubscribeNetChange) {
+        this.unsubscribeNetChange()
+      }
       this.props.navigation.navigate('DrawerStack')
+    }
+
+    // if there is a download error
+    if (!prevProps.sync.familiesError && this.props.sync.familiesError) {
+      this.showError('We seem to have a problem downloading your families.')
+    }
+
+    if (!prevProps.sync.surveysError && this.props.sync.surveysError) {
+      this.showError('We seem to have a problem downloading your surveys.')
+    }
+  }
+
+  componentWillUnmount() {
+    if (this.unsubscribeNetChange) {
+      this.unsubscribeNetChange()
     }
   }
 

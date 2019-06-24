@@ -6,7 +6,9 @@ import {
   USER_LOGOUT,
   SET_ENV,
   LOAD_SURVEYS_COMMIT,
+  LOAD_SURVEYS_ROLLBACK,
   LOAD_FAMILIES_COMMIT,
+  LOAD_FAMILIES_ROLLBACK,
   CREATE_DRAFT,
   UPDATE_DRAFT,
   ADD_SURVEY_DATA,
@@ -287,7 +289,9 @@ export const sync = (
   state = {
     appVersion: null,
     surveys: false,
+    surveysError: false,
     families: false,
+    familiesError: false,
     images: {
       total: 0,
       synced: 0
@@ -317,10 +321,22 @@ export const sync = (
           total: state[action.item].total
         }
       }
+    case LOAD_SURVEYS_ROLLBACK:
+      return {
+        ...state,
+        surveysError: true
+      }
+    case LOAD_FAMILIES_ROLLBACK:
+      return {
+        ...state,
+        familiesError: true
+      }
     case RESET_SYNCED_STATE:
       return {
         surveys: false,
+        surveysError: false,
         families: false,
+        familiesError: false,
         images: {
           total: 0,
           synced: 0
@@ -420,8 +436,9 @@ export const rootReducer = (state, action) => {
       env: 'production',
       sync: {
         appVersion: null,
-        surveys: false,
+        surveysError: false,
         families: false,
+        familiesError: false,
         images: {
           total: 0,
           synced: 0
