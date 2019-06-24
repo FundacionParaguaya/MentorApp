@@ -772,7 +772,7 @@ export class Location extends Component {
               this.survey.surveyConfig.surveyLocation.country
             }
             detectError={this.detectError}
-            country={this.survey.surveyConfig.surveyLocation.country}
+            defaultCountry={this.survey.surveyConfig.surveyLocation.country}
             readonly={this.readOnly}
           />
           <TextInput

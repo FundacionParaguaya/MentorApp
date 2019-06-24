@@ -55,41 +55,6 @@ describe('Select dropdown', () => {
     expect(spy).toHaveBeenCalledTimes(1)
     expect(spy).toHaveBeenCalledWith('')
   })
-  it('render a list of items when passed options', () => {
-    props = createTestProps({
-      value: '2',
-      options: [
-        { value: 1, text: '1', code: 1 },
-        { value: 2, text: '2', code: 2 }
-      ],
-      countrySelect: false
-    })
-    wrapper = shallow(<Select {...props} />)
-    const spy = jest.spyOn(wrapper.instance(), 'validateInput')
-
-    wrapper
-      .find(ListItem)
-      .first()
-      .props()
-      .onPress()
-
-    expect(
-      wrapper
-        .find(BottomModal)
-        .last()
-        .find(ListItem)
-    ).toHaveLength(2)
-
-    wrapper
-      .find(BottomModal)
-      .last()
-      .find(ListItem)
-      .last()
-      .props()
-      .onPress()
-
-    expect(spy).toHaveBeenCalledTimes(2)
-  })
 
   it('shows required error message when parent form is submitted', () => {
     props = createTestProps({ required: true, validation: 'string' })

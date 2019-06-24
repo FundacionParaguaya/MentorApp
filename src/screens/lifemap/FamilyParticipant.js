@@ -308,9 +308,9 @@ export class FamilyParticipant extends Component {
           onChange={this.updateParticipant}
           readonly={this.readOnly}
           label={t('views.family.countryOfBirth')}
-          country={this.survey.surveyConfig.surveyLocation.country}
+          defaultCountry={this.survey.surveyConfig.surveyLocation.country}
           countrySelect
-          countryOfBirth={this.survey.surveyConfig.countryOfBirth}
+          countriesOnTop={this.survey.surveyConfig.countryOfBirth}
           placeholder={t('views.family.countryOfBirth')}
           field="birthCountry"
           value={
