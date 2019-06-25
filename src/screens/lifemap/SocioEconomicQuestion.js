@@ -312,6 +312,7 @@ export class SocioEconomicQuestion extends Component {
       key: question.codeName,
       value
     }
+    console.log(newAnswer)
 
     if (question.forFamilyMember) {
       currentDraft = getDraftWithUpdatedFamilyEconomics(
@@ -521,56 +522,86 @@ export class SocioEconomicQuestion extends Component {
                         : false
                       : question
                   )
-                  .map(question =>
-                    question.answerType === 'select' ||
-                    question.answerType === 'radio' ? (
-                      <Select
-                        radio={question.answerType === 'radio' ? true : false}
-                        key={question.codeName}
-                        required={question.required}
-                        onChange={value =>
-                          this.updateEconomicAnswer(question, value, i)
-                        }
-                        placeholder={question.questionText}
-                        showErrors={showErrors}
-                        label={question.questionText}
-                        field={question.codeName}
-                        value={
-                          this.getFamilyMemberFieldValue(
-                            question.codeName,
-                            i
-                          ) || ''
-                        }
-                        detectError={this.detectError}
-                        readonly={this.readOnly}
-                        options={getConditionalOptions(question, draft, i)}
-                        memberIndex={i + 1}
-                        cleanErrorsOnUnmount={
-                          this.cleanErrorsCodenamesOnUnmount
-                        }
-                      />
-                    ) : (
-                      <TextInput
-                        key={question.codeName}
-                        multiline
-                        required={question.required}
-                        onChangeText={value =>
-                          this.updateEconomicAnswer(question, value, i)
-                        }
-                        placeholder={question.questionText}
-                        showErrors={showErrors}
-                        field={question.codeName}
-                        value={
-                          this.getFamilyMemberFieldValue(
-                            question.codeName,
-                            i
-                          ) || ''
-                        }
-                        detectError={this.detectError}
-                        readonly={this.readOnly}
-                      />
-                    )
-                  )}
+                  .map(question => {
+                    if (
+                      question.answerType === 'select' ||
+                      question.answerType === 'radio'
+                    ) {
+                      return (
+                        <Select
+                          radio={question.answerType === 'radio' ? true : false}
+                          key={question.codeName}
+                          required={question.required}
+                          onChange={value =>
+                            this.updateEconomicAnswer(question, value, i)
+                          }
+                          placeholder={question.questionText}
+                          showErrors={showErrors}
+                          label={question.questionText}
+                          field={question.codeName}
+                          value={
+                            this.getFamilyMemberFieldValue(
+                              question.codeName,
+                              i
+                            ) || ''
+                          }
+                          detectError={this.detectError}
+                          readonly={this.readOnly}
+                          options={getConditionalOptions(question, draft, i)}
+                          memberIndex={i + 1}
+                          cleanErrorsOnUnmount={
+                            this.cleanErrorsCodenamesOnUnmount
+                          }
+                        />
+                      )
+                    } else if (question.answerType === 'number') {
+                      return (
+                        <TextInput
+                          multiline
+                          key={question.codeName}
+                          required={question.required}
+                          onChangeText={value =>
+                            this.updateEconomicAnswer(question, value, i)
+                          }
+                          placeholder={question.questionText}
+                          showErrors={showErrors}
+                          field={question.codeName}
+                          value={
+                            this.getFamilyMemberFieldValue(
+                              question.codeName,
+                              i
+                            ) || ''
+                          }
+                          detectError={this.detectError}
+                          readonly={this.readOnly}
+                          validation="number"
+                          keyboardType="numeric"
+                        />
+                      )
+                    } else {
+                      return (
+                        <TextInput
+                          key={question.codeName}
+                          multiline
+                          required={question.required}
+                          onChangeText={value =>
+                            this.updateEconomicAnswer(question, value, i)
+                          }
+                          placeholder={question.questionText}
+                          showErrors={showErrors}
+                          field={question.codeName}
+                          value={
+                            this.getFamilyMemberFieldValue(
+                              question.codeName,
+                              i
+                            ) || ''
+                          }
+                          detectError={this.detectError}
+                          readonly={this.readOnly}
+                        />
+                      )
+                    }
+                  })}
               </View>
             ))
           ) : (
