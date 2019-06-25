@@ -170,6 +170,7 @@ export class Surveys extends Component {
               handleClick={() => this.handleClickOnSurvey(item)}
             />
           )}
+          initialNumToRender={5}
         />
       </ScrollView>
     )

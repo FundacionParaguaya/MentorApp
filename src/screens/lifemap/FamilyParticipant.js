@@ -24,32 +24,7 @@ export class FamilyParticipant extends Component {
   state = {
     errorsDetected: [],
     showErrors: false,
-    draft: this.props.navigation.getParam('draft') ||
-      this.props.navigation.getParam('family') || {
-        status: 'Draft',
-        surveyId: this.survey.id,
-        surveyVersionId: this.props.navigation.getParam('survey')[
-          'surveyVersionId'
-        ],
-        created: Date.now(),
-        draftId: uuid(),
-        economicSurveyDataList: [],
-        indicatorSurveyDataList: [],
-        priorities: [],
-        achievements: [],
-        progress: {
-          screen: 'FamilyParticipant',
-          total: getTotalScreens(this.props.navigation.getParam('survey'))
-        },
-        familyData: {
-          familyMembersList: [
-            {
-              firstParticipant: true,
-              socioEconomicAnswers: []
-            }
-          ]
-        }
-      }
+    draft: null
   }
 
   detectError = async (error, field) => {
@@ -136,15 +111,15 @@ export class FamilyParticipant extends Component {
     })
   }
 
-  getFamilyMembersCountArray = t => [
-    { text: t('views.family.onlyPerson'), value: 1 },
+  getFamilyMembersCountArray = () => [
+    { text: this.props.t('views.family.onlyPerson'), value: 1 },
     ...Array.from(new Array(24), (val, index) => ({
       value: index + 2,
       text: `${index + 2}`
     })),
 
     {
-      text: t('views.family.preferNotToSay'),
+      text: this.props.t('views.family.preferNotToSay'),
       value: -1
     }
   ]
@@ -172,27 +147,57 @@ export class FamilyParticipant extends Component {
     })
   }
 
+  generateNewDraft = () => ({
+    status: 'Draft',
+    surveyId: this.survey.id,
+    surveyVersionId: this.props.navigation.getParam('survey')[
+      'surveyVersionId'
+    ],
+    created: Date.now(),
+    draftId: uuid(),
+    economicSurveyDataList: [],
+    indicatorSurveyDataList: [],
+    priorities: [],
+    achievements: [],
+    progress: {
+      screen: 'FamilyParticipant',
+      total: getTotalScreens(this.props.navigation.getParam('survey'))
+    },
+    familyData: {
+      familyMembersList: [
+        {
+          firstParticipant: true,
+          socioEconomicAnswers: []
+        }
+      ]
+    }
+  })
+
   componentDidMount() {
     const { navigation } = this.props
-    const { draft } = this.state
+    const draft =
+      this.props.navigation.getParam('draft') ||
+      this.props.navigation.getParam('family') ||
+      this.generateNewDraft()
 
-    navigation.setParams({
-      isNewDraft: !navigation.getParam('draft'),
-      getCurrentDraftState: () => this.state.draft
-    })
-
-    if (!this.readOnly && draft.progress.screen !== 'FamilyParticipant') {
-      this.setState({
-        draft: {
-          ...draft,
-          progress: {
-            ...draft.progress,
-            screen: 'FamilyParticipant',
-            total: getTotalScreens(this.survey)
-          }
-        }
+    if (!this.readOnly) {
+      navigation.setParams({
+        isNewDraft: !navigation.getParam('draft'),
+        getCurrentDraftState: () => this.state.draft
       })
+
+      if (draft.progress.screen !== 'FamilyParticipant') {
+        draft.progress = {
+          ...draft.progress,
+          screen: 'FamilyParticipant',
+          total: getTotalScreens(this.survey)
+        }
+      }
     }
+
+    this.setState({
+      draft
+    })
   }
 
   shouldComponentUpdate() {
@@ -203,9 +208,9 @@ export class FamilyParticipant extends Component {
     const { t } = this.props
     const { showErrors, draft } = this.state
 
-    const participant = draft.familyData.familyMembersList[0]
+    const participant = draft ? draft.familyData.familyMembersList[0] : {}
 
-    return (
+    return draft ? (
       <StickyFooter
         handleClick={this.handleClick}
         continueLabel={t('general.continue')}
@@ -308,9 +313,9 @@ export class FamilyParticipant extends Component {
           onChange={this.updateParticipant}
           readonly={this.readOnly}
           label={t('views.family.countryOfBirth')}
-          country={this.survey.surveyConfig.surveyLocation.country}
+          defaultCountry={this.survey.surveyConfig.surveyLocation.country}
           countrySelect
-          countryOfBirth={this.survey.surveyConfig.countryOfBirth}
+          countriesOnTop={this.survey.surveyConfig.countryOfBirth}
           placeholder={t('views.family.countryOfBirth')}
           field="birthCountry"
           value={
@@ -331,7 +336,7 @@ export class FamilyParticipant extends Component {
           value={draft.familyData.countFamilyMembers || ''}
           detectError={this.detectError}
           showErrors={showErrors}
-          options={this.getFamilyMembersCountArray(t)}
+          options={this.getFamilyMembersCountArray()}
         />
         <TextInput
           onChangeText={this.updateParticipant}
@@ -354,7 +359,7 @@ export class FamilyParticipant extends Component {
           showErrors={showErrors}
         />
       </StickyFooter>
-    )
+    ) : null
   }
 }
 const styles = StyleSheet.create({

@@ -83,7 +83,6 @@ export class Location extends Component {
       familyData.longitude !== longitude ||
       zoom !== region.properties.zoomLevel
     ) {
-      console.log('onDragMap', region)
       this.setState({
         zoom: region.properties.zoomLevel || 15,
         draft: {
@@ -773,7 +772,7 @@ export class Location extends Component {
               this.survey.surveyConfig.surveyLocation.country
             }
             detectError={this.detectError}
-            country={this.survey.surveyConfig.surveyLocation.country}
+            defaultCountry={this.survey.surveyConfig.surveyLocation.country}
             readonly={this.readOnly}
           />
           <TextInput

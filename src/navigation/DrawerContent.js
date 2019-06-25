@@ -37,7 +37,7 @@ export class DrawerContent extends Component {
   changeLanguage = lng => {
     i18n.changeLanguage(lng) // change the currently uses i18n language
     this.props.switchLanguage(lng) // set the redux language for next app use
-    this.props.navigation.toggleDrawer() // close drawer
+    this.props.navigation.closeDrawer() // close drawer
   }
   logUserOut = () => {
     const { checkboxesVisible, ckeckedBoxes } = this.state
@@ -67,6 +67,7 @@ export class DrawerContent extends Component {
       // clear the async storage and reset the store
       AsyncStorage.clear(() => {
         this.props.logout()
+        this.closeLogoutModal()
         this.props.navigation.navigate('Login')
       })
     } else {
@@ -91,7 +92,7 @@ export class DrawerContent extends Component {
     const { navigation } = this.props
 
     this.setState({ activeTab: screen })
-    navigation.toggleDrawer()
+    navigation.closeDrawer()
 
     if (currentStack.key === 'Surveys' && currentStack.index) {
       const draft =
@@ -115,6 +116,20 @@ export class DrawerContent extends Component {
     this.setState({
       drawerContentWidth: e.nativeEvent.layout.width
     })
+  }
+
+  openLogoutModal = () => {
+    this.props.navigation.closeDrawer()
+    this.props.navigation.setParams({ logoutModalOpen: true })
+  }
+
+  closeLogoutModal = () => {
+    this.setState({
+      checkboxesVisible: false,
+      showErrors: false,
+      ckeckedBoxes: 0
+    })
+    this.props.navigation.setParams({ logoutModalOpen: false })
   }
 
   render() {
@@ -249,10 +264,7 @@ export class DrawerContent extends Component {
         <IconButton
           id="logout"
           style={styles.navItem}
-          onPress={() => {
-            this.props.navigation.toggleDrawer()
-            navigation.setParams({ logoutModalOpen: true })
-          }}
+          onPress={this.openLogoutModal}
           communityIcon="login-variant"
           size={20}
           textStyle={styles.label}
@@ -269,14 +281,7 @@ export class DrawerContent extends Component {
           showCheckboxes={this.showCheckboxes}
           onPressCheckbox={this.onPressCheckbox}
           logingOut={logingOut}
-          onModalClose={() => {
-            this.setState({
-              checkboxesVisible: false,
-              showErrors: false,
-              ckeckedBoxes: 0
-            })
-            navigation.setParams({ logoutModalOpen: false })
-          }}
+          onModalClose={this.closeLogoutModal}
         />
       </ScrollView>
     )
