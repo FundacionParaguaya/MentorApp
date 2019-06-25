@@ -436,6 +436,7 @@ export const rootReducer = (state, action) => {
       env: 'production',
       sync: {
         appVersion: null,
+        surveys: false,
         surveysError: false,
         families: false,
         familiesError: false,
