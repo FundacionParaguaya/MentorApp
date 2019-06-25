@@ -62,40 +62,27 @@ export class SocioEconomicQuestion extends Component {
 
       // go trough all questions and separate them by screen
       // filter method - checks if family members meet the conditions based on age
-      this.survey.surveyEconomicQuestions
-        .filter(question =>
-          !!question.conditions &&
-          question.conditions.length &&
-          !!question.forFamilyMember &&
-          question.conditions[0].codeName.toLocaleLowerCase() === 'birthdate'
-            ? draft.familyData.familyMembersList.filter(
-                (member, index) => !!shouldShowQuestion(question, draft, index)
-              ).length
-              ? question
-              : false
-            : question
-        )
-        .forEach(question => {
-          // if the dimention of the questions change, change the page
-          if (question.topic !== currentDimension) {
-            currentDimension = question.topic
-            totalScreens += 1
-          }
+      this.survey.surveyEconomicQuestions.forEach(question => {
+        // if the dimention of the questions change, change the page
+        if (question.topic !== currentDimension) {
+          currentDimension = question.topic
+          totalScreens += 1
+        }
 
-          // if there is object for n screen create one
-          if (!questionsPerScreen[totalScreens - 1]) {
-            questionsPerScreen[totalScreens - 1] = {
-              forFamilyMember: [],
-              forFamily: []
-            }
+        // if there is object for n screen create one
+        if (!questionsPerScreen[totalScreens - 1]) {
+          questionsPerScreen[totalScreens - 1] = {
+            forFamilyMember: [],
+            forFamily: []
           }
+        }
 
-          if (question.forFamilyMember) {
-            questionsPerScreen[totalScreens - 1].forFamilyMember.push(question)
-          } else {
-            questionsPerScreen[totalScreens - 1].forFamily.push(question)
-          }
-        })
+        if (question.forFamilyMember) {
+          questionsPerScreen[totalScreens - 1].forFamilyMember.push(question)
+        } else {
+          questionsPerScreen[totalScreens - 1].forFamily.push(question)
+        }
+      })
       if (props.navigation.getParam('fromBeginLifemap')) {
         props.navigation.setParams({
           socioEconomics: {
@@ -312,7 +299,6 @@ export class SocioEconomicQuestion extends Component {
       key: question.codeName,
       value
     }
-    console.log(newAnswer)
 
     if (question.forFamilyMember) {
       currentDraft = getDraftWithUpdatedFamilyEconomics(
