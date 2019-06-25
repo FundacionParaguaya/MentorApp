@@ -39,7 +39,7 @@ class FamiliesListItem extends Component {
         disabled={family.snapshotList && !family.snapshotList.length}
       >
         <View>
-          { family.snapshotList &&
+          {family.snapshotList &&
             family.snapshotList[0] &&
             family.snapshotList[0].familyData.countFamilyMembers &&
             family.snapshotList[0].familyData.countFamilyMembers > 1 && (
