@@ -2,7 +2,6 @@ import React from 'react'
 import { shallow } from 'enzyme'
 import { TouchableHighlight, Text } from 'react-native'
 import Select from '../Select'
-import ListItem from '../ListItem'
 import BottomModal from '../BottomModal'
 
 const createTestProps = props => ({

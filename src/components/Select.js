@@ -194,10 +194,6 @@ class Select extends Component {
       otherPlaceholder
     } = this.props
 
-    if (this.props.field === 'gender') {
-      console.log('Select render')
-    }
-
     let text = ''
     if (
       countrySelect &&
