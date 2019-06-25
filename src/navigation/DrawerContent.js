@@ -67,6 +67,7 @@ export class DrawerContent extends Component {
       // clear the async storage and reset the store
       AsyncStorage.clear(() => {
         this.props.logout()
+        this.closeLogoutModal()
         this.props.navigation.navigate('Login')
       })
     } else {
@@ -115,6 +116,20 @@ export class DrawerContent extends Component {
     this.setState({
       drawerContentWidth: e.nativeEvent.layout.width
     })
+  }
+
+  openLogoutModal = () => {
+    this.props.navigation.closeDrawer()
+    this.props.navigation.setParams({ logoutModalOpen: true })
+  }
+
+  closeLogoutModal = () => {
+    this.setState({
+      checkboxesVisible: false,
+      showErrors: false,
+      ckeckedBoxes: 0
+    })
+    this.props.navigation.setParams({ logoutModalOpen: false })
   }
 
   render() {
@@ -249,10 +264,7 @@ export class DrawerContent extends Component {
         <IconButton
           id="logout"
           style={styles.navItem}
-          onPress={() => {
-            this.props.navigation.closeDrawer()
-            navigation.setParams({ logoutModalOpen: true })
-          }}
+          onPress={this.openLogoutModal}
           communityIcon="login-variant"
           size={20}
           textStyle={styles.label}
@@ -269,14 +281,7 @@ export class DrawerContent extends Component {
           showCheckboxes={this.showCheckboxes}
           onPressCheckbox={this.onPressCheckbox}
           logingOut={logingOut}
-          onModalClose={() => {
-            this.setState({
-              checkboxesVisible: false,
-              showErrors: false,
-              ckeckedBoxes: 0
-            })
-            navigation.setParams({ logoutModalOpen: false })
-          }}
+          onModalClose={this.closeLogoutModal}
         />
       </ScrollView>
     )
