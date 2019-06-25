@@ -95,7 +95,7 @@ export class Loading extends Component {
 
   checkOfflineMaps = () => {
     if (!this.props.navigation.getParam('syncMaps')) {
-      this.handleImageCaching()
+      return this.handleImageCaching()
     }
     const mapsArray = []
 
