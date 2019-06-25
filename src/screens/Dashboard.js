@@ -27,30 +27,6 @@ export class Dashboard extends Component {
     yellow: 0,
     red: 0
   }
-  componentDidMount() {
-    if (!this.props.user.token) {
-      this.props.navigation.navigate('Login')
-    }
-
-    if (UIManager.AccessibilityEventTypes) {
-      setTimeout(() => {
-        UIManager.sendAccessibilityEvent(
-          findNodeHandle(this.acessibleComponent.current),
-          UIManager.AccessibilityEventTypes.typeViewFocused
-        )
-      }, 1)
-    }
-
-    // set sentry login details
-    Sentry.setUserContext({
-      username: this.props.user.username,
-      extra: {
-        env: this.props.env
-      }
-    })
-
-    this.calculateIndicators()
-  }
 
   navigateToPendingSync = draft => {
     const { firstName, lastName } = draft.familyData.familyMembersList[0]
@@ -116,6 +92,42 @@ export class Dashboard extends Component {
     this.props.navigation.navigate('Surveys')
   }
 
+  checkIndicators = () => {
+    // calculate indicators only if green is 0 in attempt to avoid frequency
+    // and get their number after logging in
+    if (!this.state.green) {
+      this.calculateIndicators()
+    }
+  }
+
+  componentDidMount() {
+    this.props.navigation.addListener('didFocus', this.checkIndicators)
+
+    const { surveys, families, images } = this.props.sync
+    if (!this.props.user.token) {
+      this.props.navigation.navigate('Login')
+    } else if (!surveys || !families || images.total !== images.synced) {
+      this.props.navigation.navigate('Loading')
+    } else {
+      if (UIManager.AccessibilityEventTypes) {
+        setTimeout(() => {
+          UIManager.sendAccessibilityEvent(
+            findNodeHandle(this.acessibleComponent.current),
+            UIManager.AccessibilityEventTypes.typeViewFocused
+          )
+        }, 1)
+      }
+
+      // set sentry login details
+      Sentry.setUserContext({
+        username: this.props.user.username,
+        extra: {
+          env: this.props.env
+        }
+      })
+    }
+  }
+
   calculateIndicators() {
     let green = 0
     let yellow = 0
@@ -153,7 +165,6 @@ export class Dashboard extends Component {
     const { t, drafts } = this.props
     const { green, yellow, red } = this.state
 
-    const list = drafts.slice().reverse()
     return (
       <AndroidBackHandler onBackPress={() => true}>
         <View style={globalStyles.ViewMainContainer}>
@@ -249,7 +260,7 @@ export class Dashboard extends Component {
                 ) : null}
                 <FlatList
                   style={{ ...styles.background }}
-                  data={list}
+                  data={drafts.slice().reverse()}
                   keyExtractor={(item, index) => index.toString()}
                   renderItem={({ item }) => (
                     <DraftListItem
@@ -349,6 +360,7 @@ Dashboard.propTypes = {
   offline: PropTypes.object,
   lng: PropTypes.string.isRequired,
   surveys: PropTypes.array,
+  sync: PropTypes.object,
   families: PropTypes.array
 }
 
@@ -360,7 +372,8 @@ export const mapStateToProps = ({
   string,
   surveys,
   families,
-  nav
+  nav,
+  sync
 }) => ({
   env,
   user,
@@ -369,7 +382,8 @@ export const mapStateToProps = ({
   string,
   surveys,
   families,
-  nav
+  nav,
+  sync
 })
 
 const mapDispatchToProps = {}

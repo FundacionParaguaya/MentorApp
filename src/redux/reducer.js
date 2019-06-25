@@ -64,7 +64,10 @@ export const env = (state = 'production', action) => {
 
 //Dimensions
 
-export const dimensions = (state = { width: null, height: null }, action) => {
+export const dimensions = (
+  state = { width: null, height: null, scale: null },
+  action
+) => {
   switch (action.type) {
     case SET_DIMENSIONS:
       return action.dimensions

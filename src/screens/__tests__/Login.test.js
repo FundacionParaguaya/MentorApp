@@ -1,9 +1,8 @@
 import React from 'react'
 import { shallow } from 'enzyme'
-import { ScrollView, TextInput, Text, AppState } from 'react-native'
+import { ScrollView, TextInput, Text } from 'react-native'
 import Button from '../../components/Button'
 import { Login } from '../Login'
-import DeviceInfo from 'react-native-device-info'
 
 const createTestProps = props => ({
   setEnv: jest.fn(),
@@ -11,6 +10,7 @@ const createTestProps = props => ({
   setDimensions: jest.fn(),
   login: jest.fn(() => new Promise(resolve => resolve(true))),
   env: 'production',
+  dimensions: { width: 320, height: 480, scale: 1 },
   user: { status: null },
   navigation: {
     navigate: arg => arg
@@ -77,14 +77,6 @@ describe('Login View', () => {
       })
     })
 
-    // it('clicking login calls login action', () => {
-    //   wrapper
-    //     .find('#login-button')
-    //     .props()
-    //     .handleClick()
-    //   expect(wrapper.instance().props.login).toHaveBeenCalledTimes(1)
-    // })
-
     it('calls set connectivity state function', async () => {
       const spy = jest.spyOn(wrapper.instance(), 'setConnectivityState')
       wrapper.instance().setConnectivityState()
@@ -101,7 +93,7 @@ describe('Login View', () => {
       wrapper.instance().setConnectivityState(false)
       wrapper.update()
       expect(wrapper.instance().state.connection).toBe(false)
-      expect(wrapper.instance().state.error).toBe('No connection')
+      expect(wrapper.instance().state.error).toBe(false)
     })
   })
 })

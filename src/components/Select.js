@@ -6,7 +6,8 @@ import {
   View,
   Text,
   Image,
-  ScrollView
+  ScrollView,
+  FlatList
 } from 'react-native'
 import RadioForm, {
   RadioButton,
@@ -24,7 +25,9 @@ import i18n from '../i18n'
 const countryList = countries(require('localized-countries/data/en')).array()
 
 class Select extends Component {
+  countries = []
   state = {
+    radioOptions: [],
     isOpen: false,
     errorMsg: '',
     radioChecked: null,
@@ -101,7 +104,61 @@ class Select extends Component {
     }
   }
 
+  generateRadioOptions() {
+    let radio_props = []
+
+    this.props.options.forEach(e => {
+      radio_props.push({ label: e.text, value: e.value })
+    })
+
+    this.setState({
+      radioOptions: this.props.options.map(item => ({
+        label: item.text,
+        value: item.value
+      }))
+    })
+  }
+
+  generateCountriesList() {
+    const { countriesOnTop, defaultCountry } = this.props
+
+    let countriesArr = countryList.slice()
+
+    const firstCountry = defaultCountry
+      ? countryList.find(item => item.code === defaultCountry)
+      : null
+
+    // Add default country to the beginning of the list
+    countriesArr.unshift(firstCountry)
+
+    if (countriesOnTop) {
+      countriesOnTop.forEach(e => {
+        countriesArr.unshift({
+          code: e.text,
+          label: e.value
+        })
+      })
+    }
+
+    // Add prefer not to say answer at the end of the list
+    countriesArr.push({ code: 'NONE', label: 'I prefer not to say' })
+
+    this.countries = [...new Set(countriesArr)]
+  }
+
   componentDidMount() {
+    // generate countries list if this is a county select
+    if (this.props.countrySelect) {
+      this.generateCountriesList()
+    }
+
+    if (this.props.radio) {
+      this.generateRadioOptions()
+      this.setState({
+        radioChecked: this.props.value
+      })
+    }
+
     // on mount of new Select and if the passed showErrors value is true validate
     if (this.props.showErrors) {
       this.validateInput(this.props.value || '')
@@ -110,19 +167,6 @@ class Select extends Component {
     if (this.props.required && !this.props.value) {
       this.props.detectError(true, this.props.field, this.props.memberIndex)
     }
-
-    if (this.props.radio) {
-      this.setState({
-        radioChecked: this.props.value
-      })
-    }
-
-    // save country to draft on mount
-    setTimeout(() => {
-      if (this.props.countrySelect) {
-        this.props.onChange(this.props.value, this.props.field)
-      }
-    }, 1000)
   }
 
   componentDidUpdate(prevProps) {
@@ -138,7 +182,7 @@ class Select extends Component {
   }
 
   render() {
-    const { errorMsg, isOpen, showOther } = this.state
+    const { errorMsg, isOpen, showOther, radioOptions } = this.state
     const {
       value,
       placeholder,
@@ -147,69 +191,20 @@ class Select extends Component {
       countrySelect,
       readonly,
       otherValue,
-      otherPlaceholder,
-      countryOfBirth
+      otherPlaceholder
     } = this.props
-    const defaultCountry = this.props.country
-      ? countryList.filter(item => item.code === this.props.country)[0]
-      : ''
 
-    let countries = countryList.filter(
-      country => country.code !== defaultCountry.code
-    )
-    // Add default country to the beginning of the list
-    let countriesArr = []
-
-    countriesArr.push(defaultCountry)
-
-    if (countryOfBirth) {
-      countryOfBirth.forEach(e => {
-        let addCountry = true
-        let fixedObj = {
-          code: '',
-          lavel: ''
-        }
-        fixedObj.label = e.text
-        fixedObj.code = e.value
-        e.value
-        countriesArr.forEach(elem => {
-          if (elem.code === fixedObj.code) {
-            addCountry = false
-          }
-        })
-        if (addCountry) {
-          countriesArr.unshift(fixedObj)
-        }
-      })
-    }
-
-    countriesArr.forEach(element => {
-      countries = countries.filter(country => country.code !== element.code)
-      countries.unshift(element)
-    })
-    // Add prefer not to say answer at the end of the list
-    countries.push({ code: 'NONE', label: 'I prefer not to say' })
-
-    let text
-    if (countrySelect && countries.filter(item => item.code === value)[0]) {
-      text = countries.filter(item => item.code === value)[0].label
+    let text = ''
+    if (
+      countrySelect &&
+      this.countries.filter(item => item.code === value)[0]
+    ) {
+      text = this.countries.filter(item => item.code === value)[0].label
     } else if (
       !countrySelect &&
       options.filter(item => item.value === value)[0]
     ) {
       text = options.filter(item => item.value === value)[0].text
-    } else {
-      text = ''
-    }
-    let radio = false
-    let radio_props = []
-    if (typeof this.props.radio !== 'undefined') {
-      radio = this.props.radio
-      if (radio) {
-        this.props.options.forEach(e => {
-          radio_props.push({ label: e.text, value: e.value })
-        })
-      }
     }
 
     return (
@@ -220,7 +215,7 @@ class Select extends Component {
           onPress={this.toggleDropdown}
         >
           <View style={styles.wrapper}>
-            {radio ? (
+            {this.props.radio ? (
               <RadioForm formHorizontal={true} animation={false}>
                 <View
                   style={{
@@ -231,7 +226,7 @@ class Select extends Component {
                     flexWrap: 'wrap'
                   }}
                 >
-                  {radio_props.map((obj, i) => {
+                  {radioOptions.map((obj, i) => {
                     if (readonly) {
                       if (this.state.radioChecked === obj.value) {
                         return (
@@ -347,45 +342,57 @@ class Select extends Component {
                   <View style={styles.dropdown}>
                     {countrySelect ? (
                       <ScrollView>
-                        {countries.map(item => (
-                          <ListItem
-                            key={item.code}
-                            onPress={() => this.validateInput(item.code)}
-                          >
-                            <Text
-                              style={[
-                                styles.option,
-                                value === item.code && styles.selected
-                              ]}
-                              accessibilityLabel={`${item.label}`}
+                        <FlatList
+                          style={styles.list}
+                          data={this.countries}
+                          keyExtractor={(item, index) => index.toString()}
+                          renderItem={({ item }) => (
+                            <ListItem
+                              key={item.code}
+                              onPress={() => this.validateInput(item.code)}
                             >
-                              {item.label}
-                            </Text>
-                          </ListItem>
-                        ))}
+                              <Text
+                                style={[
+                                  styles.option,
+                                  value === item.code && styles.selected
+                                ]}
+                                accessibilityLabel={`${item.label}`}
+                              >
+                                {item.label}
+                              </Text>
+                            </ListItem>
+                          )}
+                          initialNumToRender={6}
+                        />
                       </ScrollView>
                     ) : (
                       <ScrollView>
-                        {options.map(item => (
-                          <ListItem
-                            underlayColor={'transparent'}
-                            activeOpacity={1}
-                            key={item.value}
-                            onPress={() =>
-                              this.validateInput(item.value, item.otherOption)
-                            }
-                          >
-                            <Text
-                              style={[
-                                styles.option,
-                                value === item.value && styles.selected
-                              ]}
-                              accessibilityLabel={`${item.text}`}
+                        <FlatList
+                          style={styles.list}
+                          data={options}
+                          keyExtractor={(item, index) => index.toString()}
+                          renderItem={({ item }) => (
+                            <ListItem
+                              underlayColor={'transparent'}
+                              activeOpacity={1}
+                              key={item.value}
+                              onPress={() =>
+                                this.validateInput(item.value, item.otherOption)
+                              }
                             >
-                              {item.text}
-                            </Text>
-                          </ListItem>
-                        ))}
+                              <Text
+                                style={[
+                                  styles.option,
+                                  value === item.value && styles.selected
+                                ]}
+                                accessibilityLabel={`${item.text}`}
+                              >
+                                {item.text}
+                              </Text>
+                            </ListItem>
+                          )}
+                          initialNumToRender={6}
+                        />
                       </ScrollView>
                     )}
                   </View>
@@ -426,11 +433,11 @@ Select.propTypes = {
   field: PropTypes.string,
   radio: PropTypes.bool,
   otherField: PropTypes.string,
-  country: PropTypes.string,
+  defaultCountry: PropTypes.string,
   countrySelect: PropTypes.bool,
   readonly: PropTypes.bool,
   showErrors: PropTypes.bool,
-  countryOfBirth: PropTypes.array,
+  countriesOnTop: PropTypes.array,
   required: PropTypes.bool,
   detectError: PropTypes.func,
   memberIndex: PropTypes.oneOfType([PropTypes.bool, PropTypes.number]),

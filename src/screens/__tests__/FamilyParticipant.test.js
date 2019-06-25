@@ -89,6 +89,8 @@ describe('Family Participant View', () => {
   beforeEach(() => {
     props = createTestProps()
     wrapper = shallow(<FamilyParticipant {...props} />)
+    wrapper.instance().forceUpdate()
+    wrapper.update()
   })
 
   describe('lifecycle', () => {
@@ -125,6 +127,7 @@ describe('Family Participant View', () => {
 
   describe('rendering', () => {
     it('renders the continue button with proper label', () => {
+      console.log(wrapper.instance().state)
       expect(wrapper.find(StickyFooter)).toHaveProp({
         continueLabel: 'general.continue'
       })
@@ -168,6 +171,8 @@ describe('Family Participant View', () => {
         ...props
       })
       wrapper = shallow(<FamilyParticipant {...props} />)
+      wrapper.instance().forceUpdate()
+      wrapper.update()
 
       expect(
         wrapper
@@ -284,6 +289,8 @@ describe('participant adding/removing data', () => {
       ]
     })
     wrapper = shallow(<FamilyParticipant {...props} />)
+    wrapper.instance().forceUpdate()
+    wrapper.update()
   })
   it('gives Select the proper value', () => {
     expect(wrapper.find('#familyMembersCount').props().value).toBe(2)

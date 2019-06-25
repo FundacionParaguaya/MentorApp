@@ -10,6 +10,7 @@ import {
   Dimensions,
   AppState
 } from 'react-native'
+import DeviceInfo from 'react-native-device-info'
 import { connect } from 'react-redux'
 import { CheckBox } from 'react-native-elements'
 import NetInfo from '@react-native-community/netinfo'
@@ -19,7 +20,6 @@ import { url } from '../config'
 import globalStyles from '../globalStyles'
 import colors from '../theme.json'
 import Button from '../components/Button'
-import DeviceInfo from 'react-native-device-info'
 import InternalStorageFullModal, {
   MINIMUM_REQUIRED_STORAGE_SPACE_500_MB
 } from './modals/InternalStorageFullModal'
@@ -38,17 +38,17 @@ export class Login extends Component {
     syncMaps: true,
     syncImages: true,
     appState: AppState.currentState,
-    deviceStorageSpace: null,
     notEnoughStorageSpace: false
   }
   componentDidMount() {
-    this.setState({ deviceStorageSpace: DeviceInfo.getFreeDiskStorage() })
-    AppState.addEventListener('change', this.handleAppStateChange)
-
+    // if use has logged in navigate to Loading
     if (this.props.user.token) {
       this.props.navigation.navigate('Loading')
     } else {
+      AppState.addEventListener('change', this.handleAppStateChange)
       this.setDimensions()
+
+      // check connection
       NetInfo.fetch().then(state =>
         this.setConnectivityState(state.isConnected)
       )
@@ -58,17 +58,29 @@ export class Login extends Component {
     }
   }
 
-  setConnectivityState = isConnected =>
-    isConnected
-      ? this.setState({ connection: true, error: '' })
-      : this.setState({ connection: false, error: 'No connection' })
+  setConnectivityState = isConnected => {
+    if (isConnected !== this.state.connection) {
+      isConnected
+        ? this.setState({ connection: true, error: '' })
+        : this.setState({ connection: false, error: 'No connection' })
+    }
+  }
 
   setDimensions = () => {
-    this.props.setDimensions({
-      height: Dimensions.get('window').height,
-      width: Dimensions.get('window').width,
-      scale: Dimensions.get('window').scale
-    })
+    const { width, height, scale } = this.props.dimensions
+    const screenDimensions = Dimensions.get('window')
+
+    if (
+      width !== screenDimensions.width ||
+      height !== screenDimensions.height ||
+      scale !== screenDimensions.scale
+    ) {
+      this.props.setDimensions({
+        height: screenDimensions.height,
+        width: screenDimensions.width,
+        scale: screenDimensions.scale
+      })
+    }
   }
 
   checkDevOption = devProp => {
@@ -87,7 +99,7 @@ export class Login extends Component {
       loading: true
     })
 
-    let env = this.state.username.trim() === 'demo' ? 'testing' : 'production'
+    let env = this.state.username.trim() === 'demo' ? 'demo' : 'production'
     let username = this.state.username.trim()
     let envCheck = this.state.username.trim().substring(0, 2)
 
@@ -127,10 +139,9 @@ export class Login extends Component {
     this.setState({ appState: nextAppState })
 
   isStorageSpaceEnough = () => {
-    const { deviceStorageSpace } = this.state
-    return deviceStorageSpace
-      ? deviceStorageSpace > MINIMUM_REQUIRED_STORAGE_SPACE_500_MB
-      : false
+    return (
+      DeviceInfo.getFreeDiskStorage() > MINIMUM_REQUIRED_STORAGE_SPACE_500_MB
+    )
   }
 
   retryLogIn = () => this.setState({ notEnoughStorageSpace: false })
@@ -280,6 +291,7 @@ Login.propTypes = {
   setDimensions: PropTypes.func.isRequired,
   env: PropTypes.oneOf(['production', 'demo', 'testing', 'development']),
   navigation: PropTypes.object.isRequired,
+  dimensions: PropTypes.object,
   user: PropTypes.object.isRequired
 }
 
@@ -310,9 +322,10 @@ const styles = StyleSheet.create({
   error: { color: colors.red, lineHeight: 15, marginBottom: 10 }
 })
 
-const mapStateToProps = ({ env, user }) => ({
+const mapStateToProps = ({ env, user, dimensions }) => ({
   env,
-  user
+  user,
+  dimensions
 })
 
 const mapDispatchToProps = {

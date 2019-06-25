@@ -6,7 +6,7 @@ const createTestProps = props => ({
   navigation: {
     getParam: () => true, // logoutModalOpen
     setParams: jest.fn(),
-    toggleDrawer: jest.fn(),
+    closeDrawer: jest.fn(),
     state: { index: 0, routes: [{ index: 0, routes: [{ routeName: 'Test' }] }] }
   },
   lng: 'en',
