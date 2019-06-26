@@ -396,7 +396,6 @@ const appReducer = combineReducers({
 export const rootReducer = (state, action) => {
   // note that surveys are synced in the store
   if (action.type === LOAD_SURVEYS_COMMIT) {
-    console.log('set synced surveys')
     state = {
       ...state,
       sync: {
