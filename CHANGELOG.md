@@ -1,5 +1,43 @@
 # Change Log
 
+## [v1.9.11](https://github.com/FundacionParaguaya/MentorApp/tree/v1.9.11) (2019-06-26)
+[Full Changelog](https://github.com/FundacionParaguaya/MentorApp/compare/v1.9.10...v1.9.11)
+
+**Implemented enhancements:**
+
+- Feature/818 select performance [\#828](https://github.com/FundacionParaguaya/MentorApp/pull/828) ([Danman7](https://github.com/Danman7))
+
+**Fixed bugs:**
+
+- Uk login error [\#829](https://github.com/FundacionParaguaya/MentorApp/issues/829)
+- Elmira sync errors [\#827](https://github.com/FundacionParaguaya/MentorApp/issues/827)
+- Banco Solidario login error [\#826](https://github.com/FundacionParaguaya/MentorApp/issues/826)
+- Emprender conditional issues in Mentor App [\#824](https://github.com/FundacionParaguaya/MentorApp/issues/824)
+- survey.minimumPriorities null error [\#761](https://github.com/FundacionParaguaya/MentorApp/issues/761)
+- Country of birth dropdown null is not an object error [\#760](https://github.com/FundacionParaguaya/MentorApp/issues/760)
+- familyData is undefined [\#759](https://github.com/FundacionParaguaya/MentorApp/issues/759)
+- TypeError: null is not an object \(evaluating 'f.surveyConfig'\) [\#739](https://github.com/FundacionParaguaya/MentorApp/issues/739)
+- Device memory full - no space for images/maps [\#630](https://github.com/FundacionParaguaya/MentorApp/issues/630)
+- Center these titles on the screens [\#607](https://github.com/FundacionParaguaya/MentorApp/issues/607)
+
+**Closed issues:**
+
+- Design for errors in preparing or login on the mobile app [\#822](https://github.com/FundacionParaguaya/MentorApp/issues/822)
+- Improve dropdown performance [\#818](https://github.com/FundacionParaguaya/MentorApp/issues/818)
+- text performance slow [\#817](https://github.com/FundacionParaguaya/MentorApp/issues/817)
+- Git-flow set up [\#815](https://github.com/FundacionParaguaya/MentorApp/issues/815)
+- Update submit draft mutation with familyId [\#687](https://github.com/FundacionParaguaya/MentorApp/issues/687)
+
+**Merged pull requests:**
+
+- Bugfix/824 epmrender conditional [\#830](https://github.com/FundacionParaguaya/MentorApp/pull/830) ([vasildimitroffhristoff](https://github.com/vasildimitroffhristoff))
+- Feature/632 downloading error handling [\#823](https://github.com/FundacionParaguaya/MentorApp/pull/823) ([Danman7](https://github.com/Danman7))
+- Implemented check for device storage memory capacity [\#819](https://github.com/FundacionParaguaya/MentorApp/pull/819) ([vasildimitroffhristoff](https://github.com/vasildimitroffhristoff))
+- imporved-textInput-performance [\#812](https://github.com/FundacionParaguaya/MentorApp/pull/812) ([zommerberg](https://github.com/zommerberg))
+- fix-\#607 center align titles [\#792](https://github.com/FundacionParaguaya/MentorApp/pull/792) ([zommerberg](https://github.com/zommerberg))
+- fix \#554 sticky buttons width [\#780](https://github.com/FundacionParaguaya/MentorApp/pull/780) ([zommerberg](https://github.com/zommerberg))
+- fi \#601 added balls to socioeconomics [\#776](https://github.com/FundacionParaguaya/MentorApp/pull/776) ([zommerberg](https://github.com/zommerberg))
+
 ## [v1.9.10](https://github.com/FundacionParaguaya/MentorApp/tree/v1.9.10) (2019-06-20)
 [Full Changelog](https://github.com/FundacionParaguaya/MentorApp/compare/v1.9.9...v1.9.10)
 
@@ -86,6 +124,7 @@
 - TypeError appeared when taking Argentina - Fundacion Irradia [\#774](https://github.com/FundacionParaguaya/MentorApp/issues/774)
 - Congratulations Message Changes + Implications [\#756](https://github.com/FundacionParaguaya/MentorApp/issues/756)
 - Conditional logic - Add dynamic required validation [\#741](https://github.com/FundacionParaguaya/MentorApp/issues/741)
+- Width of Non Sticky buttons throughout the App [\#554](https://github.com/FundacionParaguaya/MentorApp/issues/554)
 - Intercom Screens - Design and Implementation [\#370](https://github.com/FundacionParaguaya/MentorApp/issues/370)
 
 **Merged pull requests:**
