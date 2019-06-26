@@ -80,6 +80,7 @@ export const dimensions = (
 export const surveys = (state = [], action) => {
   switch (action.type) {
     case LOAD_SURVEYS_COMMIT:
+      console.log('LOAD_SURVEYS_COMMIT')
       return action.payload.data.surveysByUser
     default:
       return state
@@ -325,6 +326,7 @@ export const sync = (
         }
       }
     case LOAD_SURVEYS_ROLLBACK:
+      console.log('LOAD_SURVEYS_ROLLBACK')
       return {
         ...state,
         surveysError: true
@@ -394,6 +396,7 @@ const appReducer = combineReducers({
 export const rootReducer = (state, action) => {
   // note that surveys are synced in the store
   if (action.type === LOAD_SURVEYS_COMMIT) {
+    console.log('set synced surveys')
     state = {
       ...state,
       sync: {
