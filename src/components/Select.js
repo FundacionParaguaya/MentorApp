@@ -462,7 +462,8 @@ const styles = StyleSheet.create({
     backgroundColor: colors.white
   },
   placeholder: {
-    paddingHorizontal: 15,
+    paddingLeft: 15,
+    paddingRight: 20,
     ...globalStyles.subline,
     // lineHeight: 50,
     paddingTop: 20,
