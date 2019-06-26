@@ -101,7 +101,7 @@ android {
         applicationId "com.povertystoplightapp"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
-        versionCode 54
+        versionCode 55
         versionName "1.9.11"
         ndk {
             abiFilters "armeabi-v7a", "x86"
