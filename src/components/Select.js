@@ -470,7 +470,7 @@ const styles = StyleSheet.create({
   },
   withoutValue: {
     backgroundColor: colors.primary,
-    height: 65
+    minHeight: 65
   },
   dropdown: {
     paddingVertical: 25,
