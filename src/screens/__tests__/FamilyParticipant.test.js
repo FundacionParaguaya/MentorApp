@@ -127,7 +127,6 @@ describe('Family Participant View', () => {
 
   describe('rendering', () => {
     it('renders the continue button with proper label', () => {
-      console.log(wrapper.instance().state)
       expect(wrapper.find(StickyFooter)).toHaveProp({
         continueLabel: 'general.continue'
       })

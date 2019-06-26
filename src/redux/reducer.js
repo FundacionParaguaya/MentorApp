@@ -80,7 +80,6 @@ export const dimensions = (
 export const surveys = (state = [], action) => {
   switch (action.type) {
     case LOAD_SURVEYS_COMMIT:
-      console.log('LOAD_SURVEYS_COMMIT')
       return action.payload.data.surveysByUser
     default:
       return state
@@ -326,7 +325,6 @@ export const sync = (
         }
       }
     case LOAD_SURVEYS_ROLLBACK:
-      console.log('LOAD_SURVEYS_ROLLBACK')
       return {
         ...state,
         surveysError: true
