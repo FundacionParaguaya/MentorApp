@@ -31,7 +31,7 @@ const store = createStore(
             setLanguage()
             setHydratedState()
           },
-          retry: () => 600000 // retry every 10 minutes
+          retry: () => 60000 // retry every 5 minutes
         })
       )
     : compose(
@@ -45,7 +45,7 @@ const store = createStore(
             setLanguage()
             setHydratedState()
           },
-          retry: () => 600000 // retry every 10 minutes
+          retry: () => 60000 // retry every 5 minutes
         })
       )
 )
