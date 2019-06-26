@@ -22,6 +22,81 @@ export const JOIN_OPERATIONS = {
 }
 
 /**
+ *  Returns an array with all of the conditional questions
+ * @param {*} survey the current survey
+ */
+export const getConditionalQuestions = survey => {
+  const surveyEconomicQuestions = survey.surveyEconomicQuestions || []
+  const conditionalQuestions = []
+  surveyEconomicQuestions.forEach(eq => {
+    if (
+      (eq.conditions && eq.conditions.length > 0) ||
+      (eq.conditionGroups && eq.conditionGroups.length > 0)
+    ) {
+      conditionalQuestions.push(eq)
+    } else {
+      // Checking conditional options only if needed
+      const options = eq.options || []
+      for (const option of options) {
+        if (option.conditions && option.conditions.length > 0) {
+          conditionalQuestions.push(eq)
+          return
+        }
+      }
+    }
+  })
+  return conditionalQuestions
+}
+
+/**
+ *  Returns an object with conditional questions keys
+ * @param {*} conditionalQuestions an array with all of the conditional questions
+ */
+export const getElementsWithConditionsOnThem = conditionalQuestions => {
+  const questionsWithConditionsOnThem = []
+  const memberKeysWithConditionsOnThem = []
+
+  const addTargetIfApplies = condition => {
+    // Addind this so it works after changing the key to scope
+    const scope = condition.scope || condition.type
+    if (
+      scope !== CONDITION_TYPES.FAMILY &&
+      !questionsWithConditionsOnThem.includes(condition.codeName)
+    ) {
+      questionsWithConditionsOnThem.push(condition.codeName)
+    }
+    if (
+      scope === CONDITION_TYPES.FAMILY &&
+      !memberKeysWithConditionsOnThem.includes(condition.codeName)
+    ) {
+      memberKeysWithConditionsOnThem.push(condition.codeName)
+    }
+  }
+
+  conditionalQuestions.forEach(conditionalQuestion => {
+    let conditions = []
+    const { conditionGroups } = conditionalQuestion
+    if (conditionGroups && conditionGroups.length > 0) {
+      conditionGroups.forEach(conditionGroup => {
+        conditions = [...conditions, ...conditionGroup.conditions]
+      })
+    } else {
+      ({ conditions = [] } = conditionalQuestion)
+    }
+
+    conditions.forEach(addTargetIfApplies)
+
+    // Checking conditional options only if needed
+    const options = conditionalQuestion.options || []
+    options.forEach(option => {
+      const { conditions: optionConditions = [] } = option
+      optionConditions.forEach(addTargetIfApplies)
+    })
+  })
+  return { questionsWithConditionsOnThem, memberKeysWithConditionsOnThem }
+}
+
+/**
  *  Returns a boolean that is the result of evaluation the condition against the question
  * @param {*} condition the condition we have to verify
  * @param {*} targetQuestion the question that holds the value we need to compare against
@@ -170,7 +245,7 @@ const applyBooleanOperations = (op1, op2, operator) =>
 export const shouldShowQuestion = (question, currentDraft, memberIndex) => {
   let shouldShow = true
   if (question.conditionGroups && question.conditionGroups.length > 0) {
-    ;({ result: shouldShow } = question.conditionGroups.reduce(
+    ({ result: shouldShow } = question.conditionGroups.reduce(
       (acc, current) => {
         const { conditions, groupOperator, joinNextGroup } = current
         const groupResult = conditions.reduce(

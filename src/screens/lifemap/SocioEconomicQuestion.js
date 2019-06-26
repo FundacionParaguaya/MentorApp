@@ -15,7 +15,9 @@ import {
   getConditionalOptions,
   getDraftWithUpdatedEconomic,
   getDraftWithUpdatedFamilyEconomics,
-  getDraftWithUpdatedQuestionsCascading
+  getDraftWithUpdatedQuestionsCascading,
+  getConditionalQuestions,
+  getElementsWithConditionsOnThem
 } from '../utils/conditional_logic'
 import { getTotalScreens } from './helpers'
 
@@ -51,7 +53,6 @@ export class SocioEconomicQuestion extends Component {
 
   constructor(props) {
     super(props)
-    const { draft } = this.state
     // If this is the first socio economics screen set the whole process
     // in the navigation. On every next screen it will know which questions
     // to ask and if it is done.
@@ -128,7 +129,13 @@ export class SocioEconomicQuestion extends Component {
     })
 
     if (!this.readOnly) {
+      const conditionalQuestions = getConditionalQuestions(this.survey)
+      const elementsWithConditionsOnThem = getElementsWithConditionsOnThem(
+        conditionalQuestions
+      )
       this.setState({
+        conditionalQuestions,
+        elementsWithConditionsOnThem,
         draft: {
           ...draft,
           progress: {
@@ -166,11 +173,6 @@ export class SocioEconomicQuestion extends Component {
 
   shouldComponentUpdate() {
     return this.props.navigation.isFocused()
-  }
-  addSurveyData = (text, field) => {
-    this.props.addSurveyData(this.draftId, 'economicSurveyDataList', {
-      [field]: text
-    })
   }
 
   getFieldValue = (field, propertyKey) => {
@@ -291,7 +293,7 @@ export class SocioEconomicQuestion extends Component {
     const {
       conditionalQuestions,
       elementsWithConditionsOnThem: { questionsWithConditionsOnThem }
-    } = this.props.nav
+    } = this.state
 
     // We get a draft with updated answer
     let currentDraft
