@@ -462,7 +462,8 @@ const styles = StyleSheet.create({
     backgroundColor: colors.white
   },
   placeholder: {
-    paddingHorizontal: 15,
+    paddingLeft: 15,
+    paddingRight: 25,
     ...globalStyles.subline,
     // lineHeight: 50,
     paddingTop: 20,
@@ -470,10 +471,10 @@ const styles = StyleSheet.create({
   },
   withoutValue: {
     backgroundColor: colors.primary,
-    height: 65
+    minHeight: 65
   },
   dropdown: {
-    paddingVertical: 25,
+    paddingVertical: 15,
     maxHeight: 360,
     position: 'absolute',
     bottom: 0,
@@ -483,9 +484,10 @@ const styles = StyleSheet.create({
   },
   option: {
     paddingHorizontal: 25,
+    paddingVertical: 12,
     fontFamily: 'Roboto',
     fontSize: 16,
-    lineHeight: 50,
+    lineHeight: 25,
     color: '#4a4a4a'
   },
   arrow: {

@@ -167,7 +167,8 @@ export class FamilyParticipant extends Component {
       familyMembersList: [
         {
           firstParticipant: true,
-          socioEconomicAnswers: []
+          socioEconomicAnswers: [],
+          birthCountry: this.survey.surveyConfig.surveyLocation.country
         }
       ]
     }
@@ -318,10 +319,7 @@ export class FamilyParticipant extends Component {
           countriesOnTop={this.survey.surveyConfig.countryOfBirth}
           placeholder={t('views.family.countryOfBirth')}
           field="birthCountry"
-          value={
-            participant.birthCountry ||
-            this.survey.surveyConfig.surveyLocation.country
-          }
+          value={participant.birthCountry}
           detectError={this.detectError}
           showErrors={showErrors}
         />
