@@ -1,6 +1,6 @@
 import React from 'react'
 import { shallow } from 'enzyme'
-import { ScrollView, FlatList } from 'react-native'
+import { FlatList } from 'react-native'
 import { Families, mapStateToProps } from '../Families'
 import SearchBar from '../../components/SearchBar'
 
@@ -59,10 +59,6 @@ describe('Families View', () => {
   })
 
   describe('rendering', () => {
-    it('renders base ScrollView', () => {
-      expect(wrapper.find(ScrollView)).toHaveLength(1)
-    })
-
     it('maps proper state', () => {
       expect(mapStateToProps({ env: 'test' })).toEqual({ env: 'test' })
     })

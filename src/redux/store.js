@@ -15,7 +15,6 @@ const setHydratedState = () => store.dispatch(setHydrated())
 const store = createStore(
   rootReducer,
   composeWithDevTools(
-    applyMiddleware(thunk),
     offline({
       ...offlineConfig,
       persistOptions: {
@@ -26,8 +25,9 @@ const store = createStore(
         setLanguage()
         setHydratedState()
       },
-      retry: () => 60000 // retry every 5 minutes
-    })
+      retry: () => 60000 // retry  every 5 minutes
+    }),
+    applyMiddleware(thunk)
   )
 )
 
