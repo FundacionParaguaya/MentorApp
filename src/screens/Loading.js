@@ -29,8 +29,7 @@ export class Loading extends Component {
     cachingImages: false,
     downloadingMap: false,
     maps: [],
-    error: null,
-    mapAllPercentage: 0
+    error: null
   }
 
   syncSurveys = resync => {
