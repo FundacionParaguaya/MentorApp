@@ -307,11 +307,9 @@ export class Loading extends Component {
       error
     } = this.state
 
-    let allMapPercentages
+    let allMapPercentages = 100
     if (this.state.downloadingMap && !this.state.cachingImages) {
       allMapPercentages = this.getDataPercentages()
-    } else if (this.state.downloadingMap && this.state.cachingImages) {
-      allMapPercentages = 100
     }
 
     return !error ? (
@@ -381,7 +379,7 @@ export class Loading extends Component {
                           : styles.colorDark
                       }
                     >
-                      {`${allMapPercentages.toFixed(0)}%`}
+                      {`${Math.floor(allMapPercentages)}%`}
                     </Text>
                   </View>
                   <View
@@ -420,10 +418,9 @@ export class Loading extends Component {
                               : styles.colorDark
                           }
                         >
-                          {`${(
-                            (sync.images.synced / sync.images.total) *
-                            100
-                          ).toFixed(0)}%`}
+                          {`${Math.floor(
+                            (sync.images.synced / sync.images.total) * 100
+                          )}%`}
                         </Text>
                       </View>
                       <View
@@ -441,7 +438,13 @@ export class Loading extends Component {
                       </View>
                     </React.Fragment>
                   ) : (
-                    <Text style={styles.colorDark}>
+                    <Text
+                      style={{
+                        color: colors.dark,
+                        fontSize: 14,
+                        marginBottom: 5
+                      }}
+                    >
                       Calculating total images to cache...
                     </Text>
                   )}
