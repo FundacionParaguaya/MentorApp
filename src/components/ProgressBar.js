@@ -5,17 +5,24 @@ import colors from '../theme.json'
 
 export class ProgressBarComponent extends Component {
   render() {
-    const { progress } = this.props
+    const { progress, hideBorder, removePadding } = this.props
     return (
       <View
         style={[
-          styles.container,
+          removePadding ? styles.containerNoPadding : styles.container,
           {
-            borderBottomWidth: this.props.currentScreen === 'Question' ? 0 : 1
+            borderBottomWidth:
+              this.props.currentScreen === 'Question' || hideBorder ? 0 : 1
           }
         ]}
       >
-        <View style={styles.progressBarContainer}>
+        <View
+          style={
+            removePadding
+              ? styles.progressBarContainerNoPadding
+              : styles.progressBarContainer
+          }
+        >
           <View style={styles.progressBar}>
             <View
               style={[
@@ -32,14 +39,22 @@ export class ProgressBarComponent extends Component {
 
 ProgressBarComponent.propTypes = {
   progress: PropTypes.number,
-  currentScreen: PropTypes.string
+  currentScreen: PropTypes.string,
+  hideBorder: PropTypes.bool,
+  removePadding: PropTypes.bool
 }
 
 const styles = StyleSheet.create({
+  containerNoPadding: {
+    borderBottomColor: colors.headerBorder
+  },
   container: {
     borderBottomColor: colors.headerBorder,
     paddingBottom: 10,
     marginBottom: 15
+  },
+  progressBarContainerNoPadding: {
+    marginHorizontal: 0
   },
   progressBarContainer: {
     marginHorizontal: 20
