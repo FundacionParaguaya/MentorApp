@@ -110,12 +110,14 @@ export class Loading extends Component {
       if (surveysWithOfflineMaps) {
         surveysWithOfflineMaps.forEach(survey => {
           survey.surveyConfig.offlineMaps.forEach(map => {
-            const options = {
-              minZoom: 10,
-              maxZoom: 13,
-              bounds: [map.from, map.to]
+            if (map.name) {
+              const options = {
+                minZoom: 10,
+                maxZoom: 13,
+                bounds: [map.from, map.to]
+              }
+              mapsArray.push({ name: map.name, statue: 0, options })
             }
-            mapsArray.push({ name: map.name, statue: 0, options })
           })
         })
       }
@@ -349,9 +351,7 @@ export class Loading extends Component {
               {cachingImages && (
                 <Text>
                   {sync.images.synced && sync.images.total
-                    ? `Syncing survey images: ${sync.images.synced} / ${
-                        sync.images.total
-                      }`
+                    ? `Syncing survey images: ${sync.images.synced} / ${sync.images.total}`
                     : 'Calculating total images to cache...'}
                 </Text>
               )}
