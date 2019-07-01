@@ -1,18 +1,24 @@
 # Change Log
 
-## [v1.9.11](https://github.com/FundacionParaguaya/MentorApp/tree/v1.9.11) (2019-06-26)
-[Full Changelog](https://github.com/FundacionParaguaya/MentorApp/compare/v1.9.10...v1.9.11)
+## [Unreleased](https://github.com/FundacionParaguaya/MentorApp/tree/HEAD)
+
+[Full Changelog](https://github.com/FundacionParaguaya/MentorApp/compare/v1.9.10...HEAD)
 
 **Implemented enhancements:**
 
+- Image caching performance [\#576](https://github.com/FundacionParaguaya/MentorApp/issues/576)
 - Feature/818 select performance [\#828](https://github.com/FundacionParaguaya/MentorApp/pull/828) ([Danman7](https://github.com/Danman7))
 
 **Fixed bugs:**
 
+- One conditional missing in Emprender  [\#842](https://github.com/FundacionParaguaya/MentorApp/issues/842)
+- Auto fix frequent sync errors from sync retry button [\#841](https://github.com/FundacionParaguaya/MentorApp/issues/841)
+- this.props.item.familyData.familyMembersList undefined in DraftList [\#839](https://github.com/FundacionParaguaya/MentorApp/issues/839)
 - Uk login error [\#829](https://github.com/FundacionParaguaya/MentorApp/issues/829)
 - Elmira sync errors [\#827](https://github.com/FundacionParaguaya/MentorApp/issues/827)
 - Banco Solidario login error [\#826](https://github.com/FundacionParaguaya/MentorApp/issues/826)
 - Emprender conditional issues in Mentor App [\#824](https://github.com/FundacionParaguaya/MentorApp/issues/824)
+- Error when opening the app [\#820](https://github.com/FundacionParaguaya/MentorApp/issues/820)
 - survey.minimumPriorities null error [\#761](https://github.com/FundacionParaguaya/MentorApp/issues/761)
 - Country of birth dropdown null is not an object error [\#760](https://github.com/FundacionParaguaya/MentorApp/issues/760)
 - familyData is undefined [\#759](https://github.com/FundacionParaguaya/MentorApp/issues/759)
@@ -22,14 +28,20 @@
 
 **Closed issues:**
 
+- Amends to "preparing app" screen \#2 [\#844](https://github.com/FundacionParaguaya/MentorApp/issues/844)
 - Design for errors in preparing or login on the mobile app [\#822](https://github.com/FundacionParaguaya/MentorApp/issues/822)
 - Improve dropdown performance [\#818](https://github.com/FundacionParaguaya/MentorApp/issues/818)
 - text performance slow [\#817](https://github.com/FundacionParaguaya/MentorApp/issues/817)
 - Git-flow set up [\#815](https://github.com/FundacionParaguaya/MentorApp/issues/815)
+- Form fields don't fit whole socioeconomic question [\#794](https://github.com/FundacionParaguaya/MentorApp/issues/794)
 - Update submit draft mutation with familyId [\#687](https://github.com/FundacionParaguaya/MentorApp/issues/687)
+- Performance Improvements [\#574](https://github.com/FundacionParaguaya/MentorApp/issues/574)
+- 64 Bit requirement on Apps [\#326](https://github.com/FundacionParaguaya/MentorApp/issues/326)
 
 **Merged pull requests:**
 
+- Feature/request encoding [\#846](https://github.com/FundacionParaguaya/MentorApp/pull/846) ([vasildimitroffhristoff](https://github.com/vasildimitroffhristoff))
+- amendments to build gradle to generate 64 bit compliant app [\#831](https://github.com/FundacionParaguaya/MentorApp/pull/831) ([vasildimitroffhristoff](https://github.com/vasildimitroffhristoff))
 - Bugfix/824 epmrender conditional [\#830](https://github.com/FundacionParaguaya/MentorApp/pull/830) ([vasildimitroffhristoff](https://github.com/vasildimitroffhristoff))
 - Feature/632 downloading error handling [\#823](https://github.com/FundacionParaguaya/MentorApp/pull/823) ([Danman7](https://github.com/Danman7))
 - Implemented check for device storage memory capacity [\#819](https://github.com/FundacionParaguaya/MentorApp/pull/819) ([vasildimitroffhristoff](https://github.com/vasildimitroffhristoff))
