@@ -16,7 +16,7 @@ import colors from '../theme.json'
 import globalStyles from '../globalStyles'
 import SearchBar from '../components/SearchBar'
 import FamiliesListItem from '../components/FamiliesListItem'
-
+import { replaceSpecialChars as sanitize } from '../utils'
 export class Families extends Component {
   state = { search: '' }
   acessibleComponent = React.createRef()
@@ -70,7 +70,7 @@ export class Families extends Component {
         }
       })
 
-    const allFamilies = [...draftFamilies, ...this.props.families]
+    const allFamilies = [...draftFamilies, ...sanitize(this.props.families)]
 
     const filteredFamilies = allFamilies.filter(
       family =>
