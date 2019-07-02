@@ -45,9 +45,12 @@ export class Question extends Component {
   }
 
   getFieldValue = field => {
-    const indicatorObject = this.state.draft.indicatorSurveyDataList.find(
-      item => item.key === field
-    )
+    const indicatorObject =
+      this.state.draft && this.state.draft.indicatorSurveyDataList
+        ? this.state.draft.indicatorSurveyDataList.find(
+            item => item.key === field
+          )
+        : null
     if (indicatorObject) {
       return indicatorObject.value
     }
