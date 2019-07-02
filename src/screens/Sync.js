@@ -13,6 +13,7 @@ import globalStyles from '../globalStyles'
 import { withNamespaces } from 'react-i18next'
 import { submitDraft } from '../redux/actions'
 import { url } from '../config'
+import { prepareDraftForSubmit } from './utils/helpers'
 
 import SyncUpToDate from '../components/sync/SyncUpToDate'
 import SyncOffline from '../components/sync/SyncOffline'
@@ -22,17 +23,6 @@ import SyncRetry from '../components/sync/SyncRetry'
 
 export class Sync extends Component {
   acessibleComponent = React.createRef()
-
-  componentDidMount() {
-    if (UIManager.AccessibilityEventTypes) {
-      setTimeout(() => {
-        UIManager.sendAccessibilityEvent(
-          findNodeHandle(this.acessibleComponent.current),
-          UIManager.AccessibilityEventTypes.typeViewFocused
-        )
-      }, 1)
-    }
-  }
 
   navigateToDraft = draft => {
     if (
@@ -53,6 +43,32 @@ export class Sync extends Component {
         survey: this.props.surveys.find(survey => survey.id === draft.surveyId),
         resumeDraft: true
       })
+  }
+
+  retrySubmittingAllDrafts = () => {
+    const draftsWithError = this.props.drafts.filter(
+      draft => draft.status === 'Sync error'
+    )
+
+    draftsWithError.forEach(draft => {
+      this.props.submitDraft(
+        url[this.props.env],
+        this.props.user.token,
+        draft.draftId,
+        prepareDraftForSubmit(draft)
+      )
+    })
+  }
+
+  componentDidMount() {
+    if (UIManager.AccessibilityEventTypes) {
+      setTimeout(() => {
+        UIManager.sendAccessibilityEvent(
+          findNodeHandle(this.acessibleComponent.current),
+          UIManager.AccessibilityEventTypes.typeViewFocused
+        )
+      }, 1)
+    }
   }
 
   render() {
@@ -90,16 +106,7 @@ export class Sync extends Component {
           {offline.online && draftsWithError.length && !pendingDrafts.length ? (
             <SyncRetry
               draftsWithError={draftsWithError.length}
-              retrySubmit={() => {
-                draftsWithError.forEach(draft => {
-                  this.props.submitDraft(
-                    url[this.props.env],
-                    this.props.user.token,
-                    draft.draftId,
-                    draft
-                  )
-                })
-              }}
+              retrySubmit={this.retrySubmittingAllDrafts}
             />
           ) : null}
         </View>

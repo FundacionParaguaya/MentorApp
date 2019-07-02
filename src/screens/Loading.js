@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
-import { Text, StyleSheet, View } from 'react-native'
+import { Text, StyleSheet, View, ActivityIndicator } from 'react-native'
 import Decoration from '../components/decoration/Decoration'
 import { connect } from 'react-redux'
 import ProgressBar from '../components/ProgressBar'
@@ -111,12 +111,14 @@ export class Loading extends Component {
       if (surveysWithOfflineMaps) {
         surveysWithOfflineMaps.forEach(survey => {
           survey.surveyConfig.offlineMaps.forEach(map => {
-            const options = {
-              minZoom: 10,
-              maxZoom: 13,
-              bounds: [map.from, map.to]
+            if (map.name) {
+              const options = {
+                minZoom: 10,
+                maxZoom: 13,
+                bounds: [map.from, map.to]
+              }
+              mapsArray.push({ name: map.name, statue: 0, options })
             }
-            mapsArray.push({ name: map.name, statue: 0, options })
           })
         })
       }
@@ -336,8 +338,10 @@ export class Loading extends Component {
                 >
                   {sync.surveys ? 'Surveys' : 'Syncing surveys...'}
                 </Text>
-                {sync.surveys && (
+                {sync.surveys ? (
                   <Icon name="check" color={colors.palegreen} size={23} />
+                ) : (
+                  <ActivityIndicator size="small" />
                 )}
               </View>
               {!sync.surveys ? (
@@ -350,8 +354,10 @@ export class Loading extends Component {
                   >
                     {sync.families ? 'Families' : 'Syncing families...'}
                   </Text>
-                  {sync.families && (
+                  {sync.families ? (
                     <Icon name="check" color={colors.palegreen} size={23} />
+                  ) : (
+                    <ActivityIndicator size="small" />
                   )}
                 </View>
               )}

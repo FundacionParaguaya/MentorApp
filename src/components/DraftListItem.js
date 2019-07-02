@@ -57,6 +57,14 @@ class DraftListItem extends Component {
     const itemCreateDateWithLocale = moment(item.created)
     itemCreateDateWithLocale.locale(lng)
 
+    const name =
+      item &&
+      item.familyData &&
+      item.familyData.familyMembersList &&
+      item.familyData.familyMembersList[0]
+        ? `${item.familyData.familyMembersList[0].firstName} ${item.familyData.familyMembersList[0].lastName}`
+        : ' - '
+
     // const linkDisabled = item.status === 'Synced'
     return (
       <ListItem
@@ -72,10 +80,7 @@ class DraftListItem extends Component {
           >
             {this.capitalize(itemCreateDateWithLocale.format('MMM DD, YYYY'))}
           </Text>
-          <Text style={globalStyles.p}>
-            {this.props.item.familyData.familyMembersList[0].firstName}{' '}
-            {this.props.item.familyData.familyMembersList[0].lastName}
-          </Text>
+          <Text style={globalStyles.p}>{name}</Text>
           <Text
             style={{
               ...styles.label,

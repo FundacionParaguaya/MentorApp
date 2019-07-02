@@ -9,6 +9,7 @@ import Button from '../../components/Button'
 import globalStyles from '../../globalStyles'
 import { updateDraft, submitDraft } from '../../redux/actions'
 import { url } from '../../config'
+import { prepareDraftForSubmit } from '../utils/helpers'
 
 export class Final extends Component {
   survey = this.props.navigation.getParam('survey')
@@ -34,52 +35,12 @@ export class Final extends Component {
     })
   }
 
-  prepareDraftForSubmit = draft => {
-    // remove unnecessary for sync properties from saved draft
-    const { progress, errors, status, ...result } = Object.assign({}, draft)
-
-    // check for frequent sync errors
-
-    // set country to survey country if not set
-    if (!result.familyData.country) {
-      result.familyData.country = this.survey.surveyConfig.surveyLocation.country
-    }
-
-    // filter out ghost family members
-    result.familyData.familyMembersList = result.familyData.familyMembersList.filter(
-      member => member.firstName
-    )
-
-    result.familyData.countFamilyMembers =
-      result.familyData.familyMembersList.length
-
-    // check for family members with no firstParticipant property
-    if (
-      result.familyData.familyMembersList.some(
-        member => !member.firstParticipant
-      )
-    ) {
-      result.familyData.familyMembersList.map(member => {
-        if (!member.firstParticipant) {
-          return {
-            ...member,
-            firstParticipant: false
-          }
-        } else {
-          return member
-        }
-      })
-    }
-
-    return result
-  }
-
   saveDraft = () => {
     this.setState({
       loading: true
     })
 
-    const draft = this.prepareDraftForSubmit(this.draft)
+    const draft = prepareDraftForSubmit(this.draft)
 
     this.props.submitDraft(
       url[this.props.env],
