@@ -89,6 +89,8 @@ describe('Family Participant View', () => {
   beforeEach(() => {
     props = createTestProps()
     wrapper = shallow(<FamilyParticipant {...props} />)
+    wrapper.instance().forceUpdate()
+    wrapper.update()
   })
 
   describe('lifecycle', () => {
@@ -168,6 +170,8 @@ describe('Family Participant View', () => {
         ...props
       })
       wrapper = shallow(<FamilyParticipant {...props} />)
+      wrapper.instance().forceUpdate()
+      wrapper.update()
 
       expect(
         wrapper
@@ -284,6 +288,8 @@ describe('participant adding/removing data', () => {
       ]
     })
     wrapper = shallow(<FamilyParticipant {...props} />)
+    wrapper.instance().forceUpdate()
+    wrapper.update()
   })
   it('gives Select the proper value', () => {
     expect(wrapper.find('#familyMembersCount').props().value).toBe(2)

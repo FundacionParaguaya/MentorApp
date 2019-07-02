@@ -1,6 +1,6 @@
 import React from 'react'
 import { shallow } from 'enzyme'
-import { ScrollView, ActivityIndicator, FlatList } from 'react-native'
+import { FlatList } from 'react-native'
 import { Families, mapStateToProps } from '../Families'
 import SearchBar from '../../components/SearchBar'
 
@@ -59,30 +59,8 @@ describe('Families View', () => {
   })
 
   describe('rendering', () => {
-    it('renders base ScrollView', () => {
-      expect(wrapper.find(ScrollView)).toHaveLength(1)
-    })
-
     it('maps proper state', () => {
       expect(mapStateToProps({ env: 'test' })).toEqual({ env: 'test' })
-    })
-
-    it('renders Activity indicator when there are families to fetch and the user is online', () => {
-      expect(wrapper.find(ActivityIndicator)).toHaveLength(1)
-    })
-
-    it('does not render Activity indicator when there are no families to fetch', () => {
-      props = createTestProps({ offline: { online: true, outbox: [] } })
-      wrapper = shallow(<Families {...props} />)
-      expect(wrapper.find(ActivityIndicator)).toHaveLength(0)
-    })
-
-    it('does not render Activity indicator when user is offline', () => {
-      props = createTestProps({
-        offline: { online: false, outbox: [{ type: 'LOAD_FAMILIES' }] }
-      })
-      wrapper = shallow(<Families {...props} />)
-      expect(wrapper.find(ActivityIndicator)).toHaveLength(0)
     })
 
     it('renders SearchBar', () => {
@@ -118,12 +96,6 @@ describe('Families View', () => {
   })
 
   describe('functionality', () => {
-    it('makes a call to fetch families when user is online and no other call is in the queue', () => {
-      props = createTestProps({ offline: { online: true, outbox: [] } })
-      wrapper = shallow(<Families {...props} />)
-      expect(wrapper.instance().props.loadFamilies).toHaveBeenCalledTimes(1)
-    })
-
     it('does not make a call to fetch families when user is online', () => {
       props = createTestProps({
         offline: { online: false, outbox: [] }
@@ -145,19 +117,5 @@ describe('Families View', () => {
       .props()
       .onChangeText('adams')
     expect(wrapper.find(FlatList).props().data).toHaveLength(1)
-  })
-  it('calls sets the screen title on mount', () => {
-    expect(wrapper.instance().props.navigation.setParams).toHaveBeenCalledTimes(
-      1
-    )
-  })
-  it('updates screen title when lng prop changes', () => {
-    wrapper.setProps({ lng: 'es' })
-    expect(wrapper.instance().props.navigation.setParams).toHaveBeenCalledTimes(
-      2
-    )
-    expect(wrapper.instance().props.navigation.setParams).toHaveBeenCalledWith({
-      title: 'views.families'
-    })
   })
 })

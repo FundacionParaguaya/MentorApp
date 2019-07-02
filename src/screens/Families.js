@@ -1,8 +1,6 @@
 import React, { Component } from 'react'
 import {
   StyleSheet,
-  ScrollView,
-  ActivityIndicator,
   FlatList,
   View,
   Text,
@@ -18,47 +16,10 @@ import colors from '../theme.json'
 import globalStyles from '../globalStyles'
 import SearchBar from '../components/SearchBar'
 import FamiliesListItem from '../components/FamiliesListItem'
-
+import { replaceSpecialChars as sanitize } from '../utils'
 export class Families extends Component {
-  static navigationOptions = ({ navigation }) => {
-    return {
-      title: navigation.getParam('title', 'Families')
-    }
-  }
-
   state = { search: '' }
   acessibleComponent = React.createRef()
-
-  updateTitle = () =>
-    this.props.navigation.setParams({
-      title: this.props.t('views.families')
-    })
-
-  componentDidMount() {
-    if (UIManager.AccessibilityEventTypes) {
-      setTimeout(() => {
-        UIManager.sendAccessibilityEvent(
-          findNodeHandle(this.acessibleComponent.current),
-          UIManager.AccessibilityEventTypes.typeViewFocused
-        )
-      }, 1)
-    }
-
-    this.updateTitle()
-    if (
-      this.props.offline.online &&
-      !this.props.offline.outbox.filter(item => item.type === 'LOAD_FAMILIES')
-        .length
-    ) {
-      this.props.loadFamilies(url[this.props.env], this.props.user.token)
-    }
-  }
-
-  componentDidUpdate(prevProps) {
-    if (prevProps.lng !== this.props.lng) {
-      this.updateTitle()
-    }
-  }
 
   sortByName = families => families.sort((a, b) => a.name.localeCompare(b.name))
 
@@ -77,12 +38,23 @@ export class Families extends Component {
     })
   }
 
+  fetchFamilies = () => {
+    this.props.loadFamilies(url[this.props.env], this.props.user.token)
+  }
+
+  componentDidMount() {
+    if (UIManager.AccessibilityEventTypes) {
+      setTimeout(() => {
+        UIManager.sendAccessibilityEvent(
+          findNodeHandle(this.acessibleComponent.current),
+          UIManager.AccessibilityEventTypes.typeViewFocused
+        )
+      }, 1)
+    }
+  }
+
   render() {
     const { t } = this.props
-
-    const familiesToSync =
-      this.props.offline.online &&
-      this.props.offline.outbox.find(item => item.type === 'LOAD_FAMILIES')
 
     // show not synced families from drafts
     const draftFamilies = this.props.drafts
@@ -92,15 +64,13 @@ export class Families extends Component {
       .map(draft => {
         const primaryParticipant = draft.familyData.familyMembersList[0]
         return {
-          name: `${primaryParticipant.firstName} ${
-            primaryParticipant.lastName
-          }`,
+          name: `${primaryParticipant.firstName} ${primaryParticipant.lastName}`,
           birthDate: primaryParticipant.birthDate,
           draft
         }
       })
 
-    const allFamilies = [...draftFamilies, ...this.props.families]
+    const allFamilies = [...draftFamilies, ...sanitize(this.props.families)]
 
     const filteredFamilies = allFamilies.filter(
       family =>
@@ -122,30 +92,28 @@ export class Families extends Component {
             {filteredFamilies.length} {t('views.families').toLowerCase()}
           </Text>
         </View>
-        <ScrollView>
-          <View ref={this.acessibleComponent} accessible={true}>
-            {familiesToSync ? (
-              <ActivityIndicator
-                size="small"
-                color={colors.palered}
-                style={styles.spinner}
+        <View ref={this.acessibleComponent} accessible={true}>
+          <FlatList
+            refreshing={
+              !!this.props.offline.online &&
+              !!this.props.offline.outbox.find(
+                item => item.type === 'LOAD_FAMILIES'
+              )
+            }
+            onRefresh={this.fetchFamilies}
+            data={this.sortByName(filteredFamilies)}
+            keyExtractor={(item, index) => index.toString()}
+            renderItem={({ item }) => (
+              <FamiliesListItem
+                error={t('views.family.error')}
+                lng={this.props.lng}
+                handleClick={() => this.handleClickOnFamily(item)}
+                family={item}
               />
-            ) : null}
-
-            <FlatList
-              data={this.sortByName(filteredFamilies)}
-              keyExtractor={(item, index) => index.toString()}
-              renderItem={({ item }) => (
-                <FamiliesListItem
-                  error={t('views.family.error')}
-                  lng={this.props.lng}
-                  handleClick={() => this.handleClickOnFamily(item)}
-                  family={item}
-                />
-              )}
-            />
-          </View>
-        </ScrollView>
+            )}
+            initialNumToRender={7}
+          />
+        </View>
       </View>
     )
   }
@@ -168,9 +136,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1
   },
-  spinner: {
-    marginVertical: 5
-  },
+
   search: { margin: 10 },
   bar: {
     paddingLeft: 30,

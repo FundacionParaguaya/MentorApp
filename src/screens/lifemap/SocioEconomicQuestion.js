@@ -15,7 +15,9 @@ import {
   getConditionalOptions,
   getDraftWithUpdatedEconomic,
   getDraftWithUpdatedFamilyEconomics,
-  getDraftWithUpdatedQuestionsCascading
+  getDraftWithUpdatedQuestionsCascading,
+  getConditionalQuestions,
+  getElementsWithConditionsOnThem
 } from '../utils/conditional_logic'
 import { getTotalScreens } from './helpers'
 
@@ -51,7 +53,6 @@ export class SocioEconomicQuestion extends Component {
 
   constructor(props) {
     super(props)
-    const { draft } = this.state
     // If this is the first socio economics screen set the whole process
     // in the navigation. On every next screen it will know which questions
     // to ask and if it is done.
@@ -62,40 +63,27 @@ export class SocioEconomicQuestion extends Component {
 
       // go trough all questions and separate them by screen
       // filter method - checks if family members meet the conditions based on age
-      this.survey.surveyEconomicQuestions
-        .filter(question =>
-          !!question.conditions &&
-          question.conditions.length &&
-          !!question.forFamilyMember &&
-          question.conditions[0].codeName.toLocaleLowerCase() === 'birthdate'
-            ? draft.familyData.familyMembersList.filter(
-                (member, index) => !!shouldShowQuestion(question, draft, index)
-              ).length
-              ? question
-              : false
-            : question
-        )
-        .forEach(question => {
-          // if the dimention of the questions change, change the page
-          if (question.topic !== currentDimension) {
-            currentDimension = question.topic
-            totalScreens += 1
-          }
+      this.survey.surveyEconomicQuestions.forEach(question => {
+        // if the dimention of the questions change, change the page
+        if (question.topic !== currentDimension) {
+          currentDimension = question.topic
+          totalScreens += 1
+        }
 
-          // if there is object for n screen create one
-          if (!questionsPerScreen[totalScreens - 1]) {
-            questionsPerScreen[totalScreens - 1] = {
-              forFamilyMember: [],
-              forFamily: []
-            }
+        // if there is object for n screen create one
+        if (!questionsPerScreen[totalScreens - 1]) {
+          questionsPerScreen[totalScreens - 1] = {
+            forFamilyMember: [],
+            forFamily: []
           }
+        }
 
-          if (question.forFamilyMember) {
-            questionsPerScreen[totalScreens - 1].forFamilyMember.push(question)
-          } else {
-            questionsPerScreen[totalScreens - 1].forFamily.push(question)
-          }
-        })
+        if (question.forFamilyMember) {
+          questionsPerScreen[totalScreens - 1].forFamilyMember.push(question)
+        } else {
+          questionsPerScreen[totalScreens - 1].forFamily.push(question)
+        }
+      })
       if (props.navigation.getParam('fromBeginLifemap')) {
         props.navigation.setParams({
           socioEconomics: {
@@ -141,7 +129,13 @@ export class SocioEconomicQuestion extends Component {
     })
 
     if (!this.readOnly) {
+      const conditionalQuestions = getConditionalQuestions(this.survey)
+      const elementsWithConditionsOnThem = getElementsWithConditionsOnThem(
+        conditionalQuestions
+      )
       this.setState({
+        conditionalQuestions,
+        elementsWithConditionsOnThem,
         draft: {
           ...draft,
           progress: {
@@ -179,11 +173,6 @@ export class SocioEconomicQuestion extends Component {
 
   shouldComponentUpdate() {
     return this.props.navigation.isFocused()
-  }
-  addSurveyData = (text, field) => {
-    this.props.addSurveyData(this.draftId, 'economicSurveyDataList', {
-      [field]: text
-    })
   }
 
   getFieldValue = (field, propertyKey) => {
@@ -304,7 +293,7 @@ export class SocioEconomicQuestion extends Component {
     const {
       conditionalQuestions,
       elementsWithConditionsOnThem: { questionsWithConditionsOnThem }
-    } = this.props.nav
+    } = this.state
 
     // We get a draft with updated answer
     let currentDraft
@@ -521,56 +510,86 @@ export class SocioEconomicQuestion extends Component {
                         : false
                       : question
                   )
-                  .map(question =>
-                    question.answerType === 'select' ||
-                    question.answerType === 'radio' ? (
-                      <Select
-                        radio={question.answerType === 'radio' ? true : false}
-                        key={question.codeName}
-                        required={question.required}
-                        onChange={value =>
-                          this.updateEconomicAnswer(question, value, i)
-                        }
-                        placeholder={question.questionText}
-                        showErrors={showErrors}
-                        label={question.questionText}
-                        field={question.codeName}
-                        value={
-                          this.getFamilyMemberFieldValue(
-                            question.codeName,
-                            i
-                          ) || ''
-                        }
-                        detectError={this.detectError}
-                        readonly={this.readOnly}
-                        options={getConditionalOptions(question, draft, i)}
-                        memberIndex={i + 1}
-                        cleanErrorsOnUnmount={
-                          this.cleanErrorsCodenamesOnUnmount
-                        }
-                      />
-                    ) : (
-                      <TextInput
-                        key={question.codeName}
-                        multiline
-                        required={question.required}
-                        onChangeText={value =>
-                          this.updateEconomicAnswer(question, value, i)
-                        }
-                        placeholder={question.questionText}
-                        showErrors={showErrors}
-                        field={question.codeName}
-                        value={
-                          this.getFamilyMemberFieldValue(
-                            question.codeName,
-                            i
-                          ) || ''
-                        }
-                        detectError={this.detectError}
-                        readonly={this.readOnly}
-                      />
-                    )
-                  )}
+                  .map(question => {
+                    if (
+                      question.answerType === 'select' ||
+                      question.answerType === 'radio'
+                    ) {
+                      return (
+                        <Select
+                          radio={question.answerType === 'radio' ? true : false}
+                          key={question.codeName}
+                          required={question.required}
+                          onChange={value =>
+                            this.updateEconomicAnswer(question, value, i)
+                          }
+                          placeholder={question.questionText}
+                          showErrors={showErrors}
+                          label={question.questionText}
+                          field={question.codeName}
+                          value={
+                            this.getFamilyMemberFieldValue(
+                              question.codeName,
+                              i
+                            ) || ''
+                          }
+                          detectError={this.detectError}
+                          readonly={this.readOnly}
+                          options={getConditionalOptions(question, draft, i)}
+                          memberIndex={i + 1}
+                          cleanErrorsOnUnmount={
+                            this.cleanErrorsCodenamesOnUnmount
+                          }
+                        />
+                      )
+                    } else if (question.answerType === 'number') {
+                      return (
+                        <TextInput
+                          multiline
+                          key={question.codeName}
+                          required={question.required}
+                          onChangeText={value =>
+                            this.updateEconomicAnswer(question, value, i)
+                          }
+                          placeholder={question.questionText}
+                          showErrors={showErrors}
+                          field={question.codeName}
+                          value={
+                            this.getFamilyMemberFieldValue(
+                              question.codeName,
+                              i
+                            ) || ''
+                          }
+                          detectError={this.detectError}
+                          readonly={this.readOnly}
+                          validation="number"
+                          keyboardType="numeric"
+                        />
+                      )
+                    } else {
+                      return (
+                        <TextInput
+                          key={question.codeName}
+                          multiline
+                          required={question.required}
+                          onChangeText={value =>
+                            this.updateEconomicAnswer(question, value, i)
+                          }
+                          placeholder={question.questionText}
+                          showErrors={showErrors}
+                          field={question.codeName}
+                          value={
+                            this.getFamilyMemberFieldValue(
+                              question.codeName,
+                              i
+                            ) || ''
+                          }
+                          detectError={this.detectError}
+                          readonly={this.readOnly}
+                        />
+                      )
+                    }
+                  })}
               </View>
             ))
           ) : (

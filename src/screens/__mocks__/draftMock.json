@@ -12,7 +12,7 @@
   ],
   "priorities": [
     {
-      "reason": "This is why don't you have it",
+      "reason": "This is why do not you have it",
       "action": "This is what will you do",
       "estimatedDate": 2,
       "indicator": "capacityToPlanAndBudget"

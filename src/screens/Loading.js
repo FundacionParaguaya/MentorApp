@@ -2,8 +2,10 @@ import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import { Text, StyleSheet, View, ActivityIndicator } from 'react-native'
 import { connect } from 'react-redux'
+import NetInfo from '@react-native-community/netinfo'
 import MapboxGL from '@mapbox/react-native-mapbox-gl'
 import Icon from 'react-native-vector-icons/MaterialIcons'
+import CommunityIcon from 'react-native-vector-icons/MaterialCommunityIcons'
 import DeviceInfo from 'react-native-device-info'
 import {
   loadFamilies,
@@ -12,17 +14,20 @@ import {
   setAppVersion,
   resetSyncState
 } from '../redux/actions'
+import Button from '../components/Button'
 import colors from '../theme.json'
 import globalStyles from '../globalStyles'
 import { url } from '../config'
 import { initImageCaching } from '../cache'
 
 export class Loading extends Component {
+  unsubscribeNetChange
   state = {
     syncingServerData: false, // know when to show that data is synced
     cachingImages: false,
     downloadingMap: false,
-    maps: []
+    maps: [],
+    error: null
   }
 
   syncSurveys = resync => {
@@ -45,6 +50,9 @@ export class Loading extends Component {
       (!!this.props.sync.images.total &&
         this.props.sync.images.total === this.props.sync.images.synced)
     ) {
+      if (this.unsubscribeNetChange) {
+        this.unsubscribeNetChange()
+      }
       this.props.navigation.navigate('DrawerStack')
     } else {
       this.setState({
@@ -85,15 +93,9 @@ export class Loading extends Component {
     })
   }
 
-  downloadMapData() {
-    this.state.maps.forEach(map =>
-      this.downloadOfflineMapPack(map.options, map.name)
-    )
-  }
-
   checkOfflineMaps = () => {
     if (!this.props.navigation.getParam('syncMaps')) {
-      this.handleImageCaching()
+      return this.handleImageCaching()
     }
     const mapsArray = []
 
@@ -108,12 +110,14 @@ export class Loading extends Component {
       if (surveysWithOfflineMaps) {
         surveysWithOfflineMaps.forEach(survey => {
           survey.surveyConfig.offlineMaps.forEach(map => {
-            const options = {
-              minZoom: 10,
-              maxZoom: 13,
-              bounds: [map.from, map.to]
+            if (map.name) {
+              const options = {
+                minZoom: 10,
+                maxZoom: 13,
+                bounds: [map.from, map.to]
+              }
+              mapsArray.push({ name: map.name, statue: 0, options })
             }
-            mapsArray.push({ name: map.name, statue: 0, options })
           })
         })
       }
@@ -151,9 +155,38 @@ export class Loading extends Component {
     })
   }
 
-  onMapDownloadError = (offlineRegion, mapDownloadError) => {}
+  onMapDownloadError = () => {
+    this.showError('We seem to have a problem downloading your offline maps.')
+  }
 
-  componentDidMount() {
+  reload = () => {
+    this.setState({
+      error: null
+    })
+    this.props.resetSyncState()
+    this.checkState()
+  }
+
+  showError(msg) {
+    this.setState({
+      error: msg
+    })
+  }
+
+  downloadMapData() {
+    this.state.maps.forEach(map =>
+      this.downloadOfflineMapPack(map.options, map.name)
+    )
+  }
+
+  checkState() {
+    // check connection state
+    NetInfo.fetch().then(state => {
+      if (!state.isConnected) {
+        this.showError('There seems to be a problem with your connetion.')
+      }
+    })
+
     const { families, surveys, images, appVersion } = this.props.sync
 
     if (!this.props.user.token) {
@@ -171,11 +204,24 @@ export class Loading extends Component {
       !!images.total &&
       images.total === images.synced
     ) {
+      if (this.unsubscribeNetChange) {
+        this.unsubscribeNetChange()
+      }
       // if everything is synced navigate to Dashboard
       this.props.navigation.navigate('DrawerStack')
     } else {
       this.syncSurveys()
     }
+  }
+
+  componentDidMount() {
+    this.unsubscribeNetChange = NetInfo.addEventListener(state => {
+      if (!state.isConnected) {
+        this.showError('There seems to be a problem with your connetion.')
+      }
+    })
+
+    this.checkState()
   }
 
   componentDidUpdate(prevProps) {
@@ -212,7 +258,25 @@ export class Loading extends Component {
       this.props.sync.images.total === this.props.sync.images.synced &&
       this.state.maps.every(map => map.status === 100)
     ) {
+      if (this.unsubscribeNetChange) {
+        this.unsubscribeNetChange()
+      }
       this.props.navigation.navigate('DrawerStack')
+    }
+
+    // if there is a download error
+    if (!prevProps.sync.familiesError && this.props.sync.familiesError) {
+      this.showError('We seem to have a problem downloading your families.')
+    }
+
+    if (!prevProps.sync.surveysError && this.props.sync.surveysError) {
+      this.showError('We seem to have a problem downloading your surveys.')
+    }
+  }
+
+  componentWillUnmount() {
+    if (this.unsubscribeNetChange) {
+      this.unsubscribeNetChange()
     }
   }
 
@@ -222,10 +286,11 @@ export class Loading extends Component {
       syncingServerData,
       cachingImages,
       downloadingMap,
-      maps
+      maps,
+      error
     } = this.state
 
-    return (
+    return !error ? (
       <View style={[globalStyles.container, styles.view]}>
         <View style={styles.loadingContainer}>
           <Text style={globalStyles.h3}>We are preparing the app …</Text>
@@ -286,14 +351,33 @@ export class Loading extends Component {
               {cachingImages && (
                 <Text>
                   {sync.images.synced && sync.images.total
-                    ? `Syncing survey images: ${sync.images.synced} / ${
-                        sync.images.total
-                      }`
+                    ? `Syncing survey images: ${sync.images.synced} / ${sync.images.total}`
                     : 'Calculating total images to cache...'}
                 </Text>
               )}
             </View>
           )}
+        </View>
+      </View>
+    ) : (
+      <View style={[globalStyles.container, styles.view]}>
+        <View style={styles.loadingContainer}>
+          <CommunityIcon
+            name="emoticon-sad-outline"
+            color={colors.palered}
+            size={60}
+          />
+          <Text style={[globalStyles.h1, { color: colors.palered }]}>Hmm…</Text>
+          <Text style={[globalStyles.h2, { textAlign: 'center' }]}>
+            {error}
+          </Text>
+          <Button
+            outlined
+            text="Retry"
+            style={{ paddingHorizontal: 30, marginTop: 30 }}
+            borderColor={colors.palered}
+            handleClick={this.reload}
+          />
         </View>
       </View>
     )
