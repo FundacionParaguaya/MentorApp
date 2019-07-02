@@ -55,7 +55,10 @@ export class Sync extends Component {
         url[this.props.env],
         this.props.user.token,
         draft.draftId,
-        prepareDraftForSubmit(draft)
+        prepareDraftForSubmit(
+          draft,
+          this.props.surveys.find(survey => survey.id === draft.surveyId)
+        )
       )
     })
   }

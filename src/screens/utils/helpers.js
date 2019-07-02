@@ -14,7 +14,7 @@ export const checkAndReplaceSpecialChars = question => {
   }
 }
 
-export const prepareDraftForSubmit = draft => {
+export const prepareDraftForSubmit = (draft, survey) => {
   // remove unnecessary for sync properties from saved draft
   const { progress, errors, status, ...result } = Object.assign({}, draft)
 
@@ -27,7 +27,9 @@ export const prepareDraftForSubmit = draft => {
 
   // set country to survey country if not set
   if (!result.familyData.country) {
-    result.familyData.country = this.survey.surveyConfig.surveyLocation.country
+    result.familyData.country =
+      survey.surveyConfig.surveyLocation &&
+      survey.surveyConfig.surveyLocation.country
   }
 
   // filter out ghost family members

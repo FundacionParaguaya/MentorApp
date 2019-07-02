@@ -1,5 +1,26 @@
 # Change Log
 
+## [v1.9.12](https://github.com/FundacionParaguaya/MentorApp/tree/v1.9.12) (2019-07-02)
+[Full Changelog](https://github.com/FundacionParaguaya/MentorApp/compare/v1.9.11...v1.9.12)
+
+**Fixed bugs:**
+
+- Crash on saving draft [\#851](https://github.com/FundacionParaguaya/MentorApp/issues/851)
+- UK crash on indicators pages [\#850](https://github.com/FundacionParaguaya/MentorApp/issues/850)
+- Download error due to null map name [\#848](https://github.com/FundacionParaguaya/MentorApp/issues/848)
+- Geco errors [\#825](https://github.com/FundacionParaguaya/MentorApp/issues/825)
+- App crashes when logging in [\#560](https://github.com/FundacionParaguaya/MentorApp/issues/560)
+
+**Closed issues:**
+
+- Amends to "preparing app" screen [\#816](https://github.com/FundacionParaguaya/MentorApp/issues/816)
+- Add these 2 maps for Nelixia - Guatemala [\#778](https://github.com/FundacionParaguaya/MentorApp/issues/778)
+
+**Merged pull requests:**
+
+- Release 1.9.11 [\#849](https://github.com/FundacionParaguaya/MentorApp/pull/849) ([Danman7](https://github.com/Danman7))
+- fix-816-loading-redesign [\#843](https://github.com/FundacionParaguaya/MentorApp/pull/843) ([zommerberg](https://github.com/zommerberg))
+
 ## [v1.9.11](https://github.com/FundacionParaguaya/MentorApp/tree/v1.9.11) (2019-07-02)
 [Full Changelog](https://github.com/FundacionParaguaya/MentorApp/compare/v1.9.10...v1.9.11)
 
