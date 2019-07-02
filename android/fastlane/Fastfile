@@ -76,11 +76,6 @@ platform :android do
       gradle(task: 'clean', project_dir: './')
       gradle(task: 'assemble', build_type: 'Release', project_dir: './')
       # UNCOMMENT AND REPLACE LATER /MentorApp/android/app/mentorapp.keystore
-
-      #supply(
-      #   track: 'alpha',
-      #   apk: "#{lane_context[SharedValues::SIGNED_APK_PATH]}"
-      # )
       end
 
       # gradle(
@@ -130,6 +125,10 @@ platform :android do
       
     #   zipalign(apk_path: "#{lane_context[SharedValues::SIGNED_APK_PATH]}")
     #   gradle(task: "test")
+    #   supply(
+    #     track: 'alpha',
+    #     apk: "#{lane_context[SharedValues::SIGNED_APK_PATH]}"
+    #   )
     # end 
 
   # desc "Deploy a new version to the Google Play"
