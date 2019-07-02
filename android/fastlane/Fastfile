@@ -77,6 +77,12 @@ platform :android do
       gradle(task: 'assemble', build_type: 'Release', project_dir: './')
       # UNCOMMENT AND REPLACE LATER /MentorApp/android/app/mentorapp.keystore
 
+      #supply(
+      #   track: 'alpha',
+      #   apk: "#{lane_context[SharedValues::SIGNED_APK_PATH]}"
+      # )
+      end
+
       # gradle(
       #   task: 'assemble',
       #   build_type: 'Release',
@@ -107,6 +113,24 @@ platform :android do
       #   apk_path: "yourpath/apk/app-prod-release.apk"
       # )
     end
+
+    # desc "Alpha release app. Deploy a new version to the Google Play Store - Alpha channel"
+    # lane :alpha do |options|
+    #   gradle(task: "clean")
+      
+    #   gradle(task: "assemble")
+      
+    #   sign_apk(
+    #     keystore_path: "${HOME}/keyvault/android.jks",
+    #     alias: "android-fastlane-example",
+    #     storepass: options[:storepass],
+    #     tsa: "http://timestamp.comodoca.com/rfc316",
+    #   )
+
+      
+    #   zipalign(apk_path: "#{lane_context[SharedValues::SIGNED_APK_PATH]}")
+    #   gradle(task: "test")
+    # end 
 
   # desc "Deploy a new version to the Google Play"
   # lane :deploy do
