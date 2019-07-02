@@ -1,8 +1,7 @@
 # Change Log
 
-## [Unreleased](https://github.com/FundacionParaguaya/MentorApp/tree/HEAD)
-
-[Full Changelog](https://github.com/FundacionParaguaya/MentorApp/compare/v1.9.10...HEAD)
+## [v1.9.11](https://github.com/FundacionParaguaya/MentorApp/tree/v1.9.11) (2019-07-02)
+[Full Changelog](https://github.com/FundacionParaguaya/MentorApp/compare/v1.9.10...v1.9.11)
 
 **Implemented enhancements:**
 
@@ -19,6 +18,7 @@
 - Banco Solidario login error [\#826](https://github.com/FundacionParaguaya/MentorApp/issues/826)
 - Emprender conditional issues in Mentor App [\#824](https://github.com/FundacionParaguaya/MentorApp/issues/824)
 - Error when opening the app [\#820](https://github.com/FundacionParaguaya/MentorApp/issues/820)
+- Strange characters when taking a survey [\#784](https://github.com/FundacionParaguaya/MentorApp/issues/784)
 - survey.minimumPriorities null error [\#761](https://github.com/FundacionParaguaya/MentorApp/issues/761)
 - Country of birth dropdown null is not an object error [\#760](https://github.com/FundacionParaguaya/MentorApp/issues/760)
 - familyData is undefined [\#759](https://github.com/FundacionParaguaya/MentorApp/issues/759)
@@ -40,6 +40,7 @@
 
 **Merged pull requests:**
 
+- Added Failsafe for map packs without names [\#847](https://github.com/FundacionParaguaya/MentorApp/pull/847) ([vasildimitroffhristoff](https://github.com/vasildimitroffhristoff))
 - Feature/request encoding [\#846](https://github.com/FundacionParaguaya/MentorApp/pull/846) ([vasildimitroffhristoff](https://github.com/vasildimitroffhristoff))
 - amendments to build gradle to generate 64 bit compliant app [\#831](https://github.com/FundacionParaguaya/MentorApp/pull/831) ([vasildimitroffhristoff](https://github.com/vasildimitroffhristoff))
 - Bugfix/824 epmrender conditional [\#830](https://github.com/FundacionParaguaya/MentorApp/pull/830) ([vasildimitroffhristoff](https://github.com/vasildimitroffhristoff))
