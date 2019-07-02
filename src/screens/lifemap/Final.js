@@ -40,7 +40,7 @@ export class Final extends Component {
       loading: true
     })
 
-    const draft = prepareDraftForSubmit(this.draft, this.surveys)
+    const draft = prepareDraftForSubmit(this.draft, this.survey)
 
     this.props.submitDraft(
       url[this.props.env],
