@@ -1,0 +1,115 @@
+# This file contains the fastlane.tools configuration
+# You can find the documentation at https://docs.fastlane.tools
+#
+# For a list of all available actions, check out
+#
+#     https://docs.fastlane.tools/actions
+#
+# For a list of all available plugins, check out
+#
+#     https://docs.fastlane.tools/plugins/available-plugins
+#
+
+# Uncomment the line if you want fastlane to automatically update itself
+# update_fastlane
+
+default_platform(:android)
+
+before_all do |lane, options|
+  ensure_git_branch(
+    branch: 'develop'
+  )
+  git_pull()
+end
+
+platform :android do
+  desc "Test command ..."
+    lane :test do 
+      changelog_from_git_commits
+    end   
+    
+    lane :bump_version do |options|
+      type = options.fetch(:type)
+    
+      case type
+      when "major", "minor", "patch"
+        increment_version_code()
+        # increment_version_number(bump_type: type)
+        android_set_version_name(
+          version_name: options[:build_number]
+      )
+      else
+        raise "Invalid bump type '#{type}'"
+      end
+
+      git_add(path: "./*")
+      git_commit(path: "./*", message: "Version Bump to #{options[:build_number]}")
+
+      push_to_git_remote(
+        remote: "origin",         
+        local_branch: "develop",  
+        remote_branch: "develop", 
+        tags: false,    # optional, default: true
+        no_verify: true,# optional, default: false
+        set_upstream: true
+      )
+
+      comments = changelog_from_git_commits(
+        between: [last_git_tag, "HEAD"],
+        pretty: "- %s",
+        date_format: "short",
+        match_lightweight_tag: false, 
+        merge_commit_filtering: "exclude_merges" 
+    ) 
+
+      add_git_tag(
+        message: comments,
+        tag: "v#{options[:build_number]}",
+        prefix: "v",
+        build_number: options[:build_number]
+      )
+      push_git_tags
+      sh("sudo","touch","changelog.txt") # replace with github_changelog_generator -t <github_token> on original repo
+    end
+
+    lane :build_android do 
+      gradle(task: 'clean', project_dir: './')
+      gradle(task: 'assemble', build_type: 'Release', project_dir: './')
+      # UNCOMMENT AND REPLACE LATER /MentorApp/android/app/mentorapp.keystore
+
+      # gradle(
+      #   task: 'assemble',
+      #   build_type: 'Release',
+      #   #flavor: 'com.sunsuper.acpt',
+      #   properties: {
+      #     "android.injected.signing.store.file" => "/Users/ben/ben_ws/certs/Android/SunsuperAndroidKeyStore.jks",
+      #     "android.injected.signing.store.password" => "[storepassword]",
+      #     "android.injected.signing.key.alias" => "[keystore alias]",
+      #     "android.injected.signing.key.password" => "[key password]",
+      #   }
+      # )
+
+      # crashlytics(
+      #   api_token: '[api token]',
+      #   build_secret: '[build secret]',
+      #   apk_path: "yourpath/apk/app-integ-release.apk"
+      # )
+
+      # crashlytics(
+      #   api_token: '[api token]',
+      #   build_secret: '[build secret]',
+      #   apk_path: "yourpath/apk/app-acpt-release.apk"
+      # )
+
+      # crashlytics(
+      #   api_token: '[api token]',
+      #   build_secret: '[build secret]',
+      #   apk_path: "yourpath/apk/app-prod-release.apk"
+      # )
+    end
+
+  # desc "Deploy a new version to the Google Play"
+  # lane :deploy do
+  #   upload_to_play_store
+  # end
+end
