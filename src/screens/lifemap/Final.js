@@ -10,14 +10,16 @@ import globalStyles from '../../globalStyles'
 import { updateDraft, submitDraft } from '../../redux/actions'
 import { url } from '../../config'
 import { prepareDraftForSubmit } from '../utils/helpers'
-// import RNHTMLtoPDF from 'react-native-html-to-pdf'
+import { buildPDFOptions } from '../utils/pdfs'
+import RNHTMLtoPDF from 'react-native-html-to-pdf'
 
 export class Final extends Component {
   survey = this.props.navigation.getParam('survey')
   draft = this.props.navigation.getParam('draft')
   state = {
     loading: false,
-    downloadingPDF: false
+    downloadingPDF: false,
+    printingLifemap: false
   }
   shouldComponentUpdate() {
     return this.props.navigation.isFocused()
@@ -54,30 +56,12 @@ export class Final extends Component {
     this.props.navigation.navigate('Dashboard')
   }
 
-  exportPDF = async () => {
-    // this.setState({ downloadingPDF: true })
-    // let options = {
-    //   html: `<div style="display:flex;align-content: space-between;border-bottom: 1px solid #eee;font-family: "Roboto">
-    //             <h2 style="width: 50%;height: 50px">Vasil Hristov , Life map</h2>
-    //             <h2 style="width: 50%;height: 50px;margin-left: auto;text-align:right">July 2, 2019</h2>
-    //         </div>
-    //         <div style="display:flex;align-content: space-between;flex-wrap: wrap;">
-    //           <div style="width: 20%;padding: 10px">
-    //             <div style="width: 70px;height: 70px;margin: 10px auto 10px auto;border-radius: 70px;background-color:#F0CB17"></div>
-    //             <span style="display:block;text-align: center">Ingresos superiores a
-    //             la línea de pobreza</span>
-    //           </div>
-    //         </div>
-    //         `,
-    //   fileName: 'test',
-    //   directory: 'Documents',
-    //   base64: true,
-    //   fonts: ['../../../assets/fonts/Roboto.ttf']
-    // }
-    // try {
-    //   let file = await RNHTMLtoPDF.convert(options)
-    //   this.setState({ downloadingPDF: false })
-    // } catch (err) {}
+  exportPDF = () => {
+    this.setState({ downloadingPDF: true })
+    const options = buildPDFOptions(this.draft, this.survey)
+    RNHTMLtoPDF.convert(options)
+      .then(() => this.setState({ downloadingPDF: false }))
+      .catch(() => {})
   }
 
   render() {
@@ -113,15 +97,24 @@ export class Final extends Component {
             priorities={this.draft.priorities}
             achievements={this.draft.achievements}
           />
-
-          <Button
-            style={{ width: '50%', alignSelf: 'center', marginTop: 20 }}
-            handleClick={this.exportPDF}
-            icon="cloud-download"
-            outlined
-            text="Download"
-            loading={this.state.downloadingPDF}
-          />
+          <View style={styles.buttonBar}>
+            <Button
+              style={{ width: '49%', alignSelf: 'center', marginTop: 20 }}
+              handleClick={this.exportPDF}
+              icon="cloud-download"
+              outlined
+              text="Download"
+              loading={this.state.downloadingPDF}
+            />
+            <Button
+              style={{ width: '49%', alignSelf: 'center', marginTop: 20 }}
+              handleClick={this.exportPDF}
+              icon="print"
+              outlined
+              text="Print"
+              loading={this.state.printingLifemap}
+            />
+          </View>
         </View>
         <View style={{ height: 50 }}>
           <Button
@@ -143,6 +136,11 @@ const styles = StyleSheet.create({
   },
   text: {
     textAlign: 'center'
+  },
+  buttonBar: {
+    marginBottom: 30,
+    flexDirection: 'row',
+    justifyContent: 'space-between'
   }
 })
 

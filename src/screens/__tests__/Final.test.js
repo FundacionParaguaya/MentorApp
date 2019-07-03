@@ -65,7 +65,7 @@ describe('Final Lifemap View when no questions are skipped', () => {
       expect(wrapper.find(LifemapVisual)).toHaveLength(1)
     })
     it('renders Buttons', () => {
-      expect(wrapper.find(Button)).toHaveLength(2)
+      expect(wrapper.find(Button)).toHaveLength(3)
     })
   })
 
