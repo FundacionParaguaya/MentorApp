@@ -10,6 +10,7 @@ import globalStyles from '../../globalStyles'
 import { updateDraft, submitDraft } from '../../redux/actions'
 import { url } from '../../config'
 import { prepareDraftForSubmit } from '../utils/helpers'
+// import RNHTMLtoPDF from 'react-native-html-to-pdf'
 
 export class Final extends Component {
   survey = this.props.navigation.getParam('survey')
@@ -53,7 +54,31 @@ export class Final extends Component {
     this.props.navigation.navigate('Dashboard')
   }
 
-  exportPDF = () => {}
+  exportPDF = async () => {
+    // this.setState({ downloadingPDF: true })
+    // let options = {
+    //   html: `<div style="display:flex;align-content: space-between;border-bottom: 1px solid #eee;font-family: "Roboto">
+    //             <h2 style="width: 50%;height: 50px">Vasil Hristov , Life map</h2>
+    //             <h2 style="width: 50%;height: 50px;margin-left: auto;text-align:right">July 2, 2019</h2>
+    //         </div>
+    //         <div style="display:flex;align-content: space-between;flex-wrap: wrap;">
+    //           <div style="width: 20%;padding: 10px">
+    //             <div style="width: 70px;height: 70px;margin: 10px auto 10px auto;border-radius: 70px;background-color:#F0CB17"></div>
+    //             <span style="display:block;text-align: center">Ingresos superiores a
+    //             la línea de pobreza</span>
+    //           </div>
+    //         </div>
+    //         `,
+    //   fileName: 'test',
+    //   directory: 'Documents',
+    //   base64: true,
+    //   fonts: ['../../../assets/fonts/Roboto.ttf']
+    // }
+    // try {
+    //   let file = await RNHTMLtoPDF.convert(options)
+    //   this.setState({ downloadingPDF: false })
+    // } catch (err) {}
+  }
 
   render() {
     const { t } = this.props
@@ -88,6 +113,7 @@ export class Final extends Component {
             priorities={this.draft.priorities}
             achievements={this.draft.achievements}
           />
+
           <Button
             style={{ width: '50%', alignSelf: 'center', marginTop: 20 }}
             handleClick={this.exportPDF}
