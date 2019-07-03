@@ -15,7 +15,8 @@ export class Final extends Component {
   survey = this.props.navigation.getParam('survey')
   draft = this.props.navigation.getParam('draft')
   state = {
-    loading: false
+    loading: false,
+    downloadingPDF: false
   }
   shouldComponentUpdate() {
     return this.props.navigation.isFocused()
@@ -52,6 +53,8 @@ export class Final extends Component {
     this.props.navigation.navigate('Dashboard')
   }
 
+  exportPDF = () => {}
+
   render() {
     const { t } = this.props
 
@@ -84,6 +87,14 @@ export class Final extends Component {
             questionsLength={this.survey.surveyStoplightQuestions.length}
             priorities={this.draft.priorities}
             achievements={this.draft.achievements}
+          />
+          <Button
+            style={{ width: '50%', alignSelf: 'center', marginTop: 20 }}
+            handleClick={this.exportPDF}
+            icon="cloud-download"
+            outlined
+            text="Download"
+            loading={this.state.downloadingPDF}
           />
         </View>
         <View style={{ height: 50 }}>
