@@ -2,12 +2,17 @@ import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import { StyleSheet, View, Text } from 'react-native'
 import LifemapOverviewListItem from './LifemapOverviewListItem'
-
+import AddPriorityAndAchievementModal from '../screens/modals/AddPriorityAndAchievementModal'
 import globalStyles from '../globalStyles'
 
 class LifemapOverview extends Component {
   dimensions = this.props.surveyData.map(item => item.dimension)
-
+  state = {
+    AddAchievementOrPriority: false,
+    indicator: '',
+    color: 0,
+    indicatorText: ''
+  }
   getColor = codeName => {
     const indicator = this.props.draftData.indicatorSurveyDataList.find(
       item => item.key === codeName
@@ -20,19 +25,15 @@ class LifemapOverview extends Component {
   }
 
   handleClick(color, indicator, indicatorText) {
-    if (color === 3) {
-      return this.props.navigateToScreen(
-        'AddAchievement',
-        indicator,
-        indicatorText
-      )
-    } else if (color === 2 || color === 1) {
-      return this.props.navigateToScreen(
-        'AddPriority',
-        indicator,
-        indicatorText
-      )
-    }
+    this.setState({
+      AddAchievementOrPriority: true,
+      indicator: indicator,
+      color: color,
+      indicatorText: indicatorText
+    })
+  }
+  onClose = () => {
+    this.setState({ AddAchievementOrPriority: false })
   }
   filterByDimension = item =>
     this.props.surveyData.filter(indicator => {
@@ -60,6 +61,7 @@ class LifemapOverview extends Component {
         )
       }
     })
+
   render() {
     const priorities = this.props.draftData.priorities.map(
       priority => priority.indicator
@@ -70,6 +72,17 @@ class LifemapOverview extends Component {
 
     return (
       <View style={styles.container}>
+        {/* I am also passing the color because i have to visually display the circle color */}
+        {this.state.AddAchievementOrPriority ? (
+          <AddPriorityAndAchievementModal
+            updateDraftGlobal={this.props.updateDraftGlobal}
+            onClose={this.onClose}
+            color={this.state.color}
+            draft={this.props.draftData}
+            indicator={this.state.indicator}
+            indicatorText={this.state.indicatorText}
+          />
+        ) : null}
         {[...new Set(this.dimensions)].map(item => (
           <View key={item}>
             {this.filterByDimension(item).length ? (
@@ -102,6 +115,7 @@ class LifemapOverview extends Component {
 LifemapOverview.propTypes = {
   surveyData: PropTypes.array.isRequired,
   draftData: PropTypes.object.isRequired,
+  updateDraftGlobal: PropTypes.func.isRequired,
   navigateToScreen: PropTypes.func.isRequired,
   draftOverview: PropTypes.bool,
   selectedFilter: PropTypes.oneOfType([
@@ -113,7 +127,7 @@ LifemapOverview.propTypes = {
 
 const styles = StyleSheet.create({
   container: {
-    ...globalStyles.container,
+    flex: 1,
     padding: 0
   },
   dimension: { ...globalStyles.h4, marginHorizontal: 20, marginVertical: 10 }

@@ -124,6 +124,9 @@
       "tellUsMore": "Puede decirnos más acerca de esta ubicación en el siguiente formulario"
     },
     "lifemap": {
+      "nowLetsMakeSomePriorities": "Ahora, ¡escribamos algunas prioridades!",
+      "youCreatedALifeMap": "Tú Has Creado un Mapa de Vida.",
+      "congratulations": "¡Felicidades!",
       "thisLifeMapHas": "Este Mapa de Vida tiene %n preguntas. ¡Tardará aproximadamente 35 minutos en completarse!",
       "responseRequired": "*Respuesta requerida",
       "skipThisQuestion": "Omitir esta pregunta",
@@ -141,7 +144,7 @@
       "great": "¡Fantástico!",
       "youHaveCompletedTheLifemap": "Has completado tu Mapa de Vida",
       "youNeedToAddPriotity": "Necesitas agregar una prioridad",
-      "youNeedToAddPriorities": "Necesitas agregar %n prioridades",
+      "youNeedToAddPriorities": "¡Elige %n indicadores y explica por qué son importantes y que harás para conseguirlos!",
       "beforeTheLifeMapIsCompleted": "Antes de que se complete el Mapa de Vida....",
       "green": "Verde",
       "yellow": "Amarillo",
