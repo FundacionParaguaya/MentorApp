@@ -182,7 +182,7 @@ export class AddPriorityAndAchievementModal extends Component {
     } else {
       achievement = this.getAchievementValue(draft)
     }
-    console.log(draft)
+
     return (
       <Popup isOpen priorOrAchievement onClose={this.props.onClose}>
         <View>
@@ -331,7 +331,6 @@ AddPriorityAndAchievementModal.propTypes = {
   t: PropTypes.func.isRequired,
   indicatorText: PropTypes.string.isRequired,
   indicator: PropTypes.string.isRequired,
-  navigation: PropTypes.object.isRequired,
   updateDraftGlobal: PropTypes.func.isRequired,
   draft: PropTypes.object,
   color: PropTypes.number,
