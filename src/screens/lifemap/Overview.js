@@ -35,14 +35,6 @@ export class Overview extends Component {
     })
 
     // show priorities message if no priorities are made or they are not enough
-    if (
-      !draft.priorities.length ||
-      this.getMandatoryPrioritiesCount(draft) > draft.priorities.length
-    ) {
-      this.setState({
-        tipIsVisible: true
-      })
-    }
 
     if (!this.isDraftResuming && !this.familyLifemap) {
       this.setState({
@@ -113,41 +105,8 @@ export class Overview extends Component {
     })
   }
 
-  getPotentialPrioritiesCount() {
-    const { draft } = this.state
-    return (
-      draft &&
-      draft.indicatorSurveyDataList &&
-      draft.indicatorSurveyDataList.filter(
-        question => question.value === 1 || question.value === 2
-      ).length
-    )
-  }
-
-  getMandatoryPrioritiesCount() {
-    const potentialPrioritiesCount = this.getPotentialPrioritiesCount() || 0
-    const mimimumPriorities =
-      (this.survey && this.survey.minimumPriorities) || 0
-
-    return potentialPrioritiesCount > mimimumPriorities
-      ? mimimumPriorities
-      : potentialPrioritiesCount
-  }
-
-  onTipClose = () => {
-    this.setState({
-      tipIsVisible: false
-    })
-  }
-
-  handleContinue = (mandatoryPrioritiesCount, draft) => {
-    if (mandatoryPrioritiesCount > draft.priorities.length) {
-      this.setState({
-        tipIsVisible: true
-      })
-    } else {
-      this.navigateToScreen('Final')
-    }
+  handleContinue = () => {
+    this.navigateToScreen('Priorities')
   }
 
   resumeDraft = () => {
@@ -163,49 +122,33 @@ export class Overview extends Component {
   render() {
     const { t } = this.props
     const { filterModalIsOpen, selectedFilter, filterLabel, draft } = this.state
-    const mandatoryPrioritiesCount = this.getMandatoryPrioritiesCount(draft)
-    const tipIsVisible = !this.isDraftResuming && this.state.tipIsVisible
-    const getTipDescription = () => {
-      //no mandatory priotities
-      if (
-        !mandatoryPrioritiesCount ||
-        mandatoryPrioritiesCount - draft.priorities.length <= 0
-      ) {
-        return `${t('general.create')} ${t(
-          'views.lifemap.priorities'
-        ).toLowerCase()}!`
-        //only one mandatory priority
-      } else if (mandatoryPrioritiesCount - draft.priorities.length === 1) {
-        return t('views.lifemap.youNeedToAddPriotity')
-      }
-      //more than one mandatory priority
-      else {
-        return `${t('general.create')} ${mandatoryPrioritiesCount -
-          draft.priorities.length} ${t(
-          'views.lifemap.priorities'
-        ).toLowerCase()}!`
-      }
-    }
 
     return (
       <StickyFooter
         continueLabel={t('general.continue')}
-        handleClick={() => this.handleContinue(mandatoryPrioritiesCount, draft)}
+        handleClick={() => this.handleContinue()}
         visible={!this.isDraftResuming && !this.familyLifemap}
-        type={tipIsVisible ? 'tip' : 'button'}
-        tipTitle={t('views.lifemap.toComplete')}
-        onTipClose={this.onTipClose}
-        tipDescription={getTipDescription()}
         progress={
           !this.isDraftResuming && !this.familyLifemap
             ? (draft.progress.total - 1) / draft.progress.total
             : 0
         }
       >
+        {this.state.draft.status === 'Draft' ? (
+          <View style={{ alignItems: 'center' }}>
+            <Text style={[globalStyles.h2Bold, styles.heading]}>      
+            {t('views.lifemap.congratulations')}
+            </Text>
+            <Text style={[globalStyles.h2Bold, styles.heading]}>
+            {t('views.lifemap.youCreatedALifeMap')}
+            </Text>
+          </View>
+        ) : null}
         <View style={[globalStyles.background, styles.contentContainer]}>
           <View style={styles.indicatorsContainer}>
             <LifemapVisual
-              large
+              large={this.state.draft.status !== 'Draft'}
+              extraLarge={this.state.draft.status === 'Draft'}
               questions={draft.indicatorSurveyDataList}
               priorities={draft.priorities}
               achievements={draft.achievements}
@@ -223,118 +166,131 @@ export class Overview extends Component {
               />
             ) : null}
           </View>
-          <View>
-            <TouchableHighlight
-              id="filters"
-              underlayColor={'transparent'}
-              activeOpacity={1}
-              onPress={this.toggleFilterModal}
-            >
-              <View style={styles.listTitle}>
-                <Text style={globalStyles.subline}>
-                  {filterLabel || t('views.lifemap.allIndicators')}
-                </Text>
-                <Image source={arrow} style={styles.arrow} />
+          {/*If we are in family/draft then show the questions.Else dont show them . This is requered for the families tab*/}
+          {this.state.draft.status !== 'Draft' ? (
+            <React.Fragment>
+              <View>
+                <TouchableHighlight
+                  id="filters"
+                  underlayColor={'transparent'}
+                  activeOpacity={1}
+                  onPress={this.toggleFilterModal}
+                >
+                  <View style={styles.listTitle}>
+                    <Text style={globalStyles.subline}>
+                      {filterLabel || t('views.lifemap.allIndicators')}
+                    </Text>
+                    <Image source={arrow} style={styles.arrow} />
+                  </View>
+                </TouchableHighlight>
+                <LifemapOverview
+                  surveyData={this.survey.surveyStoplightQuestions}
+                  draftData={draft}
+                  navigateToScreen={this.navigateToScreen}
+                  draftOverview={!this.isDraftResuming && !this.familyLifemap}
+                  selectedFilter={selectedFilter}
+                />
               </View>
-            </TouchableHighlight>
-            <LifemapOverview
-              surveyData={this.survey.surveyStoplightQuestions}
-              draftData={draft}
-              navigateToScreen={this.navigateToScreen}
-              draftOverview={!this.isDraftResuming && !this.familyLifemap}
-              selectedFilter={selectedFilter}
-            />
-          </View>
 
-          {/* Filters modal */}
-          <BottomModal
-            isOpen={filterModalIsOpen}
-            onRequestClose={this.toggleFilterModal}
-            onEmptyClose={() => this.selectFilter(false)}
-          >
-            <View style={styles.dropdown}>
-              <Text style={[globalStyles.p, styles.modalTitle]}>
-                {t('general.chooseView')}
-              </Text>
+              {/* Filters modal */}
+              <BottomModal
+                isOpen={filterModalIsOpen}
+                onRequestClose={this.toggleFilterModal}
+                onEmptyClose={() => this.selectFilter(false)}
+              >
+                <View style={styles.dropdown}>
+                  <Text style={[globalStyles.p, styles.modalTitle]}>
+                    {t('general.chooseView')}
+                  </Text>
 
-              {/* All */}
-              <FilterListItem
-                id="all"
-                onPress={() => this.selectFilter(false)}
-                color={'#EAD1AF'}
-                text={t('views.lifemap.allIndicators')}
-                amount={draft.indicatorSurveyDataList.length}
-              />
+                  {/* All */}
+                  <FilterListItem
+                    id="all"
+                    onPress={() => this.selectFilter(false)}
+                    color={'#EAD1AF'}
+                    text={t('views.lifemap.allIndicators')}
+                    amount={draft.indicatorSurveyDataList.length}
+                  />
 
-              {/* Green */}
-              <FilterListItem
-                id="green"
-                onPress={() => this.selectFilter(3, t('views.lifemap.green'))}
-                color={colors.palegreen}
-                text={t('views.lifemap.green')}
-                amount={
-                  draft.indicatorSurveyDataList.filter(item => item.value === 3)
-                    .length
-                }
-              />
+                  {/* Green */}
+                  <FilterListItem
+                    id="green"
+                    onPress={() =>
+                      this.selectFilter(3, t('views.lifemap.green'))
+                    }
+                    color={colors.palegreen}
+                    text={t('views.lifemap.green')}
+                    amount={
+                      draft.indicatorSurveyDataList.filter(
+                        item => item.value === 3
+                      ).length
+                    }
+                  />
 
-              {/* Yellow */}
-              <FilterListItem
-                id="yellow"
-                onPress={() => this.selectFilter(2, t('views.lifemap.yellow'))}
-                color={colors.gold}
-                text={t('views.lifemap.yellow')}
-                amount={
-                  draft.indicatorSurveyDataList.filter(item => item.value === 2)
-                    .length
-                }
-              />
+                  {/* Yellow */}
+                  <FilterListItem
+                    id="yellow"
+                    onPress={() =>
+                      this.selectFilter(2, t('views.lifemap.yellow'))
+                    }
+                    color={colors.gold}
+                    text={t('views.lifemap.yellow')}
+                    amount={
+                      draft.indicatorSurveyDataList.filter(
+                        item => item.value === 2
+                      ).length
+                    }
+                  />
 
-              {/* Red */}
-              <FilterListItem
-                id="red"
-                onPress={() => this.selectFilter(1, t('views.lifemap.red'))}
-                color={colors.red}
-                text={t('views.lifemap.red')}
-                amount={
-                  draft.indicatorSurveyDataList.filter(item => item.value === 1)
-                    .length
-                }
-              />
+                  {/* Red */}
+                  <FilterListItem
+                    id="red"
+                    onPress={() => this.selectFilter(1, t('views.lifemap.red'))}
+                    color={colors.red}
+                    text={t('views.lifemap.red')}
+                    amount={
+                      draft.indicatorSurveyDataList.filter(
+                        item => item.value === 1
+                      ).length
+                    }
+                  />
 
-              {/* Priorities/achievements */}
-              <FilterListItem
-                id="priorities"
-                onPress={() =>
-                  this.selectFilter(
-                    'priorities',
-                    `${t('views.lifemap.priorities')} & ${t(
+                  {/* Priorities/achievements */}
+                  <FilterListItem
+                    id="priorities"
+                    onPress={() =>
+                      this.selectFilter(
+                        'priorities',
+                        `${t('views.lifemap.priorities')} & ${t(
+                          'views.lifemap.achievements'
+                        )}`
+                      )
+                    }
+                    color={colors.blue}
+                    text={`${t('views.lifemap.priorities')} & ${t(
                       'views.lifemap.achievements'
-                    )}`
-                  )
-                }
-                color={colors.blue}
-                text={`${t('views.lifemap.priorities')} & ${t(
-                  'views.lifemap.achievements'
-                )}`}
-                amount={draft.priorities.length + draft.achievements.length}
-              />
+                    )}`}
+                    amount={draft.priorities.length + draft.achievements.length}
+                  />
 
-              {/* Skipped */}
-              <FilterListItem
-                id="skipped"
-                onPress={() =>
-                  this.selectFilter(0, t('views.skippedIndicators'))
-                }
-                color={colors.palegrey}
-                text={t('views.skippedIndicators')}
-                amount={
-                  draft.indicatorSurveyDataList.filter(item => item.value === 0)
-                    .length
-                }
-              />
-            </View>
-          </BottomModal>
+                  {/* Skipped */}
+                  <FilterListItem
+                    id="skipped"
+                    onPress={() =>
+                      this.selectFilter(0, t('views.skippedIndicators'))
+                    }
+                    color={colors.palegrey}
+                    text={t('views.skippedIndicators')}
+                    amount={
+                      draft.indicatorSurveyDataList.filter(
+                        item => item.value === 0
+                      ).length
+                    }
+                  />
+                </View>
+              </BottomModal>
+            </React.Fragment>
+          ) : null}
         </View>
       </StickyFooter>
     )

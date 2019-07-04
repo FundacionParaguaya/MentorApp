@@ -5,7 +5,9 @@ import colors from '../theme.json'
 
 export default class Popup extends Component {
   render() {
-    const { isOpen, children, onClose } = this.props
+    const { isOpen, children, onClose, priorOrAchievement } = this.props
+
+    //I had to change the way Popup component works because in the past when i clicked on the modal then it would close(not the transparent part),so i made it close only when i click on the transparent touchable part ,this can be reusable in the future.
     return (
       <Modal
         visible={!!isOpen}
@@ -14,21 +16,42 @@ export default class Popup extends Component {
         animationType="fade"
         presentationStyle="overFullScreen"
       >
-        <TouchableHighlight
-          underlayColor={'rgba(47,38,28, 0.2)'}
-          style={styles.container}
-          onPress={onClose}
-          id="overlay"
+        {priorOrAchievement ? (
+          <React.Fragment>
+            <TouchableHighlight
+              underlayColor={'rgba(47,38,28, 0.2)'}
+              style={styles.priorOrAchievementContainer}
+              onPress={onClose}
+              id="overlay"
+            >
+              <View />
+            </TouchableHighlight>
+            <View
+              id="modal"
+              style={styles.priorOrAchievementModal}
+              accessible={true}
+              accessibilityLiveRegion="assertive"
+            >
+              {children}
+            </View>
+          </React.Fragment>
+        ) : (
+          <TouchableHighlight
+            underlayColor={'rgba(47,38,28, 0.2)'}
+            style={styles.container}
+            onPress={onClose}
+            id="overlay"
           >
-          <View
-            id="modal"
-            style={styles.modal}
-            accessible={true}
-            accessibilityLiveRegion="assertive"
-          >
-            {children}
-          </View>
-        </TouchableHighlight>
+            <View
+              id="modal"
+              style={styles.modal}
+              accessible={true}
+              accessibilityLiveRegion="assertive"
+            >
+              {children}
+            </View>
+          </TouchableHighlight>
+        )}
       </Modal>
     )
   }
@@ -37,10 +60,30 @@ export default class Popup extends Component {
 Popup.propTypes = {
   isOpen: PropTypes.bool,
   children: PropTypes.oneOfType([PropTypes.array, PropTypes.object]),
-  onClose: PropTypes.func
+  onClose: PropTypes.func,
+  priorOrAchievement: PropTypes.bool
 }
 
 const styles = StyleSheet.create({
+  priorOrAchievementContainer: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    flexDirection: 'column',
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: 'rgba(47,38,28, 0.2)'
+  },
+  priorOrAchievementModal: {
+    width: '100%',
+    position: 'absolute',
+    backgroundColor: colors.white,
+    paddingVertical: 23,
+    padding: 28,
+    bottom: 0
+  },
   container: {
     position: 'absolute',
     top: 0,

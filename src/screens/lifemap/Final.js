@@ -28,7 +28,7 @@ export class Final extends Component {
   }
 
   onPressBack = () => {
-    this.props.navigation.replace('Overview', {
+    this.props.navigation.replace('Priorities', {
       resumeDraft: false,
       draft: this.draft,
       survey: this.survey

@@ -26,12 +26,20 @@ class LifemapVisual extends Component {
       : []
 
   render() {
-    const { large, bigMargin } = this.props
+    const { large, bigMargin, extraLarge } = this.props
     const prioritiesAndAchievements = [
       ...this.props.priorities.map(priority => priority.indicator),
       ...this.props.achievements.map(priority => priority.indicator)
     ]
-
+    let size1 = 10
+    let size2 = 17
+    if (large) {
+      size1 = 12
+      size2 = 25
+    }
+    if (extraLarge) {
+      size2 = 50
+    }
     return (
       <View style={styles.container}>
         {this.getColors.map((item, i) => (
@@ -40,23 +48,21 @@ class LifemapVisual extends Component {
             accessible={true}
             accessibilityLabel={this.props.questions[i].key}
             accessibilityHint={
-              Object.keys(colors).find(key => colors[key] === item) ===
-              "gold"
-                ? "yellow"
+              Object.keys(colors).find(key => colors[key] === item) === 'gold'
+                ? 'yellow'
                 : Object.keys(colors).find(key => colors[key] === item)
             }
           >
-            {prioritiesAndAchievements.includes(
-              this.props.questions[i].key
-            ) && this.props.questions[i].value ? (
+            {prioritiesAndAchievements.includes(this.props.questions[i].key) &&
+            this.props.questions[i].value ? (
               <Icon
                 name="brightness-1"
                 color={colors.blue}
-                size={large ? 12 : 10}
+                size={size1}
                 style={{
                   ...styles.iconBlue,
-                  width: large ? 12 : 10,
-                  height: large ? 12 : 10,
+                  width: size1,
+                  height: size1,
                   top: bigMargin ? 2 : 0,
                   right: bigMargin ? 6 : 3
                 }}
@@ -65,7 +71,7 @@ class LifemapVisual extends Component {
             <Icon
               name="brightness-1"
               color={item}
-              size={large ? 25 : 17}
+              size={size2}
               style={{
                 marginHorizontal: bigMargin ? 8 : 4,
                 marginVertical: bigMargin ? 4 : 2
@@ -78,7 +84,7 @@ class LifemapVisual extends Component {
             <Icon
               name="brightness-1"
               color={colors.palegrey}
-              size={large ? 25 : 17}
+              size={size2}
               style={{
                 marginHorizontal: bigMargin ? 8 : 4,
                 marginVertical: bigMargin ? 4 : 2
@@ -97,13 +103,16 @@ LifemapVisual.propTypes = {
   achievements: PropTypes.array.isRequired,
   priorities: PropTypes.array.isRequired,
   bigMargin: PropTypes.bool,
-  large: PropTypes.bool
+  large: PropTypes.bool,
+  extraLarge: PropTypes.bool
 }
 
 const styles = StyleSheet.create({
   container: {
     flexDirection: 'row',
-    flexWrap: 'wrap'
+    flexWrap: 'wrap',
+    alignItems: 'center',
+    justifyContent: 'center'
   },
   iconBlue: {
     right: 3,

@@ -124,6 +124,9 @@
       "tellUsMore": "You can tell us more about this location in the form below!"
     },
     "lifemap": {
+      "nowLetsMakeSomePriorities": "Now let's make some priorities!",
+      "youCreatedALifeMap": "You created a Life Map",
+      "congratulations": "Congratulations!",
       "thisLifeMapHas": "This life map has %n questions. It will take approximately 35 minutes to complete!",
       "responseRequired": "*Response required",
       "skipThisQuestion": "Skip this question",
@@ -141,14 +144,16 @@
       "great": "Great!",
       "youHaveCompletedTheLifemap": "You have completed the lifemap",
       "youNeedToAddPriotity": "You need to add one priority",
-      "youNeedToAddPriorities": "You need to add %n priorities",
+      "youNeedToAddPriorities": "Choose %n indicators below and explain why they are important and what you will do to achieve them!",
       "beforeTheLifeMapIsCompleted": "Before the life map is completed...",
       "green": "Green",
       "yellow": "Yellow",
       "red": "Red",
       "priorities": "Priorities",
       "achievements": "Achievements",
-      "toComplete": "To complete the lifemap..."
+      "toComplete": "To complete the lifemap...",
+      "makePriority": "Make this a priority!",
+      "makeAchievement": "Mark achievement!"
     },
     "modals": {
       "lifeMapWillNotBeSaved": "If you do not enter all details on this page the life map will not be saved!",
