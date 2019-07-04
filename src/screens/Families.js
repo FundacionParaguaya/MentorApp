@@ -1,7 +1,6 @@
 import React, { Component } from 'react'
 import {
   StyleSheet,
-  ScrollView,
   FlatList,
   View,
   Text,
@@ -17,7 +16,7 @@ import colors from '../theme.json'
 import globalStyles from '../globalStyles'
 import SearchBar from '../components/SearchBar'
 import FamiliesListItem from '../components/FamiliesListItem'
-
+import { replaceSpecialChars as sanitize } from '../utils'
 export class Families extends Component {
   state = { search: '' }
   acessibleComponent = React.createRef()
@@ -65,15 +64,13 @@ export class Families extends Component {
       .map(draft => {
         const primaryParticipant = draft.familyData.familyMembersList[0]
         return {
-          name: `${primaryParticipant.firstName} ${
-            primaryParticipant.lastName
-          }`,
+          name: `${primaryParticipant.firstName} ${primaryParticipant.lastName}`,
           birthDate: primaryParticipant.birthDate,
           draft
         }
       })
 
-    const allFamilies = [...draftFamilies, ...this.props.families]
+    const allFamilies = [...draftFamilies, ...sanitize(this.props.families)]
 
     const filteredFamilies = allFamilies.filter(
       family =>
@@ -95,30 +92,28 @@ export class Families extends Component {
             {filteredFamilies.length} {t('views.families').toLowerCase()}
           </Text>
         </View>
-        <ScrollView>
-          <View ref={this.acessibleComponent} accessible={true}>
-            <FlatList
-              refreshing={
-                !!this.props.offline.online &&
-                !!this.props.offline.outbox.find(
-                  item => item.type === 'LOAD_FAMILIES'
-                )
-              }
-              onRefresh={this.fetchFamilies}
-              data={this.sortByName(filteredFamilies)}
-              keyExtractor={(item, index) => index.toString()}
-              renderItem={({ item }) => (
-                <FamiliesListItem
-                  error={t('views.family.error')}
-                  lng={this.props.lng}
-                  handleClick={() => this.handleClickOnFamily(item)}
-                  family={item}
-                />
-              )}
-              initialNumToRender={7}
-            />
-          </View>
-        </ScrollView>
+        <View ref={this.acessibleComponent} accessible={true}>
+          <FlatList
+            refreshing={
+              !!this.props.offline.online &&
+              !!this.props.offline.outbox.find(
+                item => item.type === 'LOAD_FAMILIES'
+              )
+            }
+            onRefresh={this.fetchFamilies}
+            data={this.sortByName(filteredFamilies)}
+            keyExtractor={(item, index) => index.toString()}
+            renderItem={({ item }) => (
+              <FamiliesListItem
+                error={t('views.family.error')}
+                lng={this.props.lng}
+                handleClick={() => this.handleClickOnFamily(item)}
+                family={item}
+              />
+            )}
+            initialNumToRender={7}
+          />
+        </View>
       </View>
     )
   }

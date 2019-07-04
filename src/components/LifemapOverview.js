@@ -14,9 +14,13 @@ class LifemapOverview extends Component {
     indicatorText: ''
   }
   getColor = codeName => {
-    const indicator = this.props.draftData.indicatorSurveyDataList.find(
-      item => item.key === codeName
-    )
+    const indicator =
+      this.props.draftData && this.props.draftData.indicatorSurveyDataList
+        ? this.props.draftData.indicatorSurveyDataList.find(
+            item => item.key === codeName
+          )
+        : null
+
     if (indicator) {
       return indicator.value
     } else {

@@ -1,12 +1,6 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
-import {
-  View,
-  StyleSheet,
-  ScrollView,
-  Vibration,
-  Dimensions
-} from 'react-native'
+import { View, ScrollView, Vibration, Dimensions } from 'react-native'
 import SliderItem from './SliderItem'
 import colors from '../theme.json'
 import { isPortrait } from '../responsivenessHelpers'
@@ -86,7 +80,7 @@ export class Slider extends Component {
           snapToAlignment="center"
           snapToInterval={width - (1 / 10) * width}
           contentContainerStyle={{
-            width: isPortrait({width, height}) ? '280%' : '90%',
+            width: isPortrait({ width, height }) ? '280%' : '90%',
             flexGrow: 1,
             flexDirection: 'row',
             flexWrap: 'wrap',
@@ -96,8 +90,6 @@ export class Slider extends Component {
           ref={ref => {
             this.scrollView = ref
           }}
-          snapToAlignment="center"
-          snapToInterval={width - (1 / 10) * width}
         >
           {this.props.slides.map((slide, i) => (
             <View
@@ -123,7 +115,7 @@ export class Slider extends Component {
 Slider.propTypes = {
   slides: PropTypes.array.isRequired,
   value: PropTypes.number,
-  selectAnswer: PropTypes.func.isRequired,
+  selectAnswer: PropTypes.func.isRequired
 }
 
 export default Slider
