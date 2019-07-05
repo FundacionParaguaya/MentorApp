@@ -187,7 +187,45 @@ export default class Decoration extends Component {
             </View>
           </View>
         )}
-
+        {variation === 'priorities' && (
+          <View style={{ zIndex: -1 }}>
+            <View style={[styles.ballsContainer, { zIndex: 1 }]}>
+              <View>
+                <Orb
+                  size={15}
+                  color={colors.palered}
+                  position={{ x: 175, y: 40 }}
+                />
+                <Orb
+                  size={40}
+                  color={colors.palegold}
+                  position={{ x: -200, y: 15 }}
+                />
+                <Orb
+                  size={25}
+                  color={colors.palered}
+                  position={{ x: -115, y: -55 }}
+                />
+                <Orb
+                  size={35}
+                  color={colors.palegold}
+                  position={{ x: 50, y: -85 }}
+                />
+                <Orb
+                  size={45}
+                  color={colors.palegreen}
+                  position={{ x: 195, y: -55 }}
+                />
+                <Orb
+                  size={45}
+                  color={colors.palegreen}
+                  position={{ x: -50, y: 65 }}
+                />
+              </View>
+            </View>
+            <View style={styles.childContainer}>{this.props.children}</View>
+          </View>
+        )}
         {variation === 'primaryParticipant' && (
           <View style={{ zIndex: -1 }}>
             <View style={[styles.ballsContainer, { zIndex: 1 }]}>
@@ -324,3 +362,4 @@ const styles = StyleSheet.create({
     zIndex: 2
   }
 })
+
