@@ -32,7 +32,7 @@ export class Final extends Component {
   }
 
   onPressBack = () => {
-    this.props.navigation.replace('Overview', {
+    this.props.navigation.replace('Priorities', {
       resumeDraft: false,
       draft: this.draft,
       survey: this.survey
@@ -44,7 +44,7 @@ export class Final extends Component {
       loading: true
     })
 
-    const draft = prepareDraftForSubmit(this.draft, this.surveys)
+    const draft = prepareDraftForSubmit(this.draft, this.survey)
 
     this.props.submitDraft(
       url[this.props.env],

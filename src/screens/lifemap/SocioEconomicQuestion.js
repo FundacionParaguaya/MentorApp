@@ -8,7 +8,6 @@ import TextInput from '../../components/TextInput'
 import Select from '../../components/Select'
 import Checkbox from '../../components/Checkbox'
 import Decoration from '../../components/decoration/Decoration'
-import { addSurveyDataCheckBox } from '../../redux/actions'
 import colors from '../../theme.json'
 import {
   shouldShowQuestion,
@@ -264,28 +263,37 @@ export class SocioEconomicQuestion extends Component {
 
   onPressCheckbox = (text, field) => {
     const { draft } = this.state
-    let deleteVal = false
-    draft.economicSurveyDataList.forEach(e => {
-      if (e.key === field) {
-        if (typeof e.multipleValue !== 'undefined') {
-          e.multipleValue.forEach((el, i) => {
-            if (el === text) {
-              deleteVal = true
-              e.multipleValue.splice(i, 1)
-            }
-          })
-        }
-      }
-    })
 
-    if (!deleteVal) {
-      this.props.addSurveyDataCheckBox(
-        draft.draftId,
-        'economicSurveyDataList',
-        {
-          [field]: text
+    const question = draft.economicSurveyDataList.find(
+      item => item.key === field
+    )
+
+    if (!question) {
+      this.setState({
+        draft: {
+          ...draft,
+          economicSurveyDataList: [
+            ...draft.economicSurveyDataList,
+            { key: field, value: null, multipleValue: [text] }
+          ]
         }
-      )
+      })
+    } else {
+      this.setState({
+        draft: {
+          ...draft,
+          economicSurveyDataList: [
+            ...draft.economicSurveyDataList.filter(item => item.key !== field),
+            {
+              key: field,
+              value: null,
+              multipleValue: question.multipleValue.find(item => item === text)
+                ? question.multipleValue.filter(item => item !== text)
+                : [...question.multipleValue, text]
+            }
+          ]
+        }
+      })
     }
   }
 
@@ -328,6 +336,7 @@ export class SocioEconomicQuestion extends Component {
   render() {
     const { t } = this.props
     const { showErrors, draft } = this.state
+
     const socioEconomics = this.props.navigation.getParam('socioEconomics')
     const questionsForThisScreen = socioEconomics
       ? socioEconomics.questionsPerScreen[socioEconomics.currentScreen - 1]
@@ -638,9 +647,7 @@ const styles = StyleSheet.create({
   }
 })
 
-const mapDispatchToProps = {
-  addSurveyDataCheckBox
-}
+const mapDispatchToProps = {}
 
 const mapStateToProps = ({ drafts, nav }) => ({ drafts, nav })
 

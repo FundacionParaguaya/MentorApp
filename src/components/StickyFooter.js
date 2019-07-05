@@ -70,8 +70,9 @@ export default class StickyFooter extends Component {
         {!this.props.readonly &&
         (this.props.visible && this.state.continueVisible) ? (
           <View>
+            {/* i have changed the height to 61 because there was a weird whitespace if we dont have the progress bar */}
             {this.props.type === 'button' ? (
-              <View style={{ height: 60 }}>
+              <View style={{ height: 61 }}>
                 <Button
                   id="continue"
                   colored
