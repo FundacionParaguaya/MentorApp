@@ -22,10 +22,12 @@ import FamilyTab from '../components/FamilyTab'
 import OverviewComponent from './lifemap/Overview'
 import RoundImage from '../components/RoundImage'
 import Button from '../components/Button'
-import { updateNav } from '../redux/actions'
+import { url } from '../config'
+import { updateNav, submitDraft } from '../redux/actions'
 import MapboxGL from '@mapbox/react-native-mapbox-gl'
 import marker from '../../assets/images/marker.png'
 import mapPlaceholderLarge from '../../assets/images/map_placeholder_1000.png'
+import { prepareDraftForSubmit } from './utils/helpers'
 
 export class Family extends Component {
   // set the title of the screen to the family name
@@ -114,6 +116,19 @@ export class Family extends Component {
     item => item.id === this.familyLifemap.surveyId
   )
 
+  retrySync = () => {
+    const draft = prepareDraftForSubmit(this.familyLifemap, this.survey)
+
+    this.props.submitDraft(
+      url[this.props.env],
+      this.props.user.token,
+      draft.draftId,
+      draft
+    )
+    this.props.navigation.popToTop()
+    this.props.navigation.navigate('Dashboard')
+  }
+
   componentWillUnmount() {
     this.unsubscribeNetChange()
   }
@@ -122,6 +137,7 @@ export class Family extends Component {
     const { activeTab } = this.state
     const { t, navigation } = this.props
     const { familyData } = this.familyLifemap
+
     const email =
       familyData &&
       familyData.familyMembersList &&
@@ -366,16 +382,26 @@ export class Family extends Component {
                       handleClick={() => this.handleResumeClick()}
                     />
                   ) : (
-                    <Text
-                      style={{
-                        ...globalStyles.h2Bold,
-                        ...{
-                          textAlign: 'center'
-                        }
-                      }}
-                    >
-                      {t('views.family.lifeMapAfterSync')}
-                    </Text>
+                    <View>
+                      <Text
+                        style={{
+                          ...globalStyles.h2Bold,
+                          ...{
+                            textAlign: 'center'
+                          }
+                        }}
+                      >
+                        {t('views.family.lifeMapAfterSync')}
+                      </Text>
+                      {this.state.isOnline && (
+                        <Button
+                          id="retry"
+                          style={styles.button}
+                          text={t('views.synced')}
+                          handleClick={this.retrySync}
+                        />
+                      )}
+                    </View>
                   )}
                 </View>
               </View>
@@ -405,7 +431,10 @@ Family.propTypes = {
   navigation: PropTypes.object.isRequired,
   t: PropTypes.func,
   updateNav: PropTypes.func.isRequired,
-  nav: PropTypes.object.isRequired
+  submitDraft: PropTypes.func.isRequired,
+  nav: PropTypes.object.isRequired,
+  env: PropTypes.string.isRequired,
+  user: PropTypes.object.isRequired
 }
 
 const styles = StyleSheet.create({
@@ -418,6 +447,12 @@ const styles = StyleSheet.create({
     marginLeft: 10,
     justifyContent: 'center',
     alignItems: 'center'
+  },
+  button: {
+    marginTop: 20,
+    width: '100%',
+    maxWidth: 400,
+    backgroundColor: colors.palered
   },
   familiesIconIcon: {
     margin: 'auto',
@@ -505,9 +540,15 @@ const styles = StyleSheet.create({
   imagePlaceholder: { width: '100%', height: 139 }
 })
 const mapDispatchToProps = {
-  updateNav
+  updateNav,
+  submitDraft
 }
-const mapStateToProps = ({ nav, surveys }) => ({ nav, surveys })
+const mapStateToProps = ({ nav, surveys, env, user }) => ({
+  nav,
+  surveys,
+  env,
+  user
+})
 
 export default withNamespaces()(
   connect(
