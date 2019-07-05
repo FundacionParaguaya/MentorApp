@@ -154,7 +154,7 @@ export class Overview extends Component {
     const { draft } = this.state
 
     this.props.navigation.replace(draft.progress.screen, {
-      draft,
+      draft: draft || this.props.navigation.getParam('draft'),
       survey: this.survey,
       step: draft.progress.step
     })
