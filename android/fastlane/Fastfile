@@ -117,35 +117,41 @@ platform :android do
   ####################################################
   #   GENERATE SIGNED APK BUNDLE
   ####################################################
-  desc "Generate signed bundle"
-    lane :generate_apk do 
-      # gradle(task: 'clean', project_dir: './')
-      # gradle(
-      #   task: 'bundle',
-      #   build_type: 'Release',
-      #   project_dir: './'
-      #   properties: {
-      #     "android.injected.signing.store.file" => "/app/mentorapp.keystore",
-      #     "android.injected.signing.store.password" => "[storepassword]",
-      #     "android.injected.signing.key.alias" => "[keystore alias]",
-      #     "android.injected.signing.key.password" => "[key password]",
-      #   }
-      # )
-    end
+  # desc "Generate signed bundle"
+  #   lane :generate_apk do 
+  #     gradle(task: 'clean', project_dir: './')
+  #     gradle(
+  #       task: 'bundle',
+  #       build_type: 'Release',
+  #       project_dir: './'
+  #       properties: {
+  #         "android.injected.signing.store.file" => "/app/mentorapp.keystore",
+  #         "android.injected.signing.store.password" => "[storepassword]",
+  #         "android.injected.signing.key.alias" => "[keystore alias]",
+  #         "android.injected.signing.key.password" => "[key password]",
+  #       }
+  #     )
+  #   end
 
     ####################################################
     #   GENERATE SIGNED APK BUNDLE
+    #   Example command :
+    #   > fastlane internal jsonKey:$GOOGLE_PLAY_KEY  aabPath:$AAB_PATH
+    #     !!! where $GOOGLE_PLAY_KEY and $AAB_PATH are environment variables
+    #   ---------------------------------------------------------------------
+    #   cat be raplaced with simple shell command
+    #   > fastlane supply --aab $AAB_PATH --json_key  $GOOGLE_PLAY_KEY
     ####################################################
 
-    desc "Deploy to internal test track"
-      lane :internal do
-        # upload_to_play_store(
-        #   json_key: "#{Dir.pwd}/json_key.json",
-        #   track: "internal",
-        #   skip_upload_metadata: true,
-        #   skip_upload_images: true,
-        #   skip_upload_screenshots: true
-        # )
-      end     
-    
+    # desc "Deploy to internal test track"
+    #   lane :internal do |options|
+    #     upload_to_play_store(
+    #       json_key: options[:jsonKey],
+    #       track: "internal",
+    #       aab: options[:aabPath],
+    #       skip_upload_metadata: true,
+    #       skip_upload_images: true,
+    #       skip_upload_screenshots: true
+    #     )
+    #   end
 end
