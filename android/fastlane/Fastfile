@@ -139,7 +139,7 @@ platform :android do
     #   > fastlane internal jsonKey:$GOOGLE_PLAY_KEY  aabPath:$AAB_PATH
     #     !!! where $GOOGLE_PLAY_KEY and $AAB_PATH are environment variables
     #   ---------------------------------------------------------------------
-    #   cat be raplaced with simple shell command
+    #   can be raplaced with simple shell command
     #   > fastlane supply --aab $AAB_PATH --json_key  $GOOGLE_PLAY_KEY
     ####################################################
 
