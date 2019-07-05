@@ -17,7 +17,7 @@ export class Question extends Component {
   slides = this.indicator.stoplightColors
   readOnly = this.props.navigation.getParam('readOnly')
   state = {
-    draft: this.props.navigation.getParam('draft')
+    draft: this.props.navigation.getParam('draft') || {}
   }
 
   componentDidMount() {
