@@ -1,5 +1,11 @@
 import React, { Component } from 'react'
-import { StyleSheet, ScrollView, View, Text } from 'react-native'
+import {
+  StyleSheet,
+  ScrollView,
+  View,
+  Text,
+  PermissionsAndroid
+} from 'react-native'
 import { connect } from 'react-redux'
 import PropTypes from 'prop-types'
 import { withNamespaces } from 'react-i18next'
@@ -18,8 +24,36 @@ export class Final extends Component {
   draft = this.props.navigation.getParam('draft')
   state = {
     loading: false,
-    downloadingPDF: false,
-    printingLifemap: false
+    downloading: false,
+    printing: false,
+    isPermitted: false,
+    filePath: ''
+  }
+  constructor(props) {
+    super(props)
+    var that = this
+    async function requestExternalWritePermission() {
+      try {
+        const granted = await PermissionsAndroid.request(
+          PermissionsAndroid.PERMISSIONS.WRITE_EXTERNAL_STORAGE,
+          {
+            title: 'CameraExample App External Storage Write Permission',
+            message:
+              'CameraExample App needs access to Storage data in your SD Card '
+          }
+        )
+        if (granted === PermissionsAndroid.RESULTS.GRANTED) {
+          //If WRITE_EXTERNAL_STORAGE Permission is granted
+          //changing the state to show Create PDF option
+          that.setState({ isPermitted: true })
+        } else {
+          alert('WRITE_EXTERNAL_STORAGE permission denied')
+        }
+      } catch (err) {
+        alert('Write permission err', err)
+      }
+    }
+    requestExternalWritePermission()
   }
   shouldComponentUpdate() {
     return this.props.navigation.isFocused()
@@ -56,17 +90,22 @@ export class Final extends Component {
     this.props.navigation.navigate('Dashboard')
   }
 
-  exportPDF = () => {
-    this.setState({ downloadingPDF: true })
+  async exportPDF() {
+    this.setState({ downloading: true })
+
     const options = buildPDFOptions(this.draft, this.survey)
-    RNHTMLtoPDF.convert(options)
-      .then(() => this.setState({ downloadingPDF: false }))
-      .catch(() => {})
+    try {
+      const results = await RNHTMLtoPDF.convert(options)
+      if (results) {
+        this.setState({ downloading: false, filePath: results.filePath })
+      }
+    } catch (err) {
+      alert(err)
+    }
   }
 
   render() {
     const { t } = this.props
-
     return (
       <ScrollView
         style={globalStyles.background}
@@ -100,11 +139,11 @@ export class Final extends Component {
           <View style={styles.buttonBar}>
             <Button
               style={{ width: '49%', alignSelf: 'center', marginTop: 20 }}
-              handleClick={this.exportPDF}
+              handleClick={this.exportPDF.bind(this)}
               icon="cloud-download"
               outlined
               text="Download"
-              loading={this.state.downloadingPDF}
+              loading={this.state.downloading}
             />
             <Button
               style={{ width: '49%', alignSelf: 'center', marginTop: 20 }}
@@ -112,7 +151,7 @@ export class Final extends Component {
               icon="print"
               outlined
               text="Print"
-              loading={this.state.printingLifemap}
+              loading={this.state.printing}
             />
           </View>
         </View>

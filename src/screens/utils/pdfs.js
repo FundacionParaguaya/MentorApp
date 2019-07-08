@@ -1,5 +1,6 @@
 import colors from '../../theme.json'
 import moment from 'moment'
+import { priorityIcon, achievementIcon, styles } from './assets'
 
 export const getReportTitle = snapshot => {
   const firstParticipant = snapshot.familyData.familyMembersList.find(
@@ -30,6 +31,9 @@ export const getColor = value => {
 }
 
 export const buildPDFOptions = (draft, survey) => {
+  const indicatorsList = draft.indicatorSurveyDataList
+  const achievements = draft.achievements
+  const priorities = draft.priorities
   const dateCreated =
     draft &&
     draft.created &&
@@ -39,31 +43,39 @@ export const buildPDFOptions = (draft, survey) => {
       .replace(/-/g, ' / ')
 
   return {
-    html: `<div style="display:flex;align-content: space-between;border-bottom: 1px solid #eee;margin-bottom: 20px">
-            <h2 style="width: 50%;height:40px;font-size:19px;"><span style="color: #309E43">${getReportTitle(
-              draft
-            )}</span> , Life map</h2>
-            <h2 style="width: 50%;height:40px;margin-left: auto;text-align:right;font-size:19px;">Created on: <span style="color: #309E43">${dateCreated}</span></h2>
+    html: `<div style="${styles.wrapper}">
+            <h2 style="${styles.participantName}">${getReportTitle(
+      draft
+    )}, Life map</h2>
+            <h2 style="${styles.date}">Created on: ${dateCreated}</h2>
         </div>
-        <div style="display:flex;flex-wrap: wrap;">
-          ${draft.indicatorSurveyDataList
+        <div style="${styles.indicatorsWrapper}">
+          ${indicatorsList
             .map(indicator => {
-              return `<div style="width: 20%">
-            <div style="width: 70px;height: 70px;margin: 10px auto 10px auto;border-radius: 70px;background-color:${getColor(
-              indicator.value
-            )}; display: flex;align-items:center;justify-content: center"></div>
-            <span style="display:block;text-align: center">${getIndicatorQuestionByCodeName(
-              indicator.key,
-              survey
-            )}</span>
+              return `<div style="width: 20%;position:relative">
+            ${
+              achievements.some(a => a.indicator === indicator.key)
+                ? achievementIcon
+                : ''
+            }
+            ${
+              priorities.some(p => p.indicator === indicator.key)
+                ? priorityIcon
+                : ''
+            }
+            <div style="${styles.indicator};background-color:${getColor(
+                indicator.value
+              )};"></div>
+            <span style="${
+              styles.indicatorName
+            }">${getIndicatorQuestionByCodeName(indicator.key, survey)}</span>
           </div>`
             })
             .join('')}
         </div>
         `,
-    fileName: 'LifeMap',
-    directory: 'Documents',
-    base64: true,
+    fileName: `${getReportTitle(draft)}, Life Map`,
+    directory: 'docs',
     padding: 0,
     height: 842,
     width: 595
