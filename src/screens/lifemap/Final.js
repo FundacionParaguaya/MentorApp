@@ -16,9 +16,14 @@ import globalStyles from '../../globalStyles'
 import { updateDraft, submitDraft } from '../../redux/actions'
 import { url } from '../../config'
 import { prepareDraftForSubmit } from '../utils/helpers'
-import { buildPDFOptions, buildPrintOptions } from '../utils/pdfs'
+import {
+  buildPDFOptions,
+  buildPrintOptions,
+  getReportTitle
+} from '../utils/pdfs'
 import RNHTMLtoPDF from 'react-native-html-to-pdf'
 import RNPrint from 'react-native-print'
+import RNFetchBlob from 'rn-fetch-blob'
 
 export class Final extends Component {
   survey = this.props.navigation.getParam('survey')
@@ -30,30 +35,7 @@ export class Final extends Component {
     isPermitted: false,
     filePath: ''
   }
-  constructor(props) {
-    super(props)
-    var that = this
-    async function requestExternalWritePermission() {
-      try {
-        const granted = await PermissionsAndroid.request(
-          PermissionsAndroid.PERMISSIONS.WRITE_EXTERNAL_STORAGE,
-          {
-            title: 'CameraExample App External Storage Write Permission',
-            message:
-              'CameraExample App needs access to Storage data in your SD Card '
-          }
-        )
-        if (granted === PermissionsAndroid.RESULTS.GRANTED) {
-          that.setState({ isPermitted: true })
-        } else {
-          alert('WRITE_EXTERNAL_STORAGE permission denied')
-        }
-      } catch (err) {
-        alert('Write permission err', err)
-      }
-    }
-    requestExternalWritePermission()
-  }
+
   shouldComponentUpdate() {
     return this.props.navigation.isFocused()
   }
@@ -91,10 +73,43 @@ export class Final extends Component {
 
   async exportPDF() {
     this.setState({ downloading: true })
+    const granted = await PermissionsAndroid.request(
+      PermissionsAndroid.PERMISSIONS.WRITE_EXTERNAL_STORAGE,
+      {
+        title: 'Permission to save file into the file storage',
+        message:
+          'The app needs access to your file storage so you can download the file',
+        buttonNeutral: 'Ask Me Later',
+        buttonNegative: 'Cancel',
+        buttonPositive: 'OK'
+      }
+    )
 
-    const options = buildPDFOptions(this.draft, this.survey)
+    if (granted !== PermissionsAndroid.RESULTS.GRANTED) {
+      throw new Error()
+    }
+
     try {
+      const options = buildPDFOptions(this.draft, this.survey)
       const results = await RNHTMLtoPDF.convert(options)
+      const fileName = getReportTitle(this.draft)
+      const filePath = `${RNFetchBlob.fs.dirs.DownloadDir}/${fileName}.pdf`
+
+      RNFetchBlob.fs
+        .cp(results.filePath, filePath)
+        .then(() =>
+          RNFetchBlob.android.addCompleteDownload({
+            title: `${fileName}.pdf`,
+            description: 'Download complete',
+            mime: 'application/pdf',
+            path: filePath,
+            showNotification: true
+          })
+        )
+        .then(() =>
+          RNFetchBlob.fs.scanFile([{ path: filePath, mime: 'application/pdf' }])
+        )
+
       this.setState({ downloading: false, filePath: results.filePath })
     } catch (error) {
       alert(error)
