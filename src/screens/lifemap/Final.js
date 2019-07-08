@@ -16,8 +16,9 @@ import globalStyles from '../../globalStyles'
 import { updateDraft, submitDraft } from '../../redux/actions'
 import { url } from '../../config'
 import { prepareDraftForSubmit } from '../utils/helpers'
-import { buildPDFOptions } from '../utils/pdfs'
+import { buildPDFOptions, buildPrintOptions } from '../utils/pdfs'
 import RNHTMLtoPDF from 'react-native-html-to-pdf'
+import RNPrint from 'react-native-print'
 
 export class Final extends Component {
   survey = this.props.navigation.getParam('survey')
@@ -43,8 +44,6 @@ export class Final extends Component {
           }
         )
         if (granted === PermissionsAndroid.RESULTS.GRANTED) {
-          //If WRITE_EXTERNAL_STORAGE Permission is granted
-          //changing the state to show Create PDF option
           that.setState({ isPermitted: true })
         } else {
           alert('WRITE_EXTERNAL_STORAGE permission denied')
@@ -96,11 +95,20 @@ export class Final extends Component {
     const options = buildPDFOptions(this.draft, this.survey)
     try {
       const results = await RNHTMLtoPDF.convert(options)
-      if (results) {
-        this.setState({ downloading: false, filePath: results.filePath })
-      }
-    } catch (err) {
-      alert(err)
+      this.setState({ downloading: false, filePath: results.filePath })
+    } catch (error) {
+      alert(error)
+    }
+  }
+
+  async print() {
+    this.setState({ printing: true })
+    const options = buildPrintOptions(this.draft, this.survey)
+    try {
+      await RNPrint.print(options)
+      this.setState({ printing: false })
+    } catch (error) {
+      alert(error)
     }
   }
 
@@ -147,7 +155,7 @@ export class Final extends Component {
             />
             <Button
               style={{ width: '49%', alignSelf: 'center', marginTop: 20 }}
-              handleClick={this.exportPDF}
+              handleClick={this.print.bind(this)}
               icon="print"
               outlined
               text="Print"

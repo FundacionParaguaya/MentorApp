@@ -148,6 +148,7 @@ android {
 }
 
 dependencies {
+    implementation project(':react-native-print')
     implementation project(':react-native-html-to-pdf')
     implementation project(':@react-native-community_async-storage')
     implementation project(':@react-native-community_netinfo')

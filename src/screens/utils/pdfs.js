@@ -30,7 +30,7 @@ export const getColor = value => {
   }
 }
 
-export const buildPDFOptions = (draft, survey) => {
+const generateLifeMapHtmlTemplate = (draft, survey) => {
   const indicatorsList = draft.indicatorSurveyDataList
   const achievements = draft.achievements
   const priorities = draft.priorities
@@ -42,11 +42,10 @@ export const buildPDFOptions = (draft, survey) => {
       .format('DD-MMMM-YYYY')
       .replace(/-/g, ' / ')
 
-  return {
-    html: `<div style="${styles.wrapper}">
+  return `<div style="${styles.wrapper}">
             <h2 style="${styles.participantName}">${getReportTitle(
-      draft
-    )}, Life map</h2>
+    draft
+  )}, Life map</h2>
             <h2 style="${styles.date}">Created on: ${dateCreated}</h2>
         </div>
         <div style="${styles.indicatorsWrapper}">
@@ -73,7 +72,18 @@ export const buildPDFOptions = (draft, survey) => {
             })
             .join('')}
         </div>
-        `,
+        `
+}
+
+export const buildPrintOptions = (draft, survey) => {
+  return {
+    html: generateLifeMapHtmlTemplate(draft, survey)
+  }
+}
+
+export const buildPDFOptions = (draft, survey) => {
+  return {
+    html: generateLifeMapHtmlTemplate(draft, survey),
     fileName: `${getReportTitle(draft)}, Life Map`,
     directory: 'docs',
     padding: 0,
