@@ -73,7 +73,7 @@ export class Final extends Component {
 
   async exportPDF() {
     this.setState({ downloading: true })
-    const granted = await PermissionsAndroid.request(
+    const permissionsGranted = await PermissionsAndroid.request(
       PermissionsAndroid.PERMISSIONS.WRITE_EXTERNAL_STORAGE,
       {
         title: 'Permission to save file into the file storage',
@@ -85,18 +85,18 @@ export class Final extends Component {
       }
     )
 
-    if (granted !== PermissionsAndroid.RESULTS.GRANTED) {
+    if (permissionsGranted !== PermissionsAndroid.RESULTS.GRANTED) {
       throw new Error()
     }
 
     try {
-      const options = buildPDFOptions(this.draft, this.survey)
-      const results = await RNHTMLtoPDF.convert(options)
       const fileName = getReportTitle(this.draft)
       const filePath = `${RNFetchBlob.fs.dirs.DownloadDir}/${fileName}.pdf`
+      const pdfOptions = buildPDFOptions(this.draft, this.survey)
+      const pdf = await RNHTMLtoPDF.convert(pdfOptions)
 
       RNFetchBlob.fs
-        .cp(results.filePath, filePath)
+        .cp(pdf.filePath, filePath)
         .then(() =>
           RNFetchBlob.android.addCompleteDownload({
             title: `${fileName}.pdf`,
@@ -110,7 +110,7 @@ export class Final extends Component {
           RNFetchBlob.fs.scanFile([{ path: filePath, mime: 'application/pdf' }])
         )
 
-      this.setState({ downloading: false, filePath: results.filePath })
+      this.setState({ downloading: false, filePath: pdf.filePath })
     } catch (error) {
       alert(error)
     }
