@@ -336,7 +336,7 @@ export class Loading extends Component {
                 <Text
                   style={sync.surveys ? styles.colorGreen : styles.colorDark}
                 >
-                  {sync.surveys ? 'Surveys' : 'Syncing surveys...'}
+                  {sync.surveys ? 'Surveys' : 'Downloading surveys...'}
                 </Text>
                 {sync.surveys ? (
                   <Icon name="check" color={colors.palegreen} size={23} />
@@ -352,7 +352,7 @@ export class Loading extends Component {
                   <Text
                     style={sync.families ? styles.colorGreen : styles.colorDark}
                   >
-                    {sync.families ? 'Families' : 'Syncing families...'}
+                    {sync.families ? 'Families' : 'Downloading families...'}
                   </Text>
                   {sync.families ? (
                     <Icon name="check" color={colors.palegreen} size={23} />
@@ -457,35 +457,6 @@ export class Loading extends Component {
               )}
             </View>
           )}
-
-          {downloadingMap ? (
-            <View style={styles.mightTakeTimeContainer}>
-              <Text
-                style={{ fontSize: 22, color: colors.dark, marginBottom: 6 }}
-              >
-                Hmmm!
-              </Text>
-              <Text
-                style={{
-                  fontSize: 14,
-                  color: colors.lightdark,
-                  marginBottom: 6
-                }}
-              >
-                This might take a while...
-              </Text>
-              <Text
-                style={{
-                  fontSize: 14,
-                  color: colors.palered,
-                  marginBottom: 6,
-                  textAlign: 'center'
-                }}
-              >
-                Keep the device connected to the internet and a power source
-              </Text>
-            </View>
-          ) : null}
         </View>
       </View>
     ) : (
@@ -534,12 +505,6 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     width: 220
-  },
-  mightTakeTimeContainer: {
-    marginTop: 30,
-    marginBottom: -104,
-    width: 220,
-    alignItems: 'center'
   },
   loadingContainer: {
     marginTop: 100,
