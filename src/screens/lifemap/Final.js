@@ -31,9 +31,7 @@ export class Final extends Component {
   state = {
     loading: false,
     downloading: false,
-    printing: false,
-    isPermitted: false,
-    filePath: ''
+    printing: false
   }
 
   shouldComponentUpdate() {
