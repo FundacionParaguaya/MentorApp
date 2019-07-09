@@ -103,6 +103,7 @@ android {
         targetSdkVersion rootProject.ext.targetSdkVersion
         versionCode 61
         versionName "1.9.12"
+        multiDexEnabled true
         testBuildType System.getProperty('testBuildType', 'debug')  // This will later be used to control the test apk build type
         testInstrumentationRunner 'androidx.test.runner.AndroidJUnitRunner'
     }
@@ -147,6 +148,8 @@ android {
 }
 
 dependencies {
+    implementation project(':react-native-print')
+    implementation project(':react-native-html-to-pdf')
     implementation project(':@react-native-community_async-storage')
     implementation project(':@react-native-community_netinfo')
     implementation project(':react-native-gesture-handler')
