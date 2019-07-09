@@ -13,12 +13,10 @@ import DateInput from '../../components/DateInput'
 import Decoration from '../../components/decoration/Decoration'
 import colors from '../../theme.json'
 import globalStyles from '../../globalStyles'
-import { getTotalScreens } from './helpers'
+import { getTotalScreens, setValidationSchema } from './helpers'
 export class FamilyParticipant extends Component {
   survey = this.props.navigation.getParam('survey')
-
   readOnly = this.props.navigation.getParam('readOnly')
-
   errorsDetected = []
 
   state = {
@@ -208,6 +206,11 @@ export class FamilyParticipant extends Component {
   render() {
     const { t } = this.props
     const { showErrors, draft } = this.state
+    const requiredFields =
+      (this.survey.surveyConfig &&
+        this.survey.surveyConfig.requiredFields &&
+        this.survey.surveyConfig.requiredFields.primaryParticipant) ||
+      null
 
     const participant = draft ? draft.familyData.familyMembersList[0] : {}
 
@@ -238,7 +241,7 @@ export class FamilyParticipant extends Component {
           onChangeText={this.updateParticipant}
           placeholder={t('views.family.firstName')}
           value={participant.firstName || ''}
-          required
+          required={setValidationSchema(requiredFields, 'firstName', true)}
           detectError={this.detectError}
           showErrors={showErrors}
           upperCase
@@ -250,14 +253,14 @@ export class FamilyParticipant extends Component {
           readonly={this.readOnly}
           placeholder={t('views.family.lastName')}
           value={participant.lastName || ''}
-          required
+          required={setValidationSchema(requiredFields, 'lastName', true)}
           detectError={this.detectError}
           showErrors={showErrors}
           upperCase
         />
         <Select
           id="gender"
-          required
+          required={setValidationSchema(requiredFields, 'gender', true)}
           onChange={this.updateParticipant}
           otherField="customGender"
           otherPlaceholder={t('views.family.specifyGender')}
@@ -272,7 +275,7 @@ export class FamilyParticipant extends Component {
           options={this.survey.surveyConfig.gender}
         />
         <DateInput
-          required
+          required={setValidationSchema(requiredFields, 'birthDate', true)}
           label={t('views.family.dateOfBirth')}
           field="birthDate"
           detectError={this.detectError}
@@ -283,7 +286,7 @@ export class FamilyParticipant extends Component {
         />
 
         <Select
-          required
+          required={setValidationSchema(requiredFields, 'documentType', true)}
           onChange={this.updateParticipant}
           otherPlaceholder={t('views.family.customDocumentType')}
           otherField="customDocumentType"
@@ -302,7 +305,7 @@ export class FamilyParticipant extends Component {
           onChangeText={this.updateParticipant}
           readonly={this.readOnly}
           field="documentNumber"
-          required
+          required={setValidationSchema(requiredFields, 'documentNumber', true)}
           value={participant.documentNumber}
           placeholder={t('views.family.documentNumber')}
           detectError={this.detectError}
@@ -310,7 +313,7 @@ export class FamilyParticipant extends Component {
         />
         <Select
           id="country"
-          required
+          required={setValidationSchema(requiredFields, 'birthCountry', true)}
           onChange={this.updateParticipant}
           readonly={this.readOnly}
           label={t('views.family.countryOfBirth')}
@@ -326,7 +329,11 @@ export class FamilyParticipant extends Component {
         <Select
           id="familyMembersCount"
           field="countFamilyMembers"
-          required
+          required={setValidationSchema(
+            requiredFields,
+            'countFamilyMembers',
+            true
+          )}
           onChange={this.addFamilyCount}
           readonly={this.readOnly}
           label={t('views.family.peopleLivingInThisHousehold')}

@@ -37,3 +37,15 @@ export const getTotalScreens = survey => {
       : 0)
   )
 }
+
+export const setValidationSchema = (
+  requiredFieldsForSurvey,
+  field,
+  defaultValidation
+) => {
+  return Array.isArray(requiredFieldsForSurvey)
+    ? requiredFieldsForSurvey.length
+      ? requiredFieldsForSurvey.some(f => f === field)
+      : false
+    : defaultValidation
+}
