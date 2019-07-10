@@ -1,19 +1,44 @@
 # Change Log
 
+## [Unreleased](https://github.com/FundacionParaguaya/MentorApp/tree/HEAD)
+
+[Full Changelog](https://github.com/FundacionParaguaya/MentorApp/compare/v1.9.12...HEAD)
+
+**Implemented enhancements:**
+
+- Retry pending sync drafts [\#863](https://github.com/FundacionParaguaya/MentorApp/issues/863)
+
+**Fixed bugs:**
+
+- UK crash in resuming draft button [\#870](https://github.com/FundacionParaguaya/MentorApp/issues/870)
+- Security - update handlebars dependency [\#868](https://github.com/FundacionParaguaya/MentorApp/issues/868)
+- UK Signal survey has no indicator images [\#861](https://github.com/FundacionParaguaya/MentorApp/issues/861)
+
+**Closed issues:**
+
+- Fix bug in radio buttons [\#862](https://github.com/FundacionParaguaya/MentorApp/issues/862)
+- New Google Play app and game icon specification [\#790](https://github.com/FundacionParaguaya/MentorApp/issues/790)
+
+**Merged pull requests:**
+
+- Feature/769 download lifemap [\#878](https://github.com/FundacionParaguaya/MentorApp/pull/878) ([vasildimitroffhristoff](https://github.com/vasildimitroffhristoff))
+- 816-minor-improvement-to-loading [\#874](https://github.com/FundacionParaguaya/MentorApp/pull/874) ([zommerberg](https://github.com/zommerberg))
+- Hotfix/863 pending sync retry [\#872](https://github.com/FundacionParaguaya/MentorApp/pull/872) ([Danman7](https://github.com/Danman7))
+- Feature/fastlane [\#871](https://github.com/FundacionParaguaya/MentorApp/pull/871) ([vasildimitroffhristoff](https://github.com/vasildimitroffhristoff))
+- ui-update-push [\#860](https://github.com/FundacionParaguaya/MentorApp/pull/860) ([zommerberg](https://github.com/zommerberg))
+- Hotfix/850 uk crash [\#853](https://github.com/FundacionParaguaya/MentorApp/pull/853) ([Danman7](https://github.com/Danman7))
+
 ## [v1.9.12](https://github.com/FundacionParaguaya/MentorApp/tree/v1.9.12) (2019-07-02)
 [Full Changelog](https://github.com/FundacionParaguaya/MentorApp/compare/v1.9.11...v1.9.12)
 
 **Fixed bugs:**
 
-- Crash on saving draft [\#851](https://github.com/FundacionParaguaya/MentorApp/issues/851)
 - UK crash on indicators pages [\#850](https://github.com/FundacionParaguaya/MentorApp/issues/850)
 - Download error due to null map name [\#848](https://github.com/FundacionParaguaya/MentorApp/issues/848)
-- Geco errors [\#825](https://github.com/FundacionParaguaya/MentorApp/issues/825)
 - App crashes when logging in [\#560](https://github.com/FundacionParaguaya/MentorApp/issues/560)
 
 **Closed issues:**
 
-- Amends to "preparing app" screen [\#816](https://github.com/FundacionParaguaya/MentorApp/issues/816)
 - Add these 2 maps for Nelixia - Guatemala [\#778](https://github.com/FundacionParaguaya/MentorApp/issues/778)
 
 **Merged pull requests:**
