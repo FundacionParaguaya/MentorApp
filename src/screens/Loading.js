@@ -172,15 +172,14 @@ export class Loading extends Component {
       error: msg
     })
   }
-  getDataPercentages() {
+  getDataPercentages = () => {
     let mapAllPercentage = 0
     let mapAllNames = []
     let mapAllNumber = 0
-
     this.state.maps.map(map => {
-      if (mapAllNames.length == 4) {
+      if (mapAllNames.length == this.state.maps.length - 1) {
         mapAllNumber = mapAllNumber + map.status
-        mapAllPercentage = mapAllNumber / 5
+        mapAllPercentage = mapAllNumber / this.state.maps.length
       } else {
         mapAllNames.push(map.name)
         mapAllNumber = mapAllNumber + map.status
