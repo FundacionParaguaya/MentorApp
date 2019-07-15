@@ -121,6 +121,8 @@ const styles = StyleSheet.create({
     borderRadius: 5,
     minWidth: 100,
     height: 25,
+    paddingLeft: 5,
+    paddingRight: 5,
     lineHeight: 25,
     textAlign: 'center',
     marginTop: 5
