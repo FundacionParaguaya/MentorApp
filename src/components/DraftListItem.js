@@ -119,7 +119,7 @@ const styles = StyleSheet.create({
   },
   label: {
     borderRadius: 5,
-    width: 100,
+    minWidth: 100,
     height: 25,
     lineHeight: 25,
     textAlign: 'center',
