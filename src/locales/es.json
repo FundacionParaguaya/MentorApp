@@ -184,7 +184,10 @@
       "updatePending": "1 actualización pendiente",
       "inProgress": "Sincronización en marcha",
       "of": "de",
-      "updates": "actualizaciones"
+      "updates": "actualizaciones",
+      "syncErrProblem": "¡Parece que tenemos un problema!",
+      "itemHasError": "%n elemento tiene un error de sincronización.",
+      "itemsHaveError": "%n elementos tienen un error de sincronización."
     }
   }
 }
