@@ -38,6 +38,26 @@ export const getTotalScreens = survey => {
   )
 }
 
+/*
+    - NOTHING IS REQUIRED
+    "requiredFields": {
+      "primaryParticipant": [],
+      "familyMember": []
+    }
+
+    - APPLY DEFAULT VALIDATION FOR ALL FIELDS
+    "requiredFields": {
+      "primaryParticipant": null,
+      "familyMember": null
+    }
+
+    - APPLY DEFAULT VALIDATION FOR "primaryParticipant"
+        AND FOR "familyMember" SET ONLY BIRTHDAY FIELD AS REQUIRED
+    "requiredFields": {
+      "primaryParticipant": null,
+      "familyMember": ["birthDate"]
+    }
+*/
 export const setValidationSchema = (
   requiredFieldsForSurvey,
   field,
