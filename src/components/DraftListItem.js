@@ -119,6 +119,7 @@ const styles = StyleSheet.create({
   },
   label: {
     borderRadius: 5,
+    width: 0,
     minWidth: 100,
     height: 25,
     paddingLeft: 5,
