@@ -2,7 +2,14 @@
 
 ## [Unreleased](https://github.com/FundacionParaguaya/MentorApp/tree/HEAD)
 
-[Full Changelog](https://github.com/FundacionParaguaya/MentorApp/compare/v1.9.12...HEAD)
+[Full Changelog](https://github.com/FundacionParaguaya/MentorApp/compare/v1.9.14...HEAD)
+
+**Closed issues:**
+
+- Upload offline map for Chortitzer Paraguay [\#877](https://github.com/FundacionParaguaya/MentorApp/issues/877)
+
+## [v1.9.14](https://github.com/FundacionParaguaya/MentorApp/tree/v1.9.14) (2019-07-15)
+[Full Changelog](https://github.com/FundacionParaguaya/MentorApp/compare/v1.9.13...v1.9.14)
 
 **Implemented enhancements:**
 
@@ -10,7 +17,35 @@
 
 **Fixed bugs:**
 
+- Chile Geco - Syncing Errors / Pending Sync [\#890](https://github.com/FundacionParaguaya/MentorApp/issues/890)
+- App crashes in "Open" in Google Play Store [\#886](https://github.com/FundacionParaguaya/MentorApp/issues/886)
+- Maps loading over 100% in Loading.js [\#882](https://github.com/FundacionParaguaya/MentorApp/issues/882)
+- Sync error with ghost member [\#879](https://github.com/FundacionParaguaya/MentorApp/issues/879)
 - UK crash in resuming draft button [\#870](https://github.com/FundacionParaguaya/MentorApp/issues/870)
+- Crash on navigating to draft that is pending sync  [\#859](https://github.com/FundacionParaguaya/MentorApp/issues/859)
+- Crash on saving draft [\#851](https://github.com/FundacionParaguaya/MentorApp/issues/851)
+- Geco errors [\#825](https://github.com/FundacionParaguaya/MentorApp/issues/825)
+
+**Closed issues:**
+
+- Crash while opening the app on older devices [\#888](https://github.com/FundacionParaguaya/MentorApp/issues/888)
+- additional [\#883](https://github.com/FundacionParaguaya/MentorApp/issues/883)
+- Amends to "preparing app" screen [\#816](https://github.com/FundacionParaguaya/MentorApp/issues/816)
+- Email or Save file to Phone at end of lifemap [\#769](https://github.com/FundacionParaguaya/MentorApp/issues/769)
+
+**Merged pull requests:**
+
+- fix \#886 , \#888 fixed crashing on older devices [\#897](https://github.com/FundacionParaguaya/MentorApp/pull/897) ([zommerberg](https://github.com/zommerberg))
+- fixed loading maps over 100% [\#881](https://github.com/FundacionParaguaya/MentorApp/pull/881) ([zommerberg](https://github.com/zommerberg))
+- Feature/769 download lifemap [\#878](https://github.com/FundacionParaguaya/MentorApp/pull/878) ([vasildimitroffhristoff](https://github.com/vasildimitroffhristoff))
+- 816-minor-improvement-to-loading [\#874](https://github.com/FundacionParaguaya/MentorApp/pull/874) ([zommerberg](https://github.com/zommerberg))
+- Hotfix/863 pending sync retry [\#872](https://github.com/FundacionParaguaya/MentorApp/pull/872) ([Danman7](https://github.com/Danman7))
+
+## [v1.9.13](https://github.com/FundacionParaguaya/MentorApp/tree/v1.9.13) (2019-07-05)
+[Full Changelog](https://github.com/FundacionParaguaya/MentorApp/compare/v1.9.12...v1.9.13)
+
+**Fixed bugs:**
+
 - Security - update handlebars dependency [\#868](https://github.com/FundacionParaguaya/MentorApp/issues/868)
 - UK Signal survey has no indicator images [\#861](https://github.com/FundacionParaguaya/MentorApp/issues/861)
 
@@ -21,9 +56,6 @@
 
 **Merged pull requests:**
 
-- Feature/769 download lifemap [\#878](https://github.com/FundacionParaguaya/MentorApp/pull/878) ([vasildimitroffhristoff](https://github.com/vasildimitroffhristoff))
-- 816-minor-improvement-to-loading [\#874](https://github.com/FundacionParaguaya/MentorApp/pull/874) ([zommerberg](https://github.com/zommerberg))
-- Hotfix/863 pending sync retry [\#872](https://github.com/FundacionParaguaya/MentorApp/pull/872) ([Danman7](https://github.com/Danman7))
 - Feature/fastlane [\#871](https://github.com/FundacionParaguaya/MentorApp/pull/871) ([vasildimitroffhristoff](https://github.com/vasildimitroffhristoff))
 - ui-update-push [\#860](https://github.com/FundacionParaguaya/MentorApp/pull/860) ([zommerberg](https://github.com/zommerberg))
 - Hotfix/850 uk crash [\#853](https://github.com/FundacionParaguaya/MentorApp/pull/853) ([Danman7](https://github.com/Danman7))
