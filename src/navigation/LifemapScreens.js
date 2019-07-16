@@ -9,6 +9,7 @@ import BeginLifemapView from '../screens/lifemap/BeginLifemap'
 import LocationView from '../screens/lifemap/Location'
 import SkippedView from '../screens/lifemap/Skipped'
 import OverviewView from '../screens/lifemap/Overview'
+import Priorities from '../screens/lifemap/Priorities'
 import AddPriorityView from '../screens/lifemap/AddPriority'
 import AddAchievementView from '../screens/lifemap/AddAchievement'
 import FamilyMemberView from '../screens/lifemap/FamilyMember'
@@ -141,6 +142,16 @@ export default {
       )
     })
   },
+  Priorities: {
+    screen: Priorities,
+    navigationOptions: ({ navigation }) => ({
+      ...generateNavStyles({ navigation, shadowHeader: false }),
+      ...addCloseIcon(navigation),
+      headerTitle: (
+        <Title title="views.lifemap.priorities" style={{ marginLeft: 20 }} />
+      )
+    })
+  },
   AddPriority: {
     screen: AddPriorityView,
     navigationOptions: ({ navigation }) => ({
@@ -159,6 +170,7 @@ export default {
       )
     })
   },
+
   Final: {
     screen: FinalView,
     navigationOptions: () => ({

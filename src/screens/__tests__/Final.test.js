@@ -13,7 +13,7 @@ const createTestProps = props => ({
   env: 'env',
   submitDraft: jest.fn(),
   updateDraft: jest.fn(),
-  
+
   navigation: {
     navigate: jest.fn(),
     replace: jest.fn(),
@@ -64,8 +64,8 @@ describe('Final Lifemap View when no questions are skipped', () => {
     it('renders LifemapVisual', () => {
       expect(wrapper.find(LifemapVisual)).toHaveLength(1)
     })
-    it('renders Button', () => {
-      expect(wrapper.find(Button)).toHaveLength(1)
+    it('renders Buttons', () => {
+      expect(wrapper.find(Button)).toHaveLength(3)
     })
   })
 
@@ -73,6 +73,7 @@ describe('Final Lifemap View when no questions are skipped', () => {
     it('calls handleClick function when Button is clicked', () => {
       wrapper
         .find(Button)
+        .last()
         .props()
         .handleClick()
       expect(
@@ -94,6 +95,7 @@ describe('Final Lifemap View when no questions are skipped', () => {
   it('submits draft  when Button is clicked', () => {
     wrapper
       .find(Button)
+      .last()
       .props()
       .handleClick()
 

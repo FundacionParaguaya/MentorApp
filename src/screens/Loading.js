@@ -1,7 +1,9 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import { Text, StyleSheet, View, ActivityIndicator } from 'react-native'
+import Decoration from '../components/decoration/Decoration'
 import { connect } from 'react-redux'
+import ProgressBar from '../components/ProgressBar'
 import NetInfo from '@react-native-community/netinfo'
 import MapboxGL from '@mapbox/react-native-mapbox-gl'
 import Icon from 'react-native-vector-icons/MaterialIcons'
@@ -102,7 +104,6 @@ export class Loading extends Component {
     const surveysWithOfflineMaps = this.props.surveys.filter(
       survey => survey.surveyConfig.offlineMaps
     )
-
     if (
       surveysWithOfflineMaps ||
       this.isSurveyInSynced('Paraguay - Activate, FUPA')
@@ -131,7 +132,6 @@ export class Loading extends Component {
         }
         mapsArray.push({ name: 'Cerrito', statue: 0, options })
       }
-
       this.setState({ maps: mapsArray }, this.downloadMapData)
     } else {
       this.handleImageCaching()
@@ -172,7 +172,25 @@ export class Loading extends Component {
       error: msg
     })
   }
-
+  getDataPercentages = () => {
+    let mapAllPercentage = 0
+    let mapAllNames = []
+    let mapAllNumber = 0
+    this.state.maps.map(map => {
+      if (mapAllNames.length === this.state.maps.length - 1) {
+        mapAllNumber = mapAllNumber + map.status
+        mapAllPercentage = mapAllNumber / this.state.maps.length
+      } else {
+        mapAllNames.push(map.name)
+        mapAllNumber = mapAllNumber + map.status
+      }
+    })
+    if (isNaN(mapAllPercentage) && mapAllPercentage !== 100) {
+      return 0
+    } else {
+      return mapAllPercentage
+    }
+  }
   downloadMapData() {
     this.state.maps.forEach(map =>
       this.downloadOfflineMapPack(map.options, map.name)
@@ -281,79 +299,160 @@ export class Loading extends Component {
   }
 
   render() {
-    const { sync, surveys, families } = this.props
+    const { sync } = this.props
     const {
       syncingServerData,
       cachingImages,
       downloadingMap,
-      maps,
       error
     } = this.state
 
+    let allMapPercentages = 100
+    if (this.state.downloadingMap && !this.state.cachingImages) {
+      allMapPercentages = this.getDataPercentages()
+    }
+
     return !error ? (
       <View style={[globalStyles.container, styles.view]}>
+        <Decoration variation="loading" />
         <View style={styles.loadingContainer}>
-          <Text style={globalStyles.h3}>We are preparing the app …</Text>
-          <ActivityIndicator
-            size="large"
-            color={colors.palered}
-            style={styles.indicator}
-          />
-
-          <Text style={globalStyles.h3}>Yes!</Text>
-          <Text style={globalStyles.subline}>We will be ready soon.</Text>
+          <Text
+            style={[
+              globalStyles.h3,
+              {
+                marginBottom: 34,
+                color: colors.dark,
+                fontSize: 17
+              }
+            ]}
+          >
+            We are preparing the app.
+          </Text>
 
           {syncingServerData && (
             <View style={styles.sync} testID="syncing-surveys">
-              <View style={{ flexDirection: 'row' }}>
-                {sync.surveys && (
-                  <Icon name="check" color={colors.palegreen} size={18} />
-                )}
-                <Text style={sync.surveys ? { color: colors.palegreen } : {}}>
-                  {sync.surveys
-                    ? ` ${surveys.length} Surveys Synced`
-                    : 'Syncing surveys...'}
+              <View style={styles.syncingItem}>
+                <Text
+                  style={sync.surveys ? styles.colorGreen : styles.colorDark}
+                >
+                  {sync.surveys ? 'Surveys' : 'Downloading surveys...'}
                 </Text>
+                {sync.surveys ? (
+                  <Icon name="check" color={colors.palegreen} size={23} />
+                ) : (
+                  <ActivityIndicator size="small" />
+                )}
               </View>
-
+              {!sync.surveys ? (
+                <Text style={styles.colorDark}>Families</Text>
+              ) : null}
               {sync.surveys && (
-                <View style={{ flexDirection: 'row' }}>
-                  {sync.families && (
-                    <Icon name="check" color={colors.palegreen} size={18} />
-                  )}
+                <View style={styles.syncingItem}>
                   <Text
-                    style={sync.families ? { color: colors.palegreen } : {}}
+                    style={sync.families ? styles.colorGreen : styles.colorDark}
                   >
-                    {sync.families
-                      ? ` ${families.length} Families Synced`
-                      : 'Syncing families...'}
+                    {sync.families ? 'Families' : 'Downloading families...'}
                   </Text>
+                  {sync.families ? (
+                    <Icon name="check" color={colors.palegreen} size={23} />
+                  ) : (
+                    <ActivityIndicator size="small" />
+                  )}
                 </View>
               )}
 
+              {!downloadingMap ? (
+                <Text style={styles.colorDark}>Offline Maps</Text>
+              ) : null}
               {downloadingMap && (
-                <View style={styles.mapWrapper}>
-                  {maps.map(map =>
-                    map.status ? (
-                      <Text
-                        key={map.name}
-                        style={
-                          map.status === 100 ? { color: colors.palegreen } : {}
-                        }
-                      >
-                        {`${map.name} map (${map.status}%)`}
-                      </Text>
-                    ) : null
-                  )}
+                <View>
+                  <View style={styles.syncingItem}>
+                    <Text
+                      style={
+                        allMapPercentages === 100
+                          ? styles.colorGreen
+                          : styles.colorDark
+                      }
+                    >
+                      Offline Maps
+                    </Text>
+                    <Text
+                      style={
+                        allMapPercentages === 100
+                          ? styles.colorGreen
+                          : styles.colorDark
+                      }
+                    >
+                      {`${Math.floor(allMapPercentages)}%`}
+                    </Text>
+                  </View>
+                  <View
+                    style={allMapPercentages === 100 ? { display: 'none' } : {}}
+                  >
+                    <ProgressBar
+                      removePadding
+                      hideBorder
+                      progress={allMapPercentages / 100}
+                    />
+                  </View>
                 </View>
               )}
+              {!cachingImages ? (
+                <Text style={styles.colorDark}>Images</Text>
+              ) : null}
 
               {cachingImages && (
-                <Text>
-                  {sync.images.synced && sync.images.total
-                    ? `Syncing survey images: ${sync.images.synced} / ${sync.images.total}`
-                    : 'Calculating total images to cache...'}
-                </Text>
+                <View>
+                  {sync.images.synced && sync.images.total ? (
+                    <React.Fragment>
+                      <View style={styles.syncingItem}>
+                        <Text
+                          style={
+                            sync.images.synced / sync.images.total === 1
+                              ? styles.colorGreen
+                              : styles.colorDark
+                          }
+                        >
+                          Images
+                        </Text>
+                        <Text
+                          style={
+                            sync.images.synced / sync.images.total === 1
+                              ? styles.colorGreen
+                              : styles.colorDark
+                          }
+                        >
+                          {`${Math.floor(
+                            (sync.images.synced / sync.images.total) * 100
+                          )}%`}
+                        </Text>
+                      </View>
+                      <View
+                        style={
+                          sync.images.synced / sync.images.total === 1
+                            ? { display: 'none' }
+                            : {}
+                        }
+                      >
+                        <ProgressBar
+                          removePadding
+                          hideBorder
+                          progress={sync.images.synced / sync.images.total}
+                        />
+                      </View>
+                    </React.Fragment>
+                  ) : (
+                    <Text
+                      style={{
+                        color: colors.dark,
+                        fontSize: 14,
+                        marginBottom: 5
+                      }}
+                    >
+                      Calculating total images to cache...
+                    </Text>
+                  )}
+                </View>
               )}
             </View>
           )}
@@ -401,29 +500,34 @@ Loading.propTypes = {
 }
 
 const styles = StyleSheet.create({
-  indicator: {
-    backgroundColor: colors.white,
-    borderRadius: 85,
-    marginBottom: 45,
-    marginTop: 22,
-    padding: 55
+  syncingItem: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    width: 220
   },
   loadingContainer: {
+    marginTop: 100,
     alignItems: 'center',
     justifyContent: 'center'
   },
+  colorDark: {
+    color: colors.dark,
+    fontSize: 17,
+    marginBottom: 5
+  },
+  colorGreen: {
+    color: colors.palegreen,
+    fontSize: 17,
+    marginBottom: 5
+  },
   sync: {
-    alignItems: 'center',
+    alignItems: 'flex-start',
     marginTop: 10
   },
   view: {
     alignItems: 'center',
     flex: 1,
-    justifyContent: 'center'
-  },
-  mapWrapper: {
-    alignItems: 'center',
-    justifyContent: 'center'
+    justifyContent: 'flex-start'
   }
 })
 

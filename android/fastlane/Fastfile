@@ -1,0 +1,157 @@
+default_platform(:android)
+####################################################
+  # !! The branch is DEVELOP / 
+  # EXECUTES BEFORE ALL LANES
+####################################################
+before_all do |lane, options|
+  ensure_git_status_clean
+  ensure_git_branch(
+    branch: 'develop'
+  )
+  git_pull()
+end
+
+platform :android do
+####################################################
+              # *********** 
+        #SEPARATED SMALL HELPER COMMANDS 
+          #FOR EACH STEP OF THE DOC 
+              # ***********
+####################################################
+  desc "Increment version code and name"
+    lane :bump_version do |options|
+      increment_version_code()
+      android_set_version_name(
+          version_name: options[:version]
+      )
+  end
+
+  desc "Commit and push bumped version and name"
+  lane :commit_bump_version do |options|
+    git_add(path: "./app/build.gradle")
+    git_commit(path: "./app/build.gradle", message: "Version Bump to #{options[:version]}")
+
+    push_to_git_remote(
+      remote: "origin",         
+      local_branch: "develop",  
+      remote_branch: "develop", 
+      tags: false,
+      no_verify: true,
+      set_upstream: true
+    )
+  end
+
+  desc "Generate CHANGELOG.md"
+    lane :generate_changelog do
+    sh("sh","./generate_changelog.sh")
+  end 
+  ####################################################
+  # GETS THE CURRENT BUILD VERSION
+  ####################################################
+  desc "The current version is -"
+  lane :get_version do
+    android_get_version_name(
+      gradle_file: "app/build.gradle"
+    )
+    android_get_version_code(
+      gradle_file: "app/build.gradle"
+    )
+  end
+
+  ####################################################
+  # UPDATE VERSION, TAGS, GENERAGE CHANGELOG, 
+  # COMMIT AND PUSH CHANGES
+  ####################################################
+  desc "Create beta buid ..."
+    lane :update_version do |options|
+      # -- 1. Increment code and change version name a
+      # -- 2. Commit and push changes to the repo
+      increment_version_code()
+      android_set_version_name(
+          version_name: options[:version]
+      )
+      git_add(path: "./app/build.gradle")
+      git_commit(path: "./app/build.gradle", message: "Version Bump to #{options[:version]}")
+
+      push_to_git_remote(
+        remote: "origin",         
+        local_branch: "develop",  
+        remote_branch: "develop", 
+        tags: false,
+        no_verify: true,
+        set_upstream: true
+      )
+
+      # -- Update tags, commit and push
+      comments = changelog_from_git_commits(
+        between: [last_git_tag, "HEAD"],
+        pretty: "- %s",
+        date_format: "short",
+        match_lightweight_tag: false, 
+        merge_commit_filtering: "exclude_merges" 
+      ) 
+
+      add_git_tag(
+        message: comments,
+        tag: "v#{options[:version]}",
+        prefix: "v",
+        build_number: options[:version]
+      )
+      push_git_tags
+
+      # -- 1. Execute shell script which generates changelog 
+      # -- 2. Push and commit changes
+      sh("sh","./generate_changelog.sh")
+      git_add(path: "../CHANGELOG.md")
+      git_commit(path: "../CHANGELOG.md", message: "Update changelog")
+      push_to_git_remote(
+        remote: "origin",         
+        local_branch: "develop",  
+        remote_branch: "develop", 
+        tags: false,
+        no_verify: true,
+        set_upstream: true
+      )
+    end
+
+  ####################################################
+  #   GENERATE SIGNED APK BUNDLE
+  ####################################################
+  # desc "Generate signed bundle"
+  #   lane :generate_apk do 
+  #     gradle(task: 'clean', project_dir: './')
+  #     gradle(
+  #       task: 'bundle',
+  #       build_type: 'Release',
+  #       project_dir: './'
+  #       properties: {
+  #         "android.injected.signing.store.file" => "/app/mentorapp.keystore",
+  #         "android.injected.signing.store.password" => "[storepassword]",
+  #         "android.injected.signing.key.alias" => "[keystore alias]",
+  #         "android.injected.signing.key.password" => "[key password]",
+  #       }
+  #     )
+  #   end
+
+    ####################################################
+    #   GENERATE SIGNED APK BUNDLE
+    #   Example command :
+    #   > fastlane internal jsonKey:$GOOGLE_PLAY_KEY  aabPath:$AAB_PATH
+    #     !!! where $GOOGLE_PLAY_KEY and $AAB_PATH are environment variables
+    #   ---------------------------------------------------------------------
+    #   can be raplaced with simple shell command
+    #   > fastlane supply --aab $AAB_PATH --json_key  $GOOGLE_PLAY_KEY
+    ####################################################
+
+    # desc "Deploy to internal test track"
+    #   lane :internal do |options|
+    #     upload_to_play_store(
+    #       json_key: options[:jsonKey],
+    #       track: "internal",
+    #       aab: options[:aabPath],
+    #       skip_upload_metadata: true,
+    #       skip_upload_images: true,
+    #       skip_upload_screenshots: true
+    #     )
+    #   end
+end

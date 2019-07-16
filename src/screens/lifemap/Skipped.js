@@ -72,9 +72,13 @@ export class Skipped extends Component {
     const { t } = this.props
     const { draft } = this.state
 
-    const skippedQuestions = draft.indicatorSurveyDataList.filter(
-      question => question.value === 0
-    )
+    const skippedQuestions =
+      (draft &&
+        draft.indicatorSurveyDataList &&
+        draft.indicatorSurveyDataList.filter(
+          question => question.value === 0
+        )) ||
+      []
 
     return (
       <StickyFooter

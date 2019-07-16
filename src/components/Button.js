@@ -75,7 +75,7 @@ class Button extends Component {
         accessibilityHint={disabled || loading ? 'disabled' : ''}
       >
         <View style={{ flexDirection: 'row' }}>
-          {icon ? (
+          {icon && !loading ? (
             <Icon
               name={icon}
               size={21}
@@ -88,7 +88,7 @@ class Button extends Component {
           {loading && (
             <ActivityIndicator
               size="small"
-              color={colors.white}
+              color={outlined ? colors.palegreen : colors.white}
               style={{ marginRight: 10 }}
             />
           )}
@@ -192,7 +192,8 @@ const styles = StyleSheet.create({
     fontSize: 18
   },
   icon: {
-    marginBottom: 4
+    marginBottom: 4,
+    marginRight: 10
   }
 })
 

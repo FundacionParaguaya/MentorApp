@@ -2,6 +2,8 @@ package com.povertystoplightapp;
 
 import android.app.Application;
 import com.facebook.react.ReactApplication;
+import com.christopherdro.RNPrint.RNPrintPackage;
+import com.christopherdro.htmltopdf.RNHTMLtoPDFPackage;
 import com.reactnativecommunity.asyncstorage.AsyncStoragePackage;
 import com.reactnativecommunity.netinfo.NetInfoPackage;
 import com.swmansion.gesturehandler.react.RNGestureHandlerPackage;
@@ -20,6 +22,9 @@ import com.facebook.react.shell.MainReactPackage;
 import com.facebook.soloader.SoLoader;
 import com.facebook.react.modules.storage.ReactDatabaseSupplier;
 
+import androidx.multidex.MultiDex;
+import android.content.Context;
+
 import java.util.Arrays;
 import java.util.List;
 
@@ -35,6 +40,8 @@ public class MainApplication extends Application implements ReactApplication {
     protected List<ReactPackage> getPackages() {
       return Arrays.<ReactPackage>asList(
           new MainReactPackage(),
+            new RNPrintPackage(),
+            new RNHTMLtoPDFPackage(),
             new AsyncStoragePackage(),
             new NetInfoPackage(),
             new RNGestureHandlerPackage(),
@@ -67,5 +74,10 @@ public class MainApplication extends Application implements ReactApplication {
     SoLoader.init(this, /* native exopackage */ false);
     long size = 250L * 1024L * 1024L; // 250 MB
     com.facebook.react.modules.storage.ReactDatabaseSupplier.getInstance(getApplicationContext()).setMaximumSize(size);
+  }
+   @Override
+     protected void attachBaseContext(Context base) {
+     super.attachBaseContext(base);
+     MultiDex.install(this);
   }
 }
