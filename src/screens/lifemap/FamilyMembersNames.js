@@ -10,7 +10,7 @@ import Decoration from '../../components/decoration/Decoration'
 import globalStyles from '../../globalStyles'
 import Select from '../../components/Select'
 import DateInput from '../../components/DateInput'
-import { getTotalScreens } from './helpers'
+import { getTotalScreens, setValidationSchema } from './helpers'
 
 export class FamilyMembersNames extends Component {
   survey = this.props.navigation.getParam('survey')
@@ -126,6 +126,12 @@ export class FamilyMembersNames extends Component {
             .map((item, index) => index)
         : []
 
+    const requiredFields =
+      (this.survey.surveyConfig &&
+        this.survey.surveyConfig.requiredFields &&
+        this.survey.surveyConfig.requiredFields.familyMember) ||
+      null
+
     return (
       <StickyFooter
         handleClick={() => this.handleClick(draft)}
@@ -196,7 +202,11 @@ export class FamilyMembersNames extends Component {
                 onChangeText={this.updateMember}
                 placeholder={`${t('views.family.firstName')}`}
                 value={(familyMembersList[i + 1] || {}).firstName || ''}
-                required
+                required={setValidationSchema(
+                  requiredFields,
+                  'firstName',
+                  true
+                )}
                 detectError={this.detectError}
                 showErrors={showErrors}
               />
@@ -208,6 +218,7 @@ export class FamilyMembersNames extends Component {
                 value={(familyMembersList[i + 1] || {}).gender || ''}
                 detectError={this.detectError}
                 options={this.survey.surveyConfig.gender}
+                required={setValidationSchema(requiredFields, 'gender', false)}
                 otherField={`${i}.customGender`}
                 otherPlaceholder={t('views.family.specifyGender')}
                 otherValue={(familyMembersList[i + 1] || {}).customGender || ''}
@@ -220,6 +231,11 @@ export class FamilyMembersNames extends Component {
                 showErrors={this.state.showErrors}
                 onValidDate={this.updateMember}
                 value={(familyMembersList[i + 1] || {}).birthDate}
+                required={setValidationSchema(
+                  requiredFields,
+                  'birthDate',
+                  false
+                )}
               />
             </View>
           )
