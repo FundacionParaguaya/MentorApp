@@ -375,7 +375,7 @@ export class SocioEconomicQuestion extends Component {
                   : false
                 : question
             )
-            .map(question => {
+            .map((question, index) => {
               if (
                 question.answerType === 'select' ||
                 question.answerType === 'radio'
@@ -386,7 +386,7 @@ export class SocioEconomicQuestion extends Component {
                   ) || false
 
                 return (
-                  <React.Fragment key={question.codeName}>
+                  <React.Fragment key={index}>
                     {this.readOnly && !radioQuestionSelected ? null : (
                       <View>
                         {question.answerType === 'radio' ? (
@@ -519,37 +519,56 @@ export class SocioEconomicQuestion extends Component {
                         : false
                       : question
                   )
-                  .map(question => {
+                  .map((question, index) => {
                     if (
                       question.answerType === 'select' ||
                       question.answerType === 'radio'
                     ) {
+                      const radioQuestionSelected =
+                        draft.economicSurveyDataList.some(
+                          answer => answer.key === question.codeName
+                        ) || false
                       return (
-                        <Select
-                          radio={question.answerType === 'radio' ? true : false}
-                          key={question.codeName}
-                          required={question.required}
-                          onChange={value =>
-                            this.updateEconomicAnswer(question, value, i)
-                          }
-                          placeholder={question.questionText}
-                          showErrors={showErrors}
-                          label={question.questionText}
-                          field={question.codeName}
-                          value={
-                            this.getFamilyMemberFieldValue(
-                              question.codeName,
-                              i
-                            ) || ''
-                          }
-                          detectError={this.detectError}
-                          readonly={this.readOnly}
-                          options={getConditionalOptions(question, draft, i)}
-                          memberIndex={i + 1}
-                          cleanErrorsOnUnmount={
-                            this.cleanErrorsCodenamesOnUnmount
-                          }
-                        />
+                        <React.Fragment key={index}>
+                          {this.readOnly && !radioQuestionSelected ? null : (
+                            <View>
+                              {question.answerType === 'radio' ? (
+                                <Text
+                                  style={{ marginLeft: 10, marginBottom: 15 }}
+                                >
+                                  {question.questionText}
+                                </Text>
+                              ) : null}
+                            </View>
+                          )}
+                          <Select
+                            radio={
+                              question.answerType === 'radio' ? true : false
+                            }
+                            key={question.codeName}
+                            required={question.required}
+                            onChange={value =>
+                              this.updateEconomicAnswer(question, value, i)
+                            }
+                            placeholder={question.questionText}
+                            showErrors={showErrors}
+                            label={question.questionText}
+                            field={question.codeName}
+                            value={
+                              this.getFamilyMemberFieldValue(
+                                question.codeName,
+                                i
+                              ) || ''
+                            }
+                            detectError={this.detectError}
+                            readonly={this.readOnly}
+                            options={getConditionalOptions(question, draft, i)}
+                            memberIndex={i + 1}
+                            cleanErrorsOnUnmount={
+                              this.cleanErrorsCodenamesOnUnmount
+                            }
+                          />
+                        </React.Fragment>
                       )
                     } else if (question.answerType === 'number') {
                       return (
