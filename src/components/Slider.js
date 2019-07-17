@@ -71,7 +71,6 @@ export class Slider extends Component {
 
   render() {
     const { width, height } = Dimensions.get('window')
-
     return (
       <View>
         <ScrollView
