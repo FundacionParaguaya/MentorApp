@@ -57,16 +57,7 @@ export class Final extends Component {
       loading: true
     })
 
-    const draft = prepareDraftForSubmit(this.draft, this.survey)
-
-    this.props.submitDraft(
-      url[this.props.env],
-      this.props.user.token,
-      draft.draftId,
-      draft
-    )
-    this.props.navigation.popToTop()
-    this.props.navigation.navigate('Dashboard')
+    this.prepareDraftForSubmit()
   }
 
   async exportPDF() {
@@ -125,6 +116,28 @@ export class Final extends Component {
     }
   }
 
+  prepareDraftForSubmit() {
+    if (this.state.loading) {
+      const draft = prepareDraftForSubmit(this.draft, this.survey)
+
+      this.props.submitDraft(
+        url[this.props.env],
+        this.props.user.token,
+        draft.draftId,
+        draft
+      )
+
+      setTimeout(() => {
+        this.props.navigation.popToTop()
+        this.props.navigation.navigate('Dashboard')
+      }, 500)
+    } else {
+      setTimeout(() => {
+        this.prepareDraftForSubmit()
+      }, 200)
+    }
+  }
+
   render() {
     const { t } = this.props
     return (
@@ -178,6 +191,7 @@ export class Final extends Component {
         </View>
         <View style={{ height: 50 }}>
           <Button
+            id="save-draft"
             colored
             loading={this.state.loading}
             text={t('general.close')}
