@@ -459,9 +459,15 @@ export const rootReducer = (state, action) => {
   // create detailed sentry report on sync error
   if (action.type === SUBMIT_DRAFT_ROLLBACK) {
     Sentry.setExtraContext({
-      payload: action.meta.payload,
-      familyMembersList: action.meta.payload.familyData.familyMembersList,
-      errors: action.payload.response.errors
+      payload: action.meta.sanitizedSnapshot,
+      familyMembersList:
+        action.meta.sanitizedSnapshot.familyData.familyMembersList,
+      errors:
+        action.payload.response &&
+        action.payload.response.errors &&
+        action.payload.response.errors.length
+          ? action.payload.response.errors
+          : []
     })
 
     Sentry.setTagsContext({
@@ -479,8 +485,18 @@ export const rootReducer = (state, action) => {
       message: 'Sync error',
       category: 'action',
       data: {
-        error: action.payload.response.errors[0].message,
-        description: action.payload.response.errors[0].description
+        error:
+          action.payload.response &&
+          action.payload.response.errors &&
+          action.payload.response.errors.length
+            ? action.payload.response.errors[0].message
+            : 'Undefined server error',
+        description:
+          action.payload.response &&
+          action.payload.response.errors &&
+          action.payload.response.errors.length
+            ? action.payload.response.errors[0].description
+            : ''
       }
     })
     Sentry.captureException('Sync error')

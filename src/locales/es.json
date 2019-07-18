@@ -139,8 +139,8 @@
       "whatWillYouDoToGetIt": "¿Qué harás para tenerlo?",
       "howManyMonthsWillItTake": "¿Cuántos meses tardará?",
       "achievement": "Logro",
-      "howDidYouGetIt": "¿Cómo lo conseguiste?",
-      "whatDidItTakeToAchieveThis": "¿Qué se necesitó para lograr esto?",
+      "howDidYouGetIt": "¿Qué hiciste para conseguirlo?",
+      "whatDidItTakeToAchieveThis": "¿Quién o qué te motivó a alcanzarlo?",
       "great": "¡Fantástico!",
       "youHaveCompletedTheLifemap": "Has completado tu Mapa de Vida",
       "youNeedToAddPriotity": "Necesitas agregar una prioridad",
@@ -184,7 +184,10 @@
       "updatePending": "1 actualización pendiente",
       "inProgress": "Sincronización en marcha",
       "of": "de",
-      "updates": "actualizaciones"
+      "updates": "actualizaciones",
+      "syncErrProblem": "¡Parece que tenemos un problema!",
+      "itemHasError": "%n elemento tiene un error de sincronización.",
+      "itemsHaveError": "%n elementos tienen un error de sincronización."
     }
   }
 }

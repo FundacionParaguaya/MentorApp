@@ -37,24 +37,29 @@ export const prepareDraftForSubmit = (draft, survey) => {
     member => member.firstName
   )
 
+  // check for family members with no firstParticipant property
+  result.familyData.familyMembersList.map(member => {
+    if (typeof member.firstParticipant === 'undefined') {
+      return {
+        ...member,
+        firstParticipant: false
+      }
+    } else {
+      return member
+    }
+  })
+
+  // check for participants with a false firstParticipant value
+  if (
+    result.familyData.countFamilyMembers ===
+      result.familyData.familyMembersList.length &&
+    !result.familyData.familyMembersList.some(member => member.firstParticipant)
+  ) {
+    result.familyData.familyMembersList[0].firstParticipant = true
+  }
+
   result.familyData.countFamilyMembers =
     result.familyData.familyMembersList.length
-
-  // check for family members with no firstParticipant property
-  if (
-    result.familyData.familyMembersList.some(member => !member.firstParticipant)
-  ) {
-    result.familyData.familyMembersList.map(member => {
-      if (!member.firstParticipant) {
-        return {
-          ...member,
-          firstParticipant: false
-        }
-      } else {
-        return member
-      }
-    })
-  }
 
   return result
 }
