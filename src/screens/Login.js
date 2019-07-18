@@ -319,7 +319,15 @@ const styles = StyleSheet.create({
     backgroundColor: 'transparent'
   },
   logo: { width: 42, height: 42, marginBottom: 8 },
-  error: { color: colors.red, lineHeight: 15, marginBottom: 10 }
+  error: {
+    color: colors.red,
+    lineHeight: 15,
+    marginBottom: 10,
+    marginLeft: 'auto',
+    width: 400,
+    marginTop: 10,
+    marginRight: 'auto'
+  }
 })
 
 const mapStateToProps = ({ env, user, dimensions }) => ({
