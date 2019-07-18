@@ -16,7 +16,8 @@ import {
   getDraftWithUpdatedFamilyEconomics,
   getDraftWithUpdatedQuestionsCascading,
   getConditionalQuestions,
-  getElementsWithConditionsOnThem
+  getElementsWithConditionsOnThem,
+  familyMemberWillHaveQuestions
 } from '../utils/conditional_logic'
 import { getTotalScreens } from './helpers'
 
@@ -160,11 +161,12 @@ export class SocioEconomicQuestion extends Component {
           draft: this.state.draft
         })
       : this.props.navigation.push('SocioEconomicQuestion', {
-          socioEconomics: {
-            currentScreen: socioEconomics.currentScreen - 1,
-            questionsPerScreen: socioEconomics.questionsPerScreen,
-            totalScreens: socioEconomics.totalScreens
-          },
+          socioEconomics: this.setScreens(socioEconomics, -1),
+          // socioEconomics: {
+          //   currentScreen: socioEconomics.currentScreen - 1,
+          //   questionsPerScreen: socioEconomics.questionsPerScreen,
+          //   totalScreens: socioEconomics.totalScreens
+          // },
           survey: this.survey,
           draft: this.state.draft
         })
@@ -252,11 +254,12 @@ export class SocioEconomicQuestion extends Component {
         : this.props.navigation.push('SocioEconomicQuestion', {
             survey: this.survey,
             draft: this.state.draft,
-            socioEconomics: {
-              currentScreen: socioEconomics.currentScreen + 1,
-              questionsPerScreen: socioEconomics.questionsPerScreen,
-              totalScreens: socioEconomics.totalScreens
-            }
+            socioEconomics: this.setScreens(socioEconomics, 1)
+            // socioEconomics: {
+            //   currentScreen: socioEconomics.currentScreen + 1,
+            //   questionsPerScreen: socioEconomics.questionsPerScreen,
+            //   totalScreens: socioEconomics.totalScreens
+            // }
           })
     }
   }
@@ -294,6 +297,54 @@ export class SocioEconomicQuestion extends Component {
           ]
         }
       })
+    }
+  }
+
+  setScreens = (screenData, step) => {
+    const QUESTIONS_FOR_SCREEN =
+      screenData.questionsPerScreen[screenData.currentScreen]
+    // const TOTAL_SCREENS = screenData.totalScreens
+    const SKIP_SCREEN_WITH_ONE_STEP = step
+    if (
+      !(
+        QUESTIONS_FOR_SCREEN.forFamily &&
+        QUESTIONS_FOR_SCREEN.forFamily.length > 0
+      ) &&
+      QUESTIONS_FOR_SCREEN.forFamilyMember &&
+      QUESTIONS_FOR_SCREEN.forFamilyMember.length > 0
+    ) {
+      const { familyMembersList } = this.state.draft.familyData
+      let atLeastOneMemberHasQuestions = false
+      familyMembersList.forEach((_member, index) => {
+        atLeastOneMemberHasQuestions =
+          atLeastOneMemberHasQuestions ||
+          familyMemberWillHaveQuestions(
+            QUESTIONS_FOR_SCREEN,
+            this.state.draft,
+            index
+          )
+      })
+
+      if (!atLeastOneMemberHasQuestions) {
+        return {
+          currentScreen:
+            screenData.currentScreen + step + SKIP_SCREEN_WITH_ONE_STEP,
+          questionsPerScreen: screenData.questionsPerScreen,
+          totalScreens: screenData.totalScreens
+        }
+      } else {
+        return {
+          currentScreen: screenData.currentScreen + step,
+          questionsPerScreen: screenData.questionsPerScreen,
+          totalScreens: screenData.totalScreens
+        }
+      }
+    }
+
+    return {
+      currentScreen: screenData.currentScreen + step,
+      questionsPerScreen: screenData.questionsPerScreen,
+      totalScreens: screenData.totalScreens
     }
   }
 
