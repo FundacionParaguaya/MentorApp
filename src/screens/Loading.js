@@ -156,7 +156,7 @@ export class Loading extends Component {
   }
 
   onMapDownloadError = () => {
-    this.showError('We seem to have a problem downloading your offline maps.')
+    // this.showError('We seem to have a problem downloading your offline maps.')
   }
 
   reload = () => {
@@ -234,12 +234,6 @@ export class Loading extends Component {
   }
 
   componentDidMount() {
-    this.unsubscribeNetChange = NetInfo.addEventListener(state => {
-      if (!state.isConnected) {
-        this.showError('There seems to be a problem with your connetion.')
-      }
-    })
-
     this.checkState()
   }
 
