@@ -21,6 +21,7 @@ Enzyme.configure({ adapter: new Adapter() })
 // mock device info
 jest.mock('react-native-device-info', () => {
   return {
+    getVersion: () => '1.1.1',
     getModel: jest.fn(),
     getFreeDiskStorage: jest.fn()
   }
@@ -156,6 +157,7 @@ jest.mock('@mapbox/react-native-mapbox-gl', () => {
 
     static PointAnnotation = props =>
       React.createElement('PointAnnotation', props, props.children)
+    /* eslint-disable react/prop-types */
 
     render() {
       return React.createElement('MapView', this.props, this.props.children)
