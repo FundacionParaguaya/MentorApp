@@ -44,6 +44,7 @@ export class Family extends Component {
   }
   unsubscribeNetChange
   state = {
+    loading: false,
     activeTab: this.props.navigation.getParam('activeTab') || 'Details'
   }
   familyLifemap = this.props.navigation.getParam('familyLifemap')
@@ -117,16 +118,33 @@ export class Family extends Component {
   )
 
   retrySync = () => {
-    const draft = prepareDraftForSubmit(this.familyLifemap, this.survey)
+    if (this.state.loading) {
+      return
+    }
+    this.setState({ loading: true })
 
-    this.props.submitDraft(
-      url[this.props.env],
-      this.props.user.token,
-      draft.draftId,
-      draft
-    )
-    this.props.navigation.popToTop()
-    this.props.navigation.navigate('Dashboard')
+    this.prepareDraftForSubmit()
+  }
+
+  prepareDraftForSubmit() {
+    if (this.state.loading) {
+      const draft = prepareDraftForSubmit(this.familyLifemap, this.survey)
+
+      this.props.submitDraft(
+        url[this.props.env],
+        this.props.user.token,
+        draft.draftId,
+        draft
+      )
+      setTimeout(() => {
+        this.props.navigation.popToTop()
+        this.props.navigation.navigate('Dashboard')
+      }, 500)
+    } else {
+      setTimeout(() => {
+        this.prepareDraftForSubmit()
+      }, 200)
+    }
   }
 
   componentWillUnmount() {
@@ -397,6 +415,7 @@ export class Family extends Component {
                         <Button
                           id="retry"
                           style={styles.button}
+                          loading={this.state.loading}
                           text={t('views.synced')}
                           handleClick={this.retrySync}
                         />
@@ -449,7 +468,8 @@ const styles = StyleSheet.create({
     alignItems: 'center'
   },
   button: {
-    marginTop: 20,
+    alignSelf: 'center',
+    marginVertical: 20,
     width: '100%',
     maxWidth: 400,
     backgroundColor: colors.palered
@@ -460,7 +480,6 @@ const styles = StyleSheet.create({
   },
   familiesIcon: {
     flex: 1,
-
     flexDirection: 'row',
     justifyContent: 'center',
     alignItems: 'center'
