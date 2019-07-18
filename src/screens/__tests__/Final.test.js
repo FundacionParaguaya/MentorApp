@@ -68,19 +68,6 @@ describe('Final Lifemap View when no questions are skipped', () => {
       expect(wrapper.find(Button)).toHaveLength(1)
     })
   })
-
-  describe('functionality', () => {
-    it('calls handleClick function when Button is clicked', () => {
-      wrapper
-        .find(Button)
-        .last()
-        .props()
-        .handleClick()
-      expect(
-        wrapper.instance().props.navigation.popToTop
-      ).toHaveBeenCalledTimes(1)
-    })
-  })
   it('calls setParam on mount', () => {
     expect(wrapper.instance().props.navigation.setParams).toHaveBeenCalledTimes(
       1

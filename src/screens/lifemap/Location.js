@@ -41,6 +41,7 @@ export class Location extends Component {
     showErrors: false,
     searchAddress: '',
     showSearch: true,
+    askingForPermission: false,
     errorsDetected: [],
     centeringMap: false, // while map is centering we show a different spinner
     loading: true,
@@ -126,7 +127,7 @@ export class Location extends Component {
   getCoordinatesOnline = survey => {
     const { draft } = this.state
     const { familyData } = draft
-
+    this.setState({ askingForPermission: true })
     Geolocation.getCurrentPosition(
       // if location is available and we are online center on it
       position => {
@@ -134,6 +135,7 @@ export class Location extends Component {
         this.setState({
           loading: false,
           centeringMap: false,
+          askingForPermission: false,
           draft: {
             ...draft,
             familyData: {
@@ -153,6 +155,7 @@ export class Location extends Component {
           this.setState({
             loading: false,
             centeringMap: false,
+            askingForPermission: false,
             draft: {
               ...draft,
               familyData: {
@@ -180,7 +183,7 @@ export class Location extends Component {
   getCoordinatesOffline = () => {
     const { draft } = this.state
     const { familyData } = draft
-
+    this.setState({ askingForPermission: true })
     if (
       this.survey.surveyConfig.offlineMaps &&
       !this.state.showOfflineMapsList
@@ -208,6 +211,7 @@ export class Location extends Component {
 
           this.setState({
             loading: false,
+            askingForPermission: false,
             centeringMap: false,
             showForm: isLocationInBoundaries ? false : true,
             draft: {
@@ -288,7 +292,8 @@ export class Location extends Component {
   _handleAppStateChange = nextAppState => {
     if (
       this.state.appState.match(/inactive|background/) &&
-      nextAppState === 'active'
+      nextAppState === 'active' &&
+      !this.state.askingForPermission
     ) {
       this.props.navigation.replace('Location', {
         draft: this.state.draft,

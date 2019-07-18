@@ -76,12 +76,12 @@ SyncListItem.propTypes = {
 }
 
 const styles = StyleSheet.create({
-  errorText: {
-    marginTop: 5,
-    marginBottom: 5,
-    padding: 7,
-    backgroundColor: colors.errorLight
-  },
+  // errorText: {
+  //   marginTop: 5,
+  //   marginBottom: 5,
+  //   padding: 7,
+  //   backgroundColor: colors.errorLight
+  // },
   view: {
     justifyContent: 'space-between',
     alignItems: 'center',
@@ -104,7 +104,9 @@ const styles = StyleSheet.create({
   label: {
     color: colors.lightdark,
     borderRadius: 5,
-    width: 100,
+    minWidth: 100,
+    paddingLeft: 5,
+    paddingRight: 5,
     height: 25,
     lineHeight: 25,
     textAlign: 'center',
