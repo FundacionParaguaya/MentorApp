@@ -92,17 +92,7 @@ export class Dashboard extends Component {
     this.props.navigation.navigate('Surveys')
   }
 
-  checkIndicators = () => {
-    // calculate indicators only if green is 0 in attempt to avoid frequency
-    // and get their number after logging in
-    if (!this.state.green) {
-      this.calculateIndicators()
-    }
-  }
-
   componentDidMount() {
-    this.props.navigation.addListener('didFocus', this.checkIndicators)
-
     const { surveys, families, images } = this.props.sync
     if (!this.props.user.token) {
       this.props.navigation.navigate('Login')
@@ -128,42 +118,8 @@ export class Dashboard extends Component {
     }
   }
 
-  calculateIndicators() {
-    let green = 0
-    let yellow = 0
-    let red = 0
-    if (typeof this.props.families !== 'undefined') {
-      if (this.props.families.length) {
-        this.props.families.forEach(el => {
-          if (
-            el.snapshotList &&
-            el.snapshotList.length &&
-            el.snapshotList[0].indicatorSurveyDataList
-          ) {
-            el.snapshotList[0].indicatorSurveyDataList.forEach(e => {
-              if (e.value === 1) {
-                red++
-              } else if (e.value === 2) {
-                yellow++
-              } else if (e.value === 3) {
-                green++
-              }
-            })
-          }
-        })
-      }
-    }
-
-    this.setState({
-      green,
-      yellow,
-      red
-    })
-  }
-
   render() {
     const { t, drafts } = this.props
-    const { green, yellow, red } = this.state
 
     return (
       <AndroidBackHandler onBackPress={() => true}>
@@ -214,7 +170,7 @@ export class Dashboard extends Component {
                       <View style={styles.circleContainer}>
                         <View style={styles.circleGreen} />
                       </View>
-                      <Text style={styles.numberIndicator}>{green}</Text>
+                      {/* <Text style={styles.numberIndicator}>{green}</Text> */}
                       <Text style={styles.colorIndicator}>Green</Text>
                     </View>
 
@@ -222,7 +178,7 @@ export class Dashboard extends Component {
                       <View style={styles.circleContainer}>
                         <View style={styles.circleYellow} />
                       </View>
-                      <Text style={styles.numberIndicator}>{yellow}</Text>
+                      {/* <Text style={styles.numberIndicator}>{yellow}</Text> */}
                       <Text style={styles.colorIndicator}>Yellow</Text>
                     </View>
 
@@ -230,7 +186,7 @@ export class Dashboard extends Component {
                       <View style={styles.circleContainer}>
                         <View style={styles.circleRed} />
                       </View>
-                      <Text style={styles.numberIndicator}>{red}</Text>
+                      {/* <Text style={styles.numberIndicator}>{red}</Text> */}
                       <Text style={styles.colorIndicator}>Red</Text>
                     </View>
                   </View>
@@ -279,14 +235,10 @@ export class Dashboard extends Component {
   }
 }
 const styles = StyleSheet.create({
-  numberIndicator: {
-    fontSize: 25,
-    fontWeight: 'bold',
-    marginTop: 4
-  },
   colorIndicator: {
+    fontFamily: 'Poppins SemiBold',
     fontSize: 17,
-    fontWeight: 'bold',
+    marginTop: 10,
     marginBottom: 10
   },
   circleAndTextContainer: {
@@ -331,6 +283,9 @@ const styles = StyleSheet.create({
     borderRadius: 50
   },
   familiesCount: {
+    flexDirection: 'column',
+    justifyContent: 'center',
+    fontFamily: 'Poppins SemiBold',
     flex: 1,
     fontSize: 20,
     textAlign: 'center',
