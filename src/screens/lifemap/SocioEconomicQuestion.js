@@ -18,7 +18,7 @@ import {
   getConditionalQuestions,
   getElementsWithConditionsOnThem
 } from '../utils/conditional_logic'
-import { getTotalScreens } from './helpers'
+import { getTotalScreens, setScreen } from './helpers'
 
 export class SocioEconomicQuestion extends Component {
   static navigationOptions = ({ navigation }) => {
@@ -153,7 +153,7 @@ export class SocioEconomicQuestion extends Component {
 
   onPressBack = () => {
     const socioEconomics = this.props.navigation.getParam('socioEconomics')
-
+    const STEP_BACK = -1
     socioEconomics.currentScreen === 1
       ? this.props.navigation.push('Location', {
           survey: this.survey,
@@ -161,7 +161,11 @@ export class SocioEconomicQuestion extends Component {
         })
       : this.props.navigation.push('SocioEconomicQuestion', {
           socioEconomics: {
-            currentScreen: socioEconomics.currentScreen - 1,
+            currentScreen: setScreen(
+              socioEconomics,
+              this.state.draft,
+              STEP_BACK
+            ),
             questionsPerScreen: socioEconomics.questionsPerScreen,
             totalScreens: socioEconomics.totalScreens
           },
@@ -242,6 +246,7 @@ export class SocioEconomicQuestion extends Component {
       })
     } else {
       const socioEconomics = this.props.navigation.getParam('socioEconomics')
+      const STEP_FORWARD = 1
 
       !socioEconomics ||
       socioEconomics.currentScreen === socioEconomics.totalScreens
@@ -253,7 +258,11 @@ export class SocioEconomicQuestion extends Component {
             survey: this.survey,
             draft: this.state.draft,
             socioEconomics: {
-              currentScreen: socioEconomics.currentScreen + 1,
+              currentScreen: setScreen(
+                socioEconomics,
+                this.state.draft,
+                STEP_FORWARD
+              ),
               questionsPerScreen: socioEconomics.questionsPerScreen,
               totalScreens: socioEconomics.totalScreens
             }
