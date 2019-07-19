@@ -212,7 +212,11 @@ export class AddPriorityAndAchievementModal extends Component {
                   alignItems: 'center'
                 }}
               >
-                <Icon2 name="pin" color={colors.white} size={20} />
+                <Icon2
+                  name={this.props.color === 1 ? 'pin' : 'star'}
+                  color={colors.white}
+                  size={20}
+                />
               </View>
             </View>
             <View
