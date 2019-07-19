@@ -7,6 +7,7 @@ import {
   View,
   Platform
 } from 'react-native'
+import DeviceInfo from 'react-native-device-info'
 import AsyncStorage from '@react-native-community/async-storage'
 import MapboxGL from '@mapbox/react-native-mapbox-gl'
 import { withNamespaces } from 'react-i18next'
@@ -133,7 +134,7 @@ export class DrawerContent extends Component {
   }
 
   render() {
-    const { lng, user, navigation, dimensions, sync } = this.props
+    const { lng, user, navigation, dimensions } = this.props
     const {
       checkboxesVisible,
       showErrors,
@@ -194,7 +195,7 @@ export class DrawerContent extends Component {
             {user.username}
           </Text>
           <Text style={[styles.appversion, globalStyles.h4, styles.whiteText]}>
-            Version {sync.appVersion}
+            Version {DeviceInfo.getVersion()}
           </Text>
           {/* Links */}
         </View>

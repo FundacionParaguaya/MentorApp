@@ -104,34 +104,20 @@ export class Loading extends Component {
     const surveysWithOfflineMaps = this.props.surveys.filter(
       survey => survey.surveyConfig.offlineMaps
     )
-    if (
-      surveysWithOfflineMaps ||
-      this.isSurveyInSynced('Paraguay - Activate, FUPA')
-    ) {
-      if (surveysWithOfflineMaps) {
-        surveysWithOfflineMaps.forEach(survey => {
-          survey.surveyConfig.offlineMaps.forEach(map => {
-            if (map.name) {
-              const options = {
-                minZoom: 10,
-                maxZoom: 13,
-                bounds: [map.from, map.to]
-              }
-              mapsArray.push({ name: map.name, statue: 0, options })
+    if (surveysWithOfflineMaps) {
+      surveysWithOfflineMaps.forEach(survey => {
+        survey.surveyConfig.offlineMaps.forEach(map => {
+          if (map.name) {
+            const options = {
+              minZoom: 10,
+              maxZoom: 13,
+              bounds: [map.from, map.to]
             }
-          })
+            mapsArray.push({ name: map.name, statue: 0, options })
+          }
         })
-      }
+      })
 
-      // check for Cerrito pack
-      if (this.isSurveyInSynced('Paraguay - Activate, FUPA')) {
-        const options = {
-          minZoom: 10,
-          maxZoom: 13,
-          bounds: [[-70.6626, -24.1093], [-69.7407, -22.7571]]
-        }
-        mapsArray.push({ name: 'Cerrito', statue: 0, options })
-      }
       this.setState({ maps: mapsArray }, this.downloadMapData)
     } else {
       this.handleImageCaching()
@@ -156,11 +142,15 @@ export class Loading extends Component {
   }
 
   onMapDownloadError = () => {
-    this.showError('We seem to have a problem downloading your offline maps.')
+    // this.showError('We seem to have a problem downloading your offline maps.')
   }
 
   reload = () => {
     this.setState({
+      syncingServerData: false, // know when to show that data is synced
+      cachingImages: false,
+      downloadingMap: false,
+      maps: [],
       error: null
     })
     this.props.resetSyncState()
@@ -177,12 +167,13 @@ export class Loading extends Component {
     let mapAllNames = []
     let mapAllNumber = 0
     this.state.maps.map(map => {
+      let mapPercentageForNow = map.status || 0
       if (mapAllNames.length === this.state.maps.length - 1) {
-        mapAllNumber = mapAllNumber + map.status
+        mapAllNumber = mapAllNumber + mapPercentageForNow
         mapAllPercentage = mapAllNumber / this.state.maps.length
       } else {
         mapAllNames.push(map.name)
-        mapAllNumber = mapAllNumber + map.status
+        mapAllNumber = mapAllNumber + mapPercentageForNow
       }
     })
     if (isNaN(mapAllPercentage) && mapAllPercentage !== 100) {
@@ -233,12 +224,6 @@ export class Loading extends Component {
   }
 
   componentDidMount() {
-    this.unsubscribeNetChange = NetInfo.addEventListener(state => {
-      if (!state.isConnected) {
-        this.showError('There seems to be a problem with your connetion.')
-      }
-    })
-
     this.checkState()
   }
 
