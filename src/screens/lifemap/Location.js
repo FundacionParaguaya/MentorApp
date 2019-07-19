@@ -541,7 +541,6 @@ export class Location extends Component {
                 draft.progress.total
               : 0
           }
-          fullHeight
         >
           <View style={[styles.placeholder, { height: '100%' }]}>
             <Text style={[globalStyles.h2, { marginBottom: 30 }]}>

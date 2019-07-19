@@ -336,6 +336,7 @@ export const sync = (
       }
     case RESET_SYNCED_STATE:
       return {
+        ...state,
         surveys: false,
         surveysError: false,
         families: false,
@@ -461,13 +462,7 @@ export const rootReducer = (state, action) => {
     Sentry.setExtraContext({
       payload: action.meta.sanitizedSnapshot,
       familyMembersList:
-        action.meta.sanitizedSnapshot.familyData.familyMembersList,
-      errors:
-        action.payload.response &&
-        action.payload.response.errors &&
-        action.payload.response.errors.length
-          ? action.payload.response.errors
-          : []
+        action.meta.sanitizedSnapshot.familyData.familyMembersList
     })
 
     Sentry.setTagsContext({
@@ -483,21 +478,7 @@ export const rootReducer = (state, action) => {
 
     Sentry.captureBreadcrumb({
       message: 'Sync error',
-      category: 'action',
-      data: {
-        error:
-          action.payload.response &&
-          action.payload.response.errors &&
-          action.payload.response.errors.length
-            ? action.payload.response.errors[0].message
-            : 'Undefined server error',
-        description:
-          action.payload.response &&
-          action.payload.response.errors &&
-          action.payload.response.errors.length
-            ? action.payload.response.errors[0].description
-            : ''
-      }
+      category: 'action'
     })
     Sentry.captureException('Sync error')
   }

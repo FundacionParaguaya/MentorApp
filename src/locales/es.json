@@ -124,8 +124,9 @@
       "tellUsMore": "Puede decirnos más acerca de esta ubicación en el siguiente formulario"
     },
     "lifemap": {
+      "indicatorDefinition": "Definición del indicador",
       "nowLetsMakeSomePriorities": "Ahora, ¡escribamos algunas prioridades!",
-      "youCreatedALifeMap": "Tú Has Creado un Mapa de Vida.",
+      "youCreatedALifeMap": "Has creado un Mapa de Vida.",
       "congratulations": "¡Felicidades!",
       "thisLifeMapHas": "Este Mapa de Vida tiene %n preguntas. ¡Tardará aproximadamente 35 minutos en completarse!",
       "responseRequired": "*Respuesta requerida",
@@ -142,6 +143,7 @@
       "howDidYouGetIt": "¿Qué hiciste para conseguirlo?",
       "whatDidItTakeToAchieveThis": "¿Quién o qué te motivó a alcanzarlo?",
       "great": "¡Fantástico!",
+      "noPriorities": "¡Elige de los indicadores y explica por qué son importantes y que harás para conseguirlos!",
       "youHaveCompletedTheLifemap": "Has completado tu Mapa de Vida",
       "youNeedToAddPriotity": "Necesitas agregar una prioridad",
       "youNeedToAddPriorities": "¡Elige %n indicadores y explica por qué son importantes y que harás para conseguirlos!",
@@ -152,8 +154,8 @@
       "priorities": "Prioridades",
       "achievements": "Logros",
       "toComplete": "Antes de que se complete el Mapa de Vida....",
-      "makePriority": "Hacer una prioridad!",
-      "makeAchievement": "Marca el logro!"
+      "makePriority": "¡Hazlo una prioridad!",
+      "makeAchievement": "¡Marca el logro!"
     },
     "modals": {
       "lifeMapWillNotBeSaved": "Si no ingresa todos los detalles en esta página, ¡el Mapa de Vida no se guardará!",
