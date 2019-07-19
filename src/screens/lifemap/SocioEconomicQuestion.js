@@ -154,7 +154,7 @@ export class SocioEconomicQuestion extends Component {
 
   onPressBack = () => {
     const socioEconomics = this.props.navigation.getParam('socioEconomics')
-
+    const STEP_BACK = -1
     socioEconomics.currentScreen === 1
       ? this.props.navigation.push('Location', {
           survey: this.survey,
@@ -162,7 +162,7 @@ export class SocioEconomicQuestion extends Component {
         })
       : this.props.navigation.push('SocioEconomicQuestion', {
           socioEconomics: {
-            currentScreen: this.setScreen(-1),
+            currentScreen: this.setScreen(STEP_BACK),
             questionsPerScreen: socioEconomics.questionsPerScreen,
             totalScreens: socioEconomics.totalScreens
           },
@@ -243,7 +243,7 @@ export class SocioEconomicQuestion extends Component {
       })
     } else {
       const socioEconomics = this.props.navigation.getParam('socioEconomics')
-
+      const STEP_FORWARD = 1
       !socioEconomics ||
       socioEconomics.currentScreen === socioEconomics.totalScreens
         ? this.props.navigation.navigate('BeginLifemap', {
@@ -254,7 +254,7 @@ export class SocioEconomicQuestion extends Component {
             survey: this.survey,
             draft: this.state.draft,
             socioEconomics: {
-              currentScreen: this.setScreen(1),
+              currentScreen: this.setScreen(STEP_FORWARD),
               questionsPerScreen: socioEconomics.questionsPerScreen,
               totalScreens: socioEconomics.totalScreens
             }
