@@ -124,6 +124,7 @@
       "tellUsMore": "Puede decirnos más acerca de esta ubicación en el siguiente formulario"
     },
     "lifemap": {
+      "indicatorDefinition": "Definición del indicador",
       "nowLetsMakeSomePriorities": "Ahora, ¡escribamos algunas prioridades!",
       "youCreatedALifeMap": "Has creado un Mapa de Vida.",
       "congratulations": "¡Felicidades!",
