@@ -16,10 +16,9 @@ import {
   getDraftWithUpdatedFamilyEconomics,
   getDraftWithUpdatedQuestionsCascading,
   getConditionalQuestions,
-  getElementsWithConditionsOnThem,
-  familyMemberWillHaveQuestions
+  getElementsWithConditionsOnThem
 } from '../utils/conditional_logic'
-import { getTotalScreens } from './helpers'
+import { getTotalScreens, setScreen } from './helpers'
 
 export class SocioEconomicQuestion extends Component {
   static navigationOptions = ({ navigation }) => {
@@ -162,7 +161,11 @@ export class SocioEconomicQuestion extends Component {
         })
       : this.props.navigation.push('SocioEconomicQuestion', {
           socioEconomics: {
-            currentScreen: this.setScreen(STEP_BACK),
+            currentScreen: setScreen(
+              socioEconomics,
+              this.state.draft,
+              STEP_BACK
+            ),
             questionsPerScreen: socioEconomics.questionsPerScreen,
             totalScreens: socioEconomics.totalScreens
           },
@@ -244,6 +247,7 @@ export class SocioEconomicQuestion extends Component {
     } else {
       const socioEconomics = this.props.navigation.getParam('socioEconomics')
       const STEP_FORWARD = 1
+
       !socioEconomics ||
       socioEconomics.currentScreen === socioEconomics.totalScreens
         ? this.props.navigation.navigate('BeginLifemap', {
@@ -254,7 +258,11 @@ export class SocioEconomicQuestion extends Component {
             survey: this.survey,
             draft: this.state.draft,
             socioEconomics: {
-              currentScreen: this.setScreen(STEP_FORWARD),
+              currentScreen: setScreen(
+                socioEconomics,
+                this.state.draft,
+                STEP_FORWARD
+              ),
               questionsPerScreen: socioEconomics.questionsPerScreen,
               totalScreens: socioEconomics.totalScreens
             }
@@ -296,47 +304,6 @@ export class SocioEconomicQuestion extends Component {
         }
       })
     }
-  }
-
-  setScreen = step => {
-    const SCREEN_DATA = this.props.navigation.getParam('socioEconomics')
-    const SKIP_SCREEN_WITH_ONE_STEP = step
-
-    /* 'fromBeginLifemap' when pressing baack on the last screen we receive 
-    current screen === totalScreens : 
-      to get actual data for current -1 , 
-      to get previous -1  */
-    const QUESTIONS_FOR_SCREEN =
-      SCREEN_DATA.questionsPerScreen[
-        SCREEN_DATA.currentScreen === SCREEN_DATA.totalScreens && step === -1
-          ? SCREEN_DATA.currentScreen - 2
-          : SCREEN_DATA.currentScreen
-      ]
-    if (
-      !(
-        QUESTIONS_FOR_SCREEN.forFamily && QUESTIONS_FOR_SCREEN.forFamily.length
-      ) &&
-      QUESTIONS_FOR_SCREEN.forFamilyMember &&
-      QUESTIONS_FOR_SCREEN.forFamilyMember.length
-    ) {
-      const { familyMembersList } = this.state.draft.familyData
-
-      const atLeastOneMemberHasQuestions = familyMembersList.some(
-        (_member, index) => {
-          return familyMemberWillHaveQuestions(
-            QUESTIONS_FOR_SCREEN,
-            this.state.draft,
-            index
-          )
-        }
-      )
-
-      return !atLeastOneMemberHasQuestions
-        ? SCREEN_DATA.currentScreen + step + SKIP_SCREEN_WITH_ONE_STEP
-        : SCREEN_DATA.currentScreen + step
-    }
-
-    return SCREEN_DATA.currentScreen + step
   }
 
   updateEconomicAnswer = (question, value, memberIndex) => {
