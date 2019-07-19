@@ -65,20 +65,7 @@ describe('Final Lifemap View when no questions are skipped', () => {
       expect(wrapper.find(LifemapVisual)).toHaveLength(1)
     })
     it('renders Buttons', () => {
-      expect(wrapper.find(Button)).toHaveLength(3)
-    })
-  })
-
-  describe('functionality', () => {
-    it('calls handleClick function when Button is clicked', () => {
-      wrapper
-        .find(Button)
-        .last()
-        .props()
-        .handleClick()
-      expect(
-        wrapper.instance().props.navigation.popToTop
-      ).toHaveBeenCalledTimes(1)
+      expect(wrapper.find(Button)).toHaveLength(1)
     })
   })
   it('calls setParam on mount', () => {
