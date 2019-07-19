@@ -326,7 +326,7 @@ export class Loading extends Component {
               }
             ]}
           >
-            We are preparing the app.
+            We are preparing the app...
           </Text>
 
           {syncingServerData && (
