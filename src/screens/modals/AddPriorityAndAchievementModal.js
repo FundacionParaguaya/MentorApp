@@ -298,14 +298,16 @@ export class AddPriorityAndAchievementModal extends Component {
           >
             <View
               style={{
-                width: 230
+                minWidth: 230
               }}
             >
               {draft.status !== 'Synced' ? (
                 <Button
                   id="save-achievementOrPriority"
                   style={{
-                    marginTop: 10
+                    marginTop: 10,
+                    paddingLeft: 10,
+                    paddingRight: 10
                   }}
                   colored
                   text={
