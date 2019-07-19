@@ -104,34 +104,20 @@ export class Loading extends Component {
     const surveysWithOfflineMaps = this.props.surveys.filter(
       survey => survey.surveyConfig.offlineMaps
     )
-    if (
-      surveysWithOfflineMaps ||
-      this.isSurveyInSynced('Paraguay - Activate, FUPA')
-    ) {
-      if (surveysWithOfflineMaps) {
-        surveysWithOfflineMaps.forEach(survey => {
-          survey.surveyConfig.offlineMaps.forEach(map => {
-            if (map.name) {
-              const options = {
-                minZoom: 10,
-                maxZoom: 13,
-                bounds: [map.from, map.to]
-              }
-              mapsArray.push({ name: map.name, statue: 0, options })
+    if (surveysWithOfflineMaps) {
+      surveysWithOfflineMaps.forEach(survey => {
+        survey.surveyConfig.offlineMaps.forEach(map => {
+          if (map.name) {
+            const options = {
+              minZoom: 10,
+              maxZoom: 13,
+              bounds: [map.from, map.to]
             }
-          })
+            mapsArray.push({ name: map.name, statue: 0, options })
+          }
         })
-      }
+      })
 
-      // check for Cerrito pack
-      if (this.isSurveyInSynced('Paraguay - Activate, FUPA')) {
-        const options = {
-          minZoom: 10,
-          maxZoom: 13,
-          bounds: [[-70.6626, -24.1093], [-69.7407, -22.7571]]
-        }
-        mapsArray.push({ name: 'Cerrito', statue: 0, options })
-      }
       this.setState({ maps: mapsArray }, this.downloadMapData)
     } else {
       this.handleImageCaching()
@@ -161,6 +147,10 @@ export class Loading extends Component {
 
   reload = () => {
     this.setState({
+      syncingServerData: false, // know when to show that data is synced
+      cachingImages: false,
+      downloadingMap: false,
+      maps: [],
       error: null
     })
     this.props.resetSyncState()

@@ -336,6 +336,7 @@ export const sync = (
       }
     case RESET_SYNCED_STATE:
       return {
+        ...state,
         surveys: false,
         surveysError: false,
         families: false,
