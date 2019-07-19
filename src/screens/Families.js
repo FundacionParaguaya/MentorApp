@@ -83,13 +83,15 @@ export class Families extends Component {
     return (
       <View style={[globalStyles.background, styles.container]}>
         <View style={styles.imagePlaceholderContainer}>
-          <SearchBar
-            id="searchAddress"
-            style={styles.search}
-            placeholder={'Search by name'}
-            onChangeText={search => this.setState({ search })}
-            value={this.state.search}
-          />
+          <View style={styles.searchContainer}>
+            <SearchBar
+              id="searchAddress"
+              style={styles.search}
+              placeholder={'Search by name'}
+              onChangeText={search => this.setState({ search })}
+              value={this.state.search}
+            />
+          </View>
           <Image
             style={styles.imagePlaceholderTop}
             source={mapPlaceholderLarge}
@@ -147,17 +149,22 @@ const styles = StyleSheet.create({
   },
 
   search: {
-    margin: 10,
-    position: 'absolute',
-    zIndex: 10,
-    width: '90%',
-    top: '46%'
+    width: '100%'
   },
   bar: {
     paddingLeft: 30,
     justifyContent: 'center',
     height: 48,
     backgroundColor: colors.primary
+  },
+  searchContainer: {
+    padding: 10,
+    width: '100%',
+    justifyContent: 'center',
+    alignItems: 'center',
+    top: '46%',
+    position: 'absolute',
+    zIndex: 10
   },
   imagePlaceholderContainer: {
     position: 'relative',
