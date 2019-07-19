@@ -4,6 +4,7 @@ import {
   FlatList,
   View,
   Text,
+  Image,
   UIManager,
   findNodeHandle
 } from 'react-native'
@@ -15,6 +16,7 @@ import { url } from '../config'
 import colors from '../theme.json'
 import globalStyles from '../globalStyles'
 import SearchBar from '../components/SearchBar'
+import mapPlaceholderLarge from '../../assets/images/map_placeholder_1000.png'
 import FamiliesListItem from '../components/FamiliesListItem'
 import { replaceSpecialChars as sanitize } from '../utils'
 export class Families extends Component {
@@ -80,13 +82,20 @@ export class Families extends Component {
 
     return (
       <View style={[globalStyles.background, styles.container]}>
-        <SearchBar
-          id="searchAddress"
-          style={styles.search}
-          placeholder={'Search by name'}
-          onChangeText={search => this.setState({ search })}
-          value={this.state.search}
-        />
+        <View style={styles.imagePlaceholderContainer}>
+          <SearchBar
+            id="searchAddress"
+            style={styles.search}
+            placeholder={'Search by name'}
+            onChangeText={search => this.setState({ search })}
+            value={this.state.search}
+          />
+          <Image
+            style={styles.imagePlaceholderTop}
+            source={mapPlaceholderLarge}
+          />
+        </View>
+
         <View style={styles.bar}>
           <Text style={{ ...globalStyles.subline, ...styles.familiesCount }}>
             {filteredFamilies.length} {t('views.families').toLowerCase()}
@@ -137,12 +146,28 @@ const styles = StyleSheet.create({
     flex: 1
   },
 
-  search: { margin: 10 },
+  search: {
+    margin: 10,
+    position: 'absolute',
+    zIndex: 10,
+    width: '90%',
+    top: '46%'
+  },
   bar: {
     paddingLeft: 30,
     justifyContent: 'center',
     height: 48,
     backgroundColor: colors.primary
+  },
+  imagePlaceholderContainer: {
+    position: 'relative',
+    width: '100%',
+    height: 139
+  },
+
+  imagePlaceholderTop: {
+    width: '100%',
+    height: 139
   },
   familiesCount: {
     fontWeight: '600'
