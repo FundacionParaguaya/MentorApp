@@ -8,6 +8,7 @@ import NetInfo from '@react-native-community/netinfo'
 import MapboxGL from '@mapbox/react-native-mapbox-gl'
 import Icon from 'react-native-vector-icons/MaterialIcons'
 import CommunityIcon from 'react-native-vector-icons/MaterialCommunityIcons'
+import { AndroidBackHandler } from 'react-navigation-backhandler'
 import DeviceInfo from 'react-native-device-info'
 import {
   loadFamilies,
@@ -312,173 +313,185 @@ export class Loading extends Component {
       allMapPercentages = this.getDataPercentages()
     }
 
-    return !error ? (
-      <View style={[globalStyles.container, styles.view]}>
-        <Decoration variation="loading" />
-        <View style={styles.loadingContainer}>
-          <Text
-            style={[
-              globalStyles.h3,
-              {
-                marginBottom: 34,
-                color: colors.dark,
-                fontSize: 17
-              }
-            ]}
-          >
-            We are preparing the app.
-          </Text>
+    return (
+      <AndroidBackHandler onBackPress={() => true}>
+        {!error ? (
+          <View style={[globalStyles.container, styles.view]}>
+            <Decoration variation="loading" />
+            <View style={styles.loadingContainer}>
+              <Text
+                style={[
+                  globalStyles.h3,
+                  {
+                    marginBottom: 34,
+                    color: colors.dark,
+                    fontSize: 17
+                  }
+                ]}
+              >
+                We are preparing the app.
+              </Text>
 
-          {syncingServerData && (
-            <View style={styles.sync} testID="syncing-surveys">
-              <View style={styles.syncingItem}>
-                <Text
-                  style={sync.surveys ? styles.colorGreen : styles.colorDark}
-                >
-                  {sync.surveys ? 'Surveys' : 'Downloading surveys...'}
-                </Text>
-                {sync.surveys ? (
-                  <Icon name="check" color={colors.palegreen} size={23} />
-                ) : (
-                  <ActivityIndicator size="small" />
-                )}
-              </View>
-              {!sync.surveys ? (
-                <Text style={styles.colorDark}>Families</Text>
-              ) : null}
-              {sync.surveys && (
-                <View style={styles.syncingItem}>
-                  <Text
-                    style={sync.families ? styles.colorGreen : styles.colorDark}
-                  >
-                    {sync.families ? 'Families' : 'Downloading families...'}
-                  </Text>
-                  {sync.families ? (
-                    <Icon name="check" color={colors.palegreen} size={23} />
-                  ) : (
-                    <ActivityIndicator size="small" />
-                  )}
-                </View>
-              )}
-
-              {!downloadingMap ? (
-                <Text style={styles.colorDark}>Offline Maps</Text>
-              ) : null}
-              {downloadingMap && (
-                <View>
+              {syncingServerData && (
+                <View style={styles.sync} testID="syncing-surveys">
                   <View style={styles.syncingItem}>
                     <Text
                       style={
-                        allMapPercentages === 100
-                          ? styles.colorGreen
-                          : styles.colorDark
+                        sync.surveys ? styles.colorGreen : styles.colorDark
                       }
                     >
-                      Offline Maps
+                      {sync.surveys ? 'Surveys' : 'Downloading surveys...'}
                     </Text>
-                    <Text
-                      style={
-                        allMapPercentages === 100
-                          ? styles.colorGreen
-                          : styles.colorDark
-                      }
-                    >
-                      {`${Math.floor(allMapPercentages)}%`}
-                    </Text>
+                    {sync.surveys ? (
+                      <Icon name="check" color={colors.palegreen} size={23} />
+                    ) : (
+                      <ActivityIndicator size="small" />
+                    )}
                   </View>
-                  <View
-                    style={allMapPercentages === 100 ? { display: 'none' } : {}}
-                  >
-                    <ProgressBar
-                      removePadding
-                      hideBorder
-                      progress={allMapPercentages / 100}
-                    />
-                  </View>
-                </View>
-              )}
-              {!cachingImages ? (
-                <Text style={styles.colorDark}>Images</Text>
-              ) : null}
+                  {!sync.surveys ? (
+                    <Text style={styles.colorDark}>Families</Text>
+                  ) : null}
+                  {sync.surveys && (
+                    <View style={styles.syncingItem}>
+                      <Text
+                        style={
+                          sync.families ? styles.colorGreen : styles.colorDark
+                        }
+                      >
+                        {sync.families ? 'Families' : 'Downloading families...'}
+                      </Text>
+                      {sync.families ? (
+                        <Icon name="check" color={colors.palegreen} size={23} />
+                      ) : (
+                        <ActivityIndicator size="small" />
+                      )}
+                    </View>
+                  )}
 
-              {cachingImages && (
-                <View>
-                  {sync.images.synced && sync.images.total ? (
-                    <React.Fragment>
+                  {!downloadingMap ? (
+                    <Text style={styles.colorDark}>Offline Maps</Text>
+                  ) : null}
+                  {downloadingMap && (
+                    <View>
                       <View style={styles.syncingItem}>
                         <Text
                           style={
-                            sync.images.synced / sync.images.total === 1
+                            allMapPercentages === 100
                               ? styles.colorGreen
                               : styles.colorDark
                           }
                         >
-                          Images
+                          Offline Maps
                         </Text>
                         <Text
                           style={
-                            sync.images.synced / sync.images.total === 1
+                            allMapPercentages === 100
                               ? styles.colorGreen
                               : styles.colorDark
                           }
                         >
-                          {`${Math.floor(
-                            (sync.images.synced / sync.images.total) * 100
-                          )}%`}
+                          {`${Math.floor(allMapPercentages)}%`}
                         </Text>
                       </View>
                       <View
                         style={
-                          sync.images.synced / sync.images.total === 1
-                            ? { display: 'none' }
-                            : {}
+                          allMapPercentages === 100 ? { display: 'none' } : {}
                         }
                       >
                         <ProgressBar
                           removePadding
                           hideBorder
-                          progress={sync.images.synced / sync.images.total}
+                          progress={allMapPercentages / 100}
                         />
                       </View>
-                    </React.Fragment>
-                  ) : (
-                    <Text
-                      style={{
-                        color: colors.dark,
-                        fontSize: 14,
-                        marginBottom: 5
-                      }}
-                    >
-                      Calculating total images to cache...
-                    </Text>
+                    </View>
+                  )}
+                  {!cachingImages ? (
+                    <Text style={styles.colorDark}>Images</Text>
+                  ) : null}
+
+                  {cachingImages && (
+                    <View>
+                      {sync.images.synced && sync.images.total ? (
+                        <React.Fragment>
+                          <View style={styles.syncingItem}>
+                            <Text
+                              style={
+                                sync.images.synced / sync.images.total === 1
+                                  ? styles.colorGreen
+                                  : styles.colorDark
+                              }
+                            >
+                              Images
+                            </Text>
+                            <Text
+                              style={
+                                sync.images.synced / sync.images.total === 1
+                                  ? styles.colorGreen
+                                  : styles.colorDark
+                              }
+                            >
+                              {`${Math.floor(
+                                (sync.images.synced / sync.images.total) * 100
+                              )}%`}
+                            </Text>
+                          </View>
+                          <View
+                            style={
+                              sync.images.synced / sync.images.total === 1
+                                ? { display: 'none' }
+                                : {}
+                            }
+                          >
+                            <ProgressBar
+                              removePadding
+                              hideBorder
+                              progress={sync.images.synced / sync.images.total}
+                            />
+                          </View>
+                        </React.Fragment>
+                      ) : (
+                        <Text
+                          style={{
+                            color: colors.dark,
+                            fontSize: 14,
+                            marginBottom: 5
+                          }}
+                        >
+                          Calculating total images to cache...
+                        </Text>
+                      )}
+                    </View>
                   )}
                 </View>
               )}
             </View>
-          )}
-        </View>
-      </View>
-    ) : (
-      <View style={[globalStyles.container, styles.view]}>
-        <View style={styles.loadingContainer}>
-          <CommunityIcon
-            name="emoticon-sad-outline"
-            color={colors.palered}
-            size={60}
-          />
-          <Text style={[globalStyles.h1, { color: colors.palered }]}>Hmm…</Text>
-          <Text style={[globalStyles.h2, { textAlign: 'center' }]}>
-            {error}
-          </Text>
-          <Button
-            outlined
-            text="Retry"
-            style={{ paddingHorizontal: 30, marginTop: 30 }}
-            borderColor={colors.palered}
-            handleClick={this.reload}
-          />
-        </View>
-      </View>
+          </View>
+        ) : (
+          <View style={[globalStyles.container, styles.view]}>
+            <View style={styles.loadingContainer}>
+              <CommunityIcon
+                name="emoticon-sad-outline"
+                color={colors.palered}
+                size={60}
+              />
+              <Text style={[globalStyles.h1, { color: colors.palered }]}>
+                Hmm…
+              </Text>
+              <Text style={[globalStyles.h2, { textAlign: 'center' }]}>
+                {error}
+              </Text>
+              <Button
+                outlined
+                text="Retry"
+                style={{ paddingHorizontal: 30, marginTop: 30 }}
+                borderColor={colors.palered}
+                handleClick={this.reload}
+              />
+            </View>
+          </View>
+        )}
+      </AndroidBackHandler>
     )
   }
 }
