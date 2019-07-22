@@ -52,7 +52,7 @@ const MainNavigator = createStackNavigator(
   {
     // Default config for all screens
     headerMode: 'none',
-    initialRouteName: 'drawerStack',
+    initialRouteName: 'loginStack',
     transitionConfig: () => ({
       screenInterpolator: () => null,
       transitionSpec: {

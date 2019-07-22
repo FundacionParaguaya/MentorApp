@@ -14,7 +14,8 @@ import {
   loadSurveys,
   logout,
   setAppVersion,
-  resetSyncState
+  resetSyncState,
+  setSyncedState
 } from '../redux/actions'
 import Button from '../components/Button'
 import colors from '../theme.json'
@@ -32,6 +33,7 @@ export class Loading extends Component {
     error: null
   }
 
+  // STEP 1 - cache the surveys
   syncSurveys = resync => {
     // mark that loading has stated to show the progress
     this.setState({
@@ -46,24 +48,7 @@ export class Loading extends Component {
     }
   }
 
-  handleImageCaching = () => {
-    if (
-      !this.props.navigation.getParam('syncImages') ||
-      (!!this.props.sync.images.total &&
-        this.props.sync.images.total === this.props.sync.images.synced)
-    ) {
-      if (this.unsubscribeNetChange) {
-        this.unsubscribeNetChange()
-      }
-      this.props.navigation.navigate('DrawerStack')
-    } else {
-      this.setState({
-        cachingImages: true
-      })
-      initImageCaching()
-    }
-  }
-
+  // STEP 2 - cache the families
   syncFamilies = () => {
     // if families are synced skip to caching images
     if (this.props.sync.families) {
@@ -95,8 +80,13 @@ export class Loading extends Component {
     })
   }
 
+  // STEP 3 - check and cache the offline maps
   checkOfflineMaps = () => {
-    if (!this.props.navigation.getParam('syncMaps')) {
+    if (
+      (typeof this.props.navigation.getParam('syncMaps') !== 'undefined' &&
+        !this.props.navigation.getParam('syncMaps')) ||
+      this.props.sync.maps
+    ) {
       return this.handleImageCaching()
     }
     const mapsArray = []
@@ -141,8 +131,30 @@ export class Loading extends Component {
     })
   }
 
-  onMapDownloadError = () => {
+  onMapDownloadError = (offlineRegion, mapDownloadError) => {
+    offlineRegion
+    mapDownloadError
     // this.showError('We seem to have a problem downloading your offline maps.')
+  }
+
+  // STEP 4 - cache the survey indicator images
+  handleImageCaching = () => {
+    if (
+      !this.props.navigation.getParam('syncImages') ||
+      (!!this.props.sync.images.total &&
+        this.props.sync.images.total === this.props.sync.images.synced)
+    ) {
+      if (this.unsubscribeNetChange) {
+        this.unsubscribeNetChange()
+      }
+
+      this.props.navigation.navigate('DrawerStack')
+    } else {
+      this.setState({
+        cachingImages: true
+      })
+      initImageCaching()
+    }
   }
 
   reload = () => {
@@ -216,6 +228,7 @@ export class Loading extends Component {
       if (this.unsubscribeNetChange) {
         this.unsubscribeNetChange()
       }
+
       // if everything is synced navigate to Dashboard
       this.props.navigation.navigate('DrawerStack')
     } else {
@@ -251,6 +264,7 @@ export class Loading extends Component {
       !this.state.cachingImages
     ) {
       this.setState({ cachingImages: true })
+      this.props.setSyncedState('maps', true)
       this.handleImageCaching()
     }
 
@@ -264,6 +278,7 @@ export class Loading extends Component {
       if (this.unsubscribeNetChange) {
         this.unsubscribeNetChange()
       }
+
       this.props.navigation.navigate('DrawerStack')
     }
 
@@ -474,6 +489,7 @@ Loading.propTypes = {
   logout: PropTypes.func,
   resetSyncState: PropTypes.func,
   setAppVersion: PropTypes.func,
+  setSyncedState: PropTypes.func,
   env: PropTypes.oneOf(['production', 'demo', 'testing', 'development']),
   user: PropTypes.object.isRequired,
   sync: PropTypes.object.isRequired,
@@ -539,7 +555,8 @@ const mapDispatchToProps = {
   loadSurveys,
   logout,
   setAppVersion,
-  resetSyncState
+  resetSyncState,
+  setSyncedState
 }
 
 export default connect(

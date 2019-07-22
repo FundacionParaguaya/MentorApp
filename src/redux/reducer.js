@@ -292,6 +292,7 @@ export const sync = (
   state = {
     appVersion: null,
     surveys: false,
+    maps: false,
     surveysError: false,
     families: false,
     familiesError: false,
@@ -339,6 +340,7 @@ export const sync = (
         ...state,
         surveys: false,
         surveysError: false,
+        maps: false,
         families: false,
         familiesError: false,
         images: {
@@ -442,6 +444,7 @@ export const rootReducer = (state, action) => {
         appVersion: null,
         surveys: false,
         surveysError: false,
+        maps: false,
         families: false,
         familiesError: false,
         images: {
