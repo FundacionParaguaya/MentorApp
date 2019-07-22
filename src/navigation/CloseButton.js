@@ -10,11 +10,14 @@ class CloseButton extends Component {
       navigation.getParam('getCurrentDraftState')()
     const isNewDraft =
       navigation.state.params.isNewDraft && navigation.getParam('isNewDraft')
+    const survey =
+      navigation.state.params.survey && navigation.getParam('survey')
 
     // open the exit modal with the params it needs
     this.props.navigation.navigate('ExitDraftModal', {
       draft,
-      isNewDraft
+      isNewDraft,
+      survey
     })
   }
   render() {

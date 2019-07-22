@@ -3,12 +3,18 @@ import PropTypes from 'prop-types'
 import { StackActions, NavigationActions } from 'react-navigation'
 import { connect } from 'react-redux'
 import { Text, StyleSheet, View, Platform } from 'react-native'
-import { updateDraft } from '../../redux/actions'
+import { updateDraft, deleteDraft } from '../../redux/actions'
 import Popup from '../../components/Popup'
 import Button from '../../components/Button'
 import i18n from '../../i18n'
 import globalStyles from '../../globalStyles'
 import colors from '../../theme.json'
+
+const demoDrafts = [
+  { id: 19, title: 'Stoplight Demo - Spanish' },
+  { id: 20, title: 'Stoplight Demo - English' },
+  { id: 22, title: 'UK - SHORT DEMO' }
+]
 
 export class ExitDraftModal extends Component {
   handleClickOnYes = () => {
@@ -16,10 +22,16 @@ export class ExitDraftModal extends Component {
     const draft = navigation.getParam('draft')
     const isNewDraft = navigation.getParam('isNewDraft')
     const screen = navigation.getParam('screen')
+    const survey = navigation.getParam('survey')
+    const isDemoDraft = demoDrafts.some(
+      d => d.id === draft.surveyId && d.title === survey.title
+    )
 
-    // update draft in store on exit
-    if (draft && !isNewDraft) {
+    // update draft in store on exit if it's not demo else delete it
+    if (draft && !isNewDraft && !isDemoDraft) {
       this.props.updateDraft(draft.draftId, draft)
+    } else if (isDemoDraft) {
+      this.props.deleteDraft(draft.draftId)
     }
 
     // reset stack
@@ -92,6 +104,7 @@ export class ExitDraftModal extends Component {
 ExitDraftModal.propTypes = {
   navigation: PropTypes.object.isRequired,
   updateDraft: PropTypes.func.isRequired,
+  deleteDraft: PropTypes.func.isRequired,
   routeName: PropTypes.string
 }
 
@@ -119,7 +132,8 @@ const styles = StyleSheet.create({
 })
 
 const mapDispatchToProps = {
-  updateDraft
+  updateDraft,
+  deleteDraft
 }
 
 export default connect(
