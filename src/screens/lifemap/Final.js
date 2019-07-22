@@ -24,6 +24,7 @@ import {
 import RNHTMLtoPDF from 'react-native-html-to-pdf'
 import RNPrint from 'react-native-print'
 import RNFetchBlob from 'rn-fetch-blob'
+import { isDemoDraft } from '../utils/demoDrafts'
 
 export class Final extends Component {
   survey = this.props.navigation.getParam('survey')
@@ -127,6 +128,8 @@ export class Final extends Component {
 
   render() {
     const { t } = this.props
+    const isDemo = isDemoDraft(this.survey) || false
+
     return (
       <ScrollView
         style={globalStyles.background}
@@ -176,14 +179,16 @@ export class Final extends Component {
             />
           </View>
         </View>
-        <View style={{ height: 50 }}>
-          <Button
-            colored
-            loading={this.state.loading}
-            text={t('general.close')}
-            handleClick={this.saveDraft}
-          />
-        </View>
+        {!isDemo && (
+          <View style={{ height: 50 }}>
+            <Button
+              colored
+              loading={this.state.loading}
+              text={t('general.close')}
+              handleClick={this.saveDraft}
+            />
+          </View>
+        )}
       </ScrollView>
     )
   }

@@ -9,12 +9,7 @@ import Button from '../../components/Button'
 import i18n from '../../i18n'
 import globalStyles from '../../globalStyles'
 import colors from '../../theme.json'
-
-const demoDrafts = [
-  { id: 19, title: 'Stoplight Demo - Spanish' },
-  { id: 20, title: 'Stoplight Demo - English' },
-  { id: 22, title: 'UK - SHORT DEMO' }
-]
+import { isDemoDraft } from '../utils/demoDrafts'
 
 export class ExitDraftModal extends Component {
   handleClickOnYes = () => {
@@ -23,14 +18,12 @@ export class ExitDraftModal extends Component {
     const isNewDraft = navigation.getParam('isNewDraft')
     const screen = navigation.getParam('screen')
     const survey = navigation.getParam('survey')
-    const isDemoDraft = demoDrafts.some(
-      d => d.id === draft.surveyId && d.title === survey.title
-    )
+    const isDemo = isDemoDraft(survey)
 
     // update draft in store on exit if it's not demo else delete it
-    if (draft && !isNewDraft && !isDemoDraft) {
+    if (draft && !isNewDraft && !isDemo) {
       this.props.updateDraft(draft.draftId, draft)
-    } else if (isDemoDraft) {
+    } else if (isDemo) {
       this.props.deleteDraft(draft.draftId)
     }
 
