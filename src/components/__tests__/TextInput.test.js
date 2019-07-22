@@ -164,25 +164,6 @@ describe('TextInput Component', () => {
     ).toBe('Please enter a valid phone number')
   })
 
-  it('shows correct error message when validation is number', () => {
-    props = createTestProps({ required: true, validation: 'number' })
-    wrapper = shallow(<TextInput {...props} />)
-    wrapper.setState({ status: 'error', text: 'not a number' })
-
-    wrapper
-      .find(FormInput)
-      .props()
-      .onBlur()
-
-    expect(
-      wrapper
-        .find(Text)
-        .last()
-        .render()
-        .text()
-    ).toBe('Please enter a valid number')
-  })
-
   it('calls function detectError when handleError is called', () => {
     wrapper.instance().handleError()
     expect(wrapper.instance().props.detectError).toHaveBeenCalledTimes(1)
