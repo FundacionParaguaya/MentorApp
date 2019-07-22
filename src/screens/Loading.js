@@ -3,6 +3,7 @@ import PropTypes from 'prop-types'
 import { Text, StyleSheet, View, ActivityIndicator } from 'react-native'
 import Decoration from '../components/decoration/Decoration'
 import { connect } from 'react-redux'
+import { Sentry } from 'react-native-sentry'
 import ProgressBar from '../components/ProgressBar'
 import NetInfo from '@react-native-community/netinfo'
 import MapboxGL from '@mapbox/react-native-mapbox-gl'
@@ -23,6 +24,8 @@ import colors from '../theme.json'
 import globalStyles from '../globalStyles'
 import { url } from '../config'
 import { initImageCaching } from '../cache'
+
+const nodeEnv = process.env
 
 export class Loading extends Component {
   unsubscribeNetChange
@@ -104,7 +107,7 @@ export class Loading extends Component {
               maxZoom: 13,
               bounds: [map.from, map.to]
             }
-            mapsArray.push({ name: map.name, statue: 0, options })
+            mapsArray.push({ name: map.name, status: 0, options })
           }
         })
       })
@@ -133,9 +136,19 @@ export class Loading extends Component {
   }
 
   onMapDownloadError = (offlineRegion, mapDownloadError) => {
-    offlineRegion
-    mapDownloadError
-    // this.showError('We seem to have a problem downloading your offline maps.')
+    if (mapDownloadError.message !== 'No Internet connection available.') {
+      NetInfo.fetch().then(state => {
+        Sentry.captureBreadcrumb({
+          message: 'Map download error',
+          category: 'action',
+          data: {
+            isOnline: state.isConnected,
+            sync: this.props.sync
+          }
+        })
+        Sentry.captureException('Map download error')
+      })
+    }
   }
 
   // STEP 4 - cache the survey indicator images
@@ -167,7 +180,9 @@ export class Loading extends Component {
       error: null
     })
     this.props.resetSyncState()
-    this.checkState()
+    setTimeout(() => {
+      this.checkState()
+    }, 500)
   }
 
   showError(msg) {
@@ -202,6 +217,18 @@ export class Loading extends Component {
   }
 
   checkState() {
+    // setup sentry context
+    Sentry.setTagsContext({
+      environment: nodeEnv.NODE_ENV
+    })
+
+    Sentry.setUserContext({
+      username: this.props.user.username,
+      extra: {
+        env: this.props.env
+      }
+    })
+
     // check connection state
     NetInfo.fetch().then(state => {
       if (!state.isConnected) {
