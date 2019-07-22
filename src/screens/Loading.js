@@ -28,11 +28,12 @@ import { initImageCaching } from '../cache'
 const nodeEnv = process.env
 
 export class Loading extends Component {
-  unsubscribeNetChange
   state = {
     syncingServerData: false, // know when to show that data is synced
     cachingImages: false,
     downloadingMap: false,
+    currentMapName: '',
+    mapPercent: 0,
     maps: [],
     error: null
   }
@@ -65,22 +66,32 @@ export class Loading extends Component {
   isSurveyInSynced = title =>
     this.props.surveys.some(survey => survey.title && survey.title === title)
 
-  downloadOfflineMapPack = (options, name) => {
-    MapboxGL.offlineManager.getPack(name).then(async pack => {
+  downloadOfflineMapPack = map => {
+    MapboxGL.offlineManager.getPack(map.name).then(pack => {
       // if pack exists delete it and re-download it
       if (pack) {
-        await MapboxGL.offlineManager.deletePack(name)
+        MapboxGL.offlineManager.deletePack(map.name).then(() => {
+          MapboxGL.offlineManager.createPack(
+            {
+              name: map.name,
+              styleURL: MapboxGL.StyleURL.Street,
+              ...map.options
+            },
+            this.onMapDownloadProgress,
+            this.onMapDownloadError
+          )
+        })
+      } else {
+        MapboxGL.offlineManager.createPack(
+          {
+            name: map.name,
+            styleURL: MapboxGL.StyleURL.Street,
+            ...map.options
+          },
+          this.onMapDownloadProgress,
+          this.onMapDownloadError
+        )
       }
-
-      MapboxGL.offlineManager.createPack(
-        {
-          name,
-          styleURL: MapboxGL.StyleURL.Street,
-          ...options
-        },
-        this.onMapDownloadProgress,
-        this.onMapDownloadError
-      )
     })
   }
 
@@ -93,15 +104,17 @@ export class Loading extends Component {
     ) {
       return this.handleImageCaching()
     }
+
     const mapsArray = []
 
     const surveysWithOfflineMaps = this.props.surveys.filter(
       survey => survey.surveyConfig.offlineMaps
     )
+
     if (surveysWithOfflineMaps) {
       surveysWithOfflineMaps.forEach(survey => {
         survey.surveyConfig.offlineMaps.forEach(map => {
-          if (map.name) {
+          if (map.name && !mapsArray.some(item => item.name === map.name)) {
             const options = {
               minZoom: 10,
               maxZoom: 13,
@@ -112,7 +125,7 @@ export class Loading extends Component {
         })
       })
 
-      this.setState({ maps: mapsArray }, this.downloadMapData)
+      this.setState({ maps: mapsArray }, this.initMapDownload)
     } else {
       this.handleImageCaching()
     }
@@ -124,15 +137,33 @@ export class Loading extends Component {
 
   // update map download progress
   onMapDownloadProgress = (offlineRegion, offlineRegionStatus) => {
-    const updatedMaps = this.state.maps
+    if (offlineRegionStatus.name !== this.state.currentMapName) {
+      this.setState({
+        currentMapName: offlineRegionStatus.name
+      })
+    }
 
-    updatedMaps.find(
-      map => map.name === offlineRegionStatus.name
-    ).status = Math.trunc(offlineRegionStatus.percentage)
+    if (offlineRegionStatus.percentage === 100) {
+      this.setState({
+        maps: this.state.maps.map(map => {
+          if (map.name === offlineRegionStatus.name) {
+            return {
+              ...map,
+              status: 100
+            }
+          } else {
+            return map
+          }
+        }),
+        mapPercent: 100
+      })
 
-    this.setState({
-      maps: updatedMaps
-    })
+      this.initMapDownload()
+    } else {
+      this.setState({
+        mapPercent: Math.trunc(offlineRegionStatus.percentage)
+      })
+    }
   }
 
   onMapDownloadError = (offlineRegion, mapDownloadError) => {
@@ -154,14 +185,11 @@ export class Loading extends Component {
   // STEP 4 - cache the survey indicator images
   handleImageCaching = () => {
     if (
-      !this.props.navigation.getParam('syncImages') ||
+      (typeof this.props.navigation.getParam('syncImages') !== 'undefined' &&
+        !this.props.navigation.getParam('syncImages')) ||
       (!!this.props.sync.images.total &&
         this.props.sync.images.total === this.props.sync.images.synced)
     ) {
-      if (this.unsubscribeNetChange) {
-        this.unsubscribeNetChange()
-      }
-
       this.props.navigation.navigate('DrawerStack')
     } else {
       this.setState({
@@ -210,10 +238,13 @@ export class Loading extends Component {
       return mapAllPercentage
     }
   }
-  downloadMapData() {
-    this.state.maps.forEach(map =>
-      this.downloadOfflineMapPack(map.options, map.name)
-    )
+  initMapDownload() {
+    const { maps } = this.state
+    if (maps.length && maps.some(map => map.status !== 100)) {
+      this.downloadOfflineMapPack(maps.find(map => map.status !== 100))
+    } else {
+      this.handleImageCaching()
+    }
   }
 
   checkState() {
@@ -236,7 +267,7 @@ export class Loading extends Component {
       }
     })
 
-    const { families, surveys, images, appVersion } = this.props.sync
+    const { families, surveys, images, appVersion, maps } = this.props.sync
 
     if (!this.props.user.token) {
       // if user hasn't logged in, navigate to login
@@ -250,13 +281,10 @@ export class Loading extends Component {
     } else if (
       families &&
       surveys &&
+      maps &&
       !!images.total &&
       images.total === images.synced
     ) {
-      if (this.unsubscribeNetChange) {
-        this.unsubscribeNetChange()
-      }
-
       // if everything is synced navigate to Dashboard
       this.props.navigation.navigate('DrawerStack')
     } else {
@@ -303,10 +331,6 @@ export class Loading extends Component {
       this.props.sync.images.total === this.props.sync.images.synced &&
       this.state.maps.every(map => map.status === 100)
     ) {
-      if (this.unsubscribeNetChange) {
-        this.unsubscribeNetChange()
-      }
-
       this.props.navigation.navigate('DrawerStack')
     }
 
@@ -320,25 +344,17 @@ export class Loading extends Component {
     }
   }
 
-  componentWillUnmount() {
-    if (this.unsubscribeNetChange) {
-      this.unsubscribeNetChange()
-    }
-  }
-
   render() {
-    const { sync } = this.props
+    const { sync, families, surveys } = this.props
     const {
       syncingServerData,
       cachingImages,
       downloadingMap,
-      error
+      error,
+      maps,
+      currentMapName,
+      mapPercent
     } = this.state
-
-    let allMapPercentages = 100
-    if (this.state.downloadingMap && !this.state.cachingImages) {
-      allMapPercentages = this.getDataPercentages()
-    }
 
     return (
       <AndroidBackHandler onBackPress={() => true}>
@@ -367,7 +383,9 @@ export class Loading extends Component {
                         sync.surveys ? styles.colorGreen : styles.colorDark
                       }
                     >
-                      {sync.surveys ? 'Surveys' : 'Downloading surveys...'}
+                      {sync.surveys
+                        ? `${surveys.length} Surveys cached`
+                        : 'Downloading surveys...'}
                     </Text>
                     {sync.surveys ? (
                       <Icon name="check" color={colors.palegreen} size={23} />
@@ -385,7 +403,9 @@ export class Loading extends Component {
                           sync.families ? styles.colorGreen : styles.colorDark
                         }
                       >
-                        {sync.families ? 'Families' : 'Downloading families...'}
+                        {sync.families
+                          ? `${families.length} Families cached`
+                          : 'Downloading families...'}
                       </Text>
                       {sync.families ? (
                         <Icon name="check" color={colors.palegreen} size={23} />
@@ -395,43 +415,48 @@ export class Loading extends Component {
                     </View>
                   )}
 
-                  {!downloadingMap ? (
-                    <Text style={styles.colorDark}>Offline Maps</Text>
-                  ) : null}
-                  {downloadingMap && (
+                  {downloadingMap || sync.maps ? (
                     <View>
                       <View style={styles.syncingItem}>
                         <Text
                           style={
-                            allMapPercentages === 100
-                              ? styles.colorGreen
-                              : styles.colorDark
+                            sync.maps ? styles.colorGreen : styles.colorDark
                           }
                         >
-                          Offline Maps
+                          {sync.maps ? 'Maps cached' : 'Downloading Maps...'}
                         </Text>
-                        <Text
-                          style={
-                            allMapPercentages === 100
-                              ? styles.colorGreen
-                              : styles.colorDark
-                          }
-                        >
-                          {`${Math.floor(allMapPercentages)}%`}
-                        </Text>
+                        {!sync.maps ? (
+                          <Text
+                            style={
+                              sync.maps ? styles.colorGreen : styles.colorDark
+                            }
+                          >{`${
+                            maps.filter(item => item.status === 100).length
+                          }/${maps.length}`}</Text>
+                        ) : (
+                          <Icon
+                            name="check"
+                            color={colors.palegreen}
+                            size={23}
+                          />
+                        )}
                       </View>
-                      <View
-                        style={
-                          allMapPercentages === 100 ? { display: 'none' } : {}
-                        }
-                      >
+                      {!sync.maps && (
+                        <View style={styles.syncingItem}>
+                          <Text>{currentMapName}</Text>
+                          <Text>{`${Math.floor(mapPercent)}%`}</Text>
+                        </View>
+                      )}
+                      <View style={sync.maps ? { display: 'none' } : {}}>
                         <ProgressBar
                           removePadding
                           hideBorder
-                          progress={allMapPercentages / 100}
+                          progress={mapPercent / 100}
                         />
                       </View>
                     </View>
+                  ) : (
+                    <Text style={styles.colorDark}>Offline Maps</Text>
                   )}
                   {!cachingImages ? (
                     <Text style={styles.colorDark}>Images</Text>
