@@ -207,19 +207,12 @@ export class Family extends Component {
                     <Image source={marker} />
                   </View>
                   <MapboxGL.MapView
-                    centerCoordinate={[
-                      +familyData.longitude || 0,
-                      +familyData.latitude || 0
-                    ]}
-                    zoomLevel={15}
                     style={{ width: '100%', height: 189 }}
                     logoEnabled={false}
                     zoomEnabled={false}
                     rotateEnabled={false}
                     scrollEnabled={false}
                     pitchEnabled={false}
-                    minZoomLevel={10}
-                    maxZoomLevel={15}
                     onPress={() => {
                       navigation.navigate('Location', {
                         readOnly: true,
@@ -227,7 +220,17 @@ export class Family extends Component {
                         family: this.familyLifemap
                       })
                     }}
-                  />
+                  >
+                    <MapboxGL.Camera
+                      centerCoordinate={[
+                        +familyData.longitude || 0,
+                        +familyData.latitude || 0
+                      ]}
+                      zoomLevel={15}
+                      minZoomLevel={10}
+                      maxZoomLevel={15}
+                    />
+                  </MapboxGL.MapView>
                 </View>
               ) : (
                 // Load Map Image

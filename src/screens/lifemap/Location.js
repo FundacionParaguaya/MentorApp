@@ -667,11 +667,6 @@ export class Location extends Component {
             ref={map => {
               this._map = map
             }}
-            centerCoordinate={[
-              +familyData.longitude || 0,
-              +familyData.latitude || 0
-            ]}
-            zoomLevel={this.state.zoom}
             style={{ width: '100%', flexGrow: 2 }}
             logoEnabled={false}
             zoomEnabled={!this.readOnly}
@@ -679,9 +674,14 @@ export class Location extends Component {
             scrollEnabled={!this.readOnly}
             pitchEnabled={false}
             onRegionDidChange={this.onDragMap}
-            minZoomLevel={10}
-            maxZoomLevel={16}
-          />
+          >
+            <MapboxGL.Camera
+              zoomLevel={this.state.zoom}
+              centerCoordinate={[+familyData.longitude, +familyData.latitude]}
+              minZoomLevel={10}
+              maxZoomLevel={16}
+            />
+          </MapboxGL.MapView>
           {!this.readOnly && (
             <View>
               {centeringMap ? (
