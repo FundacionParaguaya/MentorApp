@@ -13,7 +13,6 @@
   },
   "dependencies": {
     "@delightfulstudio/react-native-wheel-picker-android": "^2.1.3",
-    "@mapbox/react-native-mapbox-gl": "file:./mapbox-react-native-mapbox-gl-6.1.4.tgz",
     "@react-native-community/async-storage": "^1.5.1",
     "@react-native-community/geolocation": "^1.4.2",
     "@react-native-community/netinfo": "^3.2.1",

@@ -6,7 +6,6 @@ import com.reactnativecommunity.asyncstorage.AsyncStoragePackage;
 import com.reactnativecommunity.netinfo.NetInfoPackage;
 import com.swmansion.gesturehandler.react.RNGestureHandlerPackage;
 import com.reactnativecommunity.geolocation.GeolocationPackage;
-import com.mapbox.rctmgl.RCTMGLPackage;
 import com.learnium.RNDeviceInfo.RNDeviceInfo;
 import com.delightfulstudio.wheelpicker.WheelPickerPackage;
 import io.sentry.RNSentryPackage;
