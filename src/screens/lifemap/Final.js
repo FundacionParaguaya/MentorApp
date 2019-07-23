@@ -15,7 +15,7 @@ import Button from '../../components/Button'
 import globalStyles from '../../globalStyles'
 import { updateDraft, submitDraft } from '../../redux/actions'
 import { url } from '../../config'
-import { prepareDraftForSubmit } from '../utils/helpers'
+import { prepareDraftForSubmit, isDemoDraft } from '../utils/helpers'
 import {
   buildPDFOptions,
   buildPrintOptions,
@@ -24,7 +24,6 @@ import {
 import RNHTMLtoPDF from 'react-native-html-to-pdf'
 import RNPrint from 'react-native-print'
 import RNFetchBlob from 'rn-fetch-blob'
-import { isDemoDraft } from '../utils/demoDrafts'
 
 export class Final extends Component {
   survey = this.props.navigation.getParam('survey')
