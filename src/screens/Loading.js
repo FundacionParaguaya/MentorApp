@@ -169,10 +169,15 @@ export class Loading extends Component {
   onMapDownloadError = (offlineRegion, mapDownloadError) => {
     if (mapDownloadError.message !== 'No Internet connection available.') {
       NetInfo.fetch().then(state => {
+        Sentry.setExtraContext({
+          mapDownloadError: mapDownloadError
+        })
+
         Sentry.captureBreadcrumb({
           message: 'Map download error',
           category: 'action',
           data: {
+            error: mapDownloadError.message,
             isOnline: state.isConnected,
             sync: this.props.sync
           }
