@@ -16,6 +16,7 @@
     "@react-native-community/async-storage": "^1.5.1",
     "@react-native-community/geolocation": "^1.4.2",
     "@react-native-community/netinfo": "^3.2.1",
+    "@react-native-mapbox-gl/maps": "^7.0.0-rc3",
     "@redux-offline/redux-offline": "^2.5.1",
     "i18next": "^12.1.0",
     "localized-countries": "^1.0.2",
