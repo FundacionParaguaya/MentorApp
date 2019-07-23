@@ -34,7 +34,7 @@ jest.mock('react-native', () => require('react-native-mock-render'), {
 })
 
 // mock mapbox
-jest.mock('@mapbox/react-native-mapbox-gl', () => {
+jest.mock('@react-native-mapbox-gl/maps', () => {
   const React = require('React')
   const NativeModules = require('react-native')
 
