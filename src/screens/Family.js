@@ -221,12 +221,19 @@ export class Family extends Component {
                       })
                     }}
                   >
+                    <MapboxGL.UserLocation />
                     <MapboxGL.Camera
+                      defaultSettings={{
+                        centerCoordinate: [
+                          +familyData.longitude || 0,
+                          +familyData.latitude || 0
+                        ],
+                        zoomLevel: 15
+                      }}
                       centerCoordinate={[
                         +familyData.longitude || 0,
                         +familyData.latitude || 0
                       ]}
-                      zoomLevel={15}
                       minZoomLevel={10}
                       maxZoomLevel={15}
                     />

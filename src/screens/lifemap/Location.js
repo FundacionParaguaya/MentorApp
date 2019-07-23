@@ -675,9 +675,19 @@ export class Location extends Component {
             pitchEnabled={false}
             onRegionDidChange={this.onDragMap}
           >
+            <MapboxGL.UserLocation />
             <MapboxGL.Camera
-              zoomLevel={this.state.zoom}
-              centerCoordinate={[+familyData.longitude, +familyData.latitude]}
+              defaultSettings={{
+                centerCoordinate: [
+                  +familyData.longitude || 0,
+                  +familyData.latitude || 0
+                ],
+                zoomLevel: this.state.zoom
+              }}
+              centerCoordinate={[
+                +familyData.longitude || 0,
+                +familyData.latitude || 0
+              ]}
               minZoomLevel={10}
               maxZoomLevel={16}
             />
