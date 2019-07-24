@@ -88,16 +88,16 @@ export class FamilyParticipant extends Component {
 
     let familyMembersList = this.state.draft.familyData.familyMembersList
 
-    const numberOfmembers =
+    const numberOfMembers =
       countFamilyMembers === PREFER_NOT_TO_SAY ? 1 : countFamilyMembers
 
-    if (value !== PREFER_NOT_TO_SAY && numberOfmembers > value) {
+    if (value !== PREFER_NOT_TO_SAY && numberOfMembers > value) {
       familyMembersList.splice(value, familyMembersList.length - 1)
     } else if (
       value !== PREFER_NOT_TO_SAY &&
-      (numberOfmembers < value || !numberOfmembers)
+      (numberOfMembers < value || !numberOfMembers)
     ) {
-      for (var i = 0; i < value - (numberOfmembers || 1); i++) {
+      for (var i = 0; i < value - (numberOfMembers || 1); i++) {
         familyMembersList.push({ firstParticipant: false })
       }
     } else if (value === PREFER_NOT_TO_SAY) {
