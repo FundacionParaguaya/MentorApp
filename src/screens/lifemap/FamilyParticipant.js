@@ -82,14 +82,14 @@ export class FamilyParticipant extends Component {
   }
 
   addFamilyCount = value => {
-    const PREFER_NOT_TO_SAY = -1
     const { draft } = this.state
     const { countFamilyMembers } = this.state.draft.familyData
+    const PREFER_NOT_TO_SAY = -1
 
     let familyMembersList = this.state.draft.familyData.familyMembersList
 
-    let numberOfmembers =
-      countFamilyMembers === PREFER_NOT_TO_SAY ? -1 : countFamilyMembers
+    const numberOfmembers =
+      countFamilyMembers === PREFER_NOT_TO_SAY ? 1 : countFamilyMembers
 
     if (value !== PREFER_NOT_TO_SAY && numberOfmembers > value) {
       familyMembersList.splice(value, familyMembersList.length - 1)
