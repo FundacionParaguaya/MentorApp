@@ -165,7 +165,7 @@ export class Question extends Component {
         survey: this.survey
       })
     } else
-      this.props.navigation.navigate('BeginLifemap', {
+      this.props.navigation.push('BeginLifemap', {
         draft: this.state.draft,
         survey: this.survey
       })
