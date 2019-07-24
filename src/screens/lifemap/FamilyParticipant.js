@@ -86,21 +86,23 @@ export class FamilyParticipant extends Component {
   addFamilyCount = value => {
     const { draft } = this.state
     const { countFamilyMembers } = this.state.draft.familyData
+    const PREFER_NOT_TO_SAY = -1
 
     let familyMembersList = this.state.draft.familyData.familyMembersList
 
-    if (value !== -1 && countFamilyMembers > value) {
+    const numberOfMembers =
+      countFamilyMembers === PREFER_NOT_TO_SAY ? 1 : countFamilyMembers
+
+    if (value !== PREFER_NOT_TO_SAY && numberOfMembers > value) {
       familyMembersList.splice(value, familyMembersList.length - 1)
     } else if (
-      value !== -1 &&
-      (countFamilyMembers < value || !countFamilyMembers)
+      value !== PREFER_NOT_TO_SAY &&
+      (numberOfMembers < value || !numberOfMembers)
     ) {
-      for (var i = 0; i < value - (countFamilyMembers || 1); i++) {
+      for (var i = 0; i < value - (numberOfMembers || 1); i++) {
         familyMembersList.push({ firstParticipant: false })
       }
-    }
-
-    if (value === -1) {
+    } else if (value === PREFER_NOT_TO_SAY) {
       familyMembersList.splice(1, familyMembersList.length - 1)
     }
 
@@ -109,7 +111,7 @@ export class FamilyParticipant extends Component {
         ...draft,
         familyData: {
           ...draft.familyData,
-          countFamilyMembers: value === -1 ? 1 : value,
+          countFamilyMembers: value,
           familyMembersList
         }
       }
