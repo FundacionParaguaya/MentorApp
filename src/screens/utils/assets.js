@@ -1,11 +1,11 @@
 export const styles = {
   wrapper:
-    'display:flex;align-content: space-between;border-bottom: 1px solid #ddd;margin-bottom: 20px',
+    'display:flex;align-content: space-between;border-bottom: 1px solid #ddd;margin-bottom: 20px;',
   participantName: 'width:50%;height:40px;font-size:20px;',
   date:
     'width: 50%;height:40px;margin-left: auto;text-align:right;font-size:18px;',
   indicator:
-    'width: 70px;height: 70px;margin: 10px auto 10px auto;border-radius: 70px;display: flex;align-items:center;justify-content: center',
+    'width: 70px;min-height:14.285%;margin-bottom:5px;border-radius: 70px;',
   indicatorName: 'display:block;text-align: center',
   indicatorsWrapper: 'display:flex;flex-wrap: wrap;'
 }

@@ -148,6 +148,8 @@ android {
 }
 
 dependencies {
+    implementation project(':react-native-html-to-pdf')
+    implementation project(':react-native-print')
     implementation 'androidx.multidex:multidex:2.0.1'
     implementation project(':@react-native-community_async-storage')
     implementation project(':@react-native-community_netinfo')
