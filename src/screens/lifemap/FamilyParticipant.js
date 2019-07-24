@@ -22,6 +22,7 @@ export class FamilyParticipant extends Component {
   errorsDetected = []
 
   state = {
+    loading: false,
     errorsDetected: [],
     showErrors: false,
     draft: null
@@ -58,7 +59,8 @@ export class FamilyParticipant extends Component {
       this.setState({
         showErrors: true
       })
-    } else {
+    } else if (!this.state.loading) {
+      this.setState({ loading: true })
       const { draft } = this.state
       const survey = this.survey
       // if this is a new draft, add it to the store
