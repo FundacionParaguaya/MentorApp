@@ -243,6 +243,12 @@ export const setSyncedItemAmount = (item, amount) => ({
   amount
 })
 
+export const setSyncedState = (item, value) => ({
+  type: SET_SYNCED_STATE,
+  item,
+  value
+})
+
 export const setAppVersion = value => ({
   type: SET_SYNCED_STATE,
   item: 'appVersion',

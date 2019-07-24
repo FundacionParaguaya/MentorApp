@@ -132,10 +132,10 @@ export class AddPriorityAndAchievementModal extends Component {
   }
 
   componentDidMount() {
-    if (this.props.color !== 1) {
+    if (this.props.color === 3) {
       const achievement = this.getAchievementValue(this.state.draft)
       this.setState({
-        colorRBG: this.props.color === 3 ? colors.palegreen : colors.palegold,
+        colorRBG: colors.palegreen,
         action: achievement.action,
         roadmap: achievement.roadmap,
         indicator: achievement.indicator
@@ -148,7 +148,7 @@ export class AddPriorityAndAchievementModal extends Component {
       }
       this.setState({
         estimatedDate: priority.estimatedDate,
-        colorRBG: colors.palered,
+        colorRBG: this.props.color === 1 ? colors.palered : colors.palegold,
         allOptionsNums: allOptionsNums,
         action: priority.action,
         reason: priority.reason,
@@ -213,7 +213,7 @@ export class AddPriorityAndAchievementModal extends Component {
                 }}
               >
                 <Icon2
-                  name={this.props.color === 1 ? 'pin' : 'star'}
+                  name={this.props.color === 3 ? 'star' : 'pin'}
                   color={colors.white}
                   size={20}
                 />
@@ -229,8 +229,8 @@ export class AddPriorityAndAchievementModal extends Component {
               <Text style={globalStyles.h2}>{this.props.indicatorText}</Text>
             </View>
           </View>
-          {/* load the qustions for priorities if 1 and achievemnt if 3 or 2 */}
-          {this.props.color === 1 ? (
+          {/* load the qustions for priorities if 3 or 2 and achievemnt if 1*/}
+          {this.props.color !== 3 ? (
             <React.Fragment>
               <TextInput
                 onChangeText={text => this.setState({ reason: text })}
@@ -315,12 +315,12 @@ export class AddPriorityAndAchievementModal extends Component {
                   }}
                   colored
                   text={
-                    this.props.color === 1
+                    this.props.color !== 3
                       ? t('views.lifemap.makePriority')
                       : t('views.lifemap.makeAchievement')
                   }
                   handleClick={
-                    this.props.color === 1
+                    this.props.color !== 3
                       ? this.addPriority
                       : this.addAchievement
                   }
