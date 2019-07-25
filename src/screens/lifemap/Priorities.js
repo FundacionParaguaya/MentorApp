@@ -147,9 +147,7 @@ export class Priorities extends Component {
         !mandatoryPrioritiesCount ||
         mandatoryPrioritiesCount - draft.priorities.length <= 0
       ) {
-        return `${t('general.create')} ${t(
-          'views.lifemap.priorities'
-        ).toLowerCase()}!`
+        return t('views.lifemap.noPriorities')
         //only one mandatory priority
       } else if (mandatoryPrioritiesCount - draft.priorities.length === 1) {
         return t('views.lifemap.youNeedToAddPriotity')

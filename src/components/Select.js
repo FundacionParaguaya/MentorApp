@@ -240,19 +240,19 @@ class Select extends Component {
                                   isSelected={
                                     this.state.radioChecked === obj.value
                                   }
-                                  onPress={this.validateInputRadio}
                                   borderWidth={2}
                                   buttonInnerColor={colors.palegreen}
                                   buttonOuterColor={colors.palegrey}
                                   buttonSize={12}
                                   buttonOuterSize={20}
                                   buttonStyle={{}}
+                                  onPress={() => {}}
                                 />
                                 <RadioButtonLabel
+                                  onPress={() => {}}
                                   obj={obj}
                                   index={i}
                                   labelHorizontal={true}
-                                  onPress={this.validateInputRadio}
                                   labelStyle={{
                                     fontSize: 17,
                                     color: '#4a4a4a'

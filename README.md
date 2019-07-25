@@ -33,3 +33,7 @@ This is the source repository for the Poverty Stoplight native mobile app. If yo
 - [Deploying on Play Store](docs/deploying.md)
 - [Versioning](docs/versioning.md)
 - [General test plan](docs/test-plan.md)
+
+## Thanks To
+
+-  <img width="200" alt="portfolio_view" src="browserstack.png"> [click here to check their website](http://browserstack.com) 

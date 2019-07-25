@@ -1,5 +1,6 @@
 import store from '../../redux/store'
 import draftMock from '../__mocks__/draftMock'
+import { familyMemberWillHaveQuestions } from '../utils/conditional_logic'
 
 export const getDraft = () =>
   store
@@ -36,4 +37,45 @@ export const getTotalScreens = survey => {
       ? 1
       : 0)
   )
+}
+
+export const setScreen = (screenData, draft, step) => {
+  const SKIP_SCREEN_WITH_ONE_STEP = step
+
+  /* 'fromBeginLifemap' when pressing baack on the last screen we receive 
+      current screen === totalScreens : 
+      to get actual data for current -1 , to get data previous screen -1  
+      that caused the -2 value */
+
+  const QUESTIONS_FOR_NEXT_SCREEN =
+    screenData.questionsPerScreen[
+      screenData.currentScreen === screenData.totalScreens && step === -1
+        ? screenData.currentScreen - 2 //
+        : screenData.currentScreen
+    ]
+  if (
+    !(
+      QUESTIONS_FOR_NEXT_SCREEN.forFamily &&
+      QUESTIONS_FOR_NEXT_SCREEN.forFamily.length
+    ) &&
+    QUESTIONS_FOR_NEXT_SCREEN.forFamilyMember &&
+    QUESTIONS_FOR_NEXT_SCREEN.forFamilyMember.length
+  ) {
+    const { familyMembersList } = draft.familyData
+    const atLeastOneMemberHasQuestions = familyMembersList.some(
+      (_member, index) => {
+        return familyMemberWillHaveQuestions(
+          QUESTIONS_FOR_NEXT_SCREEN,
+          draft,
+          index
+        )
+      }
+    )
+
+    return !atLeastOneMemberHasQuestions
+      ? screenData.currentScreen + step + SKIP_SCREEN_WITH_ONE_STEP
+      : screenData.currentScreen + step
+  }
+
+  return screenData.currentScreen + step
 }
