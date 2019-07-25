@@ -64,11 +64,9 @@ export class Login extends Component {
   }
 
   setConnectivityState = isConnected => {
-    if (isConnected !== this.state.connection) {
-      isConnected
-        ? this.setState({ connection: true, error: '' })
-        : this.setState({ connection: false, error: 'No connection' })
-    }
+    isConnected
+      ? this.setState({ connection: true, error: '' })
+      : this.setState({ connection: false, error: 'No connection' })
   }
 
   setDimensions = () => {

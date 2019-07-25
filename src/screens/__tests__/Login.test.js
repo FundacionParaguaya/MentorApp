@@ -93,7 +93,7 @@ describe('Login View', () => {
       wrapper.instance().setConnectivityState(false)
       wrapper.update()
       expect(wrapper.instance().state.connection).toBe(false)
-      expect(wrapper.instance().state.error).toBe(false)
+      expect(wrapper.instance().state.error).toBe('No connection')
     })
   })
 })

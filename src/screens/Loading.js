@@ -263,13 +263,6 @@ export class Loading extends Component {
       }
     })
 
-    // check connection state
-    NetInfo.fetch().then(state => {
-      if (!state.isConnected) {
-        this.showError('There seems to be a problem with your connetion.')
-      }
-    })
-
     const { families, surveys, images, appVersion, maps } = this.props.sync
 
     if (!this.props.user.token) {
@@ -291,7 +284,14 @@ export class Loading extends Component {
       // if everything is synced navigate to Dashboard
       this.props.navigation.navigate('DrawerStack')
     } else {
-      this.syncSurveys()
+      // check connection state
+      NetInfo.fetch().then(state => {
+        if (!state.isConnected) {
+          this.showError('There seems to be a problem with your connetion.')
+        } else {
+          this.syncSurveys()
+        }
+      })
     }
   }
 
