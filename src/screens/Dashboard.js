@@ -44,7 +44,6 @@ export class Dashboard extends Component {
     const survey = this.props.surveys.find(
       survey => survey.id === draft.surveyId
     )
-
     if (
       draft.progress.screen === 'Question' ||
       draft.progress.screen === 'Skipped' ||
@@ -93,11 +92,8 @@ export class Dashboard extends Component {
   }
 
   componentDidMount() {
-    const { surveys, families, images } = this.props.sync
     if (!this.props.user.token) {
       this.props.navigation.navigate('Login')
-    } else if (!surveys || !families || images.total !== images.synced) {
-      this.props.navigation.navigate('Loading')
     } else {
       if (UIManager.AccessibilityEventTypes) {
         setTimeout(() => {
@@ -107,7 +103,6 @@ export class Dashboard extends Component {
           )
         }, 1)
       }
-
       // set sentry login details
       Sentry.setUserContext({
         username: this.props.user.username,
@@ -120,7 +115,6 @@ export class Dashboard extends Component {
 
   render() {
     const { t, drafts } = this.props
-
     return (
       <AndroidBackHandler onBackPress={() => true}>
         <View style={globalStyles.ViewMainContainer}>
