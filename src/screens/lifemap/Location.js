@@ -19,7 +19,7 @@ import { GooglePlacesAutocomplete } from 'react-native-google-places-autocomplet
 import { connect } from 'react-redux'
 import PropTypes from 'prop-types'
 import { withNamespaces } from 'react-i18next'
-import MapboxGL from '@mapbox/react-native-mapbox-gl'
+import MapboxGL from '@react-native-mapbox-gl/maps'
 import { updateDraft } from '../../redux/actions'
 import StickyFooter from '../../components/StickyFooter'
 import TextInput from '../../components/TextInput'
@@ -671,11 +671,6 @@ export class Location extends Component {
             ref={map => {
               this._map = map
             }}
-            centerCoordinate={[
-              +familyData.longitude || 0,
-              +familyData.latitude || 0
-            ]}
-            zoomLevel={this.state.zoom}
             style={{ width: '100%', flexGrow: 2 }}
             logoEnabled={false}
             zoomEnabled={!this.readOnly}
@@ -683,9 +678,24 @@ export class Location extends Component {
             scrollEnabled={!this.readOnly}
             pitchEnabled={false}
             onRegionDidChange={this.onDragMap}
-            minZoomLevel={10}
-            maxZoomLevel={16}
-          />
+          >
+            <MapboxGL.UserLocation />
+            <MapboxGL.Camera
+              defaultSettings={{
+                centerCoordinate: [
+                  +familyData.longitude || 0,
+                  +familyData.latitude || 0
+                ],
+                zoomLevel: this.state.zoom
+              }}
+              centerCoordinate={[
+                +familyData.longitude || 0,
+                +familyData.latitude || 0
+              ]}
+              minZoomLevel={10}
+              maxZoomLevel={16}
+            />
+          </MapboxGL.MapView>
           {!this.readOnly && (
             <View>
               {centeringMap ? (

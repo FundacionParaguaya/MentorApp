@@ -1,7 +1,7 @@
 import React from 'react'
 import { shallow } from 'enzyme'
 import { ActivityIndicator, Text } from 'react-native'
-import MapboxGL from '@mapbox/react-native-mapbox-gl'
+import MapboxGL from '@react-native-mapbox-gl/maps'
 import { Location } from '../lifemap/Location'
 import draft from '../__mocks__/draftMock.json'
 
