@@ -1,5 +1,11 @@
 import React, { Component } from 'react'
-import { StyleSheet, ScrollView, View, Text } from 'react-native'
+import {
+  StyleSheet,
+  ScrollView,
+  View,
+  Text,
+  PermissionsAndroid
+} from 'react-native'
 import { connect } from 'react-redux'
 import PropTypes from 'prop-types'
 import { withNamespaces } from 'react-i18next'
@@ -10,12 +16,22 @@ import globalStyles from '../../globalStyles'
 import { updateDraft, submitDraft } from '../../redux/actions'
 import { url } from '../../config'
 import { prepareDraftForSubmit } from '../utils/helpers'
+import {
+  buildPDFOptions,
+  buildPrintOptions,
+  getReportTitle
+} from '../utils/pdfs'
+import RNHTMLtoPDF from 'react-native-html-to-pdf'
+import RNPrint from 'react-native-print'
+import RNFetchBlob from 'rn-fetch-blob'
 
 export class Final extends Component {
   survey = this.props.navigation.getParam('survey')
   draft = this.props.navigation.getParam('draft')
   state = {
-    loading: false
+    loading: false,
+    downloading: false,
+    printing: false
   }
 
   shouldComponentUpdate() {
@@ -66,6 +82,62 @@ export class Final extends Component {
     }
   }
 
+  async exportPDF() {
+    this.setState({ downloading: true })
+    const permissionsGranted = await PermissionsAndroid.request(
+      PermissionsAndroid.PERMISSIONS.WRITE_EXTERNAL_STORAGE,
+      {
+        title: 'Permission to save file into the file storage',
+        message:
+          'The app needs access to your file storage so you can download the file',
+        buttonNeutral: 'Ask Me Later',
+        buttonNegative: 'Cancel',
+        buttonPositive: 'OK'
+      }
+    )
+
+    if (permissionsGranted !== PermissionsAndroid.RESULTS.GRANTED) {
+      throw new Error()
+    }
+
+    try {
+      const fileName = getReportTitle(this.draft)
+      const filePath = `${RNFetchBlob.fs.dirs.DownloadDir}/${fileName}.pdf`
+      const pdfOptions = buildPDFOptions(this.draft, this.survey)
+      const pdf = await RNHTMLtoPDF.convert(pdfOptions)
+
+      RNFetchBlob.fs
+        .cp(pdf.filePath, filePath)
+        .then(() =>
+          RNFetchBlob.android.addCompleteDownload({
+            title: `${fileName}.pdf`,
+            description: 'Download complete',
+            mime: 'application/pdf',
+            path: filePath,
+            showNotification: true
+          })
+        )
+        .then(() =>
+          RNFetchBlob.fs.scanFile([{ path: filePath, mime: 'application/pdf' }])
+        )
+
+      this.setState({ downloading: false, filePath: pdf.filePath })
+    } catch (error) {
+      alert(error)
+    }
+  }
+
+  async print() {
+    this.setState({ printing: true })
+    const options = buildPrintOptions(this.draft, this.survey)
+    try {
+      await RNPrint.print(options)
+      this.setState({ printing: false })
+    } catch (error) {
+      alert(error)
+    }
+  }
+
   render() {
     const { t } = this.props
     return (
@@ -98,6 +170,24 @@ export class Final extends Component {
             priorities={this.draft.priorities}
             achievements={this.draft.achievements}
           />
+          <View style={styles.buttonBar}>
+            <Button
+              style={{ width: '49%', alignSelf: 'center', marginTop: 20 }}
+              handleClick={this.exportPDF.bind(this)}
+              icon="cloud-download"
+              outlined
+              text="Download"
+              loading={this.state.downloading}
+            />
+            <Button
+              style={{ width: '49%', alignSelf: 'center', marginTop: 20 }}
+              handleClick={this.print.bind(this)}
+              icon="print"
+              outlined
+              text="Print"
+              loading={this.state.printing}
+            />
+          </View>
         </View>
         <View style={{ height: 50 }}>
           <Button
@@ -120,6 +210,11 @@ const styles = StyleSheet.create({
   },
   text: {
     textAlign: 'center'
+  },
+  buttonBar: {
+    marginBottom: 30,
+    flexDirection: 'row',
+    justifyContent: 'space-between'
   }
 })
 

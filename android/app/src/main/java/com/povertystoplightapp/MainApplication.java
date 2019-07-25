@@ -2,6 +2,8 @@ package com.povertystoplightapp;
 
 import android.app.Application;
 import com.facebook.react.ReactApplication;
+import com.christopherdro.htmltopdf.RNHTMLtoPDFPackage;
+import com.christopherdro.RNPrint.RNPrintPackage;
 import com.mapbox.rctmgl.RCTMGLPackage;
 import com.reactnativecommunity.asyncstorage.AsyncStoragePackage;
 import com.reactnativecommunity.netinfo.NetInfoPackage;
@@ -38,6 +40,8 @@ public class MainApplication extends Application implements ReactApplication {
     protected List<ReactPackage> getPackages() {
       return Arrays.<ReactPackage>asList(
           new MainReactPackage(),
+            new RNHTMLtoPDFPackage(),
+            new RNPrintPackage(),
             new RCTMGLPackage(),
             new AsyncStoragePackage(),
             new NetInfoPackage(),

@@ -57,6 +57,7 @@
 		BE450C5BC94F420C84D1AE6B /* Octicons.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 7270E71F08F74C75852046DF /* Octicons.ttf */; };
 		A63BC2E65925473186A502DA /* SimpleLineIcons.ttf in Resources */ = {isa = PBXBuildFile; fileRef = D444A8A8F95D4CD59E589A90 /* SimpleLineIcons.ttf */; };
 		5A2878AFA66B493F988D52C0 /* Zocial.ttf in Resources */ = {isa = PBXBuildFile; fileRef = BBC6BA78E78E4DB5AD1F6543 /* Zocial.ttf */; };
+		3D1A356C60454CDE907DA50B /* libRCTMGL.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 95D18F08485045AC9BA864EA /* libRCTMGL.a */; };
 		AAD26BF0E07E48048338FE4D /* libRNCGeolocation.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 844D8F926B9A4F1DB139C6B5 /* libRNCGeolocation.a */; };
 		C694EF7092AF4AFDA616162C /* libRNLanguages.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 5CEA593897724776B1BEF02E /* libRNLanguages.a */; };
 		E2B4674B0C4B428C81F99CD9 /* libRNLanguages-tvOS.a in Frameworks */ = {isa = PBXBuildFile; fileRef = A8526E61967149C1B3A05BB8 /* libRNLanguages-tvOS.a */; };
@@ -71,8 +72,11 @@
 		6C16A2B8DFC94438BCC1384C /* libRNCNetInfo.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 90B54D91D21E4F3BBC57A947 /* libRNCNetInfo.a */; };
 		63C699EDECC54FE48528F854 /* libRNCNetInfo-tvOS.a in Frameworks */ = {isa = PBXBuildFile; fileRef = FB50CF4BF9094D4087A6496C /* libRNCNetInfo-tvOS.a */; };
 		9BCA23B9D0E34EA49255106C /* libRNCAsyncStorage.a in Frameworks */ = {isa = PBXBuildFile; fileRef = D7F9A49555A5476AB6C2C77D /* libRNCAsyncStorage.a */; };
-		91FBEF586C5F41A998F6F259 /* libRCTMGL.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 0AD1B8CB3735470FA45CD9A5 /* libRCTMGL.a */; };
-		957EC4E08F0D49D2AF474A8F /* Fontisto.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 4A9C049A9F9C4756B303F6F8 /* Fontisto.ttf */; };
+		4A8BEB571F60428AB5A39C3E /* Fontisto.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 5F2424C6026E45C68F8748F0 /* Fontisto.ttf */; };
+		3E1522AC3B744843B2426D64 /* libRNPrint.a in Frameworks */ = {isa = PBXBuildFile; fileRef = B9EADE0587014C9B965CF481 /* libRNPrint.a */; };
+		BE3925E046924C8F98D23CA8 /* RNPrintTests.xctest in Resources */ = {isa = PBXBuildFile; fileRef = 3E94352CD47A476AA33D29B8 /* RNPrintTests.xctest */; };
+		3D4E8F3EA4D94AE796EB4DB0 /* libRNHTMLtoPDF.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 1B7E508F95F7489F828AD5C2 /* libRNHTMLtoPDF.a */; };
+		528842F709D74897A04F08AF /* RNHTMLtoPDFTests.xctest in Resources */ = {isa = PBXBuildFile; fileRef = FFCAC76B9F3B47129896CC4E /* RNHTMLtoPDFTests.xctest */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -399,6 +403,8 @@
 		7270E71F08F74C75852046DF /* Octicons.ttf */ = {isa = PBXFileReference; name = "Octicons.ttf"; path = "../node_modules/react-native-vector-icons/Fonts/Octicons.ttf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
 		D444A8A8F95D4CD59E589A90 /* SimpleLineIcons.ttf */ = {isa = PBXFileReference; name = "SimpleLineIcons.ttf"; path = "../node_modules/react-native-vector-icons/Fonts/SimpleLineIcons.ttf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
 		BBC6BA78E78E4DB5AD1F6543 /* Zocial.ttf */ = {isa = PBXFileReference; name = "Zocial.ttf"; path = "../node_modules/react-native-vector-icons/Fonts/Zocial.ttf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
+		CA73F8479C264A5AAB3FA3C7 /* RCTMGL.xcodeproj */ = {isa = PBXFileReference; name = "RCTMGL.xcodeproj"; path = "../node_modules/@mapbox/react-native-mapbox-gl/ios/RCTMGL.xcodeproj"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = wrapper.pb-project; explicitFileType = undefined; includeInIndex = 0; };
+		95D18F08485045AC9BA864EA /* libRCTMGL.a */ = {isa = PBXFileReference; name = "libRCTMGL.a"; path = "libRCTMGL.a"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = archive.ar; explicitFileType = undefined; includeInIndex = 0; };
 		80D36390BA32445BB0E7FEAE /* RNCGeolocation.xcodeproj */ = {isa = PBXFileReference; name = "RNCGeolocation.xcodeproj"; path = "../node_modules/@react-native-community/geolocation/ios/RNCGeolocation.xcodeproj"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = wrapper.pb-project; explicitFileType = undefined; includeInIndex = 0; };
 		844D8F926B9A4F1DB139C6B5 /* libRNCGeolocation.a */ = {isa = PBXFileReference; name = "libRNCGeolocation.a"; path = "libRNCGeolocation.a"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = archive.ar; explicitFileType = undefined; includeInIndex = 0; };
 		1977BC90DDAF42058004EDA9 /* RNLanguages.xcodeproj */ = {isa = PBXFileReference; name = "RNLanguages.xcodeproj"; path = "../node_modules/react-native-languages/ios/RNLanguages.xcodeproj"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = wrapper.pb-project; explicitFileType = undefined; includeInIndex = 0; };
@@ -422,9 +428,13 @@
 		FB50CF4BF9094D4087A6496C /* libRNCNetInfo-tvOS.a */ = {isa = PBXFileReference; name = "libRNCNetInfo-tvOS.a"; path = "libRNCNetInfo-tvOS.a"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = archive.ar; explicitFileType = undefined; includeInIndex = 0; };
 		E9800488BF3A4B79A33C9B8B /* RNCAsyncStorage.xcodeproj */ = {isa = PBXFileReference; name = "RNCAsyncStorage.xcodeproj"; path = "../node_modules/@react-native-community/async-storage/ios/RNCAsyncStorage.xcodeproj"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = wrapper.pb-project; explicitFileType = undefined; includeInIndex = 0; };
 		D7F9A49555A5476AB6C2C77D /* libRNCAsyncStorage.a */ = {isa = PBXFileReference; name = "libRNCAsyncStorage.a"; path = "libRNCAsyncStorage.a"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = archive.ar; explicitFileType = undefined; includeInIndex = 0; };
-		638321218A384DEBA42322D2 /* RCTMGL.xcodeproj */ = {isa = PBXFileReference; name = "RCTMGL.xcodeproj"; path = "../node_modules/@react-native-mapbox-gl/maps/ios/RCTMGL.xcodeproj"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = wrapper.pb-project; explicitFileType = undefined; includeInIndex = 0; };
-		0AD1B8CB3735470FA45CD9A5 /* libRCTMGL.a */ = {isa = PBXFileReference; name = "libRCTMGL.a"; path = "libRCTMGL.a"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = archive.ar; explicitFileType = undefined; includeInIndex = 0; };
-		4A9C049A9F9C4756B303F6F8 /* Fontisto.ttf */ = {isa = PBXFileReference; name = "Fontisto.ttf"; path = "../node_modules/react-native-vector-icons/Fonts/Fontisto.ttf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
+		5F2424C6026E45C68F8748F0 /* Fontisto.ttf */ = {isa = PBXFileReference; name = "Fontisto.ttf"; path = "../node_modules/react-native-vector-icons/Fonts/Fontisto.ttf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
+		0A57179B5931415FAFDAA0FA /* RNPrint.xcodeproj */ = {isa = PBXFileReference; name = "RNPrint.xcodeproj"; path = "../node_modules/react-native-print/ios/RNPrint.xcodeproj"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = wrapper.pb-project; explicitFileType = undefined; includeInIndex = 0; };
+		B9EADE0587014C9B965CF481 /* libRNPrint.a */ = {isa = PBXFileReference; name = "libRNPrint.a"; path = "libRNPrint.a"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = archive.ar; explicitFileType = undefined; includeInIndex = 0; };
+		3E94352CD47A476AA33D29B8 /* RNPrintTests.xctest */ = {isa = PBXFileReference; name = "RNPrintTests.xctest"; path = "RNPrintTests.xctest"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = wrapper.cfbundle; explicitFileType = undefined; includeInIndex = 0; };
+		27606EDD8A924775BE24B571 /* RNHTMLtoPDF.xcodeproj */ = {isa = PBXFileReference; name = "RNHTMLtoPDF.xcodeproj"; path = "../node_modules/react-native-html-to-pdf/ios/RNHTMLtoPDF.xcodeproj"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = wrapper.pb-project; explicitFileType = undefined; includeInIndex = 0; };
+		1B7E508F95F7489F828AD5C2 /* libRNHTMLtoPDF.a */ = {isa = PBXFileReference; name = "libRNHTMLtoPDF.a"; path = "libRNHTMLtoPDF.a"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = archive.ar; explicitFileType = undefined; includeInIndex = 0; };
+		FFCAC76B9F3B47129896CC4E /* RNHTMLtoPDFTests.xctest */ = {isa = PBXFileReference; name = "RNHTMLtoPDFTests.xctest"; path = "RNHTMLtoPDFTests.xctest"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = wrapper.cfbundle; explicitFileType = undefined; includeInIndex = 0; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -453,6 +463,7 @@
 				00C302EA1ABCBA2D00DB3ED1 /* libRCTVibration.a in Frameworks */,
 				139FDEF61B0652A700C62182 /* libRCTWebSocket.a in Frameworks */,
 				3B5E37C680CD4EB0B3E18974 /* libRNDeviceInfo.a in Frameworks */,
+				3D1A356C60454CDE907DA50B /* libRCTMGL.a in Frameworks */,
 				AAD26BF0E07E48048338FE4D /* libRNCGeolocation.a in Frameworks */,
 				C694EF7092AF4AFDA616162C /* libRNLanguages.a in Frameworks */,
 				242385DE9EA2413DA775FBD9 /* libRNSentry.a in Frameworks */,
@@ -463,7 +474,10 @@
 				615FF5F55FFA48749B053271 /* libRNGestureHandler.a in Frameworks */,
 				6C16A2B8DFC94438BCC1384C /* libRNCNetInfo.a in Frameworks */,
 				9BCA23B9D0E34EA49255106C /* libRNCAsyncStorage.a in Frameworks */,
-				91FBEF586C5F41A998F6F259 /* libRCTMGL.a in Frameworks */,
+				3E1522AC3B744843B2426D64 /* libRNPrint.a in Frameworks */,
+				BE3925E046924C8F98D23CA8 /* RNPrintTests.xctest in Resources */,
+				3D4E8F3EA4D94AE796EB4DB0 /* libRNHTMLtoPDF.a in Frameworks */,
+				528842F709D74897A04F08AF /* RNHTMLtoPDFTests.xctest in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -657,6 +671,7 @@
 				00C302DF1ABCB9EE00DB3ED1 /* RCTVibration.xcodeproj */,
 				139FDEE61B06529A00C62182 /* RCTWebSocket.xcodeproj */,
 				613A2FEA7BC14EEFA11F8FAA /* RNDeviceInfo.xcodeproj */,
+				CA73F8479C264A5AAB3FA3C7 /* RCTMGL.xcodeproj */,
 				80D36390BA32445BB0E7FEAE /* RNCGeolocation.xcodeproj */,
 				1977BC90DDAF42058004EDA9 /* RNLanguages.xcodeproj */,
 				4EC8B6765B5A406AB6603312 /* RNSentry.xcodeproj */,
@@ -666,7 +681,8 @@
 				C1F513971F0B4F8C9E862E3E /* RNGestureHandler.xcodeproj */,
 				9CE69D5D143A4316987511EF /* RNCNetInfo.xcodeproj */,
 				E9800488BF3A4B79A33C9B8B /* RNCAsyncStorage.xcodeproj */,
-				638321218A384DEBA42322D2 /* RCTMGL.xcodeproj */,
+				0A57179B5931415FAFDAA0FA /* RNPrint.xcodeproj */,
+				27606EDD8A924775BE24B571 /* RNHTMLtoPDF.xcodeproj */,
 			);
 			name = Libraries;
 			sourceTree = "<group>";
@@ -736,7 +752,7 @@
 				7270E71F08F74C75852046DF /* Octicons.ttf */,
 				D444A8A8F95D4CD59E589A90 /* SimpleLineIcons.ttf */,
 				BBC6BA78E78E4DB5AD1F6543 /* Zocial.ttf */,
-				4A9C049A9F9C4756B303F6F8 /* Fontisto.ttf */,
+				5F2424C6026E45C68F8748F0 /* Fontisto.ttf */,
 			);
 			name = Resources;
 			sourceTree = "<group>";
@@ -774,7 +790,15 @@
 			path = Application;
 			sourceTree = "<group>";
 		};
-		58C9F083400E4F2DB87E1502 /* Frameworks */ = {
+		D92D79C2A47348C0AA428D01 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			name = Frameworks;
+			path = Application;
+			sourceTree = "<group>";
+		};
+		0BB1BD5E921848A7BF6009E0 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
 			);
@@ -1249,7 +1273,7 @@
 				BE450C5BC94F420C84D1AE6B /* Octicons.ttf in Resources */,
 				A63BC2E65925473186A502DA /* SimpleLineIcons.ttf in Resources */,
 				5A2878AFA66B493F988D52C0 /* Zocial.ttf in Resources */,
-				957EC4E08F0D49D2AF474A8F /* Fontisto.ttf in Resources */,
+				4A8BEB571F60428AB5A39C3E /* Fontisto.ttf in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1399,10 +1423,14 @@
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 				);
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(SRCROOT)/../node_modules/react-native-device-info/ios/RNDeviceInfo",
+					"$(SRCROOT)/../node_modules/@mapbox/react-native-mapbox-gl/ios/RCTMGL/**",
 					"$(SRCROOT)/../node_modules/@react-native-community/geolocation/ios",
 					"$(SRCROOT)/../node_modules/react-native-languages/ios",
 					"$(SRCROOT)/../node_modules/react-native-sentry/ios/**",
@@ -1412,7 +1440,8 @@
 					"$(SRCROOT)/../node_modules/react-native-gesture-handler/ios/**",
 					"$(SRCROOT)/../node_modules/@react-native-community/netinfo/ios",
 					"$(SRCROOT)/../node_modules/@react-native-community/async-storage/ios",
-					"$(SRCROOT)/../node_modules/@react-native-mapbox-gl/maps/ios/RCTMGL/**",
+					"$(SRCROOT)/../node_modules/react-native-print/ios/RNPrint",
+					"$(SRCROOT)/../node_modules/react-native-html-to-pdf/ios/RNHTMLtoPDF",
 				);
 				FRAMEWORK_SEARCH_PATHS = (
 				);
@@ -1437,10 +1466,14 @@
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 				);
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(SRCROOT)/../node_modules/react-native-device-info/ios/RNDeviceInfo",
+					"$(SRCROOT)/../node_modules/@mapbox/react-native-mapbox-gl/ios/RCTMGL/**",
 					"$(SRCROOT)/../node_modules/@react-native-community/geolocation/ios",
 					"$(SRCROOT)/../node_modules/react-native-languages/ios",
 					"$(SRCROOT)/../node_modules/react-native-sentry/ios/**",
@@ -1450,7 +1483,8 @@
 					"$(SRCROOT)/../node_modules/react-native-gesture-handler/ios/**",
 					"$(SRCROOT)/../node_modules/@react-native-community/netinfo/ios",
 					"$(SRCROOT)/../node_modules/@react-native-community/async-storage/ios",
-					"$(SRCROOT)/../node_modules/@react-native-mapbox-gl/maps/ios/RCTMGL/**",
+					"$(SRCROOT)/../node_modules/react-native-print/ios/RNPrint",
+					"$(SRCROOT)/../node_modules/react-native-html-to-pdf/ios/RNHTMLtoPDF",
 				);
 				FRAMEWORK_SEARCH_PATHS = (
 				);
@@ -1476,6 +1510,7 @@
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(SRCROOT)/../node_modules/react-native-device-info/ios/RNDeviceInfo",
+					"$(SRCROOT)/../node_modules/@mapbox/react-native-mapbox-gl/ios/RCTMGL/**",
 					"$(SRCROOT)/../node_modules/@react-native-community/geolocation/ios",
 					"$(SRCROOT)/../node_modules/react-native-languages/ios",
 					"$(SRCROOT)/../node_modules/react-native-sentry/ios/**",
@@ -1485,7 +1520,8 @@
 					"$(SRCROOT)/../node_modules/react-native-gesture-handler/ios/**",
 					"$(SRCROOT)/../node_modules/@react-native-community/netinfo/ios",
 					"$(SRCROOT)/../node_modules/@react-native-community/async-storage/ios",
-					"$(SRCROOT)/../node_modules/@react-native-mapbox-gl/maps/ios/RCTMGL/**",
+					"$(SRCROOT)/../node_modules/react-native-print/ios/RNPrint",
+					"$(SRCROOT)/../node_modules/react-native-html-to-pdf/ios/RNHTMLtoPDF",
 				);
 				FRAMEWORK_SEARCH_PATHS = (
 				);
@@ -1510,6 +1546,7 @@
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(SRCROOT)/../node_modules/react-native-device-info/ios/RNDeviceInfo",
+					"$(SRCROOT)/../node_modules/@mapbox/react-native-mapbox-gl/ios/RCTMGL/**",
 					"$(SRCROOT)/../node_modules/@react-native-community/geolocation/ios",
 					"$(SRCROOT)/../node_modules/react-native-languages/ios",
 					"$(SRCROOT)/../node_modules/react-native-sentry/ios/**",
@@ -1519,7 +1556,8 @@
 					"$(SRCROOT)/../node_modules/react-native-gesture-handler/ios/**",
 					"$(SRCROOT)/../node_modules/@react-native-community/netinfo/ios",
 					"$(SRCROOT)/../node_modules/@react-native-community/async-storage/ios",
-					"$(SRCROOT)/../node_modules/@react-native-mapbox-gl/maps/ios/RCTMGL/**",
+					"$(SRCROOT)/../node_modules/react-native-print/ios/RNPrint",
+					"$(SRCROOT)/../node_modules/react-native-html-to-pdf/ios/RNHTMLtoPDF",
 				);
 				FRAMEWORK_SEARCH_PATHS = (
 				);
@@ -1552,10 +1590,14 @@
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 				);
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(SRCROOT)/../node_modules/react-native-device-info/ios/RNDeviceInfo",
+					"$(SRCROOT)/../node_modules/@mapbox/react-native-mapbox-gl/ios/RCTMGL/**",
 					"$(SRCROOT)/../node_modules/@react-native-community/geolocation/ios",
 					"$(SRCROOT)/../node_modules/react-native-languages/ios",
 					"$(SRCROOT)/../node_modules/react-native-sentry/ios/**",
@@ -1565,7 +1607,8 @@
 					"$(SRCROOT)/../node_modules/react-native-gesture-handler/ios/**",
 					"$(SRCROOT)/../node_modules/@react-native-community/netinfo/ios",
 					"$(SRCROOT)/../node_modules/@react-native-community/async-storage/ios",
-					"$(SRCROOT)/../node_modules/@react-native-mapbox-gl/maps/ios/RCTMGL/**",
+					"$(SRCROOT)/../node_modules/react-native-print/ios/RNPrint",
+					"$(SRCROOT)/../node_modules/react-native-html-to-pdf/ios/RNHTMLtoPDF",
 				);
 				FRAMEWORK_SEARCH_PATHS = (
 				);
@@ -1598,10 +1641,14 @@
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 				);
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(SRCROOT)/../node_modules/react-native-device-info/ios/RNDeviceInfo",
+					"$(SRCROOT)/../node_modules/@mapbox/react-native-mapbox-gl/ios/RCTMGL/**",
 					"$(SRCROOT)/../node_modules/@react-native-community/geolocation/ios",
 					"$(SRCROOT)/../node_modules/react-native-languages/ios",
 					"$(SRCROOT)/../node_modules/react-native-sentry/ios/**",
@@ -1611,7 +1658,8 @@
 					"$(SRCROOT)/../node_modules/react-native-gesture-handler/ios/**",
 					"$(SRCROOT)/../node_modules/@react-native-community/netinfo/ios",
 					"$(SRCROOT)/../node_modules/@react-native-community/async-storage/ios",
-					"$(SRCROOT)/../node_modules/@react-native-mapbox-gl/maps/ios/RCTMGL/**",
+					"$(SRCROOT)/../node_modules/react-native-print/ios/RNPrint",
+					"$(SRCROOT)/../node_modules/react-native-html-to-pdf/ios/RNHTMLtoPDF",
 				);
 				FRAMEWORK_SEARCH_PATHS = (
 				);
@@ -1643,10 +1691,14 @@
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 				);
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(SRCROOT)/../node_modules/react-native-device-info/ios/RNDeviceInfo",
+					"$(SRCROOT)/../node_modules/@mapbox/react-native-mapbox-gl/ios/RCTMGL/**",
 					"$(SRCROOT)/../node_modules/@react-native-community/geolocation/ios",
 					"$(SRCROOT)/../node_modules/react-native-languages/ios",
 					"$(SRCROOT)/../node_modules/react-native-sentry/ios/**",
@@ -1656,7 +1708,8 @@
 					"$(SRCROOT)/../node_modules/react-native-gesture-handler/ios/**",
 					"$(SRCROOT)/../node_modules/@react-native-community/netinfo/ios",
 					"$(SRCROOT)/../node_modules/@react-native-community/async-storage/ios",
-					"$(SRCROOT)/../node_modules/@react-native-mapbox-gl/maps/ios/RCTMGL/**",
+					"$(SRCROOT)/../node_modules/react-native-print/ios/RNPrint",
+					"$(SRCROOT)/../node_modules/react-native-html-to-pdf/ios/RNHTMLtoPDF",
 				);
 				FRAMEWORK_SEARCH_PATHS = (
 				);
@@ -1688,10 +1741,14 @@
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 				);
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(SRCROOT)/../node_modules/react-native-device-info/ios/RNDeviceInfo",
+					"$(SRCROOT)/../node_modules/@mapbox/react-native-mapbox-gl/ios/RCTMGL/**",
 					"$(SRCROOT)/../node_modules/@react-native-community/geolocation/ios",
 					"$(SRCROOT)/../node_modules/react-native-languages/ios",
 					"$(SRCROOT)/../node_modules/react-native-sentry/ios/**",
@@ -1701,7 +1758,8 @@
 					"$(SRCROOT)/../node_modules/react-native-gesture-handler/ios/**",
 					"$(SRCROOT)/../node_modules/@react-native-community/netinfo/ios",
 					"$(SRCROOT)/../node_modules/@react-native-community/async-storage/ios",
-					"$(SRCROOT)/../node_modules/@react-native-mapbox-gl/maps/ios/RCTMGL/**",
+					"$(SRCROOT)/../node_modules/react-native-print/ios/RNPrint",
+					"$(SRCROOT)/../node_modules/react-native-html-to-pdf/ios/RNHTMLtoPDF",
 				);
 				FRAMEWORK_SEARCH_PATHS = (
 				);
