@@ -1,4 +1,6 @@
 import React, { Component } from 'react'
+import 'intl'
+import 'intl/locale-data/jsonp/en'
 import PropTypes from 'prop-types'
 import { View, Text, StyleSheet } from 'react-native'
 import { FormInput } from 'react-native-elements'
@@ -17,12 +19,20 @@ class TextInput extends Component {
   }
 
   onChangeText(text) {
-    this.setState({ text })
+    if (this.props.keyboardType === 'numeric' && text) {
+      //i have to remove the comas before adding the commas with Intl.NumberFormat. eg  if i add a number to a number with commas (102,313,212) then it will result to NaN so i have to remove  the commas first (102313212) and then use Intl.NumberFormat
+      this.setState({
+        text: new Intl.NumberFormat(
+          this.props.lng === 'en' ? 'pyg-PYG' : 'de-DE'
+        ).format(text.replace(/[,.]/g, ''))
+      })
+    } else {
+      this.setState({ text })
+    }
   }
 
   onEndEditing = () => {
     const { text } = this.state
-
     this.setState({
       text: text.trim(),
       status: text ? 'filled' : 'blur'
@@ -82,13 +92,15 @@ class TextInput extends Component {
     ) {
       return this.handleError(i18n.t('validation.validPhoneNumber'))
     }
-    if (
-      this.props.validation === 'number' &&
-      !validator.isNumeric(text) &&
-      !validator.isEmpty(text)
-    ) {
-      return this.handleError(i18n.t('validation.validNumber'))
-    }
+    //by default the user can only use commas dots and numbers in the numeric input. I am already removing the dots and commas before i add the number to the draft so there is no need for this check.
+
+    // if (
+    //   this.props.validation === 'number' &&
+    //   !validator.isNumeric(text) &&
+    //   !validator.isEmpty(text)
+    // ) {
+    //   return this.handleError(i18n.t('validation.validNumber'))
+    // }
 
     this.props.detectError(false, this.props.field)
   }
@@ -133,7 +145,6 @@ class TextInput extends Component {
     const status = this.props.status || this.state.status
 
     let showPlaceholder = status === 'blur' && !text
-
     return readonly && !text ? null : (
       <View style={{ marginBottom: 15 }}>
         {label && (
@@ -274,6 +285,7 @@ TextInput.propTypes = {
   upperCase: PropTypes.bool,
   multiline: PropTypes.bool,
   showErrors: PropTypes.bool,
+  lng: PropTypes.string,
   keyboardType: PropTypes.string,
   validation: PropTypes.oneOf([
     'email',

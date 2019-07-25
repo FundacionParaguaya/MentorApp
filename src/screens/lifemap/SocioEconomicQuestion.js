@@ -1,4 +1,6 @@
 import React, { Component } from 'react'
+import 'intl'
+import 'intl/locale-data/jsonp/en'
 import PropTypes from 'prop-types'
 import { View, StyleSheet, Text, Platform } from 'react-native'
 import { connect } from 'react-redux'
@@ -269,7 +271,14 @@ export class SocioEconomicQuestion extends Component {
           })
     }
   }
-
+  addDots = value => {
+    //commas are - pyg-PYG //// dots are - de-DE
+    return value
+      ? new Intl.NumberFormat(
+          this.props.lng === 'en' ? 'pyg-PYG' : 'de-DE'
+        ).format(value.replace(/[,.]/g, ''))
+      : ''
+  }
   onPressCheckbox = (text, field) => {
     const { draft } = this.state
 
@@ -316,9 +325,9 @@ export class SocioEconomicQuestion extends Component {
     let currentDraft
     const newAnswer = {
       key: question.codeName,
-      value
+      value:
+        question.answerType === 'number' ? value.replace(/[,.]/g, '') : value
     }
-
     if (question.forFamilyMember) {
       currentDraft = getDraftWithUpdatedFamilyEconomics(
         this.state.draft,
@@ -438,7 +447,10 @@ export class SocioEconomicQuestion extends Component {
                     placeholder={question.questionText}
                     showErrors={showErrors}
                     field={question.codeName}
-                    value={this.getFieldValue(question.codeName, 'value') || ''}
+                    lng={this.props.lng || 'en'}
+                    value={this.addDots(
+                      this.getFieldValue(question.codeName, 'value') || ''
+                    )}
                     detectError={this.detectError}
                     readonly={this.readOnly}
                     validation="number"
@@ -572,12 +584,13 @@ export class SocioEconomicQuestion extends Component {
                           placeholder={question.questionText}
                           showErrors={showErrors}
                           field={question.codeName}
-                          value={
+                          lng={this.props.lng || 'en'}
+                          value={this.addDots(
                             this.getFamilyMemberFieldValue(
                               question.codeName,
                               i
                             ) || ''
-                          }
+                          )}
                           detectError={this.detectError}
                           readonly={this.readOnly}
                           validation="number"
@@ -626,7 +639,8 @@ SocioEconomicQuestion.propTypes = {
   navigation: PropTypes.object.isRequired,
   addSurveyDataCheckBox: PropTypes.func,
   drafts: PropTypes.array,
-  nav: PropTypes.object
+  nav: PropTypes.object,
+  lng: PropTypes.String
 }
 
 const styles = StyleSheet.create({
