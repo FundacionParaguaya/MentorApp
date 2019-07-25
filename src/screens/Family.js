@@ -438,10 +438,9 @@ export class Family extends Component {
               <ScrollView>
                 <Text
                   style={{ ...styles.lifemapCreated, ...globalStyles.h3 }}
-                >{`${t('views.family.created')}:  ${moment
-                  .unix(this.familyLifemap.createdAt)
-                  .utc()
-                  .format('MMM DD, YYYY')}`}</Text>
+                >{`${t('views.family.created')}:  ${moment(
+                  this.familyLifemap.created
+                ).format('MMM DD, YYYY')}`}</Text>
                 <OverviewComponent
                   navigation={navigation}
                   familyLifemap={this.familyLifemap}
