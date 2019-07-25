@@ -11,7 +11,7 @@ const createTestProps = props => ({
   updateDraft: jest.fn(),
   navigation: {
     navigate: jest.fn(),
-    replace: jest.fn(),
+    push: jest.fn(),
     setParams: jest.fn(),
     getParam: jest.fn(param => {
       if (param === 'family') {
