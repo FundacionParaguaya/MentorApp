@@ -38,6 +38,15 @@ export const logout = () => ({
   type: USER_LOGOUT
 })
 
+// Download images/maps
+
+export const SET_DOWNLOADMAPSIMAGES = 'SET_DOWNLOADMAPSIMAGES'
+
+export const setDownloadMapsAndImages = downloadMapsAndImages => ({
+  type: SET_DOWNLOADMAPSIMAGES,
+  downloadMapsAndImages
+})
+
 // Dimensions
 
 export const SET_DIMENSIONS = 'SET_DIMENSIONS'
@@ -241,6 +250,12 @@ export const setSyncedItemAmount = (item, amount) => ({
   type: SET_SYNCED_ITEM_AMOUNT,
   item,
   amount
+})
+
+export const setSyncedState = (item, value) => ({
+  type: SET_SYNCED_STATE,
+  item,
+  value
 })
 
 export const setAppVersion = value => ({

@@ -9,7 +9,7 @@ import {
 } from 'react-native'
 import DeviceInfo from 'react-native-device-info'
 import AsyncStorage from '@react-native-community/async-storage'
-import MapboxGL from '@mapbox/react-native-mapbox-gl'
+import MapboxGL from '@react-native-mapbox-gl/maps'
 import { withNamespaces } from 'react-i18next'
 import { connect } from 'react-redux'
 import PropTypes from 'prop-types'
