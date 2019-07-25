@@ -32,22 +32,22 @@ export const getColor = value => {
   }
 }
 
-const renderTableRow = (indicatorsArray, survey, achievements, priorities) => {
-  return `<tr style="break-inside: avoid;page-break-inside: avoid;">
+const createTableRow = (indicatorsArray, survey, achievements, priorities) => {
+  return `<tr style="${styles.tableRow}">
     ${indicatorsArray
       .map(indicator => {
         const color = getColor(indicator.value)
         const title = getIndicatorQuestionByCodeName(indicator.key, survey)
-        return `<td style="width: ${100 / MAX_COLS}%">
-        <div style="position:relative;">
+        return `<td style="width: ${100 / MAX_COLS}%;${styles.tableData}">
+        <div style="${styles.indicatorWrapper}">
       ${
         achievements.some(a => a.indicator === indicator.key)
           ? achievementIcon
           : ''
       }
       ${priorities.some(p => p.indicator === indicator.key) ? priorityIcon : ''}
-      <div style="margin:0 auto;width:60px;border-radius:60px;height: 60px;background-color:${color};"></div>
-      <span style="display:block; text-align: center;height: 40px;padding: 5px; font-size: 14px;">${title}</span>
+      <div style="${styles.ball}background-color:${color};"></div>
+      <span style="${styles.indicatorName}">${title}</span>
       <div>
     </td>`
       })
@@ -72,18 +72,18 @@ const generateLifeMapHtmlTemplate = (draft, survey) => {
             <h2 style="${styles.participantName}">${reportTitle}, Life map</h2>
             <h2 style="${styles.date}">Created on: ${dateCreated}</h2>
         </div>
-        <table style="table-layout:fixed;width:100%; border-collapse:separate; border-spacing:0 3rem;">${indicatorsList
-          .map((indicator, index) => {
-            if (index % MAX_COLS === 0) {
-              return renderTableRow(
-                indicatorsList.slice(index, index + MAX_COLS),
-                survey,
-                achievements,
-                priorities
-              )
-            }
-          })
-          .join('')}
+        <table style="${styles.table}">${indicatorsList
+    .map((indicator, index) => {
+      if (index % MAX_COLS === 0) {
+        return createTableRow(
+          indicatorsList.slice(index, index + MAX_COLS),
+          survey,
+          achievements,
+          priorities
+        )
+      }
+    })
+    .join('')}
         </table>`
 }
 
