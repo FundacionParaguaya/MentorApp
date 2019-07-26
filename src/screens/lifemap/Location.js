@@ -690,7 +690,7 @@ export class Location extends Component {
             pitchEnabled={false}
             onRegionDidChange={this.onDragMap}
           >
-            <MapboxGL.UserLocation />
+            <MapboxGL.UserLocation visible={false} />
             <MapboxGL.Camera
               defaultSettings={{
                 centerCoordinate: [
@@ -705,8 +705,8 @@ export class Location extends Component {
               ]}
               minZoomLevel={10}
               maxZoomLevel={16}
-              followUserLocation
-              followUserMode={'normal'}
+              // followUserLocation
+              // followUserMode={'normal'}
             />
           </MapboxGL.MapView>
           {!this.readOnly && (
