@@ -77,35 +77,66 @@ const createTableRow = (indicatorsArray, survey, achievements, priorities) => {
             </tr>`
 }
 
-const generatePrioritiesTable = (priorities, dateCreated) => {
+const generatePrioritiesTable = (
+  priorities,
+  dateCreated,
+  survey,
+  indicatorsArray,
+  lng
+) => {
   return `<div style="${styles.wrapperPriority}">
-            <h2 style="${
-              styles.title
-            }">My Priorities ${priorityIconWithoutStyles}</h2>
-            <h2 style="${styles.date}">Created on: </h2>
+            <h2 style="${styles.title}">${lng(
+    'views.lifemap.myPriorities'
+  )} ${priorityIconWithoutStyles}</h2>
+            <h2 style="${styles.date};margin-top:40px;">${dateCreated}</h2>
           </div>
-          <table stye="${styles.tableWithHeader}">
-          
+          <table cellspacing="0" stye="${styles.tableWithHeader}">
             <tr>
-              <th style="${styles.tHeader}">Status</th>
-              <th style="${styles.tHeader}">Indicator</th>
-              <th style="${styles.tHeader}">Why don't you have it</th>
-              <th style="${styles.tHeader}">What will you do to get it?</th>
-              <th style="${styles.tHeader}">Months required</th>
-              <th style="${styles.tHeader}">Review date</th>
+              <th style="${styles.tHeader}">${lng('views.lifemap.status')}</th>
+              <th style="${styles.tHeader};text-align:left;">${lng(
+    'views.lifemap.indicator'
+  )}</th>
+              <th style="${styles.tHeader}">${lng(
+    'views.lifemap.whyDontYouHaveIt'
+  )}</th>
+              <th style="${styles.tHeader}">${lng(
+    'views.lifemap.whatWillYouDoToGetIt'
+  )}</th>
+              <th style="${styles.tHeader}">${lng(
+    'views.lifemap.monthsRequired'
+  )}</th>
+              <th style="${styles.tHeader}">${lng(
+    'views.lifemap.reviewDate'
+  )}</th>
             </tr>
             ${priorities
-              .map(priority => {
+              .map((priority, index) => {
+                const stripe = index % 2 !== 0
                 const { reason, action, estimatedDate, indicator } = priority
-                return `<tr>
-                          <td style="text-align:center">Status goes here</td>
-                          <td style="text-align:center;text-transform:uppercase">${indicator}</td>
-                          <td style="text-align:center">${reason}</td>
-                          <td style="text-align:center">${action}</td>
-                          <td style="text-align:center">${estimatedDate}</td>
+                const indicatorValue = indicatorsArray.find(
+                  i => i.key === indicator
+                ).value
+                const color = getColor(indicatorValue)
+                return `<tr style="${stripe ? 'background-color:#eeeeee' : ''}">
+                          <td style="${styles.tData}">
+                            <div style="${styles.indicatorWrapper}">
+                              <div style="${
+                                styles.smallBall
+                              }background-color:${color};"></div>
+                            <div>
+                        </td>
+                          <td style="${
+                            styles.tData
+                          }text-transform:capitalize;text-align:left;">${getIndicatorQuestionByCodeName(
+                  indicator,
+                  survey
+                )}</td>
+                          <td style="${styles.tData}">${reason}</td>
+                          <td style="${styles.tData}">${action}</td>
+                          <td style="${styles.tData}">${estimatedDate}</td>
                           <td style="text-align:center">${moment(dateCreated)
-                            .add(estimatedDate, 'M')
-                            .format('DD-MMMM-YYYY')}</td>
+                            .add(estimatedDate, 'months')
+                            .format('DD MMM, YYYY')}</td>
                         </tr>`
               })
               .join('')}
@@ -113,22 +144,19 @@ const generatePrioritiesTable = (priorities, dateCreated) => {
           </table>`
 }
 
-const generateLifeMapHtmlTemplate = (draft, survey) => {
+const generateLifeMapHtmlTemplate = (draft, survey, lng) => {
   const indicatorsList = draft.indicatorSurveyDataList
   const achievements = draft.achievements
   const priorities = draft.priorities
   const dateCreated =
-    draft &&
-    draft.created &&
-    moment
-      .utc(draft.created)
-      .format('DD-MMMM-YYYY')
-      .replace(/-/g, ' / ')
+    draft && draft.created && moment.utc(draft.created).format('MMMM D, YYYY')
   const reportTitle = getReportTitle(draft)
 
   return `<div style="${styles.wrapper}">
-            <h2 style="${styles.title}">${reportTitle}, Life map</h2>
-            <h2 style="${styles.date}">Created on: ${dateCreated}</h2>
+            <h2 style="${styles.title}">${reportTitle}, ${lng(
+    'views.lifemap.lifeMap'
+  )}</h2>
+            <h2 style="${styles.date}">${dateCreated}</h2>
           </div>
           <table style="${styles.table}">${indicatorsList
     .map((indicator, index) => {
@@ -143,19 +171,25 @@ const generateLifeMapHtmlTemplate = (draft, survey) => {
     })
     .join('')}
         </table>
-        ${generatePrioritiesTable(priorities, dateCreated)}
+        ${generatePrioritiesTable(
+          priorities,
+          dateCreated,
+          survey,
+          indicatorsList,
+          lng
+        )}
         `
 }
 
-export const buildPrintOptions = (draft, survey) => {
+export const buildPrintOptions = (draft, survey, lng) => {
   return {
-    html: generateLifeMapHtmlTemplate(draft, survey)
+    html: generateLifeMapHtmlTemplate(draft, survey, lng)
   }
 }
 
-export const buildPDFOptions = (draft, survey) => {
+export const buildPDFOptions = (draft, survey, lng) => {
   return {
-    html: generateLifeMapHtmlTemplate(draft, survey),
+    html: generateLifeMapHtmlTemplate(draft, survey, lng),
     fileName: `${getReportTitle(draft)}, Life Map`,
     directory: 'docs',
     padding: 0,

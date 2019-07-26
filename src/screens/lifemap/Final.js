@@ -103,7 +103,7 @@ export class Final extends Component {
     try {
       const fileName = getReportTitle(this.draft)
       const filePath = `${RNFetchBlob.fs.dirs.DownloadDir}/${fileName}.pdf`
-      const pdfOptions = buildPDFOptions(this.draft, this.survey)
+      const pdfOptions = buildPDFOptions(this.draft, this.survey, this.props.t)
       const pdf = await RNHTMLtoPDF.convert(pdfOptions)
 
       RNFetchBlob.fs
@@ -129,7 +129,7 @@ export class Final extends Component {
 
   async print() {
     this.setState({ printing: true })
-    const options = buildPrintOptions(this.draft, this.survey)
+    const options = buildPrintOptions(this.draft, this.survey, this.props.t)
     try {
       await RNPrint.print(options)
       this.setState({ printing: false })

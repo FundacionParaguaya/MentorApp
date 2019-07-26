@@ -155,7 +155,13 @@
       "achievements": "Achievements",
       "toComplete": "To complete the Life Map...",
       "makePriority": "Make this a priority!",
-      "makeAchievement": "Mark achievement!"
+      "makeAchievement": "Mark achievement!",
+      "status": "status",
+      "indicator": "indicator",
+      "monthsRequired": "Months required",
+      "reviewDate": "REVIEW DATE",
+      "myPriorities": "My priorities",
+      "lifeMap": "Life Map"
     },
     "modals": {
       "lifeMapWillNotBeSaved": "If you do not enter all details on this page the Life Map will not be saved!",
