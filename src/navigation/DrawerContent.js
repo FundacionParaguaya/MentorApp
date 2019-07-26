@@ -7,6 +7,7 @@ import {
   View,
   Platform
 } from 'react-native'
+import { StackActions, NavigationActions } from 'react-navigation'
 import DeviceInfo from 'react-native-device-info'
 import AsyncStorage from '@react-native-community/async-storage'
 import MapboxGL from '@react-native-mapbox-gl/maps'
@@ -69,7 +70,12 @@ export class DrawerContent extends Component {
       AsyncStorage.clear(() => {
         this.props.logout()
         this.closeLogoutModal()
-        this.props.navigation.navigate('Login')
+
+        const resetAction = StackActions.reset({
+          index: 0,
+          actions: [NavigationActions.navigate({ routeName: 'loginStack' })]
+        })
+        this.props.navigation.dispatch(resetAction)
       })
     } else {
       this.setState({
