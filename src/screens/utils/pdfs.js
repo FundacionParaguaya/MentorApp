@@ -1,6 +1,11 @@
 import colors from '../../theme.json'
 import moment from 'moment'
-import { priorityIcon, achievementIcon, styles } from './assets'
+import {
+  priorityIcon,
+  achievementIcon,
+  styles,
+  priorityIconWithoutStyles
+} from './assets'
 
 const MAX_COLS = 6
 
@@ -34,45 +39,126 @@ export const getColor = value => {
 
 const createTableRow = (indicatorsArray, survey, achievements, priorities) => {
   return `<tr style="${styles.tableRow}">
-    ${indicatorsArray
-      .map(indicator => {
-        const color = getColor(indicator.value)
-        const title = getIndicatorQuestionByCodeName(indicator.key, survey)
-        return `<td style="width: ${100 / MAX_COLS}%;${styles.tableData}">
-        <div style="${styles.indicatorWrapper}">
-      ${
-        achievements.some(a => a.indicator === indicator.key)
-          ? achievementIcon
-          : ''
-      }
-      ${priorities.some(p => p.indicator === indicator.key) ? priorityIcon : ''}
-      <div style="${styles.ball}background-color:${color};"></div>
-      <span style="${styles.indicatorName}">${title}</span>
-      <div>
-    </td>`
-      })
-      .join('')}
-  </tr>`
+              ${indicatorsArray
+                .map(indicator => {
+                  const color = getColor(indicator.value)
+                  const title = getIndicatorQuestionByCodeName(
+                    indicator.key,
+                    survey
+                  )
+                  return `<td style="width: ${100 / MAX_COLS}%;${
+                    styles.tableData
+                  }">
+                              <div style="${styles.indicatorWrapper}">
+                            ${
+                              achievements.some(
+                                a => a.indicator === indicator.key
+                              )
+                                ? achievementIcon
+                                : ''
+                            }
+                            ${
+                              priorities.some(
+                                p => p.indicator === indicator.key
+                              )
+                                ? priorityIcon
+                                : ''
+                            }
+                            <div style="${
+                              styles.ball
+                            }background-color:${color};"></div>
+                            <span style="${
+                              styles.indicatorName
+                            }">${title}</span>
+                            <div>
+                          </td>`
+                })
+                .join('')}
+            </tr>`
 }
 
-const generateLifeMapHtmlTemplate = (draft, survey) => {
+const generatePrioritiesTable = (
+  priorities,
+  dateCreated,
+  survey,
+  indicatorsArray,
+  lng
+) => {
+  return `<div style="${styles.wrapperPriority}">
+            <h2 style="${styles.title}">${lng(
+    'views.lifemap.myPriorities'
+  )} ${priorityIconWithoutStyles}</h2>
+            <h2 style="${styles.date};margin-top:40px;">${dateCreated}</h2>
+          </div>
+          <table cellspacing="0" stye="${styles.tableWithHeader}">
+            <tr>
+              <th style="${styles.tHeader}">${lng('views.lifemap.status')}</th>
+              <th style="${styles.tHeader};text-align:left;">${lng(
+    'views.lifemap.indicator'
+  )}</th>
+              <th style="${styles.tHeader}">${lng(
+    'views.lifemap.whyDontYouHaveIt'
+  )}</th>
+              <th style="${styles.tHeader}">${lng(
+    'views.lifemap.whatWillYouDoToGetIt'
+  )}</th>
+              <th style="${styles.tHeader}">${lng(
+    'views.lifemap.monthsRequired'
+  )}</th>
+              <th style="${styles.tHeader}">${lng(
+    'views.lifemap.reviewDate'
+  )}</th>
+            </tr>
+            ${priorities
+              .map((priority, index) => {
+                const stripe = index % 2 !== 0
+                const { reason, action, estimatedDate, indicator } = priority
+                const indicatorValue = indicatorsArray.find(
+                  i => i.key === indicator
+                ).value
+                const color = getColor(indicatorValue)
+                return `<tr style="${stripe ? 'background-color:#eeeeee' : ''}">
+                          <td style="${styles.tData}">
+                            <div style="${styles.indicatorWrapper}">
+                              <div style="${
+                                styles.smallBall
+                              }background-color:${color};"></div>
+                            <div>
+                        </td>
+                          <td style="${
+                            styles.tData
+                          }text-transform:capitalize;text-align:left;">${getIndicatorQuestionByCodeName(
+                  indicator,
+                  survey
+                )}</td>
+                          <td style="${styles.tData}">${reason}</td>
+                          <td style="${styles.tData}">${action}</td>
+                          <td style="${styles.tData}">${estimatedDate}</td>
+                          <td style="text-align:center">${moment(dateCreated)
+                            .add(estimatedDate, 'months')
+                            .format('DD MMM, YYYY')}</td>
+                        </tr>`
+              })
+              .join('')}
+            
+          </table>`
+}
+
+const generateLifeMapHtmlTemplate = (draft, survey, lng) => {
   const indicatorsList = draft.indicatorSurveyDataList
   const achievements = draft.achievements
   const priorities = draft.priorities
   const dateCreated =
-    draft &&
-    draft.created &&
-    moment
-      .utc(draft.created)
-      .format('DD-MMMM-YYYY')
-      .replace(/-/g, ' / ')
+    draft && draft.created && moment.utc(draft.created).format('MMMM D, YYYY')
   const reportTitle = getReportTitle(draft)
 
   return `<div style="${styles.wrapper}">
-            <h2 style="${styles.participantName}">${reportTitle}, Life map</h2>
-            <h2 style="${styles.date}">Created on: ${dateCreated}</h2>
-        </div>
-        <table style="${styles.table}">${indicatorsList
+            <h2 style="${styles.title}">${reportTitle}, ${lng(
+    'views.lifemap.lifeMap'
+  )}</h2>
+            <h2 style="${styles.date}">${dateCreated}</h2>
+          </div>
+          <table style="${styles.table}">${indicatorsList
     .map((indicator, index) => {
       if (index % MAX_COLS === 0) {
         return createTableRow(
@@ -84,18 +170,26 @@ const generateLifeMapHtmlTemplate = (draft, survey) => {
       }
     })
     .join('')}
-        </table>`
+        </table>
+        ${generatePrioritiesTable(
+          priorities,
+          dateCreated,
+          survey,
+          indicatorsList,
+          lng
+        )}
+        `
 }
 
-export const buildPrintOptions = (draft, survey) => {
+export const buildPrintOptions = (draft, survey, lng) => {
   return {
-    html: generateLifeMapHtmlTemplate(draft, survey)
+    html: generateLifeMapHtmlTemplate(draft, survey, lng)
   }
 }
 
-export const buildPDFOptions = (draft, survey) => {
+export const buildPDFOptions = (draft, survey, lng) => {
   return {
-    html: generateLifeMapHtmlTemplate(draft, survey),
+    html: generateLifeMapHtmlTemplate(draft, survey, lng),
     fileName: `${getReportTitle(draft)}, Life Map`,
     directory: 'docs',
     padding: 0,
