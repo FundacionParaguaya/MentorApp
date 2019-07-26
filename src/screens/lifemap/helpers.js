@@ -39,12 +39,48 @@ export const getTotalScreens = survey => {
   )
 }
 
+/*
+    - NOTHING IS REQUIRED
+    "requiredFields": {
+      "primaryParticipant": [],
+      "familyMember": []
+    }
+
+    - APPLY DEFAULT VALIDATION FOR ALL FIELDS
+    "requiredFields": {
+      "primaryParticipant": null,
+      "familyMember": null
+    }
+
+    - APPLY DEFAULT VALIDATION FOR "primaryParticipant"
+        AND FOR "familyMember" SET ONLY BIRTHDAY FIELD AS REQUIRED
+    "requiredFields": {
+      "primaryParticipant": null,
+      "familyMember": ["birthDate"]
+    }
+*/
+export const setValidationSchema = (
+  requiredFieldsForSurvey,
+  field,
+  defaultValidation
+) => {
+  if (!requiredFieldsForSurvey || !field) {
+    return defaultValidation
+  }
+
+  return Array.isArray(requiredFieldsForSurvey)
+    ? requiredFieldsForSurvey.length
+      ? requiredFieldsForSurvey.some(f => f === field)
+      : false
+    : defaultValidation
+}
+
 export const setScreen = (screenData, draft, step) => {
   const SKIP_SCREEN_WITH_ONE_STEP = step
 
-  /* 'fromBeginLifemap' when pressing baack on the last screen we receive 
-      current screen === totalScreens : 
-      to get actual data for current -1 , to get data previous screen -1  
+  /* 'fromBeginLifemap' when pressing baack on the last screen we receive
+      current screen === totalScreens :
+      to get actual data for current -1 , to get data previous screen -1
       that caused the -2 value */
 
   const QUESTIONS_FOR_NEXT_SCREEN =

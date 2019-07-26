@@ -437,7 +437,13 @@ export class Location extends Component {
     } else {
       this.props.updateDraft(draft.draftId, draft)
 
-      this.props.navigation.replace('SocioEconomicQuestion', {
+      const nextPage =
+        this.survey.surveyEconomicQuestions &&
+        this.survey.surveyEconomicQuestions.length
+          ? 'SocioEconomicQuestion'
+          : 'BeginLifemap'
+
+      this.props.navigation.replace(nextPage, {
         draft,
         survey: this.survey
       })

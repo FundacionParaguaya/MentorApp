@@ -15,7 +15,7 @@ import Button from '../../components/Button'
 import globalStyles from '../../globalStyles'
 import { updateDraft, submitDraft } from '../../redux/actions'
 import { url } from '../../config'
-import { prepareDraftForSubmit } from '../utils/helpers'
+import { prepareDraftForSubmit, isDemoDraft } from '../utils/helpers'
 import {
   buildPDFOptions,
   buildPrintOptions,
@@ -103,7 +103,7 @@ export class Final extends Component {
     try {
       const fileName = getReportTitle(this.draft)
       const filePath = `${RNFetchBlob.fs.dirs.DownloadDir}/${fileName}.pdf`
-      const pdfOptions = buildPDFOptions(this.draft, this.survey)
+      const pdfOptions = buildPDFOptions(this.draft, this.survey, this.props.t)
       const pdf = await RNHTMLtoPDF.convert(pdfOptions)
 
       RNFetchBlob.fs
@@ -129,7 +129,7 @@ export class Final extends Component {
 
   async print() {
     this.setState({ printing: true })
-    const options = buildPrintOptions(this.draft, this.survey)
+    const options = buildPrintOptions(this.draft, this.survey, this.props.t)
     try {
       await RNPrint.print(options)
       this.setState({ printing: false })
@@ -140,6 +140,8 @@ export class Final extends Component {
 
   render() {
     const { t } = this.props
+    const isDemo = isDemoDraft(this.survey) || false
+
     return (
       <ScrollView
         style={globalStyles.background}
@@ -189,15 +191,17 @@ export class Final extends Component {
             />
           </View>
         </View>
-        <View style={{ height: 50 }}>
-          <Button
-            id="save-draft"
-            colored
-            loading={this.state.loading}
-            text={t('general.close')}
-            handleClick={this.saveDraft}
-          />
-        </View>
+        {!isDemo && (
+          <View style={{ height: 50 }}>
+            <Button
+              id="save-draft"
+              colored
+              loading={this.state.loading}
+              text={t('general.close')}
+              handleClick={this.saveDraft}
+            />
+          </View>
+        )}
       </ScrollView>
     )
   }
