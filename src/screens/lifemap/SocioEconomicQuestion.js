@@ -125,7 +125,6 @@ export class SocioEconomicQuestion extends Component {
 
   componentDidMount() {
     const { draft } = this.state
-
     this.props.navigation.setParams({
       getCurrentDraftState: () => this.state.draft
     })
@@ -276,7 +275,7 @@ export class SocioEconomicQuestion extends Component {
     //commas are - pyg-PYG //// dots are - de-DE
     return value
       ? new Intl.NumberFormat(
-          this.props.lng === 'en' ? 'pyg-PYG' : 'de-DE'
+          this.props.language === 'es' ? 'de-DE' : 'pyg-PYG'
         ).format(value.replace(/[,.]/g, ''))
       : ''
   }
@@ -447,7 +446,7 @@ export class SocioEconomicQuestion extends Component {
                     placeholder={question.questionText}
                     showErrors={showErrors}
                     field={question.codeName}
-                    lng={this.props.lng || 'en'}
+                    lng={this.props.language || 'en'}
                     value={this.addDots(
                       this.getFieldValue(question.codeName, 'value') || ''
                     )}
@@ -603,7 +602,7 @@ export class SocioEconomicQuestion extends Component {
                           placeholder={question.questionText}
                           showErrors={showErrors}
                           field={question.codeName}
-                          lng={this.props.lng || 'en'}
+                          lng={this.props.language || 'en'}
                           value={this.addDots(
                             this.getFamilyMemberFieldValue(
                               question.codeName,
@@ -659,7 +658,7 @@ SocioEconomicQuestion.propTypes = {
   addSurveyDataCheckBox: PropTypes.func,
   drafts: PropTypes.array,
   nav: PropTypes.object,
-  lng: PropTypes.String
+  language: PropTypes.string
 }
 
 const styles = StyleSheet.create({
@@ -691,7 +690,11 @@ const styles = StyleSheet.create({
 
 const mapDispatchToProps = {}
 
-const mapStateToProps = ({ drafts, nav }) => ({ drafts, nav })
+const mapStateToProps = ({ drafts, nav, language }) => ({
+  drafts,
+  nav,
+  language
+})
 
 export default withNamespaces()(
   connect(

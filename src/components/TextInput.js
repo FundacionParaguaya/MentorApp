@@ -23,7 +23,7 @@ class TextInput extends Component {
       //i have to remove the comas before adding the commas with Intl.NumberFormat. eg  if i add a number to a number with commas (102,313,212) then it will result to NaN so i have to remove  the commas first (102313212) and then use Intl.NumberFormat
       this.setState({
         text: new Intl.NumberFormat(
-          this.props.lng === 'en' ? 'pyg-PYG' : 'de-DE'
+          this.props.lng === 'es' ? 'de-DE' : 'pyg-PYG'
         ).format(text.replace(/[,.]/g, ''))
       })
     } else {
