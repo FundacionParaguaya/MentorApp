@@ -84,13 +84,15 @@ const generatePrioritiesTable = (
   indicatorsArray,
   lng
 ) => {
-  return `<div style="${styles.wrapperPriority}">
+  return `<div style="${styles.wrapperPriority};page-break-before: always;">
             <h2 style="${styles.title}">${lng(
     'views.lifemap.myPriorities'
   )} ${priorityIconWithoutStyles}</h2>
             <h2 style="${styles.date};margin-top:40px;">${dateCreated}</h2>
           </div>
-          <table cellspacing="0" stye="${styles.tableWithHeader}">
+          <table cellspacing="0" stye="${
+            styles.tableWithHeader
+          };page-break-after: always;">
             <tr>
               <th style="${styles.tHeader}">${lng('views.lifemap.status')}</th>
               <th style="${styles.tHeader};text-align:left;">${lng(
