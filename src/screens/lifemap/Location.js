@@ -183,7 +183,7 @@ export class Location extends Component {
   getCoordinatesOffline = () => {
     const { draft } = this.state
     const { familyData } = draft
-    this.setState({ askingForPermission: true })
+    // this.setState({ askingForPermission: true })
     if (
       this.survey.surveyConfig.offlineMaps &&
       !this.state.showOfflineMapsList
@@ -381,12 +381,9 @@ export class Location extends Component {
 
   async requestLocationPermission() {
     const isGranted = await MapboxGL.requestAndroidLocationPermissions()
-    if (isGranted) {
-      this.setState({
-        askingForPermission: isGranted,
-        loading: false
-      })
-    }
+    this.setState({
+      askingForPermission: isGranted
+    })
   }
 
   componentWillUnmount() {
@@ -705,8 +702,6 @@ export class Location extends Component {
               ]}
               minZoomLevel={10}
               maxZoomLevel={16}
-              // followUserLocation
-              // followUserMode={'normal'}
             />
           </MapboxGL.MapView>
           {!this.readOnly && (

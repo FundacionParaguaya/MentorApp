@@ -74,7 +74,7 @@ export class Loading extends Component {
           MapboxGL.offlineManager.createPack(
             {
               name: map.name,
-              styleURL: 'mapbox://styles/mapbox/outdoors-v9?optimize=true',
+              styleURL: MapboxGL.StyleURL.Street,
               ...map.options
             },
             this.onMapDownloadProgress,
@@ -85,7 +85,7 @@ export class Loading extends Component {
         MapboxGL.offlineManager.createPack(
           {
             name: map.name,
-            styleURL: 'mapbox://styles/mapbox/outdoors-v9?optimize=true',
+            styleURL: MapboxGL.StyleURL.Street,
             ...map.options
           },
           this.onMapDownloadProgress,
