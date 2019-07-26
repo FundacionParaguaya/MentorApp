@@ -21,6 +21,7 @@ Enzyme.configure({ adapter: new Adapter() })
 // mock device info
 jest.mock('react-native-device-info', () => {
   return {
+    getVersion: () => '1.1.1',
     getModel: jest.fn(),
     getFreeDiskStorage: jest.fn()
   }
@@ -33,7 +34,7 @@ jest.mock('react-native', () => require('react-native-mock-render'), {
 })
 
 // mock mapbox
-jest.mock('@mapbox/react-native-mapbox-gl', () => {
+jest.mock('@react-native-mapbox-gl/maps', () => {
   const React = require('React')
   const NativeModules = require('react-native')
 
@@ -156,6 +157,7 @@ jest.mock('@mapbox/react-native-mapbox-gl', () => {
 
     static PointAnnotation = props =>
       React.createElement('PointAnnotation', props, props.children)
+    /* eslint-disable react/prop-types */
 
     render() {
       return React.createElement('MapView', this.props, this.props.children)

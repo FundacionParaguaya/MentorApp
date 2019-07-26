@@ -1,12 +1,72 @@
 # Change Log
 
-## [Unreleased](https://github.com/FundacionParaguaya/MentorApp/tree/HEAD)
+## [v1.9.15](https://github.com/FundacionParaguaya/MentorApp/tree/v1.9.15) (2019-07-25)
+[Full Changelog](https://github.com/FundacionParaguaya/MentorApp/compare/v1.9.14...v1.9.15)
 
-[Full Changelog](https://github.com/FundacionParaguaya/MentorApp/compare/v1.9.14...HEAD)
+**Implemented enhancements:**
+
+- Removing a mandatory question in the family section on a per survey basis [\#893](https://github.com/FundacionParaguaya/MentorApp/issues/893)
+- Maps - update deprecated package [\#867](https://github.com/FundacionParaguaya/MentorApp/issues/867)
+- Update dependencies and git hooks [\#833](https://github.com/FundacionParaguaya/MentorApp/issues/833)
+- Warning on Logout review [\#501](https://github.com/FundacionParaguaya/MentorApp/issues/501)
+
+**Fixed bugs:**
+
+- Duplicated drafts  [\#953](https://github.com/FundacionParaguaya/MentorApp/issues/953)
+- Offline maps list is not showing when navigating back to Primary participant [\#948](https://github.com/FundacionParaguaya/MentorApp/issues/948)
+- FamilyMembers count not setting option for 'Prefer not to say"' [\#947](https://github.com/FundacionParaguaya/MentorApp/issues/947)
+- App re-navigating to Loading [\#944](https://github.com/FundacionParaguaya/MentorApp/issues/944)
+- Back button shouldn't work during login [\#939](https://github.com/FundacionParaguaya/MentorApp/issues/939)
+- Incorrect app version showing in drawer [\#918](https://github.com/FundacionParaguaya/MentorApp/issues/918)
+- Disable "Close" button on Final screen [\#908](https://github.com/FundacionParaguaya/MentorApp/issues/908)
+- Button does not show the title properly in priority section [\#904](https://github.com/FundacionParaguaya/MentorApp/issues/904)
+- Achievement Popup when selecting a yellow indicator [\#902](https://github.com/FundacionParaguaya/MentorApp/issues/902)
+- US - crash on skipped screen [\#864](https://github.com/FundacionParaguaya/MentorApp/issues/864)
+- Add skip screen functionality inside Socio Economics [\#854](https://github.com/FundacionParaguaya/MentorApp/issues/854)
+- Strange text in Retry screen [\#834](https://github.com/FundacionParaguaya/MentorApp/issues/834)
+- NoSuchKeyException lineNumber in ReadableNativeMap [\#636](https://github.com/FundacionParaguaya/MentorApp/issues/636)
 
 **Closed issues:**
 
+- Invalid date after syncing a survey [\#927](https://github.com/FundacionParaguaya/MentorApp/issues/927)
+- When clicking on the radio button in the synced survey we have an error [\#926](https://github.com/FundacionParaguaya/MentorApp/issues/926)
+- Editable indicators in the synced survey [\#925](https://github.com/FundacionParaguaya/MentorApp/issues/925)
+- add image to the top to the families screen. [\#924](https://github.com/FundacionParaguaya/MentorApp/issues/924)
+- Location-automatically find the location does not work. [\#921](https://github.com/FundacionParaguaya/MentorApp/issues/921)
+- wrong password in the wrong place error [\#915](https://github.com/FundacionParaguaya/MentorApp/issues/915)
+- Text amendments in new screens [\#903](https://github.com/FundacionParaguaya/MentorApp/issues/903)
 - Upload offline map for Chortitzer Paraguay [\#877](https://github.com/FundacionParaguaya/MentorApp/issues/877)
+- Life Map - Editorial Revision [\#875](https://github.com/FundacionParaguaya/MentorApp/issues/875)
+- Reduce required permission for the app [\#836](https://github.com/FundacionParaguaya/MentorApp/issues/836)
+- Indicator Definitions [\#789](https://github.com/FundacionParaguaya/MentorApp/issues/789)
+- Life Map Creation Process ¿End points? [\#261](https://github.com/FundacionParaguaya/MentorApp/issues/261)
+
+**Merged pull requests:**
+
+- fix/duplciate-drafts-hotfix-953 [\#956](https://github.com/FundacionParaguaya/MentorApp/pull/956) ([zommerberg](https://github.com/zommerberg))
+- Fixed componentDidMount not triggering inside BeginLifemap when navig… [\#954](https://github.com/FundacionParaguaya/MentorApp/pull/954) ([vasildimitroffhristoff](https://github.com/vasildimitroffhristoff))
+- Handle NetInfo listener to trigger determineScreen method only if sta… [\#952](https://github.com/FundacionParaguaya/MentorApp/pull/952) ([vasildimitroffhristoff](https://github.com/vasildimitroffhristoff))
+- Bugfix/947 family members count [\#951](https://github.com/FundacionParaguaya/MentorApp/pull/951) ([vasildimitroffhristoff](https://github.com/vasildimitroffhristoff))
+- Minimize app on Android backbuttobn press when on login page [\#946](https://github.com/FundacionParaguaya/MentorApp/pull/946) ([vasildimitroffhristoff](https://github.com/vasildimitroffhristoff))
+- fix/924-changed-families-design [\#934](https://github.com/FundacionParaguaya/MentorApp/pull/934) ([zommerberg](https://github.com/zommerberg))
+- fixed-invalid-date [\#933](https://github.com/FundacionParaguaya/MentorApp/pull/933) ([zommerberg](https://github.com/zommerberg))
+- fix-changed-the-icon-on-achievemnts [\#932](https://github.com/FundacionParaguaya/MentorApp/pull/932) ([zommerberg](https://github.com/zommerberg))
+- fix-926-fixed-radiobutton [\#931](https://github.com/FundacionParaguaya/MentorApp/pull/931) ([zommerberg](https://github.com/zommerberg))
+- improved the text on the loading [\#929](https://github.com/FundacionParaguaya/MentorApp/pull/929) ([zommerberg](https://github.com/zommerberg))
+- Dashboard-redesign [\#928](https://github.com/FundacionParaguaya/MentorApp/pull/928) ([zommerberg](https://github.com/zommerberg))
+- fix/904-button-width-wrong [\#923](https://github.com/FundacionParaguaya/MentorApp/pull/923) ([zommerberg](https://github.com/zommerberg))
+- Bugfix/854 skip screen [\#922](https://github.com/FundacionParaguaya/MentorApp/pull/922) ([vasildimitroffhristoff](https://github.com/vasildimitroffhristoff))
+- fix wrong password in the wrong place [\#920](https://github.com/FundacionParaguaya/MentorApp/pull/920) ([zommerberg](https://github.com/zommerberg))
+- fix/translation fixed \#903 [\#919](https://github.com/FundacionParaguaya/MentorApp/pull/919) ([zommerberg](https://github.com/zommerberg))
+- fix/loading percentages maps [\#917](https://github.com/FundacionParaguaya/MentorApp/pull/917) ([zommerberg](https://github.com/zommerberg))
+- feature/\#789-added-indicator-definitions [\#913](https://github.com/FundacionParaguaya/MentorApp/pull/913) ([zommerberg](https://github.com/zommerberg))
+- Fix close draft loading state [\#909](https://github.com/FundacionParaguaya/MentorApp/pull/909) ([Danman7](https://github.com/Danman7))
+- removeImage-newBranch-\#892 [\#905](https://github.com/FundacionParaguaya/MentorApp/pull/905) ([zommerberg](https://github.com/zommerberg))
+- fix \#834 syncError adding translation [\#901](https://github.com/FundacionParaguaya/MentorApp/pull/901) ([zommerberg](https://github.com/zommerberg))
+- fix/\#840 change achievemnts translations [\#900](https://github.com/FundacionParaguaya/MentorApp/pull/900) ([zommerberg](https://github.com/zommerberg))
+- fix-\#875 improved LifeMap translations [\#899](https://github.com/FundacionParaguaya/MentorApp/pull/899) ([zommerberg](https://github.com/zommerberg))
+- fix \#873 tags not displaying all text [\#898](https://github.com/FundacionParaguaya/MentorApp/pull/898) ([zommerberg](https://github.com/zommerberg))
+- fix-\#717-deny-location-bug [\#889](https://github.com/FundacionParaguaya/MentorApp/pull/889) ([zommerberg](https://github.com/zommerberg))
 
 ## [v1.9.14](https://github.com/FundacionParaguaya/MentorApp/tree/v1.9.14) (2019-07-15)
 [Full Changelog](https://github.com/FundacionParaguaya/MentorApp/compare/v1.9.13...v1.9.14)
@@ -21,6 +81,7 @@
 - App crashes in "Open" in Google Play Store [\#886](https://github.com/FundacionParaguaya/MentorApp/issues/886)
 - Maps loading over 100% in Loading.js [\#882](https://github.com/FundacionParaguaya/MentorApp/issues/882)
 - Sync error with ghost member [\#879](https://github.com/FundacionParaguaya/MentorApp/issues/879)
+- Tags not displaying all text [\#873](https://github.com/FundacionParaguaya/MentorApp/issues/873)
 - UK crash in resuming draft button [\#870](https://github.com/FundacionParaguaya/MentorApp/issues/870)
 - Crash on navigating to draft that is pending sync  [\#859](https://github.com/FundacionParaguaya/MentorApp/issues/859)
 - Crash on saving draft [\#851](https://github.com/FundacionParaguaya/MentorApp/issues/851)

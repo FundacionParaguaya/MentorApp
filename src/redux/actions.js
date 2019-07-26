@@ -38,6 +38,15 @@ export const logout = () => ({
   type: USER_LOGOUT
 })
 
+// Download images/maps
+
+export const SET_DOWNLOADMAPSIMAGES = 'SET_DOWNLOADMAPSIMAGES'
+
+export const setDownloadMapsAndImages = downloadMapsAndImages => ({
+  type: SET_DOWNLOADMAPSIMAGES,
+  downloadMapsAndImages
+})
+
 // Dimensions
 
 export const SET_DIMENSIONS = 'SET_DIMENSIONS'
@@ -77,7 +86,7 @@ export const loadSurveys = (env, token) => ({
         },
         body: JSON.stringify({
           query:
-            'query { surveysByUser { title id createdAt description minimumPriorities privacyPolicy { title  text } termsConditions{ title text }  surveyConfig { documentType {text value} requiredFields{primaryParticipant, familyMember} gender { text value} surveyLocation { country latitude longitude}  offlineMaps { from, to, center, name } }  surveyEconomicQuestions { questionText codeName answerType topic required forFamilyMember options {text value conditions{codeName, type, values, operator, valueType, showIfNoData}}, conditions{codeName, type, value, operator}, conditionGroups{groupOperator, joinNextGroup, conditions{codeName, type, value, operator}} } surveyStoplightQuestions { questionText codeName dimension id stoplightColors { url value description } required } } }'
+            'query { surveysByUser { title id createdAt description minimumPriorities privacyPolicy { title  text } termsConditions{ title text }  surveyConfig { documentType {text value} requiredFields{primaryParticipant, familyMember} gender { text value} surveyLocation { country latitude longitude}  offlineMaps { from, to, center, name } }  surveyEconomicQuestions { questionText codeName answerType topic required forFamilyMember options {text value conditions{codeName, type, values, operator, valueType, showIfNoData}}, conditions{codeName, type, value, operator}, conditionGroups{groupOperator, joinNextGroup, conditions{codeName, type, value, operator}} } surveyStoplightQuestions { questionText codeName definition dimension id stoplightColors { url value description } required } } }'
         })
       },
       commit: { type: LOAD_SURVEYS_COMMIT },
@@ -241,6 +250,12 @@ export const setSyncedItemAmount = (item, amount) => ({
   type: SET_SYNCED_ITEM_AMOUNT,
   item,
   amount
+})
+
+export const setSyncedState = (item, value) => ({
+  type: SET_SYNCED_STATE,
+  item,
+  value
 })
 
 export const setAppVersion = value => ({

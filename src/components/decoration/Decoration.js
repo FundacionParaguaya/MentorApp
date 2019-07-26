@@ -362,4 +362,3 @@ const styles = StyleSheet.create({
     zIndex: 2
   }
 })
-

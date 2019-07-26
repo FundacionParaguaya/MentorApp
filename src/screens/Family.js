@@ -24,7 +24,7 @@ import RoundImage from '../components/RoundImage'
 import Button from '../components/Button'
 import { url } from '../config'
 import { updateNav, submitDraft } from '../redux/actions'
-import MapboxGL from '@mapbox/react-native-mapbox-gl'
+import MapboxGL from '@react-native-mapbox-gl/maps'
 import marker from '../../assets/images/marker.png'
 import mapPlaceholderLarge from '../../assets/images/map_placeholder_1000.png'
 import { prepareDraftForSubmit } from './utils/helpers'
@@ -44,6 +44,7 @@ export class Family extends Component {
   }
   unsubscribeNetChange
   state = {
+    loading: false,
     activeTab: this.props.navigation.getParam('activeTab') || 'Details'
   }
   familyLifemap = this.props.navigation.getParam('familyLifemap')
@@ -117,16 +118,33 @@ export class Family extends Component {
   )
 
   retrySync = () => {
-    const draft = prepareDraftForSubmit(this.familyLifemap, this.survey)
+    if (this.state.loading) {
+      return
+    }
+    this.setState({ loading: true })
 
-    this.props.submitDraft(
-      url[this.props.env],
-      this.props.user.token,
-      draft.draftId,
-      draft
-    )
-    this.props.navigation.popToTop()
-    this.props.navigation.navigate('Dashboard')
+    this.prepareDraftForSubmit()
+  }
+
+  prepareDraftForSubmit() {
+    if (this.state.loading) {
+      const draft = prepareDraftForSubmit(this.familyLifemap, this.survey)
+
+      this.props.submitDraft(
+        url[this.props.env],
+        this.props.user.token,
+        draft.draftId,
+        draft
+      )
+      setTimeout(() => {
+        this.props.navigation.popToTop()
+        this.props.navigation.navigate('Dashboard')
+      }, 500)
+    } else {
+      setTimeout(() => {
+        this.prepareDraftForSubmit()
+      }, 200)
+    }
   }
 
   componentWillUnmount() {
@@ -189,19 +207,12 @@ export class Family extends Component {
                     <Image source={marker} />
                   </View>
                   <MapboxGL.MapView
-                    centerCoordinate={[
-                      +familyData.longitude || 0,
-                      +familyData.latitude || 0
-                    ]}
-                    zoomLevel={15}
                     style={{ width: '100%', height: 189 }}
                     logoEnabled={false}
                     zoomEnabled={false}
                     rotateEnabled={false}
                     scrollEnabled={false}
                     pitchEnabled={false}
-                    minZoomLevel={10}
-                    maxZoomLevel={15}
                     onPress={() => {
                       navigation.navigate('Location', {
                         readOnly: true,
@@ -209,7 +220,24 @@ export class Family extends Component {
                         family: this.familyLifemap
                       })
                     }}
-                  />
+                  >
+                    <MapboxGL.UserLocation />
+                    <MapboxGL.Camera
+                      defaultSettings={{
+                        centerCoordinate: [
+                          +familyData.longitude || 0,
+                          +familyData.latitude || 0
+                        ],
+                        zoomLevel: 15
+                      }}
+                      centerCoordinate={[
+                        +familyData.longitude || 0,
+                        +familyData.latitude || 0
+                      ]}
+                      minZoomLevel={10}
+                      maxZoomLevel={15}
+                    />
+                  </MapboxGL.MapView>
                 </View>
               ) : (
                 // Load Map Image
@@ -397,6 +425,7 @@ export class Family extends Component {
                         <Button
                           id="retry"
                           style={styles.button}
+                          loading={this.state.loading}
                           text={t('views.synced')}
                           handleClick={this.retrySync}
                         />
@@ -409,10 +438,9 @@ export class Family extends Component {
               <ScrollView>
                 <Text
                   style={{ ...styles.lifemapCreated, ...globalStyles.h3 }}
-                >{`${t('views.family.created')}:  ${moment
-                  .unix(this.familyLifemap.createdAt)
-                  .utc()
-                  .format('MMM DD, YYYY')}`}</Text>
+                >{`${t('views.family.created')}:  ${moment(
+                  this.familyLifemap.created
+                ).format('MMM DD, YYYY')}`}</Text>
                 <OverviewComponent
                   navigation={navigation}
                   familyLifemap={this.familyLifemap}
@@ -449,7 +477,8 @@ const styles = StyleSheet.create({
     alignItems: 'center'
   },
   button: {
-    marginTop: 20,
+    alignSelf: 'center',
+    marginVertical: 20,
     width: '100%',
     maxWidth: 400,
     backgroundColor: colors.palered
@@ -460,7 +489,6 @@ const styles = StyleSheet.create({
   },
   familiesIcon: {
     flex: 1,
-
     flexDirection: 'row',
     justifyContent: 'center',
     alignItems: 'center'

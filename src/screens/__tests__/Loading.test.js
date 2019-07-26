@@ -1,6 +1,6 @@
 import React from 'react'
 import { shallow } from 'enzyme'
-import { Loading, mapStateToProps } from '../Loading'
+import { Loading } from '../Loading'
 
 jest.useFakeTimers()
 
@@ -39,6 +39,12 @@ describe('Loading Component', () => {
   })
 
   it('maps proper state', () => {
-    expect(mapStateToProps({ sync: [] })).toEqual({ sync: [] })
+    expect(wrapper).toHaveState({
+      syncingServerData: false, // know when to show that data is synced
+      cachingImages: false,
+      downloadingMap: false,
+      maps: [],
+      error: null
+    })
   })
 })

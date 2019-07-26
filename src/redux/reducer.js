@@ -24,7 +24,8 @@ import {
   SET_SYNCED_STATE,
   RESET_SYNCED_STATE,
   SET_DIMENSIONS,
-  UPDATE_NAV
+  UPDATE_NAV,
+  SET_DOWNLOADMAPSIMAGES
 } from './actions'
 
 //Login
@@ -57,6 +58,20 @@ export const env = (state = 'production', action) => {
   switch (action.type) {
     case SET_ENV:
       return action.env
+    default:
+      return state
+  }
+}
+
+//Download Maps or images
+
+export const downloadMapsAndImages = (
+  state = { downloadMaps: true, downloadImages: true },
+  action
+) => {
+  switch (action.type) {
+    case SET_DOWNLOADMAPSIMAGES:
+      return action.downloadMapsAndImages
     default:
       return state
   }
@@ -292,6 +307,7 @@ export const sync = (
   state = {
     appVersion: null,
     surveys: false,
+    maps: false,
     surveysError: false,
     families: false,
     familiesError: false,
@@ -336,8 +352,10 @@ export const sync = (
       }
     case RESET_SYNCED_STATE:
       return {
+        ...state,
         surveys: false,
         surveysError: false,
+        maps: false,
         families: false,
         familiesError: false,
         images: {
@@ -388,6 +406,7 @@ const appReducer = combineReducers({
   hydration,
   sync,
   dimensions,
+  downloadMapsAndImages,
   nav
 })
 
@@ -441,6 +460,7 @@ export const rootReducer = (state, action) => {
         appVersion: null,
         surveys: false,
         surveysError: false,
+        maps: false,
         families: false,
         familiesError: false,
         images: {
@@ -461,13 +481,7 @@ export const rootReducer = (state, action) => {
     Sentry.setExtraContext({
       payload: action.meta.sanitizedSnapshot,
       familyMembersList:
-        action.meta.sanitizedSnapshot.familyData.familyMembersList,
-      errors:
-        action.payload.response &&
-        action.payload.response.errors &&
-        action.payload.response.errors.length
-          ? action.payload.response.errors
-          : []
+        action.meta.sanitizedSnapshot.familyData.familyMembersList
     })
 
     Sentry.setTagsContext({
@@ -483,21 +497,7 @@ export const rootReducer = (state, action) => {
 
     Sentry.captureBreadcrumb({
       message: 'Sync error',
-      category: 'action',
-      data: {
-        error:
-          action.payload.response &&
-          action.payload.response.errors &&
-          action.payload.response.errors.length
-            ? action.payload.response.errors[0].message
-            : 'Undefined server error',
-        description:
-          action.payload.response &&
-          action.payload.response.errors &&
-          action.payload.response.errors.length
-            ? action.payload.response.errors[0].description
-            : ''
-      }
+      category: 'action'
     })
     Sentry.captureException('Sync error')
   }

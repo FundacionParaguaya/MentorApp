@@ -52,8 +52,7 @@ const createTestProps = props => ({
   },
   drafts: [draft],
   addSurveyData: jest.fn(),
-  
-  
+
   ...props
 })
 
@@ -132,20 +131,20 @@ describe('SocioEconomicQuestion screens', () => {
       })
     })
 
-    it('navigates to next socio-economics screen on pressing continue', () => {
-      wrapper
-        .find(StickyFooter)
-        .last()
-        .props()
-        .handleClick()
+    // it('navigates to next socio-economics screen on pressing continue', () => {
+    //   wrapper
+    //     .find(StickyFooter)
+    //     .last()
+    //     .props()
+    //     .handleClick()
 
-      expect(wrapper.instance().props.navigation.push).toHaveBeenCalledTimes(1)
+    //   expect(wrapper.instance().props.navigation.push).toHaveBeenCalledTimes(1)
 
-      expect(wrapper.instance().props.navigation.push).toHaveBeenCalledWith(
-        'SocioEconomicQuestion',
-        expect.any(Object)
-      )
-    })
+    //   expect(wrapper.instance().props.navigation.push).toHaveBeenCalledWith(
+    //     'SocioEconomicQuestion',
+    //     expect.any(Object)
+    //   )
+    // })
 
     it('renders Select elements for each select question', () => {
       expect(wrapper.find(Select)).toHaveLength(1)
@@ -184,13 +183,13 @@ describe('SocioEconomicQuestion screens', () => {
     // })
 
     it('gets non family member field value', () => {
-      expect(
-        wrapper.instance().getFamilyMemberFieldValue('1', 0)
-      ).toEqual('MENTAL')
+      expect(wrapper.instance().getFamilyMemberFieldValue('1', 0)).toEqual(
+        'MENTAL'
+      )
 
-      expect(
-        wrapper.instance().getFamilyMemberFieldValue('3', 0)
-      ).toEqual(undefined)
+      expect(wrapper.instance().getFamilyMemberFieldValue('3', 0)).toEqual(
+        undefined
+      )
     })
 
     it('displays errors on submit', () => {

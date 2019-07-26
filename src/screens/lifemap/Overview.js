@@ -136,11 +136,11 @@ export class Overview extends Component {
       >
         {this.state.draft.status === 'Draft' ? (
           <View style={{ alignItems: 'center' }}>
-            <Text style={[globalStyles.h2Bold, styles.heading]}>      
-            {t('views.lifemap.congratulations')}
+            <Text style={[globalStyles.h2Bold, styles.heading]}>
+              {t('views.lifemap.congratulations')}
             </Text>
             <Text style={[globalStyles.h2Bold, styles.heading]}>
-            {t('views.lifemap.youCreatedALifeMap')}
+              {t('views.lifemap.youCreatedALifeMap')}
             </Text>
           </View>
         ) : null}

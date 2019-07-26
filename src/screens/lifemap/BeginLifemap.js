@@ -48,7 +48,7 @@ export class BeginLifemap extends Component {
         ? 'SocioEconomicQuestion'
         : 'Location'
 
-    this.props.navigation.replace(previousPage, {
+    this.props.navigation.push(previousPage, {
       fromBeginLifemap: true,
       survey: this.survey,
       draft: this.state.draft

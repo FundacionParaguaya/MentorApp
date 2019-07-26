@@ -8,6 +8,8 @@ import { withNamespaces } from 'react-i18next'
 import { getTotalEconomicScreens } from './helpers'
 import colors from '../../theme.json'
 import SliderComponent from '../../components/Slider'
+import Icon from 'react-native-vector-icons/MaterialIcons'
+import Popup from '../../components/Popup'
 
 export class Question extends Component {
   step = this.props.navigation.getParam('step')
@@ -17,7 +19,8 @@ export class Question extends Component {
   slides = this.indicator.stoplightColors
   readOnly = this.props.navigation.getParam('readOnly')
   state = {
-    draft: this.props.navigation.getParam('draft') || {}
+    draft: this.props.navigation.getParam('draft') || {},
+    showDefinition: false
   }
 
   componentDidMount() {
@@ -165,15 +168,14 @@ export class Question extends Component {
         survey: this.survey
       })
     } else
-      this.props.navigation.navigate('BeginLifemap', {
+      this.props.navigation.push('BeginLifemap', {
         draft: this.state.draft,
         survey: this.survey
       })
   }
-
   render() {
     const { draft } = this.state
-
+    //added a popup component to the Question.js instead of adding it to the modals folder because it is really smol and does not do much
     const { t } = this.props
     return (
       <StickyFooter
@@ -189,12 +191,60 @@ export class Question extends Component {
         }
         currentScreen="Question"
       >
+        {this.state.showDefinition ? (
+          <Popup
+            priorOrAchievement
+            definition
+            isOpen={this.state.showDefinition}
+            onClose={() => this.setState({ showDefinition: false })}
+          >
+            <Icon
+              style={styles.closeIconStyle}
+              onPress={() => this.setState({ showDefinition: false })}
+              name="close"
+              size={20}
+            />
+            <Text
+              style={{
+                textAlign: 'center',
+                marginBottom: 20,
+                fontWeight: 'bold',
+                fontSize: 15
+              }}
+            >
+              {t('views.lifemap.indicatorDefinition')}
+            </Text>
+            <Text
+              style={{
+                fontSize: 15
+              }}
+            >
+              {this.indicator.definition ? this.indicator.definition : null}
+            </Text>
+          </Popup>
+        ) : null}
+
         <SliderComponent
           slides={this.slides}
           value={this.getFieldValue(this.indicator.codeName)}
           selectAnswer={this.selectAnswer}
         />
         <View style={styles.skip}>
+          {this.indicator.definition ? (
+            <Icon
+              onPress={() => this.setState({ showDefinition: true })}
+              name="info"
+              color={colors.palegrey}
+              size={40}
+              style={{
+                color: colors.palegreen,
+                position: 'absolute',
+                top: '55%',
+                left: '10%'
+              }}
+            />
+          ) : null}
+
           {this.indicator.required ? (
             <Text>{t('views.lifemap.responseRequired')}</Text>
           ) : (
@@ -211,7 +261,13 @@ export class Question extends Component {
 }
 
 const styles = StyleSheet.create({
+  closeIconStyle: {
+    color: colors.palegreen,
+    marginLeft: 'auto',
+    fontSize: 35
+  },
   skip: {
+    position: 'relative',
     justifyContent: 'center',
     alignItems: 'center',
     paddingTop: 20,
