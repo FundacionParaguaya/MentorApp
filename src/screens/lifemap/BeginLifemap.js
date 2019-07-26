@@ -42,7 +42,13 @@ export class BeginLifemap extends Component {
   }
 
   onPressBack = () => {
-    this.props.navigation.push('SocioEconomicQuestion', {
+    const previousPage =
+      this.survey.surveyEconomicQuestions &&
+      this.survey.surveyEconomicQuestions.length
+        ? 'SocioEconomicQuestion'
+        : 'Location'
+
+    this.props.navigation.push(previousPage, {
       fromBeginLifemap: true,
       survey: this.survey,
       draft: this.state.draft
