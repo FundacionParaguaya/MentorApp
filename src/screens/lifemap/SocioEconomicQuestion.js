@@ -125,6 +125,7 @@ export class SocioEconomicQuestion extends Component {
 
   componentDidMount() {
     const { draft } = this.state
+
     this.props.navigation.setParams({
       getCurrentDraftState: () => this.state.draft
     })
@@ -354,7 +355,6 @@ export class SocioEconomicQuestion extends Component {
   render() {
     const { t } = this.props
     const { showErrors, draft } = this.state
-
     const socioEconomics = this.props.navigation.getParam('socioEconomics')
     const questionsForThisScreen = socioEconomics
       ? socioEconomics.questionsPerScreen[socioEconomics.currentScreen - 1]
