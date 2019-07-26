@@ -127,7 +127,7 @@ export class Location extends Component {
   getCoordinatesOnline = survey => {
     const { draft } = this.state
     const { familyData } = draft
-    this.setState({ askingForPermission: true })
+    // this.setState({ askingForPermission: true })
     Geolocation.getCurrentPosition(
       // if location is available and we are online center on it
       position => {
@@ -321,6 +321,7 @@ export class Location extends Component {
   }
 
   componentDidMount() {
+    this.requestLocationPermission()
     // check if online first
     NetInfo.fetch().then(state => {
       this.determineScreenState(state.isConnected)
@@ -376,6 +377,16 @@ export class Location extends Component {
       'keyboardDidHide',
       this._keyboardDidHide
     )
+  }
+
+  async requestLocationPermission() {
+    const isGranted = await MapboxGL.requestAndroidLocationPermissions()
+    if (isGranted) {
+      this.setState({
+        askingForPermission: isGranted,
+        loading: false
+      })
+    }
   }
 
   componentWillUnmount() {
@@ -694,6 +705,8 @@ export class Location extends Component {
               ]}
               minZoomLevel={10}
               maxZoomLevel={16}
+              followUserLocation
+              followUserMode={'normal'}
             />
           </MapboxGL.MapView>
           {!this.readOnly && (
