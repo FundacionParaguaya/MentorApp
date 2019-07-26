@@ -5,8 +5,7 @@ export const styles = {
   title: 'width:50%;height:40px;font-size:20px;',
   date:
     'width: 50%;height:40px;margin-left: auto;text-align:right;font-size:18px;',
-  table:
-    'break-inside: avoid;page-break-inside: avoid;table-layout:fixed;width:100%; border-collapse:separate; border-spacing:0 3rem;',
+  table: 'table-layout:fixed;width:100%; border-spacing:0 2rem;',
   indicatorName:
     'display:block; text-align: center;height: 40px;padding: 5px; font-size: 14px;',
   ball: 'margin:0 auto;width:60px;border-radius:60px;height: 60px;',
