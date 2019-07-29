@@ -1,6 +1,12 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
-import { View, StyleSheet, Modal, TouchableHighlight } from 'react-native'
+import {
+  View,
+  StyleSheet,
+  Modal,
+  TouchableHighlight,
+  ScrollView
+} from 'react-native'
 import colors from '../theme.json'
 
 export default class Popup extends Component {
@@ -34,14 +40,14 @@ export default class Popup extends Component {
                 >
                   <View />
                 </TouchableHighlight>
-                <View
+                <ScrollView
                   id="modal"
                   style={styles.modal}
                   accessible={true}
                   accessibilityLiveRegion="assertive"
                 >
                   {children}
-                </View>
+                </ScrollView>
               </View>
             ) : (
               <React.Fragment>
