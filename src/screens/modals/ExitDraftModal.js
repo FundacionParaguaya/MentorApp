@@ -16,7 +16,6 @@ export class ExitDraftModal extends Component {
     const { navigation } = this.props
     const draft = navigation.getParam('draft')
     const isNewDraft = navigation.getParam('isNewDraft')
-    const screen = navigation.getParam('screen')
     const survey = navigation.getParam('survey')
     const isDemo = isDemoDraft(survey)
 
@@ -37,11 +36,6 @@ export class ExitDraftModal extends Component {
     })
 
     this.props.navigation.dispatch(resetAction)
-
-    // navigate to appropriate screen if present in params
-    if (screen) {
-      this.props.navigation.navigate(screen)
-    }
   }
 
   onClose = () => {
