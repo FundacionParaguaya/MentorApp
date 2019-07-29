@@ -46,7 +46,8 @@
     "redux-thunk": "^2.3.0",
     "rn-fetch-blob": "^0.10.16",
     "uuid": "^3.3.2",
-    "validator": "^10.9.0"
+    "validator": "^10.9.0",
+    "jsc-android": "241213.1.0"
   },
   "devDependencies": {
     "@babel/polyfill": "^7.4.4",
