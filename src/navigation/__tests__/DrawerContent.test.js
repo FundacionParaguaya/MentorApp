@@ -44,13 +44,4 @@ describe('Drawer Content', () => {
 
     expect(spy).toHaveBeenCalledTimes(1)
   })
-  it('check for errror on log out', () => {
-    wrapper.setState({ checkboxesVisible: true })
-    wrapper.instance().logUserOut()
-    expect(wrapper).toHaveState({ showErrors: true })
-  })
-  it('resets error state on loging out', () => {
-    wrapper.instance().logUserOut()
-    expect(wrapper).toHaveState({ showErrors: false })
-  })
 })
