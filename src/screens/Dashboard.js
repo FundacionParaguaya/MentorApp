@@ -115,7 +115,13 @@ export class Dashboard extends Component {
   }
 
   render() {
-    const { t, drafts } = this.props
+    const { t, drafts, families } = this.props
+
+    const allDraftFamilies = drafts.filter(
+      d => d.status === 'Draft' || d.status === 'Pending sync'
+    ).length
+    const countFamilies = families.length + allDraftFamilies
+
     return (
       <AndroidBackHandler onBackPress={() => true}>
         <View style={globalStyles.ViewMainContainer}>
@@ -150,7 +156,7 @@ export class Dashboard extends Component {
                     </View>
 
                     <Text style={{ ...styles.familiesCount }}>
-                      {this.props.families.length} {t('views.families')}
+                      {countFamilies} {t('views.families')}
                     </Text>
                   </View>
                   <View
