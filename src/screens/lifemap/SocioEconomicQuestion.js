@@ -1,6 +1,4 @@
 import React, { Component } from 'react'
-import 'intl'
-import 'intl/locale-data/jsonp/en'
 import PropTypes from 'prop-types'
 import { View, StyleSheet, Text, Platform } from 'react-native'
 import { connect } from 'react-redux'
@@ -273,12 +271,12 @@ export class SocioEconomicQuestion extends Component {
     }
   }
   addDots = value => {
-    //commas are - pyg-PYG //// dots are - de-DE
     return value
-      ? new Intl.NumberFormat(
-          this.props.language === 'es' ? 'de-DE' : 'pyg-PYG'
-        ).format(value.replace(/[,.]/g, ''))
-      : ''
+      .toString()
+      .replace(
+        /(\d)(?=(\d{3})+(?!\d))/g,
+        this.props.language === 'en' ? '$1,' : '$1.'
+      )
   }
   onPressCheckbox = async (text, field) => {
     const { draft } = this.state

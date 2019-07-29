@@ -1,6 +1,4 @@
 import React, { Component } from 'react'
-import 'intl'
-import 'intl/locale-data/jsonp/en'
 import PropTypes from 'prop-types'
 import { View, Text, StyleSheet } from 'react-native'
 import { FormInput } from 'react-native-elements'
@@ -22,9 +20,12 @@ class TextInput extends Component {
     if (this.props.keyboardType === 'numeric' && text) {
       //i have to remove the comas before adding the commas with Intl.NumberFormat. eg  if i add a number to a number with commas (102,313,212) then it will result to NaN so i have to remove  the commas first (102313212) and then use Intl.NumberFormat
       this.setState({
-        text: new Intl.NumberFormat(
-          this.props.lng === 'es' ? 'de-DE' : 'pyg-PYG'
-        ).format(text.replace(/[,.]/g, ''))
+        text: text
+          .replace(/[,.]/g, '')
+          .replace(
+            /(\d)(?=(\d{3})+(?!\d))/g,
+            this.props.lng === 'en' ? '$1,' : '$1.'
+          )
       })
     } else {
       this.setState({ text })
