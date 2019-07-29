@@ -44,7 +44,7 @@ export class DrawerContent extends Component {
 
     // allow the user to logout only if he checks all boxes
     if (!checkboxesVisible || (checkboxesVisible && ckeckedBoxes === 4)) {
-      NativeModules.ToastExample.deleteCache()
+      NativeModules.DeleteModule.deleteCache()
     } else {
       this.setState({
         showErrors: true

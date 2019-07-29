@@ -9,7 +9,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-public class CustomToastPackage implements ReactPackage {
+public class CustomDeletePackage implements ReactPackage {
 
   @Override
   public List<ViewManager> createViewManagers(ReactApplicationContext reactContext) {
@@ -21,7 +21,7 @@ public class CustomToastPackage implements ReactPackage {
                               ReactApplicationContext reactContext) {
     List<NativeModule> modules = new ArrayList<>();
 
-    modules.add(new ToastModule(reactContext));
+    modules.add(new DeleteModule(reactContext));
 
     return modules;
   }

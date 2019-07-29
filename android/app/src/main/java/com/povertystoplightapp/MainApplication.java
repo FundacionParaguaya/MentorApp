@@ -1,5 +1,5 @@
 package com.povertystoplightapp;
-import com.povertystoplightapp.CustomToastPackage;
+import com.povertystoplightapp.CustomDeletePackage;
 import android.app.Application;
 import com.facebook.react.ReactApplication;
 import com.christopherdro.htmltopdf.RNHTMLtoPDFPackage;
@@ -41,7 +41,7 @@ public class MainApplication extends Application implements ReactApplication {
       return Arrays.<ReactPackage>asList(
         
           new MainReactPackage(),
-          new CustomToastPackage(),
+          new CustomDeletePackage(),
             new RNHTMLtoPDFPackage(),
             new RNPrintPackage(),
             new RCTMGLPackage(),
