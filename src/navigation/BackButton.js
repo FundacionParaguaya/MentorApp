@@ -35,6 +35,8 @@ class BackButton extends Component {
         ? navigation.getParam('onPressBack')()
         : navigation.goBack()
     }
+
+    // Return true needed for the BackHanler button to denote that we have handled the event
     return true
   }
 
