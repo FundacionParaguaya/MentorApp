@@ -16,6 +16,8 @@ class BackButton extends Component {
     const firstLifeMapScreen =
       navigation.state.routeName &&
       navigation.state.routeName === 'FamilyParticipant'
+    const survey =
+      navigation.state.params.survey && navigation.getParam('survey')
 
     // open the exit modal with the params it needs
     if (readOnly) {
@@ -25,19 +27,13 @@ class BackButton extends Component {
     } else if (isNewDraft || firstLifeMapScreen) {
       this.props.navigation.navigate('ExitDraftModal', {
         draft,
-        isNewDraft
+        isNewDraft,
+        survey
       })
     } else {
       navigation.getParam('onPressBack')
         ? navigation.getParam('onPressBack')()
         : navigation.goBack()
-    }
-  }
-
-  handleBackHandlerPress = () => {
-    const { navigation } = this.props
-    if (navigation.getParam('onPressBack')) {
-      navigation.getParam('onPressBack')()
     }
     return true
   }
