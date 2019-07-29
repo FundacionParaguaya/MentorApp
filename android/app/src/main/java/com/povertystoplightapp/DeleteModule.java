@@ -24,7 +24,6 @@ public class DeleteModule extends ReactContextBaseJavaModule {
     public void deleteCache() {
         try {
             Context context = getReactApplicationContext();
-            // throw new SecurityException("Logout error");
             ((ActivityManager)context.getSystemService(Context.ACTIVITY_SERVICE)).clearApplicationUserData();
         } catch (Exception e) { 
             e.printStackTrace();}
