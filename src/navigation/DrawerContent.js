@@ -5,12 +5,10 @@ import {
   Text,
   StyleSheet,
   View,
-  Platform
+  Platform,
+  NativeModules
 } from 'react-native'
-import { StackActions, NavigationActions } from 'react-navigation'
 import DeviceInfo from 'react-native-device-info'
-import AsyncStorage from '@react-native-community/async-storage'
-import MapboxGL from '@react-native-mapbox-gl/maps'
 import { withNamespaces } from 'react-i18next'
 import { connect } from 'react-redux'
 import PropTypes from 'prop-types'
@@ -46,37 +44,7 @@ export class DrawerContent extends Component {
 
     // allow the user to logout only if he checks all boxes
     if (!checkboxesVisible || (checkboxesVisible && ckeckedBoxes === 4)) {
-      this.setState({
-        showErrors: false,
-        logingOut: true
-      })
-
-      // delete the cached map packs
-      if (MapboxGL.offlineManager) {
-        MapboxGL.offlineManager
-          .getPacks()
-          .then(packs => {
-            packs.forEach(
-              async pack =>
-                await MapboxGL.offlineManager.deletePack(
-                  JSON.parse(pack.pack.metadata).name
-                )
-            )
-          })
-          .catch(() => {})
-      }
-
-      // clear the async storage and reset the store
-      AsyncStorage.clear(() => {
-        this.props.logout()
-        this.closeLogoutModal()
-
-        const resetAction = StackActions.reset({
-          index: 0,
-          actions: [NavigationActions.navigate({ routeName: 'loginStack' })]
-        })
-        this.props.navigation.dispatch(resetAction)
-      })
+      NativeModules.ToastExample.deleteCache()
     } else {
       this.setState({
         showErrors: true

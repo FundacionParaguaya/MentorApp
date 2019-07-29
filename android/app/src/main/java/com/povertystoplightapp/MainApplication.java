@@ -1,5 +1,5 @@
 package com.povertystoplightapp;
-
+import com.povertystoplightapp.CustomToastPackage;
 import android.app.Application;
 import com.facebook.react.ReactApplication;
 import com.christopherdro.htmltopdf.RNHTMLtoPDFPackage;
@@ -39,7 +39,9 @@ public class MainApplication extends Application implements ReactApplication {
     @Override
     protected List<ReactPackage> getPackages() {
       return Arrays.<ReactPackage>asList(
+        
           new MainReactPackage(),
+          new CustomToastPackage(),
             new RNHTMLtoPDFPackage(),
             new RNPrintPackage(),
             new RCTMGLPackage(),
@@ -81,3 +83,6 @@ public class MainApplication extends Application implements ReactApplication {
      MultiDex.install(this);
   }
 }
+
+
+
