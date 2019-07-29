@@ -74,14 +74,17 @@ class Checkbox extends Component {
           >
             <CheckBox
               disabled
-              title={this.props.title}
+              title={`${this.props.title}${showErrors && !checked ? ' *' : ''}`}
               iconType="material"
               checkedColor={checkboxColor || colors.palegreen}
               checkedIcon="check-box"
               uncheckedIcon="check-box-outline-blank"
               checked={checked}
               containerStyle={containerStyle || styles.containerStyle}
-              textStyle={[textStyle || styles.label]}
+              textStyle={[
+                textStyle || styles.label,
+                showErrors && !checked ? styles.error : {}
+              ]}
               accessibilityLabel={`${this.props.title}${
                 showErrors && !checked ? ' *' : ''
               } ${checked === true ? 'checked' : 'unchecked'}`}
