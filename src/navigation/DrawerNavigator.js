@@ -13,7 +13,13 @@ export default createDrawerNavigator(
       screen: DashboardStack
     },
     Surveys: {
-      screen: LifemapStack
+      screen: LifemapStack,
+      // Enable drawer when choosing a survey and disable it after that,
+      // when creating a Life Map
+      navigationOptions: ({ navigation }) => ({
+        drawerLockMode:
+          navigation.state.index === 0 ? 'unlocked' : 'locked-closed'
+      })
     },
     Families: {
       screen: FamiliesStack
