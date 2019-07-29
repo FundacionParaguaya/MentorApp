@@ -42,7 +42,7 @@ export default class Popup extends Component {
                 </TouchableHighlight>
                 <ScrollView
                   id="modal"
-                  style={styles.modal}
+                  style={styles.modalDefinition}
                   accessible={true}
                   accessibilityLiveRegion="assertive"
                 >
@@ -131,6 +131,14 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     backgroundColor: 'rgba(47,38,28, 0.2)'
   },
+  modalDefinition: {
+    maxWidth: 400,
+    backgroundColor: colors.white,
+    paddingVertical: 23,
+    padding: 28,
+    marginLeft: 20,
+    marginRight: 20
+  },
   modal: {
     width: 300,
     backgroundColor: colors.white,
@@ -143,8 +151,8 @@ const styles = StyleSheet.create({
     top: 0,
     left: 0,
     right: 0,
-    bottom: -100,
-    flexDirection: 'column',
+    bottom: 0,
+    flexDirection: 'row',
     justifyContent: 'center',
     alignItems: 'center',
     backgroundColor: 'rgba(47,38,28, 0.2)'
