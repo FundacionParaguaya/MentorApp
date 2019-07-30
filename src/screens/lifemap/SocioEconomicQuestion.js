@@ -1,6 +1,4 @@
 import React, { Component } from 'react'
-import 'intl'
-import 'intl/locale-data/jsonp/en'
 import PropTypes from 'prop-types'
 import { View, StyleSheet, Text, Platform } from 'react-native'
 import { connect } from 'react-redux'
@@ -44,6 +42,7 @@ export class SocioEconomicQuestion extends Component {
 
   errorsDetected = []
   state = {
+    checkboxError: false,
     errorsDetected: [],
     showErrors: false,
     draft:
@@ -272,14 +271,14 @@ export class SocioEconomicQuestion extends Component {
     }
   }
   addDots = value => {
-    //commas are - pyg-PYG //// dots are - de-DE
     return value
-      ? new Intl.NumberFormat(
-          this.props.language === 'es' ? 'de-DE' : 'pyg-PYG'
-        ).format(value.replace(/[,.]/g, ''))
-      : ''
+      .toString()
+      .replace(
+        /(\d)(?=(\d{3})+(?!\d))/g,
+        this.props.language === 'en' ? '$1,' : '$1.'
+      )
   }
-  onPressCheckbox = (text, field) => {
+  onPressCheckbox = async (text, field) => {
     const { draft } = this.state
 
     const question = draft.economicSurveyDataList.find(
@@ -287,7 +286,7 @@ export class SocioEconomicQuestion extends Component {
     )
 
     if (!question) {
-      this.setState({
+      await this.setState({
         draft: {
           ...draft,
           economicSurveyDataList: [
@@ -297,7 +296,7 @@ export class SocioEconomicQuestion extends Component {
         }
       })
     } else {
-      this.setState({
+      await this.setState({
         draft: {
           ...draft,
           economicSurveyDataList: [
@@ -312,6 +311,14 @@ export class SocioEconomicQuestion extends Component {
           ]
         }
       })
+    }
+    const questionAfterSave = this.state.draft.economicSurveyDataList.find(
+      item => item.key === field
+    )
+    if (questionAfterSave) {
+      !questionAfterSave.multipleValue.length
+        ? this.setState({ checkboxError: true })
+        : this.setState({ checkboxError: false })
     }
   }
 
@@ -408,7 +415,9 @@ export class SocioEconomicQuestion extends Component {
                       <View>
                         {question.answerType === 'radio' ? (
                           <Text style={{ marginLeft: 10, marginBottom: 15 }}>
-                            {question.questionText}
+                            {!question.required
+                              ? question.questionText
+                              : `${question.questionText}*`}
                           </Text>
                         ) : null}
                       </View>
@@ -473,7 +482,9 @@ export class SocioEconomicQuestion extends Component {
                   <View key={question.codeName}>
                     {this.readOnly && !multipleValue.length ? null : (
                       <Text style={{ marginLeft: 10 }}>
-                        {question.questionText}
+                        {!question.required
+                          ? question.questionText
+                          : `${question.questionText}*`}
                       </Text>
                     )}
 
@@ -496,6 +507,11 @@ export class SocioEconomicQuestion extends Component {
                         </View>
                       )
                     })}
+                    {question.required && this.state.checkboxError ? (
+                      <Text style={styles.error}>
+                        {t('validation.fieldIsRequired')}{' '}
+                      </Text>
+                    ) : null}
                   </View>
                 )
               } else {
@@ -662,6 +678,15 @@ SocioEconomicQuestion.propTypes = {
 }
 
 const styles = StyleSheet.create({
+  error: {
+    paddingLeft: 15,
+    paddingRight: 25,
+    // lineHeight: 50,
+    paddingTop: 10,
+    paddingBottom: 10,
+    minHeight: 50,
+    color: colors.red
+  },
   memberName: {
     marginHorizontal: 20,
     fontWeight: 'normal',

@@ -1,6 +1,12 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
-import { View, StyleSheet, Modal, TouchableHighlight } from 'react-native'
+import {
+  View,
+  StyleSheet,
+  Modal,
+  TouchableHighlight,
+  ScrollView
+} from 'react-native'
 import colors from '../theme.json'
 
 export default class Popup extends Component {
@@ -34,14 +40,14 @@ export default class Popup extends Component {
                 >
                   <View />
                 </TouchableHighlight>
-                <View
+                <ScrollView
                   id="modal"
-                  style={styles.modal}
+                  style={styles.modalDefinition}
                   accessible={true}
                   accessibilityLiveRegion="assertive"
                 >
                   {children}
-                </View>
+                </ScrollView>
               </View>
             ) : (
               <React.Fragment>
@@ -125,6 +131,14 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     backgroundColor: 'rgba(47,38,28, 0.2)'
   },
+  modalDefinition: {
+    maxWidth: 400,
+    backgroundColor: colors.white,
+    paddingVertical: 23,
+    padding: 28,
+    marginLeft: 20,
+    marginRight: 20
+  },
   modal: {
     width: 300,
     backgroundColor: colors.white,
@@ -137,8 +151,8 @@ const styles = StyleSheet.create({
     top: 0,
     left: 0,
     right: 0,
-    bottom: -100,
-    flexDirection: 'column',
+    bottom: 0,
+    flexDirection: 'row',
     justifyContent: 'center',
     alignItems: 'center',
     backgroundColor: 'rgba(47,38,28, 0.2)'
