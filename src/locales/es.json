@@ -50,6 +50,9 @@
     "december": "Diciembre"
   },
   "views": {
+    "DashGreen": "Verde",
+    "DashYellow": "Amarillo",
+    "DashRed": "Rojo",
     "synced": "Sincronización",
     "families": "Familias",
     "dashboard": "Stoplight Mobile",
