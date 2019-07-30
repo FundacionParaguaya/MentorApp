@@ -103,7 +103,12 @@ export class Final extends Component {
     try {
       const fileName = getReportTitle(this.draft)
       const filePath = `${RNFetchBlob.fs.dirs.DownloadDir}/${fileName}.pdf`
-      const pdfOptions = buildPDFOptions(this.draft, this.survey, this.props.t)
+      const pdfOptions = buildPDFOptions(
+        this.draft,
+        this.survey,
+        this.props.lng || 'en',
+        this.props.t
+      )
       const pdf = await RNHTMLtoPDF.convert(pdfOptions)
 
       RNFetchBlob.fs
@@ -129,7 +134,12 @@ export class Final extends Component {
 
   async print() {
     this.setState({ printing: true })
-    const options = buildPrintOptions(this.draft, this.survey, this.props.t)
+    const options = buildPrintOptions(
+      this.draft,
+      this.survey,
+      this.props.lng || 'en',
+      this.props.t
+    )
     try {
       await RNPrint.print(options)
       this.setState({ printing: false })
@@ -228,7 +238,8 @@ Final.propTypes = {
   updateDraft: PropTypes.func.isRequired,
   submitDraft: PropTypes.func.isRequired,
   env: PropTypes.string.isRequired,
-  user: PropTypes.object.isRequired
+  user: PropTypes.object.isRequired,
+  lng: PropTypes.string.isRequired
 }
 
 const mapStateToProps = ({ env, user }) => ({

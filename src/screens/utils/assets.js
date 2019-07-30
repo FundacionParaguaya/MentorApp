@@ -7,7 +7,7 @@ export const styles = {
     'width: 50%;height:40px;margin-left: auto;text-align:right;font-size:18px;',
   table: 'table-layout:fixed;width:100%; border-spacing:0 2rem;',
   indicatorName:
-    'display:block; text-align: center;height: 40px;padding: 5px; font-size: 14px;',
+    'display:block; text-align: center;height: 65px;padding: 5px; font-size: 12px;',
   ball: 'margin:0 auto;width:60px;border-radius:60px;height: 60px;',
   smallBall: 'margin:0 auto;width:30px;border-radius:30px;height: 30px;',
   indicatorWrapper:

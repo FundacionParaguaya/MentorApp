@@ -1,6 +1,6 @@
 {
   "name": "PovertyStoplightApp",
-  "version": "1.10.0-rc1",
+  "version": "1.10.0",
   "private": true,
   "scripts": {
     "start": "node node_modules/react-native/local-cli/cli.js start -- --reset-cache",
@@ -19,7 +19,6 @@
     "@react-native-community/netinfo": "^3.2.1",
     "@redux-offline/redux-offline": "^2.5.2",
     "i18next": "^12.1.0",
-    "intl": "^1.2.5",
     "localized-countries": "^1.0.2",
     "moment": "^2.22.2",
     "prop-types": "^15.6.2",

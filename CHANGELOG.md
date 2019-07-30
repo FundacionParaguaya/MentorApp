@@ -1,5 +1,60 @@
 # Change Log
 
+## [1.10.0](https://github.com/FundacionParaguaya/MentorApp/tree/1.10.0) (2019-07-29)
+[Full Changelog](https://github.com/FundacionParaguaya/MentorApp/compare/v1.9.15...1.10.0)
+
+**Implemented enhancements:**
+
+- Disable opening sidebar navigation when creating lifemap  [\#997](https://github.com/FundacionParaguaya/MentorApp/issues/997)
+- Include punctuation marks for thousand position [\#385](https://github.com/FundacionParaguaya/MentorApp/issues/385)
+
+**Fixed bugs:**
+
+- PDF not showing date in Spanish [\#994](https://github.com/FundacionParaguaya/MentorApp/issues/994)
+- Cannot click finish on a Demo survey [\#993](https://github.com/FundacionParaguaya/MentorApp/issues/993)
+- Pie chart translations for Dashboard [\#990](https://github.com/FundacionParaguaya/MentorApp/issues/990)
+- N° of families in main screen and profiles screen do not match [\#988](https://github.com/FundacionParaguaya/MentorApp/issues/988)
+- All checkboxes show as mandatory if clicking continue [\#986](https://github.com/FundacionParaguaya/MentorApp/issues/986)
+- Set location permissions on MapboxGL [\#983](https://github.com/FundacionParaguaya/MentorApp/issues/983)
+- Print version not optimal [\#979](https://github.com/FundacionParaguaya/MentorApp/issues/979)
+- Indicator definition box size not optimal [\#978](https://github.com/FundacionParaguaya/MentorApp/issues/978)
+- Wrong character for thousand position [\#977](https://github.com/FundacionParaguaya/MentorApp/issues/977)
+- Missing numbers in Reds, Yellows, & Greens [\#974](https://github.com/FundacionParaguaya/MentorApp/issues/974)
+- Re-visition socioecomics doesnt apply changes [\#969](https://github.com/FundacionParaguaya/MentorApp/issues/969)
+- logging out from socialEconomics. [\#962](https://github.com/FundacionParaguaya/MentorApp/issues/962)
+- The images load to 200% sometimes [\#961](https://github.com/FundacionParaguaya/MentorApp/issues/961)
+- the back button \(from the phone\) is not working properly [\#960](https://github.com/FundacionParaguaya/MentorApp/issues/960)
+- Error screen "we are having problems downloading offline maps" when exiting draft [\#949](https://github.com/FundacionParaguaya/MentorApp/issues/949)
+- Print version is split and priorities do not show [\#910](https://github.com/FundacionParaguaya/MentorApp/issues/910)
+
+**Closed issues:**
+
+- Delete cache on logout [\#1007](https://github.com/FundacionParaguaya/MentorApp/issues/1007)
+- Migrate Mapbox deprecated package  [\#938](https://github.com/FundacionParaguaya/MentorApp/issues/938)
+- A demo survey with NO mandatory questions [\#781](https://github.com/FundacionParaguaya/MentorApp/issues/781)
+
+**Merged pull requests:**
+
+- FEATURE/LOGOUT-DELETE-CACHE [\#1006](https://github.com/FundacionParaguaya/MentorApp/pull/1006) ([zommerberg](https://github.com/zommerberg))
+- Fixed different count numbers for families in Dash and Families screen [\#1003](https://github.com/FundacionParaguaya/MentorApp/pull/1003) ([vasildimitroffhristoff](https://github.com/vasildimitroffhristoff))
+- fix-indicators-definitions-978-boxSizing [\#1002](https://github.com/FundacionParaguaya/MentorApp/pull/1002) ([zommerberg](https://github.com/zommerberg))
+- Bugfix/backbutton [\#1001](https://github.com/FundacionParaguaya/MentorApp/pull/1001) ([vasildimitroffhristoff](https://github.com/vasildimitroffhristoff))
+- Fix/986 987 checkboxes and radio buttons [\#999](https://github.com/FundacionParaguaya/MentorApp/pull/999) ([zommerberg](https://github.com/zommerberg))
+- Feature/disable drawer [\#998](https://github.com/FundacionParaguaya/MentorApp/pull/998) ([vasildimitroffhristoff](https://github.com/vasildimitroffhristoff))
+- Fixes: added dates for Spanish, overlapping texts, refactor [\#995](https://github.com/FundacionParaguaya/MentorApp/pull/995) ([vasildimitroffhristoff](https://github.com/vasildimitroffhristoff))
+- punctuation fix [\#991](https://github.com/FundacionParaguaya/MentorApp/pull/991) ([zommerberg](https://github.com/zommerberg))
+- Print Priorities table on single page [\#989](https://github.com/FundacionParaguaya/MentorApp/pull/989) ([vasildimitroffhristoff](https://github.com/vasildimitroffhristoff))
+- Bugfix/map permissions [\#984](https://github.com/FundacionParaguaya/MentorApp/pull/984) ([vasildimitroffhristoff](https://github.com/vasildimitroffhristoff))
+- Bugfix/979 pdf print [\#982](https://github.com/FundacionParaguaya/MentorApp/pull/982) ([vasildimitroffhristoff](https://github.com/vasildimitroffhristoff))
+- fix/962-fixing-nagation-on-logout [\#980](https://github.com/FundacionParaguaya/MentorApp/pull/980) ([zommerberg](https://github.com/zommerberg))
+- Check for connection on login only if items are not fully cached [\#971](https://github.com/FundacionParaguaya/MentorApp/pull/971) ([Danman7](https://github.com/Danman7))
+- changed the onPressBakcFunction form replace with push [\#970](https://github.com/FundacionParaguaya/MentorApp/pull/970) ([zommerberg](https://github.com/zommerberg))
+- fix/dashboard-rendering-as-many-times-as-images [\#967](https://github.com/FundacionParaguaya/MentorApp/pull/967) ([zommerberg](https://github.com/zommerberg))
+- Bugfix/910 print [\#965](https://github.com/FundacionParaguaya/MentorApp/pull/965) ([vasildimitroffhristoff](https://github.com/vasildimitroffhristoff))
+- Feature/938 migrate mapbox pack [\#943](https://github.com/FundacionParaguaya/MentorApp/pull/943) ([vasildimitroffhristoff](https://github.com/vasildimitroffhristoff))
+- Feature/\#385 added punctuations [\#941](https://github.com/FundacionParaguaya/MentorApp/pull/941) ([zommerberg](https://github.com/zommerberg))
+- Feature/demo survey no mandatory [\#935](https://github.com/FundacionParaguaya/MentorApp/pull/935) ([vasildimitroffhristoff](https://github.com/vasildimitroffhristoff))
+
 ## [v1.9.15](https://github.com/FundacionParaguaya/MentorApp/tree/v1.9.15) (2019-07-25)
 [Full Changelog](https://github.com/FundacionParaguaya/MentorApp/compare/v1.9.14...v1.9.15)
 
@@ -77,7 +132,6 @@
 
 **Fixed bugs:**
 
-- Chile Geco - Syncing Errors / Pending Sync [\#890](https://github.com/FundacionParaguaya/MentorApp/issues/890)
 - App crashes in "Open" in Google Play Store [\#886](https://github.com/FundacionParaguaya/MentorApp/issues/886)
 - Maps loading over 100% in Loading.js [\#882](https://github.com/FundacionParaguaya/MentorApp/issues/882)
 - Sync error with ghost member [\#879](https://github.com/FundacionParaguaya/MentorApp/issues/879)
@@ -85,7 +139,6 @@
 - UK crash in resuming draft button [\#870](https://github.com/FundacionParaguaya/MentorApp/issues/870)
 - Crash on navigating to draft that is pending sync  [\#859](https://github.com/FundacionParaguaya/MentorApp/issues/859)
 - Crash on saving draft [\#851](https://github.com/FundacionParaguaya/MentorApp/issues/851)
-- Geco errors [\#825](https://github.com/FundacionParaguaya/MentorApp/issues/825)
 
 **Closed issues:**
 

@@ -69,5 +69,10 @@ const demoDrafts = [
   { id: 20, title: 'Stoplight Demo - English' }
 ]
 
-export const isDemoDraft = ({ id, title }) =>
-  demoDrafts.some(draft => draft.id === id && draft.title === title)
+export const isDemoDraft = survey => {
+  if (survey === undefined) {
+    return false
+  }
+  const { id, title } = survey
+  return demoDrafts.some(draft => draft.id === id && draft.title === title)
+}
