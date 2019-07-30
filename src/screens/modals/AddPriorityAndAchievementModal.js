@@ -184,7 +184,7 @@ export class AddPriorityAndAchievementModal extends Component {
     }
 
     return (
-      <Popup isOpen priorOrAchievement onClose={this.props.onClose}>
+      <Popup isOpen modifiedPopUp onClose={this.props.onClose}>
         <View>
           <View>
             <View
