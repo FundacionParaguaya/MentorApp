@@ -9,8 +9,11 @@ const createTestProps = props => ({
       param === 'survey'
         ? {
             id: 1,
-            termsConditions: { text: 'text', title: 'title' },
-            privacyPolicy: { text: 'text', title: 'title' }
+            termsConditions: {
+              text: 'some terms',
+              title: 'terms and conditions'
+            },
+            privacyPolicy: { text: 'some policy', title: 'privacy policy' }
           }
         : 'privacy',
     navigate: jest.fn(),
@@ -22,12 +25,13 @@ const createTestProps = props => ({
 
 describe('Terms/Privacy view', () => {
   let wrapper
+  let props
   beforeEach(() => {
-    const props = createTestProps()
+    props = createTestProps()
     wrapper = shallow(<Terms {...props} />)
   })
 
-  it('gets proper survey from redux', () => {})
+  it('receives proper survey from navigation', () => {})
 
   it('renders translated agree and disagree buttons', () => {
     expect(wrapper.find(Button)).toHaveLength(2)
@@ -42,34 +46,59 @@ describe('Terms/Privacy view', () => {
       .props()
       .handleClick()
 
-    expect(wrapper.instance().props.navigation.navigate).toHaveBeenCalledTimes(
-      1
-    )
+    expect(props.navigation.navigate).toHaveBeenCalledTimes(1)
 
-    expect(wrapper.instance().props.navigation.navigate).toHaveBeenCalledWith(
+    expect(props.navigation.navigate).toHaveBeenCalledWith(
       'FamilyParticipant',
       {
         page: undefined,
-        survey: {
-          id: 1,
-          privacyPolicy: { text: 'text', title: 'title' },
-          termsConditions: { text: 'text', title: 'title' }
-        }
+        survey: props.navigation.getParam('survey')
       }
     )
   })
-  it('disagreeing opens modal', () => {
+  it('disagreeing opens exit draft modal', () => {
     wrapper
       .find(Button)
       .first()
       .props()
       .handleClick()
 
-    expect(wrapper.instance().props.navigation.setParams).toHaveBeenCalledTimes(
-      1
+    expect(props.navigation.navigate).toHaveBeenCalledTimes(1)
+    expect(props.navigation.navigate).toHaveBeenCalledWith('ExitDraftModal')
+  })
+  it('shows proper contents based on page', () => {
+    expect(wrapper.find('#title')).toHaveHTML(
+      '<react-native-mock>privacy policy</react-native-mock>'
     )
-    expect(wrapper.instance().props.navigation.setParams).toHaveBeenCalledWith({
-      modalOpen: true
+    expect(wrapper.find('#content')).toHaveHTML(
+      '<react-native-mock>some policy</react-native-mock>'
+    )
+
+    props = createTestProps({
+      navigation: {
+        getParam: param =>
+          param === 'survey'
+            ? {
+                id: 1,
+                termsConditions: {
+                  text: 'some terms',
+                  title: 'terms and conditions'
+                },
+                privacyPolicy: { text: 'some policy', title: 'privacy policy' }
+              }
+            : 'terms',
+        navigate: jest.fn(),
+        setParams: jest.fn()
+      }
     })
+
+    wrapper = shallow(<Terms {...props} />)
+
+    expect(wrapper.find('#title')).toHaveHTML(
+      '<react-native-mock>terms and conditions</react-native-mock>'
+    )
+    expect(wrapper.find('#content')).toHaveHTML(
+      '<react-native-mock>some terms</react-native-mock>'
+    )
   })
 })

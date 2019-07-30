@@ -1,8 +1,9 @@
 import React from 'react'
 import { shallow } from 'enzyme'
-import { ScrollView, FlatList } from 'react-native'
+import { FlatList } from 'react-native'
 import { Surveys } from '../Surveys'
-import RoundImage from '../../components/RoundImage'
+
+jest.useFakeTimers()
 
 const createTestProps = props => ({
   loadSurveys: jest.fn(),
@@ -27,28 +28,38 @@ const createTestProps = props => ({
 
 describe('Surveys View', () => {
   let wrapper
+  let props
   beforeEach(() => {
-    const props = createTestProps()
+    props = createTestProps()
     wrapper = shallow(<Surveys {...props} />)
   })
-  describe('rendering', () => {
-    it('renders base View', () => {
-      expect(wrapper.find(ScrollView)).toHaveLength(1)
-    })
-    it('renders <RoundImage />', () => {
-      expect(wrapper.find(RoundImage)).toHaveLength(1)
-    })
-    it('renders FlatList', () => {
-      expect(wrapper.find(FlatList)).toHaveLength(1)
-    })
+
+  it('renders a list of surveys', () => {
+    expect(wrapper.find(FlatList).props().data).toEqual(props.surveys)
+
+    expect(
+      wrapper
+        .find(FlatList)
+        .props()
+        .keyExtractor(props.surveys[0], 0)
+    ).toEqual('0')
   })
-  describe('functionality', () => {
-    describe('functionality', () => {
-      it('passes the correct data to <FlatList />', () => {
-        expect(wrapper.find(FlatList).props().data).toEqual(
-          wrapper.instance().props.surveys
-        )
-      })
+
+  it('handles clicking on a survey', () => {
+    const spy = jest.spyOn(wrapper.instance(), 'handleClickOnSurvey')
+
+    wrapper
+      .find(FlatList)
+      .props()
+      .renderItem({ item: props.surveys[0] })
+      .props.handleClick()
+
+    expect(spy).toHaveBeenCalledTimes(1)
+    expect(spy).toHaveBeenCalledWith({ id: 1, title: 'Test survey 1' })
+
+    expect(props.navigation.navigate).toHaveBeenCalledWith('Terms', {
+      page: 'terms',
+      survey: { id: 1, title: 'Test survey 1' }
     })
   })
 })

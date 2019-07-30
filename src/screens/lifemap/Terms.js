@@ -20,11 +20,25 @@ const navigationRules = {
 }
 
 export class Terms extends Component {
-  render() {
-    const { t, navigation } = this.props
-    const survey = navigation.getParam('survey')
+  survey = this.props.navigation.getParam('survey')
+  page = this.props.navigation.getParam('page')
 
-    const page = navigation.getParam('page')
+  onClickDisagree = () => {
+    this.props.navigation.navigate('ExitDraftModal')
+  }
+
+  onClickAgree = () => {
+    const { navigation } = this.props
+
+    navigation.navigate(navigationRules[this.page].nextPage, {
+      page: navigationRules[this.page].param,
+      survey: this.survey
+    })
+  }
+  render() {
+    const { t } = this.props
+
+    const page = this.page
 
     return (
       <ScrollView
@@ -35,19 +49,19 @@ export class Terms extends Component {
           <Decoration variation="terms">
             <RoundImage source="check" />
           </Decoration>
-          <Text style={[globalStyles.h2Bold, styles.heading]}>
+          <Text id="title" style={[globalStyles.h2Bold, styles.heading]}>
             {page === 'terms'
-              ? survey.termsConditions.title
-              : survey.privacyPolicy.title}
+              ? this.survey.termsConditions.title
+              : this.survey.privacyPolicy.title}
           </Text>
 
           <Text id="content" style={[globalStyles.subline, styles.content]}>
             {page === 'terms' &&
-              survey.termsConditions.text &&
-              survey.termsConditions.text.replace(/\\n/g, '\n')}
+              this.survey.termsConditions.text &&
+              this.survey.termsConditions.text.replace(/\\n/g, '\n')}
             {page !== 'terms' &&
-              survey.privacyPolicy.text &&
-              survey.privacyPolicy.text.replace(/\\n/g, '\n')}
+              this.survey.privacyPolicy.text &&
+              this.survey.privacyPolicy.text.replace(/\\n/g, '\n')}
           </Text>
         </View>
         <View style={styles.buttonsBar}>
@@ -55,34 +69,19 @@ export class Terms extends Component {
             id="dissagree"
             text={t('general.disagree')}
             underlined
-            handleClick={() => navigation.setParams({ modalOpen: true })}
+            handleClick={this.onClickDisagree}
           />
           <Button
             id="agree"
             colored
             text={t('general.agree')}
-            handleClick={() =>
-              navigation.navigate(
-                navigationRules[navigation.getParam('page')].nextPage,
-                {
-                  page: navigationRules[navigation.getParam('page')].param,
-                  survey
-                }
-              )
-            }
+            handleClick={this.onClickAgree}
           />
         </View>
       </ScrollView>
     )
   }
 }
-
-Terms.propTypes = {
-  t: PropTypes.func.isRequired,
-  navigation: PropTypes.object.isRequired
-}
-
-export default withNamespaces()(Terms)
 
 const styles = StyleSheet.create({
   contentContainer: {
@@ -104,3 +103,10 @@ const styles = StyleSheet.create({
     flexDirection: 'row'
   }
 })
+
+Terms.propTypes = {
+  t: PropTypes.func.isRequired,
+  navigation: PropTypes.object.isRequired
+}
+
+export default withNamespaces()(Terms)
