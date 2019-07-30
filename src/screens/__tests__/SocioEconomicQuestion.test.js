@@ -46,10 +46,7 @@ const createTestProps = props => ({
     setParams: jest.fn(),
     isFocused: jest.fn(() => true)
   },
-  nav: {
-    conditionalQuestions: [],
-    elementsWithConditionsOnThem: { questionsWithConditionsOnThem: [] }
-  },
+
   drafts: [draft],
   addSurveyData: jest.fn(),
 
@@ -357,9 +354,7 @@ describe('Render optimization', () => {
     wrapper = shallow(<SocioEconomicQuestion {...props} />)
   })
   it('checks if screen is focused before updating', () => {
-    wrapper.setProps({
-      nav: { ...props.nav, draftId: 5 }
-    })
+    wrapper.setProps({})
     expect(wrapper.instance().props.navigation.isFocused).toHaveBeenCalledTimes(
       2
     )

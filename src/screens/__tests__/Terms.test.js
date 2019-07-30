@@ -1,8 +1,6 @@
 import React from 'react'
 import { shallow } from 'enzyme'
-import { ScrollView } from 'react-native'
 import { Terms } from '../lifemap/Terms'
-import RoundImage from '../../components/RoundImage'
 import Button from '../../components/Button'
 
 const createTestProps = props => ({
@@ -28,20 +26,16 @@ describe('Terms/Privacy view', () => {
     const props = createTestProps()
     wrapper = shallow(<Terms {...props} />)
   })
-  it('renders base ScrollView element', () => {
-    expect(wrapper.find(ScrollView)).toHaveLength(1)
-  })
-  it('renders proper RoundImage', () => {
-    expect(wrapper.find(RoundImage)).toHaveLength(1)
-    expect(wrapper.find(RoundImage)).toHaveProp('source', 'check')
-  })
 
-  it('renders an agree and disagree button', () => {
+  it('gets proper survey from redux', () => {})
+
+  it('renders translated agree and disagree buttons', () => {
     expect(wrapper.find(Button)).toHaveLength(2)
     expect(wrapper.find(Button).first()).toHaveProp('text', 'general.disagree')
     expect(wrapper.find(Button).last()).toHaveProp('text', 'general.agree')
   })
-  it('agreeing navigates to next view', () => {
+
+  it('agreeing navigates to the correct screen', () => {
     wrapper
       .find(Button)
       .last()
@@ -50,6 +44,18 @@ describe('Terms/Privacy view', () => {
 
     expect(wrapper.instance().props.navigation.navigate).toHaveBeenCalledTimes(
       1
+    )
+
+    expect(wrapper.instance().props.navigation.navigate).toHaveBeenCalledWith(
+      'FamilyParticipant',
+      {
+        page: undefined,
+        survey: {
+          id: 1,
+          privacyPolicy: { text: 'text', title: 'title' },
+          termsConditions: { text: 'text', title: 'title' }
+        }
+      }
     )
   })
   it('disagreeing opens modal', () => {

@@ -843,9 +843,7 @@ const mapDispatchToProps = {
   updateDraft
 }
 
-const mapStateToProps = ({ nav }) => ({
-  nav
-})
+const mapStateToProps = () => ({})
 
 export default withNamespaces()(
   connect(

@@ -86,9 +86,7 @@ describe('Skipped Questions View when questions are skipped', () => {
   })
   describe('Render optimization', () => {
     it('checks if screen is focused before updating', () => {
-      wrapper.setProps({
-        nav: { draftId: 5 }
-      })
+      wrapper.setProps({})
       expect(
         wrapper.instance().props.navigation.isFocused
       ).toHaveBeenCalledTimes(2)

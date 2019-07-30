@@ -23,7 +23,7 @@ import OverviewComponent from './lifemap/Overview'
 import RoundImage from '../components/RoundImage'
 import Button from '../components/Button'
 import { url } from '../config'
-import { updateNav, submitDraft } from '../redux/actions'
+import { submitDraft } from '../redux/actions'
 import MapboxGL from '@react-native-mapbox-gl/maps'
 import marker from '../../assets/images/marker.png'
 import mapPlaceholderLarge from '../../assets/images/map_placeholder_1000.png'
@@ -59,9 +59,6 @@ export class Family extends Component {
     )
   ]
   componentDidMount() {
-    const { survey } = this.props.nav
-    const { navigation } = this.props
-
     // // monitor for connection changes
     this.unsubscribeNetChange = NetInfo.addEventListener(isOnline => {
       this.setState({ isOnline })
@@ -75,16 +72,6 @@ export class Family extends Component {
     this.props.navigation.setParams({
       withoutCloseButton: true
     })
-
-    if (typeof survey !== 'undefined') {
-      this.props.updateNav({
-        survey: this.props.surveys.find(
-          item => item.id === this.familyLifemap.surveyId
-        ),
-        draftId: navigation.getParam('draftId'),
-        readonly: true
-      })
-    }
   }
   sendEmail = async email => {
     let url = `mailto:${email}`
@@ -102,9 +89,7 @@ export class Family extends Component {
   }
   handleResumeClick = () => {
     const { navigation } = this.props
-    this.props.updateNav({
-      readonly: false
-    })
+
     navigation.replace(this.familyLifemap.progress.screen, {
       draftId: this.familyLifemap.draftId,
       survey: this.survey,
@@ -458,9 +443,7 @@ Family.propTypes = {
   surveys: PropTypes.array,
   navigation: PropTypes.object.isRequired,
   t: PropTypes.func,
-  updateNav: PropTypes.func.isRequired,
   submitDraft: PropTypes.func.isRequired,
-  nav: PropTypes.object.isRequired,
   env: PropTypes.string.isRequired,
   user: PropTypes.object.isRequired
 }
@@ -568,11 +551,9 @@ const styles = StyleSheet.create({
   imagePlaceholder: { width: '100%', height: 139 }
 })
 const mapDispatchToProps = {
-  updateNav,
   submitDraft
 }
-const mapStateToProps = ({ nav, surveys, env, user }) => ({
-  nav,
+const mapStateToProps = ({ surveys, env, user }) => ({
   surveys,
   env,
   user

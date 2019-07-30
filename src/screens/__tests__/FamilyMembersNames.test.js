@@ -106,18 +106,3 @@ describe('FamilyMembersNames View', () => {
     expect(wrapper).toHaveState({ errorsDetected: ['anotherError'] })
   })
 })
-
-describe('Render optimization', () => {
-  let wrapper
-  let props
-  beforeEach(() => {
-    props = createTestProps()
-    wrapper = shallow(<FamilyMembersNames {...props} />)
-  })
-  it('updates screen if focused', () => {
-    wrapper.setProps({
-      nav: { draftId: 5 }
-    })
-    expect(wrapper.instance().props.nav).toEqual({ draftId: 5 })
-  })
-})

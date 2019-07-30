@@ -24,7 +24,6 @@ import {
   SET_SYNCED_STATE,
   RESET_SYNCED_STATE,
   SET_DIMENSIONS,
-  UPDATE_NAV,
   SET_DOWNLOADMAPSIMAGES
 } from './actions'
 
@@ -368,34 +367,6 @@ export const sync = (
   }
 }
 
-// Navigation
-export const nav = (
-  state = {
-    readonly: false,
-    draftId: null,
-    survey: null
-  },
-  action
-) => {
-  switch (action.type) {
-    case UPDATE_NAV:
-      if (typeof action.value !== 'undefined') {
-        return {
-          ...state,
-          [action.item]: action.value
-        }
-      } else {
-        return {
-          ...state,
-          ...action.item
-        }
-      }
-
-    default:
-      return state
-  }
-}
-
 const appReducer = combineReducers({
   env,
   user,
@@ -406,8 +377,7 @@ const appReducer = combineReducers({
   hydration,
   sync,
   dimensions,
-  downloadMapsAndImages,
-  nav
+  downloadMapsAndImages
 })
 
 export const rootReducer = (state, action) => {
@@ -467,11 +437,6 @@ export const rootReducer = (state, action) => {
           total: 0,
           synced: 0
         }
-      },
-      nav: {
-        readonly: false,
-        draftId: null,
-        survey: null
       }
     }
   }

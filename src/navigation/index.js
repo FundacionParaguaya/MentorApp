@@ -48,19 +48,17 @@ const styles = StyleSheet.create({
 })
 
 NavWrapper.propTypes = {
-  nav: PropTypes.object.isRequired,
   user: PropTypes.object.isRequired,
   sync: PropTypes.object.isRequired,
   hydration: PropTypes.bool.isRequired,
   setDimensions: PropTypes.func.isRequired
 }
 
-const mapStateToProps = ({ user, sync, dimensions, hydration, nav }) => ({
+const mapStateToProps = ({ user, sync, dimensions, hydration }) => ({
   user,
   sync,
   dimensions,
-  hydration,
-  nav
+  hydration
 })
 
 const mapDispatchToProps = {

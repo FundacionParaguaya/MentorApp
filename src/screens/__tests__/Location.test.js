@@ -50,9 +50,6 @@ const createTestProps = props => ({
     }),
     isFocused: jest.fn(() => true)
   },
-  nav: {
-    readonly: false
-  },
   updateDraft: jest.fn(),
   ...props
 })
@@ -74,7 +71,7 @@ describe('Family Location component', () => {
         '<react-native-mock>views.family.gettingYourLocation</react-native-mock>'
       )
 
-      wrapper.setProps({ nav: { readonly: true } })
+      wrapper.setProps({})
 
       expect(wrapper.find(Text)).toHaveLength(1)
     })
@@ -91,20 +88,7 @@ describe('Family Location component', () => {
   })
   describe('showing the form instead of the map', () => {
     beforeEach(() => {
-      props = createTestProps({
-        nav: {
-          readonly: false,
-          draftId: 4,
-          survey: {
-            surveyEconomicQuestions: [],
-            surveyStoplightQuestions: [],
-            surveyId: 100,
-            surveyConfig: {
-              surveyLocation: { country: 'BG', latitude: 10, longitude: 11 }
-            }
-          }
-        }
-      })
+      props = createTestProps({})
       wrapper = shallow(<Location {...props} />)
       wrapper.instance().getDeviceCoordinates(false)
       wrapper.setState({ showForm: true })
@@ -112,19 +96,7 @@ describe('Family Location component', () => {
   })
   describe('reviewing family location', () => {
     beforeEach(() => {
-      props = createTestProps({
-        nav: {
-          readonly: true,
-          draftId: 4,
-          survey: {
-            title: 'Chile - Geco',
-            surveyId: 100,
-            surveyConfig: {
-              surveyLocation: { country: 'BG', latitude: 10, longitude: 11 }
-            }
-          }
-        }
-      })
+      props = createTestProps({})
       wrapper = shallow(<Location {...props} />)
     })
   })

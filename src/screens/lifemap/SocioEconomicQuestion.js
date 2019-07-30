@@ -673,7 +673,6 @@ SocioEconomicQuestion.propTypes = {
   navigation: PropTypes.object.isRequired,
   addSurveyDataCheckBox: PropTypes.func,
   drafts: PropTypes.array,
-  nav: PropTypes.object,
   language: PropTypes.string
 }
 
@@ -715,9 +714,9 @@ const styles = StyleSheet.create({
 
 const mapDispatchToProps = {}
 
-const mapStateToProps = ({ drafts, nav, language }) => ({
+const mapStateToProps = ({ drafts, language }) => ({
   drafts,
-  nav,
+
   language
 })
 
