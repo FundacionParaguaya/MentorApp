@@ -97,11 +97,6 @@ android {
     compileSdkVersion rootProject.ext.compileSdkVersion
     buildToolsVersion rootProject.ext.buildToolsVersion
 
-    packagingOptions {
-        pickFirst '**/libjsc.so'
-        pickFirst '**/libc++_shared.so'
-    }
-
     defaultConfig {
         applicationId "com.povertystoplightapp"
         minSdkVersion rootProject.ext.minSdkVersion
@@ -150,10 +145,14 @@ android {
             }
         }
     }
+
+    packagingOptions {
+        pickFirst '**/libjsc.so'
+    }
 }
 
 dependencies {
-    implementation "org.webkit:android-jsc:r241213"
+    implementation "org.webkit:android-jsc:r245459"
     implementation project(':react-native-html-to-pdf')
     implementation project(':react-native-print')
     implementation project(':@react-native-mapbox-gl_maps')
