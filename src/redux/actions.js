@@ -16,6 +16,7 @@ export const login = (username, password, env) => dispatch =>
     .then(data => {
       if (data.status !== 200) {
         dispatch({
+          role: null,
           type: SET_LOGIN_STATE,
           token: null,
           status: data.status,
@@ -26,6 +27,7 @@ export const login = (username, password, env) => dispatch =>
     })
     .then(data =>
       dispatch({
+        role: data.user.authorities ? data.user.authorities[0].authority : null,
         type: SET_LOGIN_STATE,
         token: data.access_token,
         status: 200,

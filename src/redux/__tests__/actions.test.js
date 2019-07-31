@@ -53,7 +53,8 @@ describe('login/logout actions', () => {
         type: action.SET_LOGIN_STATE,
         token: 'token',
         status: 200,
-        username: 'username'
+        username: 'username',
+        role: null
       }
     ]
 
@@ -73,6 +74,7 @@ describe('login/logout actions', () => {
     )
     const expectedAction = [
       {
+        role: null,
         type: action.SET_LOGIN_STATE,
         token: null,
         status: 401,
