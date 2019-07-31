@@ -77,6 +77,7 @@
 		BE3925E046924C8F98D23CA8 /* RNPrintTests.xctest in Resources */ = {isa = PBXBuildFile; fileRef = 3E94352CD47A476AA33D29B8 /* RNPrintTests.xctest */; };
 		3D4E8F3EA4D94AE796EB4DB0 /* libRNHTMLtoPDF.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 1B7E508F95F7489F828AD5C2 /* libRNHTMLtoPDF.a */; };
 		528842F709D74897A04F08AF /* RNHTMLtoPDFTests.xctest in Resources */ = {isa = PBXBuildFile; fileRef = FFCAC76B9F3B47129896CC4E /* RNHTMLtoPDFTests.xctest */; };
+		7C01F2A8220D494A987F34DA /* libReactNativeTestFairy.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 0736B30F1C574AB7A98E402F /* libReactNativeTestFairy.a */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -435,6 +436,8 @@
 		27606EDD8A924775BE24B571 /* RNHTMLtoPDF.xcodeproj */ = {isa = PBXFileReference; name = "RNHTMLtoPDF.xcodeproj"; path = "../node_modules/react-native-html-to-pdf/ios/RNHTMLtoPDF.xcodeproj"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = wrapper.pb-project; explicitFileType = undefined; includeInIndex = 0; };
 		1B7E508F95F7489F828AD5C2 /* libRNHTMLtoPDF.a */ = {isa = PBXFileReference; name = "libRNHTMLtoPDF.a"; path = "libRNHTMLtoPDF.a"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = archive.ar; explicitFileType = undefined; includeInIndex = 0; };
 		FFCAC76B9F3B47129896CC4E /* RNHTMLtoPDFTests.xctest */ = {isa = PBXFileReference; name = "RNHTMLtoPDFTests.xctest"; path = "RNHTMLtoPDFTests.xctest"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = wrapper.cfbundle; explicitFileType = undefined; includeInIndex = 0; };
+		6A468430C6F64B5185DD4D2B /* ReactNativeTestFairy.xcodeproj */ = {isa = PBXFileReference; name = "ReactNativeTestFairy.xcodeproj"; path = "../node_modules/react-native-testfairy/ios/ReactNativeTestFairy.xcodeproj"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = wrapper.pb-project; explicitFileType = undefined; includeInIndex = 0; };
+		0736B30F1C574AB7A98E402F /* libReactNativeTestFairy.a */ = {isa = PBXFileReference; name = "libReactNativeTestFairy.a"; path = "libReactNativeTestFairy.a"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = archive.ar; explicitFileType = undefined; includeInIndex = 0; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -478,6 +481,7 @@
 				BE3925E046924C8F98D23CA8 /* RNPrintTests.xctest in Resources */,
 				3D4E8F3EA4D94AE796EB4DB0 /* libRNHTMLtoPDF.a in Frameworks */,
 				528842F709D74897A04F08AF /* RNHTMLtoPDFTests.xctest in Resources */,
+				7C01F2A8220D494A987F34DA /* libReactNativeTestFairy.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -683,6 +687,7 @@
 				E9800488BF3A4B79A33C9B8B /* RNCAsyncStorage.xcodeproj */,
 				0A57179B5931415FAFDAA0FA /* RNPrint.xcodeproj */,
 				27606EDD8A924775BE24B571 /* RNHTMLtoPDF.xcodeproj */,
+				6A468430C6F64B5185DD4D2B /* ReactNativeTestFairy.xcodeproj */,
 			);
 			name = Libraries;
 			sourceTree = "<group>";
@@ -1426,6 +1431,7 @@
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 				);
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
@@ -1442,6 +1448,7 @@
 					"$(SRCROOT)/../node_modules/@react-native-community/async-storage/ios",
 					"$(SRCROOT)/../node_modules/react-native-print/ios/RNPrint",
 					"$(SRCROOT)/../node_modules/react-native-html-to-pdf/ios/RNHTMLtoPDF",
+					"$(SRCROOT)/../node_modules/react-native-testfairy/ios",
 				);
 				FRAMEWORK_SEARCH_PATHS = (
 				);
@@ -1469,6 +1476,7 @@
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 				);
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
@@ -1485,6 +1493,7 @@
 					"$(SRCROOT)/../node_modules/@react-native-community/async-storage/ios",
 					"$(SRCROOT)/../node_modules/react-native-print/ios/RNPrint",
 					"$(SRCROOT)/../node_modules/react-native-html-to-pdf/ios/RNHTMLtoPDF",
+					"$(SRCROOT)/../node_modules/react-native-testfairy/ios",
 				);
 				FRAMEWORK_SEARCH_PATHS = (
 				);
@@ -1522,6 +1531,7 @@
 					"$(SRCROOT)/../node_modules/@react-native-community/async-storage/ios",
 					"$(SRCROOT)/../node_modules/react-native-print/ios/RNPrint",
 					"$(SRCROOT)/../node_modules/react-native-html-to-pdf/ios/RNHTMLtoPDF",
+					"$(SRCROOT)/../node_modules/react-native-testfairy/ios",
 				);
 				FRAMEWORK_SEARCH_PATHS = (
 				);
@@ -1558,6 +1568,7 @@
 					"$(SRCROOT)/../node_modules/@react-native-community/async-storage/ios",
 					"$(SRCROOT)/../node_modules/react-native-print/ios/RNPrint",
 					"$(SRCROOT)/../node_modules/react-native-html-to-pdf/ios/RNHTMLtoPDF",
+					"$(SRCROOT)/../node_modules/react-native-testfairy/ios",
 				);
 				FRAMEWORK_SEARCH_PATHS = (
 				);
@@ -1593,6 +1604,7 @@
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 				);
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
@@ -1609,6 +1621,7 @@
 					"$(SRCROOT)/../node_modules/@react-native-community/async-storage/ios",
 					"$(SRCROOT)/../node_modules/react-native-print/ios/RNPrint",
 					"$(SRCROOT)/../node_modules/react-native-html-to-pdf/ios/RNHTMLtoPDF",
+					"$(SRCROOT)/../node_modules/react-native-testfairy/ios",
 				);
 				FRAMEWORK_SEARCH_PATHS = (
 				);
@@ -1644,6 +1657,7 @@
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 				);
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
@@ -1660,6 +1674,7 @@
 					"$(SRCROOT)/../node_modules/@react-native-community/async-storage/ios",
 					"$(SRCROOT)/../node_modules/react-native-print/ios/RNPrint",
 					"$(SRCROOT)/../node_modules/react-native-html-to-pdf/ios/RNHTMLtoPDF",
+					"$(SRCROOT)/../node_modules/react-native-testfairy/ios",
 				);
 				FRAMEWORK_SEARCH_PATHS = (
 				);
@@ -1694,6 +1709,7 @@
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 				);
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
@@ -1710,6 +1726,7 @@
 					"$(SRCROOT)/../node_modules/@react-native-community/async-storage/ios",
 					"$(SRCROOT)/../node_modules/react-native-print/ios/RNPrint",
 					"$(SRCROOT)/../node_modules/react-native-html-to-pdf/ios/RNHTMLtoPDF",
+					"$(SRCROOT)/../node_modules/react-native-testfairy/ios",
 				);
 				FRAMEWORK_SEARCH_PATHS = (
 				);
@@ -1744,6 +1761,7 @@
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 				);
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
@@ -1760,6 +1778,7 @@
 					"$(SRCROOT)/../node_modules/@react-native-community/async-storage/ios",
 					"$(SRCROOT)/../node_modules/react-native-print/ios/RNPrint",
 					"$(SRCROOT)/../node_modules/react-native-html-to-pdf/ios/RNHTMLtoPDF",
+					"$(SRCROOT)/../node_modules/react-native-testfairy/ios",
 				);
 				FRAMEWORK_SEARCH_PATHS = (
 				);
