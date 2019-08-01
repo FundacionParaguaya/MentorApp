@@ -1,15 +1,64 @@
 import React from 'react'
 import { shallow } from 'enzyme'
 import { FamilyMembersNames } from '../lifemap/FamilyMembersNames'
-import draft from '../__mocks__/draftMock.json'
-import StickyFooter from '../../components/StickyFooter'
 import Select from '../../components/form/Select'
 import DateInput from '../../components/form/DateInput'
+import TextInput from '../../components/form/TextInput'
+
+const survey = {
+  surveyStoplightQuestions: [],
+  surveyEconomicQuestions: [],
+  surveyConfig: {
+    gender: [
+      {
+        text: 'Female',
+        value: 'F'
+      },
+      {
+        text: 'Male',
+        value: 'M'
+      },
+      {
+        text: 'Prefer not to disclose',
+        value: 'O'
+      }
+    ]
+  }
+}
+
+const draftId = 1
+
+const draft = {
+  draftId,
+  progress: { screen: 'FamilyParticipant', total: 5 },
+  familyData: {
+    countFamilyMembers: 3,
+    familyMembersList: [
+      {
+        firstName: 'Juan',
+        lastName: 'Perez',
+        documentNumber: '123456',
+        documentType: '0',
+        email: 'juan@gmail.com',
+        birthCountry: 'PY',
+        gender: 'M',
+        birthDate: 12345,
+        firstParticipant: true,
+        socioEconomicAnswers: [
+          { key: 'educationPersonMostStudied', value: 'SCHOOL-COMPLETE' },
+          { key: 'receiveStateIncome', value: 'NO' }
+        ]
+      },
+      { firstParticipant: false },
+      { firstParticipant: false }
+    ]
+  }
+}
 
 const createTestProps = props => ({
   t: value => value,
   navigation: {
-    isFocused: jest.fn(),
+    isFocused: () => true,
     navigate: jest.fn(),
     push: jest.fn(),
     setParams: jest.fn(),
@@ -17,92 +66,125 @@ const createTestProps = props => ({
       if (param === 'family') {
         return null
       } else if (param === 'survey') {
-        return {
-          surveyStoplightQuestions: [],
-          surveyEconomicQuestions: [],
-          surveyConfig: {
-            gender: [
-              {
-                text: 'Female',
-                value: 'F'
-              },
-              {
-                text: 'Male',
-                value: 'M'
-              },
-              {
-                text: 'Prefer not to disclose',
-                value: 'O'
-              }
-            ]
-          }
-        }
-      } else if (param === 'draft') {
-        return draft
+        return survey
+      } else if (param === 'draftId') {
+        return draftId
       }
     })
   },
-  addSurveyData: jest.fn(),
+  drafts: [draft, { draftId: 2 }],
+  updateDraft: jest.fn(),
   ...props
 })
 
 describe('FamilyMembersNames View', () => {
   let wrapper
+  let props
   beforeEach(() => {
-    const props = createTestProps()
+    props = createTestProps()
     wrapper = shallow(<FamilyMembersNames {...props} />)
   })
 
-  it('renders the continue button with proper label', () => {
-    expect(wrapper.find(StickyFooter)).toHaveProp({
-      continueLabel: 'general.continue'
+  it('receives proper survey from navigation', () => {
+    expect(wrapper.instance().survey).toBe(survey)
+  })
+
+  it('receives proper draftId from navigation', () => {
+    expect(wrapper.instance().draftId).toBe(draftId)
+  })
+
+  it('gets proper draft from draftId', () => {
+    expect(wrapper.instance().getDraft()).toBe(draft)
+  })
+
+  it('renders all inputs for each family member', () => {
+    expect(wrapper.find(TextInput)).toHaveLength(2)
+    expect(wrapper.find(Select)).toHaveLength(2)
+    expect(wrapper.find(DateInput)).toHaveLength(2)
+  })
+
+  it('navigates to location on continue ', () => {
+    wrapper.instance().onContinue()
+    expect(props.navigation.navigate).toHaveBeenCalledWith('Location', {
+      survey,
+      draftId
     })
   })
 
-  it('renders DateInput', () => {
-    expect(wrapper.find(DateInput)).toHaveLength(1)
+  it('updates only when focused', () => {
+    expect(wrapper.instance().shouldComponentUpdate()).toEqual(true)
   })
 
-  it('calls navigate function when button is pressed', () => {
-    wrapper
-      .find(StickyFooter)
-      .props()
-      .handleClick()
-
-    expect(wrapper.instance().props.navigation.push).toHaveBeenCalledTimes(1)
-  })
-  it('calls setParam on mount', () => {
-    expect(wrapper.instance().props.navigation.setParams).toHaveBeenCalledTimes(
-      2
+  it('navigates back to proper screen', () => {
+    wrapper.instance().onPressBack()
+    expect(props.navigation.navigate).toHaveBeenCalledWith(
+      'FamilyParticipant',
+      {
+        survey,
+        draftId
+      }
     )
   })
 
-  it('calls onPressBack', () => {
-    const spy = jest.spyOn(wrapper.instance(), 'onPressBack')
-
-    wrapper.instance().onPressBack()
-    expect(spy).toHaveBeenCalledTimes(1)
+  it('sets draft navigation when navigation from a different page', () => {
+    expect(props.updateDraft).toHaveBeenCalledWith({
+      ...draft,
+      progress: {
+        ...draft.progress,
+        screen: 'FamilyMembersNames'
+      }
+    })
   })
 
-  it('gives DateInput the proper value', () => {
-    expect(wrapper.find(DateInput).props().value).toBe(12345)
-  })
+  describe('from resume draft', () => {
+    const resumeDraft = {
+      ...draft,
+      familyData: {
+        ...draft.familyData,
+        familyMembersList: [
+          draft.familyData.familyMembersList[0],
+          { firstParticipant: false, firstName: 'Ana' },
+          { firstParticipant: false, firstName: 'Pesho', gender: 'M' }
+        ]
+      }
+    }
+    beforeEach(() => {
+      props = createTestProps({
+        drafts: [resumeDraft]
+      })
+      wrapper = shallow(<FamilyMembersNames {...props} />)
+    })
+    it('sets correct value from draft to each field', () => {
+      expect(wrapper.find(TextInput).first()).toHaveProp({
+        initialValue: 'Ana'
+      })
+      expect(wrapper.find(TextInput).last()).toHaveProp({
+        initialValue: 'Pesho'
+      })
+      expect(wrapper.find(Select).last()).toHaveProp({ initialValue: 'M' })
+    })
 
-  it('gives Select the proper value', () => {
-    expect(wrapper.find(Select).props().value).toBe('F')
-  })
+    it('updates the draft with correct data', () => {
+      wrapper.instance().updateMember('F', '1.gender')
+      expect(props.updateDraft).toHaveBeenCalledWith({
+        ...resumeDraft,
+        familyData: {
+          ...resumeDraft.familyData,
+          familyMembersList: Object.assign(
+            [],
+            resumeDraft.familyData.familyMembersList,
+            {
+              [1]: {
+                ...resumeDraft.familyData.familyMembersList[1],
+                firstParticipant: false,
+                gender: 'F'
+              }
+            }
+          )
+        }
+      })
+    })
 
-  it('shows and hides errors', () => {
-    wrapper.instance().detectError(true, 'test')
-
-    expect(wrapper).toHaveState({ errorsDetected: ['test'] })
-
-    wrapper.instance().detectError(true, 'anotherError')
-
-    expect(wrapper).toHaveState({ errorsDetected: ['test', 'anotherError'] })
-
-    wrapper.instance().detectError(false, 'test')
-
-    expect(wrapper).toHaveState({ errorsDetected: ['anotherError'] })
+    it('updates the draft on each field change ', () => {})
   })
 })

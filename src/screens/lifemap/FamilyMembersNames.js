@@ -1,56 +1,36 @@
 import React, { Component } from 'react'
 import { StyleSheet, Text, View } from 'react-native'
 import { getTotalScreens, setValidationSchema } from './helpers'
-
+import { updateDraft } from '../../redux/actions'
 import DateInput from '../../components/form/DateInput'
 import Decoration from '../../components/decoration/Decoration'
 import Icon from 'react-native-vector-icons/MaterialIcons'
 import PropTypes from 'prop-types'
 import Select from '../../components/form/Select'
-import StickyFooter from '../../components/StickyFooter'
+import Form from '../../components/form/Form'
 import TextInput from '../../components/form/TextInput'
 import colors from '../../theme.json'
 import globalStyles from '../../globalStyles'
 import { withNamespaces } from 'react-i18next'
+import { connect } from 'react-redux'
 
 export class FamilyMembersNames extends Component {
   survey = this.props.navigation.getParam('survey')
   readOnly = this.props.navigation.getParam('readOnly')
+  draftId = this.props.navigation.getParam('draftId')
 
   errorsDetected = []
   state = {
     errorsDetected: [],
-    showErrors: false,
-    draft: this.props.navigation.getParam('draft') || {}
+    showErrors: false
   }
 
-  componentDidMount() {
-    const { draft } = this.state
-    this.props.navigation.setParams({
-      getCurrentDraftState: () => this.state.draft
-    })
-
-    if (!this.readonly && draft.progress.screen !== 'FamilyMembersNames') {
-      this.setState({
-        draft: {
-          ...draft,
-          progress: {
-            ...draft.progress,
-            screen: 'FamilyMembersNames',
-            total: getTotalScreens(this.survey)
-          }
-        }
-      })
-    }
-
-    this.props.navigation.setParams({
-      onPressBack: this.onPressBack
-    })
-  }
+  getDraft = () =>
+    this.props.drafts.find(draft => draft.draftId === this.draftId)
 
   onPressBack = () => {
-    this.props.navigation.push('FamilyParticipant', {
-      draft: this.state.draft,
+    this.props.navigation.navigate('FamilyParticipant', {
+      draftId: this.draftId,
       survey: this.survey
     })
   }
@@ -71,51 +51,71 @@ export class FamilyMembersNames extends Component {
     })
   }
 
-  handleClick = () => {
+  onContinue = () => {
     if (this.state.errorsDetected.length) {
       this.setState({
         showErrors: true
       })
     } else {
-      this.props.navigation.push('Location', {
-        draft: this.state.draft,
+      this.props.navigation.navigate('Location', {
+        draftId: this.draftId,
         survey: this.survey
       })
     }
   }
 
   updateMember = (value, field) => {
-    const { draft } = this.state
+    const draft = this.getDraft()
 
     // [0] is the index, [1] is the field
     const split = field.split('.')
     const memberIndex = split[0]
     const memberField = split[1]
 
-    this.setState({
-      draft: {
-        ...draft,
-        familyData: {
-          ...draft.familyData,
-          familyMembersList: Object.assign(
-            [],
-            draft.familyData.familyMembersList,
-            {
-              [memberIndex]: {
-                ...draft.familyData.familyMembersList[memberIndex],
-                firstParticipant: false,
-                [memberField]: value
-              }
+    this.props.updateDraft({
+      ...draft,
+      familyData: {
+        ...draft.familyData,
+        familyMembersList: Object.assign(
+          [],
+          draft.familyData.familyMembersList,
+          {
+            [memberIndex]: {
+              ...draft.familyData.familyMembersList[memberIndex],
+              firstParticipant: false,
+              [memberField]: value
             }
-          )
-        }
+          }
+        )
       }
+    })
+  }
+
+  componentDidMount() {
+    const draft = this.getDraft()
+    this.props.navigation.setParams({
+      getCurrentDraftState: () => this.state.draft
+    })
+
+    if (!this.readonly && draft.progress.screen !== 'FamilyMembersNames') {
+      this.props.updateDraft({
+        ...draft,
+        progress: {
+          ...draft.progress,
+          screen: 'FamilyMembersNames',
+          total: getTotalScreens(this.survey)
+        }
+      })
+    }
+
+    this.props.navigation.setParams({
+      onPressBack: this.onPressBack
     })
   }
 
   render() {
     const { t } = this.props
-    const { showErrors, draft } = this.state
+    const draft = this.getDraft()
 
     let onlyOneAutoFocusCheck = false
     const { familyMembersList } = draft.familyData
@@ -134,7 +134,7 @@ export class FamilyMembersNames extends Component {
       null
 
     return (
-      <StickyFooter
+      <Form
         handleClick={() => this.handleClick(draft)}
         continueLabel={t('general.continue')}
         progress={draft ? 2 / draft.progress.total : 0}
@@ -195,29 +195,25 @@ export class FamilyMembersNames extends Component {
                 </Text>
               </View>
               <TextInput
+                id={`${i + 1}.firstName`}
                 autoFocus={firstNameAutoFocus}
                 upperCase
-                key={i}
                 validation="string"
-                field={`${i + 1}.firstName`}
                 onChangeText={this.updateMember}
                 placeholder={`${t('views.family.firstName')}`}
-                value={(familyMembersList[i + 1] || {}).firstName || ''}
+                initialValue={(familyMembersList[i + 1] || {}).firstName || ''}
                 required={setValidationSchema(
                   requiredFields,
                   'firstName',
                   true
                 )}
-                detectError={this.detectError}
-                showErrors={showErrors}
               />
               <Select
-                field={`${i + 1}.gender`}
+                id={`${i + 1}.gender`}
                 onChange={this.updateMember}
                 label={t('views.family.gender')}
                 placeholder={t('views.family.selectGender')}
-                value={(familyMembersList[i + 1] || {}).gender || ''}
-                detectError={this.detectError}
+                initialValue={(familyMembersList[i + 1] || {}).gender || ''}
                 options={this.survey.surveyConfig.gender}
                 required={setValidationSchema(requiredFields, 'gender', false)}
                 otherField={`${i}.customGender`}
@@ -226,12 +222,10 @@ export class FamilyMembersNames extends Component {
               />
 
               <DateInput
-                field={`${i + 1}.birthDate`}
+                id={`${i + 1}.birthDate`}
                 label={t('views.family.dateOfBirth')}
-                detectError={this.detectError}
-                showErrors={this.state.showErrors}
                 onValidDate={this.updateMember}
-                value={(familyMembersList[i + 1] || {}).birthDate}
+                initialValue={(familyMembersList[i + 1] || {}).birthDate}
                 required={setValidationSchema(
                   requiredFields,
                   'birthDate',
@@ -241,14 +235,9 @@ export class FamilyMembersNames extends Component {
             </View>
           )
         })}
-      </StickyFooter>
+      </Form>
     )
   }
-}
-
-FamilyMembersNames.propTypes = {
-  t: PropTypes.func.isRequired,
-  navigation: PropTypes.object.isRequired
 }
 
 const styles = StyleSheet.create({
@@ -282,4 +271,22 @@ const styles = StyleSheet.create({
   }
 })
 
-export default withNamespaces()(FamilyMembersNames)
+FamilyMembersNames.propTypes = {
+  drafts: PropTypes.array.isRequired,
+  t: PropTypes.func.isRequired,
+  navigation: PropTypes.object.isRequired,
+  updateDraft: PropTypes.func.isRequired
+}
+
+const mapDispatchToProps = {
+  updateDraft
+}
+
+const mapStateToProps = ({ drafts }) => ({ drafts })
+
+export default withNamespaces()(
+  connect(
+    mapStateToProps,
+    mapDispatchToProps
+  )(FamilyMembersNames)
+)
