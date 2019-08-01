@@ -19,7 +19,7 @@ export class Surveys extends Component {
   acessibleComponent = React.createRef()
 
   componentDidMount() {
-    // this.props.navigation.popToTop()
+    // focuses component on render for device to begin talking
     if (UIManager.AccessibilityEventTypes) {
       setTimeout(() => {
         UIManager.sendAccessibilityEvent(

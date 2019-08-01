@@ -53,16 +53,17 @@ export class Dashboard extends Component {
     ) {
       this.props.navigation.navigate('Overview', {
         resumeDraft: true,
-        draft,
+        draftId: draft.draftId,
         survey
       })
-    } else
+    } else {
       this.props.navigation.navigate(draft.progress.screen, {
-        draft,
+        draftId: draft.draftId,
         survey,
         step: draft.progress.step,
         socioEconomics: draft.progress.socioEconomics
       })
+    }
   }
   navigateToSynced = item => {
     this.props.navigation.navigate('Family', {

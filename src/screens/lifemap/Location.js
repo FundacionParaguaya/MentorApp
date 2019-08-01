@@ -22,10 +22,10 @@ import { withNamespaces } from 'react-i18next'
 import MapboxGL from '@react-native-mapbox-gl/maps'
 import { updateDraft } from '../../redux/actions'
 import StickyFooter from '../../components/StickyFooter'
-import TextInput from '../../components/TextInput'
+import TextInput from '../../components/form/TextInput'
 import globalStyles from '../../globalStyles'
 import colors from '../../theme.json'
-import Select from '../../components/Select'
+import Select from '../../components/form/Select'
 import marker from '../../../assets/images/marker.png'
 import center from '../../../assets/images/centerMap.png'
 import happy from '../../../assets/images/happy.png'
@@ -508,14 +508,6 @@ export class Location extends Component {
         }
       }
     })
-  }
-
-  componentDidUpdate(prevProps, prevState) {
-    // update nav draft param if the data changes
-    // so the exit modal can access it
-    if (prevState.draft.familyData !== this.state.draft.familyData) {
-      this.props.navigation.setParams({ draft: this.state.draft })
-    }
   }
 
   render() {

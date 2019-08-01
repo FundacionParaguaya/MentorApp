@@ -2,10 +2,10 @@ import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import { View, Text, StyleSheet, Platform } from 'react-native'
 import { withNamespaces } from 'react-i18next'
-import TextInput from '../../components/TextInput'
+import TextInput from '../../components/form/TextInput'
 import globalStyles from '../../globalStyles'
-import Select from '../../components/Select'
-import DateInput from '../../components/DateInput'
+import Select from '../../components/form/Select'
+import DateInput from '../../components/form/DateInput'
 import colors from '../../theme.json'
 
 export class FamilyMember extends Component {

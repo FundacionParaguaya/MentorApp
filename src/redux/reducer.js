@@ -120,7 +120,7 @@ export const drafts = (state = [], action) => {
     case UPDATE_DRAFT:
       return state.map(draft => {
         // if this is the draft we are editing
-        if (draft.draftId === action.id) {
+        if (draft.draftId === action.payload.draftId) {
           return action.payload
         } else {
           return draft
@@ -466,6 +466,8 @@ export const rootReducer = (state, action) => {
     })
     Sentry.captureException('Sync error')
   }
+
+  // state = { ...state, drafts: [] }
 
   return appReducer(state, action)
 }

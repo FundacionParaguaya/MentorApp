@@ -11,8 +11,9 @@ class BackButton extends Component {
     const draft =
       navigation.state.params.getCurrentDraftState &&
       navigation.getParam('getCurrentDraftState')()
-    const isNewDraft =
-      navigation.state.params.isNewDraft && navigation.getParam('isNewDraft')
+    const deleteDraftOnExit =
+      navigation.state.params.deleteDraftOnExit &&
+      navigation.getParam('deleteDraftOnExit')
     const firstLifeMapScreen =
       navigation.state.routeName &&
       navigation.state.routeName === 'FamilyParticipant'
@@ -24,10 +25,10 @@ class BackButton extends Component {
       navigation.getParam('onPressBack')
         ? navigation.getParam('onPressBack')()
         : navigation.goBack()
-    } else if (isNewDraft || firstLifeMapScreen) {
+    } else if (deleteDraftOnExit || firstLifeMapScreen) {
       this.props.navigation.navigate('ExitDraftModal', {
         draft,
-        isNewDraft,
+        deleteDraftOnExit,
         survey
       })
     } else {

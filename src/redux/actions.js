@@ -141,9 +141,8 @@ export const createDraft = payload => ({
   payload
 })
 
-export const updateDraft = (id, payload) => ({
+export const updateDraft = payload => ({
   type: UPDATE_DRAFT,
-  id,
   payload
 })
 

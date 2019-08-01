@@ -3,19 +3,18 @@ import { shallow } from 'enzyme'
 import { Terms } from '../lifemap/Terms'
 import Button from '../../components/Button'
 
+const survey = {
+  id: 1,
+  termsConditions: {
+    text: 'some terms',
+    title: 'terms and conditions'
+  },
+  privacyPolicy: { text: 'some policy', title: 'privacy policy' }
+}
+
 const createTestProps = props => ({
   navigation: {
-    getParam: param =>
-      param === 'survey'
-        ? {
-            id: 1,
-            termsConditions: {
-              text: 'some terms',
-              title: 'terms and conditions'
-            },
-            privacyPolicy: { text: 'some policy', title: 'privacy policy' }
-          }
-        : 'privacy',
+    getParam: param => (param === 'survey' ? survey : 'privacy'),
     navigate: jest.fn(),
     setParams: jest.fn()
   },
@@ -31,7 +30,9 @@ describe('Terms/Privacy view', () => {
     wrapper = shallow(<Terms {...props} />)
   })
 
-  it('receives proper survey from navigation', () => {})
+  it('receives proper survey from navigation', () => {
+    expect(wrapper.instance().survey).toBe(survey)
+  })
 
   it('renders translated agree and disagree buttons', () => {
     expect(wrapper.find(Button)).toHaveLength(2)
@@ -51,7 +52,7 @@ describe('Terms/Privacy view', () => {
     expect(props.navigation.navigate).toHaveBeenCalledWith(
       'FamilyParticipant',
       {
-        page: undefined,
+        page: null,
         survey: props.navigation.getParam('survey')
       }
     )

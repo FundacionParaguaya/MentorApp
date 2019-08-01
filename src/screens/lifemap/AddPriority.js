@@ -7,8 +7,8 @@ import { withNamespaces } from 'react-i18next'
 import StickyFooter from '../../components/StickyFooter'
 import globalStyles from '../../globalStyles'
 import colors from '../../theme.json'
-import TextInput from '../../components/TextInput'
-import Select from '../../components/Select'
+import TextInput from '../../components/form/TextInput'
+import Select from '../../components/form/Select'
 
 export class AddPriority extends Component {
   survey = this.props.navigation.getParam('survey')
@@ -120,7 +120,7 @@ export class AddPriority extends Component {
     for (let x = 1; x < 25; x++) {
       allOptionsNums.push({ value: x, text: String(x) })
     }
-    
+
     return (
       <StickyFooter
         continueLabel={t('general.save')}

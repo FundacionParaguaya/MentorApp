@@ -1,32 +1,34 @@
-import React, { Component } from 'react'
-import PropTypes from 'prop-types'
 import {
-  TouchableHighlight,
-  StyleSheet,
-  View,
-  Text,
+  FlatList,
   Image,
   ScrollView,
-  FlatList
+  StyleSheet,
+  Text,
+  TouchableHighlight,
+  View
 } from 'react-native'
 import RadioForm, {
   RadioButton,
   RadioButtonInput,
   RadioButtonLabel
 } from 'react-native-simple-radio-button'
-import BottomModal from './BottomModal'
-import ListItem from './ListItem'
+import React, { Component } from 'react'
+
+import BottomModal from '../BottomModal'
+import ListItem from '../ListItem'
+import PropTypes from 'prop-types'
 import TextInput from './TextInput'
+import arrow from '../../../assets/images/selectArrow.png'
+import colors from '../../theme.json'
 import countries from 'localized-countries'
-import arrow from '../../assets/images/selectArrow.png'
-import colors from '../theme.json'
-import globalStyles from '../globalStyles'
-import i18n from '../i18n'
+import globalStyles from '../../globalStyles'
+import i18n from '../../i18n'
 const countryList = countries(require('localized-countries/data/en')).array()
 
 class Select extends Component {
   countries = []
   state = {
+    value: this.props.initialValue,
     radioOptions: [],
     isOpen: false,
     errorMsg: '',
@@ -42,18 +44,11 @@ class Select extends Component {
     }
   }
 
-  handleError(errorMsg) {
-    this.props.detectError(true, this.props.field, this.props.memberIndex)
-    this.props.onChange('', this.props.field)
+  validateInput = (value, isOtherOption) => {
     this.setState({
-      errorMsg
-    })
-  }
-
-  validateInput = (value, otherOption) => {
-    this.setState({
+      value: value,
       isOpen: false,
-      showOther: otherOption
+      showOther: isOtherOption
     })
     if (this.props.required && !value) {
       this.handleError(i18n.t('validation.fieldIsRequired'))
@@ -61,22 +56,21 @@ class Select extends Component {
         errorMsg: i18n.t('validation.fieldIsRequired')
       })
     } else {
-      this.props.onChange(value, this.props.field, otherOption)
+      this.props.onChange(value, this.props.id, isOtherOption)
       this.setState({
         errorMsg: null
       })
-      this.props.field
-        ? this.props.detectError(
-            false,
-            this.props.field,
-            this.props.memberIndex
-          )
+      this.props.id
+        ? this.props.setError(false, this.props.id, this.props.memberIndex)
         : ''
     }
   }
 
-  onChangeOther = value => {
-    this.props.onChange(value, this.props.otherField)
+  onChangeOther = otherValue => {
+    this.setState({
+      otherValue
+    })
+    this.props.onChange(otherValue, this.props.otherField)
   }
 
   validateInputRadio = value => {
@@ -90,18 +84,22 @@ class Select extends Component {
         errorMsg: i18n.t('validation.fieldIsRequired')
       })
     } else {
-      this.props.onChange(value, this.props.field)
+      this.props.onChange(value, this.props.id)
       this.setState({
         errorMsg: null
       })
-      this.props.field
-        ? this.props.detectError(
-            false,
-            this.props.field,
-            this.props.memberIndex
-          )
+      this.props.id
+        ? this.props.setError(false, this.props.id, this.props.memberIndex)
         : ''
     }
+  }
+
+  handleError(errorMsg) {
+    this.props.setError(true, this.props.id, this.props.memberIndex)
+    this.props.onChange('', this.props.id)
+    this.setState({
+      errorMsg
+    })
   }
 
   generateRadioOptions() {
@@ -155,42 +153,41 @@ class Select extends Component {
     if (this.props.radio) {
       this.generateRadioOptions()
       this.setState({
-        radioChecked: this.props.value
+        radioChecked: this.props.initialValue
       })
     }
 
     // on mount of new Select and if the passed showErrors value is true validate
     if (this.props.showErrors) {
-      this.validateInput(this.props.value || '')
+      this.validateInput(this.props.initialValue || '')
     }
-    // on mount validate empty required fields without showing an errors message
-    if (this.props.required && !this.props.value) {
-      this.props.detectError(true, this.props.field, this.props.memberIndex)
+    // on mount validate empty required fields with out showing an errors message
+    if (this.props.required && !this.props.initialValue) {
+      this.props.setError(true, this.props.id, this.props.memberIndex)
     }
   }
 
   componentDidUpdate(prevProps) {
     if (prevProps.showErrors !== this.props.showErrors) {
-      this.validateInput(this.props.value || '')
+      this.validateInput(this.props.initialValue || '')
     }
   }
 
   componentWillUnmount() {
     if (this.props.cleanErrorsOnUnmount) {
-      this.props.cleanErrorsOnUnmount(this.props.field, this.props.memberIndex)
+      this.props.cleanErrorsOnUnmount(this.props.id, this.props.memberIndex)
     }
   }
 
   render() {
-    const { errorMsg, isOpen, showOther, radioOptions } = this.state
+    const { errorMsg, isOpen, showOther, radioOptions, value } = this.state
     const {
-      value,
       placeholder,
       required,
       options,
       countrySelect,
       readonly,
-      otherValue,
+      initialOtherValue,
       otherPlaceholder
     } = this.props
 
@@ -411,40 +408,17 @@ class Select extends Component {
         {/* Other field */}
         {showOther && (
           <TextInput
-            field="otherField"
+            id={this.props.otherField || 'otherField'}
             onChangeText={this.onChangeOther}
             readonly={readonly}
             placeholder={otherPlaceholder}
-            value={otherValue}
+            initialValue={initialOtherValue}
           />
         )}
       </View>
     )
   }
 }
-
-Select.propTypes = {
-  onChange: PropTypes.func.isRequired,
-  options: PropTypes.array,
-  value: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
-  otherValue: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
-  placeholder: PropTypes.string.isRequired,
-  otherPlaceholder: PropTypes.string,
-  field: PropTypes.string,
-  radio: PropTypes.bool,
-  otherField: PropTypes.string,
-  defaultCountry: PropTypes.string,
-  countrySelect: PropTypes.bool,
-  readonly: PropTypes.bool,
-  showErrors: PropTypes.bool,
-  countriesOnTop: PropTypes.array,
-  required: PropTypes.bool,
-  detectError: PropTypes.func,
-  memberIndex: PropTypes.oneOfType([PropTypes.bool, PropTypes.number]),
-  cleanErrorsOnUnmount: PropTypes.oneOfType([PropTypes.func, PropTypes.bool])
-}
-
-export default Select
 
 const styles = StyleSheet.create({
   wrapper: {
@@ -516,3 +490,26 @@ const styles = StyleSheet.create({
     zIndex: 100
   }
 })
+
+Select.propTypes = {
+  id: PropTypes.string,
+  onChange: PropTypes.func.isRequired,
+  options: PropTypes.array,
+  initialValue: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+  initialOtherValue: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+  placeholder: PropTypes.string.isRequired,
+  otherPlaceholder: PropTypes.string,
+  radio: PropTypes.bool,
+  otherField: PropTypes.string,
+  defaultCountry: PropTypes.string,
+  countrySelect: PropTypes.bool,
+  readonly: PropTypes.bool,
+  showErrors: PropTypes.bool,
+  countriesOnTop: PropTypes.array,
+  required: PropTypes.bool,
+  setError: PropTypes.func,
+  memberIndex: PropTypes.oneOfType([PropTypes.bool, PropTypes.number]),
+  cleanErrorsOnUnmount: PropTypes.oneOfType([PropTypes.func, PropTypes.bool])
+}
+
+export default Select

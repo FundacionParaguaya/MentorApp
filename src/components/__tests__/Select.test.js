@@ -1,7 +1,7 @@
 import React from 'react'
 import { shallow } from 'enzyme'
 import { TouchableHighlight, Text } from 'react-native'
-import Select from '../Select'
+import Select from '../form/Select'
 import BottomModal from '../BottomModal'
 
 const createTestProps = props => ({
@@ -53,14 +53,5 @@ describe('Select dropdown', () => {
 
     expect(spy).toHaveBeenCalledTimes(1)
     expect(spy).toHaveBeenCalledWith('')
-  })
-
-  it('shows required error message when parent form is submitted', () => {
-    props = createTestProps({ required: true, validation: 'string' })
-    wrapper = shallow(<Select {...props} />)
-
-    wrapper.setProps({ showErrors: true })
-
-    expect(wrapper).toHaveState({ errorMsg: 'This field is required' })
   })
 })

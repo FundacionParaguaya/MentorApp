@@ -15,7 +15,7 @@ import Button from '../../components/Button'
 import globalStyles from '../../globalStyles'
 import { updateDraft, submitDraft } from '../../redux/actions'
 import { url } from '../../config'
-import { prepareDraftForSubmit, isDemoDraft } from '../utils/helpers'
+import { prepareDraftForSubmit } from '../utils/helpers'
 import {
   buildPDFOptions,
   buildPrintOptions,
@@ -150,7 +150,6 @@ export class Final extends Component {
 
   render() {
     const { t } = this.props
-    const isDemo = isDemoDraft(this.survey) || false
 
     return (
       <ScrollView
@@ -201,17 +200,15 @@ export class Final extends Component {
             />
           </View>
         </View>
-        {!isDemo && (
-          <View style={{ height: 50 }}>
-            <Button
-              id="save-draft"
-              colored
-              loading={this.state.loading}
-              text={t('general.close')}
-              handleClick={this.saveDraft}
-            />
-          </View>
-        )}
+        <View style={{ height: 50 }}>
+          <Button
+            id="save-draft"
+            colored
+            loading={this.state.loading}
+            text={t('general.close')}
+            handleClick={this.saveDraft}
+          />
+        </View>
       </ScrollView>
     )
   }

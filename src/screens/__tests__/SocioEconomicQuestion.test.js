@@ -1,8 +1,8 @@
 import React from 'react'
 import { shallow } from 'enzyme'
 import { SocioEconomicQuestion } from '../lifemap/SocioEconomicQuestion'
-import Select from '../../components/Select'
-import TextInput from '../../components/TextInput'
+import Select from '../../components/form/Select'
+import TextInput from '../../components/form/TextInput'
 import data from '../__mocks__/fake-socio-economic-data.json'
 import StickyFooter from '../../components/StickyFooter'
 

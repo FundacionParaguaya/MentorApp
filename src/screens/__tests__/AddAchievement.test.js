@@ -1,7 +1,7 @@
 import React from 'react'
 import { shallow } from 'enzyme'
 import { AddAchievement } from '../lifemap/AddAchievement'
-import TextInput from '../../components/TextInput'
+import TextInput from '../../components/form/TextInput'
 import StickyFooter from '../../components/StickyFooter'
 import draft from '../__mocks__/draftMock.json'
 

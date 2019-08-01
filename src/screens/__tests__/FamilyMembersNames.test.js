@@ -3,8 +3,8 @@ import { shallow } from 'enzyme'
 import { FamilyMembersNames } from '../lifemap/FamilyMembersNames'
 import draft from '../__mocks__/draftMock.json'
 import StickyFooter from '../../components/StickyFooter'
-import Select from '../../components/Select'
-import DateInput from '../../components/DateInput'
+import Select from '../../components/form/Select'
+import DateInput from '../../components/form/DateInput'
 
 const createTestProps = props => ({
   t: value => value,

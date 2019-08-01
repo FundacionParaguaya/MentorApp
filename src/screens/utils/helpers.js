@@ -63,16 +63,3 @@ export const prepareDraftForSubmit = (draft, survey) => {
 
   return result
 }
-
-const demoDrafts = [
-  { id: 19, title: 'Stoplight Demo - Spanish' },
-  { id: 20, title: 'Stoplight Demo - English' }
-]
-
-export const isDemoDraft = survey => {
-  if (survey === undefined) {
-    return false
-  }
-  const { id, title } = survey
-  return demoDrafts.some(draft => draft.id === id && draft.title === title)
-}

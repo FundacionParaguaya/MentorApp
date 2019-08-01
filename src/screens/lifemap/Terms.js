@@ -8,7 +8,7 @@ import RoundImage from '../../components/RoundImage'
 import Button from '../../components/Button'
 import Decoration from '../../components/decoration/Decoration'
 
-// which screen comes after which
+// this describes which screen comes after which
 const navigationRules = {
   terms: {
     nextPage: 'Privacy',
@@ -31,10 +31,11 @@ export class Terms extends Component {
     const { navigation } = this.props
 
     navigation.navigate(navigationRules[this.page].nextPage, {
-      page: navigationRules[this.page].param,
+      page: navigationRules[this.page].param || null,
       survey: this.survey
     })
   }
+
   render() {
     const { t } = this.props
 
