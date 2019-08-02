@@ -6,19 +6,16 @@ import { View } from 'react-native'
 
 class BackButton extends Component {
   handlePress = () => {
-    const { navigation } = this.props
     let readOnly = this.props.navigation.getParam('readOnly')
-    const draft =
-      navigation.state.params.getCurrentDraftState &&
-      navigation.getParam('getCurrentDraftState')()
-    const deleteDraftOnExit =
-      navigation.state.params.deleteDraftOnExit &&
-      navigation.getParam('deleteDraftOnExit')
+
+    const { navigation } = this.props
+    const draftId = navigation.getParam('draftId')
+    const deleteDraftOnExit = navigation.getParam('deleteDraftOnExit')
+    const survey =
+      navigation.state.params.survey && navigation.getParam('survey')
     const firstLifeMapScreen =
       navigation.state.routeName &&
       navigation.state.routeName === 'FamilyParticipant'
-    const survey =
-      navigation.state.params.survey && navigation.getParam('survey')
 
     // open the exit modal with the params it needs
     if (readOnly) {
@@ -27,7 +24,7 @@ class BackButton extends Component {
         : navigation.goBack()
     } else if (deleteDraftOnExit || firstLifeMapScreen) {
       this.props.navigation.navigate('ExitDraftModal', {
-        draft,
+        draftId,
         deleteDraftOnExit,
         survey
       })

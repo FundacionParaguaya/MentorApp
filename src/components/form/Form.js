@@ -72,6 +72,28 @@ export default class Form extends Component {
     }
   }
 
+  generateNestedClones = () => {}
+
+  generateClonedChild = child =>
+    React.cloneElement(child, {
+      readOnly: this.props.readOnly,
+      setError: isError => {
+        const { errors } = this.state
+
+        if (isError && !errors.includes(child.props.id)) {
+          this.setState({
+            errors: [...errors, child.props.id]
+          })
+          errors.push(child.props.id)
+        } else if (!isError) {
+          this.setState({
+            errors: errors.filter(item => item !== child.props.id)
+          })
+        }
+      },
+      showErrors: this.state.showErrors
+    })
+
   componentDidMount() {
     this.keyboardDidShowListener = Keyboard.addListener('keyboardDidShow', () =>
       this.toggleContinue(false)
@@ -90,23 +112,26 @@ export default class Form extends Component {
     // map children and add validation props to input related ones
     const children = React.Children.map(this.props.children, child => {
       if (formTypes.find(item => item === child.type.displayName)) {
+        return this.generateClonedChild(child)
+      } else if (
+        child.props.children &&
+        child.props.children.length &&
+        child.props.children.some(
+          element =>
+            element && formTypes.find(item => item === element.type.displayName)
+        )
+      ) {
         return React.cloneElement(child, {
-          readOnly: this.props.readOnly,
-          setError: isError => {
-            const { errors } = this.state
-
-            if (isError && !errors.includes(child.props.id)) {
-              this.setState({
-                errors: [...errors, child.props.id]
-              })
-              errors.push(child.props.id)
-            } else if (!isError) {
-              this.setState({
-                errors: errors.filter(item => item !== child.props.id)
-              })
+          children: React.Children.map(child.props.children, nestedChild => {
+            if (
+              nestedChild &&
+              formTypes.find(item => item === nestedChild.type.displayName)
+            ) {
+              return this.generateClonedChild(nestedChild)
+            } else {
+              return nestedChild
             }
-          },
-          showErrors: this.state.showErrors
+          })
         })
       } else {
         return child

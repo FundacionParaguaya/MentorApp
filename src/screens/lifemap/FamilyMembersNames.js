@@ -1,29 +1,24 @@
 import React, { Component } from 'react'
 import { StyleSheet, Text, View } from 'react-native'
 import { getTotalScreens, setValidationSchema } from './helpers'
-import { updateDraft } from '../../redux/actions'
+
 import DateInput from '../../components/form/DateInput'
 import Decoration from '../../components/decoration/Decoration'
+import Form from '../../components/form/Form'
 import Icon from 'react-native-vector-icons/MaterialIcons'
 import PropTypes from 'prop-types'
 import Select from '../../components/form/Select'
-import Form from '../../components/form/Form'
 import TextInput from '../../components/form/TextInput'
 import colors from '../../theme.json'
-import globalStyles from '../../globalStyles'
-import { withNamespaces } from 'react-i18next'
 import { connect } from 'react-redux'
+import globalStyles from '../../globalStyles'
+import { updateDraft } from '../../redux/actions'
+import { withNamespaces } from 'react-i18next'
 
 export class FamilyMembersNames extends Component {
   survey = this.props.navigation.getParam('survey')
   readOnly = this.props.navigation.getParam('readOnly')
   draftId = this.props.navigation.getParam('draftId')
-
-  errorsDetected = []
-  state = {
-    errorsDetected: [],
-    showErrors: false
-  }
 
   getDraft = () =>
     this.props.drafts.find(draft => draft.draftId === this.draftId)
@@ -39,32 +34,18 @@ export class FamilyMembersNames extends Component {
     return this.props.navigation.isFocused()
   }
 
-  detectError = (error, field) => {
-    if (error && !this.errorsDetected.includes(field)) {
-      this.errorsDetected.push(field)
-    } else if (!error) {
-      this.errorsDetected = this.errorsDetected.filter(item => item !== field)
-    }
-
-    this.setState({
-      errorsDetected: this.errorsDetected
+  onContinue = () => {
+    this.props.navigation.navigate('Location', {
+      draftId: this.draftId,
+      survey: this.survey
     })
   }
 
-  onContinue = () => {
-    if (this.state.errorsDetected.length) {
-      this.setState({
-        showErrors: true
-      })
-    } else {
-      this.props.navigation.navigate('Location', {
-        draftId: this.draftId,
-        survey: this.survey
-      })
-    }
-  }
-
   updateMember = (value, field) => {
+    if (!field || !field.split.length) {
+      return
+    }
+
     const draft = this.getDraft()
 
     // [0] is the index, [1] is the field
@@ -138,6 +119,7 @@ export class FamilyMembersNames extends Component {
         handleClick={() => this.handleClick(draft)}
         continueLabel={t('general.continue')}
         progress={draft ? 2 / draft.progress.total : 0}
+        readOnly={!!this.readOnly}
       >
         <Decoration variation="familyMemberNamesHeader">
           <View style={styles.circleContainer}>

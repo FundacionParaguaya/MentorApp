@@ -20,6 +20,12 @@ export class FamilyParticipant extends Component {
   survey = this.props.navigation.getParam('survey')
   draftId = this.props.navigation.getParam('draftId')
   readOnly = this.props.navigation.getParam('readOnly')
+  requiredFields =
+    (this.survey.surveyConfig &&
+      this.survey.surveyConfig.requiredFields &&
+      this.survey.surveyConfig.requiredFields.primaryParticipant) ||
+    null
+
   familyMembersArray = [] // the options array for members count dropdown
 
   getDraft = () =>
@@ -175,12 +181,6 @@ export class FamilyParticipant extends Component {
   render() {
     const { t } = this.props
 
-    const requiredFields =
-      (this.survey.surveyConfig &&
-        this.survey.surveyConfig.requiredFields &&
-        this.survey.surveyConfig.requiredFields.primaryParticipant) ||
-      null
-
     const draft = this.getDraft()
 
     const participant = draft ? draft.familyData.familyMembersList[0] : {}
@@ -210,7 +210,7 @@ export class FamilyParticipant extends Component {
           autoFocus={!participant.firstName}
           placeholder={t('views.family.firstName')}
           initialValue={participant.firstName || ''}
-          required={setValidationSchema(requiredFields, 'firstName', true)}
+          required={setValidationSchema(this.requiredFields, 'firstName', true)}
           validation="string"
           onChangeText={this.updateParticipant}
         />
@@ -220,7 +220,7 @@ export class FamilyParticipant extends Component {
           upperCase
           placeholder={t('views.family.lastName')}
           initialValue={participant.lastName || ''}
-          required={setValidationSchema(requiredFields, 'lastName', true)}
+          required={setValidationSchema(this.requiredFields, 'lastName', true)}
           validation="string"
           onChangeText={this.updateParticipant}
         />
@@ -230,7 +230,7 @@ export class FamilyParticipant extends Component {
           label={t('views.family.gender')}
           placeholder={t('views.family.selectGender')}
           initialValue={participant.gender || ''}
-          required={setValidationSchema(requiredFields, 'gender', true)}
+          required={setValidationSchema(this.requiredFields, 'gender', true)}
           options={this.survey.surveyConfig.gender}
           onChange={this.updateParticipant}
           otherField="customGender"
@@ -240,7 +240,7 @@ export class FamilyParticipant extends Component {
 
         <DateInput
           id="birthDate"
-          required={setValidationSchema(requiredFields, 'birthDate', true)}
+          required={setValidationSchema(this.requiredFields, 'birthDate', true)}
           label={t('views.family.dateOfBirth')}
           initialValue={participant.birthDate}
           onValidDate={this.updateParticipant}
@@ -252,7 +252,11 @@ export class FamilyParticipant extends Component {
           placeholder={t('views.family.documentType')}
           options={this.survey.surveyConfig.documentType}
           initialValue={participant.documentType || ''}
-          required={setValidationSchema(requiredFields, 'documentType', true)}
+          required={setValidationSchema(
+            this.requiredFields,
+            'documentType',
+            true
+          )}
           otherPlaceholder={t('views.family.customDocumentType')}
           otherField="customDocumentType"
           otherValue={participant.customDocumentType}
@@ -263,7 +267,11 @@ export class FamilyParticipant extends Component {
           id="documentNumber"
           placeholder={t('views.family.documentNumber')}
           initialValue={participant.documentNumber}
-          required={setValidationSchema(requiredFields, 'documentNumber', true)}
+          required={setValidationSchema(
+            this.requiredFields,
+            'documentNumber',
+            true
+          )}
           onChangeText={this.updateParticipant}
         />
 
@@ -273,7 +281,11 @@ export class FamilyParticipant extends Component {
           label={t('views.family.countryOfBirth')}
           placeholder={t('views.family.countryOfBirth')}
           initialValue={participant.birthCountry}
-          required={setValidationSchema(requiredFields, 'birthCountry', true)}
+          required={setValidationSchema(
+            this.requiredFields,
+            'birthCountry',
+            true
+          )}
           defaultCountry={this.survey.surveyConfig.surveyLocation.country}
           countriesOnTop={this.survey.surveyConfig.countryOfBirth}
           onChange={this.updateParticipant}
@@ -285,7 +297,7 @@ export class FamilyParticipant extends Component {
           placeholder={t('views.family.peopleLivingInThisHousehold')}
           initialValue={draft.familyData.countFamilyMembers || ''}
           required={setValidationSchema(
-            requiredFields,
+            this.requiredFields,
             'countFamilyMembers',
             true
           )}
