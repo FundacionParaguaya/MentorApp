@@ -1,6 +1,7 @@
-import Enzyme from 'enzyme'
-import Adapter from 'enzyme-adapter-react-16'
 import 'jest-enzyme'
+
+import Adapter from 'enzyme-adapter-react-16'
+import Enzyme from 'enzyme'
 import mockAsyncStorage from '@react-native-community/async-storage/jest/async-storage-mock'
 
 jest.mock('@react-native-community/async-storage', () => mockAsyncStorage)
@@ -154,6 +155,10 @@ jest.mock('@react-native-mapbox-gl/maps', () => {
   return class Mapbox extends React.Component {
     static MapView = props =>
       React.createElement('MapView', props, props.children)
+    static UserLocation = props =>
+      React.createElement('UserLocation', props, props.children)
+    static Camera = props =>
+      React.createElement('Camera', props, props.children)
 
     static PointAnnotation = props =>
       React.createElement('PointAnnotation', props, props.children)

@@ -1,9 +1,10 @@
+import { Keyboard, ScrollView, StyleSheet, View } from 'react-native'
 import React, { Component } from 'react'
-import { View, ScrollView, StyleSheet, Keyboard } from 'react-native'
+
 import Button from './Button'
 import ProgressBar from './ProgressBar'
-import Tip from './Tip'
 import PropTypes from 'prop-types'
+import Tip from './Tip'
 import globalStyles from '../globalStyles'
 
 export default class StickyFooter extends Component {
@@ -67,8 +68,7 @@ export default class StickyFooter extends Component {
           <ScrollView>{this.props.children}</ScrollView>
         )}
 
-        {!this.props.readonly &&
-        (this.props.visible && this.state.continueVisible) ? (
+        {this.props.visible && this.state.continueVisible ? (
           <View>
             {/* i have changed the height to 61 because there was a weird whitespace if we dont have the progress bar */}
             {this.props.type === 'button' ? (
@@ -77,7 +77,7 @@ export default class StickyFooter extends Component {
                   id="continue"
                   colored
                   text={this.props.continueLabel}
-                  handleClick={this.props.handleClick}
+                  handleClick={this.props.onContinue}
                 />
               </View>
             ) : (
@@ -97,7 +97,7 @@ export default class StickyFooter extends Component {
 
 StickyFooter.propTypes = {
   children: PropTypes.oneOfType([PropTypes.array, PropTypes.object]).isRequired,
-  handleClick: PropTypes.func,
+  onContinue: PropTypes.func,
   visible: PropTypes.bool.isRequired,
   continueLabel: PropTypes.string,
   type: PropTypes.oneOf(['button', 'tip']),
@@ -106,7 +106,6 @@ StickyFooter.propTypes = {
   fullHeight: PropTypes.bool,
   tipDescription: PropTypes.string,
   onTipClose: PropTypes.func,
-  readonly: PropTypes.bool,
   progress: PropTypes.number,
   currentScreen: PropTypes.string
 }

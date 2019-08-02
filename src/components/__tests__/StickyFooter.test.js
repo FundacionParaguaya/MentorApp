@@ -1,9 +1,9 @@
-import React from 'react'
-import { shallow } from 'enzyme'
-import { ScrollView } from 'react-native'
 import Button from '../Button'
-import Tip from '../Tip'
+import React from 'react'
+import { ScrollView } from 'react-native'
 import StickyFooter from '../StickyFooter'
+import Tip from '../Tip'
+import { shallow } from 'enzyme'
 
 const createTestProps = props => ({
   children: [],
@@ -40,13 +40,6 @@ describe('Sticky Footer', () => {
       title: 'title',
       description: 'description'
     })
-  })
-  it('pressing continue/save fires the handleClick function', () => {
-    wrapper
-      .find(Button)
-      .props()
-      .handleClick()
-    expect(props.handleClick).toHaveBeenCalledTimes(1)
   })
   it('does not render button or Tip when visible prop is false', () => {
     props = createTestProps({ visible: false })
