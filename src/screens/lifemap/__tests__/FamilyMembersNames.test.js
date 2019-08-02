@@ -135,6 +135,16 @@ it('sets draft navigation when navigation from a different page', () => {
   })
 })
 
+it('sets autoFocus to first textInput', () => {
+  expect(wrapper.find(TextInput).first()).toHaveProp({ autoFocus: true })
+  expect(wrapper.find(TextInput).last()).toHaveProp({ autoFocus: false })
+})
+
+it('does not update draft on wrong field format', () => {
+  wrapper.instance().updateMember('m')
+  expect(props.updateDraft).toHaveBeenCalledTimes(1)
+})
+
 describe('from resumed draft', () => {
   const resumeDraft = {
     ...draft,

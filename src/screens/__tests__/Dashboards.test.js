@@ -42,4 +42,5 @@ it('receives not empty data as props', () => {
   const wrapper = shallow(<Dashboard {...props} />)
   expect(wrapper.find(FlatList).props().data).toEqual([{ banica: 0 }])
 })
+
 //sorry dan, Bjorn made me do it

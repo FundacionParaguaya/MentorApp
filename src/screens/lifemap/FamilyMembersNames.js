@@ -97,8 +97,6 @@ export class FamilyMembersNames extends Component {
   render() {
     const { t } = this.props
     const draft = this.getDraft()
-
-    let onlyOneAutoFocusCheck = false
     const { familyMembersList } = draft.familyData
     const familyMembersCount =
       draft.familyData.countFamilyMembers &&
@@ -137,22 +135,6 @@ export class FamilyMembersNames extends Component {
         </Decoration>
 
         {familyMembersCount.map((item, i) => {
-          let firstNameAutoFocus
-          if (familyMembersList[i + 1]) {
-            if (familyMembersList[i + 1].firstName) {
-              firstNameAutoFocus = false
-            } else {
-              if (!onlyOneAutoFocusCheck) {
-                onlyOneAutoFocusCheck = true
-                firstNameAutoFocus = true
-              }
-            }
-          } else {
-            if (!onlyOneAutoFocusCheck) {
-              onlyOneAutoFocusCheck = true
-              firstNameAutoFocus = true
-            }
-          }
           return (
             <View key={i} style={{ marginBottom: 20 }}>
               {i % 2 ? <Decoration variation="familyMemberNamesBody" /> : null}
@@ -178,7 +160,9 @@ export class FamilyMembersNames extends Component {
               </View>
               <TextInput
                 id={`${i + 1}.firstName`}
-                autoFocus={firstNameAutoFocus}
+                autoFocus={
+                  i === 0 && !(familyMembersList[i + 1] || {}).firstName
+                }
                 upperCase
                 validation="string"
                 onChangeText={this.updateMember}
