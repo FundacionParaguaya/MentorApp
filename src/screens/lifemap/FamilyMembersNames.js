@@ -20,6 +20,12 @@ export class FamilyMembersNames extends Component {
   readOnly = this.props.navigation.getParam('readOnly')
   draftId = this.props.navigation.getParam('draftId')
 
+  requiredFields =
+    (this.survey.surveyConfig &&
+      this.survey.surveyConfig.requiredFields &&
+      this.survey.surveyConfig.requiredFields.primaryParticipant) ||
+    null
+
   getDraft = () =>
     this.props.drafts.find(draft => draft.draftId === this.draftId)
 
@@ -74,9 +80,6 @@ export class FamilyMembersNames extends Component {
 
   componentDidMount() {
     const draft = this.getDraft()
-    this.props.navigation.setParams({
-      getCurrentDraftState: () => this.state.draft
-    })
 
     if (!this.readonly && draft.progress.screen !== 'FamilyMembersNames') {
       this.props.updateDraft({
@@ -98,6 +101,7 @@ export class FamilyMembersNames extends Component {
     const { t } = this.props
     const draft = this.getDraft()
     const { familyMembersList } = draft.familyData
+
     const familyMembersCount =
       draft.familyData.countFamilyMembers &&
       draft.familyData.countFamilyMembers !== -1
@@ -106,15 +110,9 @@ export class FamilyMembersNames extends Component {
             .map((item, index) => index)
         : []
 
-    const requiredFields =
-      (this.survey.surveyConfig &&
-        this.survey.surveyConfig.requiredFields &&
-        this.survey.surveyConfig.requiredFields.familyMember) ||
-      null
-
     return (
       <Form
-        handleClick={() => this.handleClick(draft)}
+        onContinue={this.onContinue}
         continueLabel={t('general.continue')}
         progress={draft ? 2 / draft.progress.total : 0}
         readOnly={!!this.readOnly}
@@ -169,7 +167,7 @@ export class FamilyMembersNames extends Component {
                 placeholder={`${t('views.family.firstName')}`}
                 initialValue={(familyMembersList[i + 1] || {}).firstName || ''}
                 required={setValidationSchema(
-                  requiredFields,
+                  this.requiredFields,
                   'firstName',
                   true
                 )}
@@ -181,7 +179,11 @@ export class FamilyMembersNames extends Component {
                 placeholder={t('views.family.selectGender')}
                 initialValue={(familyMembersList[i + 1] || {}).gender || ''}
                 options={this.survey.surveyConfig.gender}
-                required={setValidationSchema(requiredFields, 'gender', false)}
+                required={setValidationSchema(
+                  this.requiredFields,
+                  'gender',
+                  false
+                )}
                 otherField={`${i}.customGender`}
                 otherPlaceholder={t('views.family.specifyGender')}
                 otherValue={(familyMembersList[i + 1] || {}).customGender || ''}
@@ -193,7 +195,7 @@ export class FamilyMembersNames extends Component {
                 onValidDate={this.updateMember}
                 initialValue={(familyMembersList[i + 1] || {}).birthDate}
                 required={setValidationSchema(
-                  requiredFields,
+                  this.requiredFields,
                   'birthDate',
                   false
                 )}
