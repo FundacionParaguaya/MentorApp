@@ -15,11 +15,11 @@ export default class Popup extends Component {
       isOpen,
       children,
       onClose,
-      priorOrAchievement,
-      definition
+      modifiedPopUp,
+      definition,
+      LogoutPopup
     } = this.props
 
-    //React.Fragment does not accept styles.priorOrAchievement modal does not work with View,it works only with React.Fragment,thats why i had to create such a silly structure
     return (
       <Modal
         visible={!!isOpen}
@@ -28,13 +28,13 @@ export default class Popup extends Component {
         animationType="fade"
         presentationStyle="overFullScreen"
       >
-        {priorOrAchievement ? (
+        {modifiedPopUp ? (
           <React.Fragment>
-            {definition ? (
+            {definition || LogoutPopup ? (
               <View style={styles.definitionParent}>
                 <TouchableHighlight
                   underlayColor={'rgba(47,38,28, 0.2)'}
-                  style={styles.priorOrAchievementContainer}
+                  style={styles.container}
                   onPress={onClose}
                   id="overlay"
                 >
@@ -42,7 +42,9 @@ export default class Popup extends Component {
                 </TouchableHighlight>
                 <ScrollView
                   id="modal"
-                  style={styles.modalDefinition}
+                  style={
+                    LogoutPopup ? styles.modalLogout : styles.modalDefinition
+                  }
                   accessible={true}
                   accessibilityLiveRegion="assertive"
                 >
@@ -53,7 +55,7 @@ export default class Popup extends Component {
               <React.Fragment>
                 <TouchableHighlight
                   underlayColor={'rgba(47,38,28, 0.2)'}
-                  style={styles.priorOrAchievementContainer}
+                  style={styles.container}
                   onPress={onClose}
                   id="overlay"
                 >
@@ -94,24 +96,14 @@ export default class Popup extends Component {
 
 Popup.propTypes = {
   isOpen: PropTypes.bool,
+  LogoutPopup: PropTypes.bool,
   definition: PropTypes.bool,
   children: PropTypes.oneOfType([PropTypes.array, PropTypes.object]),
   onClose: PropTypes.func,
-  priorOrAchievement: PropTypes.bool
+  modifiedPopUp: PropTypes.bool
 }
 
 const styles = StyleSheet.create({
-  priorOrAchievementContainer: {
-    position: 'absolute',
-    top: 0,
-    left: 0,
-    right: 0,
-    bottom: 0,
-    flexDirection: 'column',
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: 'rgba(47,38,28, 0.2)'
-  },
   priorOrAchievementModal: {
     width: '100%',
     position: 'absolute',
@@ -141,10 +133,19 @@ const styles = StyleSheet.create({
   },
   modal: {
     width: 300,
+
     backgroundColor: colors.white,
     paddingVertical: 23,
     padding: 28,
     marginBottom: 200
+  },
+  modalLogout: {
+    width: 300,
+    backgroundColor: colors.white,
+    paddingVertical: 23,
+    padding: 28,
+    marginLeft: 20,
+    marginRight: 20
   },
   definitionParent: {
     position: 'absolute',

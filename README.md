@@ -36,4 +36,6 @@ This is the source repository for the Poverty Stoplight native mobile app. If yo
 
 ## Thanks To
 
--  <img width="200" alt="portfolio_view" src="browserstack.png"> [click here to check their website](http://browserstack.com) 
+<img width="200" alt="portfolio_view" src="assets/images/browserstack.png"> 
+
+[click here to check their website](http://browserstack.com)
