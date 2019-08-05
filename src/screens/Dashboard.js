@@ -8,7 +8,6 @@ import {
   UIManager,
   findNodeHandle
 } from 'react-native'
-import { Sentry } from 'react-native-sentry'
 import { AndroidBackHandler } from 'react-navigation-backhandler'
 import { withNamespaces } from 'react-i18next'
 import PropTypes from 'prop-types'
@@ -104,13 +103,6 @@ export class Dashboard extends Component {
           )
         }, 1)
       }
-      // set sentry login details
-      Sentry.setUserContext({
-        username: this.props.user.username,
-        extra: {
-          env: this.props.env
-        }
-      })
     }
   }
 
