@@ -115,7 +115,7 @@ export class Location extends Component {
     }
   }
 
-  getCoordinatesOnline = survey => {
+  getCoordinatesOnline() {
     const draft = this.getDraft()
     const { familyData } = draft
     // this.setState({ askingForPermission: true })
@@ -144,7 +144,7 @@ export class Location extends Component {
         // if no location available reset to survey location only when
         // no location comes from the draft
         if (!familyData.latitude) {
-          const position = survey.surveyConfig.surveyLocation
+          const position = this.survey.surveyConfig.surveyLocation
 
           this.props.updateDraft({
             ...draft,
@@ -175,7 +175,7 @@ export class Location extends Component {
     )
   }
 
-  getCoordinatesOffline = () => {
+  getCoordinatesOffline() {
     const draft = this.getDraft()
     const { familyData } = draft
 
@@ -196,6 +196,7 @@ export class Location extends Component {
         // if no offline map is available, but there is location save it
         position => {
           const { longitude, latitude, accuracy } = position.coords
+
           const isLocationInBoundaries = this.state.cachedMapPacks.length
             ? this.isUserLocationWithinMapPackBounds(
                 longitude,
@@ -244,9 +245,7 @@ export class Location extends Component {
       centeringMap: true
     })
 
-    isOnline
-      ? this.getCoordinatesOnline(this.survey)
-      : this.getCoordinatesOffline()
+    isOnline ? this.getCoordinatesOnline() : this.getCoordinatesOffline()
   }
 
   _handleAppStateChange = nextAppState => {
@@ -264,25 +263,16 @@ export class Location extends Component {
   }
 
   onContinue = () => {
-    const draft = this.getDraft()
-    if (this.errorsDetected.length) {
-      this.setState({
-        showErrors: true
-      })
-    } else {
-      this.props.updateDraft(draft.draftId, draft)
+    const nextPage =
+      this.survey.surveyEconomicQuestions &&
+      this.survey.surveyEconomicQuestions.length
+        ? 'SocioEconomicQuestion'
+        : 'BeginLifemap'
 
-      const nextPage =
-        this.survey.surveyEconomicQuestions &&
-        this.survey.surveyEconomicQuestions.length
-          ? 'SocioEconomicQuestion'
-          : 'BeginLifemap'
-
-      this.props.navigation.replace(nextPage, {
-        draft,
-        survey: this.survey
-      })
-    }
+    this.props.navigation.navigate(nextPage, {
+      draftId: this.draftId,
+      survey: this.survey
+    })
   }
 
   updateFamilyData = (value, field) => {
@@ -324,7 +314,9 @@ export class Location extends Component {
   }
 
   centerOnOfflineMap = map => {
-    const draft = this.getDraft({
+    const draft = this.getDraft()
+
+    this.props.updateDraft({
       ...draft,
       familyData: {
         ...draft.familyData,
@@ -332,8 +324,6 @@ export class Location extends Component {
         longitude: map.center[1]
       }
     })
-
-    this.props.updateDraft()
 
     this.setState({
       hasShownList: true,
@@ -440,6 +430,10 @@ export class Location extends Component {
   }
 
   componentDidMount() {
+    this.setState({
+      loading: true
+    })
+
     this.requestLocationPermission()
 
     // check if online first
@@ -455,10 +449,6 @@ export class Location extends Component {
         this.setState({ status: state.isConnected })
         this.determineScreenState(state.isConnected)
       }
-    })
-
-    this.setState({
-      loading: true
     })
 
     const draft = this.getDraft()
@@ -618,6 +608,7 @@ export class Location extends Component {
             </View>
 
             <TouchableHighlight
+              id="location-not-listed-above"
               underlayColor={'transparent'}
               onPress={this.goToOfflineLocation}
             >

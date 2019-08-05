@@ -4,6 +4,8 @@ import Adapter from 'enzyme-adapter-react-16'
 import Enzyme from 'enzyme'
 import mockAsyncStorage from '@react-native-community/async-storage/jest/async-storage-mock'
 
+Enzyme.configure({ adapter: new Adapter() })
+
 jest.mock('@react-native-community/async-storage', () => mockAsyncStorage)
 
 jest.mock('@react-native-community/netinfo', () => {
@@ -16,8 +18,6 @@ jest.mock('@react-native-community/netinfo', () => {
     removeListeners: jest.fn()
   })
 })
-
-Enzyme.configure({ adapter: new Adapter() })
 
 // mock device info
 jest.mock('react-native-device-info', () => {

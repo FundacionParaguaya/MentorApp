@@ -1,30 +1,13 @@
-import { ActivityIndicator, Text } from 'react-native'
+import { ActivityIndicator, Text, TouchableHighlight } from 'react-native'
 
+import Geolocation from '../../../__mocks__/@react-native-community/geolocation.js'
+/* eslint-disable import/named */
+import { GooglePlacesAutocomplete } from 'react-native-google-places-autocomplete'
+/* eslint-enable import/named */
 import { Location } from '../Location'
 import MapboxGL from '@react-native-mapbox-gl/maps'
 import React from 'react'
 import { shallow } from 'enzyme'
-
-jest.useFakeTimers()
-
-// navigator mock
-/* eslint-disable no-undef */
-global.navigator = {
-  geolocation: {
-    getCurrentPosition: callback =>
-      callback({
-        coords: {
-          latitude: 44,
-          longitude: 45,
-          accuracy: 15
-        }
-      }),
-    watchPosition: jest.fn()
-  }
-}
-
-global.fetch = () => new Promise(() => {})
-/* eslint-enable no-undef */
 
 const survey = {
   surveyEconomicQuestions: [],
@@ -144,9 +127,63 @@ it('sets draft navigation when navigation from a different page', () => {
   })
 })
 
+it('navigates to first socio economic screen on continue', () => {
+  const updatedSurvey = {
+    ...survey,
+    surveyEconomicQuestions: [
+      {
+        questionText: 'Ingrese la zona en que vive',
+        codeName: 'areaOfResidence'
+      }
+    ]
+  }
+
+  props = createTestProps({
+    navigation: {
+      ...navigation,
+      getParam: jest.fn(param => {
+        if (param === 'draftId') {
+          return draftId
+        } else if (param === 'survey') {
+          return updatedSurvey
+        }
+
+        return null
+      })
+    }
+  })
+
+  wrapper = shallow(<Location {...props} />)
+  wrapper.instance().onContinue()
+
+  expect(props.navigation.navigate).toHaveBeenCalledWith(
+    'SocioEconomicQuestion',
+    {
+      survey: updatedSurvey,
+      draftId
+    }
+  )
+})
+
+it('navigates to lifemap if no socio economic screens on continue', () => {
+  wrapper.instance().onContinue()
+  expect(props.navigation.navigate).toHaveBeenCalledWith('BeginLifemap', {
+    survey,
+    draftId
+  })
+})
+
+it('requests user location permision on mount', () => {
+  const spy = jest.spyOn(wrapper.instance(), 'requestLocationPermission')
+
+  wrapper.instance().componentDidMount()
+  expect(spy).toHaveBeenCalledTimes(1)
+})
+
 describe('loading...', () => {
-  it('shows ActivityIndicator', () => {
+  it('shows only ActivityIndicator', () => {
     expect(wrapper.find(ActivityIndicator)).toHaveLength(1)
+    expect(wrapper.find(MapboxGL.MapView)).toHaveLength(0)
   })
 
   it('show getting location message only when actually getting location', () => {
@@ -159,22 +196,192 @@ describe('loading...', () => {
     expect(wrapper.find(Text)).toHaveLength(1)
   })
 })
-describe('showing the map', () => {
+
+describe('user is online', () => {
   beforeEach(() => {
-    wrapper.instance().getDeviceCoordinates(true)
+    wrapper.instance().determineScreenState(true)
   })
 
-  it('shows form when out of boundries for offline map', () => {
-    wrapper.instance().getDeviceCoordinates(false)
+  it('shows map with user location if device location is available', () => {
     expect(wrapper.find(MapboxGL.MapView)).toHaveLength(1)
+    expect(wrapper.find(MapboxGL.Camera)).toHaveLength(1)
+  })
+
+  it('updates draft with device location', () => {
+    expect(props.updateDraft).toHaveBeenCalledWith({
+      ...draft,
+      familyData: {
+        ...draft.familyData,
+        latitude: 44,
+        longitude: 45,
+        accuracy: 15
+      }
+    })
+  })
+
+  it('shows list of available cached maps if one is available and locations is not', () => {
+    Geolocation.getCurrentPosition.mockImplementationOnce((callback, error) =>
+      error()
+    )
+  })
+
+  it('set user location to survey default if both location and cached maps are unavailable', () => {
+    Geolocation.getCurrentPosition.mockImplementationOnce((callback, error) =>
+      error()
+    )
+
+    expect(props.updateDraft).toHaveBeenCalledWith({
+      ...draft,
+      familyData: {
+        ...draft.familyData,
+        latitude: 10,
+        longitude: 11,
+        accuracy: 0
+      }
+    })
+  })
+
+  it('allows user to serch for location', () => {
+    const searchBar = wrapper.find(GooglePlacesAutocomplete)
+
+    expect(searchBar).toHaveLength(1)
+
+    searchBar
+      .props()
+      .onPress({}, { geometry: { location: { lat: 4, lng: -1 } } })
+
+    wrapper
+      .instance()
+      .goToSearch({}, { geometry: { location: { lat: 4, lng: -1 } } })
+
+    expect(props.updateDraft).toHaveBeenCalledWith({
+      ...draft,
+      familyData: {
+        ...draft.familyData,
+        latitude: 4,
+        longitude: -1
+      }
+    })
   })
 })
-describe('showing the form instead of the map', () => {
+
+describe('user is offline', () => {
   beforeEach(() => {
-    props = createTestProps({})
+    const surveyWithMaps = {
+      ...survey,
+      surveyConfig: {
+        ...survey.surveyConfig,
+        offlineMaps: [
+          { name: 'Test Location', from: [1, 1], to: [3, 3], center: [2, 2] },
+          { name: 'Test Place', from: [4, 1], to: [6, 6], center: [5, 5] }
+        ]
+      }
+    }
+
+    props = createTestProps({
+      navigation: {
+        ...navigation,
+        getParam: jest.fn(param => {
+          if (param === 'draftId') {
+            return draftId
+          } else if (param === 'survey') {
+            return surveyWithMaps
+          }
+
+          return null
+        })
+      }
+    })
     wrapper = shallow(<Location {...props} />)
-    wrapper.instance().getDeviceCoordinates(false)
-    wrapper.setState({ showForm: true })
+
+    wrapper.instance().determineScreenState(false)
+  })
+  it('shows list of available cached maps', () => {
+    const buttons = wrapper.find(TouchableHighlight)
+
+    expect(wrapper).toHaveState({ showOfflineMapsList: true })
+    expect(buttons).toHaveLength(3)
+
+    expect(buttons.first().find(Text)).toHaveHTML(
+      '<react-native-mock>Test Location</react-native-mock>'
+    )
+  })
+
+  it('give option to user for location not listed', () => {
+    const spy = jest.spyOn(wrapper.instance(), 'getCoordinatesOffline')
+
+    wrapper
+      .find(TouchableHighlight)
+      .last()
+      .props()
+      .onPress()
+
+    expect(wrapper).toHaveState({
+      hasShownList: true,
+      showSearch: false
+    })
+
+    expect(spy).toHaveBeenCalledTimes(1)
+  })
+
+  it('shows a cached map if user has selected one', () => {
+    wrapper
+      .find(TouchableHighlight)
+      .first()
+      .props()
+      .onPress()
+
+    expect(wrapper).toHaveState({
+      hasShownList: true,
+      loading: false,
+      centeringMap: false,
+      showForm: false,
+      showSearch: false,
+      showOfflineMapsList: false
+    })
+
+    expect(props.updateDraft).toHaveBeenCalledWith({
+      ...draft,
+      familyData: {
+        ...draft.familyData,
+        latitude: 2,
+        longitude: 2
+      }
+    })
   })
 })
+
+describe('user offline with no cached maps', () => {
+  beforeEach(() => {
+    wrapper.instance().determineScreenState(false)
+  })
+
+  it('shows form if not cached maps available', () => {})
+
+  it('informs user if app has located them or not', () => {})
+
+  it('allows user to edit each field on offline form', () => {})
+})
+
+describe('resuming a draft', () => {
+  beforeEach(() => {
+    props = createTestProps({
+      drafts: [
+        {
+          ...draft,
+          familyData: { ...draft.familyData, latitude: -5, longitude: 70 }
+        }
+      ]
+    })
+    wrapper = shallow(<Location {...props} />)
+
+    wrapper.instance().determineScreenState(true)
+  })
+  it('sets draft to saved location', () => {
+    expect(wrapper.find(MapboxGL.Camera)).toHaveProp({
+      centerCoordinate: [70, -5]
+    })
+  })
+})
+
 describe('readonly mode', () => {})
