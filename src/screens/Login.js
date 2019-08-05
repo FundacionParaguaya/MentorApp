@@ -49,7 +49,7 @@ export class Login extends Component {
   componentDidMount() {
     // if use has logged in navigate to Loading
     if (this.props.user.token) {
-      // this.props.navigation.navigate('Loading')
+      this.props.navigation.navigate('Loading')
     } else {
       AppState.addEventListener('change', this.handleAppStateChange)
       this.setDimensions()
