@@ -19,7 +19,6 @@
     "@react-native-mapbox-gl/maps": "^7.0.0-rc3",
     "@redux-offline/redux-offline": "^2.5.2",
     "i18next": "^12.1.0",
-    "intl": "^1.2.5",
     "jsc-android": "^245459.0.0",
     "localized-countries": "^1.0.2",
     "moment": "^2.22.2",
