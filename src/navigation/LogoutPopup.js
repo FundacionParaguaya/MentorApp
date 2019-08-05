@@ -31,6 +31,8 @@ export default class LogoutPopup extends Component {
     } = this.props
     return logingOut ? (
       <Popup
+        LogoutPopup
+        modifiedPopUp
         isOpen={navigation.getParam('logoutModalOpen')}
         onClose={onModalClose}
         style={{ paddingVertical: 100 }}
@@ -43,6 +45,8 @@ export default class LogoutPopup extends Component {
       </Popup>
     ) : (
       <Popup
+        LogoutPopup
+        modifiedPopUp
         isOpen={navigation.getParam('logoutModalOpen')}
         onClose={onModalClose}
       >
@@ -52,7 +56,7 @@ export default class LogoutPopup extends Component {
           accessibilityLabel={i18n.t('general.close')}
           accessibilityRole={'button'}
         >
-          <Icon name="close" size={20} />
+          <Icon onPress={onModalClose} name="close" size={23} />
         </View>
 
         <View style={styles.modalContainer} accessibilityLiveRegion="polite">
@@ -175,7 +179,7 @@ export default class LogoutPopup extends Component {
                   : i18n.t('general.yes')
               }
               borderColor={unsyncedDrafts ? colors.palered : colors.palegreen}
-              style={{ width: 107, alignSelf: 'flex-start' }}
+              style={{ width: 107, marginRight: 20 }}
               handleClick={
                 unsyncedDrafts && !checkboxesVisible
                   ? showCheckboxes
@@ -191,7 +195,7 @@ export default class LogoutPopup extends Component {
                   ? i18n.t('general.no')
                   : i18n.t('general.cancel')
               }
-              style={{ width: 107, alignSelf: 'flex-end' }}
+              style={{ width: 107, marginLeft: 20 }}
               handleClick={onModalClose}
             />
           </View>
@@ -241,7 +245,7 @@ const styles = StyleSheet.create({
   buttonBar: {
     marginBottom: 80,
     flexDirection: 'row',
-    justifyContent: 'space-between'
+    justifyContent: 'center'
   },
   checkbox: {
     marginTop: 0,
