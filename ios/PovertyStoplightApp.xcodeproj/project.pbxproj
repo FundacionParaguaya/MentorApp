@@ -78,6 +78,7 @@
 		3D4E8F3EA4D94AE796EB4DB0 /* libRNHTMLtoPDF.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 1B7E508F95F7489F828AD5C2 /* libRNHTMLtoPDF.a */; };
 		528842F709D74897A04F08AF /* RNHTMLtoPDFTests.xctest in Resources */ = {isa = PBXBuildFile; fileRef = FFCAC76B9F3B47129896CC4E /* RNHTMLtoPDFTests.xctest */; };
 		7C01F2A8220D494A987F34DA /* libReactNativeTestFairy.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 0736B30F1C574AB7A98E402F /* libReactNativeTestFairy.a */; };
+		2988737A713C4AB5A4B1A542 /* libBugsnagReactNative.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 63CAE0F52CD244D187B81E8D /* libBugsnagReactNative.a */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -438,6 +439,8 @@
 		FFCAC76B9F3B47129896CC4E /* RNHTMLtoPDFTests.xctest */ = {isa = PBXFileReference; name = "RNHTMLtoPDFTests.xctest"; path = "RNHTMLtoPDFTests.xctest"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = wrapper.cfbundle; explicitFileType = undefined; includeInIndex = 0; };
 		6A468430C6F64B5185DD4D2B /* ReactNativeTestFairy.xcodeproj */ = {isa = PBXFileReference; name = "ReactNativeTestFairy.xcodeproj"; path = "../node_modules/react-native-testfairy/ios/ReactNativeTestFairy.xcodeproj"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = wrapper.pb-project; explicitFileType = undefined; includeInIndex = 0; };
 		0736B30F1C574AB7A98E402F /* libReactNativeTestFairy.a */ = {isa = PBXFileReference; name = "libReactNativeTestFairy.a"; path = "libReactNativeTestFairy.a"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = archive.ar; explicitFileType = undefined; includeInIndex = 0; };
+		FA0085CD2F704A7E87999C0D /* BugsnagReactNative.xcodeproj */ = {isa = PBXFileReference; name = "BugsnagReactNative.xcodeproj"; path = "../node_modules/bugsnag-react-native/cocoa/BugsnagReactNative.xcodeproj"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = wrapper.pb-project; explicitFileType = undefined; includeInIndex = 0; };
+		63CAE0F52CD244D187B81E8D /* libBugsnagReactNative.a */ = {isa = PBXFileReference; name = "libBugsnagReactNative.a"; path = "libBugsnagReactNative.a"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = archive.ar; explicitFileType = undefined; includeInIndex = 0; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -482,6 +485,7 @@
 				3D4E8F3EA4D94AE796EB4DB0 /* libRNHTMLtoPDF.a in Frameworks */,
 				528842F709D74897A04F08AF /* RNHTMLtoPDFTests.xctest in Resources */,
 				7C01F2A8220D494A987F34DA /* libReactNativeTestFairy.a in Frameworks */,
+				2988737A713C4AB5A4B1A542 /* libBugsnagReactNative.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -688,6 +692,7 @@
 				0A57179B5931415FAFDAA0FA /* RNPrint.xcodeproj */,
 				27606EDD8A924775BE24B571 /* RNHTMLtoPDF.xcodeproj */,
 				6A468430C6F64B5185DD4D2B /* ReactNativeTestFairy.xcodeproj */,
+				FA0085CD2F704A7E87999C0D /* BugsnagReactNative.xcodeproj */,
 			);
 			name = Libraries;
 			sourceTree = "<group>";
@@ -1432,6 +1437,7 @@
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 				);
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
@@ -1449,6 +1455,7 @@
 					"$(SRCROOT)/../node_modules/react-native-print/ios/RNPrint",
 					"$(SRCROOT)/../node_modules/react-native-html-to-pdf/ios/RNHTMLtoPDF",
 					"$(SRCROOT)/../node_modules/react-native-testfairy/ios",
+					"$(SRCROOT)/../node_modules/bugsnag-react-native/cocoa/**",
 				);
 				FRAMEWORK_SEARCH_PATHS = (
 				);
@@ -1477,6 +1484,7 @@
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 				);
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
@@ -1494,6 +1502,7 @@
 					"$(SRCROOT)/../node_modules/react-native-print/ios/RNPrint",
 					"$(SRCROOT)/../node_modules/react-native-html-to-pdf/ios/RNHTMLtoPDF",
 					"$(SRCROOT)/../node_modules/react-native-testfairy/ios",
+					"$(SRCROOT)/../node_modules/bugsnag-react-native/cocoa/**",
 				);
 				FRAMEWORK_SEARCH_PATHS = (
 				);
@@ -1532,6 +1541,7 @@
 					"$(SRCROOT)/../node_modules/react-native-print/ios/RNPrint",
 					"$(SRCROOT)/../node_modules/react-native-html-to-pdf/ios/RNHTMLtoPDF",
 					"$(SRCROOT)/../node_modules/react-native-testfairy/ios",
+					"$(SRCROOT)/../node_modules/bugsnag-react-native/cocoa/**",
 				);
 				FRAMEWORK_SEARCH_PATHS = (
 				);
@@ -1569,6 +1579,7 @@
 					"$(SRCROOT)/../node_modules/react-native-print/ios/RNPrint",
 					"$(SRCROOT)/../node_modules/react-native-html-to-pdf/ios/RNHTMLtoPDF",
 					"$(SRCROOT)/../node_modules/react-native-testfairy/ios",
+					"$(SRCROOT)/../node_modules/bugsnag-react-native/cocoa/**",
 				);
 				FRAMEWORK_SEARCH_PATHS = (
 				);
@@ -1605,6 +1616,7 @@
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 				);
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
@@ -1622,6 +1634,7 @@
 					"$(SRCROOT)/../node_modules/react-native-print/ios/RNPrint",
 					"$(SRCROOT)/../node_modules/react-native-html-to-pdf/ios/RNHTMLtoPDF",
 					"$(SRCROOT)/../node_modules/react-native-testfairy/ios",
+					"$(SRCROOT)/../node_modules/bugsnag-react-native/cocoa/**",
 				);
 				FRAMEWORK_SEARCH_PATHS = (
 				);
@@ -1658,6 +1671,7 @@
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 				);
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
@@ -1675,6 +1689,7 @@
 					"$(SRCROOT)/../node_modules/react-native-print/ios/RNPrint",
 					"$(SRCROOT)/../node_modules/react-native-html-to-pdf/ios/RNHTMLtoPDF",
 					"$(SRCROOT)/../node_modules/react-native-testfairy/ios",
+					"$(SRCROOT)/../node_modules/bugsnag-react-native/cocoa/**",
 				);
 				FRAMEWORK_SEARCH_PATHS = (
 				);
@@ -1710,6 +1725,7 @@
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 				);
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
@@ -1727,6 +1743,7 @@
 					"$(SRCROOT)/../node_modules/react-native-print/ios/RNPrint",
 					"$(SRCROOT)/../node_modules/react-native-html-to-pdf/ios/RNHTMLtoPDF",
 					"$(SRCROOT)/../node_modules/react-native-testfairy/ios",
+					"$(SRCROOT)/../node_modules/bugsnag-react-native/cocoa/**",
 				);
 				FRAMEWORK_SEARCH_PATHS = (
 				);
@@ -1762,6 +1779,7 @@
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 				);
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
@@ -1779,6 +1797,7 @@
 					"$(SRCROOT)/../node_modules/react-native-print/ios/RNPrint",
 					"$(SRCROOT)/../node_modules/react-native-html-to-pdf/ios/RNHTMLtoPDF",
 					"$(SRCROOT)/../node_modules/react-native-testfairy/ios",
+					"$(SRCROOT)/../node_modules/bugsnag-react-native/cocoa/**",
 				);
 				FRAMEWORK_SEARCH_PATHS = (
 				);

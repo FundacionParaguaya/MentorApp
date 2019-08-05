@@ -148,6 +148,7 @@ android {
 }
 
 dependencies {
+    implementation project(':bugsnag-react-native')
     implementation project(':react-native-testfairy')
     implementation project(':react-native-html-to-pdf')
     implementation project(':react-native-print')

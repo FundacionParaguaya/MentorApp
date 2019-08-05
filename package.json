@@ -18,6 +18,7 @@
     "@react-native-community/netinfo": "^3.2.1",
     "@react-native-mapbox-gl/maps": "^7.0.0-rc3",
     "@redux-offline/redux-offline": "^2.5.2",
+    "bugsnag-react-native": "^2.22.4",
     "i18next": "^12.1.0",
     "localized-countries": "^1.0.2",
     "moment": "^2.22.2",
