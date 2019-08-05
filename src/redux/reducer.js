@@ -495,7 +495,7 @@ export const rootReducer = (state, action) => {
         serverError: (action.payload.response && action.payload.response) || {},
         reduxStore: currentState || {},
         currentSurvey: draftSurvey || {},
-        draftData: { data: JSON.stringify(action.meta.sanitizedSnapshot || {}) }
+        draftjson: { data: JSON.stringify(action.meta.sanitizedSnapshot || {}) }
       }
     })
   }
