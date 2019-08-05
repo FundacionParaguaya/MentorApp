@@ -1,6 +1,6 @@
 {
   "name": "PovertyStoplightApp",
-  "version": "1.10.0-rc1",
+  "version": "1.10.0",
   "private": true,
   "scripts": {
     "start": "node node_modules/react-native/local-cli/cli.js start -- --reset-cache",
@@ -39,6 +39,7 @@
     "react-native-simple-radio-button": "^2.7.3",
     "react-native-snap-carousel": "^3.8.0",
     "react-native-splash-screen": "^3.2.0",
+    "react-native-testfairy": "^2.18.2",
     "react-native-vector-icons": "^6.6.0",
     "react-navigation": "^3.11.1",
     "react-navigation-backhandler": "^1.3.2",

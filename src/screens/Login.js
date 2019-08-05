@@ -28,7 +28,7 @@ import Button from '../components/Button'
 import InternalStorageFullModal, {
   MINIMUM_REQUIRED_STORAGE_SPACE_500_MB
 } from './modals/InternalStorageFullModal'
-
+const TestFairy = require('react-native-testfairy')
 // get env
 const nodeEnv = process.env
 
@@ -122,7 +122,7 @@ export class Login extends Component {
         .trim()
         .substring(2, this.state.username.trim().length)
     }
-
+    TestFairy.setUserId(username)
     this.props.setEnv(env)
     this.props.login(username, this.state.password, url[env]).then(() => {
       if (this.props.user.status === 401) {

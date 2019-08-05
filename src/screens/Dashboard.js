@@ -115,7 +115,13 @@ export class Dashboard extends Component {
   }
 
   render() {
-    const { t, drafts } = this.props
+    const { t, drafts, families } = this.props
+
+    const allDraftFamilies = drafts.filter(
+      d => d.status === 'Draft' || d.status === 'Pending sync'
+    ).length
+    const countFamilies = families.length + allDraftFamilies
+
     return (
       <AndroidBackHandler onBackPress={() => true}>
         <View style={globalStyles.ViewMainContainer}>
@@ -150,7 +156,7 @@ export class Dashboard extends Component {
                     </View>
 
                     <Text style={{ ...styles.familiesCount }}>
-                      {this.props.families.length} {t('views.families')}
+                      {countFamilies} {t('views.families')}
                     </Text>
                   </View>
                   <View
@@ -166,7 +172,9 @@ export class Dashboard extends Component {
                         <View style={styles.circleGreen} />
                       </View>
                       {/* <Text style={styles.numberIndicator}>{green}</Text> */}
-                      <Text style={styles.colorIndicator}>Green</Text>
+                      <Text style={styles.colorIndicator}>
+                        {t('views.DashGreen')}
+                      </Text>
                     </View>
 
                     <View style={styles.circleAndTextContainer}>
@@ -174,7 +182,9 @@ export class Dashboard extends Component {
                         <View style={styles.circleYellow} />
                       </View>
                       {/* <Text style={styles.numberIndicator}>{yellow}</Text> */}
-                      <Text style={styles.colorIndicator}>Yellow</Text>
+                      <Text style={styles.colorIndicator}>
+                        {t('views.DashYellow')}
+                      </Text>
                     </View>
 
                     <View style={styles.circleAndTextContainer}>
@@ -182,7 +192,9 @@ export class Dashboard extends Component {
                         <View style={styles.circleRed} />
                       </View>
                       {/* <Text style={styles.numberIndicator}>{red}</Text> */}
-                      <Text style={styles.colorIndicator}>Red</Text>
+                      <Text style={styles.colorIndicator}>
+                        {t('views.DashRed')}
+                      </Text>
                     </View>
                   </View>
 

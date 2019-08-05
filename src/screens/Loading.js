@@ -97,6 +97,7 @@ export class Loading extends Component {
 
   // STEP 3 - check and cache the offline maps
   checkOfflineMaps = () => {
+    MapboxGL.offlineManager.setTileCountLimit(200000)
     if (
       !this.props.downloadMapsAndImages.downloadMaps ||
       this.props.sync.maps
