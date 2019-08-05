@@ -736,7 +736,10 @@ export class Location extends Component {
                     source={happy}
                     style={{ width: 50, height: 50, marginBottom: 20 }}
                   />
-                  <Text style={[globalStyles.h2, { marginBottom: 20 }]}>
+                  <Text
+                    id="weFoundYou"
+                    style={[globalStyles.h2, { marginBottom: 20 }]}
+                  >
                     {t('views.family.weFoundYou')}
                   </Text>
                   <Text style={[globalStyles.h3, { textAlign: 'center' }]}>
@@ -758,7 +761,10 @@ export class Location extends Component {
                     source={sad}
                     style={{ width: 50, height: 50, marginBottom: 20 }}
                   />
-                  <Text style={[globalStyles.h2, { marginBottom: 20 }]}>
+                  <Text
+                    id="weCannotLocate"
+                    style={[globalStyles.h2, { marginBottom: 20 }]}
+                  >
                     {t('views.family.weCannotLocate')}
                   </Text>
                   <Text style={[globalStyles.h3, { textAlign: 'center' }]}>
@@ -780,7 +786,7 @@ export class Location extends Component {
                 ? t('views.family.country')
                 : t('views.family.selectACountry')
             }
-            value={
+            initialValue={
               draft.familyData.country ||
               this.survey.surveyConfig.surveyLocation.country
             }
@@ -789,13 +795,13 @@ export class Location extends Component {
           <TextInput
             id="postCode"
             onChangeText={this.updateFamilyData}
-            value={draft.familyData.postCode || ''}
+            initialValue={draft.familyData.postCode || ''}
             placeholder={t('views.family.postcode')}
           />
           <TextInput
             id="address"
             onChangeText={this.updateFamilyData}
-            value={draft.familyData.address || ''}
+            initialValue={draft.familyData.address || ''}
             placeholder={t('views.family.streetOrHouseDescription')}
             validation="long-string"
             multiline

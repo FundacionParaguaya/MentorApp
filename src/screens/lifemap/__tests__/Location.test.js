@@ -7,6 +7,8 @@ import { GooglePlacesAutocomplete } from 'react-native-google-places-autocomplet
 import { Location } from '../Location'
 import MapboxGL from '@react-native-mapbox-gl/maps'
 import React from 'react'
+import Select from '../../../components/form/Select'
+import TextInput from '../../../components/form/TextInput'
 import { shallow } from 'enzyme'
 
 const survey = {
@@ -356,11 +358,38 @@ describe('user offline with no cached maps', () => {
     wrapper.instance().determineScreenState(false)
   })
 
-  it('shows form if not cached maps available', () => {})
+  it('shows form if not cached maps available', () => {
+    expect(wrapper.find(MapboxGL.MapView)).toHaveLength(0)
+    expect(wrapper.find(Select)).toHaveLength(1)
+    expect(wrapper.find(TextInput)).toHaveLength(2)
+  })
 
-  it('informs user if app has located them or not', () => {})
+  it('informs user if app has located them or not', () => {
+    expect(wrapper.find('#weFoundYou')).toHaveLength(0)
+    expect(wrapper.find('#weCannotLocate')).toHaveLength(1)
+  })
 
-  it('allows user to edit each field on offline form', () => {})
+  it('sets default country to survey country', () => {
+    expect(wrapper.find('#country')).toHaveProp({ initialValue: 'BG' })
+  })
+
+  it('allows user to edit each field on offline form', () => {
+    wrapper
+      .find('#address')
+      .props()
+      .onChangeText()
+    wrapper
+      .find('#postCode')
+      .props()
+      .onChangeText()
+
+    wrapper
+      .find('#country')
+      .props()
+      .onChange()
+
+    expect(props.updateDraft).toHaveBeenCalledTimes(5)
+  })
 })
 
 describe('resuming a draft', () => {
