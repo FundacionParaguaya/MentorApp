@@ -145,9 +145,14 @@ android {
             }
         }
     }
+
+    packagingOptions {
+        pickFirst '**/libjsc.so'
+    }
 }
 
 dependencies {
+    implementation "org.webkit:android-jsc:r245459"
     implementation project(':react-native-testfairy')
     implementation project(':react-native-html-to-pdf')
     implementation project(':react-native-print')
