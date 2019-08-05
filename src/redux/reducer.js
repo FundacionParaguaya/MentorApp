@@ -283,7 +283,7 @@ export const drafts = (state = [], action) => {
 }
 
 // Language
-export const language = (state = false, action) => {
+export const language = (state = 'en', action) => {
   switch (action.type) {
     case SWITCH_LANGUAGE:
       return action.language
