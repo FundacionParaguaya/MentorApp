@@ -1,11 +1,19 @@
-import { ActivityIndicator, Text, TouchableHighlight } from 'react-native'
+import {
+  ActivityIndicator,
+  AppState,
+  Text,
+  TouchableHighlight
+} from 'react-native'
 
+import Form from '../../../components/form/Form'
 import Geolocation from '../../../__mocks__/@react-native-community/geolocation.js'
 /* eslint-disable import/named */
 import { GooglePlacesAutocomplete } from 'react-native-google-places-autocomplete'
 /* eslint-enable import/named */
 import { Location } from '../Location'
 import MapboxGL from '@react-native-mapbox-gl/maps'
+import MockedMapboxGL from '../../../__mocks__/@react-native-mapbox-gl/maps.js'
+import NetInfo from '../../../__mocks__/@react-native-community/netinfo.js'
 import React from 'react'
 import Select from '../../../components/form/Select'
 import TextInput from '../../../components/form/TextInput'
@@ -17,7 +25,7 @@ const survey = {
   title: 'Chile - Geco',
   surveyId: 100,
   surveyConfig: {
-    surveyLocation: { country: 'BG', latitude: 10, longitude: 11 }
+    surveyLocation: { country: 'CI', latitude: 10, longitude: 11 }
   }
 }
 
@@ -28,7 +36,6 @@ const draft = {
   progress: { screen: 'FamilyParticipant', total: 5 },
   familyData: {
     countFamilyMembers: 1,
-    country: 'BG',
     familyMembersList: [
       {
         firstName: 'Juan',
@@ -46,6 +53,17 @@ const draft = {
         ]
       }
     ]
+  }
+}
+
+const resumedDraft = {
+  ...draft,
+  familyData: {
+    ...draft.familyData,
+    country: 'US',
+    latitude: -5,
+    longitude: 70,
+    postCode: '1150'
   }
 }
 
@@ -122,6 +140,7 @@ it('navigates back to family members screen if multiple family members in draft'
 it('sets draft navigation when navigation from a different page', () => {
   expect(props.updateDraft).toHaveBeenCalledWith({
     ...draft,
+    familyData: { ...draft.familyData, country: 'CI' },
     progress: {
       ...draft.progress,
       screen: 'Location'
@@ -176,10 +195,26 @@ it('navigates to lifemap if no socio economic screens on continue', () => {
 })
 
 it('requests user location permision on mount', () => {
+  wrapper.setState({ status: true })
   const spy = jest.spyOn(wrapper.instance(), 'requestLocationPermission')
 
   wrapper.instance().componentDidMount()
   expect(spy).toHaveBeenCalledTimes(1)
+
+  return NetInfo.fetch().then(data => {
+    expect(data).toBe(true)
+  })
+})
+
+it('unsubscribes from all listeners on unmount', () => {
+  const spy = jest.spyOn(AppState, 'removeEventListener')
+  const instance = wrapper.instance()
+
+  instance.unsubscribeNetChange = jest.fn()
+  instance.componentWillUnmount()
+
+  expect(spy).toHaveBeenCalledWith('change', instance._handleAppStateChange)
+  expect(instance.unsubscribeNetChange).toHaveBeenCalledTimes(1)
 })
 
 describe('loading...', () => {
@@ -240,6 +275,10 @@ describe('user is online', () => {
         longitude: 11,
         accuracy: 0
       }
+    })
+
+    return MockedMapboxGL.offlineManager.getPacks().then(data => {
+      expect(data).toBe(true)
     })
   })
 
@@ -351,6 +390,23 @@ describe('user is offline', () => {
       }
     })
   })
+
+  it('checks if user is whichn cached map bounds', () => {
+    const mapBounds = [[[3, 1], [1, 3]]]
+    expect(
+      wrapper.instance().isUserLocationWithinMapPackBounds(2, 2, mapBounds)
+    ).toBe(true)
+
+    expect(
+      wrapper.instance().isUserLocationWithinMapPackBounds(4, 4, mapBounds)
+    ).toBe(false)
+
+    expect(
+      wrapper
+        .instance()
+        .isUserLocationWithinMapPackBounds(4, 4, [[[1, 1], [2, 3]]])
+    ).toBe(false)
+  })
 })
 
 describe('user offline with no cached maps', () => {
@@ -370,7 +426,7 @@ describe('user offline with no cached maps', () => {
   })
 
   it('sets default country to survey country', () => {
-    expect(wrapper.find('#country')).toHaveProp({ initialValue: 'BG' })
+    expect(wrapper.find('#country')).toHaveProp({ initialValue: 'CI' })
   })
 
   it('allows user to edit each field on offline form', () => {
@@ -395,22 +451,53 @@ describe('user offline with no cached maps', () => {
 describe('resuming a draft', () => {
   beforeEach(() => {
     props = createTestProps({
-      drafts: [
-        {
-          ...draft,
-          familyData: { ...draft.familyData, latitude: -5, longitude: 70 }
-        }
-      ]
+      drafts: [resumedDraft]
     })
     wrapper = shallow(<Location {...props} />)
 
     wrapper.instance().determineScreenState(true)
   })
-  it('sets draft to saved location', () => {
+
+  it('sets map to saved location', () => {
     expect(wrapper.find(MapboxGL.Camera)).toHaveProp({
       centerCoordinate: [70, -5]
     })
   })
+
+  it('sets form data from draft', () => {
+    wrapper.instance().determineScreenState(false)
+
+    expect(wrapper.find('#postCode')).toHaveProp({ initialValue: '1150' })
+    expect(wrapper.find('#country')).toHaveProp({ initialValue: 'US' })
+  })
 })
 
-describe('readonly mode', () => {})
+describe('readonly mode', () => {
+  beforeEach(() => {
+    props = createTestProps({
+      drafts: [resumedDraft],
+      navigation: {
+        ...navigation,
+        getParam: jest.fn(param => {
+          if (param === 'family') {
+            return null
+          } else if (param === 'survey') {
+            return survey
+          } else if (param === 'draftId') {
+            return 1
+          } else if (param === 'readOnly') {
+            return true
+          } else {
+            return 1
+          }
+        })
+      }
+    })
+    wrapper = shallow(<Location {...props} />)
+  })
+
+  it('disables editing fields', () => {
+    wrapper.instance().determineScreenState(false)
+    expect(wrapper.find(Form)).toHaveProp({ readOnly: true })
+  })
+})

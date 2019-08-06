@@ -1,25 +1,26 @@
-import React, { Component } from 'react'
 import {
-  ScrollView,
-  Text,
-  View,
-  StyleSheet,
   FlatList,
+  ScrollView,
+  StyleSheet,
+  Text,
   UIManager,
+  View,
   findNodeHandle
 } from 'react-native'
-import { Sentry } from 'react-native-sentry'
+import React, { Component } from 'react'
+
 import { AndroidBackHandler } from 'react-navigation-backhandler'
-import { withNamespaces } from 'react-i18next'
-import PropTypes from 'prop-types'
 import Button from '../components/Button'
 import Decoration from '../components/decoration/Decoration'
-import RoundImage from '../components/RoundImage'
 import DraftListItem from '../components/DraftListItem'
-import globalStyles from '../globalStyles'
-import { connect } from 'react-redux'
-import colors from '../theme.json'
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons'
+import PropTypes from 'prop-types'
+import RoundImage from '../components/RoundImage'
+import { Sentry } from 'react-native-sentry'
+import colors from '../theme.json'
+import { connect } from 'react-redux'
+import globalStyles from '../globalStyles'
+import { withNamespaces } from 'react-i18next'
 
 export class Dashboard extends Component {
   acessibleComponent = React.createRef()

@@ -55,8 +55,6 @@ export class Location extends Component {
     appState: AppState.currentState
   }
 
-  locationCheckTimer
-
   getDraft = () =>
     this.props.drafts.find(draft => draft.draftId === this.draftId)
 
@@ -385,6 +383,7 @@ export class Location extends Component {
 
       const eastBound = longitude <= neLng
       const westBound = longitude >= swLng
+
       let inLong
       if (neLng <= swLng) {
         inLong = eastBound || westBound
@@ -392,7 +391,7 @@ export class Location extends Component {
         inLong = eastBound && westBound
       }
 
-      const inLat = latitude >= swLat && latitude <= neLat
+      const inLat = latitude <= swLat && latitude >= neLat
       return inLat && inLong
     })
   }
@@ -445,6 +444,7 @@ export class Location extends Component {
     // monitor for connection changes
     this.unsubscribeNetChange = NetInfo.addEventListener(state => {
       const { status } = this.state
+
       if (status !== undefined && status !== state.isConnected) {
         this.setState({ status: state.isConnected })
         this.determineScreenState(state.isConnected)
@@ -453,7 +453,7 @@ export class Location extends Component {
 
     const draft = this.getDraft()
 
-    if (!this.readOnly && draft.progress.screen !== 'Location') {
+    if (!this.readOnly) {
       this.props.updateDraft({
         ...draft,
         progress: {
@@ -485,10 +485,6 @@ export class Location extends Component {
   }
 
   shouldComponentUpdate() {
-    if (!this.props.navigation.isFocused()) {
-      clearTimeout(this.locationCheckTimer)
-      this.locationCheckTimer = null
-    }
     return this.props.navigation.isFocused()
   }
 
@@ -665,9 +661,6 @@ export class Location extends Component {
             />
           )}
           <MapboxGL.MapView
-            ref={map => {
-              this._map = map
-            }}
             style={{ width: '100%', flexGrow: 2 }}
             logoEnabled={false}
             zoomEnabled={!this.readOnly}
@@ -777,10 +770,8 @@ export class Location extends Component {
 
           <Select
             id="country"
-            required
-            onChange={this.updateFamilyData}
-            label={t('views.family.country')}
             countrySelect
+            label={t('views.family.country')}
             placeholder={
               this.readOnly
                 ? t('views.family.country')
@@ -790,7 +781,9 @@ export class Location extends Component {
               draft.familyData.country ||
               this.survey.surveyConfig.surveyLocation.country
             }
+            required
             defaultCountry={this.survey.surveyConfig.surveyLocation.country}
+            onChange={this.updateFamilyData}
           />
           <TextInput
             id="postCode"

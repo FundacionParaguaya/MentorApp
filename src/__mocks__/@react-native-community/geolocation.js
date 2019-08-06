@@ -1,4 +1,9 @@
 export default {
+  offlineManager: {
+    getPacks: jest.fn(
+      () => new Promise(resolve => resolve([{ name: 'First' }]))
+    )
+  },
   getCurrentPosition: jest.fn(callback =>
     callback({
       coords: {

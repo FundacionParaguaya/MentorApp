@@ -23,17 +23,18 @@ import colors from '../../theme.json'
 import countries from 'localized-countries'
 import globalStyles from '../../globalStyles'
 import i18n from '../../i18n'
+
 const countryList = countries(require('localized-countries/data/en')).array()
 
 class Select extends Component {
-  countries = []
   state = {
     value: this.props.initialValue,
     radioOptions: [],
     isOpen: false,
     errorMsg: '',
     radioChecked: null,
-    showOther: false
+    showOther: false,
+    countries: []
   }
 
   toggleDropdown = () => {
@@ -141,7 +142,9 @@ class Select extends Component {
     // Add prefer not to say answer at the end of the list
     countriesArr.push({ code: 'NONE', label: 'I prefer not to say' })
 
-    this.countries = [...new Set(countriesArr)]
+    this.setState({
+      countries: [...new Set(countriesArr)]
+    })
   }
 
   componentDidMount() {
@@ -180,7 +183,14 @@ class Select extends Component {
   }
 
   render() {
-    const { errorMsg, isOpen, showOther, radioOptions, value } = this.state
+    const {
+      errorMsg,
+      isOpen,
+      showOther,
+      radioOptions,
+      value,
+      countries
+    } = this.state
     const {
       placeholder,
       required,
@@ -192,16 +202,10 @@ class Select extends Component {
     } = this.props
 
     let text = ''
-    if (
-      countrySelect &&
-      this.countries.filter(item => item.code === value)[0]
-    ) {
-      text = this.countries.filter(item => item.code === value)[0].label
-    } else if (
-      !countrySelect &&
-      options.filter(item => item.value === value)[0]
-    ) {
-      text = options.filter(item => item.value === value)[0].text
+    if (countrySelect && countries.find(item => item.code === value)) {
+      text = countries.find(item => item.code === value).label
+    } else if (!countrySelect && options.find(item => item.value === value)) {
+      text = options.find(item => item.value === value).text
     }
 
     return (
@@ -341,7 +345,7 @@ class Select extends Component {
                       <ScrollView>
                         <FlatList
                           style={styles.list}
-                          data={this.countries}
+                          data={countries}
                           keyExtractor={(item, index) => index.toString()}
                           renderItem={({ item }) => (
                             <ListItem
