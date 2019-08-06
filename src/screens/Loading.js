@@ -3,7 +3,7 @@ import PropTypes from 'prop-types'
 import { Text, StyleSheet, View, ActivityIndicator } from 'react-native'
 import Decoration from '../components/decoration/Decoration'
 import { connect } from 'react-redux'
-import bugsnag from '../screens/utils/bugsnag'
+import { bugsnag } from '../screens/utils/bugsnag'
 import ProgressBar from '../components/ProgressBar'
 import NetInfo from '@react-native-community/netinfo'
 import MapboxGL from '@react-native-mapbox-gl/maps'
@@ -167,6 +167,8 @@ export class Loading extends Component {
   onMapDownloadError = (offlineRegion, mapDownloadError) => {
     if (mapDownloadError.message !== 'No Internet connection available.') {
       NetInfo.fetch().then(state => {
+        bugsnag.clearUser()
+        bugsnag.setUser(this.props.user.username, this.props.user.username)
         bugsnag.notify(new Error('Map download error'), report => {
           report.metadata = {
             ...(report.metaData || {}),
@@ -174,7 +176,8 @@ export class Loading extends Component {
             error: mapDownloadError,
             errorMessage: mapDownloadError.message,
             isOnline: state.isConnected,
-            sync: this.props.sync
+            sync: this.props.sync,
+            env: this.props.env
           }
         })
       })

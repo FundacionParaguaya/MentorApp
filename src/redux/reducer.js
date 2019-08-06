@@ -1,5 +1,5 @@
 import { combineReducers } from 'redux'
-import bugsnag from '../screens/utils/bugsnag'
+import { bugsnag } from '../screens/utils/bugsnag'
 
 import {
   SET_LOGIN_STATE,
@@ -486,6 +486,8 @@ export const rootReducer = (state, action) => {
       action.meta.sanitizedSnapshot.surveyId &&
       state.surveys.find(s => s.id === action.meta.sanitizedSnapshot.surveyId)
 
+    bugsnag.clearUser()
+    bugsnag.setUser(state.user.token, state.user.username)
     bugsnag.notify(new Error('Sync Error'), report => {
       report.metadata = {
         ...(report.metaData || {}),
@@ -495,7 +497,10 @@ export const rootReducer = (state, action) => {
         serverError: (action.payload.response && action.payload.response) || {},
         reduxStore: currentState || {},
         currentSurvey: draftSurvey || {},
-        draftjson: { data: JSON.stringify(action.meta.sanitizedSnapshot || {}) }
+        draftjson: {
+          data: JSON.stringify(action.meta.sanitizedSnapshot || {})
+        },
+        environment: { environment: state.env }
       }
     })
   }
