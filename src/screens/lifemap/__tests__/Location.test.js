@@ -304,6 +304,25 @@ describe('user is online', () => {
       }
     })
   })
+
+  it('updates draft on dragging the map', () => {
+    wrapper.instance().onDragMap({
+      geometry: { coordinates: [30, -31] },
+      properties: { zoomLevel: 16 }
+    })
+
+    expect(props.updateDraft).toHaveBeenCalledWith({
+      ...draft,
+      familyData: {
+        ...draft.familyData,
+        latitude: -31,
+        longitude: 30,
+        accuracy: 0
+      }
+    })
+
+    expect(wrapper).toHaveState({ zoom: 16 })
+  })
 })
 
 describe('user is offline', () => {

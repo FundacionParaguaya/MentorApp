@@ -58,7 +58,7 @@ export class Location extends Component {
   getDraft = () =>
     this.props.drafts.find(draft => draft.draftId === this.draftId)
 
-  onDragMap = async region => {
+  onDragMap = region => {
     const draft = this.getDraft()
     const { zoom } = this.state
     const { familyData } = draft
