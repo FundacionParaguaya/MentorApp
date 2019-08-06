@@ -33,8 +33,8 @@ export default class Form extends Component {
   }
 
   setError = (error, field) => {
+    const { onErrorStateChange } = this.props
     const { errors } = this.state
-    // const { navigation } = this.props
 
     if (error && !errors.includes(field)) {
       this.setState(previousState => {
@@ -49,17 +49,9 @@ export default class Form extends Component {
       })
     }
 
-    // for this particular screen we need to detect if form is valid
-    // in order to delete the draft on exiting
-    // if (error || this.state.errors.length) {
-    //   navigation.setParams({
-    //     deleteDraftOnExit: true
-    //   })
-    // } else {
-    //   navigation.setParams({
-    //     deleteDraftOnExit: !navigation.getParam('draftId')
-    //   })
-    // }
+    if (onErrorStateChange) {
+      onErrorStateChange(error || this.state.errors.length)
+    }
   }
 
   validateForm = () => {
@@ -77,20 +69,7 @@ export default class Form extends Component {
   generateClonedChild = child =>
     React.cloneElement(child, {
       readOnly: this.props.readOnly,
-      setError: isError => {
-        const { errors } = this.state
-
-        if (isError && !errors.includes(child.props.id)) {
-          this.setState({
-            errors: [...errors, child.props.id]
-          })
-          errors.push(child.props.id)
-        } else if (!isError) {
-          this.setState({
-            errors: errors.filter(item => item !== child.props.id)
-          })
-        }
-      },
+      setError: isError => this.setError(isError, child.props.id),
       showErrors: this.state.showErrors
     })
 
@@ -196,6 +175,7 @@ export default class Form extends Component {
 Form.propTypes = {
   children: PropTypes.oneOfType([PropTypes.array, PropTypes.object]).isRequired,
   onContinue: PropTypes.func,
+  onErrorStateChange: PropTypes.func,
   visible: PropTypes.bool.isRequired,
   continueLabel: PropTypes.string,
   type: PropTypes.oneOf(['button', 'tip']),

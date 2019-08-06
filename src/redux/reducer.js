@@ -1,31 +1,32 @@
-import { combineReducers } from 'redux'
-import { Sentry } from 'react-native-sentry'
 // import devDrafts from './dev/drafts.json'
 import {
-  SET_LOGIN_STATE,
-  USER_LOGOUT,
-  SET_ENV,
-  LOAD_SURVEYS_COMMIT,
-  LOAD_SURVEYS_ROLLBACK,
+  ADD_SURVEY_DATA,
+  ADD_SURVEY_DATA_CHECKBOX,
+  CREATE_DRAFT,
+  DELETE_DRAFT,
   LOAD_FAMILIES_COMMIT,
   LOAD_FAMILIES_ROLLBACK,
-  CREATE_DRAFT,
-  UPDATE_DRAFT,
-  ADD_SURVEY_DATA,
-  DELETE_DRAFT,
-  SUBMIT_DRAFT,
-  SUBMIT_DRAFT_COMMIT,
-  ADD_SURVEY_DATA_CHECKBOX,
-  SUBMIT_DRAFT_ROLLBACK,
-  SWITCH_LANGUAGE,
-  SET_HYDRATED,
-  SET_SYNCED_ITEM_TOTAL,
-  SET_SYNCED_ITEM_AMOUNT,
-  SET_SYNCED_STATE,
+  LOAD_SURVEYS_COMMIT,
+  LOAD_SURVEYS_ROLLBACK,
   RESET_SYNCED_STATE,
   SET_DIMENSIONS,
-  SET_DOWNLOADMAPSIMAGES
+  SET_DOWNLOADMAPSIMAGES,
+  SET_ENV,
+  SET_HYDRATED,
+  SET_LOGIN_STATE,
+  SET_SYNCED_ITEM_AMOUNT,
+  SET_SYNCED_ITEM_TOTAL,
+  SET_SYNCED_STATE,
+  SUBMIT_DRAFT,
+  SUBMIT_DRAFT_COMMIT,
+  SUBMIT_DRAFT_ROLLBACK,
+  SWITCH_LANGUAGE,
+  UPDATE_DRAFT,
+  USER_LOGOUT
 } from './actions'
+
+import { Sentry } from 'react-native-sentry'
+import { combineReducers } from 'redux'
 
 //Login
 
@@ -466,8 +467,6 @@ export const rootReducer = (state, action) => {
     })
     Sentry.captureException('Sync error')
   }
-
-  // state = { ...state, drafts: [] }
 
   return appReducer(state, action)
 }

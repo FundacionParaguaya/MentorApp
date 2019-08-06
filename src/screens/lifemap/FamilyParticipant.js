@@ -116,6 +116,16 @@ export class FamilyParticipant extends Component {
     })
   }
 
+  onErrorStateChange = hasErrors => {
+    const { navigation } = this.props
+
+    // for this particular screen we need to detect if form is valid
+    // in order to delete the draft on exiting
+    navigation.setParams({
+      deleteDraftOnExit: hasErrors
+    })
+  }
+
   createNewDraft() {
     // generate a new draft id
     const draftId = uuid()
@@ -191,6 +201,7 @@ export class FamilyParticipant extends Component {
         continueLabel={t('general.continue')}
         readOnly={!!this.readOnly}
         progress={!this.readOnly && draft ? 1 / draft.progress.total : 0}
+        onErrorStateChange={this.onErrorStateChange}
       >
         <Decoration variation="primaryParticipant">
           <Icon name="face" color={colors.grey} size={61} style={styles.icon} />
