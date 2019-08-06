@@ -138,8 +138,8 @@ export class Login extends Component {
           loading: false
         })
         this.setState({
-          error: 'Only Mentors can access the app',
-          error2: 'Únicamente los Encuestadores pueden acceder a la aplicación'
+          error: 'Only facilitators can access the app',
+          error2: 'Únicamente los facilitadores pueden acceder a la aplicación'
         })
       } else {
         this.setState({
