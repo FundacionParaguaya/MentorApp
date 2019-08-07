@@ -1,37 +1,53 @@
 import React, { Component } from 'react'
-import { StyleSheet, View, Text } from 'react-native'
-import PropTypes from 'prop-types'
-import { withNamespaces } from 'react-i18next'
-import { connect } from 'react-redux'
+import { StyleSheet, Text, View } from 'react-native'
+
 import Decoration from '../../components/decoration/Decoration'
-import globalStyles from '../../globalStyles'
+import PropTypes from 'prop-types'
 import RoundImage from '../../components/RoundImage'
 import StickyFooter from '../../components/StickyFooter'
+import { connect } from 'react-redux'
 import { getTotalEconomicScreens } from './helpers'
+import globalStyles from '../../globalStyles'
 import { updateDraft } from '../../redux/actions'
+import { withNamespaces } from 'react-i18next'
 
 export class BeginLifemap extends Component {
   survey = this.props.navigation.getParam('survey')
-  readOnly = this.props.navigation.getParam('readOnly')
-  state = {
-    draft: this.props.navigation.getParam('draft')
+  draftId = this.props.navigation.getParam('draftId')
+
+  // the draft is not mutated in this screen (only its progress),
+  // we need it for progress bar
+  draft = this.props.drafts.find(draft => draft.draftId === this.draftId)
+
+  onPressBack = () => {
+    const previousPage =
+      this.survey.surveyEconomicQuestions &&
+      this.survey.surveyEconomicQuestions.length
+        ? 'SocioEconomicQuestion'
+        : 'Location'
+
+    this.props.navigation.navigate(previousPage, {
+      fromBeginLifemap: true,
+      survey: this.survey,
+      draftId: this.draftId
+    })
+  }
+
+  onContinue = () => {
+    this.props.navigation.navigate('Question', {
+      step: 0,
+      survey: this.survey,
+      draftId: this.draftId
+    })
   }
 
   componentDidMount() {
-    const { draft } = this.state
-    this.props.updateDraft(draft.draftId, draft)
-    this.props.navigation.setParams({
-      getCurrentDraftState: () => this.state.draft
-    })
-
-    if (draft.progress.screen !== 'BeginLifemap') {
-      this.setState({
-        draft: {
-          ...draft,
-          progress: {
-            ...draft.progress,
-            screen: 'BeginLifemap'
-          }
+    if (this.draft.progress.screen !== 'BeginLifemap') {
+      this.props.updateDraft({
+        ...this.draft,
+        progress: {
+          ...this.draft.progress,
+          screen: 'BeginLifemap'
         }
       })
     }
@@ -41,41 +57,16 @@ export class BeginLifemap extends Component {
     })
   }
 
-  onPressBack = () => {
-    const previousPage =
-      this.survey.surveyEconomicQuestions &&
-      this.survey.surveyEconomicQuestions.length
-        ? 'SocioEconomicQuestion'
-        : 'Location'
-
-    this.props.navigation.push(previousPage, {
-      fromBeginLifemap: true,
-      survey: this.survey,
-      draft: this.state.draft
-    })
-  }
-
-  handleClick = () => {
-    this.props.navigation.navigate('Question', {
-      step: 0,
-      survey: this.survey,
-      draft: this.state.draft
-    })
-  }
-
   render() {
-    const { draft } = this.state
     const { t } = this.props
     return (
       <StickyFooter
-        handleClick={this.handleClick}
+        onContinue={this.onContinue}
         continueLabel={t('general.continue')}
         progress={
-          draft
-            ? ((draft.familyData.countFamilyMembers > 1 ? 4 : 3) +
-                getTotalEconomicScreens(this.survey)) /
-              draft.progress.total
-            : 0
+          ((this.draft.familyData.countFamilyMembers > 1 ? 4 : 3) +
+            getTotalEconomicScreens(this.survey)) /
+          this.draft.progress.total
         }
       >
         <View
@@ -84,7 +75,7 @@ export class BeginLifemap extends Component {
             padding: 0
           }}
         >
-          <Text style={{ ...globalStyles.h3, ...styles.text }}>
+          <Text id="label" style={{ ...globalStyles.h3, ...styles.text }}>
             {t('views.lifemap.thisLifeMapHas').replace(
               '%n',
               this.survey.surveyStoplightQuestions.length
@@ -112,14 +103,15 @@ const styles = StyleSheet.create({
 BeginLifemap.propTypes = {
   t: PropTypes.func.isRequired,
   updateDraft: PropTypes.func.isRequired,
-  navigation: PropTypes.object.isRequired
+  navigation: PropTypes.object.isRequired,
+  drafts: PropTypes.array.isRequired
 }
 
 const mapDispatchToProps = {
   updateDraft
 }
 
-const mapStateToProps = () => ({})
+const mapStateToProps = ({ drafts }) => ({ drafts })
 
 export default withNamespaces()(
   connect(
