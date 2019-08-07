@@ -74,6 +74,7 @@ const createTestProps = props => ({
 
 let wrapper
 let props
+
 beforeEach(() => {
   props = createTestProps()
   wrapper = shallow(<BeginLifemap {...props} />)

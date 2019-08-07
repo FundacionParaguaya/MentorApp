@@ -1,66 +1,51 @@
 import React, { Component } from 'react'
 import { StyleSheet, Text, View } from 'react-native'
-import IconButton from '../../components/IconButton'
-import StickyFooter from '../../components/StickyFooter'
-import { connect } from 'react-redux'
-import PropTypes from 'prop-types'
-import { withNamespaces } from 'react-i18next'
-import { getTotalEconomicScreens } from './helpers'
-import colors from '../../theme.json'
-import SliderComponent from '../../components/Slider'
+
 import Icon from 'react-native-vector-icons/MaterialIcons'
+import IconButton from '../../components/IconButton'
 import Popup from '../../components/Popup'
+import PropTypes from 'prop-types'
+import SliderComponent from '../../components/Slider'
+import StickyFooter from '../../components/StickyFooter'
+import colors from '../../theme.json'
+import { connect } from 'react-redux'
+import { getTotalEconomicScreens } from './helpers'
+import { updateDraft } from '../../redux/actions'
+import { withNamespaces } from 'react-i18next'
 
 export class Question extends Component {
   step = this.props.navigation.getParam('step')
   survey = this.props.navigation.getParam('survey')
+  draftId = this.props.navigation.getParam('draftId')
+
   indicators = this.props.navigation.getParam('survey').surveyStoplightQuestions
   indicator = this.indicators[this.step]
+
   slides = this.indicator.stoplightColors
   readOnly = this.props.navigation.getParam('readOnly')
+
   state = {
-    draft: this.props.navigation.getParam('draft') || {},
     showDefinition: false
   }
 
-  componentDidMount() {
-    this.props.navigation.setParams({
-      getCurrentDraftState: () => this.state.draft,
-      onPressBack: this.onPressBack
-    })
-
-    const { draft } = this.state
-
-    this.setState({
-      draft: {
-        ...draft,
-        progress: {
-          ...draft.progress,
-          screen: 'Question',
-          step: this.step
-        }
-      }
-    })
-  }
-
-  shouldComponentUpdate() {
-    return this.props.navigation.isFocused()
-  }
+  getDraft = () =>
+    this.props.drafts.find(draft => draft.draftId === this.draftId)
 
   getFieldValue = field => {
+    const draft = this.getDraft()
+
     const indicatorObject =
-      this.state.draft && this.state.draft.indicatorSurveyDataList
-        ? this.state.draft.indicatorSurveyDataList.find(
-            item => item.key === field
-          )
+      draft && draft.indicatorSurveyDataList
+        ? draft.indicatorSurveyDataList.find(item => item.key === field)
         : null
     if (indicatorObject) {
       return indicatorObject.value
     }
   }
 
-  selectAnswer = answer => {
-    const { draft } = this.state
+  selectAnswer = (answer = 0) => {
+    const draft = this.getDraft()
+
     const skippedQuestions = draft.indicatorSurveyDataList.filter(
       question => question.value === 0
     )
@@ -123,22 +108,21 @@ export class Question extends Component {
       }
     }
 
-    this.setState({
-      draft: updatedDraft
-    })
+    this.props.updateDraft(updatedDraft)
 
+    // after updating the draft, navigate based on navigation state
     if (
       this.step + 1 < this.indicators.length &&
       !this.props.navigation.getParam('skipped')
     ) {
-      return this.props.navigation.replace('Question', {
+      return this.props.navigation.navigate('Question', {
         step: this.step + 1,
-        draft: updatedDraft,
+        draftId: this.draftId,
         survey: this.survey
       })
     } else if (this.step + 1 >= this.indicators.length && answer === 0) {
       return this.props.navigation.navigate('Skipped', {
-        draft: updatedDraft,
+        draftId: this.draftId,
         survey: this.survey
       })
     } else if (
@@ -147,14 +131,14 @@ export class Question extends Component {
         answer !== 0) ||
       skippedQuestions.length === 0
     ) {
-      return this.props.navigation.push('Overview', {
+      return this.props.navigation.navigate('Overview', {
         resumeDraft: false,
-        draft: updatedDraft,
+        draftId: this.draftId,
         survey: this.survey
       })
     } else {
-      return this.props.navigation.replace('Skipped', {
-        draft: updatedDraft,
+      return this.props.navigation.navigate('Skipped', {
+        draftId: this.draftId,
         survey: this.survey
       })
     }
@@ -162,24 +146,50 @@ export class Question extends Component {
 
   onPressBack = () => {
     if (this.step > 0) {
-      this.props.navigation.replace('Question', {
+      this.props.navigation.navigate('Question', {
         step: this.step - 1,
-        draft: this.state.draft,
+        draftId: this.draftId,
         survey: this.survey
       })
     } else
-      this.props.navigation.push('BeginLifemap', {
-        draft: this.state.draft,
+      this.props.navigation.navigate('BeginLifemap', {
+        draftId: this.draftId,
         survey: this.survey
       })
   }
+
+  toggleDefinitionWindow = (state = false) => {
+    this.setState({
+      showDefinition: state
+    })
+  }
+
+  componentDidMount() {
+    const draft = this.getDraft()
+
+    this.props.updateDraft({
+      ...draft,
+      progress: {
+        ...draft.progress,
+        screen: 'Question',
+        step: this.step
+      }
+    })
+  }
+
+  shouldComponentUpdate() {
+    return this.props.navigation.isFocused()
+  }
+
   render() {
-    const { draft } = this.state
-    //added a popup component to the Question.js instead of adding it to the modals folder because it is really smol and does not do much
+    const draft = this.getDraft()
+    // added a popup component to the Question.js instead of adding it to the
+    // modals folder because it is really smol and does not do much
+
     const { t } = this.props
+
     return (
       <StickyFooter
-        handleClick={() => ({})}
         readonly
         progress={
           draft
@@ -196,11 +206,11 @@ export class Question extends Component {
             priorOrAchievement
             definition
             isOpen={this.state.showDefinition}
-            onClose={() => this.setState({ showDefinition: false })}
+            onClose={this.toggleDefinitionWindow}
           >
             <Icon
               style={styles.closeIconStyle}
-              onPress={() => this.setState({ showDefinition: false })}
+              onPress={this.toggleDefinitionWindow}
               name="close"
               size={20}
             />
@@ -215,6 +225,7 @@ export class Question extends Component {
               {t('views.lifemap.indicatorDefinition')}
             </Text>
             <Text
+              id="definition"
               style={{
                 fontSize: 15
               }}
@@ -229,10 +240,12 @@ export class Question extends Component {
           value={this.getFieldValue(this.indicator.codeName)}
           selectAnswer={this.selectAnswer}
         />
+
         <View style={styles.skip}>
           {this.indicator.definition ? (
             <Icon
-              onPress={() => this.setState({ showDefinition: true })}
+              id="show-definition"
+              onPress={() => this.toggleDefinitionWindow(true)}
               name="info"
               color={colors.palegrey}
               size={40}
@@ -251,7 +264,7 @@ export class Question extends Component {
             <IconButton
               text={t('views.lifemap.skipThisQuestion')}
               textStyle={styles.link}
-              onPress={() => this.selectAnswer(0)}
+              onPress={this.selectAnswer}
             />
           )}
         </View>
@@ -280,16 +293,19 @@ const styles = StyleSheet.create({
 })
 
 Question.propTypes = {
+  drafts: PropTypes.array.isRequired,
   t: PropTypes.func.isRequired,
   dimensions: PropTypes.object.isRequired,
-  navigation: PropTypes.object.isRequired
+  navigation: PropTypes.object.isRequired,
+  updateDraft: PropTypes.func.isRequired
 }
 
-const mapStateToProps = ({ dimensions }) => ({
-  dimensions
+const mapStateToProps = ({ dimensions, drafts }) => ({
+  dimensions,
+  drafts
 })
 
-const mapDispatchToProps = {}
+const mapDispatchToProps = { updateDraft }
 
 export default withNamespaces()(
   connect(

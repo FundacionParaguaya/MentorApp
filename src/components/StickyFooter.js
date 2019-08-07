@@ -77,7 +77,7 @@ export default class StickyFooter extends Component {
                   id="continue"
                   colored
                   text={this.props.continueLabel}
-                  handleClick={this.props.onContinue}
+                  handleClick={this.props.onContinue || (() => {})}
                 />
               </View>
             ) : (

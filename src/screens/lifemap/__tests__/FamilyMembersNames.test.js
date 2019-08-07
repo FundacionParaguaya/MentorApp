@@ -57,7 +57,7 @@ const draft = {
 }
 
 const navigation = {
-  isFocused: () => true,
+  isFocused: jest.fn(() => true),
   navigate: jest.fn(),
   push: jest.fn(),
   setParams: jest.fn(),
