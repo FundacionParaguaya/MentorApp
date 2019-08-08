@@ -70,6 +70,9 @@ const draftId = 1
 const draft = {
   draftId,
   progress: { screen: 'FamilyParticipant', total: 5 },
+  indicatorSurveyDataList: [],
+  achievements: [],
+  priorities: [],
   familyData: {
     countFamilyMembers: 1,
     familyMembersList: [
@@ -209,20 +212,204 @@ it('shows question definition popup when prompted', () => {
   expect(wrapper.find('#definition')).toHaveHTML(
     `<react-native-mock>${survey.surveyStoplightQuestions[0].definition}</react-native-mock>`
   )
+
+  wrapper.instance().toggleDefinitionWindow()
+  expect(wrapper).toHaveState({ showDefinition: false })
 })
 
-it('updates draft on selecting a question', () => {})
+it('updates draft on selecting a question', () => {
+  props = createTestProps({
+    drafts: [{ ...draft, priorities: [{ indicator: 'income' }] }]
+  })
+  wrapper = shallow(<Question {...props} />)
 
-it('updates draft on skipping a question', () => {})
+  wrapper
+    .find(SliderComponent)
+    .props()
+    .selectAnswer(3)
 
-it('navigates to next question on selecting or skipping a question', () => {})
+  expect(props.updateDraft).toHaveBeenCalledWith({
+    ...draft,
+    indicatorSurveyDataList: [{ key: 'income', value: 3 }]
+  })
 
-it('navigates to skipped questions screen upon answering last question when there are such', () => {})
+  props = createTestProps({
+    drafts: [{ ...draft, achievements: [{ indicator: 'income' }] }]
+  })
+  wrapper = shallow(<Question {...props} />)
 
-it('navigates to overview upon answering last question when there are no skipped questions', () => {})
+  wrapper
+    .find(SliderComponent)
+    .props()
+    .selectAnswer(2)
 
-it('navigates back to a different question', () => {})
+  expect(props.updateDraft).toHaveBeenCalledWith({
+    ...draft,
+    indicatorSurveyDataList: [{ key: 'income', value: 2 }]
+  })
+})
 
-it('navigates back to begin lifemap when on first question', () => {})
+it('updates draft on skipping a question', () => {
+  wrapper
+    .find(IconButton)
+    .props()
+    .onPress()
 
-it('shows the answer to a previously answered questio', () => {})
+  expect(props.updateDraft).toHaveBeenCalledWith({
+    ...draft,
+    indicatorSurveyDataList: [{ key: 'income', value: 0 }]
+  })
+})
+
+it('navigates to next question on selecting or skipping a question', () => {
+  wrapper.instance().selectAnswer()
+  expect(props.navigation.navigate).toHaveBeenCalledWith('Question', {
+    step: 1,
+    draftId,
+    survey
+  })
+})
+
+it('navigates to skipped questions screen upon answering last question when there are such', () => {
+  props = createTestProps({
+    drafts: [
+      { ...draft, indicatorSurveyDataList: [{ key: 'income', value: 0 }] }
+    ],
+    navigation: {
+      ...navigation,
+      getParam: jest.fn(param => {
+        if (param === 'survey') {
+          return survey
+        } else if (param === 'step') {
+          return 1
+        } else if (param === 'draftId') {
+          return draftId
+        }
+      })
+    }
+  })
+  wrapper = shallow(<Question {...props} />)
+
+  wrapper.setState({ showDefinition: true })
+  wrapper.instance().selectAnswer()
+  expect(props.navigation.navigate).toHaveBeenCalledWith('Skipped', {
+    draftId,
+    survey
+  })
+
+  wrapper.instance().selectAnswer(3)
+  expect(props.navigation.navigate).toHaveBeenCalledWith('Skipped', {
+    draftId,
+    survey
+  })
+})
+
+it('navigates to overview upon answering last question when there are no skipped questions', () => {
+  props = createTestProps({
+    drafts: [
+      {
+        ...draft,
+        indicatorSurveyDataList: [{ key: 'income', value: 3 }],
+        familyData: { ...draft.familyData, countFamilyMembers: 2 }
+      }
+    ],
+    navigation: {
+      ...navigation,
+      getParam: jest.fn(param => {
+        if (param === 'survey') {
+          return survey
+        } else if (param === 'step') {
+          return 1
+        } else if (param === 'draftId') {
+          return draftId
+        }
+      })
+    }
+  })
+  wrapper = shallow(<Question {...props} />)
+
+  wrapper.instance().selectAnswer(2)
+  expect(props.navigation.navigate).toHaveBeenCalledWith('Overview', {
+    resumeDraft: false,
+    draftId,
+    survey
+  })
+})
+
+it('navigates back to a different question', () => {
+  props = createTestProps({
+    navigation: {
+      ...navigation,
+      getParam: jest.fn(param => {
+        if (param === 'survey') {
+          return survey
+        } else if (param === 'step') {
+          return 1
+        } else if (param === 'draftId') {
+          return draftId
+        }
+      })
+    }
+  })
+  wrapper = shallow(<Question {...props} />)
+
+  wrapper.instance().onPressBack()
+  expect(props.navigation.navigate).toHaveBeenCalledWith('Question', {
+    step: 0,
+    draftId,
+    survey
+  })
+})
+
+it('navigates back to begin lifemap when on first question', () => {
+  wrapper.instance().onPressBack()
+  expect(props.navigation.navigate).toHaveBeenCalledWith('BeginLifemap', {
+    draftId,
+    survey
+  })
+})
+
+describe('resuming a draft', () => {
+  beforeEach(() => {
+    props = createTestProps({
+      drafts: [
+        { ...draft, indicatorSurveyDataList: [{ key: 'income', value: 3 }] }
+      ]
+    })
+    wrapper = shallow(<Question {...props} />)
+  })
+
+  it('shows the answer to a previously answered question', () => {
+    expect(wrapper.find(SliderComponent)).toHaveProp({ value: 3 })
+  })
+
+  it('adds answer to a new indicator', () => {
+    props = createTestProps({
+      drafts: [
+        {
+          ...draft,
+          indicatorSurveyDataList: [
+            { key: 'income', value: 3 },
+            { key: 'health', value: 2 }
+          ]
+        }
+      ]
+    })
+    wrapper = shallow(<Question {...props} />)
+    wrapper.instance().selectAnswer(1)
+    expect(props.navigation.navigate).toHaveBeenCalledWith('Overview', {
+      resumeDraft: false,
+      draftId,
+      survey
+    })
+  })
+
+  it('updates answer to previously andwered question', () => {
+    wrapper.instance().selectAnswer(2)
+    expect(props.navigation.navigate).toHaveBeenCalledWith('Overview', {
+      resumeDraft: false,
+      draftId,
+      survey
+    })
+  })
+})

@@ -192,12 +192,10 @@ export class Question extends Component {
       <StickyFooter
         readonly
         progress={
-          draft
-            ? ((draft.familyData.countFamilyMembers > 1 ? 5 : 4) +
-                getTotalEconomicScreens(this.survey) +
-                this.step) /
-              draft.progress.total
-            : 0
+          ((draft.familyData.countFamilyMembers > 1 ? 5 : 4) +
+            getTotalEconomicScreens(this.survey) +
+            this.step) /
+          draft.progress.total
         }
         currentScreen="Question"
       >
@@ -230,7 +228,7 @@ export class Question extends Component {
                 fontSize: 15
               }}
             >
-              {this.indicator.definition ? this.indicator.definition : null}
+              {this.indicator.definition || null}
             </Text>
           </Popup>
         ) : null}

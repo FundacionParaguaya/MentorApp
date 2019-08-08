@@ -1,7 +1,7 @@
+import Button from '../../../components/Button'
 import React from 'react'
+import { Terms } from '../Terms'
 import { shallow } from 'enzyme'
-import { Terms } from '../lifemap/Terms'
-import Button from '../../components/Button'
 
 const survey = {
   id: 1,
