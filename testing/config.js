@@ -10,3 +10,8 @@ jest.mock('react-native', () => require('react-native-mock-render'), {
   virtual: true,
   timers: 'fake'
 })
+
+jest.mock('bugsnag-react-native', () => ({
+  Configuration: jest.fn(),
+  Client: jest.fn(() => ({ leaveBreadcrumb: jest.fn() }))
+}))

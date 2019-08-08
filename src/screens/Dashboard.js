@@ -16,7 +16,6 @@ import DraftListItem from '../components/DraftListItem'
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons'
 import PropTypes from 'prop-types'
 import RoundImage from '../components/RoundImage'
-import { Sentry } from 'react-native-sentry'
 import colors from '../theme.json'
 import { connect } from 'react-redux'
 import globalStyles from '../globalStyles'
@@ -106,13 +105,6 @@ export class Dashboard extends Component {
           )
         }, 1)
       }
-      // set sentry login details
-      Sentry.setUserContext({
-        username: this.props.user.username,
-        extra: {
-          env: this.props.env
-        }
-      })
     }
   }
 
@@ -174,7 +166,9 @@ export class Dashboard extends Component {
                         <View style={styles.circleGreen} />
                       </View>
                       {/* <Text style={styles.numberIndicator}>{green}</Text> */}
-                      <Text style={styles.colorIndicator}>Green</Text>
+                      <Text style={styles.colorIndicator}>
+                        {t('views.DashGreen')}
+                      </Text>
                     </View>
 
                     <View style={styles.circleAndTextContainer}>
@@ -182,7 +176,9 @@ export class Dashboard extends Component {
                         <View style={styles.circleYellow} />
                       </View>
                       {/* <Text style={styles.numberIndicator}>{yellow}</Text> */}
-                      <Text style={styles.colorIndicator}>Yellow</Text>
+                      <Text style={styles.colorIndicator}>
+                        {t('views.DashYellow')}
+                      </Text>
                     </View>
 
                     <View style={styles.circleAndTextContainer}>
@@ -190,7 +186,9 @@ export class Dashboard extends Component {
                         <View style={styles.circleRed} />
                       </View>
                       {/* <Text style={styles.numberIndicator}>{red}</Text> */}
-                      <Text style={styles.colorIndicator}>Red</Text>
+                      <Text style={styles.colorIndicator}>
+                        {t('views.DashRed')}
+                      </Text>
                     </View>
                   </View>
 

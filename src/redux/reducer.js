@@ -1,4 +1,3 @@
-// import devDrafts from './dev/drafts.json'
 import {
   ADD_SURVEY_DATA,
   ADD_SURVEY_DATA_CHECKBOX,
@@ -25,13 +24,13 @@ import {
   USER_LOGOUT
 } from './actions'
 
-import { Sentry } from 'react-native-sentry'
+import { bugsnag } from '../screens/utils/bugsnag'
 import { combineReducers } from 'redux'
 
 //Login
 
 export const user = (
-  state = { token: null, status: null, username: null },
+  state = { token: null, status: null, username: null, role: null },
   action
 ) => {
   switch (action.type) {
@@ -39,13 +38,15 @@ export const user = (
       return {
         status: action.status,
         token: action.token,
-        username: action.username
+        username: action.username,
+        role: action.role
       }
     case USER_LOGOUT:
       return {
         status: null,
         token: null,
-        username: null
+        username: null,
+        role: null
       }
     default:
       return state
@@ -112,7 +113,6 @@ export const families = (state = [], action) => {
 }
 
 //Drafts
-const nodeEnv = process.env
 export const drafts = (state = [], action) => {
   switch (action.type) {
     case CREATE_DRAFT:
@@ -121,7 +121,7 @@ export const drafts = (state = [], action) => {
     case UPDATE_DRAFT:
       return state.map(draft => {
         // if this is the draft we are editing
-        if (draft.draftId === action.payload.draftId) {
+        if (draft.draftId === action.id) {
           return action.payload
         } else {
           return draft
@@ -422,7 +422,7 @@ export const rootReducer = (state, action) => {
     // reset store
     state = {
       ...state,
-      user: { token: null, status: null, username: null },
+      user: { token: null, status: null, username: null, role: null },
       drafts: [],
       surveys: [],
       families: [],
@@ -442,31 +442,34 @@ export const rootReducer = (state, action) => {
     }
   }
 
-  // create detailed sentry report on sync error
+  // create detailed Bugsnag report on sync error
   if (action.type === SUBMIT_DRAFT_ROLLBACK) {
-    Sentry.setExtraContext({
-      payload: action.meta.sanitizedSnapshot,
-      familyMembersList:
-        action.meta.sanitizedSnapshot.familyData.familyMembersList
-    })
+    const { families, surveys, ...currentState } = state
+    families
+    surveys
+    const draftSurvey =
+      state.surveys &&
+      action.meta.sanitizedSnapshot &&
+      action.meta.sanitizedSnapshot.surveyId &&
+      state.surveys.find(s => s.id === action.meta.sanitizedSnapshot.surveyId)
 
-    Sentry.setTagsContext({
-      environment: nodeEnv.NODE_ENV
-    })
-
-    Sentry.setUserContext({
-      username: state.user.username,
-      extra: {
-        env: state.env
+    bugsnag.clearUser()
+    bugsnag.setUser(state.user.token, state.user.username)
+    bugsnag.notify(new Error('Sync Error'), report => {
+      report.metadata = {
+        ...(report.metaData || {}),
+        userDraft:
+          (action.meta.sanitizedSnapshot && action.meta.sanitizedSnapshot) ||
+          {},
+        serverError: (action.payload.response && action.payload.response) || {},
+        reduxStore: currentState || {},
+        currentSurvey: draftSurvey || {},
+        draftjson: {
+          data: JSON.stringify(action.meta.sanitizedSnapshot || {})
+        },
+        environment: { environment: state.env }
       }
     })
-
-    Sentry.captureBreadcrumb({
-      message: 'Sync error',
-      category: 'action'
-    })
-    Sentry.captureException('Sync error')
   }
-
   return appReducer(state, action)
 }

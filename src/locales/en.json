@@ -50,6 +50,9 @@
     "december": "December"
   },
   "views": {
+    "DashGreen": "Green",
+    "DashYellow": "Yellow",
+    "DashRed": "Red",
     "synced": "Sync",
     "dashboard": "Stoplight Mobile",
     "home": "Home",

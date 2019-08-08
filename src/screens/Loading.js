@@ -3,7 +3,7 @@ import PropTypes from 'prop-types'
 import { Text, StyleSheet, View, ActivityIndicator } from 'react-native'
 import Decoration from '../components/decoration/Decoration'
 import { connect } from 'react-redux'
-import { Sentry } from 'react-native-sentry'
+import { bugsnag } from '../screens/utils/bugsnag'
 import ProgressBar from '../components/ProgressBar'
 import NetInfo from '@react-native-community/netinfo'
 import MapboxGL from '@react-native-mapbox-gl/maps'
@@ -24,8 +24,6 @@ import colors from '../theme.json'
 import globalStyles from '../globalStyles'
 import { url } from '../config'
 import { initImageCaching } from '../cache'
-
-const nodeEnv = process.env
 
 export class Loading extends Component {
   state = {
@@ -169,20 +167,19 @@ export class Loading extends Component {
   onMapDownloadError = (offlineRegion, mapDownloadError) => {
     if (mapDownloadError.message !== 'No Internet connection available.') {
       NetInfo.fetch().then(state => {
-        Sentry.setExtraContext({
-          mapDownloadError: mapDownloadError
-        })
-
-        Sentry.captureBreadcrumb({
-          message: 'Map download error',
-          category: 'action',
-          data: {
-            error: mapDownloadError.message,
+        bugsnag.clearUser()
+        bugsnag.setUser(this.props.user.username, this.props.user.username)
+        bugsnag.notify(new Error('Map download error'), report => {
+          report.metadata = {
+            ...(report.metaData || {}),
+            username: this.props.user.username,
+            error: mapDownloadError,
+            errorMessage: mapDownloadError.message,
             isOnline: state.isConnected,
-            sync: this.props.sync
+            sync: this.props.sync,
+            env: this.props.env
           }
         })
-        Sentry.captureException('Map download error')
       })
     }
   }
@@ -252,18 +249,6 @@ export class Loading extends Component {
   }
 
   checkState() {
-    // setup sentry context
-    Sentry.setTagsContext({
-      environment: nodeEnv.NODE_ENV
-    })
-
-    Sentry.setUserContext({
-      username: this.props.user.username,
-      extra: {
-        env: this.props.env
-      }
-    })
-
     const { families, surveys, images, appVersion, maps } = this.props.sync
 
     if (!this.props.user.token) {

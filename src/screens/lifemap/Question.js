@@ -206,7 +206,7 @@ export class Question extends Component {
       >
         {this.state.showDefinition ? (
           <Popup
-            priorOrAchievement
+            modifiedPopUp
             definition
             isOpen={this.state.showDefinition}
             onClose={this.toggleDefinitionWindow}

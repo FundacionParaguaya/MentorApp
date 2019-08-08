@@ -28,7 +28,7 @@ import Button from '../components/Button'
 import InternalStorageFullModal, {
   MINIMUM_REQUIRED_STORAGE_SPACE_500_MB
 } from './modals/InternalStorageFullModal'
-
+const TestFairy = require('react-native-testfairy')
 // get env
 const nodeEnv = process.env
 
@@ -38,6 +38,7 @@ export class Login extends Component {
     username: '',
     password: '',
     error: false,
+    error2: false,
     connection: false,
     loading: false,
     syncMaps: true,
@@ -99,7 +100,9 @@ export class Login extends Component {
     }
 
     this.setState({
-      loading: true
+      loading: true,
+      error: false,
+      error2: false
     })
     this.props.setDownloadMapsAndImages({
       downloadMaps: this.state.syncMaps,
@@ -122,7 +125,7 @@ export class Login extends Component {
         .trim()
         .substring(2, this.state.username.trim().length)
     }
-
+    TestFairy.setUserId(username)
     this.props.setEnv(env)
     this.props.login(username, this.state.password, url[env]).then(() => {
       if (this.props.user.status === 401) {
@@ -130,10 +133,17 @@ export class Login extends Component {
           loading: false
         })
         this.setState({ error: 'Wrong username or password' })
+      } else if (this.props.user.role !== 'ROLE_SURVEY_USER') {
+        this.setState({
+          loading: false
+        })
+        this.setState({
+          error: 'Only facilitators can access the app',
+          error2: 'Únicamente los facilitadores pueden acceder a la aplicación'
+        })
       } else {
         this.setState({
-          loading: false,
-          error: false
+          loading: false
         })
         this.props.navigation.navigate('Loading')
       }
@@ -229,6 +239,20 @@ export class Login extends Component {
                   style={{ ...globalStyles.tag, ...styles.error }}
                 >
                   {this.state.error}
+                </Text>
+              ) : (
+                <View />
+              )}
+              {this.state.error2 ? (
+                <Text
+                  id="error-message"
+                  style={{
+                    ...globalStyles.tag,
+                    ...styles.error,
+                    marginTop: -6
+                  }}
+                >
+                  {this.state.error2}
                 </Text>
               ) : (
                 <View />

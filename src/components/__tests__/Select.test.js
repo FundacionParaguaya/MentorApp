@@ -1,8 +1,9 @@
-import React from 'react'
-import { shallow } from 'enzyme'
-import { TouchableHighlight, Text } from 'react-native'
-import Select from '../form/Select'
+import { Text, TouchableHighlight } from 'react-native'
+
 import BottomModal from '../BottomModal'
+import React from 'react'
+import Select from '../form/Select'
+import { shallow } from 'enzyme'
 
 const createTestProps = props => ({
   onChange: jest.fn(),

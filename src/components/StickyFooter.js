@@ -65,7 +65,9 @@ export default class StickyFooter extends Component {
             {this.props.children}
           </View>
         ) : (
-          <ScrollView>{this.props.children}</ScrollView>
+          <ScrollView keyboardShouldPersistTaps="always">
+            {this.props.children}
+          </ScrollView>
         )}
 
         {this.props.visible && this.state.continueVisible ? (

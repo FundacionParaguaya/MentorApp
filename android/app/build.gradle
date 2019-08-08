@@ -77,7 +77,6 @@ project.ext.react = [
 ]
 
 apply from: "../../node_modules/react-native/react.gradle"
-apply from: "../../node_modules/react-native-sentry/sentry.gradle"
 /**
  * Set this to true to create two separate APKs instead of one:
  *   - An APK that only works on ARM devices
@@ -101,8 +100,8 @@ android {
         applicationId "com.povertystoplightapp"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
-        versionCode 77
-        versionName "1.10.0"
+        versionCode 78
+        versionName "1.10.1-rc1"
         multiDexEnabled true
         testBuildType System.getProperty('testBuildType', 'debug')  // This will later be used to control the test apk build type
         testInstrumentationRunner 'androidx.test.runner.AndroidJUnitRunner'
@@ -145,9 +144,15 @@ android {
             }
         }
     }
+
+    packagingOptions {
+        pickFirst '**/libjsc.so'
+    }
 }
 
 dependencies {
+    implementation project(':bugsnag-react-native')
+    implementation project(':react-native-testfairy')
     implementation project(':react-native-html-to-pdf')
     implementation project(':react-native-print')
     implementation project(':@react-native-mapbox-gl_maps')
@@ -158,7 +163,6 @@ dependencies {
     implementation project(':@react-native-community_geolocation')
     implementation project(':react-native-device-info')
     implementation project(':@delightfulstudio_react-native-wheel-picker-android')
-    implementation project(':react-native-sentry')
     implementation project(':react-native-splash-screen')
     implementation project(':react-native-vector-icons')
     implementation project(':react-native-languages')
