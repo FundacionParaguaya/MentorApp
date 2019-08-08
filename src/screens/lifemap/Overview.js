@@ -1,61 +1,39 @@
+import { Image, StyleSheet, Text, TouchableHighlight, View } from 'react-native'
 import React, { Component } from 'react'
-import { StyleSheet, View, Text, Image, TouchableHighlight } from 'react-native'
-import PropTypes from 'prop-types'
-import { withNamespaces } from 'react-i18next'
-import StickyFooter from '../../components/StickyFooter'
-import LifemapVisual from '../../components/LifemapVisual'
+
+import BottomModal from '../../components/BottomModal'
 import Button from '../../components/Button'
 import FilterListItem from '../../components/FilterListItem'
 import LifemapOverview from '../../components/LifemapOverview'
-import BottomModal from '../../components/BottomModal'
+import LifemapVisual from '../../components/LifemapVisual'
+import PropTypes from 'prop-types'
+import StickyFooter from '../../components/StickyFooter'
 import arrow from '../../../assets/images/selectArrow.png'
-import globalStyles from '../../globalStyles'
 import colors from '../../theme.json'
+import { connect } from 'react-redux'
+import globalStyles from '../../globalStyles'
+import { updateDraft } from '../../redux/actions'
+import { withNamespaces } from 'react-i18next'
+
 export class Overview extends Component {
+  step = this.props.navigation.getParam('step')
   survey = this.props.navigation.getParam('survey')
+  draftId = this.props.navigation.getParam('draftId')
   familyLifemap = this.props.navigation.getParam('familyLifemap')
+  isDraftResuming = this.props.navigation.getParam('resumeDraft')
 
   state = {
     filterModalIsOpen: false,
     selectedFilter: false,
     filterLabel: false,
-    tipIsVisible: false,
-    draft:
-      this.props.navigation.getParam('draft') ||
-      this.props.navigation.getParam('familyLifemap') ||
-      {}
+    tipIsVisible: false
   }
 
-  isDraftResuming = this.props.navigation.getParam('resumeDraft')
-  componentDidMount() {
-    const { draft } = this.state
-
-    this.props.navigation.setParams({
-      getCurrentDraftState: () => draft
-    })
-
-    // show priorities message if no priorities are made or they are not enough
-
-    if (!this.isDraftResuming && !this.familyLifemap) {
-      this.setState({
-        draft: {
-          ...draft,
-          progress: {
-            ...draft.progress,
-            screen: 'Overview'
-          }
-        }
-      })
-
-      this.props.navigation.setParams({
-        onPressBack: this.onPressBack,
-        withoutCloseButton: draft.draftId ? false : true
-      })
-    }
-  }
+  getDraft = () =>
+    this.props.drafts.find(draft => draft.draftId === this.draftId)
 
   onPressBack = () => {
-    const { draft } = this.state
+    const draft = this.getDraft()
     const survey = this.survey
 
     //If we do not arrive to this screen from the families screen
@@ -87,10 +65,6 @@ export class Overview extends Component {
       draft: this.state.draft
     })
 
-  shouldComponentUpdate() {
-    return this.props.navigation.isFocused()
-  }
-
   toggleFilterModal = () => {
     this.setState({
       filterModalIsOpen: !this.state.filterModalIsOpen
@@ -110,7 +84,7 @@ export class Overview extends Component {
   }
 
   resumeDraft = () => {
-    const { draft } = this.state
+    const draft = this.getDraft()
 
     this.props.navigation.replace(draft.progress.screen, {
       draft: draft || this.props.navigation.getParam('draft'),
@@ -119,9 +93,33 @@ export class Overview extends Component {
     })
   }
 
+  componentDidMount() {
+    const draft = this.getDraft()
+
+    if (!this.isDraftResuming && !this.familyLifemap) {
+      this.props.updateDraft({
+        ...draft,
+        progress: {
+          ...draft.progress,
+          screen: 'Overview'
+        }
+      })
+
+      this.props.navigation.setParams({
+        onPressBack: this.onPressBack,
+        withoutCloseButton: draft.draftId ? false : true
+      })
+    }
+  }
+
+  shouldComponentUpdate() {
+    return this.props.navigation.isFocused()
+  }
+
   render() {
     const { t } = this.props
-    const { filterModalIsOpen, selectedFilter, filterLabel, draft } = this.state
+    const { filterModalIsOpen, selectedFilter, filterLabel } = this.state
+    const draft = this.getDraft()
 
     return (
       <StickyFooter
@@ -338,8 +336,21 @@ const styles = StyleSheet.create({
 })
 
 Overview.propTypes = {
+  drafts: PropTypes.array.isRequired,
+  updateDraft: PropTypes.func.isRequired,
   t: PropTypes.func.isRequired,
   navigation: PropTypes.object.isRequired
 }
 
-export default withNamespaces()(Overview)
+const mapDispatchToProps = {
+  updateDraft
+}
+
+const mapStateToProps = ({ drafts }) => ({ drafts })
+
+export default withNamespaces()(
+  connect(
+    mapStateToProps,
+    mapDispatchToProps
+  )(Overview)
+)
