@@ -89,6 +89,7 @@ export class SocioEconomicQuestion extends Component {
 
   getFamilyMemberFieldValue = (field, index) => {
     const draft = this.getDraft()
+
     if (
       !draft ||
       !draft.familyData.familyMembersList[index].socioEconomicAnswers ||
@@ -225,7 +226,7 @@ export class SocioEconomicQuestion extends Component {
         false
       )
     }
-    this.props.updateDraft({ currentDraft })
+    this.props.updateDraft(currentDraft)
   }
 
   setSocioEconomicsParam() {
@@ -350,7 +351,9 @@ export class SocioEconomicQuestion extends Component {
         shouldShowQuestion(question, draft, memberIndex)
       ).length
       return memberHasQuestions ? (
-        <Text style={styles.memberName}>{member.firstName}</Text>
+        <Text id={member.firstName} style={styles.memberName}>
+          {member.firstName}
+        </Text>
       ) : null
     }
 
@@ -389,7 +392,7 @@ export class SocioEconomicQuestion extends Component {
                   ) || false
 
                 return (
-                  <React.Fragment key={index}>
+                  <View key={index}>
                     {this.readOnly && !radioQuestionSelected ? null : (
                       <View>
                         {question.answerType === 'radio' ? (
@@ -414,10 +417,10 @@ export class SocioEconomicQuestion extends Component {
                       initialValue={
                         this.getFieldValue(question.codeName, 'value') || ''
                       }
-                      cleanErrorsOnUnmount={this.cleanErrorsCodenamesOnUnmount}
+                      // cleanErrorsOnUnmount={this.cleanErrorsCodenamesOnUnmount}
                       options={getConditionalOptions(question, draft)}
                     />
-                  </React.Fragment>
+                  </View>
                 )
               } else if (question.answerType === 'number') {
                 return (
@@ -537,7 +540,7 @@ export class SocioEconomicQuestion extends Component {
                           answer => answer.key === question.codeName
                         ) || false
                       return (
-                        <React.Fragment key={index}>
+                        <View key={index}>
                           {this.readOnly && !radioQuestionSelected ? null : (
                             <View>
                               {question.answerType === 'radio' ? (
@@ -569,11 +572,11 @@ export class SocioEconomicQuestion extends Component {
                             }
                             options={getConditionalOptions(question, draft, i)}
                             memberIndex={i + 1}
-                            cleanErrorsOnUnmount={
-                              this.cleanErrorsCodenamesOnUnmount
-                            }
+                            // cleanErrorsOnUnmount={
+                            //   this.cleanErrorsCodenamesOnUnmount
+                            // }
                           />
-                        </React.Fragment>
+                        </View>
                       )
                     } else if (question.answerType === 'number') {
                       return (

@@ -90,14 +90,19 @@ export default class Form extends Component {
   render() {
     // map children and add validation props to input related ones
     const children = React.Children.map(this.props.children, child => {
-      if (formTypes.find(item => item === child.type.displayName)) {
+      if (
+        child.type &&
+        formTypes.find(item => item === child.type.displayName)
+      ) {
         return this.generateClonedChild(child)
       } else if (
         child.props.children &&
         child.props.children.length &&
         child.props.children.some(
           element =>
-            element && formTypes.find(item => item === element.type.displayName)
+            element &&
+            element.type &&
+            formTypes.find(item => item === element.type.displayName)
         )
       ) {
         return React.cloneElement(child, {

@@ -2,6 +2,7 @@ import Form from '../../../components/form/Form'
 import React from 'react'
 import { SocioEconomicQuestion } from '../SocioEconomicQuestion'
 import { shallow } from 'enzyme'
+import Select from '../../../components/form/Select'
 
 const survey = {
   title: 'Chile - Geco',
@@ -144,9 +145,14 @@ const draft = {
         gender: 'M',
         birthDate: 12345,
         firstParticipant: true
+      },
+      {
+        firstName: 'Ana',
+        firstParticipant: false
       }
     ]
-  }
+  },
+  economicSurveyDataList: []
 }
 
 const resumedDraft = {
@@ -160,6 +166,12 @@ const resumedDraft = {
     familyMembersList: [
       {
         ...draft.familyData.familyMembersList[0],
+        socioEconomicAnswers: [
+          { key: 'highestEducation', value: 'SCHOOL-INCOMPLETE' }
+        ]
+      },
+      {
+        ...draft.familyData.familyMembersList[1],
         socioEconomicAnswers: [
           { key: 'highestEducation', value: 'SCHOOL-INCOMPLETE' }
         ]
@@ -297,7 +309,125 @@ it('creates socioEconomics param when navigating from begin lifemap', () => {
   })
 })
 
+describe('after setup', () => {
+  beforeEach(() => {
+    props = createTestProps({
+      navigation: {
+        ...navigation,
+        getParam: jest.fn(param => {
+          if (param === 'readOnly') {
+            return false
+          } else if (param === 'survey') {
+            return survey
+          } else if (param === 'draftId') {
+            return draftId
+          } else if (param === 'socioEconomics') {
+            return {
+              currentScreen: 1,
+              questionsPerScreen: questionsPerScreen,
+              totalScreens: 3
+            }
+          } else if (param === 'title') {
+            return 'Socio Economics'
+          } else if (param === 'fromBeginLifemap') {
+            return false
+          }
+        })
+      }
+    })
+    wrapper = shallow(<SocioEconomicQuestion {...props} />)
+  })
+  it('shows an input for each question', () => {
+    expect(wrapper.find(Select)).toHaveLength(2)
+    expect(wrapper.find(Select).first()).toHaveProp({
+      id: surveyEconomicQuestions[0].codeName,
+      label: surveyEconomicQuestions[0].questionText,
+      required: surveyEconomicQuestions[0].required,
+      options: surveyEconomicQuestions[0].options
+    })
+
+    // DONE --- ToDo :: Check props for the last one
+    expect(wrapper.find(Select).last()).toHaveProp({
+      id: surveyEconomicQuestions[1].codeName,
+      label: surveyEconomicQuestions[1].questionText,
+      required: surveyEconomicQuestions[1].required,
+      options: surveyEconomicQuestions[1].options
+    })
+  })
+
+  it('shows an input for each member question', () => {
+    props = createTestProps({
+      navigation: {
+        ...navigation,
+        getParam: jest.fn(param => {
+          if (param === 'readOnly') {
+            return false
+          } else if (param === 'survey') {
+            return survey
+          } else if (param === 'draftId') {
+            return draftId
+          } else if (param === 'socioEconomics') {
+            return {
+              currentScreen: 2,
+              questionsPerScreen: questionsPerScreen,
+              totalScreens: 3
+            }
+          } else if (param === 'title') {
+            return 'Socio Economics'
+          } else if (param === 'fromBeginLifemap') {
+            return false
+          }
+        })
+      }
+    })
+    wrapper = shallow(<SocioEconomicQuestion {...props} />)
+
+    expect(wrapper.find(Select)).toHaveLength(2)
+    expect(wrapper.find('#Juan')).toHaveLength(1)
+    expect(wrapper.find('#Juan')).toHaveHTML(
+      '<react-native-mock>Juan</react-native-mock>'
+    )
+
+    // DONE -- ToDo surveyEconomicQuestions[2] check props of first and last select
+    expect(wrapper.find(Select).first()).toHaveProp({
+      id: surveyEconomicQuestions[2].codeName,
+      label: surveyEconomicQuestions[2].questionText,
+      required: surveyEconomicQuestions[2].required,
+      options: surveyEconomicQuestions[2].options
+    })
+
+    expect(wrapper.find(Select).last()).toHaveProp({
+      id: surveyEconomicQuestions[2].codeName,
+      label: surveyEconomicQuestions[2].questionText,
+      required: surveyEconomicQuestions[2].required,
+      options: surveyEconomicQuestions[2].options
+    })
+  })
+
+  it('updates a socio economic answer in draft', () => {
+    // Done --- TODO -- Was failing because of the
+    wrapper
+      .instance()
+      .updateEconomicAnswer(surveyEconomicQuestions[0], 'random')
+    expect(props.updateDraft).toHaveBeenCalledWith({
+      ...draft,
+      progress: {
+        ...draft.progress,
+        screen: 'SocioEconomicQuestion'
+      }
+    })
+  })
+})
+
 describe('resuming a draft', () => {
+  /* 
+    TODO
+    test TextInput 
+  
+    Test if the first screen have the right initial values for the two selects
+    Test screen 2 / The first Participant has initial value / Ana 's question should be empty because she didn't selected anything
+    Test 3 screen (add in resume draft test)
+  */
   beforeEach(() => {
     props = createTestProps({
       drafts: [resumedDraft],
@@ -325,6 +455,59 @@ describe('resuming a draft', () => {
       }
     })
     wrapper = shallow(<SocioEconomicQuestion {...props} />)
+  })
+
+  it('gets correct draft from Redux store on resuming', () => {
+    // TODO
+    expect(wrapper.instance().getDraft()).toBe(resumedDraft)
+  })
+
+  it('sets correct initial values for the selects on the first screen', () => {
+    // TODO
+    expect(wrapper.find(Select).first()).toHaveProp({
+      initialValue: props.drafts[0].economicSurveyDataList[0].value
+    })
+
+    expect(wrapper.find(Select).last()).toHaveProp({
+      initialValue: props.drafts[0].economicSurveyDataList[1].value
+    })
+  })
+
+  it('sets correct initial values for the selects on the second screen', () => {
+    // TODO
+
+    props = createTestProps({
+      drafts: [resumedDraft],
+      navigation: {
+        ...navigation,
+        getParam: jest.fn(param => {
+          if (param === 'readOnly') {
+            return false
+          } else if (param === 'survey') {
+            return survey
+          } else if (param === 'draftId') {
+            return draftId
+          } else if (param === 'socioEconomics') {
+            return {
+              currentScreen: 2,
+              questionsPerScreen: questionsPerScreen,
+              totalScreens: 3
+            }
+          } else if (param === 'title') {
+            return 'Socio Economics'
+          } else if (param === 'fromBeginLifemap') {
+            return false
+          }
+        })
+      }
+    })
+    wrapper = shallow(<SocioEconomicQuestion {...props} />)
+
+    expect(wrapper.find(Select).first()).toHaveProp({
+      initialValue:
+        resumedDraft.familyData.familyMembersList[0].socioEconomicAnswers[0]
+          .value
+    })
   })
 
   it('updates socioEconomics param when navigating from another socioEconomics page', () => {
