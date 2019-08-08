@@ -6,7 +6,9 @@ import {
   StyleSheet,
   FlatList,
   UIManager,
-  findNodeHandle
+  findNodeHandle,
+  Image,
+  TouchableHighlight
 } from 'react-native'
 import { AndroidBackHandler } from 'react-navigation-backhandler'
 import { withNamespaces } from 'react-i18next'
@@ -19,10 +21,17 @@ import globalStyles from '../globalStyles'
 import { connect } from 'react-redux'
 import colors from '../theme.json'
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons'
+import FilterListItem from '../components/FilterListItem'
+import BottomModal from '../components/BottomModal'
+import arrow from '../../assets/images/selectArrow.png'
 
 export class Dashboard extends Component {
   acessibleComponent = React.createRef()
   state = {
+    filterModalIsOpen: false,
+    renderFiltered: false,
+    renderLable: false,
+    filteredDrafts: [],
     green: 0,
     yellow: 0,
     red: 0
@@ -90,7 +99,34 @@ export class Dashboard extends Component {
   navigateToCreateLifemap = () => {
     this.props.navigation.navigate('Surveys')
   }
+  toggleFilterModal = () => {
+    this.setState({
+      filterModalIsOpen: !this.state.filterModalIsOpen
+    })
+  }
 
+  selectFilter = (filter, label) => {
+    if (filter) {
+      let propsCopy = [...this.props.drafts]
+      let filteredDrafts = propsCopy.filter(e => {
+        if (e.status === filter) {
+          return e
+        }
+      })
+      this.setState({
+        filteredDrafts: filteredDrafts,
+        filterModalIsOpen: false,
+        renderFiltered: true,
+        renderLable: label
+      })
+    } else {
+      this.setState({
+        filterModalIsOpen: false,
+        renderFiltered: false,
+        renderLable: false
+      })
+    }
+  }
   componentDidMount() {
     if (!this.props.user.token) {
       this.props.navigation.navigate('Login')
@@ -107,13 +143,12 @@ export class Dashboard extends Component {
   }
 
   render() {
-    const { t, drafts, families } = this.props
-
+    const { t, families, drafts } = this.props
+    const { filterModalIsOpen } = this.state
     const allDraftFamilies = drafts.filter(
       d => d.status === 'Draft' || d.status === 'Pending sync'
     ).length
     const countFamilies = families.length + allDraftFamilies
-
     return (
       <AndroidBackHandler onBackPress={() => true}>
         <View style={globalStyles.ViewMainContainer}>
@@ -206,16 +241,74 @@ export class Dashboard extends Component {
                 </View>
                 {drafts.length ? (
                   <View style={styles.borderBottom}>
-                    <Text
-                      style={{ ...globalStyles.subline, ...styles.listTitle }}
+                    <View>
+                      <TouchableHighlight
+                        id="filters"
+                        underlayColor={'transparent'}
+                        activeOpacity={1}
+                        onPress={this.toggleFilterModal}
+                      >
+                        <View style={styles.listTitle}>
+                          <View>
+                            {this.state.renderLable ? (
+                              <Text style={globalStyles.subline}>
+                                {' '}
+                                {this.state.renderLable}
+                              </Text>
+                            ) : (
+                              <Text style={globalStyles.subline}>
+                                {t('general.lifeMaps')}
+                              </Text>
+                            )}
+                          </View>
+                          <Image source={arrow} style={styles.arrow} />
+                        </View>
+                      </TouchableHighlight>
+                    </View>
+                    {/* Filters modal */}
+                    <BottomModal
+                      isOpen={filterModalIsOpen}
+                      onRequestClose={this.toggleFilterModal}
+                      onEmptyClose={() => this.selectFilter(false)}
                     >
-                      {t('views.latestDrafts')}
-                    </Text>
+                      <View style={styles.dropdown}>
+                        <FilterListItem
+                          dashboard
+                          onPress={() => this.selectFilter('Draft', 'Drafts')}
+                          text={'Drafts'}
+                        />
+                        <FilterListItem
+                          dashboard
+                          onPress={() =>
+                            this.selectFilter('Pending sync', 'Sync Pending')
+                          }
+                          text={'Sync Pending'}
+                        />
+                        <FilterListItem
+                          dashboard
+                          onPress={() =>
+                            this.selectFilter('Sync error', 'Sync Error')
+                          }
+                          text={'Sync Error'}
+                        />
+                        <FilterListItem
+                          dashboard
+                          onPress={() =>
+                            this.selectFilter('Synced', 'Completed')
+                          }
+                          text={'Completed'}
+                        />
+                      </View>
+                    </BottomModal>
                   </View>
                 ) : null}
                 <FlatList
                   style={{ ...styles.background }}
-                  data={drafts.slice().reverse()}
+                  data={
+                    this.state.renderFiltered
+                      ? this.state.filteredDrafts.slice().reverse()
+                      : drafts.slice().reverse()
+                  }
                   keyExtractor={(item, index) => index.toString()}
                   renderItem={({ item }) => (
                     <DraftListItem
@@ -290,7 +383,16 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     marginBottom: 20
   },
+  arrow: {
+    marginLeft: 7,
+    marginTop: 3,
+    width: 10,
+    height: 5
+  },
   listTitle: {
+    justifyContent: 'center',
+    alignItems: 'center',
+    flexDirection: 'row',
     backgroundColor: colors.primary,
     height: 41,
     lineHeight: 41,
@@ -301,6 +403,14 @@ const styles = StyleSheet.create({
     marginTop: 20,
     borderBottomColor: colors.lightgrey,
     borderBottomWidth: 1
+  },
+  dropdown: {
+    paddingVertical: 16,
+    position: 'absolute',
+    bottom: 0,
+    left: 0,
+    right: 0,
+    backgroundColor: colors.white
   }
 })
 
