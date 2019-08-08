@@ -164,7 +164,9 @@ export class Dashboard extends Component {
                         <View style={styles.circleGreen} />
                       </View>
                       {/* <Text style={styles.numberIndicator}>{green}</Text> */}
-                      <Text style={styles.colorIndicator}>Green</Text>
+                      <Text style={styles.colorIndicator}>
+                        {t('views.DashGreen')}
+                      </Text>
                     </View>
 
                     <View style={styles.circleAndTextContainer}>
@@ -172,7 +174,9 @@ export class Dashboard extends Component {
                         <View style={styles.circleYellow} />
                       </View>
                       {/* <Text style={styles.numberIndicator}>{yellow}</Text> */}
-                      <Text style={styles.colorIndicator}>Yellow</Text>
+                      <Text style={styles.colorIndicator}>
+                        {t('views.DashYellow')}
+                      </Text>
                     </View>
 
                     <View style={styles.circleAndTextContainer}>
@@ -180,7 +184,9 @@ export class Dashboard extends Component {
                         <View style={styles.circleRed} />
                       </View>
                       {/* <Text style={styles.numberIndicator}>{red}</Text> */}
-                      <Text style={styles.colorIndicator}>Red</Text>
+                      <Text style={styles.colorIndicator}>
+                        {t('views.DashRed')}
+                      </Text>
                     </View>
                   </View>
 
