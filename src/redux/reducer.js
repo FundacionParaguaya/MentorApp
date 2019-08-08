@@ -1,6 +1,6 @@
 import { combineReducers } from 'redux'
-import { Sentry } from 'react-native-sentry'
-// import devDrafts from './dev/drafts.json'
+import { bugsnag } from '../screens/utils/bugsnag'
+
 import {
   SET_LOGIN_STATE,
   USER_LOGOUT,
@@ -114,7 +114,6 @@ export const families = (state = [], action) => {
 }
 
 //Drafts
-const nodeEnv = process.env
 export const drafts = (state = [], action) => {
   switch (action.type) {
     case CREATE_DRAFT:
@@ -478,31 +477,34 @@ export const rootReducer = (state, action) => {
     }
   }
 
-  // create detailed sentry report on sync error
+  // create detailed Bugsnag report on sync error
   if (action.type === SUBMIT_DRAFT_ROLLBACK) {
-    Sentry.setExtraContext({
-      payload: action.meta.sanitizedSnapshot,
-      familyMembersList:
-        action.meta.sanitizedSnapshot.familyData.familyMembersList
-    })
+    const { families, surveys, ...currentState } = state
+    families
+    surveys
+    const draftSurvey =
+      state.surveys &&
+      action.meta.sanitizedSnapshot &&
+      action.meta.sanitizedSnapshot.surveyId &&
+      state.surveys.find(s => s.id === action.meta.sanitizedSnapshot.surveyId)
 
-    Sentry.setTagsContext({
-      environment: nodeEnv.NODE_ENV
-    })
-
-    Sentry.setUserContext({
-      username: state.user.username,
-      extra: {
-        env: state.env
+    bugsnag.clearUser()
+    bugsnag.setUser(state.user.token, state.user.username)
+    bugsnag.notify(new Error('Sync Error'), report => {
+      report.metadata = {
+        ...(report.metaData || {}),
+        userDraft:
+          (action.meta.sanitizedSnapshot && action.meta.sanitizedSnapshot) ||
+          {},
+        serverError: (action.payload.response && action.payload.response) || {},
+        reduxStore: currentState || {},
+        currentSurvey: draftSurvey || {},
+        draftjson: {
+          data: JSON.stringify(action.meta.sanitizedSnapshot || {})
+        },
+        environment: { environment: state.env }
       }
     })
-
-    Sentry.captureBreadcrumb({
-      message: 'Sync error',
-      category: 'action'
-    })
-    Sentry.captureException('Sync error')
   }
-
   return appReducer(state, action)
 }

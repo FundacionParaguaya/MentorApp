@@ -2,6 +2,7 @@ package com.povertystoplightapp;
 import com.povertystoplightapp.CustomDeletePackage;
 import android.app.Application;
 import com.facebook.react.ReactApplication;
+import com.bugsnag.BugsnagReactNative;
 import com.testfairy.react.TestFairyPackage;
 import com.christopherdro.htmltopdf.RNHTMLtoPDFPackage;
 import com.christopherdro.RNPrint.RNPrintPackage;
@@ -12,7 +13,6 @@ import com.swmansion.gesturehandler.react.RNGestureHandlerPackage;
 import com.reactnativecommunity.geolocation.GeolocationPackage;
 import com.learnium.RNDeviceInfo.RNDeviceInfo;
 import com.delightfulstudio.wheelpicker.WheelPickerPackage;
-import io.sentry.RNSentryPackage;
 import org.devio.rn.splashscreen.SplashScreenReactPackage;
 import com.oblador.vectoricons.VectorIconsPackage;
 import com.reactcommunity.rnlanguages.RNLanguagesPackage;
@@ -42,6 +42,7 @@ public class MainApplication extends Application implements ReactApplication {
       return Arrays.<ReactPackage>asList(
         
           new MainReactPackage(),
+            BugsnagReactNative.getPackage(),
             new TestFairyPackage(),
           new CustomDeletePackage(),
             new RNHTMLtoPDFPackage(),
@@ -53,7 +54,6 @@ public class MainApplication extends Application implements ReactApplication {
             new GeolocationPackage(),
           new RNDeviceInfo(),
           new WheelPickerPackage(),
-          new RNSentryPackage(),
           new SplashScreenReactPackage(),
           new VectorIconsPackage(),
           new RNLanguagesPackage(),

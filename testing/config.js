@@ -173,3 +173,8 @@ jest.mock('@react-native-mapbox-gl/maps', () => {
     }
   }
 })
+
+jest.mock('bugsnag-react-native', () => ({
+  Configuration: jest.fn(),
+  Client: jest.fn(() => ({ leaveBreadcrumb: jest.fn() }))
+}))

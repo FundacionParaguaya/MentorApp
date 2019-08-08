@@ -77,7 +77,6 @@ project.ext.react = [
 ]
 
 apply from: "../../node_modules/react-native/react.gradle"
-apply from: "../../node_modules/react-native-sentry/sentry.gradle"
 /**
  * Set this to true to create two separate APKs instead of one:
  *   - An APK that only works on ARM devices
@@ -152,7 +151,7 @@ android {
 }
 
 dependencies {
-    implementation "org.webkit:android-jsc:r245459"
+    implementation project(':bugsnag-react-native')
     implementation project(':react-native-testfairy')
     implementation project(':react-native-html-to-pdf')
     implementation project(':react-native-print')
@@ -164,7 +163,6 @@ dependencies {
     implementation project(':@react-native-community_geolocation')
     implementation project(':react-native-device-info')
     implementation project(':@delightfulstudio_react-native-wheel-picker-android')
-    implementation project(':react-native-sentry')
     implementation project(':react-native-splash-screen')
     implementation project(':react-native-vector-icons')
     implementation project(':react-native-languages')
