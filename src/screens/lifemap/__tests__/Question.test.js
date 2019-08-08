@@ -98,6 +98,7 @@ const draft = {
 const navigation = {
   isFocused: jest.fn(() => true),
   navigate: jest.fn(),
+  replace: jest.fn(),
   setParams: jest.fn(),
   getParam: jest.fn(param => {
     if (param === 'survey') {
@@ -263,7 +264,7 @@ it('updates draft on skipping a question', () => {
 
 it('navigates to next question on selecting or skipping a question', () => {
   wrapper.instance().selectAnswer()
-  expect(props.navigation.navigate).toHaveBeenCalledWith('Question', {
+  expect(props.navigation.replace).toHaveBeenCalledWith('Question', {
     step: 1,
     draftId,
     survey
@@ -354,7 +355,7 @@ it('navigates back to a different question', () => {
   wrapper = shallow(<Question {...props} />)
 
   wrapper.instance().onPressBack()
-  expect(props.navigation.navigate).toHaveBeenCalledWith('Question', {
+  expect(props.navigation.replace).toHaveBeenCalledWith('Question', {
     step: 0,
     draftId,
     survey

@@ -115,7 +115,7 @@ export class Question extends Component {
       this.step + 1 < this.indicators.length &&
       !this.props.navigation.getParam('skipped')
     ) {
-      return this.props.navigation.navigate('Question', {
+      return this.props.navigation.replace('Question', {
         step: this.step + 1,
         draftId: this.draftId,
         survey: this.survey
@@ -146,7 +146,7 @@ export class Question extends Component {
 
   onPressBack = () => {
     if (this.step > 0) {
-      this.props.navigation.navigate('Question', {
+      this.props.navigation.replace('Question', {
         step: this.step - 1,
         draftId: this.draftId,
         survey: this.survey
@@ -175,6 +175,10 @@ export class Question extends Component {
         step: this.step
       }
     })
+
+    this.props.navigation.setParams({
+      onPressBack: this.onPressBack
+    })
   }
 
   shouldComponentUpdate() {
@@ -190,6 +194,7 @@ export class Question extends Component {
 
     return (
       <StickyFooter
+        visible={false}
         readonly
         progress={
           ((draft.familyData.countFamilyMembers > 1 ? 5 : 4) +
