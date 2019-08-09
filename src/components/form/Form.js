@@ -87,20 +87,26 @@ export default class Form extends Component {
     this.keyboardDidHideListener.remove()
   }
 
-  render() {
-    // map children and add validation props to input related ones
-    const children = React.Children.map(this.props.children, child => {
+  renderChildrenRecursively = children => {
+    let that = this
+
+    return React.Children.map(children, child => {
       if (
+        child &&
         child.type &&
         formTypes.find(item => item === child.type.displayName)
       ) {
         return this.generateClonedChild(child)
       } else if (
+        child &&
+        child.props &&
         child.props.children &&
         child.props.children.length &&
+        Array.isArray(child.props.children) &&
         child.props.children.some(
           element =>
             element &&
+            !Array.isArray(element) &&
             element.type &&
             formTypes.find(item => item === element.type.displayName)
         )
@@ -117,11 +123,26 @@ export default class Form extends Component {
             }
           })
         })
+      } else if (
+        child &&
+        child.props &&
+        child.props.children &&
+        child.props.children.length &&
+        Array.isArray(child.props.children) &&
+        child.props.children.some(
+          element => element && !element.type && Array.isArray(element)
+        )
+      ) {
+        return that.renderChildrenRecursively(child.props.children)
       } else {
         return child
       }
     })
+  }
 
+  render() {
+    // map children and add validation props to input related ones
+    const children = this.renderChildrenRecursively(this.props.children)
     return (
       <View
         style={[

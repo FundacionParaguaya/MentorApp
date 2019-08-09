@@ -53,7 +53,7 @@ export class SocioEconomicQuestion extends Component {
     const STEP_BACK = -1
 
     if (
-      (socioEconomics && !socioEconomics.currentScreen === 1) ||
+      (socioEconomics && socioEconomics.currentScreen === 1) ||
       !socioEconomics
     ) {
       this.props.navigation.navigate('Location', {
@@ -61,7 +61,7 @@ export class SocioEconomicQuestion extends Component {
         draftId: this.draftId
       })
     } else {
-      this.props.navigation.navigate('SocioEconomicQuestion', {
+      this.props.navigation.replace('SocioEconomicQuestion', {
         socioEconomics: {
           currentScreen: setScreen(socioEconomics, this.getDraft(), STEP_BACK),
           questionsPerScreen: socioEconomics.questionsPerScreen,
