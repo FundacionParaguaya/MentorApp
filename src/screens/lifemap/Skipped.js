@@ -1,62 +1,48 @@
+import { FlatList, Image, StyleSheet } from 'react-native'
 import React, { Component } from 'react'
-import { StyleSheet, Image, FlatList } from 'react-native'
+
 import PropTypes from 'prop-types'
-import { withNamespaces } from 'react-i18next'
-import StickyFooter from '../../components/StickyFooter'
 import SkippedListItem from '../../components/SkippedListItem'
+import StickyFooter from '../../components/StickyFooter'
+import { connect } from 'react-redux'
 import { getTotalScreens } from './helpers'
+import { updateDraft } from '../../redux/actions'
+import { withNamespaces } from 'react-i18next'
 
 export class Skipped extends Component {
   survey = this.props.navigation.getParam('survey')
+  draftId = this.props.navigation.getParam('draftId')
   readOnly = this.props.navigation.getParam('readOnly')
+
   indicatorsArray = this.props.navigation
     .getParam('survey')
     .surveyStoplightQuestions.map(item => item.codeName)
-  state = { tipIsVisible: true, draft: this.props.navigation.getParam('draft') }
 
-  componentDidMount() {
-    const { draft } = this.state
+  state = { tipIsVisible: true }
 
-    this.setState({
-      draft: {
-        ...draft,
-        progress: {
-          ...draft.progress,
-          screen: 'Skipped',
-          total: getTotalScreens(this.survey)
-        }
-      }
-    })
-
-    this.props.navigation.setParams({
-      getCurrentDraftState: () => this.state.draft,
-      onPressBack: this.onPressBack
-    })
-  }
+  getDraft = () =>
+    this.props.drafts.find(draft => draft.draftId === this.draftId)
 
   navigateToSkipped = item => {
-    this.props.navigation.push('Question', {
-      draft: this.state.draft,
+    this.props.navigation.replace('Question', {
+      draftId: this.draftId,
       survey: this.survey,
       step: this.indicatorsArray.indexOf(item.codeName),
-      skipped: true
+      answeringSkipped: true
     })
   }
 
   onPressBack = () => {
-    this.props.navigation.push('Question', {
+    this.props.navigation.navigate('Question', {
       step: this.survey.surveyStoplightQuestions.length - 1,
-      draft: this.state.draft,
+      draftId: this.draftId,
       survey: this.survey
     })
   }
 
-  shouldComponentUpdate() {
-    return this.props.navigation.isFocused()
-  }
   handleClick = () => {
-    this.props.navigation.replace('Overview', {
-      draft: this.state.draft,
+    this.props.navigation.navigate('Overview', {
+      draftId: this.draftId,
       survey: this.survey,
       resumeDraft: false
     })
@@ -68,9 +54,32 @@ export class Skipped extends Component {
     })
   }
 
+  componentDidMount() {
+    const draft = this.getDraft()
+
+    if (draft.progress.screen !== 'Skipped') {
+      this.props.updateDraft({
+        ...draft,
+        progress: {
+          ...draft.progress,
+          screen: 'Skipped',
+          total: getTotalScreens(this.survey)
+        }
+      })
+    }
+
+    this.props.navigation.setParams({
+      onPressBack: this.onPressBack
+    })
+  }
+
+  shouldComponentUpdate() {
+    return this.props.navigation.isFocused()
+  }
+
   render() {
     const { t } = this.props
-    const { draft } = this.state
+    const draft = this.getDraft()
 
     const skippedQuestions =
       (draft &&
@@ -112,13 +121,27 @@ export class Skipped extends Component {
     )
   }
 }
+
 const styles = StyleSheet.create({
   image: { alignSelf: 'center', marginVertical: 50 }
 })
 
 Skipped.propTypes = {
   t: PropTypes.func.isRequired,
-  navigation: PropTypes.object.isRequired
+  navigation: PropTypes.object.isRequired,
+  updateDraft: PropTypes.func.isRequired,
+  drafts: PropTypes.array.isRequired
 }
 
-export default withNamespaces()(Skipped)
+const mapDispatchToProps = {
+  updateDraft
+}
+
+const mapStateToProps = ({ drafts }) => ({ drafts })
+
+export default withNamespaces()(
+  connect(
+    mapStateToProps,
+    mapDispatchToProps
+  )(Skipped)
+)

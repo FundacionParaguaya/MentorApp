@@ -20,7 +20,7 @@ export class Overview extends Component {
   survey = this.props.navigation.getParam('survey')
   draftId = this.props.navigation.getParam('draftId')
   familyLifemap = this.props.navigation.getParam('familyLifemap')
-  isDraftResuming = this.props.navigation.getParam('resumeDraft')
+  isResumingDraft = this.props.navigation.getParam('resumeDraft')
 
   state = {
     filterModalIsOpen: false,
@@ -42,8 +42,9 @@ export class Overview extends Component {
         question => question.value === 0
       )
 
-      // If there are no skipped questions
-      if (skippedQuestions.length > 0) {
+      if (this.isResumingDraft) {
+        this.props.navigation.navigate('Dashboard')
+      } else if (skippedQuestions.length > 0) {
         this.props.navigation.navigate('Skipped', {
           draftId: draft.draftId,
           survey
@@ -51,14 +52,14 @@ export class Overview extends Component {
       } else
         this.props.navigation.navigate('Question', {
           step: this.survey.surveyStoplightQuestions.length - 1,
-          draftId: draft.draftId,
+          draftId: this.draftId,
           survey
         })
     }
     // If we arrive to this screen from the families screen
     else
       this.props.navigation.navigate('Families', {
-        draftId: draft.draftId,
+        draftId: this.draftId,
         survey
       })
   }
@@ -68,7 +69,7 @@ export class Overview extends Component {
       survey: this.survey,
       indicator,
       indicatorText,
-      draftId: this.getDraft().draftId
+      draftId: this.draftId
     })
 
   toggleFilterModal = () => {
@@ -93,7 +94,7 @@ export class Overview extends Component {
     const draft = this.getDraft()
 
     this.props.navigation.navigate(draft.progress.screen, {
-      draftId: draft.draftId,
+      draftId: this.draftId,
       survey: this.survey,
       step: draft.progress.step
     })
@@ -102,18 +103,18 @@ export class Overview extends Component {
   componentDidMount() {
     const draft = this.getDraft()
 
-    if (!this.isDraftResuming && !this.familyLifemap) {
+    this.props.navigation.setParams({
+      onPressBack: this.onPressBack,
+      withoutCloseButton: draft.draftId ? false : true
+    })
+
+    if (!this.isResumingDraft && !this.familyLifemap) {
       this.props.updateDraft({
         ...draft,
         progress: {
           ...draft.progress,
           screen: 'Overview'
         }
-      })
-
-      this.props.navigation.setParams({
-        onPressBack: this.onPressBack,
-        withoutCloseButton: draft.draftId ? false : true
       })
     }
   }
@@ -131,9 +132,9 @@ export class Overview extends Component {
       <StickyFooter
         continueLabel={t('general.continue')}
         handleClick={() => this.handleContinue()}
-        visible={!this.isDraftResuming && !this.familyLifemap}
+        visible={!this.isResumingDraft && !this.familyLifemap}
         progress={
-          !this.isDraftResuming && !this.familyLifemap
+          !this.isResumingDraft && !this.familyLifemap
             ? (draft.progress.total - 1) / draft.progress.total
             : 0
         }
@@ -158,7 +159,7 @@ export class Overview extends Component {
               achievements={draft.achievements}
               questionsLength={this.survey.surveyStoplightQuestions.length}
             />
-            {this.isDraftResuming ? (
+            {this.isResumingDraft ? (
               <Button
                 id="resume-draft"
                 style={{
@@ -191,7 +192,7 @@ export class Overview extends Component {
                   surveyData={this.survey.surveyStoplightQuestions}
                   draftData={draft}
                   navigateToScreen={this.navigateToScreen}
-                  draftOverview={!this.isDraftResuming && !this.familyLifemap}
+                  draftOverview={!this.isResumingDraft && !this.familyLifemap}
                   selectedFilter={selectedFilter}
                 />
               </View>

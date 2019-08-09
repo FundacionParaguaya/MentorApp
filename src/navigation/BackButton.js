@@ -1,7 +1,8 @@
 import React, { Component } from 'react'
-import PropTypes from 'prop-types'
-import IconButton from '../components/IconButton'
+
 import { AndroidBackHandler } from 'react-navigation-backhandler'
+import IconButton from '../components/IconButton'
+import PropTypes from 'prop-types'
 import { View } from 'react-native'
 
 class BackButton extends Component {

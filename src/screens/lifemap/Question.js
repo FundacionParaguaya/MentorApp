@@ -17,6 +17,7 @@ export class Question extends Component {
   step = this.props.navigation.getParam('step')
   survey = this.props.navigation.getParam('survey')
   draftId = this.props.navigation.getParam('draftId')
+  answeringSkipped = this.props.navigation.getParam('answeringSkipped')
 
   indicators = this.props.navigation.getParam('survey').surveyStoplightQuestions
   indicator = this.indicators[this.step]
@@ -111,10 +112,7 @@ export class Question extends Component {
     this.props.updateDraft(updatedDraft)
 
     // after updating the draft, navigate based on navigation state
-    if (
-      this.step + 1 < this.indicators.length &&
-      !this.props.navigation.getParam('skipped')
-    ) {
+    if (this.step + 1 < this.indicators.length && !this.answeringSkipped) {
       return this.props.navigation.replace('Question', {
         step: this.step + 1,
         draftId: this.draftId,
@@ -126,7 +124,7 @@ export class Question extends Component {
         survey: this.survey
       })
     } else if (
-      (this.props.navigation.getParam('skipped') &&
+      (this.answeringSkipped &&
         skippedQuestions.length === 1 &&
         answer !== 0) ||
       skippedQuestions.length === 0
@@ -145,7 +143,14 @@ export class Question extends Component {
   }
 
   onPressBack = () => {
-    if (this.step > 0) {
+    // navigate back to skipped questions if answering one,
+    // otherwise to the expected screen in the lifemap flow
+    if (this.answeringSkipped) {
+      this.props.navigation.navigate('Skipped', {
+        draftId: this.draftId,
+        survey: this.survey
+      })
+    } else if (this.step > 0) {
       this.props.navigation.replace('Question', {
         step: this.step - 1,
         draftId: this.draftId,
