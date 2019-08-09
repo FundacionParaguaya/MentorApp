@@ -32,20 +32,22 @@ export default class Form extends Component {
     })
   }
 
-  setError = (error, field) => {
+  setError = (error, field, memberIndex) => {
     const { onErrorStateChange } = this.props
     const { errors } = this.state
 
-    if (error && !errors.includes(field)) {
+    const fieldName = memberIndex ? `${field}-${memberIndex}` : field
+
+    if (error && !errors.includes(fieldName)) {
       this.setState(previousState => {
         return {
           ...previousState,
-          errors: [...previousState.errors, field]
+          errors: [...previousState.errors, fieldName]
         }
       })
     } else if (!error) {
       this.setState({
-        errors: errors.filter(item => item !== field)
+        errors: errors.filter(item => item !== fieldName)
       })
     }
 
@@ -69,7 +71,8 @@ export default class Form extends Component {
   generateClonedChild = child =>
     React.cloneElement(child, {
       readOnly: this.props.readOnly,
-      setError: isError => this.setError(isError, child.props.id),
+      setError: isError =>
+        this.setError(isError, child.props.id, child.props.memberIndex || null),
       showErrors: this.state.showErrors
     })
 

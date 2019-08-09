@@ -128,7 +128,7 @@ export class SocioEconomicQuestion extends Component {
           survey: this.survey,
           draftId: this.draftId
         })
-      : this.props.navigation.navigate('SocioEconomicQuestion', {
+      : this.props.navigation.replace('SocioEconomicQuestion', {
           survey: this.survey,
           draftId: this.draftId,
           socioEconomics: {
