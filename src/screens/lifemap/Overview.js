@@ -38,31 +38,37 @@ export class Overview extends Component {
 
     //If we do not arrive to this screen from the families screen
     if (!this.familyLifemap) {
-      const skippedQuestions = this.state.draft.indicatorSurveyDataList.filter(
+      const skippedQuestions = draft.indicatorSurveyDataList.filter(
         question => question.value === 0
       )
 
       // If there are no skipped questions
       if (skippedQuestions.length > 0) {
-        this.props.navigation.push('Skipped', { draft, survey })
+        this.props.navigation.navigate('Skipped', {
+          draftId: draft.draftId,
+          survey
+        })
       } else
-        this.props.navigation.push('Question', {
+        this.props.navigation.navigate('Question', {
           step: this.survey.surveyStoplightQuestions.length - 1,
-          draft,
+          draftId: draft.draftId,
           survey
         })
     }
     // If we arrive to this screen from the families screen
-    else this.props.navigation.navigate('Families', { draft, survey })
+    else
+      this.props.navigation.navigate('Families', {
+        draftId: draft.draftId,
+        survey
+      })
   }
 
   navigateToScreen = (screen, indicator, indicatorText) =>
-    this.props.navigation.push(screen, {
-      familyLifemap: this.state.draft,
+    this.props.navigation.navigate(screen, {
       survey: this.survey,
       indicator,
       indicatorText,
-      draft: this.state.draft
+      draftId: this.getDraft().draftId
     })
 
   toggleFilterModal = () => {
@@ -86,8 +92,8 @@ export class Overview extends Component {
   resumeDraft = () => {
     const draft = this.getDraft()
 
-    this.props.navigation.replace(draft.progress.screen, {
-      draft: draft || this.props.navigation.getParam('draft'),
+    this.props.navigation.navigate(draft.progress.screen, {
+      draftId: draft.draftId,
       survey: this.survey,
       step: draft.progress.step
     })
@@ -132,7 +138,7 @@ export class Overview extends Component {
             : 0
         }
       >
-        {this.state.draft.status === 'Draft' ? (
+        {draft.status === 'Draft' ? (
           <View style={{ alignItems: 'center' }}>
             <Text style={[globalStyles.h2Bold, styles.heading]}>
               {t('views.lifemap.congratulations')}
@@ -145,8 +151,8 @@ export class Overview extends Component {
         <View style={[globalStyles.background, styles.contentContainer]}>
           <View style={styles.indicatorsContainer}>
             <LifemapVisual
-              large={this.state.draft.status !== 'Draft'}
-              extraLarge={this.state.draft.status === 'Draft'}
+              large={draft.status !== 'Draft'}
+              extraLarge={draft.status === 'Draft'}
               questions={draft.indicatorSurveyDataList}
               priorities={draft.priorities}
               achievements={draft.achievements}
@@ -165,7 +171,7 @@ export class Overview extends Component {
             ) : null}
           </View>
           {/*If we are in family/draft then show the questions.Else dont show them . This is requered for the families tab*/}
-          {this.state.draft.status !== 'Draft' ? (
+          {draft.status !== 'Draft' ? (
             <React.Fragment>
               <View>
                 <TouchableHighlight

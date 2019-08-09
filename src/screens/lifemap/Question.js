@@ -197,10 +197,8 @@ export class Question extends Component {
         visible={false}
         readonly
         progress={
-          ((draft.familyData.countFamilyMembers > 1 ? 5 : 4) +
-            getTotalEconomicScreens(this.survey) +
-            this.step) /
-          draft.progress.total
+          ((draft.familyData.countFamilyMembers > 1 ? 5 : 4) + this.step) /
+            draft.progress.total || getTotalEconomicScreens(this.survey)
         }
         currentScreen="Question"
       >
@@ -267,7 +265,7 @@ export class Question extends Component {
             <IconButton
               text={t('views.lifemap.skipThisQuestion')}
               textStyle={styles.link}
-              onPress={this.selectAnswer}
+              onPress={() => this.selectAnswer(0)}
             />
           )}
         </View>
