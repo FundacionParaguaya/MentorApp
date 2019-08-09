@@ -125,7 +125,8 @@ export class Login extends Component {
         .trim()
         .substring(2, this.state.username.trim().length)
     }
-    TestFairy.setUserId(username)
+    nodeEnv.NODE_ENV === 'production' ? TestFairy.setUserId(username) : null
+
     this.props.setEnv(env)
     this.props.login(username, this.state.password, url[env]).then(() => {
       if (this.props.user.status === 401) {
