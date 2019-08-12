@@ -86,14 +86,14 @@ export class Overview extends Component {
     })
   }
 
-  handleContinue = () => {
+  onContinue = () => {
     this.navigateToScreen('Priorities')
   }
 
   resumeDraft = () => {
     const draft = this.getDraft()
 
-    this.props.navigation.navigate(draft.progress.screen, {
+    this.props.navigation.replace(draft.progress.screen, {
       draftId: this.draftId,
       survey: this.survey,
       step: draft.progress.step
@@ -131,7 +131,7 @@ export class Overview extends Component {
     return (
       <StickyFooter
         continueLabel={t('general.continue')}
-        handleClick={() => this.handleContinue()}
+        onContinue={() => this.onContinue()}
         visible={!this.isResumingDraft && !this.familyLifemap}
         progress={
           !this.isResumingDraft && !this.familyLifemap
