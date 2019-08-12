@@ -1,6 +1,8 @@
 import React, { Component } from 'react'
 import { StyleSheet, View, Text, Image, TouchableHighlight } from 'react-native'
 import PropTypes from 'prop-types'
+import { connect } from 'react-redux'
+import { updateDraft } from '../../redux/actions'
 import { withNamespaces } from 'react-i18next'
 import StickyFooter from '../../components/StickyFooter'
 import Icon2 from 'react-native-vector-icons/MaterialCommunityIcons'
@@ -11,23 +13,99 @@ import BottomModal from '../../components/BottomModal'
 import arrow from '../../../assets/images/selectArrow.png'
 import globalStyles from '../../globalStyles'
 import colors from '../../theme.json'
+
 export class Priorities extends Component {
   survey = this.props.navigation.getParam('survey')
+  draftId = this.props.navigation.getParam('draftId')
   familyLifemap = this.props.navigation.getParam('familyLifemap')
+  isResumingDraft = this.props.navigation.getParam('resumeDraft')
+
   state = {
     filterModalIsOpen: false,
     selectedFilter: false,
     filterLabel: false,
-    tipIsVisible: false,
-    draft:
-      this.props.navigation.getParam('draft') ||
-      this.props.navigation.getParam('familyLifemap') ||
-      {}
+    tipIsVisible: false
   }
 
-  isDraftResuming = this.props.navigation.getParam('resumeDraft')
+  getDraft = () =>
+    this.props.drafts.find(draft => draft.draftId === this.draftId)
+
+  onPressBack = () => {
+    const draft = this.getDraft()
+    this.props.navigation.push('Overview', {
+      resumeDraft: false,
+      draft,
+      survey: this.survey
+    })
+  }
+
+  updateDraftGlobal = draft => {
+    this.setState({ draft: draft })
+  }
+
+  navigateToScreen = (screen, indicator, indicatorText) =>
+    this.props.navigation.push(screen, {
+      familyLifemap: this.getDraft(),
+      survey: this.survey,
+      indicator,
+      indicatorText,
+      draft: this.getDraft()
+    })
+
+  toggleFilterModal = () => {
+    this.setState({
+      filterModalIsOpen: !this.state.filterModalIsOpen
+    })
+  }
+
+  selectFilter = (filter, filterLabel = false) => {
+    this.setState({
+      selectedFilter: filter,
+      filterModalIsOpen: false,
+      filterLabel: filterLabel
+    })
+  }
+
+  getPotentialPrioritiesCount() {
+    const draft = this.getDraft()
+    return (
+      draft &&
+      draft.indicatorSurveyDataList &&
+      draft.indicatorSurveyDataList.filter(
+        question => question.value === 1 || question.value === 2
+      ).length
+    )
+  }
+
+  getMandatoryPrioritiesCount() {
+    const potentialPrioritiesCount = this.getPotentialPrioritiesCount() || 0
+    const mimimumPriorities =
+      (this.survey && this.survey.minimumPriorities) || 0
+
+    return potentialPrioritiesCount > mimimumPriorities
+      ? mimimumPriorities
+      : potentialPrioritiesCount
+  }
+
+  onTipClose = () => {
+    this.setState({
+      tipIsVisible: false
+    })
+  }
+
+  onContinue = (mandatoryPrioritiesCount, draft) => {
+    if (mandatoryPrioritiesCount > draft.priorities.length) {
+      this.setState({
+        tipIsVisible: true
+      })
+    } else {
+      this.navigateToScreen('Final')
+    }
+  }
+
   componentDidMount() {
-    const { draft } = this.state
+    const draft = this.getDraft()
+
     this.props.navigation.setParams({
       getCurrentDraftState: () => draft
     })
@@ -60,86 +138,14 @@ export class Priorities extends Component {
     }
   }
 
-  onPressBack = () => {
-    const { draft } = this.state
-    this.props.navigation.push('Overview', {
-      resumeDraft: false,
-      draft,
-      survey: this.survey
-    })
-  }
-
-  updateDraftGlobal = draft => {
-    this.setState({ draft: draft })
-  }
-
-  navigateToScreen = (screen, indicator, indicatorText) =>
-    this.props.navigation.push(screen, {
-      familyLifemap: this.state.draft,
-      survey: this.survey,
-      indicator,
-      indicatorText,
-      draft: this.state.draft
-    })
-
   shouldComponentUpdate() {
     return this.props.navigation.isFocused()
   }
 
-  toggleFilterModal = () => {
-    this.setState({
-      filterModalIsOpen: !this.state.filterModalIsOpen
-    })
-  }
-
-  selectFilter = (filter, filterLabel = false) => {
-    this.setState({
-      selectedFilter: filter,
-      filterModalIsOpen: false,
-      filterLabel: filterLabel
-    })
-  }
-
-  getPotentialPrioritiesCount() {
-    const { draft } = this.state
-    return (
-      draft &&
-      draft.indicatorSurveyDataList &&
-      draft.indicatorSurveyDataList.filter(
-        question => question.value === 1 || question.value === 2
-      ).length
-    )
-  }
-
-  getMandatoryPrioritiesCount() {
-    const potentialPrioritiesCount = this.getPotentialPrioritiesCount() || 0
-    const mimimumPriorities =
-      (this.survey && this.survey.minimumPriorities) || 0
-
-    return potentialPrioritiesCount > mimimumPriorities
-      ? mimimumPriorities
-      : potentialPrioritiesCount
-  }
-
-  onTipClose = () => {
-    this.setState({
-      tipIsVisible: false
-    })
-  }
-
-  handleContinue = (mandatoryPrioritiesCount, draft) => {
-    if (mandatoryPrioritiesCount > draft.priorities.length) {
-      this.setState({
-        tipIsVisible: true
-      })
-    } else {
-      this.navigateToScreen('Final')
-    }
-  }
-
   render() {
     const { t } = this.props
-    const { filterModalIsOpen, selectedFilter, filterLabel, draft } = this.state
+    const { filterModalIsOpen, selectedFilter, filterLabel } = this.state
+    const draft = this.getDraft()
     const mandatoryPrioritiesCount = this.getMandatoryPrioritiesCount(draft)
     const getTipDescription = () => {
       //no mandatory priotities
@@ -163,7 +169,7 @@ export class Priorities extends Component {
     return (
       <StickyFooter
         continueLabel={t('general.continue')}
-        handleClick={() => this.handleContinue(mandatoryPrioritiesCount, draft)}
+        onContinue={() => this.onContinue(mandatoryPrioritiesCount, draft)}
         style={{ marginBottom: -20 }}
       >
         <View style={[globalStyles.background, styles.contentContainer]}>
@@ -386,7 +392,19 @@ const styles = StyleSheet.create({
 
 Priorities.propTypes = {
   t: PropTypes.func.isRequired,
-  navigation: PropTypes.object.isRequired
+  navigation: PropTypes.object.isRequired,
+  drafts: PropTypes.array.isRequired
 }
 
-export default withNamespaces()(Priorities)
+const mapDispatchToProps = {
+  updateDraft
+}
+
+const mapStateToProps = ({ drafts }) => ({ drafts })
+
+export default withNamespaces()(
+  connect(
+    mapStateToProps,
+    mapDispatchToProps
+  )(Priorities)
+)
