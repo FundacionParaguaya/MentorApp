@@ -255,7 +255,8 @@ export class Location extends Component {
     ) {
       this.props.navigation.replace('Location', {
         draft: this.state.draft,
-        survey: this.survey
+        survey: this.survey,
+        draftId: this.draftId
       })
     }
     this.setState({ appState: nextAppState })
