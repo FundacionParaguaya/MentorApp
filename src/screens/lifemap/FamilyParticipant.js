@@ -25,9 +25,8 @@ export class FamilyParticipant extends Component {
       this.survey.surveyConfig.requiredFields &&
       this.survey.surveyConfig.requiredFields.primaryParticipant) ||
     null
-
   familyMembersArray = [] // the options array for members count dropdown
-
+  readOnlyDraft = this.props.navigation.getParam('family') || []
   getDraft = () =>
     this.props.drafts.find(draft => draft.draftId === this.draftId)
 
@@ -165,7 +164,6 @@ export class FamilyParticipant extends Component {
     const draft = this.getDraft()
 
     this.familyMembersArray = this.getFamilyMembersCountArray()
-
     // generate a new draft if not resuming or reviewing an old one,
     // else just set the draft progress
     if (!this.draftId) {
@@ -191,15 +189,14 @@ export class FamilyParticipant extends Component {
   render() {
     const { t } = this.props
 
-    const draft = this.getDraft()
-
-    const participant = draft ? draft.familyData.familyMembersList[0] : {}
+    const draft = !this.readOnly ? this.getDraft() : this.readOnlyDraft
+    let participant = draft ? draft.familyData.familyMembersList[0] : {}
 
     return draft ? (
       <Form
         onContinue={this.onContinue}
         continueLabel={t('general.continue')}
-        readOnly={!!this.readOnly}
+        readonly={!!this.readOnly}
         progress={!this.readOnly && draft ? 1 / draft.progress.total : 0}
         onErrorStateChange={this.onErrorStateChange}
       >
@@ -223,6 +220,7 @@ export class FamilyParticipant extends Component {
           initialValue={participant.firstName || ''}
           required={setValidationSchema(this.requiredFields, 'firstName', true)}
           validation="string"
+          readonly={!!this.readOnly}
           onChangeText={this.updateParticipant}
         />
 
@@ -233,6 +231,7 @@ export class FamilyParticipant extends Component {
           initialValue={participant.lastName || ''}
           required={setValidationSchema(this.requiredFields, 'lastName', true)}
           validation="string"
+          readonly={!!this.readOnly}
           onChangeText={this.updateParticipant}
         />
 
@@ -246,6 +245,7 @@ export class FamilyParticipant extends Component {
           onChange={this.updateParticipant}
           otherField="customGender"
           otherPlaceholder={t('views.family.specifyGender')}
+          readonly={!!this.readOnly}
           otherValue={participant.customGender}
         />
 
@@ -254,6 +254,7 @@ export class FamilyParticipant extends Component {
           required={setValidationSchema(this.requiredFields, 'birthDate', true)}
           label={t('views.family.dateOfBirth')}
           initialValue={participant.birthDate}
+          readonly={!!this.readOnly}
           onValidDate={this.updateParticipant}
         />
 
@@ -271,6 +272,7 @@ export class FamilyParticipant extends Component {
           otherPlaceholder={t('views.family.customDocumentType')}
           otherField="customDocumentType"
           otherValue={participant.customDocumentType}
+          readonly={!!this.readOnly}
           onChange={this.updateParticipant}
         />
 
@@ -283,6 +285,7 @@ export class FamilyParticipant extends Component {
             'documentNumber',
             true
           )}
+          readonly={!!this.readOnly}
           onChangeText={this.updateParticipant}
         />
 
@@ -299,6 +302,7 @@ export class FamilyParticipant extends Component {
           )}
           defaultCountry={this.survey.surveyConfig.surveyLocation.country}
           countriesOnTop={this.survey.surveyConfig.countryOfBirth}
+          readonly={!!this.readOnly}
           onChange={this.updateParticipant}
         />
 
@@ -313,6 +317,7 @@ export class FamilyParticipant extends Component {
             true
           )}
           options={this.familyMembersArray}
+          readonly={!!this.readOnly}
           onChange={this.addFamilyCount}
         />
 
@@ -321,6 +326,7 @@ export class FamilyParticipant extends Component {
           initialValue={participant.email}
           placeholder={t('views.family.email')}
           validation="email"
+          readonly={!!this.readOnly}
           onChangeText={this.updateParticipant}
         />
 
@@ -329,6 +335,7 @@ export class FamilyParticipant extends Component {
           initialValue={participant.phoneNumber}
           placeholder={t('views.family.phone')}
           validation="phoneNumber"
+          readonly={!!this.readOnly}
           onChangeText={this.updateParticipant}
         />
       </Form>

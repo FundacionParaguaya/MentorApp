@@ -16,7 +16,8 @@ export class FamilyMember extends Component {
           accessibilityLiveRegion="assertive"
           style={styles.headerTitleStyle}
         >
-          {navigation.getParam('title', 'Family Member')}
+          {navigation.getParam('member').firstName}
+          {/* {navigation.getParam('title', 'Family Member')} */}
         </Text>
       )
     }
@@ -35,33 +36,37 @@ export class FamilyMember extends Component {
   render() {
     const { t } = this.props
     const member = this.props.navigation.getParam('member')
-
     return (
       <View style={[globalStyles.background, styles.contentContainer]}>
         <TextInput
+          id="readOnlyTextInput"
+          placeholder={t('views.family.firstName')}
+          initialValue={member.firstName}
           readonly
-          placeholder={`${t('views.family.firstName')}`}
-          value={member.firstName}
           onChangeText={() => {}}
+          setError={() => {}}
         />
+
         <Select
           onChange={() => {}}
           readonly
           placeholder={t('views.family.gender')}
-          value={member.gender}
+          initialValue={member.gender}
           options={[
             { text: 'Male', value: 'M' },
             { text: 'Female', value: 'F' },
             { text: 'Other', value: 'O' },
             { text: 'I prefer not to answer', value: 'N' }
           ]}
+          setError={() => {}}
         />
         <DateInput
           label={t('views.family.dateOfBirth')}
-          value={member.birthDate}
+          initialValue={member.birthDate}
           readonly
           detectError={() => {}}
           onValidDate={() => {}}
+          setError={() => {}}
         />
       </View>
     )

@@ -21,7 +21,7 @@ export class Overview extends Component {
   draftId = this.props.navigation.getParam('draftId')
   familyLifemap = this.props.navigation.getParam('familyLifemap')
   isResumingDraft = this.props.navigation.getParam('resumeDraft')
-
+  readOnly = this.props.navigation.getParam('readOnly') || false
   state = {
     filterModalIsOpen: false,
     selectedFilter: false,
@@ -33,7 +33,9 @@ export class Overview extends Component {
     this.props.drafts.find(draft => draft.draftId === this.draftId)
 
   onPressBack = () => {
-    const draft = this.getDraft()
+    const draft = !this.props.readOnly
+      ? this.getDraft()
+      : this.props.familyLifemap
     const survey = this.survey
 
     //If we do not arrive to this screen from the families screen
@@ -91,7 +93,9 @@ export class Overview extends Component {
   }
 
   resumeDraft = () => {
-    const draft = this.getDraft()
+    const draft = !this.props.readOnly
+      ? this.getDraft()
+      : this.props.familyLifemap
 
     this.props.navigation.replace(draft.progress.screen, {
       draftId: this.draftId,
@@ -101,7 +105,9 @@ export class Overview extends Component {
   }
 
   componentDidMount() {
-    const draft = this.getDraft()
+    const draft = !this.props.readOnly
+      ? this.getDraft()
+      : this.props.familyLifemap
 
     this.props.navigation.setParams({
       onPressBack: this.onPressBack,
@@ -126,8 +132,9 @@ export class Overview extends Component {
   render() {
     const { t } = this.props
     const { filterModalIsOpen, selectedFilter, filterLabel } = this.state
-    const draft = this.getDraft()
-
+    const draft = !this.props.readOnly
+      ? this.getDraft()
+      : this.props.familyLifemap
     return (
       <StickyFooter
         continueLabel={t('general.continue')}
@@ -139,7 +146,7 @@ export class Overview extends Component {
             : 0
         }
       >
-        {draft.status === 'Draft' ? (
+        {!this.props.readOnly ? (
           <View style={{ alignItems: 'center' }}>
             <Text style={[globalStyles.h2Bold, styles.heading]}>
               {t('views.lifemap.congratulations')}
@@ -152,8 +159,8 @@ export class Overview extends Component {
         <View style={[globalStyles.background, styles.contentContainer]}>
           <View style={styles.indicatorsContainer}>
             <LifemapVisual
-              large={draft.status !== 'Draft'}
-              extraLarge={draft.status === 'Draft'}
+              large={this.props.readOnly}
+              extraLarge={!this.props.readOnly}
               questions={draft.indicatorSurveyDataList}
               priorities={draft.priorities}
               achievements={draft.achievements}
@@ -172,8 +179,8 @@ export class Overview extends Component {
             ) : null}
           </View>
           {/*If we are in family/draft then show the questions.Else dont show them . This is requered for the families tab*/}
-          {draft.status !== 'Draft' ? (
-            <React.Fragment>
+          {this.props.readOnly ? (
+            <View>
               <View>
                 <TouchableHighlight
                   id="filters"
@@ -294,7 +301,7 @@ export class Overview extends Component {
                   />
                 </View>
               </BottomModal>
-            </React.Fragment>
+            </View>
           ) : null}
         </View>
       </StickyFooter>
@@ -346,7 +353,9 @@ Overview.propTypes = {
   drafts: PropTypes.array.isRequired,
   updateDraft: PropTypes.func.isRequired,
   t: PropTypes.func.isRequired,
-  navigation: PropTypes.object.isRequired
+  navigation: PropTypes.object.isRequired,
+  readOnly: PropTypes.bool,
+  familyLifemap: PropTypes.object
 }
 
 const mapDispatchToProps = {

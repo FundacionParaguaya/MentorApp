@@ -550,6 +550,6 @@ describe('readonly mode', () => {
   })
 
   it('disables editing fields', () => {
-    expect(wrapper.find(Form)).toHaveProp({ readOnly: true })
+    expect(wrapper.find(Form)).toHaveProp({ readonly: true })
   })
 })

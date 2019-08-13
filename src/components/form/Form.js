@@ -70,7 +70,7 @@ export default class Form extends Component {
 
   generateClonedChild = child =>
     React.cloneElement(child, {
-      readOnly: this.props.readOnly,
+      readonly: this.props.readonly,
       setError: isError =>
         this.setError(isError, child.props.id, child.props.memberIndex || null),
       showErrors: this.state.showErrors
@@ -173,7 +173,7 @@ export default class Form extends Component {
           <ScrollView>{children}</ScrollView>
         )}
 
-        {!this.props.readOnly &&
+        {!this.props.readonly &&
         (this.props.visible && this.state.continueVisible) ? (
           <View>
             {/* i have changed the height to 61 because there was a weird whitespace if we dont have the progress bar */}
@@ -213,7 +213,7 @@ Form.propTypes = {
   fullHeight: PropTypes.bool,
   tipDescription: PropTypes.string,
   onTipClose: PropTypes.func,
-  readOnly: PropTypes.bool,
+  readonly: PropTypes.bool,
   progress: PropTypes.number,
   currentScreen: PropTypes.string
 }

@@ -512,12 +512,12 @@ describe('readonly mode', () => {
         ...navigation,
         getParam: jest.fn(param => {
           if (param === 'family') {
-            return null
+            return props.drafts[0]
           } else if (param === 'survey') {
             return survey
           } else if (param === 'draftId') {
             return 1
-          } else if (param === 'readOnly') {
+          } else if (param === 'readonly') {
             return true
           } else {
             return 1
@@ -529,6 +529,6 @@ describe('readonly mode', () => {
   })
 
   it('disables editing fields', () => {
-    expect(wrapper.find(Form)).toHaveProp({ readOnly: true })
+    expect(wrapper.find(Form)).toHaveProp({ readonly: true })
   })
 })

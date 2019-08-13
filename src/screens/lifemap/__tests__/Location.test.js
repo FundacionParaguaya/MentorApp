@@ -499,7 +499,7 @@ describe('readonly mode', () => {
         ...navigation,
         getParam: jest.fn(param => {
           if (param === 'family') {
-            return null
+            return resumedDraft
           } else if (param === 'survey') {
             return survey
           } else if (param === 'draftId') {

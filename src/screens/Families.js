@@ -19,6 +19,7 @@ import SearchBar from '../components/SearchBar'
 import mapPlaceholderLarge from '../../assets/images/map_placeholder_1000.png'
 import FamiliesListItem from '../components/FamiliesListItem'
 import { replaceSpecialChars as sanitize } from '../utils'
+
 export class Families extends Component {
   state = { search: '' }
   acessibleComponent = React.createRef()
@@ -57,7 +58,6 @@ export class Families extends Component {
 
   render() {
     const { t } = this.props
-
     // show not synced families from drafts
     const draftFamilies = this.props.drafts
       .filter(

@@ -427,6 +427,7 @@ export class Family extends Component {
                   this.familyLifemap.created
                 ).format('MMM DD, YYYY')}`}</Text>
                 <OverviewComponent
+                  readOnly
                   navigation={navigation}
                   familyLifemap={this.familyLifemap}
                 />
@@ -553,10 +554,11 @@ const styles = StyleSheet.create({
 const mapDispatchToProps = {
   submitDraft
 }
-const mapStateToProps = ({ surveys, env, user }) => ({
+const mapStateToProps = ({ surveys, env, user, drafts }) => ({
   surveys,
   env,
-  user
+  user,
+  drafts
 })
 
 export default withNamespaces()(

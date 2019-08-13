@@ -23,6 +23,8 @@ import { updateDraft } from '../../redux/actions'
 import { withNamespaces } from 'react-i18next'
 
 export class SocioEconomicQuestion extends Component {
+  readOnlyDraft = this.props.navigation.getParam('family') || []
+  readOnly = this.props.navigation.getParam('readOnly') || false
   static navigationOptions = ({ navigation }) => {
     return {
       headerTitle: (
@@ -73,7 +75,7 @@ export class SocioEconomicQuestion extends Component {
     }
   }
   getFieldValue = (field, propertyKey) => {
-    const draft = this.getDraft()
+    const draft = !this.readOnly ? this.getDraft() : this.readOnlyDraft
     if (
       !draft ||
       !draft.economicSurveyDataList ||
@@ -88,7 +90,7 @@ export class SocioEconomicQuestion extends Component {
   }
 
   getFamilyMemberFieldValue = (field, index) => {
-    const draft = this.getDraft()
+    const draft = !this.readOnly ? this.getDraft() : this.readOnlyDraft
 
     if (
       !draft ||
@@ -151,7 +153,7 @@ export class SocioEconomicQuestion extends Component {
       )
   }
   onPressCheckbox = (text, field) => {
-    const draft = this.getDraft()
+    const draft = !this.readOnly ? this.getDraft() : this.readOnlyDraft
 
     const question = draft.economicSurveyDataList.find(
       item => item.key === field
@@ -193,7 +195,7 @@ export class SocioEconomicQuestion extends Component {
   }
 
   updateEconomicAnswer = (question, value, memberIndex) => {
-    const draft = this.getDraft()
+    const draft = !this.readOnly ? this.getDraft() : this.readOnlyDraft
     const {
       conditionalQuestions,
       elementsWithConditionsOnThem: { questionsWithConditionsOnThem }
@@ -308,7 +310,7 @@ export class SocioEconomicQuestion extends Component {
 
   componentDidMount() {
     this.setSocioEconomicsParam()
-    const draft = this.getDraft()
+    const draft = !this.readOnly ? this.getDraft() : this.readOnlyDraft
 
     if (!this.readOnly) {
       const conditionalQuestions = getConditionalQuestions(this.survey)
@@ -344,7 +346,7 @@ export class SocioEconomicQuestion extends Component {
       ? socioEconomics.questionsPerScreen[socioEconomics.currentScreen - 1]
       : {}
 
-    const draft = this.getDraft()
+    const draft = !this.readOnly ? this.getDraft() : this.readOnlyDraft
 
     const showMemberName = (member, memberIndex, questionsForFamilyMember) => {
       const memberHasQuestions = questionsForFamilyMember.filter(question =>
@@ -361,7 +363,7 @@ export class SocioEconomicQuestion extends Component {
       <Form
         onContinue={this.onContinue}
         continueLabel={t('general.continue')}
-        readOnly={!!this.readOnly}
+        readonly={!!this.readOnly}
         progress={
           !this.readOnly && draft
             ? ((draft.familyData.countFamilyMembers > 1 ? 3 : 2) +

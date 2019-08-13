@@ -38,6 +38,7 @@ export class Location extends Component {
   survey = this.props.navigation.getParam('survey')
   readOnly = this.props.navigation.getParam('readOnly')
   draftId = this.props.navigation.getParam('draftId')
+  readOnlyDraft = this.props.navigation.getParam('family') || []
 
   unsubscribeNetChange
   state = {
@@ -59,7 +60,7 @@ export class Location extends Component {
     this.props.drafts.find(draft => draft.draftId === this.draftId)
 
   onDragMap = region => {
-    const draft = this.getDraft()
+    const draft = !this.readOnly ? this.getDraft() : this.readOnlyDraft
     const { zoom } = this.state
     const { familyData } = draft
     const { coordinates } = region.geometry
@@ -90,7 +91,7 @@ export class Location extends Component {
 
   // if the user has draged the map and the draft has stored some coordinates
   setCoordinatesFromDraft = isOnline => {
-    const draft = this.getDraft()
+    const draft = !this.readOnly ? this.getDraft() : this.readOnlyDraft
     const { familyData } = draft
     this.setState({
       loading: false,
@@ -114,7 +115,7 @@ export class Location extends Component {
   }
 
   getCoordinatesOnline() {
-    const draft = this.getDraft()
+    const draft = !this.readOnly ? this.getDraft() : this.readOnlyDraft
     const { familyData } = draft
     // this.setState({ askingForPermission: true })
     Geolocation.getCurrentPosition(
@@ -174,7 +175,7 @@ export class Location extends Component {
   }
 
   getCoordinatesOffline() {
-    const draft = this.getDraft()
+    const draft = !this.readOnly ? this.getDraft() : this.readOnlyDraft
     const { familyData } = draft
 
     if (
@@ -274,7 +275,7 @@ export class Location extends Component {
   }
 
   updateFamilyData = (value, field) => {
-    const draft = this.getDraft()
+    const draft = !this.readOnly ? this.getDraft() : this.readOnlyDraft
 
     this.props.updateDraft({
       ...draft,
@@ -286,7 +287,7 @@ export class Location extends Component {
   }
 
   goToSearch = (data, details = null) => {
-    const draft = this.getDraft()
+    const draft = !this.readOnly ? this.getDraft() : this.readOnlyDraft
 
     this.props.updateDraft({
       ...draft,
@@ -312,7 +313,7 @@ export class Location extends Component {
   }
 
   centerOnOfflineMap = map => {
-    const draft = this.getDraft()
+    const draft = !this.readOnly ? this.getDraft() : this.readOnlyDraft
 
     this.props.updateDraft({
       ...draft,
@@ -343,7 +344,7 @@ export class Location extends Component {
   onPressBack = () => {
     const { hasShownList } = this.state
 
-    const draft = this.getDraft()
+    const draft = !this.readOnly ? this.getDraft() : this.readOnlyDraft
 
     if (hasShownList) {
       this.setState({
@@ -412,7 +413,7 @@ export class Location extends Component {
   }
 
   determineScreenState(isOnline) {
-    const draft = this.getDraft()
+    const draft = !this.readOnly ? this.getDraft() : this.readOnlyDraft
     const { familyData } = draft
 
     if (!this.readOnly) {
@@ -451,7 +452,7 @@ export class Location extends Component {
       }
     })
 
-    const draft = this.getDraft()
+    const draft = !this.readOnly ? this.getDraft() : this.readOnlyDraft
 
     if (!this.readOnly) {
       this.props.updateDraft({
@@ -507,8 +508,7 @@ export class Location extends Component {
       showOfflineMapsList
     } = this.state
 
-    const draft = this.getDraft()
-
+    const draft = !this.readOnly ? this.getDraft() : this.readOnlyDraft
     const familyData = draft.familyData
 
     if (loading) {
