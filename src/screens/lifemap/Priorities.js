@@ -86,11 +86,11 @@ export class Priorities extends Component {
       : potentialPrioritiesCount
   }
 
-  // onTipClose = () => {
-  //   this.setState({
-  //     tipIsVisible: false
-  //   })
-  // }
+  onTipClose = () => {
+    this.setState({
+      tipIsVisible: false
+    })
+  }
 
   onContinue = (mandatoryPrioritiesCount, draft) => {
     if (mandatoryPrioritiesCount > draft.priorities.length) {
@@ -102,10 +102,16 @@ export class Priorities extends Component {
     }
   }
 
-  getTipDescription = mandatoryPrioritiesCount => {
+  getTipDescription = (mandatoryPrioritiesCount, tipValue) => {
     const { t } = this.props
     const draft = this.getDraft()
     //no mandatory priotities
+    if (tipValue) {
+      return `${t('general.create')} ${mandatoryPrioritiesCount -
+        draft.priorities.length} ${t(
+        'views.lifemap.priorities'
+      ).toLowerCase()}!`
+    }
     if (
       !mandatoryPrioritiesCount ||
       mandatoryPrioritiesCount - draft.priorities.length <= 0
@@ -117,10 +123,10 @@ export class Priorities extends Component {
     }
     //more than one mandatory priority
     else {
-      return `${t('general.create')} ${mandatoryPrioritiesCount -
-        draft.priorities.length} ${t(
-        'views.lifemap.priorities'
-      ).toLowerCase()}!`
+      return `${t('views.lifemap.youNeedToAddPriorities').replace(
+        '%n',
+        mandatoryPrioritiesCount - draft.priorities.length
+      )}!`
     }
   }
 
@@ -170,6 +176,10 @@ export class Priorities extends Component {
         continueLabel={t('general.continue')}
         onContinue={() => this.onContinue(mandatoryPrioritiesCount, draft)}
         style={{ marginBottom: -20 }}
+        type={this.state.tipIsVisible ? 'tip' : 'button'}
+        tipTitle={t('views.lifemap.toComplete')}
+        onTipClose={this.onTipClose}
+        tipDescription={this.getTipDescription(mandatoryPrioritiesCount, true)}
       >
         <View style={[globalStyles.background, styles.contentContainer]}>
           <Text style={[globalStyles.h2Bold, styles.heading]}>
