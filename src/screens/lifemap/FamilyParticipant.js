@@ -31,7 +31,7 @@ export class FamilyParticipant extends Component {
     this.props.drafts.find(draft => draft.draftId === this.draftId)
 
   onContinue = () => {
-    const draft = this.getDraft()
+    const draft = !this.readOnly ? this.getDraft() : this.readOnlyDraft
     const survey = this.survey
 
     const { draftId } = draft
@@ -50,7 +50,7 @@ export class FamilyParticipant extends Component {
   }
 
   addFamilyCount = value => {
-    const draft = this.getDraft()
+    const draft = !this.readOnly ? this.getDraft() : this.readOnlyDraft
     const { countFamilyMembers } = draft.familyData
     const PREFER_NOT_TO_SAY = -1
 
@@ -95,7 +95,7 @@ export class FamilyParticipant extends Component {
   ]
 
   updateParticipant = (value, field) => {
-    const draft = this.getDraft()
+    const draft = !this.readOnly ? this.getDraft() : this.readOnlyDraft
 
     this.props.updateDraft({
       ...draft,
@@ -161,12 +161,13 @@ export class FamilyParticipant extends Component {
   }
 
   componentDidMount() {
-    const draft = this.getDraft()
+    const draft = !this.readOnly ? this.getDraft() : this.readOnlyDraft
 
     this.familyMembersArray = this.getFamilyMembersCountArray()
     // generate a new draft if not resuming or reviewing an old one,
     // else just set the draft progress
-    if (!this.draftId) {
+
+    if (!this.draftId && !this.readOnly) {
       this.createNewDraft()
     } else if (
       !this.readOnly &&
@@ -188,7 +189,6 @@ export class FamilyParticipant extends Component {
 
   render() {
     const { t } = this.props
-
     const draft = !this.readOnly ? this.getDraft() : this.readOnlyDraft
     let participant = draft ? draft.familyData.familyMembersList[0] : {}
 
