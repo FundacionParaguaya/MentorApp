@@ -1,20 +1,21 @@
 import React, { Component } from 'react'
 import { View, Text, StyleSheet } from 'react-native'
 import { withNamespaces } from 'react-i18next'
-import Button from '../../components/Button'
 import Select from '../../components/form/Select'
 import Icon2 from 'react-native-vector-icons/MaterialCommunityIcons'
 import PropTypes from 'prop-types'
-import { updateDraft } from '../../redux/actions'
 import { connect } from 'react-redux'
+import { updateDraft } from '../../redux/actions'
 import globalStyles from '../../globalStyles'
 import colors from '../../theme.json'
 import Popup from '../../components/Popup'
 import TextInput from '../../components/form/TextInput'
 import Orb from '../../components/decoration/Orb'
+import Form from '../../components/form/Form'
 
 export class AddPriorityAndAchievementModal extends Component {
-  errorsDetected = []
+  draftId = this.props.draftId
+
   state = {
     allOptionsNums: [],
     colorRBG: '',
@@ -22,10 +23,7 @@ export class AddPriorityAndAchievementModal extends Component {
     action: '',
     roadmap: '',
     validationError: false,
-    errorsDetected: [],
-    showErrors: false,
     indicator: this.props.indicator || '',
-    draft: this.props.draft || {},
     estimatedDate: null
   }
   editCounter = action => {
@@ -36,104 +34,81 @@ export class AddPriorityAndAchievementModal extends Component {
     return this.setState({ estimatedDate: action })
   }
 
-  detectError = (error, field) => {
-    if (error && !this.errorsDetected.includes(field)) {
-      this.errorsDetected.push(field)
-    } else if (!error) {
-      this.errorsDetected = this.errorsDetected.filter(item => item !== field)
-    }
-
-    this.setState({
-      errorsDetected: this.errorsDetected
-    })
-  }
+  getDraft = () =>
+    this.props.drafts.find(draft => draft.draftId === this.draftId)
 
   addPriority = () => {
-    if (!this.state.estimatedDate) {
-      this.setState({
-        validationError: true
-      })
-    } else {
-      const { reason, action, estimatedDate, indicator, draft } = this.state
-      const priorities = draft.priorities
-      const item = priorities.find(item => item.indicator === indicator)
-      let updatedDraft = draft
+    const draft = this.getDraft()
+    const { reason, action, estimatedDate, indicator } = this.state
+    const priorities = draft.priorities
+    const item = priorities.find(item => item.indicator === indicator)
+    let updatedDraft = draft
 
-      // If item exists update it
-      if (item) {
-        const index = priorities.indexOf(item)
-        updatedDraft = {
-          ...draft,
-          priorities: [
-            ...priorities.slice(0, index),
-            { reason, action, estimatedDate, indicator },
-            ...priorities.slice(index + 1)
-          ]
-        }
-      } else {
-        // If item does not exist create it
-        updatedDraft = {
-          ...draft,
-          priorities: [
-            ...priorities,
-            { reason, action, estimatedDate, indicator }
-          ]
-        }
+    // If item exists update it
+    if (item) {
+      const index = priorities.indexOf(item)
+      updatedDraft = {
+        ...draft,
+        priorities: [
+          ...priorities.slice(0, index),
+          { reason, action, estimatedDate, indicator },
+          ...priorities.slice(index + 1)
+        ]
       }
-
-      //Updating the draft
-      this.props.updateDraft(updatedDraft.draftId, updatedDraft)
-      //updateDraftGlobal is requered in order to immediately add the pin to the  question in Priorities.js component (it changes the state there),this way everything can be updated without refreshind the screen
-      this.props.updateDraftGlobal(updatedDraft)
-      //closing the modal
-      this.props.onClose()
+    } else {
+      // If item does not exist create it
+      updatedDraft = {
+        ...draft,
+        priorities: [
+          ...priorities,
+          { reason, action, estimatedDate, indicator }
+        ]
+      }
     }
+
+    //Updating the draft
+    this.props.updateDraft(updatedDraft)
+
+    //closing the modal
+    this.props.onClose()
   }
 
   addAchievement = () => {
-    if (this.errorsDetected.length) {
-      this.setState({
-        showErrors: true
-      })
-    } else {
-      const { action, roadmap, indicator, draft } = this.state
+    const { action, roadmap, indicator } = this.state
+    const draft = this.getDraft()
+    const achievements = draft.achievements
+    const item = achievements.find(item => item.indicator === indicator)
 
-      const achievements = draft.achievements
+    let updatedDraft = draft
 
-      const item = achievements.find(item => item.indicator === indicator)
-
-      let updatedDraft = draft
-
-      // If item exists update it
-      if (item) {
-        const index = achievements.indexOf(item)
-        updatedDraft = {
-          ...draft,
-          achievements: [
-            ...achievements.slice(0, index),
-            { action, roadmap, indicator },
-            ...achievements.slice(index + 1)
-          ]
-        }
-      } else {
-        // If item does not exist create it
-        updatedDraft = {
-          ...draft,
-          achievements: [...achievements, { action, roadmap, indicator }]
-        }
+    // If item exists update it
+    if (item) {
+      const index = achievements.indexOf(item)
+      updatedDraft = {
+        ...draft,
+        achievements: [
+          ...achievements.slice(0, index),
+          { action, roadmap, indicator },
+          ...achievements.slice(index + 1)
+        ]
       }
-      //Updating the draft
-      this.props.updateDraft(updatedDraft.draftId, updatedDraft)
-      //updateDraftGlobal is requered in order to immediately add the pin to the  question in Priorities.js component (it changes the state there),this way everything can be updated without refreshind the screen
-      this.props.updateDraftGlobal(updatedDraft)
-      //closing the modal
-      this.props.onClose()
+    } else {
+      // If item does not exist create it
+      updatedDraft = {
+        ...draft,
+        achievements: [...achievements, { action, roadmap, indicator }]
+      }
     }
+    //Updating the draft
+    this.props.updateDraft(updatedDraft)
+    //closing the modal
+    this.props.onClose()
   }
 
   componentDidMount() {
+    const draft = this.getDraft()
     if (this.props.color === 3) {
-      const achievement = this.getAchievementValue(this.state.draft)
+      const achievement = this.getAchievementValue(draft)
       this.setState({
         colorRBG: colors.palegreen,
         action: achievement.action,
@@ -141,7 +116,7 @@ export class AddPriorityAndAchievementModal extends Component {
         indicator: achievement.indicator
       })
     } else {
-      const priority = this.getPriorityValue(this.state.draft)
+      const priority = this.getPriorityValue(draft)
       let allOptionsNums = []
       for (let x = 1; x < 25; x++) {
         allOptionsNums.push({ value: x, text: String(x) })
@@ -162,6 +137,7 @@ export class AddPriorityAndAchievementModal extends Component {
     )
     return priority || this.state
   }
+
   getAchievementValue = data => {
     const achievement = data.achievements.find(
       achievement => achievement.indicator === this.state.indicator
@@ -170,11 +146,18 @@ export class AddPriorityAndAchievementModal extends Component {
     return achievement || this.state
   }
 
-  render() {
-    const { t } = this.props
-    const { validationError, estimatedDate, draft, showErrors } = this.state
+  onContinue = () => {
+    this.props.color !== 3 ? this.addPriority() : this.addAchievement()
+  }
 
-    //i cound directly use this.state.action for the values below but it just doesnt work.Thats why i use the old way from the old components
+  render() {
+    const draft = this.getDraft()
+    const { t } = this.props
+    const { validationError } = this.state
+    const isReadOnly = draft.status === 'Synced'
+
+    //i cound directly use this.state.action for the values below but
+    // it just doesnt work.Thats why i use the old way from the old components
     let priority
     let achievement
     if (this.props.color === 1) {
@@ -185,150 +168,107 @@ export class AddPriorityAndAchievementModal extends Component {
 
     return (
       <Popup isOpen modifiedPopUp onClose={this.props.onClose}>
-        <View>
+        <Form
+          onContinue={this.onContinue}
+          continueLabel={
+            this.props.color !== 3
+              ? t('views.lifemap.makePriority')
+              : t('views.lifemap.makeAchievement')
+          }
+          type="button"
+          visible={true}
+          readonly={isReadOnly}
+        >
           <View>
-            <View
-              style={{
-                flexDirection: 'row',
-                justifyContent: 'center',
-                alignItems: 'center',
-                paddingBottom: 20
-              }}
-            >
-              <Orb
-                size={55}
-                color={this.state.colorRBG}
-                position={{ x: 0, y: 0 }}
-              />
+            <View>
               <View
                 style={{
-                  ...styles.blueIcon,
-                  backgroundColor: colors.blue,
-                  width: 30,
-                  height: 30,
-                  marginLeft: 35,
-                  marginBottom: 22,
+                  flexDirection: 'row',
                   justifyContent: 'center',
-                  alignItems: 'center'
+                  alignItems: 'center',
+                  paddingBottom: 20
                 }}
               >
-                <Icon2
-                  name={this.props.color === 3 ? 'star' : 'pin'}
-                  color={colors.white}
-                  size={20}
+                <Orb
+                  size={55}
+                  color={this.state.colorRBG}
+                  position={{ x: 0, y: 0 }}
                 />
+                <View style={styles.blueIcon}>
+                  <Icon2
+                    name={this.props.color === 3 ? 'star' : 'pin'}
+                    color={colors.white}
+                    size={20}
+                  />
+                </View>
+              </View>
+              <View style={styles.subheading}>
+                <Text style={globalStyles.h2}>{this.props.indicatorText}</Text>
               </View>
             </View>
-            <View
-              style={{
-                justifyContent: 'center',
-                alignItems: 'center',
-                paddingBottom: 20
-              }}
-            >
-              <Text style={globalStyles.h2}>{this.props.indicatorText}</Text>
-            </View>
-          </View>
-          {/* load the qustions for priorities if 3 or 2 and achievemnt if 1*/}
-          {this.props.color !== 3 ? (
-            <React.Fragment>
-              <TextInput
-                onChangeText={text => this.setState({ reason: text })}
-                placeholder={t('views.lifemap.whyDontYouHaveIt')}
-                value={priority ? priority.reason : ''}
-                multiline
-                readonly={draft.status !== 'Synced' ? false : true}
-              />
-              <TextInput
-                onChangeText={text => this.setState({ action: text })}
-                placeholder={t('views.lifemap.whatWillYouDoToGetIt')}
-                value={priority ? priority.action : ''}
-                multiline
-                readonly={draft.status !== 'Synced' ? false : true}
-              />
-              <View>
-                <Select
-                  id="howManyMonthsWillItTake"
+            {/* load the qustions for priorities if 3 or 2 and achievemnt if 1*/}
+            {this.props.color !== 3 ? (
+              <React.Fragment>
+                <TextInput
+                  id="whyDontYouHaveIt"
+                  onChangeText={text => this.setState({ reason: text })}
+                  placeholder={t('views.lifemap.whyDontYouHaveIt')}
+                  initialValue={priority ? priority.reason : ''}
+                  multiline
+                  readonly={isReadOnly}
+                />
+                <TextInput
+                  id="whatWillYouDoToGetIt"
+                  onChangeText={text => this.setState({ action: text })}
+                  placeholder={t('views.lifemap.whatWillYouDoToGetIt')}
+                  initialValue={priority ? priority.action : ''}
+                  multiline
+                  readonly={isReadOnly}
+                />
+                <View>
+                  <Select
+                    id="howManyMonthsWillItTake"
+                    required
+                    onChange={this.editCounter}
+                    readonly={isReadOnly}
+                    placeholder={t('views.lifemap.howManyMonthsWillItTake')}
+                    initialValue={priority.estimatedDate || ''}
+                    options={this.state.allOptionsNums}
+                  />
+                </View>
+              </React.Fragment>
+            ) : (
+              <React.Fragment>
+                <TextInput
+                  id="howDidYouGetIt"
+                  readonly={isReadOnly}
+                  onChangeText={text => this.setState({ action: text })}
+                  placeholder={t('views.lifemap.howDidYouGetIt')}
+                  initialValue={achievement ? achievement.action : ''}
                   required
-                  onChange={this.editCounter}
-                  readonly={draft.status !== 'Synced' ? false : true}
-                  placeholder={t('views.lifemap.howManyMonthsWillItTake')}
-                  field="howManyMonthsWillItTake"
-                  value={estimatedDate || ''}
-                  detectError={this.detectError}
-                  showErrors={showErrors}
-                  options={this.state.allOptionsNums}
+                  multiline
                 />
-              </View>
-            </React.Fragment>
-          ) : (
-            <React.Fragment>
-              <TextInput
-                field="action"
-                readonly={draft.status !== 'Synced' ? false : true}
-                onChangeText={text => this.setState({ action: text })}
-                placeholder={t('views.lifemap.howDidYouGetIt')}
-                value={achievement ? achievement.action : ''}
-                required
-                detectError={this.detectError}
-                showErrors={showErrors}
-                multiline
-              />
 
-              <TextInput
-                onChangeText={text => this.setState({ roadmap: text })}
-                placeholder={t('views.lifemap.whatDidItTakeToAchieveThis')}
-                readonly={draft.status !== 'Synced' ? false : true}
-                value={achievement ? achievement.roadmap : ''}
-                multiline
-              />
-            </React.Fragment>
-          )}
-
-          {validationError ? (
-            <Text style={{ paddingHorizontal: 15, color: colors.red }}>
-              {t('validation.fieldIsRequired')}
-            </Text>
-          ) : (
-            <View />
-          )}
-
-          <View
-            style={{
-              flexDirection: 'row',
-              justifyContent: 'center',
-              alignItems: 'center'
-            }}
-          >
-            <View
-              style={{
-                minWidth: 230
-              }}
-            >
-              {draft.status !== 'Synced' ? (
-                <Button
-                  id="save-achievementOrPriority"
-                  style={{
-                    marginTop: 10,
-                    paddingLeft: 10,
-                    paddingRight: 10
-                  }}
-                  colored
-                  text={
-                    this.props.color !== 3
-                      ? t('views.lifemap.makePriority')
-                      : t('views.lifemap.makeAchievement')
-                  }
-                  handleClick={
-                    this.props.color !== 3
-                      ? this.addPriority
-                      : this.addAchievement
-                  }
+                <TextInput
+                  id="whatDidItTakeToAchieveThis"
+                  onChangeText={text => this.setState({ roadmap: text })}
+                  placeholder={t('views.lifemap.whatDidItTakeToAchieveThis')}
+                  readonly={isReadOnly}
+                  initialValue={achievement ? achievement.roadmap : ''}
+                  multiline
                 />
-              ) : null}
-            </View>
+              </React.Fragment>
+            )}
+
+            {validationError ? (
+              <Text style={styles.validationText}>
+                {t('validation.fieldIsRequired')}
+              </Text>
+            ) : (
+              <View />
+            )}
           </View>
-        </View>
+        </Form>
       </Popup>
     )
   }
@@ -337,17 +277,34 @@ AddPriorityAndAchievementModal.propTypes = {
   t: PropTypes.func.isRequired,
   indicatorText: PropTypes.string.isRequired,
   indicator: PropTypes.string.isRequired,
-  updateDraftGlobal: PropTypes.func,
   draft: PropTypes.object,
   color: PropTypes.number,
   onClose: PropTypes.func,
-  updateDraft: PropTypes.func.isRequired
+  updateDraft: PropTypes.func.isRequired,
+  draftId: PropTypes.string,
+  drafts: PropTypes.array.isRequired
 }
 
 const styles = StyleSheet.create({
   blueIcon: {
     borderRadius: 100,
-    zIndex: 10
+    zIndex: 10,
+    backgroundColor: colors.blue,
+    width: 30,
+    height: 30,
+    marginLeft: 35,
+    marginBottom: 22,
+    justifyContent: 'center',
+    alignItems: 'center'
+  },
+  subheading: {
+    justifyContent: 'center',
+    alignItems: 'center',
+    paddingBottom: 20
+  },
+  validationText: {
+    paddingHorizontal: 15,
+    color: colors.red
   }
 })
 
@@ -355,7 +312,7 @@ const mapDispatchToProps = {
   updateDraft
 }
 
-const mapStateToProps = () => ({})
+const mapStateToProps = ({ drafts }) => ({ drafts })
 
 export default withNamespaces()(
   connect(

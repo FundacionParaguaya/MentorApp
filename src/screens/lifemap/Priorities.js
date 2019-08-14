@@ -15,8 +15,8 @@ import globalStyles from '../../globalStyles'
 import colors from '../../theme.json'
 
 export class Priorities extends Component {
-  survey = this.props.navigation.getParam('survey')
   draftId = this.props.navigation.getParam('draftId')
+  survey = this.props.navigation.getParam('survey')
   familyLifemap = this.props.navigation.getParam('familyLifemap')
   isResumingDraft = this.props.navigation.getParam('resumeDraft')
 
@@ -31,17 +31,16 @@ export class Priorities extends Component {
     this.props.drafts.find(draft => draft.draftId === this.draftId)
 
   onPressBack = () => {
-    const draft = this.getDraft()
     this.props.navigation.push('Overview', {
       resumeDraft: false,
-      draft,
+      draftId: this.draftId,
       survey: this.survey
     })
   }
 
-  updateDraftGlobal = draft => {
-    this.setState({ draft: draft })
-  }
+  // updateDraftGlobal = draft => {
+  //   this.setState({ draft: draft })
+  // }
 
   navigateToScreen = (screen, indicator, indicatorText) =>
     this.props.navigation.push(screen, {
@@ -87,11 +86,11 @@ export class Priorities extends Component {
       : potentialPrioritiesCount
   }
 
-  onTipClose = () => {
-    this.setState({
-      tipIsVisible: false
-    })
-  }
+  // onTipClose = () => {
+  //   this.setState({
+  //     tipIsVisible: false
+  //   })
+  // }
 
   onContinue = (mandatoryPrioritiesCount, draft) => {
     if (mandatoryPrioritiesCount > draft.priorities.length) {
@@ -103,12 +102,30 @@ export class Priorities extends Component {
     }
   }
 
+  getTipDescription = mandatoryPrioritiesCount => {
+    const { t } = this.props
+    const draft = this.getDraft()
+    //no mandatory priotities
+    if (
+      !mandatoryPrioritiesCount ||
+      mandatoryPrioritiesCount - draft.priorities.length <= 0
+    ) {
+      return t('views.lifemap.noPriorities')
+      //only one mandatory priority
+    } else if (mandatoryPrioritiesCount - draft.priorities.length === 1) {
+      return t('views.lifemap.youNeedToAddPriotity')
+    }
+    //more than one mandatory priority
+    else {
+      return `${t('general.create')} ${mandatoryPrioritiesCount -
+        draft.priorities.length} ${t(
+        'views.lifemap.priorities'
+      ).toLowerCase()}!`
+    }
+  }
+
   componentDidMount() {
     const draft = this.getDraft()
-
-    this.props.navigation.setParams({
-      getCurrentDraftState: () => draft
-    })
 
     // show priorities message if no priorities are made or they are not enough
     if (
@@ -121,7 +138,7 @@ export class Priorities extends Component {
     }
 
     if (!this.isDraftResuming && !this.familyLifemap) {
-      this.setState({
+      this.props.updateDraft({
         draft: {
           ...draft,
           progress: {
@@ -147,25 +164,7 @@ export class Priorities extends Component {
     const { filterModalIsOpen, selectedFilter, filterLabel } = this.state
     const draft = this.getDraft()
     const mandatoryPrioritiesCount = this.getMandatoryPrioritiesCount(draft)
-    const getTipDescription = () => {
-      //no mandatory priotities
-      if (
-        !mandatoryPrioritiesCount ||
-        mandatoryPrioritiesCount - draft.priorities.length <= 0
-      ) {
-        return t('views.lifemap.noPriorities')
-        //only one mandatory priority
-      } else if (mandatoryPrioritiesCount - draft.priorities.length === 1) {
-        return t('views.lifemap.youNeedToAddPriotity')
-      }
-      //more than one mandatory priority
-      else {
-        return `${t('general.create')} ${mandatoryPrioritiesCount -
-          draft.priorities.length} ${t(
-          'views.lifemap.priorities'
-        ).toLowerCase()}!`
-      }
-    }
+
     return (
       <StickyFooter
         continueLabel={t('general.continue')}
@@ -179,31 +178,14 @@ export class Priorities extends Component {
 
           <Decoration variation="priorities">
             <View style={styles.iconContainer}>
-              <View
-                style={{
-                  ...styles.blueIcon,
-                  backgroundColor: colors.blue,
-                  width: 180,
-                  height: 180,
-                  justifyContent: 'center',
-                  alignItems: 'center',
-                  transform: [{ rotate: '25deg' }]
-                }}
-              >
+              <View style={styles.blueIcon}>
                 <Icon2 name="pin" color={colors.white} size={130} />
               </View>
             </View>
           </Decoration>
-          <View
-            style={{
-              justifyContent: 'center',
-              alignItems: 'center',
-              paddingLeft: 38,
-              paddingRight: 38
-            }}
-          >
+          <View style={styles.subheading}>
             <Text style={[styles.infoPriorities, styles.heading2]}>
-              {getTipDescription()}{' '}
+              {this.getTipDescription(mandatoryPrioritiesCount)}
             </Text>
 
             {/* Choose 5 indicators below and explain why they are important and
@@ -227,7 +209,6 @@ export class Priorities extends Component {
             <LifemapOverview
               surveyData={this.survey.surveyStoplightQuestions}
               draftData={draft}
-              updateDraftGlobal={this.updateDraftGlobal}
               navigateToScreen={this.navigateToScreen}
               draftOverview={draft.status === 'Draft' ? true : false}
               selectedFilter={selectedFilter}
@@ -356,7 +337,13 @@ const styles = StyleSheet.create({
     borderRadius: 100,
     borderColor: colors.white,
     borderWidth: 1,
-    zIndex: 10
+    zIndex: 10,
+    backgroundColor: colors.blue,
+    width: 180,
+    height: 180,
+    justifyContent: 'center',
+    alignItems: 'center',
+    transform: [{ rotate: '25deg' }]
   },
   dropdown: {
     paddingVertical: 16,
@@ -382,6 +369,12 @@ const styles = StyleSheet.create({
     marginBottom: 20,
     marginTop: -10
   },
+  subheading: {
+    justifyContent: 'center',
+    alignItems: 'center',
+    paddingLeft: 38,
+    paddingRight: 38
+  },
   modalTitle: {
     color: colors.grey,
     fontWeight: '300',
@@ -393,7 +386,8 @@ const styles = StyleSheet.create({
 Priorities.propTypes = {
   t: PropTypes.func.isRequired,
   navigation: PropTypes.object.isRequired,
-  drafts: PropTypes.array.isRequired
+  drafts: PropTypes.array.isRequired,
+  updateDraft: PropTypes.func.isRequired
 }
 
 const mapDispatchToProps = {

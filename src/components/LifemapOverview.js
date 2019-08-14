@@ -39,6 +39,7 @@ class LifemapOverview extends Component {
   onClose = () => {
     this.setState({ AddAchievementOrPriority: false })
   }
+
   filterByDimension = item =>
     this.props.surveyData.filter(indicator => {
       const colorCode = this.getColor(indicator.codeName)
@@ -79,10 +80,9 @@ class LifemapOverview extends Component {
         {/* I am also passing the color because i have to visually display the circle color */}
         {this.state.AddAchievementOrPriority ? (
           <AddPriorityAndAchievementModal
-            updateDraftGlobal={this.props.updateDraftGlobal}
             onClose={this.onClose}
             color={this.state.color}
-            draft={this.props.draftData}
+            draftId={this.props.draftData.draftId}
             indicator={this.state.indicator}
             indicatorText={this.state.indicatorText}
           />
@@ -119,7 +119,6 @@ class LifemapOverview extends Component {
 LifemapOverview.propTypes = {
   surveyData: PropTypes.array.isRequired,
   draftData: PropTypes.object.isRequired,
-  updateDraftGlobal: PropTypes.func,
   navigateToScreen: PropTypes.func.isRequired,
   draftOverview: PropTypes.bool,
   selectedFilter: PropTypes.oneOfType([
