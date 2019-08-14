@@ -163,9 +163,9 @@ export class Question extends Component {
       })
   }
 
-  toggleDefinitionWindow = (state = false) => {
+  toggleDefinitionWindow = stateWindow => {
     this.setState({
-      showDefinition: state
+      showDefinition: stateWindow
     })
   }
 
@@ -212,11 +212,11 @@ export class Question extends Component {
             modifiedPopUp
             definition
             isOpen={this.state.showDefinition}
-            onClose={this.toggleDefinitionWindow}
+            onClose={() => this.toggleDefinitionWindow(false)}
           >
             <Icon
               style={styles.closeIconStyle}
-              onPress={this.toggleDefinitionWindow}
+              onPress={() => this.toggleDefinitionWindow(false)}
               name="close"
               size={20}
             />

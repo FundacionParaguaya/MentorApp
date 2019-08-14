@@ -214,7 +214,7 @@ it('shows question definition popup when prompted', () => {
     `<react-native-mock>${survey.surveyStoplightQuestions[0].definition}</react-native-mock>`
   )
 
-  wrapper.instance().toggleDefinitionWindow()
+  wrapper.instance().toggleDefinitionWindow(false)
   expect(wrapper).toHaveState({ showDefinition: false })
 })
 
