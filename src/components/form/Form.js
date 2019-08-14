@@ -97,46 +97,17 @@ export default class Form extends Component {
       if (
         child &&
         child.type &&
-        formTypes.find(item => item === child.type.displayName)
+        formTypes.some(item => item === child.type.displayName)
       ) {
         return this.generateClonedChild(child)
-      } else if (
-        child &&
-        child.props &&
-        child.props.children &&
-        child.props.children.length &&
-        Array.isArray(child.props.children) &&
-        child.props.children.some(
-          element =>
-            element &&
-            !Array.isArray(element) &&
-            element.type &&
-            formTypes.find(item => item === element.type.displayName)
-        )
-      ) {
+      } else if (child && child.props && child.props.children) {
         return React.cloneElement(child, {
-          children: React.Children.map(child.props.children, nestedChild => {
-            if (
-              nestedChild &&
-              formTypes.find(item => item === nestedChild.type.displayName)
-            ) {
-              return this.generateClonedChild(nestedChild)
-            } else {
-              return nestedChild
-            }
-          })
+          children: that.renderChildrenRecursively(
+            Array.isArray(child.props.children)
+              ? child.props.children
+              : [child.props.children]
+          )
         })
-      } else if (
-        child &&
-        child.props &&
-        child.props.children &&
-        child.props.children.length &&
-        Array.isArray(child.props.children) &&
-        child.props.children.some(
-          element => element && !element.type && Array.isArray(element)
-        )
-      ) {
-        return that.renderChildrenRecursively(child.props.children)
       } else {
         return child
       }
