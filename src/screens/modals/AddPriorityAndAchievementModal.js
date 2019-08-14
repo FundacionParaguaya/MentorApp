@@ -43,7 +43,6 @@ export class AddPriorityAndAchievementModal extends Component {
     const priorities = draft.priorities
     const item = priorities.find(item => item.indicator === indicator)
     let updatedDraft = draft
-
     // If item exists update it
     if (item) {
       const index = priorities.indexOf(item)
@@ -232,7 +231,7 @@ export class AddPriorityAndAchievementModal extends Component {
                     onChange={this.editCounter}
                     readonly={isReadOnly}
                     placeholder={t('views.lifemap.howManyMonthsWillItTake')}
-                    initialValue={priority.estimatedDate || ''}
+                    initialValue={priority ? priority.estimatedDate : ''}
                     options={this.state.allOptionsNums}
                   />
                 </View>
