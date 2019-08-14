@@ -269,4 +269,18 @@ describe('readonly mode', () => {
     expect(wrapper.state().selectedFilter).toBe(false)
     expect(wrapper.state().filterLabel).toBe('RED')
   })
+
+  it('expect to navigate to the corrrect question', () => {
+    wrapper.instance().navigateToScreen(resumedDraft.progress.screen, 1, 'Text')
+
+    expect(props.navigation.navigate).toHaveBeenCalledWith(
+      resumedDraft.progress.screen,
+      {
+        draftId: resumedDraft.draftId,
+        indicatorText: 'Text',
+        indicator: 1,
+        survey: resumedDraft.survey
+      }
+    )
+  })
 })

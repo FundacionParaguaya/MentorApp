@@ -126,6 +126,7 @@ describe('check if component render properly', () => {
       navigation: {
         isFocused: jest.fn(),
         replace: jest.fn(),
+        push: jest.fn(),
         navigate: jest.fn(),
         setParams: jest.fn(),
         getParam: jest.fn(param => {
