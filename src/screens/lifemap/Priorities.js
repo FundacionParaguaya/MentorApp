@@ -132,15 +132,16 @@ export class Priorities extends Component {
 
   componentDidMount() {
     const draft = this.getDraft()
-
     // show priorities message if no priorities are made or they are not enough
     if (
       !draft.priorities.length ||
       this.getMandatoryPrioritiesCount(draft) > draft.priorities.length
     ) {
-      this.setState({
-        tipIsVisible: true
-      })
+      if (this.getMandatoryPrioritiesCount(draft) != 0) {
+        this.setState({
+          tipIsVisible: true
+        })
+      }
     }
 
     if (!this.isDraftResuming && !this.familyLifemap) {

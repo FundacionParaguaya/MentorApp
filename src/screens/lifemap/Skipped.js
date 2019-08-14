@@ -91,7 +91,7 @@ export class Skipped extends Component {
 
     return (
       <StickyFooter
-        handleClick={this.handleClick}
+        onContinue={this.handleClick}
         continueLabel={t('general.continue')}
         type={this.state.tipIsVisible ? 'tip' : 'button'}
         tipTitle={t('views.lifemap.youSkipped')}
