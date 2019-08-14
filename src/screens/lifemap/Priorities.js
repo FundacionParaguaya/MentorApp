@@ -218,6 +218,7 @@ export class Priorities extends Component {
             </TouchableHighlight>
             {/* If we are in the draft then make the qustions clickable ,else dont make them clickable */}
             <LifemapOverview
+              id="lifeMapOverview"
               surveyData={this.survey.surveyStoplightQuestions}
               draftData={draft}
               navigateToScreen={this.navigateToScreen}

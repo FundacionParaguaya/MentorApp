@@ -196,6 +196,7 @@ export class Overview extends Component {
                   </View>
                 </TouchableHighlight>
                 <LifemapOverview
+                  id="lifeMapOverview"
                   surveyData={this.survey.surveyStoplightQuestions}
                   draftData={draft}
                   navigateToScreen={this.navigateToScreen}
