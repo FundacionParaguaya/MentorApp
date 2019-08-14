@@ -56,6 +56,19 @@ export default class Form extends Component {
     }
   }
 
+  cleanErrorsCodenamesOnUnmount = (field, memberIndex) => {
+    const { errors } = this.state
+    const fieldName = memberIndex ? `${field}-${memberIndex}` : field
+    let errorsDetected = []
+    if (fieldName) {
+      errorsDetected = errors.filter(item => item !== fieldName)
+    }
+
+    this.setState({
+      errors: errorsDetected
+    })
+  }
+
   validateForm = () => {
     if (this.state.errors.length) {
       this.setState({
@@ -66,29 +79,23 @@ export default class Form extends Component {
     }
   }
 
-  generateNestedClones = () => {}
-
   generateClonedChild = child =>
     React.cloneElement(child, {
       readonly: this.props.readonly,
       setError: isError =>
         this.setError(isError, child.props.id, child.props.memberIndex || null),
+      cleanErrorsOnUnmount:
+        child.type &&
+        child.type.displayName &&
+        child.type.displayName === 'Select'
+          ? () =>
+              this.cleanErrorsCodenamesOnUnmount(
+                child.props.id,
+                child.props.memberIndex || false
+              )
+          : false,
       showErrors: this.state.showErrors
     })
-
-  componentDidMount() {
-    this.keyboardDidShowListener = Keyboard.addListener('keyboardDidShow', () =>
-      this.toggleContinue(false)
-    )
-    this.keyboardDidHideListener = Keyboard.addListener('keyboardDidHide', () =>
-      this.toggleContinue(true)
-    )
-  }
-
-  componentWillUnmount() {
-    this.keyboardDidShowListener.remove()
-    this.keyboardDidHideListener.remove()
-  }
 
   renderChildrenRecursively = children => {
     let that = this
@@ -112,6 +119,20 @@ export default class Form extends Component {
         return child
       }
     })
+  }
+
+  componentDidMount() {
+    this.keyboardDidShowListener = Keyboard.addListener('keyboardDidShow', () =>
+      this.toggleContinue(false)
+    )
+    this.keyboardDidHideListener = Keyboard.addListener('keyboardDidHide', () =>
+      this.toggleContinue(true)
+    )
+  }
+
+  componentWillUnmount() {
+    this.keyboardDidShowListener.remove()
+    this.keyboardDidHideListener.remove()
   }
 
   render() {

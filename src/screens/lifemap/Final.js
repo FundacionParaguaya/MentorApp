@@ -34,16 +34,6 @@ export class Final extends Component {
     printing: false
   }
 
-  shouldComponentUpdate() {
-    return this.props.navigation.isFocused()
-  }
-  componentDidMount() {
-    this.props.updateDraft(this.draft.draftId, this.draft)
-    this.props.navigation.setParams({
-      onPressBack: this.onPressBack
-    })
-  }
-
   onPressBack = () => {
     this.props.navigation.replace('Priorities', {
       resumeDraft: false,
@@ -146,6 +136,16 @@ export class Final extends Component {
     } catch (error) {
       alert(error)
     }
+  }
+
+  shouldComponentUpdate() {
+    return this.props.navigation.isFocused()
+  }
+  componentDidMount() {
+    this.props.updateDraft(this.draft.draftId, this.draft)
+    this.props.navigation.setParams({
+      onPressBack: this.onPressBack
+    })
   }
 
   render() {

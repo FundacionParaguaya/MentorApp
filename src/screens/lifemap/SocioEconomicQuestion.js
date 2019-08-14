@@ -107,19 +107,6 @@ export class SocioEconomicQuestion extends Component {
     ].socioEconomicAnswers.filter(item => item.key === field)[0].value
   }
 
-  cleanErrorsCodenamesOnUnmount = (field, memberIndex) => {
-    const fieldName = memberIndex ? `${field}-${memberIndex}` : field
-    if (fieldName) {
-      this.errorsDetected = this.errorsDetected.filter(
-        item => item !== fieldName
-      )
-    }
-
-    this.setState({
-      errorsDetected: this.errorsDetected
-    })
-  }
-
   onContinue = () => {
     const socioEconomics = this.props.navigation.getParam('socioEconomics')
     const STEP_FORWARD = 1
@@ -419,7 +406,6 @@ export class SocioEconomicQuestion extends Component {
                       initialValue={
                         this.getFieldValue(question.codeName, 'value') || ''
                       }
-                      // cleanErrorsOnUnmount={this.cleanErrorsCodenamesOnUnmount}
                       options={getConditionalOptions(question, draft)}
                     />
                   </View>
@@ -574,9 +560,6 @@ export class SocioEconomicQuestion extends Component {
                             }
                             options={getConditionalOptions(question, draft, i)}
                             memberIndex={i + 1}
-                            // cleanErrorsOnUnmount={
-                            //   this.cleanErrorsCodenamesOnUnmount
-                            // }
                           />
                         </View>
                       )
