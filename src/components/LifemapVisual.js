@@ -29,7 +29,7 @@ class LifemapVisual extends Component {
     const { large, bigMargin, extraLarge } = this.props
     const prioritiesAndAchievements = [
       ...this.props.priorities.map(priority => priority.indicator),
-      ...this.props.achievements.map(priority => priority.indicator)
+      ...this.props.achievements.map(achievement => achievement.indicator)
     ]
     let size1 = 10
     let size2 = 17

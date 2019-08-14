@@ -159,7 +159,7 @@ export class AddPriorityAndAchievementModal extends Component {
     // it just doesnt work.Thats why i use the old way from the old components
     let priority
     let achievement
-    if (this.props.color === 1) {
+    if (this.props.color !== 3) {
       priority = this.getPriorityValue(draft)
     } else {
       achievement = this.getAchievementValue(draft)

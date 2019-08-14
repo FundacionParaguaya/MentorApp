@@ -20,7 +20,6 @@ class LifemapOverview extends Component {
             item => item.key === codeName
           )
         : null
-
     if (indicator) {
       return indicator.value
     } else {
@@ -74,7 +73,6 @@ class LifemapOverview extends Component {
     const achievements = this.props.draftData.achievements.map(
       priority => priority.indicator
     )
-
     return (
       <View style={styles.container}>
         {/* I am also passing the color because i have to visually display the circle color */}
