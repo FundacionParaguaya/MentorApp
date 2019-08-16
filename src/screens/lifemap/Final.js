@@ -15,7 +15,7 @@ import Button from '../../components/Button'
 import globalStyles from '../../globalStyles'
 import { updateDraft, submitDraft } from '../../redux/actions'
 import { url } from '../../config'
-import { prepareDraftForSubmit, isDemoDraft } from '../utils/helpers'
+import { prepareDraftForSubmit } from '../utils/helpers'
 import {
   buildPDFOptions,
   buildPrintOptions,
@@ -34,20 +34,10 @@ export class Final extends Component {
     printing: false
   }
 
-  shouldComponentUpdate() {
-    return this.props.navigation.isFocused()
-  }
-  componentDidMount() {
-    this.props.updateDraft(this.draft.draftId, this.draft)
-    this.props.navigation.setParams({
-      onPressBack: this.onPressBack
-    })
-  }
-
   onPressBack = () => {
     this.props.navigation.replace('Priorities', {
       resumeDraft: false,
-      draft: this.draft,
+      draftId: this.draft.draftId,
       survey: this.survey
     })
   }
@@ -148,9 +138,18 @@ export class Final extends Component {
     }
   }
 
+  shouldComponentUpdate() {
+    return this.props.navigation.isFocused()
+  }
+  componentDidMount() {
+    this.props.updateDraft(this.draft)
+    this.props.navigation.setParams({
+      onPressBack: this.onPressBack
+    })
+  }
+
   render() {
     const { t } = this.props
-    const isDemo = isDemoDraft(this.survey) || false
 
     return (
       <ScrollView
@@ -184,34 +183,34 @@ export class Final extends Component {
           />
           <View style={styles.buttonBar}>
             <Button
+              id="download"
               style={{ width: '49%', alignSelf: 'center', marginTop: 20 }}
               handleClick={this.exportPDF.bind(this)}
               icon="cloud-download"
               outlined
-              text="Download"
+              text={t('general.download')}
               loading={this.state.downloading}
             />
             <Button
+              id="print"
               style={{ width: '49%', alignSelf: 'center', marginTop: 20 }}
               handleClick={this.print.bind(this)}
               icon="print"
               outlined
-              text="Print"
+              text={t('general.print')}
               loading={this.state.printing}
             />
           </View>
         </View>
-        {!isDemo && (
-          <View style={{ height: 50 }}>
-            <Button
-              id="save-draft"
-              colored
-              loading={this.state.loading}
-              text={t('general.close')}
-              handleClick={this.saveDraft}
-            />
-          </View>
-        )}
+        <View style={{ height: 50 }}>
+          <Button
+            id="save-draft"
+            colored
+            loading={this.state.loading}
+            text={t('general.close')}
+            handleClick={this.saveDraft}
+          />
+        </View>
       </ScrollView>
     )
   }

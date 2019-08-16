@@ -24,7 +24,9 @@
     "cachedData": "Datos almacenados",
     "chooseView": "Elegir vista",
     "create": "Crear",
-    "confirm": "Confirmar"
+    "confirm": "Confirmar",
+    "download": "Descargar",
+    "print": "Imprimir"
   },
   "validation": {
     "fieldIsRequired": "Este campo es requerido",

@@ -5,18 +5,15 @@ import IconButton from '../components/IconButton'
 class CloseButton extends Component {
   handlePress = () => {
     const { navigation } = this.props
-    const draft =
-      navigation.state.params.getCurrentDraftState &&
-      navigation.getParam('getCurrentDraftState')()
-    const isNewDraft =
-      navigation.state.params.isNewDraft && navigation.getParam('isNewDraft')
+    const draftId = navigation.getParam('draftId')
+    const deleteDraftOnExit = navigation.getParam('deleteDraftOnExit')
     const survey =
       navigation.state.params.survey && navigation.getParam('survey')
 
     // open the exit modal with the params it needs
     this.props.navigation.navigate('ExitDraftModal', {
-      draft,
-      isNewDraft,
+      draftId,
+      deleteDraftOnExit,
       survey
     })
   }

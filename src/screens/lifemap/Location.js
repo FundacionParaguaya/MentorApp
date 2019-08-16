@@ -1,48 +1,51 @@
-import React, { Component } from 'react'
 import {
-  View,
-  StyleSheet,
   ActivityIndicator,
-  Text,
+  AppState,
   Image,
   Keyboard,
+  StyleSheet,
+  Text,
   TouchableHighlight,
-  AppState
+  View
 } from 'react-native'
-import Geolocation from '@react-native-community/geolocation'
-import NetInfo from '@react-native-community/netinfo'
-import Icon from 'react-native-vector-icons/MaterialIcons'
+import React, { Component } from 'react'
+
 import CommunityIcon from 'react-native-vector-icons/MaterialCommunityIcons'
+import Form from '../../components/form/Form'
+import Geolocation from '@react-native-community/geolocation'
 /* eslint-disable import/named */
 import { GooglePlacesAutocomplete } from 'react-native-google-places-autocomplete'
 /* eslint-enable import/named */
-import { connect } from 'react-redux'
-import PropTypes from 'prop-types'
-import { withNamespaces } from 'react-i18next'
+import Icon from 'react-native-vector-icons/MaterialIcons'
 import MapboxGL from '@react-native-mapbox-gl/maps'
-import { updateDraft } from '../../redux/actions'
+import NetInfo from '@react-native-community/netinfo'
+import PropTypes from 'prop-types'
+import Select from '../../components/form/Select'
 import StickyFooter from '../../components/StickyFooter'
-import TextInput from '../../components/TextInput'
-import globalStyles from '../../globalStyles'
-import colors from '../../theme.json'
-import Select from '../../components/Select'
-import marker from '../../../assets/images/marker.png'
+import TextInput from '../../components/form/TextInput'
 import center from '../../../assets/images/centerMap.png'
-import happy from '../../../assets/images/happy.png'
-import sad from '../../../assets/images/sad.png'
+import colors from '../../theme.json'
+import { connect } from 'react-redux'
 import { getTotalScreens } from './helpers'
+import globalStyles from '../../globalStyles'
+import happy from '../../../assets/images/happy.png'
+import marker from '../../../assets/images/marker.png'
+import sad from '../../../assets/images/sad.png'
+import { updateDraft } from '../../redux/actions'
+import { withNamespaces } from 'react-i18next'
 
 export class Location extends Component {
   survey = this.props.navigation.getParam('survey')
   readOnly = this.props.navigation.getParam('readOnly')
+  draftId = this.props.navigation.getParam('draftId')
+  readOnlyDraft = this.props.navigation.getParam('family') || []
+
   unsubscribeNetChange
   state = {
     showList: false,
-    showErrors: false,
     searchAddress: '',
     showSearch: true,
     askingForPermission: false,
-    errorsDetected: [],
     centeringMap: false, // while map is centering we show a different spinner
     loading: true,
     showForm: false,
@@ -50,29 +53,15 @@ export class Location extends Component {
     hasShownList: false, // back button needs this
     cachedMapPacks: [],
     zoom: 15,
-    appState: AppState.currentState,
-    draft:
-      this.props.navigation.getParam('draft') ||
-      this.props.navigation.getParam('family')
+    appState: AppState.currentState
   }
 
-  errorsDetected = []
-  locationCheckTimer
+  getDraft = () =>
+    this.props.drafts.find(draft => draft.draftId === this.draftId)
 
-  detectError = (error, field) => {
-    if (error && !this.errorsDetected.includes(field)) {
-      this.errorsDetected.push(field)
-    } else if (!error) {
-      this.errorsDetected = this.errorsDetected.filter(item => item !== field)
-    }
-
-    this.setState({
-      errorsDetected: this.errorsDetected
-    })
-  }
-
-  onDragMap = async region => {
-    const { draft, zoom } = this.state
+  onDragMap = region => {
+    const draft = !this.readOnly ? this.getDraft() : this.readOnlyDraft
+    const { zoom } = this.state
     const { familyData } = draft
     const { coordinates } = region.geometry
     const longitude = coordinates[0]
@@ -84,24 +73,25 @@ export class Location extends Component {
       familyData.longitude !== longitude ||
       zoom !== region.properties.zoomLevel
     ) {
-      this.setState({
-        zoom: region.properties.zoomLevel || 15,
-        draft: {
-          ...draft,
-          familyData: {
-            ...familyData,
-            latitude,
-            longitude,
-            accuracy: 0
-          }
+      this.props.updateDraft({
+        ...draft,
+        familyData: {
+          ...familyData,
+          latitude,
+          longitude,
+          accuracy: 0
         }
+      })
+
+      this.setState({
+        zoom: region.properties.zoomLevel || 15
       })
     }
   }
 
   // if the user has draged the map and the draft has stored some coordinates
   setCoordinatesFromDraft = isOnline => {
-    const { draft } = this.state
+    const draft = !this.readOnly ? this.getDraft() : this.readOnlyDraft
     const { familyData } = draft
     this.setState({
       loading: false,
@@ -124,47 +114,51 @@ export class Location extends Component {
     }
   }
 
-  getCoordinatesOnline = survey => {
-    const { draft } = this.state
+  getCoordinatesOnline() {
+    const draft = !this.readOnly ? this.getDraft() : this.readOnlyDraft
     const { familyData } = draft
     // this.setState({ askingForPermission: true })
     Geolocation.getCurrentPosition(
       // if location is available and we are online center on it
       position => {
         const { longitude, latitude, accuracy } = position.coords
+
+        this.props.updateDraft({
+          ...draft,
+          familyData: {
+            ...familyData,
+            latitude,
+            longitude,
+            accuracy
+          }
+        })
+
         this.setState({
           loading: false,
           centeringMap: false,
-          askingForPermission: false,
-          draft: {
-            ...draft,
-            familyData: {
-              ...familyData,
-              latitude,
-              longitude,
-              accuracy
-            }
-          }
+          askingForPermission: false
         })
       },
       () => {
         // if no location available reset to survey location only when
         // no location comes from the draft
         if (!familyData.latitude) {
-          const position = survey.surveyConfig.surveyLocation
+          const position = this.survey.surveyConfig.surveyLocation
+
+          this.props.updateDraft({
+            ...draft,
+            familyData: {
+              ...familyData,
+              latitude: position.latitude,
+              longitude: position.longitude,
+              accuracy: 0
+            }
+          })
+
           this.setState({
             loading: false,
             centeringMap: false,
-            askingForPermission: false,
-            draft: {
-              ...draft,
-              familyData: {
-                ...familyData,
-                latitude: position.latitude,
-                longitude: position.longitude,
-                accuracy: 0
-              }
-            }
+            askingForPermission: false
           })
         } else {
           this.setState({
@@ -180,10 +174,10 @@ export class Location extends Component {
     )
   }
 
-  getCoordinatesOffline = () => {
-    const { draft } = this.state
+  getCoordinatesOffline() {
+    const draft = !this.readOnly ? this.getDraft() : this.readOnlyDraft
     const { familyData } = draft
-    // this.setState({ askingForPermission: true })
+
     if (
       this.survey.surveyConfig.offlineMaps &&
       !this.state.showOfflineMapsList
@@ -201,6 +195,7 @@ export class Location extends Component {
         // if no offline map is available, but there is location save it
         position => {
           const { longitude, latitude, accuracy } = position.coords
+
           const isLocationInBoundaries = this.state.cachedMapPacks.length
             ? this.isUserLocationWithinMapPackBounds(
                 longitude,
@@ -209,20 +204,21 @@ export class Location extends Component {
               )
             : false
 
+          this.props.updateDraft({
+            ...draft,
+            familyData: {
+              ...familyData,
+              latitude,
+              longitude,
+              accuracy
+            }
+          })
+
           this.setState({
             loading: false,
             askingForPermission: false,
             centeringMap: false,
-            showForm: isLocationInBoundaries ? false : true,
-            draft: {
-              ...draft,
-              familyData: {
-                ...familyData,
-                latitude,
-                longitude,
-                accuracy
-              }
-            }
+            showForm: isLocationInBoundaries ? false : true
           })
         },
         // otherwise ask for more details
@@ -248,9 +244,136 @@ export class Location extends Component {
       centeringMap: true
     })
 
-    isOnline
-      ? this.getCoordinatesOnline(this.survey)
-      : this.getCoordinatesOffline()
+    isOnline ? this.getCoordinatesOnline() : this.getCoordinatesOffline()
+  }
+
+  _handleAppStateChange = nextAppState => {
+    if (
+      this.state.appState.match(/inactive|background/) &&
+      nextAppState === 'active' &&
+      !this.state.askingForPermission
+    ) {
+      this.props.navigation.replace('Location', {
+        draft: this.state.draft,
+        survey: this.survey,
+        draftId: this.draftId
+      })
+    }
+    this.setState({ appState: nextAppState })
+  }
+
+  onContinue = () => {
+    const nextPage =
+      this.survey.surveyEconomicQuestions &&
+      this.survey.surveyEconomicQuestions.length
+        ? 'SocioEconomicQuestion'
+        : 'BeginLifemap'
+
+    this.props.navigation.navigate(nextPage, {
+      draftId: this.draftId,
+      survey: this.survey
+    })
+  }
+
+  updateFamilyData = (value, field) => {
+    const draft = !this.readOnly ? this.getDraft() : this.readOnlyDraft
+
+    this.props.updateDraft({
+      ...draft,
+      familyData: {
+        ...draft.familyData,
+        [field]: value
+      }
+    })
+  }
+
+  goToSearch = (data, details = null) => {
+    const draft = !this.readOnly ? this.getDraft() : this.readOnlyDraft
+
+    this.props.updateDraft({
+      ...draft,
+      familyData: {
+        ...draft.familyData,
+        latitude: details.geometry.location.lat,
+        longitude: details.geometry.location.lng
+      }
+    })
+
+    this.setState({
+      showList: false
+    })
+  }
+
+  goToOfflineLocation = () => {
+    this.setState({
+      hasShownList: true,
+      loading: true,
+      showSearch: false
+    })
+    this.getCoordinatesOffline()
+  }
+
+  centerOnOfflineMap = map => {
+    const draft = !this.readOnly ? this.getDraft() : this.readOnlyDraft
+
+    this.props.updateDraft({
+      ...draft,
+      familyData: {
+        ...draft.familyData,
+        latitude: map.center[0],
+        longitude: map.center[1]
+      }
+    })
+
+    this.setState({
+      hasShownList: true,
+      loading: false,
+      centeringMap: false,
+      showForm: false,
+      showSearch: false,
+      showOfflineMapsList: false
+    })
+  }
+
+  _keyboardDidHide = () => {
+    this.setState({ showList: false })
+  }
+  _keyboardDidShow = () => {
+    this.setState({ showList: true })
+  }
+
+  onPressBack = () => {
+    const { hasShownList } = this.state
+
+    const draft = !this.readOnly ? this.getDraft() : this.readOnlyDraft
+
+    if (hasShownList) {
+      this.setState({
+        showOfflineMapsList: true,
+        hasShownList: false
+      })
+    } else {
+      const survey = this.survey
+
+      if (draft.familyData.countFamilyMembers > 1) {
+        this.props.navigation.navigate('FamilyMembersNames', {
+          draftId: this.draftId,
+          survey
+        })
+      } else {
+        this.props.navigation.navigate('FamilyParticipant', {
+          draftId: this.draftId,
+          survey
+        })
+      }
+    }
+  }
+
+  async requestLocationPermission() {
+    const isGranted = await MapboxGL.requestAndroidLocationPermissions()
+    this.setState({
+      askingForPermission: isGranted
+    })
   }
 
   isUserLocationWithinMapPackBounds(longitude, latitude, packs) {
@@ -262,6 +385,7 @@ export class Location extends Component {
 
       const eastBound = longitude <= neLng
       const westBound = longitude >= swLng
+
       let inLong
       if (neLng <= swLng) {
         inLong = eastBound || westBound
@@ -269,7 +393,7 @@ export class Location extends Component {
         inLong = eastBound && westBound
       }
 
-      const inLat = latitude >= swLat && latitude <= neLat
+      const inLat = latitude <= swLat && latitude >= neLat
       return inLat && inLong
     })
   }
@@ -289,22 +413,8 @@ export class Location extends Component {
       .catch(() => {})
   }
 
-  _handleAppStateChange = nextAppState => {
-    if (
-      this.state.appState.match(/inactive|background/) &&
-      nextAppState === 'active' &&
-      !this.state.askingForPermission
-    ) {
-      this.props.navigation.replace('Location', {
-        draft: this.state.draft,
-        survey: this.survey
-      })
-    }
-    this.setState({ appState: nextAppState })
-  }
-
   determineScreenState(isOnline) {
-    const { draft } = this.state
+    const draft = !this.readOnly ? this.getDraft() : this.readOnlyDraft
     const { familyData } = draft
 
     if (!this.readOnly) {
@@ -321,49 +431,46 @@ export class Location extends Component {
   }
 
   componentDidMount() {
+    this.setState({
+      loading: true
+    })
+
     this.requestLocationPermission()
+
     // check if online first
     NetInfo.fetch().then(state => {
       this.determineScreenState(state.isConnected)
       this.setState({ status: state.isConnected })
     })
+
     // monitor for connection changes
     this.unsubscribeNetChange = NetInfo.addEventListener(state => {
       const { status } = this.state
+
       if (status !== undefined && status !== state.isConnected) {
         this.setState({ status: state.isConnected })
         this.determineScreenState(state.isConnected)
       }
     })
 
-    const { draft } = this.state
+    const draft = !this.readOnly ? this.getDraft() : this.readOnlyDraft
+
     if (!this.readOnly) {
-      this.setState({
-        draft: {
-          ...draft,
-          progress: {
-            ...draft.progress,
-            screen: 'Location',
-            total: getTotalScreens(this.survey)
-          },
-          familyData: {
-            ...draft.familyData,
-            country:
-              draft.familyData.country ||
-              this.survey.surveyConfig.surveyLocation.country
-          }
+      this.props.updateDraft({
+        ...draft,
+        progress: {
+          ...draft.progress,
+          screen: 'Location',
+          total: getTotalScreens(this.survey)
         },
-        loading: true
-      })
-    } else {
-      this.setState({
-        loading: true
+        familyData: {
+          ...draft.familyData,
+          country:
+            draft.familyData.country ||
+            this.survey.surveyConfig.surveyLocation.country
+        }
       })
     }
-
-    this.props.navigation.setParams({
-      getCurrentDraftState: () => this.state.draft
-    })
 
     AppState.addEventListener('change', this._handleAppStateChange)
     this.getMapOfflinePacks()
@@ -379,11 +486,8 @@ export class Location extends Component {
     )
   }
 
-  async requestLocationPermission() {
-    const isGranted = await MapboxGL.requestAndroidLocationPermissions()
-    this.setState({
-      askingForPermission: isGranted
-    })
+  shouldComponentUpdate() {
+    return this.props.navigation.isFocused()
   }
 
   componentWillUnmount() {
@@ -394,142 +498,18 @@ export class Location extends Component {
     this.keyboardDidShowListener.remove()
     this.keyboardDidHideListener.remove()
   }
-  _keyboardDidHide = () => {
-    this.setState({ showList: false })
-  }
-  _keyboardDidShow = () => {
-    this.setState({ showList: true })
-  }
-
-  onPressBack = () => {
-    const { draft, hasShownList } = this.state
-
-    if (hasShownList) {
-      this.setState({
-        showOfflineMapsList: true,
-        hasShownList: false
-      })
-    } else {
-      const survey = this.survey
-
-      if (draft.familyData.countFamilyMembers > 1) {
-        this.props.navigation.push('FamilyMembersNames', { draft, survey })
-      } else {
-        this.props.navigation.replace('FamilyParticipant', { draft, survey })
-      }
-    }
-  }
-
-  shouldComponentUpdate() {
-    if (!this.props.navigation.isFocused()) {
-      clearTimeout(this.locationCheckTimer)
-      this.locationCheckTimer = null
-    }
-    return this.props.navigation.isFocused()
-  }
-
-  handleClick = () => {
-    const { draft } = this.state
-    if (this.errorsDetected.length) {
-      this.setState({
-        showErrors: true
-      })
-    } else {
-      this.props.updateDraft(draft.draftId, draft)
-
-      const nextPage =
-        this.survey.surveyEconomicQuestions &&
-        this.survey.surveyEconomicQuestions.length
-          ? 'SocioEconomicQuestion'
-          : 'BeginLifemap'
-
-      this.props.navigation.replace(nextPage, {
-        draft,
-        survey: this.survey
-      })
-    }
-  }
-
-  updateFamilyData = (value, field) => {
-    const { draft } = this.state
-
-    this.setState({
-      draft: {
-        ...draft,
-        familyData: {
-          ...draft.familyData,
-          [field]: value
-        }
-      }
-    })
-  }
-
-  goToSearch = (data, details = null) => {
-    const { draft } = this.state
-
-    this.setState({
-      showList: false,
-      draft: {
-        ...draft,
-        familyData: {
-          ...draft.familyData,
-          latitude: details.geometry.location.lat,
-          longitude: details.geometry.location.lng
-        }
-      }
-    })
-  }
-
-  goToOfflineLocation = () => {
-    this.setState({
-      hasShownList: true,
-      loading: true,
-      showSearch: false
-    })
-    this.getCoordinatesOffline()
-  }
-
-  centerOnOfflineMap = map => {
-    const { draft } = this.state
-
-    this.setState({
-      hasShownList: true,
-      loading: false,
-      centeringMap: false,
-      showForm: false,
-      showSearch: false,
-      showOfflineMapsList: false,
-      draft: {
-        ...draft,
-        familyData: {
-          ...draft.familyData,
-          latitude: map.center[0],
-          longitude: map.center[1]
-        }
-      }
-    })
-  }
-
-  componentDidUpdate(prevProps, prevState) {
-    // update nav draft param if the data changes
-    // so the exit modal can access it
-    if (prevState.draft.familyData !== this.state.draft.familyData) {
-      this.props.navigation.setParams({ draft: this.state.draft })
-    }
-  }
 
   render() {
     const { t } = this.props
     const {
       centeringMap,
       loading,
-      showErrors,
       showSearch,
       showForm,
-      draft,
       showOfflineMapsList
     } = this.state
 
+    const draft = !this.readOnly ? this.getDraft() : this.readOnlyDraft
     const familyData = draft.familyData
 
     if (loading) {
@@ -550,8 +530,7 @@ export class Location extends Component {
     } else if (showOfflineMapsList) {
       return (
         <StickyFooter
-          handleClick={this.handleClick}
-          readonly={this.readOnly}
+          onContinue={this.onContinue}
           visible={false}
           progress={
             !this.readOnly && draft
@@ -626,6 +605,7 @@ export class Location extends Component {
             </View>
 
             <TouchableHighlight
+              id="location-not-listed-above"
               underlayColor={'transparent'}
               onPress={this.goToOfflineLocation}
             >
@@ -639,8 +619,8 @@ export class Location extends Component {
     } else if (!showForm) {
       return (
         <StickyFooter
-          handleClick={this.handleClick}
-          readonly={this.readOnly}
+          onContinue={this.onContinue}
+          visible={!this.readOnly}
           continueLabel={t('general.continue')}
           progress={
             !this.readOnly && draft
@@ -682,9 +662,6 @@ export class Location extends Component {
             />
           )}
           <MapboxGL.MapView
-            ref={map => {
-              this._map = map
-            }}
             style={{ width: '100%', flexGrow: 2 }}
             logoEnabled={false}
             zoomEnabled={!this.readOnly}
@@ -735,9 +712,9 @@ export class Location extends Component {
       )
     } else {
       return (
-        <StickyFooter
-          handleClick={this.handleClick}
-          readonly={this.readOnly}
+        <Form
+          onContinue={this.onContinue}
+          readOnly={!!this.readOnly}
           continueLabel={t('general.continue')}
           progress={
             !this.readOnly && draft
@@ -753,7 +730,10 @@ export class Location extends Component {
                     source={happy}
                     style={{ width: 50, height: 50, marginBottom: 20 }}
                   />
-                  <Text style={[globalStyles.h2, { marginBottom: 20 }]}>
+                  <Text
+                    id="weFoundYou"
+                    style={[globalStyles.h2, { marginBottom: 20 }]}
+                  >
                     {t('views.family.weFoundYou')}
                   </Text>
                   <Text style={[globalStyles.h3, { textAlign: 'center' }]}>
@@ -775,7 +755,10 @@ export class Location extends Component {
                     source={sad}
                     style={{ width: 50, height: 50, marginBottom: 20 }}
                   />
-                  <Text style={[globalStyles.h2, { marginBottom: 20 }]}>
+                  <Text
+                    id="weCannotLocate"
+                    style={[globalStyles.h2, { marginBottom: 20 }]}
+                  >
                     {t('views.family.weCannotLocate')}
                   </Text>
                   <Text style={[globalStyles.h3, { textAlign: 'center' }]}>
@@ -787,72 +770,41 @@ export class Location extends Component {
           )}
 
           <Select
-            id="countrySelect"
-            required
-            showErrors={showErrors}
-            onChange={this.updateFamilyData}
-            label={t('views.family.country')}
+            id="country"
             countrySelect
+            label={t('views.family.country')}
             placeholder={
               this.readOnly
                 ? t('views.family.country')
                 : t('views.family.selectACountry')
             }
-            field="country"
-            value={
+            initialValue={
               draft.familyData.country ||
               this.survey.surveyConfig.surveyLocation.country
             }
-            detectError={this.detectError}
+            required
             defaultCountry={this.survey.surveyConfig.surveyLocation.country}
-            readonly={this.readOnly}
+            onChange={this.updateFamilyData}
           />
           <TextInput
             id="postCode"
             onChangeText={this.updateFamilyData}
-            field="postCode"
-            value={draft.familyData.postCode || ''}
+            initialValue={draft.familyData.postCode || ''}
             placeholder={t('views.family.postcode')}
-            detectError={this.detectError}
-            readonly={this.readOnly}
           />
           <TextInput
             id="address"
             onChangeText={this.updateFamilyData}
-            field="address"
-            value={draft.familyData.address || ''}
+            initialValue={draft.familyData.address || ''}
             placeholder={t('views.family.streetOrHouseDescription')}
             validation="long-string"
-            detectError={this.detectError}
-            readonly={this.readOnly}
             multiline
           />
-        </StickyFooter>
+        </Form>
       )
     }
   }
 }
-
-Location.propTypes = {
-  t: PropTypes.func.isRequired,
-  updateDraft: PropTypes.func.isRequired,
-  navigation: PropTypes.object.isRequired
-}
-
-const mapDispatchToProps = {
-  updateDraft
-}
-
-const mapStateToProps = ({ nav }) => ({
-  nav
-})
-
-export default withNamespaces()(
-  connect(
-    mapStateToProps,
-    mapDispatchToProps
-  )(Location)
-)
 
 const styles = StyleSheet.create({
   map: {
@@ -932,3 +884,23 @@ const styles = StyleSheet.create({
     backgroundColor: 'transparent'
   }
 })
+
+Location.propTypes = {
+  t: PropTypes.func.isRequired,
+  updateDraft: PropTypes.func.isRequired,
+  navigation: PropTypes.object.isRequired,
+  drafts: PropTypes.array.isRequired
+}
+
+const mapDispatchToProps = {
+  updateDraft
+}
+
+const mapStateToProps = ({ drafts }) => ({ drafts })
+
+export default withNamespaces()(
+  connect(
+    mapStateToProps,
+    mapDispatchToProps
+  )(Location)
+)

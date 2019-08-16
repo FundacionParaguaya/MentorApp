@@ -1,12 +1,12 @@
+import { DateInputComponent } from '../form/DateInput'
 import React from 'react'
-import { shallow } from 'enzyme'
 import { Text } from 'react-native'
-import { DateInputComponent } from '../DateInput'
+import { shallow } from 'enzyme'
 
 const createTestProps = props => ({
   readonly: true,
   onValidDate: jest.fn(),
-  detectError: jest.fn(),
+  setError: jest.fn(),
   required: false,
   t: value => value,
   label: 'Some label',
@@ -49,16 +49,13 @@ describe('DateInput Component', () => {
   })
 
   describe('Date validation', () => {
-    it('calls detectError with first argument true if date is invalid', () => {
+    it('calls setError with first argument true if date is invalid', () => {
       wrapper.instance().validateDate()
 
-      expect(wrapper.instance().props.detectError).toHaveBeenCalledTimes(1)
-      expect(wrapper.instance().props.detectError).toHaveBeenCalledWith(
-        false,
-        'birthDate'
-      )
+      expect(wrapper.instance().props.setError).toHaveBeenCalledTimes(1)
     })
-    it('calls detectError with first argument false if date is valid', () => {
+
+    it('calls setError with first argument false if date is valid', () => {
       props = createTestProps({ required: true, validation: 'string' })
 
       wrapper.setState({ date: '1 June 2019' })

@@ -1,14 +1,15 @@
-import React from 'react'
-import PropTypes from 'prop-types'
-import moment from 'moment'
-import { View, StyleSheet, Text } from 'react-native'
-import { withNamespaces } from 'react-i18next'
-import colors from '../theme.json'
+import { StyleSheet, Text, View } from 'react-native'
+
 import DatePickerWheel from './DatePickerWheel'
+import PropTypes from 'prop-types'
+import React from 'react'
+import colors from '../../theme.json'
+import moment from 'moment'
+import { withNamespaces } from 'react-i18next'
 
 export class DateInputComponent extends React.Component {
   state = {
-    date: '',
+    date: this.props.initialValue || '',
     error: false
   }
 
@@ -31,20 +32,21 @@ export class DateInputComponent extends React.Component {
 
   validateDate() {
     const { date } = this.state
+    const { id } = this.props
 
     const error =
       (this.props.required && !date) ||
-      (this.props.required && !this.props.value) ||
+      (this.props.required && !this.props.initialValue) ||
       (!this.props.required && !!date)
         ? !moment(`${date}`, 'D MMMM YYYY', true).isValid()
         : false
 
     if (error) {
-      this.props.detectError(true, this.props.field)
+      this.props.setError(true, id)
     } else {
       const unix = moment.utc(`${date}`, 'D MMMM YYYY').unix()
-      this.props.detectError(false, this.props.field)
-      this.props.onValidDate(unix, this.props.field)
+      this.props.setError(false, id)
+      this.props.onValidDate(unix, id)
     }
     this.setState({
       error
@@ -53,13 +55,13 @@ export class DateInputComponent extends React.Component {
 
   componentDidMount() {
     // on mount validate empty required fields without showing an errors message
-    if (this.props.required && !this.props.value) {
-      this.props.detectError(true, this.props.field)
+    if (this.props.required && !this.props.initialValue) {
+      this.props.setError(true, this.props.id)
     }
 
-    if (this.props.value) {
+    if (this.props.initialValue) {
       this.setState({
-        date: moment.unix(this.props.value).format('D MMMM YYYY')
+        date: moment.unix(this.props.initialValue).format('D MMMM YYYY')
       })
     }
   }
@@ -113,8 +115,7 @@ export class DateInputComponent extends React.Component {
         <View style={styles.container}>
           <View style={styles.date}>
             <DatePickerWheel
-              onChange={date => this.setDate(date)}
-              label={this.props.label}
+              onChange={this.setDate}
               placeholder={
                 readonly
                   ? this.state.date
@@ -122,12 +123,12 @@ export class DateInputComponent extends React.Component {
                     : `${this.props.label}`
                   : `${this.props.label} ${required && !readonly ? '*' : ''}`
               }
-              field=""
               readonly={readonly}
               value={date}
               days={this.days}
               months={months}
               years={this.years}
+              hasError={!!this.state.error}
             />
           </View>
         </View>
@@ -155,13 +156,13 @@ const styles = StyleSheet.create({
 
 DateInputComponent.propTypes = {
   label: PropTypes.string,
-  value: PropTypes.number,
+  initialValue: PropTypes.number,
   t: PropTypes.func.isRequired,
-  field: PropTypes.string,
+  id: PropTypes.string,
   required: PropTypes.bool,
   showErrors: PropTypes.bool,
   readonly: PropTypes.bool,
-  detectError: PropTypes.func,
+  setError: PropTypes.func,
   onValidDate: PropTypes.func
 }
 

@@ -1,9 +1,8 @@
-import React from 'react'
-import { shallow } from 'enzyme'
-import { Text } from 'react-native'
 import { FormInput } from 'react-native-elements'
-
-import TextInput from '../TextInput'
+import React from 'react'
+import { Text } from 'react-native'
+import TextInput from '../form/TextInput'
+import { shallow } from 'enzyme'
 
 const createTestProps = props => ({
   ...props,
@@ -45,16 +44,6 @@ describe('TextInput Component', () => {
       ).toBe('Some label')
     })
 
-    it('calls onChangeText when text is changed', () => {
-      const spy = jest.spyOn(wrapper.instance(), 'onChangeText')
-      wrapper
-        .find(FormInput)
-        .props()
-        .onChangeText('Changed text')
-
-      expect(spy).toHaveBeenCalledTimes(1)
-    })
-
     it('has correct initial state', () => {
       expect(wrapper.instance().state).toEqual({
         text: '',
@@ -89,83 +78,5 @@ describe('TextInput Component', () => {
         .onBlur()
       expect(wrapper.instance().state.status).toEqual('blur')
     })
-  })
-  describe('Input validation', () => {
-    it('shows correct error message when input is required but empty', () => {
-      props = createTestProps({ required: true, validation: 'string' })
-      wrapper = shallow(<TextInput {...props} />)
-      wrapper.setState({ status: 'error' })
-
-      wrapper
-        .find(FormInput)
-        .props()
-        .onBlur()
-
-      expect(
-        wrapper
-          .find(Text)
-          .last()
-          .render()
-          .text()
-      ).toBe('This field is required')
-    })
-  })
-
-  it('shows required error message when parent form is submitted', () => {
-    props = createTestProps({ required: true, validation: 'string' })
-    wrapper = shallow(<TextInput {...props} />)
-
-    wrapper.setProps({ showErrors: true })
-
-    expect(
-      wrapper
-        .find(Text)
-        .last()
-        .render()
-        .text()
-    ).toBe('This field is required')
-  })
-
-  it('shows correct error message when validation is email', () => {
-    props = createTestProps({ required: true, validation: 'email' })
-    wrapper = shallow(<TextInput {...props} />)
-    wrapper.setState({ status: 'error', text: 'not an email' })
-
-    wrapper
-      .find(FormInput)
-      .props()
-      .onBlur()
-
-    expect(
-      wrapper
-        .find(Text)
-        .last()
-        .render()
-        .text()
-    ).toBe('Please enter a valid email address')
-  })
-
-  it('shows correct error message when validation is phoneNumber', () => {
-    props = createTestProps({ required: true, validation: 'phoneNumber' })
-    wrapper = shallow(<TextInput {...props} />)
-    wrapper.setState({ status: 'error', text: 'not a phone number' })
-
-    wrapper
-      .find(FormInput)
-      .props()
-      .onBlur()
-
-    expect(
-      wrapper
-        .find(Text)
-        .last()
-        .render()
-        .text()
-    ).toBe('Please enter a valid phone number')
-  })
-
-  it('calls function detectError when handleError is called', () => {
-    wrapper.instance().handleError()
-    expect(wrapper.instance().props.detectError).toHaveBeenCalledTimes(1)
   })
 })

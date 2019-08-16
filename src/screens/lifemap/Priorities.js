@@ -1,6 +1,8 @@
 import React, { Component } from 'react'
 import { StyleSheet, View, Text, Image, TouchableHighlight } from 'react-native'
 import PropTypes from 'prop-types'
+import { connect } from 'react-redux'
+import { updateDraft } from '../../redux/actions'
 import { withNamespaces } from 'react-i18next'
 import StickyFooter from '../../components/StickyFooter'
 import Icon2 from 'react-native-vector-icons/MaterialCommunityIcons'
@@ -11,80 +13,39 @@ import BottomModal from '../../components/BottomModal'
 import arrow from '../../../assets/images/selectArrow.png'
 import globalStyles from '../../globalStyles'
 import colors from '../../theme.json'
+
 export class Priorities extends Component {
+  draftId = this.props.navigation.getParam('draftId')
   survey = this.props.navigation.getParam('survey')
   familyLifemap = this.props.navigation.getParam('familyLifemap')
+  isResumingDraft = this.props.navigation.getParam('resumeDraft')
+
   state = {
     filterModalIsOpen: false,
     selectedFilter: false,
     filterLabel: false,
-    tipIsVisible: false,
-    draft:
-      this.props.navigation.getParam('draft') ||
-      this.props.navigation.getParam('familyLifemap') ||
-      {}
+    tipIsVisible: false
   }
 
-  isDraftResuming = this.props.navigation.getParam('resumeDraft')
-  componentDidMount() {
-    const { draft } = this.state
-    this.props.navigation.setParams({
-      getCurrentDraftState: () => draft
-    })
-
-    // show priorities message if no priorities are made or they are not enough
-    if (
-      !draft.priorities.length ||
-      this.getMandatoryPrioritiesCount(draft) > draft.priorities.length
-    ) {
-      this.setState({
-        tipIsVisible: true
-      })
-    }
-
-    if (!this.isDraftResuming && !this.familyLifemap) {
-      this.setState({
-        draft: {
-          ...draft,
-          progress: {
-            ...draft.progress,
-            screen: 'Overview'
-          }
-        }
-      })
-
-      this.props.navigation.setParams({
-        onPressBack: this.onPressBack,
-        withoutCloseButton: draft.draftId ? false : true
-      })
-    }
-  }
+  getDraft = () =>
+    this.props.drafts.find(draft => draft.draftId === this.draftId)
 
   onPressBack = () => {
-    const { draft } = this.state
     this.props.navigation.push('Overview', {
       resumeDraft: false,
-      draft,
+      draftId: this.draftId,
       survey: this.survey
     })
   }
 
-  updateDraftGlobal = draft => {
-    this.setState({ draft: draft })
-  }
-
   navigateToScreen = (screen, indicator, indicatorText) =>
     this.props.navigation.push(screen, {
-      familyLifemap: this.state.draft,
+      familyLifemap: this.getDraft(),
       survey: this.survey,
       indicator,
       indicatorText,
-      draft: this.state.draft
+      draft: this.getDraft()
     })
-
-  shouldComponentUpdate() {
-    return this.props.navigation.isFocused()
-  }
 
   toggleFilterModal = () => {
     this.setState({
@@ -101,7 +62,7 @@ export class Priorities extends Component {
   }
 
   getPotentialPrioritiesCount() {
-    const { draft } = this.state
+    const draft = this.getDraft()
     return (
       draft &&
       draft.indicatorSurveyDataList &&
@@ -127,7 +88,7 @@ export class Priorities extends Component {
     })
   }
 
-  handleContinue = (mandatoryPrioritiesCount, draft) => {
+  onContinue = (mandatoryPrioritiesCount, draft) => {
     if (mandatoryPrioritiesCount > draft.priorities.length) {
       this.setState({
         tipIsVisible: true
@@ -137,34 +98,85 @@ export class Priorities extends Component {
     }
   }
 
-  render() {
+  getTipDescription = (mandatoryPrioritiesCount, tipValue) => {
     const { t } = this.props
-    const { filterModalIsOpen, selectedFilter, filterLabel, draft } = this.state
-    const mandatoryPrioritiesCount = this.getMandatoryPrioritiesCount(draft)
-    const getTipDescription = () => {
-      //no mandatory priotities
-      if (
-        !mandatoryPrioritiesCount ||
-        mandatoryPrioritiesCount - draft.priorities.length <= 0
-      ) {
-        return t('views.lifemap.noPriorities')
-        //only one mandatory priority
-      } else if (mandatoryPrioritiesCount - draft.priorities.length === 1) {
-        return t('views.lifemap.youNeedToAddPriotity')
-      }
-      //more than one mandatory priority
-      else {
-        return `${t('general.create')} ${mandatoryPrioritiesCount -
-          draft.priorities.length} ${t(
-          'views.lifemap.priorities'
-        ).toLowerCase()}!`
+    const draft = this.getDraft()
+    //no mandatory priotities
+    if (tipValue) {
+      return `${t('general.create')} ${mandatoryPrioritiesCount -
+        draft.priorities.length} ${t(
+        'views.lifemap.priorities'
+      ).toLowerCase()}!`
+    }
+    if (
+      !mandatoryPrioritiesCount ||
+      mandatoryPrioritiesCount - draft.priorities.length <= 0
+    ) {
+      return t('views.lifemap.noPriorities')
+      //only one mandatory priority
+    } else if (mandatoryPrioritiesCount - draft.priorities.length === 1) {
+      return t('views.lifemap.youNeedToAddPriotity')
+    }
+    //more than one mandatory priority
+    else {
+      return `${t('views.lifemap.youNeedToAddPriorities').replace(
+        '%n',
+        mandatoryPrioritiesCount - draft.priorities.length
+      )}!`
+    }
+  }
+
+  componentDidMount() {
+    const draft = this.getDraft()
+    // show priorities message if no priorities are made or they are not enough
+    if (
+      !draft.priorities.length ||
+      this.getMandatoryPrioritiesCount(draft) > draft.priorities.length
+    ) {
+      if (this.getMandatoryPrioritiesCount(draft) != 0) {
+        this.setState({
+          tipIsVisible: true
+        })
       }
     }
+
+    if (!this.isDraftResuming && !this.familyLifemap) {
+      this.props.updateDraft({
+        draft: {
+          ...draft,
+          progress: {
+            ...draft.progress,
+            screen: 'Overview'
+          }
+        }
+      })
+
+      this.props.navigation.setParams({
+        onPressBack: this.onPressBack,
+        withoutCloseButton: draft.draftId ? false : true
+      })
+    }
+  }
+
+  shouldComponentUpdate() {
+    return this.props.navigation.isFocused()
+  }
+
+  render() {
+    const { t } = this.props
+    const { filterModalIsOpen, selectedFilter, filterLabel } = this.state
+    const draft = this.getDraft()
+    const mandatoryPrioritiesCount = this.getMandatoryPrioritiesCount(draft)
+
     return (
       <StickyFooter
         continueLabel={t('general.continue')}
-        handleClick={() => this.handleContinue(mandatoryPrioritiesCount, draft)}
+        onContinue={() => this.onContinue(mandatoryPrioritiesCount, draft)}
         style={{ marginBottom: -20 }}
+        type={this.state.tipIsVisible ? 'tip' : 'button'}
+        tipTitle={t('views.lifemap.toComplete')}
+        onTipClose={this.onTipClose}
+        tipDescription={this.getTipDescription(mandatoryPrioritiesCount, true)}
       >
         <View style={[globalStyles.background, styles.contentContainer]}>
           <Text style={[globalStyles.h2Bold, styles.heading]}>
@@ -173,31 +185,14 @@ export class Priorities extends Component {
 
           <Decoration variation="priorities">
             <View style={styles.iconContainer}>
-              <View
-                style={{
-                  ...styles.blueIcon,
-                  backgroundColor: colors.blue,
-                  width: 180,
-                  height: 180,
-                  justifyContent: 'center',
-                  alignItems: 'center',
-                  transform: [{ rotate: '25deg' }]
-                }}
-              >
+              <View style={styles.blueIcon}>
                 <Icon2 name="pin" color={colors.white} size={130} />
               </View>
             </View>
           </Decoration>
-          <View
-            style={{
-              justifyContent: 'center',
-              alignItems: 'center',
-              paddingLeft: 38,
-              paddingRight: 38
-            }}
-          >
+          <View style={styles.subheading}>
             <Text style={[styles.infoPriorities, styles.heading2]}>
-              {getTipDescription()}{' '}
+              {this.getTipDescription(mandatoryPrioritiesCount)}
             </Text>
 
             {/* Choose 5 indicators below and explain why they are important and
@@ -219,9 +214,9 @@ export class Priorities extends Component {
             </TouchableHighlight>
             {/* If we are in the draft then make the qustions clickable ,else dont make them clickable */}
             <LifemapOverview
+              id="lifeMapOverview"
               surveyData={this.survey.surveyStoplightQuestions}
               draftData={draft}
-              updateDraftGlobal={this.updateDraftGlobal}
               navigateToScreen={this.navigateToScreen}
               draftOverview={draft.status === 'Draft' ? true : false}
               selectedFilter={selectedFilter}
@@ -350,7 +345,13 @@ const styles = StyleSheet.create({
     borderRadius: 100,
     borderColor: colors.white,
     borderWidth: 1,
-    zIndex: 10
+    zIndex: 10,
+    backgroundColor: colors.blue,
+    width: 180,
+    height: 180,
+    justifyContent: 'center',
+    alignItems: 'center',
+    transform: [{ rotate: '25deg' }]
   },
   dropdown: {
     paddingVertical: 16,
@@ -376,6 +377,12 @@ const styles = StyleSheet.create({
     marginBottom: 20,
     marginTop: -10
   },
+  subheading: {
+    justifyContent: 'center',
+    alignItems: 'center',
+    paddingLeft: 38,
+    paddingRight: 38
+  },
   modalTitle: {
     color: colors.grey,
     fontWeight: '300',
@@ -386,7 +393,20 @@ const styles = StyleSheet.create({
 
 Priorities.propTypes = {
   t: PropTypes.func.isRequired,
-  navigation: PropTypes.object.isRequired
+  navigation: PropTypes.object.isRequired,
+  drafts: PropTypes.array.isRequired,
+  updateDraft: PropTypes.func.isRequired
 }
 
-export default withNamespaces()(Priorities)
+const mapDispatchToProps = {
+  updateDraft
+}
+
+const mapStateToProps = ({ drafts }) => ({ drafts })
+
+export default withNamespaces()(
+  connect(
+    mapStateToProps,
+    mapDispatchToProps
+  )(Priorities)
+)

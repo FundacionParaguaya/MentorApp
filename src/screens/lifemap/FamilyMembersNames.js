@@ -1,43 +1,93 @@
 import React, { Component } from 'react'
-import PropTypes from 'prop-types'
-import { StyleSheet, View, Text } from 'react-native'
-import Icon from 'react-native-vector-icons/MaterialIcons'
-import colors from '../../theme.json'
-import { withNamespaces } from 'react-i18next'
-import StickyFooter from '../../components/StickyFooter'
-import TextInput from '../../components/TextInput'
-import Decoration from '../../components/decoration/Decoration'
-import globalStyles from '../../globalStyles'
-import Select from '../../components/Select'
-import DateInput from '../../components/DateInput'
+import { StyleSheet, Text, View } from 'react-native'
 import { getTotalScreens, setValidationSchema } from './helpers'
+
+import DateInput from '../../components/form/DateInput'
+import Decoration from '../../components/decoration/Decoration'
+import Form from '../../components/form/Form'
+import Icon from 'react-native-vector-icons/MaterialIcons'
+import PropTypes from 'prop-types'
+import Select from '../../components/form/Select'
+import TextInput from '../../components/form/TextInput'
+import colors from '../../theme.json'
+import { connect } from 'react-redux'
+import globalStyles from '../../globalStyles'
+import { updateDraft } from '../../redux/actions'
+import { withNamespaces } from 'react-i18next'
 
 export class FamilyMembersNames extends Component {
   survey = this.props.navigation.getParam('survey')
   readOnly = this.props.navigation.getParam('readOnly')
+  draftId = this.props.navigation.getParam('draftId')
 
-  errorsDetected = []
-  state = {
-    errorsDetected: [],
-    showErrors: false,
-    draft: this.props.navigation.getParam('draft') || {}
+  requiredFields =
+    (this.survey.surveyConfig &&
+      this.survey.surveyConfig.requiredFields &&
+      this.survey.surveyConfig.requiredFields.primaryParticipant) ||
+    null
+
+  getDraft = () =>
+    this.props.drafts.find(draft => draft.draftId === this.draftId)
+
+  onPressBack = () => {
+    this.props.navigation.navigate('FamilyParticipant', {
+      draftId: this.draftId,
+      survey: this.survey
+    })
+  }
+
+  shouldComponentUpdate() {
+    return this.props.navigation.isFocused()
+  }
+
+  onContinue = () => {
+    this.props.navigation.navigate('Location', {
+      draftId: this.draftId,
+      survey: this.survey
+    })
+  }
+
+  updateMember = (value, field) => {
+    if (!field || !field.split.length) {
+      return
+    }
+
+    const draft = this.getDraft()
+
+    // [0] is the index, [1] is the field
+    const split = field.split('.')
+    const memberIndex = split[0]
+    const memberField = split[1]
+
+    this.props.updateDraft({
+      ...draft,
+      familyData: {
+        ...draft.familyData,
+        familyMembersList: Object.assign(
+          [],
+          draft.familyData.familyMembersList,
+          {
+            [memberIndex]: {
+              ...draft.familyData.familyMembersList[memberIndex],
+              firstParticipant: false,
+              [memberField]: value
+            }
+          }
+        )
+      }
+    })
   }
 
   componentDidMount() {
-    const { draft } = this.state
-    this.props.navigation.setParams({
-      getCurrentDraftState: () => this.state.draft
-    })
+    const draft = this.getDraft()
 
     if (!this.readonly && draft.progress.screen !== 'FamilyMembersNames') {
-      this.setState({
-        draft: {
-          ...draft,
-          progress: {
-            ...draft.progress,
-            screen: 'FamilyMembersNames',
-            total: getTotalScreens(this.survey)
-          }
+      this.props.updateDraft({
+        ...draft,
+        progress: {
+          ...draft.progress,
+          screen: 'FamilyMembersNames',
+          total: getTotalScreens(this.survey)
         }
       })
     }
@@ -47,77 +97,11 @@ export class FamilyMembersNames extends Component {
     })
   }
 
-  onPressBack = () => {
-    this.props.navigation.push('FamilyParticipant', {
-      draft: this.state.draft,
-      survey: this.survey
-    })
-  }
-
-  shouldComponentUpdate() {
-    return this.props.navigation.isFocused()
-  }
-
-  detectError = (error, field) => {
-    if (error && !this.errorsDetected.includes(field)) {
-      this.errorsDetected.push(field)
-    } else if (!error) {
-      this.errorsDetected = this.errorsDetected.filter(item => item !== field)
-    }
-
-    this.setState({
-      errorsDetected: this.errorsDetected
-    })
-  }
-
-  handleClick = () => {
-    if (this.state.errorsDetected.length) {
-      this.setState({
-        showErrors: true
-      })
-    } else {
-      this.props.navigation.push('Location', {
-        draft: this.state.draft,
-        survey: this.survey
-      })
-    }
-  }
-
-  updateMember = (value, field) => {
-    const { draft } = this.state
-
-    // [0] is the index, [1] is the field
-    const split = field.split('.')
-    const memberIndex = split[0]
-    const memberField = split[1]
-
-    this.setState({
-      draft: {
-        ...draft,
-        familyData: {
-          ...draft.familyData,
-          familyMembersList: Object.assign(
-            [],
-            draft.familyData.familyMembersList,
-            {
-              [memberIndex]: {
-                ...draft.familyData.familyMembersList[memberIndex],
-                firstParticipant: false,
-                [memberField]: value
-              }
-            }
-          )
-        }
-      }
-    })
-  }
-
   render() {
     const { t } = this.props
-    const { showErrors, draft } = this.state
-
-    let onlyOneAutoFocusCheck = false
+    const draft = this.getDraft()
     const { familyMembersList } = draft.familyData
+
     const familyMembersCount =
       draft.familyData.countFamilyMembers &&
       draft.familyData.countFamilyMembers !== -1
@@ -126,17 +110,12 @@ export class FamilyMembersNames extends Component {
             .map((item, index) => index)
         : []
 
-    const requiredFields =
-      (this.survey.surveyConfig &&
-        this.survey.surveyConfig.requiredFields &&
-        this.survey.surveyConfig.requiredFields.familyMember) ||
-      null
-
     return (
-      <StickyFooter
-        handleClick={() => this.handleClick(draft)}
+      <Form
+        onContinue={this.onContinue}
         continueLabel={t('general.continue')}
         progress={draft ? 2 / draft.progress.total : 0}
+        readOnly={!!this.readOnly}
       >
         <Decoration variation="familyMemberNamesHeader">
           <View style={styles.circleContainer}>
@@ -154,22 +133,6 @@ export class FamilyMembersNames extends Component {
         </Decoration>
 
         {familyMembersCount.map((item, i) => {
-          let firstNameAutoFocus
-          if (familyMembersList[i + 1]) {
-            if (familyMembersList[i + 1].firstName) {
-              firstNameAutoFocus = false
-            } else {
-              if (!onlyOneAutoFocusCheck) {
-                onlyOneAutoFocusCheck = true
-                firstNameAutoFocus = true
-              }
-            }
-          } else {
-            if (!onlyOneAutoFocusCheck) {
-              onlyOneAutoFocusCheck = true
-              firstNameAutoFocus = true
-            }
-          }
           return (
             <View key={i} style={{ marginBottom: 20 }}>
               {i % 2 ? <Decoration variation="familyMemberNamesBody" /> : null}
@@ -194,45 +157,45 @@ export class FamilyMembersNames extends Component {
                 </Text>
               </View>
               <TextInput
-                autoFocus={firstNameAutoFocus}
+                id={`${i + 1}.firstName`}
+                autoFocus={
+                  i === 0 && !(familyMembersList[i + 1] || {}).firstName
+                }
                 upperCase
-                key={i}
                 validation="string"
-                field={`${i + 1}.firstName`}
                 onChangeText={this.updateMember}
                 placeholder={`${t('views.family.firstName')}`}
-                value={(familyMembersList[i + 1] || {}).firstName || ''}
+                initialValue={(familyMembersList[i + 1] || {}).firstName || ''}
                 required={setValidationSchema(
-                  requiredFields,
+                  this.requiredFields,
                   'firstName',
                   true
                 )}
-                detectError={this.detectError}
-                showErrors={showErrors}
               />
               <Select
-                field={`${i + 1}.gender`}
+                id={`${i + 1}.gender`}
                 onChange={this.updateMember}
                 label={t('views.family.gender')}
                 placeholder={t('views.family.selectGender')}
-                value={(familyMembersList[i + 1] || {}).gender || ''}
-                detectError={this.detectError}
+                initialValue={(familyMembersList[i + 1] || {}).gender || ''}
                 options={this.survey.surveyConfig.gender}
-                required={setValidationSchema(requiredFields, 'gender', false)}
+                required={setValidationSchema(
+                  this.requiredFields,
+                  'gender',
+                  false
+                )}
                 otherField={`${i}.customGender`}
                 otherPlaceholder={t('views.family.specifyGender')}
                 otherValue={(familyMembersList[i + 1] || {}).customGender || ''}
               />
 
               <DateInput
-                field={`${i + 1}.birthDate`}
+                id={`${i + 1}.birthDate`}
                 label={t('views.family.dateOfBirth')}
-                detectError={this.detectError}
-                showErrors={this.state.showErrors}
                 onValidDate={this.updateMember}
-                value={(familyMembersList[i + 1] || {}).birthDate}
+                initialValue={(familyMembersList[i + 1] || {}).birthDate}
                 required={setValidationSchema(
-                  requiredFields,
+                  this.requiredFields,
                   'birthDate',
                   false
                 )}
@@ -240,14 +203,9 @@ export class FamilyMembersNames extends Component {
             </View>
           )
         })}
-      </StickyFooter>
+      </Form>
     )
   }
-}
-
-FamilyMembersNames.propTypes = {
-  t: PropTypes.func.isRequired,
-  navigation: PropTypes.object.isRequired
 }
 
 const styles = StyleSheet.create({
@@ -281,4 +239,22 @@ const styles = StyleSheet.create({
   }
 })
 
-export default withNamespaces()(FamilyMembersNames)
+FamilyMembersNames.propTypes = {
+  drafts: PropTypes.array.isRequired,
+  t: PropTypes.func.isRequired,
+  navigation: PropTypes.object.isRequired,
+  updateDraft: PropTypes.func.isRequired
+}
+
+const mapDispatchToProps = {
+  updateDraft
+}
+
+const mapStateToProps = ({ drafts }) => ({ drafts })
+
+export default withNamespaces()(
+  connect(
+    mapStateToProps,
+    mapDispatchToProps
+  )(FamilyMembersNames)
+)

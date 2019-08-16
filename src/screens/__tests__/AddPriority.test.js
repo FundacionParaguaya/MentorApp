@@ -4,7 +4,7 @@ import { Text } from 'react-native'
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons'
 import StickyFooter from '../../components/StickyFooter'
 import { AddPriority } from '../lifemap/AddPriority'
-import TextInput from '../../components/TextInput'
+import TextInput from '../../components/form/TextInput'
 import draft from '../__mocks__/draftMock.json'
 
 const createTestProps = props => ({

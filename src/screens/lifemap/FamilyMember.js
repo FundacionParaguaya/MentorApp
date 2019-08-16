@@ -2,10 +2,10 @@ import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import { View, Text, StyleSheet, Platform } from 'react-native'
 import { withNamespaces } from 'react-i18next'
-import TextInput from '../../components/TextInput'
+import TextInput from '../../components/form/TextInput'
 import globalStyles from '../../globalStyles'
-import Select from '../../components/Select'
-import DateInput from '../../components/DateInput'
+import Select from '../../components/form/Select'
+import DateInput from '../../components/form/DateInput'
 import colors from '../../theme.json'
 
 export class FamilyMember extends Component {
@@ -16,7 +16,8 @@ export class FamilyMember extends Component {
           accessibilityLiveRegion="assertive"
           style={styles.headerTitleStyle}
         >
-          {navigation.getParam('title', 'Family Member')}
+          {navigation.getParam('member').firstName}
+          {/* {navigation.getParam('title', 'Family Member')} */}
         </Text>
       )
     }
@@ -35,33 +36,37 @@ export class FamilyMember extends Component {
   render() {
     const { t } = this.props
     const member = this.props.navigation.getParam('member')
-
     return (
       <View style={[globalStyles.background, styles.contentContainer]}>
         <TextInput
+          id="readOnlyTextInput"
+          placeholder={t('views.family.firstName')}
+          initialValue={member.firstName}
           readonly
-          placeholder={`${t('views.family.firstName')}`}
-          value={member.firstName}
           onChangeText={() => {}}
+          setError={() => {}}
         />
+
         <Select
           onChange={() => {}}
           readonly
           placeholder={t('views.family.gender')}
-          value={member.gender}
+          initialValue={member.gender}
           options={[
             { text: 'Male', value: 'M' },
             { text: 'Female', value: 'F' },
             { text: 'Other', value: 'O' },
             { text: 'I prefer not to answer', value: 'N' }
           ]}
+          setError={() => {}}
         />
         <DateInput
           label={t('views.family.dateOfBirth')}
-          value={member.birthDate}
+          initialValue={member.birthDate}
           readonly
           detectError={() => {}}
           onValidDate={() => {}}
+          setError={() => {}}
         />
       </View>
     )

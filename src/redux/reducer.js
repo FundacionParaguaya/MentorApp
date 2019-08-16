@@ -1,32 +1,31 @@
-import { combineReducers } from 'redux'
-import { bugsnag } from '../screens/utils/bugsnag'
-
 import {
-  SET_LOGIN_STATE,
-  USER_LOGOUT,
-  SET_ENV,
-  LOAD_SURVEYS_COMMIT,
-  LOAD_SURVEYS_ROLLBACK,
+  ADD_SURVEY_DATA,
+  ADD_SURVEY_DATA_CHECKBOX,
+  CREATE_DRAFT,
+  DELETE_DRAFT,
   LOAD_FAMILIES_COMMIT,
   LOAD_FAMILIES_ROLLBACK,
-  CREATE_DRAFT,
-  UPDATE_DRAFT,
-  ADD_SURVEY_DATA,
-  DELETE_DRAFT,
-  SUBMIT_DRAFT,
-  SUBMIT_DRAFT_COMMIT,
-  ADD_SURVEY_DATA_CHECKBOX,
-  SUBMIT_DRAFT_ROLLBACK,
-  SWITCH_LANGUAGE,
-  SET_HYDRATED,
-  SET_SYNCED_ITEM_TOTAL,
-  SET_SYNCED_ITEM_AMOUNT,
-  SET_SYNCED_STATE,
+  LOAD_SURVEYS_COMMIT,
+  LOAD_SURVEYS_ROLLBACK,
   RESET_SYNCED_STATE,
   SET_DIMENSIONS,
-  UPDATE_NAV,
-  SET_DOWNLOADMAPSIMAGES
+  SET_DOWNLOADMAPSIMAGES,
+  SET_ENV,
+  SET_HYDRATED,
+  SET_LOGIN_STATE,
+  SET_SYNCED_ITEM_AMOUNT,
+  SET_SYNCED_ITEM_TOTAL,
+  SET_SYNCED_STATE,
+  SUBMIT_DRAFT,
+  SUBMIT_DRAFT_COMMIT,
+  SUBMIT_DRAFT_ROLLBACK,
+  SWITCH_LANGUAGE,
+  UPDATE_DRAFT,
+  USER_LOGOUT
 } from './actions'
+
+import { bugsnag } from '../screens/utils/bugsnag'
+import { combineReducers } from 'redux'
 
 //Login
 
@@ -122,7 +121,7 @@ export const drafts = (state = [], action) => {
     case UPDATE_DRAFT:
       return state.map(draft => {
         // if this is the draft we are editing
-        if (draft.draftId === action.id) {
+        if (draft.draftId === action.payload.draftId) {
           return action.payload
         } else {
           return draft
@@ -369,34 +368,6 @@ export const sync = (
   }
 }
 
-// Navigation
-export const nav = (
-  state = {
-    readonly: false,
-    draftId: null,
-    survey: null
-  },
-  action
-) => {
-  switch (action.type) {
-    case UPDATE_NAV:
-      if (typeof action.value !== 'undefined') {
-        return {
-          ...state,
-          [action.item]: action.value
-        }
-      } else {
-        return {
-          ...state,
-          ...action.item
-        }
-      }
-
-    default:
-      return state
-  }
-}
-
 const appReducer = combineReducers({
   env,
   user,
@@ -407,8 +378,7 @@ const appReducer = combineReducers({
   hydration,
   sync,
   dimensions,
-  downloadMapsAndImages,
-  nav
+  downloadMapsAndImages
 })
 
 export const rootReducer = (state, action) => {
@@ -468,11 +438,6 @@ export const rootReducer = (state, action) => {
           total: 0,
           synced: 0
         }
-      },
-      nav: {
-        readonly: false,
-        draftId: null,
-        survey: null
       }
     }
   }
@@ -506,5 +471,6 @@ export const rootReducer = (state, action) => {
       }
     })
   }
+
   return appReducer(state, action)
 }
