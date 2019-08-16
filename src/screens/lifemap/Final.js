@@ -188,7 +188,7 @@ export class Final extends Component {
               handleClick={this.exportPDF.bind(this)}
               icon="cloud-download"
               outlined
-              text="Download"
+              text={t('general.download')}
               loading={this.state.downloading}
             />
             <Button
@@ -197,7 +197,7 @@ export class Final extends Component {
               handleClick={this.print.bind(this)}
               icon="print"
               outlined
-              text="Print"
+              text={t('general.print')}
               loading={this.state.printing}
             />
           </View>
