@@ -1,12 +1,4 @@
-import store from '../../redux/store'
-import draftMock from '../__mocks__/draftMock'
 import { familyMemberWillHaveQuestions } from '../utils/conditional_logic'
-
-export const getDraft = () =>
-  store
-    .getState()
-    .drafts.find(draft => draft.draftId === store.getState().nav.draftId) ||
-  draftMock
 
 export const getTotalEconomicScreens = survey => {
   let currentDimension = ''
@@ -23,9 +15,7 @@ export const getTotalEconomicScreens = survey => {
   return totalScreens
 }
 
-export const getTotalScreens = survey => {
-  const draft = getDraft()
-
+export const getTotalScreens = (survey, draft) => {
   // there are 5 screens each snapshot always has:
   // participant, location, begin lifemap, overview and final
   return (

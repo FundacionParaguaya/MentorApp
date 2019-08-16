@@ -62,29 +62,13 @@ export class DrawerContent extends Component {
       ckeckedBoxes: state ? ckeckedBoxes + 1 : ckeckedBoxes - 1
     })
   }
-  navigateToScreen = (screen, currentStack) => {
+  navigateToScreen = screen => {
     // navigation comes from react-navigation, nav comes from redux
     const { navigation } = this.props
 
     this.setState({ activeTab: screen })
     navigation.closeDrawer()
-
-    if (currentStack.key === 'Surveys' && currentStack.index) {
-      const draft =
-        currentStack.routes[currentStack.index].params.getCurrentDraftState &&
-        currentStack.routes[currentStack.index].params.getCurrentDraftState()
-      const isNewDraft =
-        currentStack.routes[currentStack.index].params.isNewDraft
-
-      // open the exit modal with the params it needs
-      this.props.navigation.navigate('ExitDraftModal', {
-        draft,
-        isNewDraft,
-        screen
-      })
-    } else {
-      navigation.navigate(screen)
-    }
+    navigation.navigate(screen)
   }
 
   onLayout = e => {

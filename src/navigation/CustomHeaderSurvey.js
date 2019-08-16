@@ -3,7 +3,6 @@ import { Text, View, StyleSheet } from 'react-native'
 import globalStyles from '../globalStyles'
 import PropTypes from 'prop-types'
 import colors from '../theme.json'
-import { connect } from 'react-redux'
 
 export class CustomHeaderSurveyComponent extends Component {
   render() {
@@ -38,8 +37,7 @@ export class CustomHeaderSurveyComponent extends Component {
 }
 
 CustomHeaderSurveyComponent.propTypes = {
-  navigation: PropTypes.object.isRequired,
-  nav: PropTypes.object.isRequired
+  navigation: PropTypes.object.isRequired
 }
 
 const styles = StyleSheet.create({
@@ -62,8 +60,4 @@ const styles = StyleSheet.create({
   }
 })
 
-const mapStateToProps = ({ nav }) => ({
-  nav
-})
-
-export default connect(mapStateToProps)(CustomHeaderSurveyComponent)
+export default CustomHeaderSurveyComponent

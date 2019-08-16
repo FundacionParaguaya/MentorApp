@@ -143,9 +143,8 @@ export const createDraft = payload => ({
   payload
 })
 
-export const updateDraft = (id, payload) => ({
+export const updateDraft = payload => ({
   type: UPDATE_DRAFT,
-  id,
   payload
 })
 
@@ -268,13 +267,4 @@ export const setAppVersion = value => ({
 
 export const resetSyncState = () => ({
   type: RESET_SYNCED_STATE
-})
-
-// NAV
-export const UPDATE_NAV = 'UPDATE_NAV'
-
-export const updateNav = (item, value) => ({
-  type: UPDATE_NAV,
-  item,
-  value
 })

@@ -1,8 +1,8 @@
 import React from 'react'
 import { shallow } from 'enzyme'
 import { FamilyMember } from '../lifemap/FamilyMember'
-import TextInput from '../../components/TextInput'
-import Select from '../../components/Select'
+import TextInput from '../../components/form/TextInput'
+import Select from '../../components/form/Select'
 
 const createTestProps = props => ({
   t: value => value,

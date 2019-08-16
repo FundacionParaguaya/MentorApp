@@ -7,7 +7,7 @@ import { withNamespaces } from 'react-i18next'
 import StickyFooter from '../../components/StickyFooter'
 import globalStyles from '../../globalStyles'
 import colors from '../../theme.json'
-import TextInput from '../../components/TextInput'
+import TextInput from '../../components/form/TextInput'
 
 export class AddAchievement extends Component {
   errorsDetected = []

@@ -29,7 +29,7 @@ class LifemapVisual extends Component {
     const { large, bigMargin, extraLarge } = this.props
     const prioritiesAndAchievements = [
       ...this.props.priorities.map(priority => priority.indicator),
-      ...this.props.achievements.map(priority => priority.indicator)
+      ...this.props.achievements.map(achievement => achievement.indicator)
     ]
     let size1 = 10
     let size2 = 17
@@ -39,6 +39,7 @@ class LifemapVisual extends Component {
     }
     if (extraLarge) {
       size2 = 50
+      size1 = 20
     }
     return (
       <View style={styles.container}>
@@ -64,7 +65,8 @@ class LifemapVisual extends Component {
                   width: size1,
                   height: size1,
                   top: bigMargin ? 2 : 0,
-                  right: bigMargin ? 6 : 3
+                  right: bigMargin ? 6 : 3,
+                  borderRadius: 20
                 }}
               />
             ) : null}

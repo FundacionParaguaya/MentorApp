@@ -1,66 +1,52 @@
 import React, { Component } from 'react'
 import { StyleSheet, Text, View } from 'react-native'
-import IconButton from '../../components/IconButton'
-import StickyFooter from '../../components/StickyFooter'
-import { connect } from 'react-redux'
-import PropTypes from 'prop-types'
-import { withNamespaces } from 'react-i18next'
-import { getTotalEconomicScreens } from './helpers'
-import colors from '../../theme.json'
-import SliderComponent from '../../components/Slider'
+
 import Icon from 'react-native-vector-icons/MaterialIcons'
+import IconButton from '../../components/IconButton'
 import Popup from '../../components/Popup'
+import PropTypes from 'prop-types'
+import SliderComponent from '../../components/Slider'
+import StickyFooter from '../../components/StickyFooter'
+import colors from '../../theme.json'
+import { connect } from 'react-redux'
+import { getTotalEconomicScreens } from './helpers'
+import { updateDraft } from '../../redux/actions'
+import { withNamespaces } from 'react-i18next'
 
 export class Question extends Component {
   step = this.props.navigation.getParam('step')
   survey = this.props.navigation.getParam('survey')
+  draftId = this.props.navigation.getParam('draftId')
+  answeringSkipped = this.props.navigation.getParam('answeringSkipped')
+
   indicators = this.props.navigation.getParam('survey').surveyStoplightQuestions
   indicator = this.indicators[this.step]
+
   slides = this.indicator.stoplightColors
   readOnly = this.props.navigation.getParam('readOnly')
+
   state = {
-    draft: this.props.navigation.getParam('draft') || {},
     showDefinition: false
   }
 
-  componentDidMount() {
-    this.props.navigation.setParams({
-      getCurrentDraftState: () => this.state.draft,
-      onPressBack: this.onPressBack
-    })
-
-    const { draft } = this.state
-
-    this.setState({
-      draft: {
-        ...draft,
-        progress: {
-          ...draft.progress,
-          screen: 'Question',
-          step: this.step
-        }
-      }
-    })
-  }
-
-  shouldComponentUpdate() {
-    return this.props.navigation.isFocused()
-  }
+  getDraft = () =>
+    this.props.drafts.find(draft => draft.draftId === this.draftId)
 
   getFieldValue = field => {
+    const draft = this.getDraft()
+
     const indicatorObject =
-      this.state.draft && this.state.draft.indicatorSurveyDataList
-        ? this.state.draft.indicatorSurveyDataList.find(
-            item => item.key === field
-          )
+      draft && draft.indicatorSurveyDataList
+        ? draft.indicatorSurveyDataList.find(item => item.key === field)
         : null
     if (indicatorObject) {
       return indicatorObject.value
     }
   }
 
-  selectAnswer = answer => {
-    const { draft } = this.state
+  selectAnswer = (answer = 0) => {
+    const draft = this.getDraft()
+
     const skippedQuestions = draft.indicatorSurveyDataList.filter(
       question => question.value === 0
     )
@@ -123,71 +109,101 @@ export class Question extends Component {
       }
     }
 
-    this.setState({
-      draft: updatedDraft
-    })
+    this.props.updateDraft(updatedDraft)
 
-    if (
-      this.step + 1 < this.indicators.length &&
-      !this.props.navigation.getParam('skipped')
-    ) {
+    // after updating the draft, navigate based on navigation state
+    if (this.step + 1 < this.indicators.length && !this.answeringSkipped) {
       return this.props.navigation.replace('Question', {
         step: this.step + 1,
-        draft: updatedDraft,
+        draftId: this.draftId,
         survey: this.survey
       })
     } else if (this.step + 1 >= this.indicators.length && answer === 0) {
       return this.props.navigation.navigate('Skipped', {
-        draft: updatedDraft,
+        draftId: this.draftId,
         survey: this.survey
       })
     } else if (
-      (this.props.navigation.getParam('skipped') &&
+      (this.answeringSkipped &&
         skippedQuestions.length === 1 &&
         answer !== 0) ||
       skippedQuestions.length === 0
     ) {
-      return this.props.navigation.push('Overview', {
+      return this.props.navigation.navigate('Overview', {
         resumeDraft: false,
-        draft: updatedDraft,
+        draftId: this.draftId,
         survey: this.survey
       })
     } else {
-      return this.props.navigation.replace('Skipped', {
-        draft: updatedDraft,
+      return this.props.navigation.navigate('Skipped', {
+        draftId: this.draftId,
         survey: this.survey
       })
     }
   }
 
   onPressBack = () => {
-    if (this.step > 0) {
+    // navigate back to skipped questions if answering one,
+    // otherwise to the expected screen in the lifemap flow
+    if (this.answeringSkipped) {
+      this.props.navigation.navigate('Skipped', {
+        draftId: this.draftId,
+        survey: this.survey
+      })
+    } else if (this.step > 0) {
       this.props.navigation.replace('Question', {
         step: this.step - 1,
-        draft: this.state.draft,
+        draftId: this.draftId,
         survey: this.survey
       })
     } else
-      this.props.navigation.push('BeginLifemap', {
-        draft: this.state.draft,
+      this.props.navigation.navigate('BeginLifemap', {
+        draftId: this.draftId,
         survey: this.survey
       })
   }
+
+  toggleDefinitionWindow = stateWindow => {
+    this.setState({
+      showDefinition: stateWindow
+    })
+  }
+
+  componentDidMount() {
+    const draft = this.getDraft()
+
+    this.props.updateDraft({
+      ...draft,
+      progress: {
+        ...draft.progress,
+        screen: 'Question',
+        step: this.step
+      }
+    })
+
+    this.props.navigation.setParams({
+      onPressBack: this.onPressBack
+    })
+  }
+
+  shouldComponentUpdate() {
+    return this.props.navigation.isFocused()
+  }
+
   render() {
-    const { draft } = this.state
-    //added a popup component to the Question.js instead of adding it to the modals folder because it is really smol and does not do much
+    const draft = this.getDraft()
+    // added a popup component to the Question.js instead of adding it to the
+    // modals folder because it is really smol and does not do much
+
     const { t } = this.props
+
     return (
       <StickyFooter
-        handleClick={() => ({})}
+        visible={false}
         readonly
         progress={
-          draft
-            ? ((draft.familyData.countFamilyMembers > 1 ? 5 : 4) +
-                getTotalEconomicScreens(this.survey) +
-                this.step) /
-              draft.progress.total
-            : 0
+          ((draft.familyData.countFamilyMembers > 1 ? 5 : 4) + this.step) /
+            draft.progress.total || getTotalEconomicScreens(this.survey)
         }
         currentScreen="Question"
       >
@@ -196,11 +212,11 @@ export class Question extends Component {
             modifiedPopUp
             definition
             isOpen={this.state.showDefinition}
-            onClose={() => this.setState({ showDefinition: false })}
+            onClose={() => this.toggleDefinitionWindow(false)}
           >
             <Icon
               style={styles.closeIconStyle}
-              onPress={() => this.setState({ showDefinition: false })}
+              onPress={() => this.toggleDefinitionWindow(false)}
               name="close"
               size={20}
             />
@@ -215,11 +231,12 @@ export class Question extends Component {
               {t('views.lifemap.indicatorDefinition')}
             </Text>
             <Text
+              id="definition"
               style={{
                 fontSize: 15
               }}
             >
-              {this.indicator.definition ? this.indicator.definition : null}
+              {this.indicator.definition || null}
             </Text>
           </Popup>
         ) : null}
@@ -229,10 +246,12 @@ export class Question extends Component {
           value={this.getFieldValue(this.indicator.codeName)}
           selectAnswer={this.selectAnswer}
         />
+
         <View style={styles.skip}>
           {this.indicator.definition ? (
             <Icon
-              onPress={() => this.setState({ showDefinition: true })}
+              id="show-definition"
+              onPress={() => this.toggleDefinitionWindow(true)}
               name="info"
               color={colors.palegrey}
               size={40}
@@ -280,16 +299,19 @@ const styles = StyleSheet.create({
 })
 
 Question.propTypes = {
+  drafts: PropTypes.array.isRequired,
   t: PropTypes.func.isRequired,
   dimensions: PropTypes.object.isRequired,
-  navigation: PropTypes.object.isRequired
+  navigation: PropTypes.object.isRequired,
+  updateDraft: PropTypes.func.isRequired
 }
 
-const mapStateToProps = ({ dimensions }) => ({
-  dimensions
+const mapStateToProps = ({ dimensions, drafts }) => ({
+  dimensions,
+  drafts
 })
 
-const mapDispatchToProps = {}
+const mapDispatchToProps = { updateDraft }
 
 export default withNamespaces()(
   connect(

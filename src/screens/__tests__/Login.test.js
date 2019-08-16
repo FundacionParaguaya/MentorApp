@@ -1,8 +1,8 @@
+import { ScrollView, Text } from 'react-native'
+
+import { Login } from '../Login'
 import React from 'react'
 import { shallow } from 'enzyme'
-import { ScrollView, TextInput, Text } from 'react-native'
-import Button from '../../components/Button'
-import { Login } from '../Login'
 
 const createTestProps = props => ({
   setEnv: jest.fn(),
@@ -29,21 +29,6 @@ describe('Login View', () => {
   describe('rendering', () => {
     it('renders <ScrollView />', () => {
       expect(wrapper.find(ScrollView)).toHaveLength(1)
-    })
-
-    it('renders minimal login UI: <TextInput /> and <Button />', () => {
-      expect(wrapper.find(TextInput)).toHaveLength(2)
-      expect(wrapper.find(Text)).toHaveLength(4)
-      expect(wrapper.find(Button)).toExist()
-    })
-
-    it('has proper initial state', () => {
-      expect(wrapper).toHaveState({
-        username: '',
-        password: '',
-        error: false,
-        connection: false
-      })
     })
 
     it('call setDimensions on mount', () => {

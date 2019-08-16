@@ -1,29 +1,30 @@
-import React, { Component } from 'react'
 import {
-  ScrollView,
-  Text,
-  View,
-  StyleSheet,
   FlatList,
+  ScrollView,
+  StyleSheet,
+  Text,
   UIManager,
+  View,
   findNodeHandle,
   Image,
   TouchableHighlight
 } from 'react-native'
+import React, { Component } from 'react'
+
 import { AndroidBackHandler } from 'react-navigation-backhandler'
-import { withNamespaces } from 'react-i18next'
-import PropTypes from 'prop-types'
 import Button from '../components/Button'
 import Decoration from '../components/decoration/Decoration'
-import RoundImage from '../components/RoundImage'
 import DraftListItem from '../components/DraftListItem'
-import globalStyles from '../globalStyles'
-import { connect } from 'react-redux'
-import colors from '../theme.json'
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons'
 import FilterListItem from '../components/FilterListItem'
 import BottomModal from '../components/BottomModal'
 import arrow from '../../assets/images/selectArrow.png'
+import PropTypes from 'prop-types'
+import RoundImage from '../components/RoundImage'
+import colors from '../theme.json'
+import { connect } from 'react-redux'
+import globalStyles from '../globalStyles'
+import { withNamespaces } from 'react-i18next'
 
 export class Dashboard extends Component {
   acessibleComponent = React.createRef()
@@ -61,16 +62,17 @@ export class Dashboard extends Component {
     ) {
       this.props.navigation.navigate('Overview', {
         resumeDraft: true,
-        draft,
+        draftId: draft.draftId,
         survey
       })
-    } else
+    } else {
       this.props.navigation.navigate(draft.progress.screen, {
-        draft,
+        draftId: draft.draftId,
         survey,
         step: draft.progress.step,
         socioEconomics: draft.progress.socioEconomics
       })
+    }
   }
   navigateToSynced = item => {
     this.props.navigation.navigate('Family', {
@@ -420,7 +422,7 @@ Dashboard.propTypes = {
   drafts: PropTypes.array.isRequired,
   env: PropTypes.oneOf(['production', 'demo', 'testing', 'development']),
   user: PropTypes.object.isRequired,
-  nav: PropTypes.object,
+
   offline: PropTypes.object,
   lng: PropTypes.string.isRequired,
   surveys: PropTypes.array,
@@ -436,7 +438,6 @@ export const mapStateToProps = ({
   string,
   surveys,
   families,
-  nav,
   sync
 }) => ({
   env,
@@ -446,7 +447,6 @@ export const mapStateToProps = ({
   string,
   surveys,
   families,
-  nav,
   sync
 })
 
