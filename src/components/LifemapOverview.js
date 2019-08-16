@@ -117,7 +117,6 @@ class LifemapOverview extends Component {
 LifemapOverview.propTypes = {
   surveyData: PropTypes.array.isRequired,
   draftData: PropTypes.object.isRequired,
-  navigateToScreen: PropTypes.func.isRequired,
   draftOverview: PropTypes.bool,
   selectedFilter: PropTypes.oneOfType([
     PropTypes.bool,

@@ -38,10 +38,6 @@ export class Priorities extends Component {
     })
   }
 
-  // updateDraftGlobal = draft => {
-  //   this.setState({ draft: draft })
-  // }
-
   navigateToScreen = (screen, indicator, indicatorText) =>
     this.props.navigation.push(screen, {
       familyLifemap: this.getDraft(),

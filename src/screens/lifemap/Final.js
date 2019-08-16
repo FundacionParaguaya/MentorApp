@@ -142,7 +142,7 @@ export class Final extends Component {
     return this.props.navigation.isFocused()
   }
   componentDidMount() {
-    this.props.updateDraft(this.draft.draftId, this.draft)
+    this.props.updateDraft(this.draft)
     this.props.navigation.setParams({
       onPressBack: this.onPressBack
     })
@@ -183,6 +183,7 @@ export class Final extends Component {
           />
           <View style={styles.buttonBar}>
             <Button
+              id="download"
               style={{ width: '49%', alignSelf: 'center', marginTop: 20 }}
               handleClick={this.exportPDF.bind(this)}
               icon="cloud-download"
@@ -191,6 +192,7 @@ export class Final extends Component {
               loading={this.state.downloading}
             />
             <Button
+              id="print"
               style={{ width: '49%', alignSelf: 'center', marginTop: 20 }}
               handleClick={this.print.bind(this)}
               icon="print"
