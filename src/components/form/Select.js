@@ -61,9 +61,10 @@ class Select extends Component {
       this.setState({
         errorMsg: null
       })
-      this.props.id && this.props.setError
-        ? this.props.setError(false, this.props.id, this.props.memberIndex)
-        : ''
+
+      if (typeof this.props.setError === 'function' && this.props.id) {
+        this.props.setError(false, this.props.id, this.props.memberIndex)
+      }
     }
   }
 
@@ -89,14 +90,15 @@ class Select extends Component {
       this.setState({
         errorMsg: null
       })
-      this.props.id && this.props.setError
-        ? this.props.setError(false, this.props.id, this.props.memberIndex)
-        : ''
+
+      if (typeof this.props.setError === 'function' && this.props.id) {
+        this.props.setError(false, this.props.id, this.props.memberIndex)
+      }
     }
   }
 
   handleError(errorMsg) {
-    if (this.props.setError) {
+    if (typeof this.props.setError === 'function') {
       this.props.setError(true, this.props.id, this.props.memberIndex)
     }
     this.props.onChange('', this.props.id)
@@ -167,7 +169,11 @@ class Select extends Component {
       this.validateInput(this.props.initialValue || '')
     }
     // on mount validate empty required fields with out showing an errors message
-    if (this.props.required && !this.props.initialValue) {
+    if (
+      typeof this.props.setError === 'function' &&
+      this.props.required &&
+      !this.props.initialValue
+    ) {
       this.props.setError(true, this.props.id, this.props.memberIndex)
     }
   }
