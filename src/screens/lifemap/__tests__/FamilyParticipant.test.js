@@ -1,6 +1,6 @@
 import { FamilyParticipant } from '../FamilyParticipant'
-import Form from '../../../components/form/Form'
 import React from 'react'
+import TextInput from '../../../components/form/TextInput'
 import { shallow } from 'enzyme'
 
 // props
@@ -529,6 +529,6 @@ describe('readonly mode', () => {
   })
 
   it('disables editing fields', () => {
-    expect(wrapper.find(Form)).toHaveProp({ readonly: true })
+    expect(wrapper.find(TextInput).first()).toHaveProp({ readonly: true })
   })
 })
