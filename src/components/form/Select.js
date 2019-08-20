@@ -61,7 +61,7 @@ class Select extends Component {
       this.setState({
         errorMsg: null
       })
-      this.props.id
+      this.props.id && this.props.setError
         ? this.props.setError(false, this.props.id, this.props.memberIndex)
         : ''
     }
@@ -89,14 +89,16 @@ class Select extends Component {
       this.setState({
         errorMsg: null
       })
-      this.props.id
+      this.props.id && this.props.setError
         ? this.props.setError(false, this.props.id, this.props.memberIndex)
         : ''
     }
   }
 
   handleError(errorMsg) {
-    this.props.setError(true, this.props.id, this.props.memberIndex)
+    if (this.props.setError) {
+      this.props.setError(true, this.props.id, this.props.memberIndex)
+    }
     this.props.onChange('', this.props.id)
     this.setState({
       errorMsg

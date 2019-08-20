@@ -68,7 +68,10 @@ class TextInput extends Component {
   }
 
   handleError(errorMsg) {
-    this.props.setError(true)
+    if (this.props.setError) {
+      this.props.setError(true)
+    }
+
     this.setState({
       status: 'error',
       errorMsg
@@ -107,17 +110,10 @@ class TextInput extends Component {
     ) {
       return this.handleError(i18n.t('validation.validPhoneNumber'))
     }
-    //by default the user can only use commas dots and numbers in the numeric input. I am already removing the dots and commas before i add the number to the draft so there is no need for this check.
 
-    // if (
-    //   this.props.validation === 'number' &&
-    //   !validator.isNumeric(text) &&
-    //   !validator.isEmpty(text)
-    // ) {
-    //   return this.handleError(i18n.t('validation.validNumber'))
-    // }
-
-    this.props.setError(false)
+    if (this.props.setError) {
+      this.props.setError(false)
+    }
   }
 
   componentDidUpdate(prevProps) {
@@ -128,7 +124,11 @@ class TextInput extends Component {
 
   componentDidMount() {
     // on mount validate empty required fields without showing an errors message
-    if (this.props.required && !this.props.initialValue) {
+    if (
+      this.props.required &&
+      !this.props.initialValue &&
+      this.props.setError
+    ) {
       this.props.setError(true)
     }
   }

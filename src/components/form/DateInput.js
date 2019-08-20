@@ -41,21 +41,27 @@ export class DateInputComponent extends React.Component {
         ? !moment(`${date}`, 'D MMMM YYYY', true).isValid()
         : false
 
-    if (error) {
-      this.props.setError(true, id)
-    } else {
-      const unix = moment.utc(`${date}`, 'D MMMM YYYY').unix()
-      this.props.setError(false, id)
-      this.props.onValidDate(unix, id)
+    if (this.props.setError) {
+      if (error) {
+        this.props.setError(true, id)
+      } else {
+        const unix = moment.utc(`${date}`, 'D MMMM YYYY').unix()
+        this.props.setError(false, id)
+        this.props.onValidDate(unix, id)
+      }
+      this.setState({
+        error
+      })
     }
-    this.setState({
-      error
-    })
   }
 
   componentDidMount() {
     // on mount validate empty required fields without showing an errors message
-    if (this.props.required && !this.props.initialValue) {
+    if (
+      this.props.required &&
+      !this.props.initialValue &&
+      this.props.setError
+    ) {
       this.props.setError(true, this.props.id)
     }
 
