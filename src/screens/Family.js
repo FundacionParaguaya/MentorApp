@@ -1,33 +1,34 @@
-import React, { Component } from 'react'
 import {
-  View,
-  StyleSheet,
-  Text,
-  ScrollView,
   FlatList,
   Image,
+  Linking,
+  ScrollView,
+  StyleSheet,
+  Text,
   TouchableHighlight,
-  Linking
+  View
 } from 'react-native'
-import NetInfo from '@react-native-community/netinfo'
-import { connect } from 'react-redux'
-import PropTypes from 'prop-types'
-import { withNamespaces } from 'react-i18next'
-import moment from 'moment'
-import Icon from 'react-native-vector-icons/MaterialIcons'
-import globalStyles from '../globalStyles'
-import FamilyListItem from '../components/FamilyListItem'
-import colors from '../theme.json'
-import FamilyTab from '../components/FamilyTab'
-import OverviewComponent from './lifemap/Overview'
-import RoundImage from '../components/RoundImage'
+import React, { Component } from 'react'
+
 import Button from '../components/Button'
-import { url } from '../config'
-import { submitDraft } from '../redux/actions'
+import FamilyListItem from '../components/FamilyListItem'
+import FamilyTab from '../components/FamilyTab'
+import Icon from 'react-native-vector-icons/MaterialIcons'
 import MapboxGL from '@react-native-mapbox-gl/maps'
-import marker from '../../assets/images/marker.png'
+import NetInfo from '@react-native-community/netinfo'
+import OverviewComponent from './lifemap/Overview'
+import PropTypes from 'prop-types'
+import RoundImage from '../components/RoundImage'
+import colors from '../theme.json'
+import { connect } from 'react-redux'
+import globalStyles from '../globalStyles'
 import mapPlaceholderLarge from '../../assets/images/map_placeholder_1000.png'
+import marker from '../../assets/images/marker.png'
+import moment from 'moment'
 import { prepareDraftForSubmit } from './utils/helpers'
+import { submitDraft } from '../redux/actions'
+import { url } from '../config'
+import { withNamespaces } from 'react-i18next'
 
 export class Family extends Component {
   // set the title of the screen to the family name
@@ -206,7 +207,6 @@ export class Family extends Component {
                       })
                     }}
                   >
-                    <MapboxGL.UserLocation />
                     <MapboxGL.Camera
                       defaultSettings={{
                         centerCoordinate: [

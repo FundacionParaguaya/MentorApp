@@ -247,6 +247,7 @@ export class FamilyParticipant extends Component {
       <StickyFooter
         onContinue={this.validateForm}
         continueLabel={t('general.continue')}
+        readOnly={!!this.readOnly}
         progress={!this.readOnly && draft ? 1 / draft.progress.total : 0}
       >
         <Decoration variation="primaryParticipant">

@@ -70,7 +70,9 @@ export default class StickyFooter extends Component {
           </ScrollView>
         )}
 
-        {this.props.visible && this.state.continueVisible ? (
+        {!this.props.readOnly &&
+        this.props.visible &&
+        this.state.continueVisible ? (
           <View>
             {/* i have changed the height to 61 because there was a weird whitespace if we dont have the progress bar */}
             {this.props.type === 'button' ? (
@@ -101,6 +103,7 @@ StickyFooter.propTypes = {
   children: PropTypes.oneOfType([PropTypes.array, PropTypes.object]).isRequired,
   onContinue: PropTypes.func,
   visible: PropTypes.bool.isRequired,
+  readOnly: PropTypes.bool,
   continueLabel: PropTypes.string,
   type: PropTypes.oneOf(['button', 'tip']),
   tipTitle: PropTypes.string,
