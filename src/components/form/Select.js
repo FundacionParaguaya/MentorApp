@@ -176,6 +176,12 @@ class Select extends Component {
     ) {
       this.props.setError(true, this.props.id, this.props.memberIndex)
     }
+
+    if (this.props.initialOtherValue) {
+      this.setState({
+        showOther: true
+      })
+    }
   }
 
   componentDidUpdate(prevProps) {

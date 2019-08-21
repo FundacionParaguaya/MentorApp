@@ -301,7 +301,7 @@ export class FamilyParticipant extends Component {
           otherField="customGender"
           otherPlaceholder={t('views.family.specifyGender')}
           readonly={!!this.readOnly}
-          otherValue={participant.customGender}
+          initialOtherValue={participant.customGender}
         />
 
         <DateInput
@@ -328,7 +328,7 @@ export class FamilyParticipant extends Component {
           )}
           otherPlaceholder={t('views.family.customDocumentType')}
           otherField="customDocumentType"
-          otherValue={participant.customDocumentType}
+          initialOtherValue={participant.customDocumentType}
           readonly={!!this.readOnly}
           onChange={this.updateParticipant}
           showErrors={showErrors}

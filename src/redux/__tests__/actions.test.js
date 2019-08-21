@@ -1,8 +1,8 @@
+import * as action from '../actions'
+
 import configureStore from 'redux-mock-store' //ES6 modules
 import fetchMock from 'fetch-mock'
 import thunk from 'redux-thunk'
-
-import * as action from '../actions'
 
 const middlewares = [thunk]
 const mockStore = configureStore(middlewares)
@@ -137,7 +137,7 @@ describe('surveys actions', () => {
           rollback: { type: 'LOAD_SURVEYS_ROLLBACK' },
           effect: {
             body:
-              '{"query":"query { surveysByUser { title id createdAt description minimumPriorities privacyPolicy { title  text } termsConditions{ title text }  surveyConfig { documentType {text value} requiredFields{primaryParticipant, familyMember} gender { text value} surveyLocation { country latitude longitude}  offlineMaps { from, to, center, name } }  surveyEconomicQuestions { questionText codeName answerType topic required forFamilyMember options {text value conditions{codeName, type, values, operator, valueType, showIfNoData}}, conditions{codeName, type, value, operator}, conditionGroups{groupOperator, joinNextGroup, conditions{codeName, type, value, operator}} } surveyStoplightQuestions { questionText codeName definition dimension id stoplightColors { url value description } required } } }"}',
+              '{"query":"query { surveysByUser { title id createdAt description minimumPriorities privacyPolicy { title  text } termsConditions{ title text }  surveyConfig { documentType {text value otherOption} requiredFields{primaryParticipant, familyMember} gender { text value otherOption } surveyLocation { country latitude longitude}  offlineMaps { from, to, center, name } }  surveyEconomicQuestions { questionText codeName answerType topic required forFamilyMember options {text value otherOption conditions{codeName, type, values, operator, valueType, showIfNoData}}, conditions{codeName, type, value, operator}, conditionGroups{groupOperator, joinNextGroup, conditions{codeName, type, value, operator}} } surveyStoplightQuestions { questionText codeName definition dimension id stoplightColors { url value description } required } } }"}',
             headers: {
               Authorization: 'Bearer token',
               'content-type': 'application/json;charset=utf8'
