@@ -182,7 +182,7 @@ export class SocioEconomicQuestion extends Component {
         ...draft,
         economicSurveyDataList: [
           ...draft.economicSurveyDataList,
-          { key: field, value: null, multipleValue: [text] }
+          { key: field, multipleValue: [text] }
         ]
       })
     } else {
@@ -192,7 +192,6 @@ export class SocioEconomicQuestion extends Component {
           ...draft.economicSurveyDataList.filter(item => item.key !== field),
           {
             key: field,
-            value: null,
             multipleValue: question.multipleValue.find(item => item === text)
               ? question.multipleValue.filter(item => item !== text)
               : [...question.multipleValue, text]
@@ -720,7 +719,6 @@ SocioEconomicQuestion.propTypes = {
   t: PropTypes.func.isRequired,
   updateDraft: PropTypes.func.isRequired,
   navigation: PropTypes.object.isRequired,
-  addSurveyDataCheckBox: PropTypes.func,
   drafts: PropTypes.array,
   language: PropTypes.string
 }

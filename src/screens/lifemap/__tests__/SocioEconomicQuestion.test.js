@@ -205,7 +205,6 @@ const createTestProps = props => ({
   navigation,
   drafts: [draft, { draftId: 2 }],
   updateDraft: jest.fn(),
-  addSurveyDataCheckBox: jest.fn(),
   language: 'en',
   ...props
 })

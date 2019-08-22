@@ -153,12 +153,6 @@ export const deleteDraft = id => ({
   id
 })
 
-export const addSurveyDataCheckBox = (id, category, payload) => ({
-  type: ADD_SURVEY_DATA_CHECKBOX,
-  category,
-  id,
-  payload
-})
 export const addSurveyData = (id, category, payload) => ({
   type: ADD_SURVEY_DATA,
   category,
@@ -169,8 +163,11 @@ export const addSurveyData = (id, category, payload) => ({
 export const submitDraft = (env, token, id, payload) => {
   const sanitizedSnapshot = { ...payload }
   let { economicSurveyDataList } = payload
+
   const validEconomicIndicator = ec =>
-    ec.value !== null && ec.value !== undefined && ec.value !== ''
+    (ec.value !== null && ec.value !== undefined && ec.value !== '') ||
+    (!!ec.multipleValue && ec.multipleValue.length > 0)
+
   economicSurveyDataList = economicSurveyDataList.filter(validEconomicIndicator)
   sanitizedSnapshot.economicSurveyDataList = economicSurveyDataList
   sanitizedSnapshot.familyData.familyMembersList.forEach(member => {

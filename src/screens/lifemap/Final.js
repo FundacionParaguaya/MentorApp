@@ -1,29 +1,30 @@
-import React, { Component } from 'react'
 import {
-  StyleSheet,
+  PermissionsAndroid,
   ScrollView,
-  View,
+  StyleSheet,
   Text,
-  PermissionsAndroid
+  View
 } from 'react-native'
-import { connect } from 'react-redux'
-import PropTypes from 'prop-types'
-import { withNamespaces } from 'react-i18next'
-import RoundImage from '../../components/RoundImage'
-import LifemapVisual from '../../components/LifemapVisual'
-import Button from '../../components/Button'
-import globalStyles from '../../globalStyles'
-import { updateDraft, submitDraft } from '../../redux/actions'
-import { url } from '../../config'
-import { prepareDraftForSubmit } from '../utils/helpers'
+import React, { Component } from 'react'
 import {
   buildPDFOptions,
   buildPrintOptions,
   getReportTitle
 } from '../utils/pdfs'
+import { submitDraft, updateDraft } from '../../redux/actions'
+
+import Button from '../../components/Button'
+import LifemapVisual from '../../components/LifemapVisual'
+import PropTypes from 'prop-types'
+import RNFetchBlob from 'rn-fetch-blob'
 import RNHTMLtoPDF from 'react-native-html-to-pdf'
 import RNPrint from 'react-native-print'
-import RNFetchBlob from 'rn-fetch-blob'
+import RoundImage from '../../components/RoundImage'
+import { connect } from 'react-redux'
+import globalStyles from '../../globalStyles'
+import { prepareDraftForSubmit } from '../utils/helpers'
+import { url } from '../../config'
+import { withNamespaces } from 'react-i18next'
 
 export class Final extends Component {
   survey = this.props.navigation.getParam('survey')

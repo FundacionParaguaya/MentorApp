@@ -1,6 +1,5 @@
 import {
   ADD_SURVEY_DATA,
-  ADD_SURVEY_DATA_CHECKBOX,
   CREATE_DRAFT,
   DELETE_DRAFT,
   LOAD_FAMILIES_COMMIT,
@@ -126,50 +125,6 @@ export const drafts = (state = [], action) => {
         } else {
           return draft
         }
-      })
-
-    case ADD_SURVEY_DATA_CHECKBOX:
-      return state.map(draft => {
-        // if this is the draft we are editing
-        if (draft.draftId === action.id) {
-          const draftCategory = draft[action.category]
-          const item = draftCategory.filter(
-            item => item.key === Object.keys(action.payload)[0]
-          )[0]
-
-          if (item) {
-            // if item exists in array update it
-            const index = draftCategory.indexOf(item)
-            let multipleValue = item.multipleValue
-            item.multipleValue.push(Object.values(action.payload)[0])
-            let obj = {
-              key: Object.keys(action.payload)[0],
-              value: null,
-              multipleValue: multipleValue
-            }
-            return {
-              ...draft,
-              [action.category]: [
-                ...draftCategory.slice(0, index),
-                obj,
-                ...draftCategory.slice(index + 1)
-              ]
-            }
-          } else {
-            // if item is not in array push it
-            let multipleValue = []
-            multipleValue.push(Object.values(action.payload)[0])
-            let obj2 = {
-              key: Object.keys(action.payload)[0],
-              value: null,
-              multipleValue: multipleValue
-            }
-            return {
-              ...draft,
-              [action.category]: [...draftCategory, obj2]
-            }
-          }
-        } else return draft
       })
 
     case ADD_SURVEY_DATA:
