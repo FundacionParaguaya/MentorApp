@@ -92,7 +92,9 @@ export class Location extends Component {
   // if the user has draged the map and the draft has stored some coordinates
   setCoordinatesFromDraft = isOnline => {
     const draft = !this.readOnly ? this.getDraft() : this.readOnlyDraft
+
     const { familyData } = draft
+
     this.setState({
       loading: false,
       centeringMap: false
