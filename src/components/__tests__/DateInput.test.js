@@ -5,6 +5,7 @@ import { shallow } from 'enzyme'
 
 const createTestProps = props => ({
   readonly: true,
+  initialValue: 52454354,
   onValidDate: jest.fn(),
   setError: jest.fn(),
   required: false,
@@ -25,10 +26,6 @@ describe('DateInput Component', () => {
     it('renders Text', () => {
       expect(wrapper.find(Text)).toHaveLength(1)
     })
-    it('renders Text when there is an error', () => {
-      wrapper.setState({ error: true })
-      expect(wrapper.find(Text)).toHaveLength(2)
-    })
   })
   describe('functionality', () => {
     it('has the correct label', () => {
@@ -42,7 +39,7 @@ describe('DateInput Component', () => {
 
     it('has correct initial state', () => {
       expect(wrapper.instance().state).toEqual({
-        date: '',
+        date: '31 August 1971',
         error: false
       })
     })
@@ -52,7 +49,7 @@ describe('DateInput Component', () => {
     it('calls setError with first argument true if date is invalid', () => {
       wrapper.instance().validateDate()
 
-      expect(wrapper.instance().props.setError).toHaveBeenCalledTimes(1)
+      expect(wrapper.instance().props.setError).toHaveBeenCalledTimes(3)
     })
 
     it('calls setError with first argument false if date is valid', () => {

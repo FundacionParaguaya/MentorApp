@@ -222,7 +222,7 @@ class Select extends Component {
       text = options.find(item => item.value === value).text
     }
 
-    return (
+    return readonly && !this.props.initialValue ? null : (
       <View>
         <TouchableHighlight
           underlayColor={'transparent'}

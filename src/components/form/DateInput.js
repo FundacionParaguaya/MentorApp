@@ -106,7 +106,7 @@ export class DateInputComponent extends React.Component {
       { text: t('months.december'), value: 'December' }
     ]
 
-    return (
+    return readonly && !this.props.initialValue ? null : (
       <View>
         {readonly && (
           <Text
