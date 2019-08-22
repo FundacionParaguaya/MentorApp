@@ -816,7 +816,7 @@ export class Location extends Component {
             onChange={this.updateFamilyData}
             readonly={!!this.readOnly}
             showErrors={showErrors}
-            setError={isError => this.setError(isError, 'documentType')}
+            setError={isError => this.setError(isError, 'country')}
           />
           <TextInput
             id="postCode"
@@ -825,7 +825,7 @@ export class Location extends Component {
             placeholder={t('views.family.postcode')}
             readonly={!!this.readOnly}
             showErrors={showErrors}
-            setError={isError => this.setError(isError, 'documentType')}
+            setError={isError => this.setError(isError, 'postCode')}
           />
           <TextInput
             id="address"
@@ -836,7 +836,7 @@ export class Location extends Component {
             multiline
             readonly={!!this.readOnly}
             showErrors={showErrors}
-            setError={isError => this.setError(isError, 'documentType')}
+            setError={isError => this.setError(isError, 'address')}
           />
         </StickyFooter>
       )

@@ -1,21 +1,20 @@
-import React from 'react'
-import TermsView from '../screens/lifemap/Terms'
-import SocioEconomicQuestionView from '../screens/lifemap/SocioEconomicQuestion'
-import FinalView from '../screens/lifemap/Final'
-import FamilyParticipantView from '../screens/lifemap/FamilyParticipant'
-import FamilyMembersNamesView from '../screens/lifemap/FamilyMembersNames'
-import QuestionView from '../screens/lifemap/Question'
+import { addCloseIcon, generateNavStyles } from './helpers'
+
 import BeginLifemapView from '../screens/lifemap/BeginLifemap'
-import LocationView from '../screens/lifemap/Location'
-import SkippedView from '../screens/lifemap/Skipped'
-import OverviewView from '../screens/lifemap/Overview'
-import Priorities from '../screens/lifemap/Priorities'
-import AddPriorityView from '../screens/lifemap/AddPriority'
-import AddAchievementView from '../screens/lifemap/AddAchievement'
-import FamilyMemberView from '../screens/lifemap/FamilyMember'
-import Title from './Title'
-import { generateNavStyles, addCloseIcon } from './helpers'
 import CustomHeaderSurvey from './CustomHeaderSurvey'
+import FamilyMemberView from '../screens/lifemap/FamilyMember'
+import FamilyMembersNamesView from '../screens/lifemap/FamilyMembersNames'
+import FamilyParticipantView from '../screens/lifemap/FamilyParticipant'
+import FinalView from '../screens/lifemap/Final'
+import LocationView from '../screens/lifemap/Location'
+import OverviewView from '../screens/lifemap/Overview'
+import PrioritiesView from '../screens/lifemap/Priorities'
+import QuestionView from '../screens/lifemap/Question'
+import React from 'react'
+import SkippedView from '../screens/lifemap/Skipped'
+import SocioEconomicQuestionView from '../screens/lifemap/SocioEconomicQuestion'
+import TermsView from '../screens/lifemap/Terms'
+import Title from './Title'
 
 // Reusable object for all screens related to a draft
 export default {
@@ -143,30 +142,12 @@ export default {
     })
   },
   Priorities: {
-    screen: Priorities,
+    screen: PrioritiesView,
     navigationOptions: ({ navigation }) => ({
       ...generateNavStyles({ navigation, shadowHeader: false }),
       ...addCloseIcon(navigation),
       headerTitle: (
         <Title title="views.lifemap.priorities" style={{ marginLeft: 20 }} />
-      )
-    })
-  },
-  AddPriority: {
-    screen: AddPriorityView,
-    navigationOptions: ({ navigation }) => ({
-      ...addCloseIcon(navigation),
-      headerTitle: (
-        <Title title="views.yourLifeMap" style={{ marginLeft: 20 }} />
-      )
-    })
-  },
-  AddAchievement: {
-    screen: AddAchievementView,
-    navigationOptions: ({ navigation }) => ({
-      ...addCloseIcon(navigation),
-      headerTitle: (
-        <Title title="views.yourLifeMap" style={{ marginLeft: 20 }} />
       )
     })
   },

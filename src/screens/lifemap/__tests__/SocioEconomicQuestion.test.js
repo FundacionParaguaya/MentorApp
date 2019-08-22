@@ -1,8 +1,7 @@
-import Form from '../../../components/form/Form'
 import React from 'react'
+import Select from '../../../components/form/Select'
 import { SocioEconomicQuestion } from '../SocioEconomicQuestion'
 import { shallow } from 'enzyme'
-import Select from '../../../components/form/Select'
 
 const survey = {
   title: 'Chile - Geco',
@@ -420,10 +419,10 @@ describe('after setup', () => {
 })
 
 describe('resuming a draft', () => {
-  /* 
+  /*
     TODO
-    test TextInput 
-  
+    test TextInput
+
     Test if the first screen have the right initial values for the two selects
     Test screen 2 / The first Participant has initial value / Ana 's question should be empty because she didn't selected anything
     Test 3 screen (add in resume draft test)
@@ -547,9 +546,5 @@ describe('readonly mode', () => {
       }
     })
     wrapper = shallow(<SocioEconomicQuestion {...props} />)
-  })
-
-  it('disables editing fields', () => {
-    expect(wrapper.find(Form)).toHaveProp({ readonly: true })
   })
 })

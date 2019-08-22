@@ -13,9 +13,9 @@ import { getTotalScreens, setScreen } from './helpers'
 
 import Checkbox from '../../components/Checkbox'
 import Decoration from '../../components/decoration/Decoration'
-import Form from '../../components/form/Form'
 import PropTypes from 'prop-types'
 import Select from '../../components/form/Select'
+import StickyFooter from '../../components/StickyFooter'
 import TextInput from '../../components/form/TextInput'
 import colors from '../../theme.json'
 import { connect } from 'react-redux'
@@ -43,11 +43,42 @@ export class SocioEconomicQuestion extends Component {
   draftId = this.props.navigation.getParam('draftId')
 
   state = {
-    checkboxError: false
+    checkboxError: false,
+    errors: [],
+    showErrors: false
   }
 
   getDraft = () =>
     this.props.drafts.find(draft => draft.draftId === this.draftId)
+
+  setError = (error, field, memberIndex) => {
+    const { errors } = this.state
+
+    const fieldName = memberIndex ? `${field}-${memberIndex}` : field
+
+    if (error && !errors.includes(fieldName)) {
+      this.setState(previousState => {
+        return {
+          ...previousState,
+          errors: [...previousState.errors, fieldName]
+        }
+      })
+    } else if (!error) {
+      this.setState({
+        errors: errors.filter(item => item !== fieldName)
+      })
+    }
+  }
+
+  validateForm = () => {
+    if (this.state.errors.length) {
+      this.setState({
+        showErrors: true
+      })
+    } else {
+      this.onContinue()
+    }
+  }
 
   onPressBack = () => {
     const socioEconomics = this.props.navigation.getParam('socioEconomics')
@@ -347,8 +378,8 @@ export class SocioEconomicQuestion extends Component {
     }
 
     return (
-      <Form
-        onContinue={this.onContinue}
+      <StickyFooter
+        onContinue={this.validateForm}
         continueLabel={t('general.continue')}
         readonly={!!this.readOnly}
         progress={
@@ -407,6 +438,11 @@ export class SocioEconomicQuestion extends Component {
                         this.getFieldValue(question.codeName, 'value') || ''
                       }
                       options={getConditionalOptions(question, draft)}
+                      readonly={!!this.readOnly}
+                      showErrors={showErrors}
+                      setError={isError =>
+                        this.setError(isError, question.codeName)
+                      }
                     />
                   </View>
                 )
@@ -427,6 +463,11 @@ export class SocioEconomicQuestion extends Component {
                     )}
                     validation="number"
                     keyboardType="numeric"
+                    readonly={!!this.readOnly}
+                    showErrors={showErrors}
+                    setError={isError =>
+                      this.setError(isError, question.codeName)
+                    }
                   />
                 )
               } else if (question.answerType === 'checkbox') {
@@ -459,14 +500,14 @@ export class SocioEconomicQuestion extends Component {
                             multipleValue={multipleValue}
                             containerStyle={styles.checkbox}
                             checkboxColor={colors.green}
-                            showErrors={showErrors}
                             onIconPress={() =>
                               this.onPressCheckbox(e.value, question.codeName)
                             }
-                            readonly={this.readOnly}
                             title={e.text}
                             value={e.value}
                             codeName={question.codeName}
+                            readonly={!!this.readOnly}
+                            showErrors={showErrors}
                           />
                         </View>
                       )
@@ -491,6 +532,11 @@ export class SocioEconomicQuestion extends Component {
                     placeholder={question.questionText}
                     initialValue={
                       this.getFieldValue(question.codeName, 'value') || ''
+                    }
+                    readonly={!!this.readOnly}
+                    showErrors={showErrors}
+                    setError={isError =>
+                      this.setError(isError, question.codeName)
                     }
                   />
                 )
@@ -560,6 +606,11 @@ export class SocioEconomicQuestion extends Component {
                             }
                             options={getConditionalOptions(question, draft, i)}
                             memberIndex={i + 1}
+                            readonly={!!this.readOnly}
+                            showErrors={showErrors}
+                            setError={isError =>
+                              this.setError(isError, question.codeName)
+                            }
                           />
                         </View>
                       )
@@ -583,6 +634,11 @@ export class SocioEconomicQuestion extends Component {
                           )}
                           validation="number"
                           keyboardType="numeric"
+                          readonly={!!this.readOnly}
+                          showErrors={showErrors}
+                          setError={isError =>
+                            this.setError(isError, question.codeName)
+                          }
                         />
                       )
                     } else {
@@ -602,6 +658,11 @@ export class SocioEconomicQuestion extends Component {
                               i
                             ) || ''
                           }
+                          readonly={!!this.readOnly}
+                          showErrors={showErrors}
+                          setError={isError =>
+                            this.setError(isError, question.codeName)
+                          }
                         />
                       )
                     }
@@ -614,7 +675,7 @@ export class SocioEconomicQuestion extends Component {
         ) : (
           <View />
         )}
-      </Form>
+      </StickyFooter>
     )
   }
 }
