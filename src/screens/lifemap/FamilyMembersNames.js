@@ -4,10 +4,10 @@ import { getTotalScreens, setValidationSchema } from './helpers'
 
 import DateInput from '../../components/form/DateInput'
 import Decoration from '../../components/decoration/Decoration'
-import Form from '../../components/form/Form'
 import Icon from 'react-native-vector-icons/MaterialIcons'
 import PropTypes from 'prop-types'
 import Select from '../../components/form/Select'
+import StickyFooter from '../../components/StickyFooter'
 import TextInput from '../../components/form/TextInput'
 import colors from '../../theme.json'
 import { connect } from 'react-redux'
@@ -26,8 +26,42 @@ export class FamilyMembersNames extends Component {
       this.survey.surveyConfig.requiredFields.primaryParticipant) ||
     null
 
+  state = {
+    errors: [],
+    showErrors: false
+  }
+
   getDraft = () =>
     this.props.drafts.find(draft => draft.draftId === this.draftId)
+
+  setError = (error, field, memberIndex) => {
+    const { errors } = this.state
+
+    const fieldName = memberIndex ? `${field}-${memberIndex}` : field
+
+    if (error && !errors.includes(fieldName)) {
+      this.setState(previousState => {
+        return {
+          ...previousState,
+          errors: [...previousState.errors, fieldName]
+        }
+      })
+    } else if (!error) {
+      this.setState({
+        errors: errors.filter(item => item !== fieldName)
+      })
+    }
+  }
+
+  validateForm = () => {
+    if (this.state.errors.length) {
+      this.setState({
+        showErrors: true
+      })
+    } else {
+      this.onContinue()
+    }
+  }
 
   onPressBack = () => {
     this.props.navigation.navigate('FamilyParticipant', {
@@ -99,6 +133,7 @@ export class FamilyMembersNames extends Component {
 
   render() {
     const { t } = this.props
+    const { showErrors } = this.state
     const draft = this.getDraft()
     const { familyMembersList } = draft.familyData
 
@@ -111,11 +146,11 @@ export class FamilyMembersNames extends Component {
         : []
 
     return (
-      <Form
-        onContinue={this.onContinue}
+      <StickyFooter
+        onContinue={this.validateForm}
         continueLabel={t('general.continue')}
-        progress={draft ? 2 / draft.progress.total : 0}
         readOnly={!!this.readOnly}
+        progress={draft ? 2 / draft.progress.total : 0}
       >
         <Decoration variation="familyMemberNamesHeader">
           <View style={styles.circleContainer}>
@@ -171,6 +206,11 @@ export class FamilyMembersNames extends Component {
                   'firstName',
                   true
                 )}
+                readonly={!!this.readOnly}
+                showErrors={showErrors}
+                setError={isError =>
+                  this.setError(isError, `${i + 1}.firstName`)
+                }
               />
               <Select
                 id={`${i + 1}.gender`}
@@ -187,6 +227,9 @@ export class FamilyMembersNames extends Component {
                 otherField={`${i}.customGender`}
                 otherPlaceholder={t('views.family.specifyGender')}
                 otherValue={(familyMembersList[i + 1] || {}).customGender || ''}
+                readonly={!!this.readOnly}
+                showErrors={showErrors}
+                setError={isError => this.setError(isError, `${i + 1}.gender`)}
               />
 
               <DateInput
@@ -199,11 +242,16 @@ export class FamilyMembersNames extends Component {
                   'birthDate',
                   false
                 )}
+                readonly={!!this.readOnly}
+                showErrors={showErrors}
+                setError={isError =>
+                  this.setError(isError, `${i + 1}.birthDate`)
+                }
               />
             </View>
           )
         })}
-      </Form>
+      </StickyFooter>
     )
   }
 }

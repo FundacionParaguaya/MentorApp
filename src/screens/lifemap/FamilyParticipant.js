@@ -36,38 +36,23 @@ export class FamilyParticipant extends Component {
   getDraft = () =>
     this.props.drafts.find(draft => draft.draftId === this.draftId)
 
-  setError = (error, field, memberIndex) => {
+  setError = (error, field) => {
     const { errors } = this.state
 
-    const fieldName = memberIndex ? `${field}-${memberIndex}` : field
-
-    if (error && !errors.includes(fieldName)) {
+    if (error && !errors.includes(field)) {
       this.setState(previousState => {
         return {
           ...previousState,
-          errors: [...previousState.errors, fieldName]
+          errors: [...previousState.errors, field]
         }
       })
     } else if (!error) {
       this.setState({
-        errors: errors.filter(item => item !== fieldName)
+        errors: errors.filter(item => item !== field)
       })
     }
 
     this.onErrorStateChange(error || this.state.errors.length)
-  }
-
-  cleanErrorsCodenamesOnUnmount = (field, memberIndex) => {
-    const { errors } = this.state
-    const fieldName = memberIndex ? `${field}-${memberIndex}` : field
-    let errorsDetected = []
-    if (fieldName) {
-      errorsDetected = errors.filter(item => item !== fieldName)
-    }
-
-    this.setState({
-      errors: errorsDetected
-    })
   }
 
   validateForm = () => {

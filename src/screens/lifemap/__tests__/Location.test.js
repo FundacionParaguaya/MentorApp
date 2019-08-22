@@ -5,7 +5,6 @@ import {
   TouchableHighlight
 } from 'react-native'
 
-import Form from '../../../components/form/Form'
 import Geolocation from '../../../__mocks__/@react-native-community/geolocation.js'
 /* eslint-disable import/named */
 import { GooglePlacesAutocomplete } from 'react-native-google-places-autocomplete'
@@ -517,6 +516,6 @@ describe('readonly mode', () => {
 
   it('disables editing fields', () => {
     wrapper.instance().determineScreenState(false)
-    expect(wrapper.find(Form)).toHaveProp({ readOnly: true })
+    expect(wrapper.find(TextInput).first()).toHaveProp({ readonly: true })
   })
 })

@@ -11,7 +11,6 @@ import {
 import React, { Component } from 'react'
 
 import CommunityIcon from 'react-native-vector-icons/MaterialCommunityIcons'
-import Form from '../../components/form/Form'
 import Geolocation from '@react-native-community/geolocation'
 /* eslint-disable import/named */
 import { GooglePlacesAutocomplete } from 'react-native-google-places-autocomplete'
@@ -53,11 +52,40 @@ export class Location extends Component {
     hasShownList: false, // back button needs this
     cachedMapPacks: [],
     zoom: 15,
-    appState: AppState.currentState
+    appState: AppState.currentState,
+    errors: [],
+    showErrors: false
   }
 
   getDraft = () =>
     this.props.drafts.find(draft => draft.draftId === this.draftId)
+
+  setError = (error, field) => {
+    const { errors } = this.state
+
+    if (error && !errors.includes(field)) {
+      this.setState(previousState => {
+        return {
+          ...previousState,
+          errors: [...previousState.errors, field]
+        }
+      })
+    } else if (!error) {
+      this.setState({
+        errors: errors.filter(item => item !== field)
+      })
+    }
+  }
+
+  validateForm = () => {
+    if (this.state.errors.length) {
+      this.setState({
+        showErrors: true
+      })
+    } else {
+      this.onContinue()
+    }
+  }
 
   onDragMap = region => {
     const draft = !this.readOnly ? this.getDraft() : this.readOnlyDraft
@@ -506,7 +534,8 @@ export class Location extends Component {
       loading,
       showSearch,
       showForm,
-      showOfflineMapsList
+      showOfflineMapsList,
+      showErrors
     } = this.state
 
     const draft = !this.readOnly ? this.getDraft() : this.readOnlyDraft
@@ -712,10 +741,10 @@ export class Location extends Component {
       )
     } else {
       return (
-        <Form
-          onContinue={this.onContinue}
-          readOnly={!!this.readOnly}
+        <StickyFooter
+          onContinue={this.validateForm}
           continueLabel={t('general.continue')}
+          readOnly={!!this.readOnly}
           progress={
             !this.readOnly && draft
               ? draft.progress.current / draft.progress.total
@@ -785,12 +814,18 @@ export class Location extends Component {
             required
             defaultCountry={this.survey.surveyConfig.surveyLocation.country}
             onChange={this.updateFamilyData}
+            readonly={!!this.readOnly}
+            showErrors={showErrors}
+            setError={isError => this.setError(isError, 'documentType')}
           />
           <TextInput
             id="postCode"
             onChangeText={this.updateFamilyData}
             initialValue={draft.familyData.postCode || ''}
             placeholder={t('views.family.postcode')}
+            readonly={!!this.readOnly}
+            showErrors={showErrors}
+            setError={isError => this.setError(isError, 'documentType')}
           />
           <TextInput
             id="address"
@@ -799,8 +834,11 @@ export class Location extends Component {
             placeholder={t('views.family.streetOrHouseDescription')}
             validation="long-string"
             multiline
+            readonly={!!this.readOnly}
+            showErrors={showErrors}
+            setError={isError => this.setError(isError, 'documentType')}
           />
-        </Form>
+        </StickyFooter>
       )
     }
   }

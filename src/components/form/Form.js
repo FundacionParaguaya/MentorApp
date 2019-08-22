@@ -1,3 +1,7 @@
+// Unfortunately something weird and undocumented is happening when using this
+// component after building in Android studio. Probably related to
+// React.cloneChild. We are for now forced to use in screen view validation.
+
 import { Keyboard, ScrollView, StyleSheet, View } from 'react-native'
 import React, { Component } from 'react'
 

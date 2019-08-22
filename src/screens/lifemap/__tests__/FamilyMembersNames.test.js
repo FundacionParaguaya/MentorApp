@@ -1,6 +1,5 @@
 import DateInput from '../../../components/form/DateInput'
 import { FamilyMembersNames } from '../FamilyMembersNames'
-import Form from '../../../components/form/Form'
 import React from 'react'
 import Select from '../../../components/form/Select'
 import TextInput from '../../../components/form/TextInput'
@@ -244,9 +243,5 @@ describe('readonly mode', () => {
       }
     })
     wrapper = shallow(<FamilyMembersNames {...props} />)
-  })
-
-  it('disables editing fields', () => {
-    expect(wrapper.find(Form)).toHaveProp({ readOnly: true })
   })
 })
