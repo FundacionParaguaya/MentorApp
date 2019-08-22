@@ -1,17 +1,18 @@
 import React, { Component } from 'react'
-import { View, Text, StyleSheet } from 'react-native'
-import { withNamespaces } from 'react-i18next'
-import Select from '../../components/form/Select'
+import { StyleSheet, Text, View } from 'react-native'
+
 import Icon2 from 'react-native-vector-icons/MaterialCommunityIcons'
-import PropTypes from 'prop-types'
-import { connect } from 'react-redux'
-import { updateDraft } from '../../redux/actions'
-import globalStyles from '../../globalStyles'
-import colors from '../../theme.json'
-import Popup from '../../components/Popup'
-import TextInput from '../../components/form/TextInput'
 import Orb from '../../components/decoration/Orb'
-import Form from '../../components/form/Form'
+import Popup from '../../components/Popup'
+import PropTypes from 'prop-types'
+import Select from '../../components/form/Select'
+import StickyFooter from '../../components/StickyFooter'
+import TextInput from '../../components/form/TextInput'
+import colors from '../../theme.json'
+import { connect } from 'react-redux'
+import globalStyles from '../../globalStyles'
+import { updateDraft } from '../../redux/actions'
+import { withNamespaces } from 'react-i18next'
 
 export class AddPriorityAndAchievementModal extends Component {
   draftId = this.props.draftId
@@ -24,8 +25,38 @@ export class AddPriorityAndAchievementModal extends Component {
     roadmap: '',
     validationError: false,
     indicator: this.props.indicator || '',
-    estimatedDate: null
+    estimatedDate: null,
+    errors: [],
+    showErrors: false
   }
+
+  setError = (error, field) => {
+    const { errors } = this.state
+
+    if (error && !errors.includes(field)) {
+      this.setState(previousState => {
+        return {
+          ...previousState,
+          errors: [...previousState.errors, field]
+        }
+      })
+    } else if (!error) {
+      this.setState({
+        errors: errors.filter(item => item !== field)
+      })
+    }
+  }
+
+  validateForm = () => {
+    if (this.state.errors.length) {
+      this.setState({
+        showErrors: true
+      })
+    } else {
+      this.onContinue()
+    }
+  }
+
   editCounter = action => {
     this.setState({
       validationError: false
@@ -152,7 +183,7 @@ export class AddPriorityAndAchievementModal extends Component {
   render() {
     const draft = this.getDraft()
     const { t } = this.props
-    const { validationError } = this.state
+    const { validationError, showErrors } = this.state
     const isReadOnly = draft.status === 'Synced'
 
     //i cound directly use this.state.action for the values below but
@@ -167,8 +198,8 @@ export class AddPriorityAndAchievementModal extends Component {
 
     return (
       <Popup isOpen modifiedPopUp onClose={this.props.onClose}>
-        <Form
-          onContinue={this.onContinue}
+        <StickyFooter
+          onContinue={this.validateForm}
           continueLabel={
             this.props.color !== 3
               ? t('views.lifemap.makePriority')
@@ -214,7 +245,11 @@ export class AddPriorityAndAchievementModal extends Component {
                   placeholder={t('views.lifemap.whyDontYouHaveIt')}
                   initialValue={priority ? priority.reason : ''}
                   multiline
-                  readonly={isReadOnly}
+                  readonly={!!this.readOnly}
+                  showErrors={showErrors}
+                  setError={isError =>
+                    this.setError(isError, 'whyDontYouHaveIt')
+                  }
                 />
                 <TextInput
                   id="whatWillYouDoToGetIt"
@@ -222,17 +257,25 @@ export class AddPriorityAndAchievementModal extends Component {
                   placeholder={t('views.lifemap.whatWillYouDoToGetIt')}
                   initialValue={priority ? priority.action : ''}
                   multiline
-                  readonly={isReadOnly}
+                  readonly={!!this.readOnly}
+                  showErrors={showErrors}
+                  setError={isError =>
+                    this.setError(isError, 'whatWillYouDoToGetIt')
+                  }
                 />
                 <View>
                   <Select
                     id="howManyMonthsWillItTake"
                     required
                     onChange={this.editCounter}
-                    readonly={isReadOnly}
                     placeholder={t('views.lifemap.howManyMonthsWillItTake')}
                     initialValue={priority ? priority.estimatedDate : ''}
                     options={this.state.allOptionsNums}
+                    readonly={!!this.readOnly}
+                    showErrors={showErrors}
+                    setError={isError =>
+                      this.setError(isError, 'howManyMonthsWillItTake')
+                    }
                   />
                 </View>
               </React.Fragment>
@@ -240,21 +283,27 @@ export class AddPriorityAndAchievementModal extends Component {
               <React.Fragment>
                 <TextInput
                   id="howDidYouGetIt"
-                  readonly={isReadOnly}
                   onChangeText={text => this.setState({ action: text })}
                   placeholder={t('views.lifemap.howDidYouGetIt')}
                   initialValue={achievement ? achievement.action : ''}
                   required
                   multiline
+                  readonly={!!this.readOnly}
+                  showErrors={showErrors}
+                  setError={isError => this.setError(isError, 'howDidYouGetIt')}
                 />
 
                 <TextInput
                   id="whatDidItTakeToAchieveThis"
                   onChangeText={text => this.setState({ roadmap: text })}
                   placeholder={t('views.lifemap.whatDidItTakeToAchieveThis')}
-                  readonly={isReadOnly}
                   initialValue={achievement ? achievement.roadmap : ''}
                   multiline
+                  readonly={!!this.readOnly}
+                  showErrors={showErrors}
+                  setError={isError =>
+                    this.setError(isError, 'whatDidItTakeToAchieveThis')
+                  }
                 />
               </React.Fragment>
             )}
@@ -267,7 +316,7 @@ export class AddPriorityAndAchievementModal extends Component {
               <View />
             )}
           </View>
-        </Form>
+        </StickyFooter>
       </Popup>
     )
   }
