@@ -463,7 +463,9 @@ export class Location extends Component {
       loading: true
     })
 
-    this.requestLocationPermission()
+    if (!this.readOnly) {
+      this.requestLocationPermission()
+    }
 
     // check if online first
     NetInfo.fetch().then(state => {
@@ -699,7 +701,7 @@ export class Location extends Component {
             pitchEnabled={false}
             onRegionDidChange={this.onDragMap}
           >
-            <MapboxGL.UserLocation visible={false} />
+            {!this.readOnly && <MapboxGL.UserLocation visible={false} />}
             <MapboxGL.Camera
               defaultSettings={{
                 centerCoordinate: [

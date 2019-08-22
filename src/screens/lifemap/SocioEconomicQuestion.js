@@ -294,19 +294,19 @@ export class SocioEconomicQuestion extends Component {
             ? questionsPerScreen[totalScreens - 1].forFamily[0].topic
             : questionsPerScreen[totalScreens - 1].forFamilyMember[0].topic
         })
-      } else
+      } else {
+        const page = navigation.getParam('page') || 0
         navigation.setParams({
           socioEconomics: {
-            currentScreen: navigation.getParam('page')
-              ? navigation.getParam('page') + 1
-              : 1,
+            currentScreen: page ? page + 1 : 1,
             questionsPerScreen,
             totalScreens
           },
-          title: questionsPerScreen[0].forFamily[0]
-            ? questionsPerScreen[0].forFamily[0].topic
-            : questionsPerScreen[0].forFamilyMember[0].topic
+          title: questionsPerScreen[page].forFamily[0]
+            ? questionsPerScreen[page].forFamily[0].topic
+            : questionsPerScreen[page].forFamilyMember[0].topic
         })
+      }
     } else {
       const socioEconomics = navigation.getParam('socioEconomics')
       const questionsForThisScreen = socioEconomics
