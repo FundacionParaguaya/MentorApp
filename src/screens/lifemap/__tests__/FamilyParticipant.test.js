@@ -1,5 +1,6 @@
 import { FamilyParticipant } from '../FamilyParticipant'
 import React from 'react'
+import StickyFooter from '../../../components/StickyFooter'
 import TextInput from '../../../components/form/TextInput'
 import { shallow } from 'enzyme'
 
@@ -359,6 +360,98 @@ describe('resuming a draft', () => {
     expect(props.updateDraft).toHaveBeenCalledTimes(11)
   })
 
+  it('sets errors on each field change', () => {
+    const spy = jest.spyOn(wrapper.instance(), 'setError')
+    wrapper
+      .find('#firstName')
+      .props()
+      .setError(true)
+
+    expect(spy).toHaveBeenCalledWith(true, 'firstName')
+
+    wrapper
+      .find('#lastName')
+      .props()
+      .setError(true)
+
+    expect(wrapper).toHaveState({ errors: ['firstName', 'lastName'] })
+
+    wrapper
+      .find('#lastName')
+      .props()
+      .setError(false)
+
+    expect(wrapper).toHaveState({ errors: ['firstName'] })
+
+    wrapper
+      .find('#documentNumber')
+      .props()
+      .setError(true)
+
+    wrapper
+      .find('#email')
+      .props()
+      .setError(true)
+
+    wrapper
+      .find('#phoneNumber')
+      .props()
+      .setError(true)
+
+    wrapper
+      .find('#gender')
+      .props()
+      .setError(true)
+
+    wrapper
+      .find('#documentType')
+      .props()
+      .setError(true)
+
+    wrapper
+      .find('#birthCountry')
+      .props()
+      .setError(true)
+
+    wrapper
+      .find('#countFamilyMembers')
+      .props()
+      .setError(true)
+
+    wrapper
+      .find('#countFamilyMembers')
+      .props()
+      .setError(true)
+
+    wrapper
+      .find('#birthDate')
+      .props()
+      .setError(true)
+
+    expect(spy).toHaveBeenCalledTimes(12)
+  })
+
+  it('validates form on pressing continue', () => {
+    const spy = jest.spyOn(wrapper.instance(), 'onContinue')
+
+    wrapper
+      .find(StickyFooter)
+      .props()
+      .onContinue()
+
+    expect(spy).toHaveBeenCalledTimes(1)
+  })
+
+  it('prevents continue on form errors', () => {
+    wrapper.setState({ errors: ['field'] })
+    wrapper
+      .find(StickyFooter)
+      .props()
+      .onContinue()
+
+    expect(wrapper).toHaveState({ showErrors: true })
+  })
+
   it('updates family members count', () => {
     wrapper.instance().addFamilyCount(2)
     expect(props.updateDraft).toHaveBeenCalledWith({
@@ -391,6 +484,74 @@ describe('resuming a draft', () => {
         countFamilyMembers: -1
       }
     })
+  })
+
+  it('adds new family members', () => {
+    props = createTestProps({
+      drafts: [
+        {
+          ...resumedDraft,
+          familyData: {
+            ...resumedDraft.familyData,
+            countFamilyMembers: 0
+          }
+        }
+      ],
+      navigation: {
+        ...navigation,
+        getParam: jest.fn(param => {
+          if (param === 'family') {
+            return null
+          } else if (param === 'survey') {
+            return survey
+          } else if (param === 'draftId') {
+            return 1
+          } else if (param === 'readOnly') {
+            return false
+          } else {
+            return 1
+          }
+        })
+      }
+    })
+
+    wrapper = shallow(<FamilyParticipant {...props} />)
+
+    wrapper.instance().addFamilyCount(2)
+
+    props = createTestProps({
+      drafts: [
+        {
+          ...resumedDraft,
+          familyData: {
+            ...resumedDraft.familyData,
+            countFamilyMembers: -1
+          }
+        }
+      ],
+      navigation: {
+        ...navigation,
+        getParam: jest.fn(param => {
+          if (param === 'family') {
+            return null
+          } else if (param === 'survey') {
+            return survey
+          } else if (param === 'draftId') {
+            return 1
+          } else if (param === 'readOnly') {
+            return false
+          } else {
+            return 1
+          }
+        })
+      }
+    })
+
+    wrapper = shallow(<FamilyParticipant {...props} />)
+
+    wrapper.instance().addFamilyCount(1)
+
+    expect(props.updateDraft).toHaveBeenCalledTimes(1)
   })
 
   it('continues to location screen if only 1 family member', () => {
@@ -530,5 +691,11 @@ describe('readonly mode', () => {
 
   it('disables editing fields', () => {
     expect(wrapper.find(TextInput).first()).toHaveProp({ readonly: true })
+  })
+
+  it('does not update in readonly mode', () => {
+    expect(wrapper.instance().updateParticipant()).toBeFalsy()
+    expect(wrapper.instance().addFamilyCount()).toBeFalsy()
+    expect(wrapper.instance().onContinue()).toBeFalsy()
   })
 })

@@ -137,20 +137,16 @@ export class FamilyMembersNames extends Component {
     const draft = this.getDraft()
     const { familyMembersList } = draft.familyData
 
-    const familyMembersCount =
-      draft.familyData.countFamilyMembers &&
-      draft.familyData.countFamilyMembers !== -1
-        ? Array(draft.familyData.countFamilyMembers - 1)
-            .fill()
-            .map((item, index) => index)
-        : []
+    const familyMembersCount = Array(draft.familyData.countFamilyMembers - 1)
+      .fill()
+      .map((item, index) => index)
 
     return (
       <StickyFooter
         onContinue={this.validateForm}
         continueLabel={t('general.continue')}
         readOnly={!!this.readOnly}
-        progress={draft ? 2 / draft.progress.total : 0}
+        progress={2 / draft.progress.total}
       >
         <Decoration variation="familyMemberNamesHeader">
           <View style={styles.circleContainer}>
@@ -193,14 +189,12 @@ export class FamilyMembersNames extends Component {
               </View>
               <TextInput
                 id={`${i + 1}.firstName`}
-                autoFocus={
-                  i === 0 && !(familyMembersList[i + 1] || {}).firstName
-                }
+                autoFocus={i === 0 && !familyMembersList[i + 1].firstName}
                 upperCase
                 validation="string"
                 onChangeText={this.updateMember}
                 placeholder={`${t('views.family.firstName')}`}
-                initialValue={(familyMembersList[i + 1] || {}).firstName || ''}
+                initialValue={familyMembersList[i + 1].firstName || ''}
                 required={setValidationSchema(
                   this.requiredFields,
                   'firstName',
@@ -217,7 +211,7 @@ export class FamilyMembersNames extends Component {
                 onChange={this.updateMember}
                 label={t('views.family.gender')}
                 placeholder={t('views.family.selectGender')}
-                initialValue={(familyMembersList[i + 1] || {}).gender || ''}
+                initialValue={familyMembersList[i + 1].gender || ''}
                 options={this.survey.surveyConfig.gender}
                 required={setValidationSchema(
                   this.requiredFields,
@@ -226,7 +220,7 @@ export class FamilyMembersNames extends Component {
                 )}
                 otherField={`${i}.customGender`}
                 otherPlaceholder={t('views.family.specifyGender')}
-                otherValue={(familyMembersList[i + 1] || {}).customGender || ''}
+                otherValue={familyMembersList[i + 1].customGender || ''}
                 readonly={!!this.readOnly}
                 showErrors={showErrors}
                 setError={isError => this.setError(isError, `${i + 1}.gender`)}
@@ -236,7 +230,7 @@ export class FamilyMembersNames extends Component {
                 id={`${i + 1}.birthDate`}
                 label={t('views.family.dateOfBirth')}
                 onValidDate={this.updateMember}
-                initialValue={(familyMembersList[i + 1] || {}).birthDate}
+                initialValue={familyMembersList[i + 1].birthDate}
                 required={setValidationSchema(
                   this.requiredFields,
                   'birthDate',

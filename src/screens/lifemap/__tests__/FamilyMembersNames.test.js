@@ -2,6 +2,7 @@ import DateInput from '../../../components/form/DateInput'
 import { FamilyMembersNames } from '../FamilyMembersNames'
 import React from 'react'
 import Select from '../../../components/form/Select'
+import StickyFooter from '../../../components/StickyFooter'
 import TextInput from '../../../components/form/TextInput'
 import { shallow } from 'enzyme'
 
@@ -144,9 +145,34 @@ it('does not update draft on wrong field format', () => {
   expect(props.updateDraft).toHaveBeenCalledTimes(1)
 })
 
+it('sets up custom required fields', () => {
+  props = createTestProps({
+    navigation: {
+      ...navigation,
+      getParam: jest.fn(param => {
+        if (param === 'family') {
+          return null
+        } else if (param === 'survey') {
+          return {
+            ...survey,
+            surveyConfig: { requiredFields: { primaryParticipant: [] } }
+          }
+        } else if (param === 'draftId') {
+          return draftId
+        }
+      })
+    }
+  })
+  wrapper = shallow(<FamilyMembersNames {...props} />)
+})
+
 describe('from resumed draft', () => {
   const resumeDraft = {
     ...draft,
+    progress: {
+      ...draft.progress,
+      screen: 'FamilyMembersNames'
+    },
     familyData: {
       ...draft.familyData,
       familyMembersList: [
@@ -212,7 +238,65 @@ describe('from resumed draft', () => {
       .props()
       .onValidDate('Test', '1.date')
 
-    expect(props.updateDraft).toHaveBeenCalledTimes(4)
+    expect(props.updateDraft).toHaveBeenCalledTimes(3)
+  })
+
+  it('sets errors on each field change', () => {
+    const spy = jest.spyOn(wrapper.instance(), 'setError')
+    wrapper
+      .find(TextInput)
+      .first()
+      .props()
+      .setError(true)
+
+    expect(spy).toHaveBeenCalledWith(true, '1.firstName')
+
+    wrapper
+      .find(Select)
+      .first()
+      .props()
+      .setError(true)
+
+    expect(wrapper).toHaveState({ errors: ['1.firstName', '1.gender'] })
+
+    wrapper
+      .find(Select)
+      .first()
+      .props()
+      .setError(false)
+
+    expect(wrapper).toHaveState({ errors: ['1.firstName'] })
+
+    wrapper
+      .find(DateInput)
+      .first()
+      .props()
+      .setError(true)
+
+    wrapper.instance().setError(false, 'field', 1)
+
+    expect(wrapper).toHaveState({ errors: ['1.firstName', '1.birthDate'] })
+  })
+
+  it('validates form on pressing continue', () => {
+    const spy = jest.spyOn(wrapper.instance(), 'onContinue')
+
+    wrapper
+      .find(StickyFooter)
+      .props()
+      .onContinue()
+
+    expect(spy).toHaveBeenCalledTimes(1)
+  })
+
+  it('prevents continue on form errors', () => {
+    wrapper.setState({ errors: ['field'] })
+    wrapper
+      .find(StickyFooter)
+      .props()
+      .onContinue()
+
+    expect(wrapper).toHaveState({ showErrors: true })
   })
 })
 
