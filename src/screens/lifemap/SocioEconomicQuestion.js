@@ -181,7 +181,7 @@ export class SocioEconomicQuestion extends Component {
         this.props.language === 'en' ? '$1,' : '$1.'
       )
   }
-  onPressCheckbox = async (text, field) => {
+  onPressCheckbox = (text, field) => {
     const draft = !this.readOnly ? this.getDraft() : this.readOnlyDraft
 
     const question = draft.economicSurveyDataList.find(
@@ -189,7 +189,7 @@ export class SocioEconomicQuestion extends Component {
     )
 
     if (!question) {
-      await this.props.updateDraft({
+      this.props.updateDraft({
         ...draft,
         economicSurveyDataList: [
           ...draft.economicSurveyDataList,
@@ -197,7 +197,7 @@ export class SocioEconomicQuestion extends Component {
         ]
       })
     } else {
-      await this.props.updateDraft({
+      this.props.updateDraft({
         ...draft,
         economicSurveyDataList: [
           ...draft.economicSurveyDataList.filter(item => item.key !== field),
