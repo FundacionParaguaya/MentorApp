@@ -32,8 +32,8 @@ const createTestProps = props => ({
   ...props
 })
 
-let wrapper
-let props
+let wrapper, props
+
 beforeEach(() => {
   props = createTestProps()
   wrapper = shallow(<DatePickerWheel {...props} />)
