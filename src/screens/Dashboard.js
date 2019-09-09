@@ -271,9 +271,16 @@ export class Dashboard extends Component {
                     <BottomModal
                       isOpen={filterModalIsOpen}
                       onRequestClose={this.toggleFilterModal}
-                      onEmptyClose={() => this.selectFilter(false)}
+                      onEmptyClose={() =>
+                        this.setState({ filterModalIsOpen: false })
+                      }
                     >
                       <View style={styles.dropdown}>
+                        <FilterListItem
+                          dashboard
+                          onPress={() => this.selectFilter(false)}
+                          text={'All Life Maps'}
+                        />
                         <FilterListItem
                           dashboard
                           onPress={() => this.selectFilter('Draft', 'Drafts')}
