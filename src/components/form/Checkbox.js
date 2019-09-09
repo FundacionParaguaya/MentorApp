@@ -26,6 +26,18 @@ class Checkbox extends Component {
       })
     }
   }
+
+  // componentDidMount() {
+  //   // on mount validate empty required fields without showing an errors message
+  //   if (
+  //     this.props.required &&
+  //     !this.props.initialValue &&
+  //     this.props.setError
+  //   ) {
+  //     this.props.setError(true)
+  //   }
+  // }
+
   render() {
     const { checked } = this.state
     const { containerStyle, textStyle, checkboxColor, showErrors } = this.props
@@ -50,7 +62,6 @@ class Checkbox extends Component {
                     showErrors && !checked ? ' *' : ''
                   }`}
                   iconType="material"
-                  id="checkboxTest1"
                   checkedColor={checkboxColor || colors.palegreen}
                   checkedIcon="check-box"
                   uncheckedIcon="check-box-outline-blank"
@@ -74,7 +85,7 @@ class Checkbox extends Component {
             onPress={this.onIconPress}
           >
             <CheckBox
-              id="checkboxTest2"
+              id="checkbox"
               disabled
               title={this.props.title}
               iconType="material"

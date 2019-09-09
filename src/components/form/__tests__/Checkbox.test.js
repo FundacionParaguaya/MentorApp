@@ -46,10 +46,10 @@ describe('Checkbox Component', () => {
       expect(wrapper.instance().state).toEqual({
         checked: true
       })
-      expect(wrapper.find('#checkboxTest2')).toHaveProp({
+      expect(wrapper.find('#checkbox')).toHaveProp({
         checked: true
       })
-      expect(wrapper.find('#checkboxTest2')).toHaveProp({
+      expect(wrapper.find('#checkbox')).toHaveProp({
         accessibilityLabel: 'Some checkbox text checked'
       })
 
@@ -61,10 +61,10 @@ describe('Checkbox Component', () => {
       expect(wrapper.instance().state).toEqual({
         checked: false
       })
-      expect(wrapper.find('#checkboxTest2')).toHaveProp({
+      expect(wrapper.find('#checkbox')).toHaveProp({
         checked: false
       })
-      expect(wrapper.find('#checkboxTest2')).toHaveProp({
+      expect(wrapper.find('#checkbox')).toHaveProp({
         accessibilityLabel: 'Some checkbox text unchecked'
       })
     })
