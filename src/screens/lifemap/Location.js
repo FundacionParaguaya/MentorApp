@@ -120,7 +120,9 @@ export class Location extends Component {
   // if the user has draged the map and the draft has stored some coordinates
   setCoordinatesFromDraft = isOnline => {
     const draft = !this.readOnly ? this.getDraft() : this.readOnlyDraft
+
     const { familyData } = draft
+
     this.setState({
       loading: false,
       centeringMap: false
@@ -145,7 +147,7 @@ export class Location extends Component {
   getCoordinatesOnline() {
     const draft = !this.readOnly ? this.getDraft() : this.readOnlyDraft
     const { familyData } = draft
-    // this.setState({ askingForPermission: true })
+    this.setState({ askingForPermission: true })
     Geolocation.getCurrentPosition(
       // if location is available and we are online center on it
       position => {
@@ -205,7 +207,7 @@ export class Location extends Component {
   getCoordinatesOffline() {
     const draft = !this.readOnly ? this.getDraft() : this.readOnlyDraft
     const { familyData } = draft
-
+    this.setState({ askingForPermission: true })
     if (
       this.survey.surveyConfig.offlineMaps &&
       !this.state.showOfflineMapsList
@@ -305,7 +307,6 @@ export class Location extends Component {
 
   updateFamilyData = (value, field) => {
     const draft = !this.readOnly ? this.getDraft() : this.readOnlyDraft
-
     this.props.updateDraft({
       ...draft,
       familyData: {
@@ -398,10 +399,23 @@ export class Location extends Component {
   }
 
   async requestLocationPermission() {
-    const isGranted = await MapboxGL.requestAndroidLocationPermissions()
     this.setState({
-      askingForPermission: isGranted
+      askingForPermission: true
     })
+
+    let isGranted = await MapboxGL.requestAndroidLocationPermissions()
+
+    if (isGranted) {
+      this.setState({
+        askingForPermission: false,
+        loading: false
+      })
+    } else {
+      this.setState({
+        showForm: true,
+        loading: false
+      })
+    }
   }
 
   isUserLocationWithinMapPackBounds(longitude, latitude, packs) {
