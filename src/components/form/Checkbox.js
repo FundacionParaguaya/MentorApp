@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import { TouchableHighlight, StyleSheet, View } from 'react-native'
 import { CheckBox } from 'react-native-elements'
-import colors from '../theme.json'
+import colors from '../../theme.json'
 
 class Checkbox extends Component {
   state = { checked: false }
@@ -26,6 +26,7 @@ class Checkbox extends Component {
       })
     }
   }
+
   render() {
     const { checked } = this.state
     const { containerStyle, textStyle, checkboxColor, showErrors } = this.props
@@ -73,6 +74,7 @@ class Checkbox extends Component {
             onPress={this.onIconPress}
           >
             <CheckBox
+              id="checkbox"
               disabled
               title={this.props.title}
               iconType="material"

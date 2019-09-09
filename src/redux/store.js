@@ -1,11 +1,13 @@
-import { createStore, applyMiddleware } from 'redux'
-import thunk from 'redux-thunk'
-import offlineConfig from '@redux-offline/redux-offline/lib/defaults'
-import { offline } from '@redux-offline/redux-offline'
+import { applyMiddleware, createStore } from 'redux'
+
 import { composeWithDevTools } from 'redux-devtools-extension'
+import { offline } from '@redux-offline/redux-offline'
+import offlineConfig from '@redux-offline/redux-offline/lib/defaults'
 import { rootReducer } from './reducer'
 import { setHydrated } from './actions'
 import { setLanguage } from '../i18n'
+import thunk from 'redux-thunk'
+
 let rehydrated = false
 
 export const getHydrationState = () => rehydrated
@@ -18,7 +20,7 @@ const store = createStore(
     offline({
       ...offlineConfig,
       persistOptions: {
-        blacklist: ['hydration', 'nav']
+        blacklist: ['hydration']
       },
       // this fires after store hydration is done
       persistCallback: () => {

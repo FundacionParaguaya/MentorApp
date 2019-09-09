@@ -9,7 +9,7 @@ import {
 } from 'react-native'
 import CommunityIcon from 'react-native-vector-icons/MaterialCommunityIcons'
 import Popup from '../components/Popup'
-import Checkbox from '../components/Checkbox'
+import Checkbox from '../components/form/Checkbox'
 import Icon from 'react-native-vector-icons/MaterialIcons'
 import Button from '../components/Button'
 import i18n from '../i18n'
@@ -179,7 +179,7 @@ export default class LogoutPopup extends Component {
                   : i18n.t('general.yes')
               }
               borderColor={unsyncedDrafts ? colors.palered : colors.palegreen}
-              style={{ width: 107, marginRight: 20 }}
+              style={{ minWidth: 107, marginRight: 20 }}
               handleClick={
                 unsyncedDrafts && !checkboxesVisible
                   ? showCheckboxes
@@ -195,7 +195,7 @@ export default class LogoutPopup extends Component {
                   ? i18n.t('general.no')
                   : i18n.t('general.cancel')
               }
-              style={{ width: 107, marginLeft: 20 }}
+              style={{ minWidth: 107, marginLeft: 20 }}
               handleClick={onModalClose}
             />
           </View>

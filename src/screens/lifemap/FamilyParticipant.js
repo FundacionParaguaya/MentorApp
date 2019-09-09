@@ -67,7 +67,11 @@ export class FamilyParticipant extends Component {
   }
 
   onContinue = () => {
-    const draft = !this.readOnly ? this.getDraft() : this.readOnlyDraft
+    if (this.readOnly) {
+      return
+    }
+
+    const draft = this.getDraft()
     const survey = this.survey
 
     const { draftId } = draft
@@ -86,7 +90,11 @@ export class FamilyParticipant extends Component {
   }
 
   addFamilyCount = value => {
-    const draft = !this.readOnly ? this.getDraft() : this.readOnlyDraft
+    if (this.readOnly) {
+      return
+    }
+
+    const draft = this.getDraft()
     const { countFamilyMembers } = draft.familyData
     const PREFER_NOT_TO_SAY = -1
 
@@ -131,7 +139,11 @@ export class FamilyParticipant extends Component {
   ]
 
   updateParticipant = (value, field) => {
-    const draft = !this.readOnly ? this.getDraft() : this.readOnlyDraft
+    if (this.readOnly) {
+      return
+    }
+
+    const draft = this.getDraft()
 
     this.props.updateDraft({
       ...draft,
@@ -243,7 +255,7 @@ export class FamilyParticipant extends Component {
       >
         <Decoration variation="primaryParticipant">
           <Icon name="face" color={colors.grey} size={61} style={styles.icon} />
-          {this.readOnly !== true ? (
+          {!this.readOnly ? (
             <Text
               readonly={this.readOnly}
               style={[globalStyles.h2Bold, styles.heading]}

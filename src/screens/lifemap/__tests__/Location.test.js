@@ -15,6 +15,7 @@ import MockedMapboxGL from '../../../__mocks__/@react-native-mapbox-gl/maps.js'
 import NetInfo from '../../../__mocks__/@react-native-community/netinfo.js'
 import React from 'react'
 import Select from '../../../components/form/Select'
+import StickyFooter from '../../../components/StickyFooter'
 import TextInput from '../../../components/form/TextInput'
 import { shallow } from 'enzyme'
 
@@ -463,6 +464,57 @@ describe('user offline with no cached maps', () => {
       .onChange()
 
     expect(props.updateDraft).toHaveBeenCalledTimes(5)
+  })
+
+  it('sets errors on each field change', () => {
+    const spy = jest.spyOn(wrapper.instance(), 'setError')
+
+    wrapper
+      .find('#address')
+      .props()
+      .setError(true)
+
+    expect(spy).toHaveBeenCalledWith(true, 'address')
+
+    wrapper
+      .find('#postCode')
+      .props()
+      .setError(true)
+
+    expect(wrapper).toHaveState({ errors: ['address', 'postCode'] })
+
+    wrapper
+      .find('#postCode')
+      .props()
+      .setError(false)
+
+    expect(wrapper).toHaveState({ errors: ['address'] })
+
+    wrapper
+      .find('#country')
+      .props()
+      .setError(true)
+  })
+
+  it('validates form on pressing continue', () => {
+    const spy = jest.spyOn(wrapper.instance(), 'onContinue')
+
+    wrapper
+      .find(StickyFooter)
+      .props()
+      .onContinue()
+
+    expect(spy).toHaveBeenCalledTimes(1)
+  })
+
+  it('prevents continue on form errors', () => {
+    wrapper.setState({ errors: ['field'] })
+    wrapper
+      .find(StickyFooter)
+      .props()
+      .onContinue()
+
+    expect(wrapper).toHaveState({ showErrors: true })
   })
 })
 
