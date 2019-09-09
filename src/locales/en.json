@@ -26,7 +26,10 @@
     "create": "Create",
     "confirm": "Confirm",
     "download": "Download",
-    "print": "Print"
+    "print": "Print",
+    "navigation": "navigation",
+    "goback": "go back",
+    "exit": "exit"
   },
   "validation": {
     "fieldIsRequired": "This field is required",

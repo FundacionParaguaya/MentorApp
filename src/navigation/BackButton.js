@@ -3,6 +3,7 @@ import React, { Component } from 'react'
 import { AndroidBackHandler } from 'react-navigation-backhandler'
 import IconButton from '../components/IconButton'
 import PropTypes from 'prop-types'
+import i18n from '../i18n'
 import { View } from 'react-native'
 
 class BackButton extends Component {
@@ -49,7 +50,7 @@ class BackButton extends Component {
             icon="arrow-back"
             size={25}
             accessible={true}
-            accessibilityLabel={'Go back'}
+            accessibilityLabel={i18n.t('general.goback')}
           />
         </View>
       </AndroidBackHandler>
