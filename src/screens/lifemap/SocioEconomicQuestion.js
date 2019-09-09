@@ -11,7 +11,7 @@ import {
 } from '../utils/conditional_logic'
 import { getTotalScreens, setScreen } from './helpers'
 
-import Checkbox from '../../components/Checkbox'
+import Checkbox from '../../components/form/Checkbox'
 import Decoration from '../../components/decoration/Decoration'
 import PropTypes from 'prop-types'
 import Select from '../../components/form/Select'
@@ -41,7 +41,7 @@ export class SocioEconomicQuestion extends Component {
   survey = this.props.navigation.getParam('survey')
   readOnly = this.props.navigation.getParam('readOnly')
   draftId = this.props.navigation.getParam('draftId')
-
+  checkboxErrors = []
   state = {
     checkboxError: false,
     errors: [],
@@ -69,11 +69,22 @@ export class SocioEconomicQuestion extends Component {
       })
     }
   }
+  setCheckboxError(itemArr, checkboxQuestion) {
+    let error = itemArr.length ? false : true
+    if (error) {
+      this.checkboxErrors.push(checkboxQuestion)
+    } else {
+      this.checkboxErrors = this.checkboxErrors.filter(
+        item => item !== checkboxQuestion
+      )
+    }
+  }
 
   validateForm = () => {
-    if (this.state.errors.length) {
+    if (this.state.errors.length || this.checkboxErrors.length) {
       this.setState({
-        showErrors: true
+        showErrors: this.state.errors.length ? true : false,
+        checkboxError: this.checkboxErrors.length ? true : false
       })
     } else {
       this.onContinue()
@@ -170,7 +181,7 @@ export class SocioEconomicQuestion extends Component {
         this.props.language === 'en' ? '$1,' : '$1.'
       )
   }
-  onPressCheckbox = (text, field) => {
+  onPressCheckbox = async (text, field, required) => {
     const draft = !this.readOnly ? this.getDraft() : this.readOnlyDraft
 
     const question = draft.economicSurveyDataList.find(
@@ -178,7 +189,7 @@ export class SocioEconomicQuestion extends Component {
     )
 
     if (!question) {
-      this.props.updateDraft({
+      await this.props.updateDraft({
         ...draft,
         economicSurveyDataList: [
           ...draft.economicSurveyDataList,
@@ -186,7 +197,7 @@ export class SocioEconomicQuestion extends Component {
         ]
       })
     } else {
-      this.props.updateDraft({
+      await this.props.updateDraft({
         ...draft,
         economicSurveyDataList: [
           ...draft.economicSurveyDataList.filter(item => item.key !== field),
@@ -199,15 +210,25 @@ export class SocioEconomicQuestion extends Component {
         ]
       })
     }
+    //this is different from  "draft" and "question" because i get the new data after updating the state.
+    //If you console log the variables above then you will get the old array of checkboxes
 
-    const questionAfterSave = draft.economicSurveyDataList.find(
-      item => item.key === field
-    )
+    if (required) {
+      const draftUpdated = this.props.drafts.find(
+        item => item.draftId === draft.draftId
+      )
+      const questionAfterSave = draftUpdated.economicSurveyDataList.find(
+        item => item.key === field
+      )
+      //this is the same as passing an error to the setError function.
+      //the checkboxes are individual but the must act as one question.
 
-    if (questionAfterSave) {
-      !questionAfterSave.multipleValue.length
-        ? this.setState({ checkboxError: true })
-        : this.setState({ checkboxError: false })
+      if (questionAfterSave) {
+        this.setCheckboxError(questionAfterSave.multipleValue.length, field)
+        !questionAfterSave.multipleValue.length
+          ? this.setState({ checkboxError: true })
+          : this.setState({ checkboxError: false })
+      }
     }
   }
 
@@ -481,6 +502,16 @@ export class SocioEconomicQuestion extends Component {
                     }
                   }
                 })
+                //sending the length of the checkbox question (if none is checked the length is 0)
+                //sending the length of the checkbox question after the screen load(for example if we already answered the questions and then we send the answered questions array and the cehckbxo question)
+                //we also need to do this in case we have more than 1 required checkbox questions.
+                //cant setError here because it always rerenders the state
+                //i cant set it up in component did mount ,like we do in  all the other components because a Checkbox component is the checkbox question itself (ed. each "answer1","answer2","answer3" is a Checkbox component  )
+                //thats why we need to set it up only once and we set it up here. and not in the state,and that why we need checkboxErrors=[]
+                //THIS is the fundamental difference betwen Checkbox component and the other components. a Checkbox component is just an answer,not a collection of answers
+                question.required
+                  ? this.setCheckboxError(multipleValue, question.codeName)
+                  : null
 
                 return (
                   <View key={question.codeName}>
@@ -493,6 +524,12 @@ export class SocioEconomicQuestion extends Component {
                     )}
 
                     {question.options.map(e => {
+                      //the code below return something like
+                      //answer1
+                      //answer2
+                      //answer3
+                      //answer4...
+                      //and each answer is a checkbox component.
                       return (
                         <View key={e.value}>
                           <Checkbox
@@ -500,7 +537,11 @@ export class SocioEconomicQuestion extends Component {
                             containerStyle={styles.checkbox}
                             checkboxColor={colors.green}
                             onIconPress={() =>
-                              this.onPressCheckbox(e.value, question.codeName)
+                              this.onPressCheckbox(
+                                e.value,
+                                question.codeName,
+                                question.required
+                              )
                             }
                             title={e.text}
                             value={e.value}
@@ -511,7 +552,10 @@ export class SocioEconomicQuestion extends Component {
                         </View>
                       )
                     })}
-                    {question.required && this.state.checkboxError ? (
+
+                    {question.required &&
+                    this.checkboxErrors.includes(question.codeName) &&
+                    this.state.checkboxError ? (
                       <Text style={styles.error}>
                         {t('validation.fieldIsRequired')}{' '}
                       </Text>

@@ -9,7 +9,7 @@ import {
 } from 'react-native'
 import CommunityIcon from 'react-native-vector-icons/MaterialCommunityIcons'
 import Popup from '../components/Popup'
-import Checkbox from '../components/Checkbox'
+import Checkbox from '../components/form/Checkbox'
 import Icon from 'react-native-vector-icons/MaterialIcons'
 import Button from '../components/Button'
 import i18n from '../i18n'
