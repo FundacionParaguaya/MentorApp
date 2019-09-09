@@ -27,17 +27,6 @@ class Checkbox extends Component {
     }
   }
 
-  // componentDidMount() {
-  //   // on mount validate empty required fields without showing an errors message
-  //   if (
-  //     this.props.required &&
-  //     !this.props.initialValue &&
-  //     this.props.setError
-  //   ) {
-  //     this.props.setError(true)
-  //   }
-  // }
-
   render() {
     const { checked } = this.state
     const { containerStyle, textStyle, checkboxColor, showErrors } = this.props
