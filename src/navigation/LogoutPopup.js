@@ -179,7 +179,7 @@ export default class LogoutPopup extends Component {
                   : i18n.t('general.yes')
               }
               borderColor={unsyncedDrafts ? colors.palered : colors.palegreen}
-              style={{ width: 107, marginRight: 20 }}
+              style={{ minWidth: 107, marginRight: 20 }}
               handleClick={
                 unsyncedDrafts && !checkboxesVisible
                   ? showCheckboxes
@@ -195,7 +195,7 @@ export default class LogoutPopup extends Component {
                   ? i18n.t('general.no')
                   : i18n.t('general.cancel')
               }
-              style={{ width: 107, marginLeft: 20 }}
+              style={{ minWidth: 107, marginLeft: 20 }}
               handleClick={onModalClose}
             />
           </View>
