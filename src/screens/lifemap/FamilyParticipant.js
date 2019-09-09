@@ -15,6 +15,7 @@ import { connect } from 'react-redux'
 import globalStyles from '../../globalStyles'
 import uuid from 'uuid/v1'
 import { withNamespaces } from 'react-i18next'
+import { generateNewDemoDraft } from '../utils/helpers'
 
 export class FamilyParticipant extends Component {
   survey = this.props.navigation.getParam('survey')
@@ -161,6 +162,8 @@ export class FamilyParticipant extends Component {
   }
 
   createNewDraft() {
+    // check if current survey is demo
+    const isDemo = this.survey.surveyConfig && this.survey.surveyConfig.isDemo
     // generate a new draft id
     const draftId = uuid()
 
@@ -168,8 +171,7 @@ export class FamilyParticipant extends Component {
     this.draftId = draftId
     this.props.navigation.setParams({ draftId })
 
-    // create the new draft in redux
-    this.props.createDraft({
+    const regularDraft = {
       draftId,
       created: Date.now(),
       status: 'Draft',
@@ -192,7 +194,12 @@ export class FamilyParticipant extends Component {
           }
         ]
       }
-    })
+    }
+
+    // create the new draft in redux
+    this.props.createDraft(
+      isDemo ? generateNewDemoDraft(this.survey, draftId) : regularDraft
+    )
   }
 
   componentDidMount() {

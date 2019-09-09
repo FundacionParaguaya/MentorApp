@@ -61,7 +61,7 @@ export const setValidationSchema = (
   return Array.isArray(requiredFieldsForSurvey)
     ? requiredFieldsForSurvey.length
       ? requiredFieldsForSurvey.some(f => f === field)
-      : false
+      : defaultValidation
     : defaultValidation
 }
 
