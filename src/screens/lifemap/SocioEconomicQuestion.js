@@ -181,7 +181,7 @@ export class SocioEconomicQuestion extends Component {
         this.props.language === 'en' ? '$1,' : '$1.'
       )
   }
-  onPressCheckbox = (text, field) => {
+  onPressCheckbox = async (text, field) => {
     const draft = !this.readOnly ? this.getDraft() : this.readOnlyDraft
 
     const question = draft.economicSurveyDataList.find(
@@ -189,7 +189,7 @@ export class SocioEconomicQuestion extends Component {
     )
 
     if (!question) {
-      this.props.updateDraft({
+      await this.props.updateDraft({
         ...draft,
         economicSurveyDataList: [
           ...draft.economicSurveyDataList,
@@ -197,7 +197,7 @@ export class SocioEconomicQuestion extends Component {
         ]
       })
     } else {
-      this.props.updateDraft({
+      await this.props.updateDraft({
         ...draft,
         economicSurveyDataList: [
           ...draft.economicSurveyDataList.filter(item => item.key !== field),
@@ -210,7 +210,8 @@ export class SocioEconomicQuestion extends Component {
         ]
       })
     }
-
+    //this is different from  "draft" and "question" because i get the new data after updating the state.
+    //If you console log the variables above then you will get the old array of checkboxes
     const draftUpdated = this.props.drafts.find(
       item => item.draftId === draft.draftId
     )
