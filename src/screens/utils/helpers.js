@@ -67,7 +67,12 @@ export const prepareDraftForSubmit = (draft, survey) => {
   return result
 }
 
-export const generateNewDemoDraft = (survey, id) => {
+export const generateNewDemoDraft = (survey, draftId) => {
   const toalScreens = getTotalScreens(survey)
-  return generateRandomDraftData(toalScreens, id)
+  const random = Math.floor(
+    Math.random() & survey.surveyConfig.documentType.length
+  )
+  const documentType = survey.surveyConfig.documentType[random]
+  const surveyId = survey.id
+  return generateRandomDraftData(draftId, surveyId, toalScreens, documentType)
 }
