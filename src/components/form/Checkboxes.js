@@ -115,7 +115,7 @@ class Checkboxes extends Component {
 
 Checkboxes.propTypes = {
   multipleValue: PropTypes.array.isRequired,
-  question: PropTypes.array,
+  question: PropTypes.object,
   updateAnswers: PropTypes.func,
   setError: PropTypes.func,
   checkboxColor: PropTypes.string,
