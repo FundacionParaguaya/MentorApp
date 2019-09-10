@@ -9,6 +9,7 @@ import Button from '../../components/Button'
 import i18n from '../../i18n'
 import globalStyles from '../../globalStyles'
 import colors from '../../theme.json'
+import { exitModalAccessibleText } from '../../screens/utils/accessibilityHelpers'
 
 export class ExitDraftModal extends Component {
   handleClickOnYes = () => {
@@ -39,44 +40,54 @@ export class ExitDraftModal extends Component {
 
     const draftId = navigation.getParam('draftId')
     const deleteDraftOnExit = navigation.getParam('deleteDraftOnExit')
+    const accessibleContentText = exitModalAccessibleText(
+      draftId,
+      deleteDraftOnExit
+    )
 
     return (
       <Popup isOpen onClose={this.onClose}>
-        {!draftId || deleteDraftOnExit ? (
-          <View>
-            <Text style={[globalStyles.centerText, globalStyles.h3]}>
-              {deleteDraftOnExit
-                ? i18n.t('views.modals.lifeMapWillNotBeSaved')
-                : i18n.t('views.modals.weCannotContinueToCreateTheLifeMap')}
-            </Text>
-            <Text style={[globalStyles.centerText, styles.subline]}>
-              {i18n.t('views.modals.areYouSureYouWantToExit')}
-            </Text>
-          </View>
-        ) : (
-          <View>
-            <Text style={[globalStyles.centerText, globalStyles.h3]}>
-              {i18n.t('views.modals.yourLifemapIsNotComplete')}
-            </Text>
-            <Text style={[globalStyles.centerText, styles.subline]}>
-              {i18n.t('views.modals.thisWillBeSavedAsADraft')}
-            </Text>
-          </View>
-        )}
+        <View
+          accessible={true}
+          accessibilityLabel={accessibleContentText}
+          accessibilityLiveRegion="assertive"
+        >
+          {!draftId || deleteDraftOnExit ? (
+            <View>
+              <Text style={[globalStyles.centerText, globalStyles.h3]}>
+                {deleteDraftOnExit
+                  ? i18n.t('views.modals.lifeMapWillNotBeSaved')
+                  : i18n.t('views.modals.weCannotContinueToCreateTheLifeMap')}
+              </Text>
+              <Text style={[globalStyles.centerText, styles.subline]}>
+                {i18n.t('views.modals.areYouSureYouWantToExit')}
+              </Text>
+            </View>
+          ) : (
+            <View>
+              <Text style={[globalStyles.centerText, globalStyles.h3]}>
+                {i18n.t('views.modals.yourLifemapIsNotComplete')}
+              </Text>
+              <Text style={[globalStyles.centerText, styles.subline]}>
+                {i18n.t('views.modals.thisWillBeSavedAsADraft')}
+              </Text>
+            </View>
+          )}
 
-        <View style={styles.buttonBar}>
-          <Button
-            outlined
-            text={i18n.t('general.yes')}
-            style={{ width: 107 }}
-            handleClick={this.handleClickOnYes}
-          />
-          <Button
-            outlined
-            text={i18n.t('general.no')}
-            style={{ width: 107 }}
-            handleClick={this.onClose}
-          />
+          <View style={styles.buttonBar}>
+            <Button
+              outlined
+              text={i18n.t('general.yes')}
+              style={{ width: 107 }}
+              handleClick={this.handleClickOnYes}
+            />
+            <Button
+              outlined
+              text={i18n.t('general.no')}
+              style={{ width: 107 }}
+              handleClick={this.onClose}
+            />
+          </View>
         </View>
       </Popup>
     )

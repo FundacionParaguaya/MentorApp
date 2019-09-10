@@ -6,11 +6,12 @@ import i18n from '../../i18n'
 //     : 'items'
 // }
 
+const pause = '.'
+
 export const logoutModalAccessibleText = (
   unsyncedDrafts,
   checkboxesVisible
 ) => {
-  const pause = '.'
   const logoutTitle = `${
     !checkboxesVisible
       ? i18n.t('views.logout.logout')
@@ -54,4 +55,25 @@ export const logoutModalAccessibleText = (
   ${logoutBody}
   ${logoutButtons}
 `
+}
+
+export const exitModalAccessibleText = (draftId, deleteDraftOnExit) => {
+  const popUpBody = `${
+    !draftId || deleteDraftOnExit
+      ? `
+      ${
+        deleteDraftOnExit
+          ? i18n.t('views.modals.lifeMapWillNotBeSaved')
+          : i18n.t('views.modals.weCannotContinueToCreateTheLifeMap')
+      }
+      ${i18n.t('views.modals.areYouSureYouWantToExit')}`
+      : `${i18n.t('views.modals.yourLifemapIsNotComplete')}${pause}${i18n.t(
+          'views.modals.thisWillBeSavedAsADraft'
+        )}`
+  }`
+  const popUpButtons = `${i18n.t('general.yes')}${pause}${i18n.t('general.no')}`
+  return `
+    ${popUpBody}
+    ${popUpButtons}
+  `
 }

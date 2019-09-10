@@ -31,7 +31,7 @@ export default class LogoutPopup extends Component {
       logingOut
     } = this.props
 
-    const popupAccessibilityText = logoutModalAccessibleText(
+    const accessiblePopUpText = logoutModalAccessibleText(
       unsyncedDrafts,
       checkboxesVisible
     )
@@ -59,7 +59,7 @@ export default class LogoutPopup extends Component {
       >
         <View
           accessible={true}
-          accessibilityLabel={`${popupAccessibilityText}`}
+          accessibilityLabel={`${accessiblePopUpText}`}
           accessibilityLiveRegion="assertive"
         >
           <View

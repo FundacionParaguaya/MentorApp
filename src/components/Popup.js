@@ -45,8 +45,8 @@ export default class Popup extends Component {
                   style={
                     LogoutPopup ? styles.modalLogout : styles.modalDefinition
                   }
-                  accessible={true}
-                  accessibilityLiveRegion="assertive"
+                  // accessible={true}
+                  // accessibilityLiveRegion="assertive"
                 >
                   {children}
                 </ScrollView>
@@ -64,8 +64,8 @@ export default class Popup extends Component {
                 <View
                   id="modal"
                   style={styles.priorOrAchievementModal}
-                  accessible={true}
-                  accessibilityLiveRegion="assertive"
+                  // accessible={true}
+                  // accessibilityLiveRegion="assertive"
                 >
                   {children}
                 </View>
@@ -82,8 +82,8 @@ export default class Popup extends Component {
             <View
               id="modal"
               style={styles.modal}
-              accessible={true}
-              accessibilityLiveRegion="assertive"
+              // accessible={true}
+              // accessibilityLiveRegion="assertive"
             >
               {children}
             </View>
