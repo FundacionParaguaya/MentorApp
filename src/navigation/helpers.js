@@ -4,6 +4,7 @@ import colors from '../theme.json'
 import IconButton from '../components/IconButton'
 import CloseButton from './CloseButton'
 import BackButton from './BackButton'
+import i18n from '../i18n'
 
 // Each of the major views has a stack that needs the same nav options.
 // These options handle the header styles and menu icon.
@@ -44,19 +45,21 @@ export const generateNavStyles = ({
   headerRight: <View style={{ width: 25 }} />
 })
 
-export const addMenuIcon = navigation => ({
-  headerLeft: (
-    <IconButton
-      style={styles.touchable}
-      onPress={() => navigation.toggleDrawer()}
-      icon="menu"
-      size={30}
-      badge
-      accessible={true}
-      accessibilityLabel={'Navigation'}
-    />
-  )
-})
+export const addMenuIcon = navigation => {
+  return {
+    headerLeft: (
+      <IconButton
+        style={styles.touchable}
+        onPress={() => navigation.toggleDrawer()}
+        icon="menu"
+        size={30}
+        badge
+        accessible={true}
+        accessibilityLabel={i18n.t('general.navigation')}
+      />
+    )
+  }
+}
 
 export const addCloseIcon = navigation =>
   !navigation.getParam('family') ? (
