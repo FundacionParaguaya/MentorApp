@@ -1,33 +1,34 @@
-import React, { Component } from 'react'
-import PropTypes from 'prop-types'
 import {
+  AppState,
+  Dimensions,
+  Image,
   ScrollView,
+  StyleSheet,
   Text,
   TextInput,
-  Image,
-  StyleSheet,
-  View,
-  Dimensions,
-  AppState
+  View
 } from 'react-native'
-import DeviceInfo from 'react-native-device-info'
-import { connect } from 'react-redux'
-import { CheckBox } from 'react-native-elements'
-import NetInfo from '@react-native-community/netinfo'
-import {
-  setEnv,
-  login,
-  setDimensions,
-  setDownloadMapsAndImages
-} from '../redux/actions'
-import logo from '../../assets/images/logo.png'
-import { url } from '../config'
-import globalStyles from '../globalStyles'
-import colors from '../theme.json'
-import Button from '../components/Button'
 import InternalStorageFullModal, {
   MINIMUM_REQUIRED_STORAGE_SPACE_500_MB
 } from './modals/InternalStorageFullModal'
+import React, { Component } from 'react'
+import {
+  login,
+  setDimensions,
+  setDownloadMapsAndImages,
+  setEnv
+} from '../redux/actions'
+
+import Button from '../components/Button'
+import { CheckBox } from 'react-native-elements'
+import DeviceInfo from 'react-native-device-info'
+import NetInfo from '@react-native-community/netinfo'
+import PropTypes from 'prop-types'
+import colors from '../theme.json'
+import { connect } from 'react-redux'
+import globalStyles from '../globalStyles'
+import logo from '../../assets/images/logo.png'
+import { url } from '../config'
 const TestFairy = require('react-native-testfairy')
 // get env
 const nodeEnv = process.env

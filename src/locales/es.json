@@ -26,7 +26,9 @@
     "create": "Crear",
     "confirm": "Confirmar",
     "download": "Descargar",
-    "print": "Imprimir"
+    "print": "Imprimir",
+    "attention": "¡Atención!",
+    "syncAll": "¡Sincroniza todos los Mapas de Vida y actualiza la aplicación!"
   },
   "validation": {
     "fieldIsRequired": "Este campo es requerido",

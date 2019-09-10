@@ -1,9 +1,12 @@
-import React from 'react'
-import { shallow } from 'enzyme'
 import { Dashboard } from '../Dashboard'
 import { FlatList } from 'react-native'
+import React from 'react'
+import { shallow } from 'enzyme'
 
 const createTestProps = props => ({
+  toggleAPIVersionModal: jest.fn(),
+  markVersionCheked: jest.fn(),
+  apiVersion: { timestamp: null, showModal: false },
   navigation: {
     getParam: () => true,
     navigate: jest.fn(),
@@ -42,5 +45,3 @@ it('receives not empty data as props', () => {
   const wrapper = shallow(<Dashboard {...props} />)
   expect(wrapper.find(FlatList).props().data).toEqual([{ banica: 0 }])
 })
-
-//sorry dan, Bjorn made me do it
