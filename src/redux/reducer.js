@@ -6,6 +6,8 @@ import {
   LOAD_FAMILIES_ROLLBACK,
   LOAD_SURVEYS_COMMIT,
   LOAD_SURVEYS_ROLLBACK,
+  LOAD_MAPS_COMMIT,
+  LOAD_MAPS_ROLLBACK,
   RESET_SYNCED_STATE,
   SET_DIMENSIONS,
   SET_DOWNLOADMAPSIMAGES,
@@ -90,7 +92,18 @@ export const dimensions = (
       return state
   }
 }
-
+//Maps
+export const maps = (state = [], action) => {
+  switch (action.type) {
+    case LOAD_MAPS_COMMIT:
+      //if there are no maps simply return an array with emty object,because of the componentdidUpdate listener on the Loading.js we are looking for a change in props.maps length.
+      return action.payload.data.offlineMaps.length
+        ? action.payload.data.offlineMaps
+        : [{}]
+    default:
+      return state
+  }
+}
 //Surveys
 export const surveys = (state = [], action) => {
   switch (action.type) {
@@ -262,8 +275,8 @@ export const sync = (
   state = {
     appVersion: null,
     surveys: false,
-    maps: false,
     surveysError: false,
+    mapsError: false,
     families: false,
     familiesError: false,
     images: {
@@ -305,12 +318,17 @@ export const sync = (
         ...state,
         familiesError: true
       }
+    case LOAD_MAPS_ROLLBACK:
+      return {
+        ...state,
+        mapsError: true
+      }
     case RESET_SYNCED_STATE:
       return {
         ...state,
         surveys: false,
         surveysError: false,
-        maps: false,
+        mapsError: false,
         families: false,
         familiesError: false,
         images: {
@@ -326,6 +344,7 @@ export const sync = (
 const appReducer = combineReducers({
   env,
   user,
+  maps,
   surveys,
   families,
   drafts,
@@ -380,13 +399,14 @@ export const rootReducer = (state, action) => {
       user: { token: null, status: null, username: null, role: null },
       drafts: [],
       surveys: [],
+      maps: [],
       families: [],
       env: 'production',
       sync: {
         appVersion: null,
         surveys: false,
         surveysError: false,
-        maps: false,
+        mapsError: false,
         families: false,
         familiesError: false,
         images: {
@@ -402,6 +422,7 @@ export const rootReducer = (state, action) => {
     const { families, surveys, ...currentState } = state
     families
     surveys
+
     const draftSurvey =
       state.surveys &&
       action.meta.sanitizedSnapshot &&
