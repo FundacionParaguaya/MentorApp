@@ -342,16 +342,19 @@ export class Dashboard extends Component {
                     >
                       <View style={styles.dropdown}>
                         <FilterListItem
+                          id="all"
                           dashboard
                           onPress={() => this.selectFilter(false)}
                           text={'All Life Maps'}
                         />
                         <FilterListItem
+                          id="drafts"
                           dashboard
                           onPress={() => this.selectFilter('Draft', 'Drafts')}
                           text={'Drafts'}
                         />
                         <FilterListItem
+                          id="pending"
                           dashboard
                           onPress={() =>
                             this.selectFilter('Pending sync', 'Sync Pending')
@@ -359,6 +362,7 @@ export class Dashboard extends Component {
                           text={'Sync Pending'}
                         />
                         <FilterListItem
+                          id="error"
                           dashboard
                           onPress={() =>
                             this.selectFilter('Sync error', 'Sync Error')
@@ -366,6 +370,7 @@ export class Dashboard extends Component {
                           text={'Sync Error'}
                         />
                         <FilterListItem
+                          id="synced"
                           dashboard
                           onPress={() =>
                             this.selectFilter('Synced', 'Completed')
