@@ -9,7 +9,13 @@ import i18n from '../i18n'
 class Tip extends Component {
   render() {
     return (
-      <View style={styles.tipview}>
+      <View
+        accessible={true}
+        accessibilityLabel={`${this.props.description} ${i18n.t(
+          'general.gotIt'
+        )}`}
+        style={styles.tipview}
+      >
         <Text style={[globalStyles.h3, styles.text]}>{this.props.title}</Text>
         <Text style={[globalStyles.p, styles.text]}>
           {this.props.description}

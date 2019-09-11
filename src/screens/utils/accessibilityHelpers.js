@@ -116,3 +116,16 @@ export const screenSyncScreenContent = (
     ${syncBody}
   `
 }
+
+export const skippedScreen = tipVisible => {
+  const pageTitle = i18n.t('views.skippedIndicators')
+  const skippedTip = tipVisible
+    ? `${i18n.t('views.lifemap.youSkipped')} 
+      ${i18n.t('views.lifemap.whyNotTryAgain')}
+      ${i18n.t('general.gotIt')}`
+    : ''
+  return `
+    ${pageTitle}
+    ${skippedTip}
+  `
+}

@@ -1,4 +1,4 @@
-import { FlatList, Image, StyleSheet } from 'react-native'
+import { FlatList, Image, StyleSheet, View } from 'react-native'
 import React, { Component } from 'react'
 
 import PropTypes from 'prop-types'
@@ -8,6 +8,7 @@ import { connect } from 'react-redux'
 import { getTotalScreens } from './helpers'
 import { updateDraft } from '../../redux/actions'
 import { withNamespaces } from 'react-i18next'
+import { skippedScreen } from '../../screens/utils/accessibilityHelpers'
 
 export class Skipped extends Component {
   survey = this.props.navigation.getParam('survey')
@@ -89,6 +90,8 @@ export class Skipped extends Component {
         )) ||
       []
 
+    const screenAccessibilityContent = skippedScreen(this.state.tipIsVisible)
+
     return (
       <StickyFooter
         onContinue={this.handleClick}
@@ -99,24 +102,30 @@ export class Skipped extends Component {
         onTipClose={this.onTipClose}
         progress={draft ? (draft.progress.total - 2) / draft.progress.total : 0}
       >
-        <Image
-          style={styles.image}
-          source={require('../../../assets/images/skipped.png')}
-        />
+        <View
+          accessible={true}
+          accessibilityLabel={`${screenAccessibilityContent}`}
+          accessibilityLiveRegion="assertive"
+        >
+          <Image
+            style={styles.image}
+            source={require('../../../assets/images/skipped.png')}
+          />
 
-        <FlatList
-          style={{ ...styles.background }}
-          data={skippedQuestions}
-          keyExtractor={(item, index) => index.toString()}
-          renderItem={({ item }) => (
-            <SkippedListItem
-              item={this.survey.surveyStoplightQuestions.find(
-                question => question.codeName === item.key
-              )}
-              handleClick={this.navigateToSkipped}
-            />
-          )}
-        />
+          <FlatList
+            style={{ ...styles.background }}
+            data={skippedQuestions}
+            keyExtractor={(item, index) => index.toString()}
+            renderItem={({ item }) => (
+              <SkippedListItem
+                item={this.survey.surveyStoplightQuestions.find(
+                  question => question.codeName === item.key
+                )}
+                handleClick={this.navigateToSkipped}
+              />
+            )}
+          />
+        </View>
       </StickyFooter>
     )
   }
