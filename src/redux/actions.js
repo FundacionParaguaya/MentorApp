@@ -218,6 +218,7 @@ export const submitDraft = (env, token, id, payload) => {
 }
 
 // Language
+
 export const SWITCH_LANGUAGE = 'SWITCH_LANGUAGE'
 
 export const switchLanguage = language => ({
@@ -226,6 +227,7 @@ export const switchLanguage = language => ({
 })
 
 // Store Hydration
+
 export const SET_HYDRATED = 'SET_HYDRATED'
 
 export const setHydrated = () => ({
@@ -233,6 +235,7 @@ export const setHydrated = () => ({
 })
 
 // Sync
+
 export const SET_SYNCED_ITEM_TOTAL = 'SET_SYNCED_ITEM_TOTAL'
 export const SET_SYNCED_ITEM_AMOUNT = 'SET_SYNCED_ITEM_AMOUNT'
 export const SET_SYNCED_STATE = 'SET_SYNCED_STATE'
@@ -264,4 +267,19 @@ export const setAppVersion = value => ({
 
 export const resetSyncState = () => ({
   type: RESET_SYNCED_STATE
+})
+
+// API Versioning
+
+export const TOGGLE_API_VERSION_MODAL = 'TOGGLE_API_VERSION_MODAL'
+export const MARK_VERSION_CHECKED = 'MARK_VERSION_CHECKED'
+
+export const markVersionCheked = timestamp => ({
+  type: MARK_VERSION_CHECKED,
+  timestamp
+})
+
+export const toggleAPIVersionModal = isOpen => ({
+  type: TOGGLE_API_VERSION_MODAL,
+  isOpen
 })
