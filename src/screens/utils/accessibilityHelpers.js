@@ -129,3 +129,18 @@ export const skippedScreen = tipVisible => {
     ${skippedTip}
   `
 }
+
+export const prioritiesScreen = (tipVisible, tipDescription) => {
+  const pageTitle = i18n.t('views.lifemap.priorities')
+  const prioritiesTip = tipVisible
+    ? `${i18n.t('views.lifemap.toComplete')} 
+    ${tipDescription}
+  ${i18n.t('general.gotIt')}
+  `
+    : ''
+
+  return `
+    ${pageTitle}
+    ${prioritiesTip}
+  `
+}

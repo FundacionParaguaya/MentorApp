@@ -9,7 +9,7 @@ export class DynamicTitle extends React.Component {
   render() {
     return (
       <Text
-        // accessibilityLiveRegion="assertive"
+        accessibilityLiveRegion={this.props.accessibilityAssertiveType}
         style={[styles.headerTitleStyle, this.props.style]}
       >
         {this.props.t(this.props.title)}
@@ -22,7 +22,15 @@ DynamicTitle.propTypes = {
   style: PropTypes.object,
   title: PropTypes.string,
   lng: PropTypes.string,
-  t: PropTypes.func
+  t: PropTypes.func,
+  accessibilityAssertiveType: PropTypes.oneOfType([
+    PropTypes.bool,
+    PropTypes.string
+  ])
+}
+
+DynamicTitle.defaultProps = {
+  accessibilityAssertiveType: 'assertive'
 }
 
 const styles = StyleSheet.create({

@@ -126,6 +126,7 @@ export default {
       headerTitle: (
         <Title
           title="views.skippedIndicators"
+          accessibilityAssertiveType="none"
           style={{ marginLeft: 'auto', marginRight: 'auto' }}
         />
       )
@@ -147,7 +148,11 @@ export default {
       ...generateNavStyles({ navigation, shadowHeader: false }),
       ...addCloseIcon(navigation),
       headerTitle: (
-        <Title title="views.lifemap.priorities" style={{ marginLeft: 20 }} />
+        <Title
+          title="views.lifemap.priorities"
+          accessibilityAssertiveType="none"
+          style={{ marginLeft: 20 }}
+        />
       )
     })
   },
