@@ -1,3 +1,6 @@
+import { generateRandomDraftData } from './demo_draft_generator'
+import { getTotalScreens } from '../lifemap/helpers'
+
 const LATIN_CHARS = /^[A-Za-z0-9]*$/
 
 export const checkAndReplaceSpecialChars = question => {
@@ -62,4 +65,14 @@ export const prepareDraftForSubmit = (draft, survey) => {
     result.familyData.familyMembersList.length
 
   return result
+}
+
+export const generateNewDemoDraft = (survey, draftId) => {
+  const toalScreens = getTotalScreens(survey)
+  const random = Math.floor(
+    Math.random() & survey.surveyConfig.documentType.length
+  )
+  const documentType = survey.surveyConfig.documentType[random]
+  const surveyId = survey.id
+  return generateRandomDraftData(draftId, surveyId, toalScreens, documentType)
 }
