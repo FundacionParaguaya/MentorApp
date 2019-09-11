@@ -9,14 +9,31 @@ import {
 } from 'react-native'
 import CommunityIcon from 'react-native-vector-icons/MaterialCommunityIcons'
 import Popup from '../components/Popup'
-import Checkbox from '../components/form/Checkbox'
 import Icon from 'react-native-vector-icons/MaterialIcons'
 import Button from '../components/Button'
 import i18n from '../i18n'
 import colors from '../theme.json'
 import globalStyles from '../globalStyles'
+import { CheckBox } from 'react-native-elements'
 
+const initialState = {
+  checkboxDrafts: false,
+  checkboxLifeMaps: false,
+  checkboxFamilyInfo: false,
+  checkboxCachedData: false
+}
 export default class LogoutPopup extends Component {
+  state = initialState
+
+  checkboxChange(checkbox) {
+    this.props.onPressCheckbox(!this.state[checkbox])
+    this.setState({ [checkbox]: !this.state[checkbox] })
+  }
+  onModalCloseFunc() {
+    //resetting the state and closing the modal
+    this.setState(initialState)
+    this.props.onModalClose()
+  }
   render() {
     const {
       navigation,
@@ -25,7 +42,6 @@ export default class LogoutPopup extends Component {
       unsyncedDrafts,
       logUserOut,
       showCheckboxes,
-      onPressCheckbox,
       onModalClose,
       logingOut
     } = this.props
@@ -124,42 +140,71 @@ export default class LogoutPopup extends Component {
                 </Text>
               </View>
               <View style={{ marginBottom: 15 }}>
-                <Checkbox
+                {/* just like in the LogIn.js,here it is more easy to simply use the Checkbox from react-native-elements rather than modifying the Checboxes.js */}
+                <CheckBox
+                  iconType="material"
+                  checkedIcon="check-box"
+                  uncheckedIcon="check-box-outline-blank"
+                  checked={this.state.checkboxDrafts}
                   containerStyle={styles.checkbox}
-                  checkboxColor={colors.palered}
-                  textStyle={styles.checkboxText}
-                  showErrors={showErrors}
-                  onIconPress={onPressCheckbox}
+                  checkedColor={colors.palered}
+                  textStyle={
+                    showErrors && !this.state.checkboxDrafts
+                      ? styles.error
+                      : styles.checkboxText
+                  }
+                  onPress={() => this.checkboxChange('checkboxDrafts')}
                   title={`${i18n.t('general.delete')} ${i18n.t(
                     'general.drafts'
                   )}`}
                 />
-                <Checkbox
+                <CheckBox
+                  iconType="material"
+                  checkedIcon="check-box"
+                  uncheckedIcon="check-box-outline-blank"
+                  checked={this.state.checkboxLifeMaps}
                   containerStyle={styles.checkbox}
-                  checkboxColor={colors.palered}
-                  textStyle={styles.checkboxText}
-                  showErrors={showErrors}
-                  onIconPress={onPressCheckbox}
+                  checkedColor={colors.palered}
+                  textStyle={
+                    showErrors && !this.state.checkboxLifeMaps
+                      ? styles.error
+                      : styles.checkboxText
+                  }
+                  onPress={() => this.checkboxChange('checkboxLifeMaps')}
                   title={`${i18n.t('general.delete')} ${i18n.t(
                     'general.lifeMaps'
                   )}`}
                 />
-                <Checkbox
+                <CheckBox
+                  iconType="material"
+                  checkedIcon="check-box"
+                  uncheckedIcon="check-box-outline-blank"
+                  checked={this.state.checkboxFamilyInfo}
                   containerStyle={styles.checkbox}
-                  checkboxColor={colors.palered}
-                  textStyle={styles.checkboxText}
-                  showErrors={showErrors}
-                  onIconPress={onPressCheckbox}
+                  checkedColor={colors.palered}
+                  textStyle={
+                    showErrors && !this.state.checkboxFamilyInfo
+                      ? styles.error
+                      : styles.checkboxText
+                  }
+                  onPress={() => this.checkboxChange('checkboxFamilyInfo')}
                   title={`${i18n.t('general.delete')} ${i18n.t(
                     'general.familyInfo'
                   )}`}
                 />
-                <Checkbox
+                <CheckBox
+                  iconType="material"
+                  checkedIcon="check-box"
+                  uncheckedIcon="check-box-outline-blank"
+                  checked={this.state.checkboxCachedData}
                   containerStyle={styles.checkbox}
-                  checkboxColor={colors.palered}
-                  textStyle={styles.checkboxText}
-                  showErrors={showErrors}
-                  onIconPress={onPressCheckbox}
+                  checkedColor={colors.palered}
+                  textStyle={
+                    showErrors && !this.state.checkboxCachedData
+                      ? styles.error
+                      : styles.checkboxText
+                  }
+                  onPress={() => this.checkboxChange('checkboxCachedData')}
                   title={`${i18n.t('general.delete')} ${i18n.t(
                     'general.cachedData'
                   )}`}
@@ -196,7 +241,7 @@ export default class LogoutPopup extends Component {
                   : i18n.t('general.cancel')
               }
               style={{ minWidth: 107, marginLeft: 20 }}
-              handleClick={onModalClose}
+              handleClick={() => this.onModalCloseFunc()}
             />
           </View>
         </View>
@@ -253,6 +298,13 @@ const styles = StyleSheet.create({
     paddingVertical: 0,
     backgroundColor: 'transparent',
     borderWidth: 0
+  },
+  error: {
+    fontWeight: 'normal',
+    fontSize: 16,
+    fontFamily: 'Roboto',
+    color: colors.palered,
+    textDecorationLine: 'underline'
   },
   checkboxText: {
     fontWeight: 'normal',
