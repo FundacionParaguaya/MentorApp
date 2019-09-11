@@ -2,7 +2,7 @@ import React from 'react'
 import { shallow } from 'enzyme'
 import Popup from '../../components/Popup'
 import LogoutPopup from '../LogoutPopup'
-import Checkbox from '../../components/form/Checkbox'
+import { CheckBox } from 'react-native-elements'
 import i18n from '../../i18n'
 import colors from '../../theme.json'
 
@@ -102,16 +102,12 @@ describe('Logout Modal', () => {
         wrapper = shallow(<LogoutPopup {...props} />)
       })
 
-      it('shows a list of checkboxes', () => {
-        expect(wrapper.find(Checkbox)).toHaveLength(4)
-      })
-
       it('calls onPressCheckbox on pressing a Checkbox', () => {
         wrapper
-          .find(Checkbox)
+          .find(CheckBox)
           .first()
           .props()
-          .onIconPress()
+          .onPress()
 
         expect(props.onPressCheckbox).toHaveBeenCalledTimes(1)
       })
