@@ -82,7 +82,8 @@ class DatePickerWheel extends Component {
       value,
       placeholder,
       readonly,
-      hasError
+      hasError,
+      required
     } = this.props
     const wheelDays = days.map(day => day.value)
     const wheelMonths = months.map(month => month.text)
@@ -100,6 +101,14 @@ class DatePickerWheel extends Component {
         underlayColor={'transparent'}
         activeOpacity={1}
         onPress={this.toggleDropdown}
+        accessible={true}
+        accessibilityLabel={
+          required && !readonly
+            ? `${placeholder.replace('*', '')} ${i18n.t(
+                'validation.fieldIsRequiredAccessibilityLabel'
+              )}`
+            : ''
+        }
       >
         <View style={styles.wrapper}>
           <View
@@ -290,6 +299,7 @@ DatePickerWheel.propTypes = {
   value: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
   placeholder: PropTypes.string.isRequired,
   readonly: PropTypes.bool,
+  required: PropTypes.bool,
   hasError: PropTypes.bool,
   days: PropTypes.array.isRequired,
   months: PropTypes.array.isRequired,

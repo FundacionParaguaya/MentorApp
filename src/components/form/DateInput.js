@@ -6,6 +6,7 @@ import React from 'react'
 import colors from '../../theme.json'
 import moment from 'moment'
 import { withNamespaces } from 'react-i18next'
+import i18n from '../../i18n'
 
 export class DateInputComponent extends React.Component {
   state = {
@@ -112,7 +113,9 @@ export class DateInputComponent extends React.Component {
           <Text
             style={[styles.text, { marginBottom: readonly ? -15 : 15 }]}
             accessibilityLabel={`${this.props.label} ${
-              required && !readonly ? ' This is a mandatory field.' : ''
+              required && !readonly
+                ? i18n.t('validation.fieldIsRequiredAccessibilityLabel')
+                : ''
             }`}
           >
             {this.props.label} {required && !readonly ? '*' : ''}
@@ -135,6 +138,7 @@ export class DateInputComponent extends React.Component {
               months={months}
               years={this.years}
               hasError={!!this.state.error}
+              required={this.props.required}
             />
           </View>
         </View>

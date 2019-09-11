@@ -38,7 +38,8 @@
     "lessThan50Characters": "Value must be less than 50 characters",
     "alphabeticCharacters": "Please enter alphabetic characters",
     "validPhoneNumber": "Please enter a valid phone number",
-    "validNumber": "Please enter a valid number"
+    "validNumber": "Please enter a valid number",
+    "fieldIsRequiredAccessibilityLabel": "This is a mandatory field"
   },
   "months": {
     "january": "January",
