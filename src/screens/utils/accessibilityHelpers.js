@@ -77,3 +77,42 @@ export const exitModalAccessibleText = (draftId, deleteDraftOnExit) => {
     ${popUpButtons}
   `
 }
+
+export const screenSyncScreenContent = (
+  offline,
+  pendingDrafts,
+  draftsWithError,
+  lastSync
+) => {
+  const screenTitle = `${i18n.t('views.synced')}${pause}`
+
+  const syncUptoDate =
+    offline.online && !pendingDrafts.length && !draftsWithError.length
+  const syncInProgress = offline.online && pendingDrafts.length
+  const syncOffline = !offline.online
+  const syncRetry =
+    offline.online && draftsWithError.length && !pendingDrafts.length
+
+  let syncBody
+
+  if (syncUptoDate) {
+    syncBody = `${i18n.t('views.sync.upToDate')} ${
+      lastSync ? 'Last sync date should be added' : ''
+    }`
+  } else if (syncInProgress) {
+    syncBody = `${i18n.t('views.sync.inProgress')} `
+  } else if (syncOffline) {
+    syncBody = `${'Sync in progress'}`
+  } else if (syncRetry) {
+    syncBody = `${
+      draftsWithError === 1
+        ? i18n.t('views.sync.itemHasError').replace('%n', draftsWithError)
+        : i18n.t('views.sync.itemsHaveError').replace('%n', draftsWithError)
+    }`
+  }
+
+  return `
+    ${screenTitle}
+    ${syncBody}
+  `
+}

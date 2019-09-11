@@ -40,7 +40,7 @@ export class ExitDraftModal extends Component {
 
     const draftId = navigation.getParam('draftId')
     const deleteDraftOnExit = navigation.getParam('deleteDraftOnExit')
-    const accessibleContentText = exitModalAccessibleText(
+    const screenAccessibilityContent = exitModalAccessibleText(
       draftId,
       deleteDraftOnExit
     )
@@ -49,7 +49,7 @@ export class ExitDraftModal extends Component {
       <Popup isOpen onClose={this.onClose}>
         <View
           accessible={true}
-          accessibilityLabel={accessibleContentText}
+          accessibilityLabel={screenAccessibilityContent}
           accessibilityLiveRegion="assertive"
         >
           {!draftId || deleteDraftOnExit ? (

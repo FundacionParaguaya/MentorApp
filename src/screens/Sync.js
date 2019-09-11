@@ -20,6 +20,7 @@ import SyncOffline from '../components/sync/SyncOffline'
 import SyncInProgress from '../components/sync/SyncInProgress'
 import SyncListItem from '../components/sync/SyncListItem'
 import SyncRetry from '../components/sync/SyncRetry'
+import { screenSyncScreenContent } from '../screens/utils/accessibilityHelpers'
 
 export class Sync extends Component {
   acessibleComponent = React.createRef()
@@ -92,9 +93,20 @@ export class Sync extends Component {
     const list = drafts.filter(
       draft => draft.status === 'Sync error' || draft.status === 'Pending sync'
     )
+    const screenAccessibilityContent = screenSyncScreenContent(
+      offline,
+      pendingDrafts,
+      draftsWithError,
+      lastSync
+    )
+
     return (
       <ScrollView contentContainerStyle={[globalStyles.container, styles.view]}>
-        <View ref={this.acessibleComponent} accessible={true}>
+        <View
+          ref={this.acessibleComponent}
+          accessible={true}
+          accessibilityLabel={screenAccessibilityContent}
+        >
           {offline.online &&
           !pendingDrafts.length &&
           !draftsWithError.length ? (
