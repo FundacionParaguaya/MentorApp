@@ -4,10 +4,11 @@ import {
   DELETE_DRAFT,
   LOAD_FAMILIES_COMMIT,
   LOAD_FAMILIES_ROLLBACK,
-  LOAD_SURVEYS_COMMIT,
-  LOAD_SURVEYS_ROLLBACK,
   LOAD_MAPS_COMMIT,
   LOAD_MAPS_ROLLBACK,
+  LOAD_SURVEYS_COMMIT,
+  LOAD_SURVEYS_ROLLBACK,
+  MARK_VERSION_CHECKED,
   RESET_SYNCED_STATE,
   SET_DIMENSIONS,
   SET_DOWNLOADMAPSIMAGES,
@@ -21,6 +22,7 @@ import {
   SUBMIT_DRAFT_COMMIT,
   SUBMIT_DRAFT_ROLLBACK,
   SWITCH_LANGUAGE,
+  TOGGLE_API_VERSION_MODAL,
   UPDATE_DRAFT,
   USER_LOGOUT
 } from './actions'
@@ -66,7 +68,6 @@ export const env = (state = 'production', action) => {
 }
 
 //Download Maps or images
-
 export const downloadMapsAndImages = (
   state = { downloadMaps: true, downloadImages: true },
   action
@@ -80,7 +81,6 @@ export const downloadMapsAndImages = (
 }
 
 //Dimensions
-
 export const dimensions = (
   state = { width: null, height: null, scale: null },
   action
@@ -341,6 +341,31 @@ export const sync = (
   }
 }
 
+// API Versioning
+export const apiVersion = (
+  state = {
+    showModal: false,
+    timestamp: null
+  },
+  action
+) => {
+  switch (action.type) {
+    case TOGGLE_API_VERSION_MODAL:
+      return {
+        ...state,
+        showModal: action.isOpen
+      }
+    case MARK_VERSION_CHECKED:
+      return {
+        ...state,
+        timestamp: action.timestamp
+      }
+
+    default:
+      return state
+  }
+}
+
 const appReducer = combineReducers({
   env,
   user,
@@ -352,7 +377,8 @@ const appReducer = combineReducers({
   hydration,
   sync,
   dimensions,
-  downloadMapsAndImages
+  downloadMapsAndImages,
+  apiVersion
 })
 
 export const rootReducer = (state, action) => {
