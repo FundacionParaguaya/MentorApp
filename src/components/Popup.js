@@ -40,16 +40,32 @@ export default class Popup extends Component {
                 >
                   <View />
                 </TouchableHighlight>
-                <ScrollView
-                  id="modal"
-                  style={
-                    LogoutPopup ? styles.modalLogout : styles.modalDefinition
-                  }
-                  accessible={true}
-                  accessibilityLiveRegion="assertive"
+
+                <View
+                  style={{
+                    justifyContent: 'center',
+                    alignItems: 'center'
+                  }}
                 >
-                  {children}
-                </ScrollView>
+                  <View
+                    style={{
+                      width: '100%'
+                    }}
+                  >
+                    <ScrollView
+                      id="modal"
+                      style={
+                        LogoutPopup
+                          ? styles.modalLogout
+                          : styles.modalDefinition
+                      }
+                      accessible={true}
+                      accessibilityLiveRegion="assertive"
+                    >
+                      {children}
+                    </ScrollView>
+                  </View>
+                </View>
               </View>
             ) : (
               <React.Fragment>
@@ -133,19 +149,14 @@ const styles = StyleSheet.create({
   },
   modal: {
     width: 300,
-
     backgroundColor: colors.white,
     paddingVertical: 23,
     padding: 28,
     marginBottom: 200
   },
   modalLogout: {
-    width: 300,
     backgroundColor: colors.white,
-    paddingVertical: 23,
-    padding: 28,
-    marginLeft: 20,
-    marginRight: 20
+    padding: 28
   },
   definitionParent: {
     position: 'absolute',
