@@ -46,8 +46,8 @@ export const logoutModalAccessibleText = (
   `
   const logoutButtons = `${
     !checkboxesVisible
-      ? `${i18n.t('general.yes')} ${i18n.t('general.no')}`
-      : `${i18n.t('general.delete')}${i18n.t('general.cancel')}`
+      ? `${i18n.t('general.yes')} ${pause} ${i18n.t('general.no')}`
+      : `${i18n.t('general.delete')} ${pause} ${i18n.t('general.cancel')}`
   }`
 
   return `
