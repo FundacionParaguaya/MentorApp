@@ -208,8 +208,10 @@ export class Location extends Component {
     const draft = !this.readOnly ? this.getDraft() : this.readOnlyDraft
     const { familyData } = draft
     this.setState({ askingForPermission: true })
+    // if we have an emty array [] or an array with an empty object [{}] then dont show the offline maps because we dont have any.
     if (
-      this.survey.surveyConfig.offlineMaps &&
+      this.props.maps.length &&
+      !!this.props.maps[0].name &&
       !this.state.showOfflineMapsList
     ) {
       this.setState({
@@ -611,7 +613,7 @@ export class Location extends Component {
                   borderTopColor: colors.palegrey
                 }}
               >
-                {this.survey.surveyConfig.offlineMaps.map(map => (
+                {this.props.maps.map(map => (
                   <TouchableHighlight
                     underlayColor={colors.primary}
                     onPress={() => this.centerOnOfflineMap(map)}
@@ -943,14 +945,15 @@ Location.propTypes = {
   t: PropTypes.func.isRequired,
   updateDraft: PropTypes.func.isRequired,
   navigation: PropTypes.object.isRequired,
-  drafts: PropTypes.array.isRequired
+  drafts: PropTypes.array.isRequired,
+  maps: PropTypes.array
 }
 
 const mapDispatchToProps = {
   updateDraft
 }
 
-const mapStateToProps = ({ drafts }) => ({ drafts })
+const mapStateToProps = ({ drafts, maps }) => ({ drafts, maps })
 
 export default withNamespaces()(
   connect(

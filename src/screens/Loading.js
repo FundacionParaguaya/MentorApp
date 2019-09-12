@@ -14,6 +14,7 @@ import DeviceInfo from 'react-native-device-info'
 import {
   loadFamilies,
   loadSurveys,
+  loadMaps,
   logout,
   setAppVersion,
   resetSyncState,
@@ -30,6 +31,7 @@ export class Loading extends Component {
     syncingServerData: false, // know when to show that data is synced
     cachingImages: false,
     downloadingMap: false,
+    mapsDownloaded: false,
     currentMapName: '',
     mapPercent: 0,
     maps: [],
@@ -94,47 +96,24 @@ export class Loading extends Component {
   }
 
   // STEP 3 - check and cache the offline maps
-  checkOfflineMaps = () => {
+  checkOfflineMaps = async () => {
     MapboxGL.offlineManager.setTileCountLimit(200000)
-    if (
-      !this.props.downloadMapsAndImages.downloadMaps ||
-      this.props.sync.maps
-    ) {
-      return this.handleImageCaching()
-    }
-
-    const mapsArray = []
-
-    const surveysWithOfflineMaps = this.props.surveys.filter(
-      survey => survey.surveyConfig.offlineMaps
-    )
-
-    if (surveysWithOfflineMaps) {
-      surveysWithOfflineMaps.forEach(survey => {
-        survey.surveyConfig.offlineMaps.forEach(map => {
-          if (map.name && !mapsArray.some(item => item.name === map.name)) {
-            const options = {
-              minZoom: 10,
-              maxZoom: 13,
-              bounds: [map.from, map.to]
-            }
-            mapsArray.push({ name: map.name, status: 0, options })
-          }
-        })
+    if (!this.props.downloadMapsAndImages.downloadMaps) {
+      //when we decide to skip the maps form the dev options , we simply pretend that they are already downloaded
+      this.setState({
+        mapsDownloaded: true
       })
-
-      this.setState({ maps: mapsArray }, this.initMapDownload)
+      return this.handleImageCaching()
     } else {
-      this.handleImageCaching()
+      this.props.loadMaps(url[this.props.env], this.props.user.token)
+      this.setState({
+        downloadingMap: true
+      })
     }
-
-    this.setState({
-      downloadingMap: true
-    })
   }
 
   // update map download progress
-  onMapDownloadProgress = (offlineRegion, offlineRegionStatus) => {
+  onMapDownloadProgress = async (offlineRegion, offlineRegionStatus) => {
     if (offlineRegionStatus.name !== this.state.currentMapName) {
       this.setState({
         currentMapName: offlineRegionStatus.name
@@ -142,7 +121,7 @@ export class Loading extends Component {
     }
 
     if (offlineRegionStatus.percentage === 100) {
-      this.setState({
+      await this.setState({
         maps: this.state.maps.map(map => {
           if (map.name === offlineRegionStatus.name) {
             return {
@@ -244,13 +223,16 @@ export class Loading extends Component {
     if (maps.length && maps.some(map => map.status !== 100)) {
       this.downloadOfflineMapPack(maps.find(map => map.status !== 100))
     } else {
+      this.setState({
+        downloadingMap: false,
+        mapsDownloaded: true
+      })
       this.handleImageCaching()
     }
   }
 
   checkState() {
-    const { families, surveys, images, appVersion, maps } = this.props.sync
-
+    const { families, surveys, images, appVersion } = this.props.sync
     if (!this.props.user.token) {
       // if user hasn't logged in, navigate to login
       this.props.navigation.navigate('Login')
@@ -263,7 +245,6 @@ export class Loading extends Component {
     } else if (
       families &&
       surveys &&
-      maps &&
       !!images.total &&
       images.total === images.synced
     ) {
@@ -284,18 +265,33 @@ export class Loading extends Component {
   componentDidMount() {
     this.checkState()
   }
-
+  downloadMaps = async () => {
+    let mapsArray = []
+    this.props.maps.forEach(map => {
+      if (map.name && !mapsArray.some(item => item.name === map.name)) {
+        const options = {
+          minZoom: 10,
+          maxZoom: 13,
+          bounds: [map.from, map.to]
+        }
+        mapsArray.push({ name: map.name, status: 0, options })
+      }
+    })
+    await this.setState({ maps: mapsArray })
+    this.initMapDownload()
+  }
   componentDidUpdate(prevProps) {
     // if user logs in
     if (!prevProps.user.token && this.props.user.token) {
       this.syncSurveys()
     }
-
     // start syncing families once surveys are synced
     if (!prevProps.sync.surveys && this.props.sync.surveys) {
       this.syncFamilies()
     }
-
+    if (!prevProps.maps.length && this.props.maps.length) {
+      this.downloadMaps()
+    }
     // if families are synced check for map data
     if (!prevProps.sync.families && this.props.sync.families) {
       this.checkOfflineMaps()
@@ -304,7 +300,7 @@ export class Loading extends Component {
     if (
       this.props.surveys.length &&
       !this.props.offline.outbox.lenght &&
-      this.state.downloadingMap &&
+      this.state.mapsDownloaded &&
       this.state.maps.every(map => map.status === 100) &&
       !this.state.cachingImages
     ) {
@@ -322,7 +318,14 @@ export class Loading extends Component {
     ) {
       this.props.navigation.navigate('DrawerStack')
     }
-
+    // if there is a map download error
+    if (!prevProps.sync.mapsError && this.props.sync.mapsError) {
+      //in case of error we dont show the error... we just skip the maps.
+      this.setState({
+        mapsDownloaded: true,
+        downloadingMap: false
+      })
+    }
     // if there is a download error
     if (!prevProps.sync.familiesError && this.props.sync.familiesError) {
       this.showError('We seem to have a problem downloading your families.')
@@ -339,12 +342,12 @@ export class Loading extends Component {
       syncingServerData,
       cachingImages,
       downloadingMap,
+      mapsDownloaded,
       error,
       maps,
       currentMapName,
       mapPercent
     } = this.state
-
     return (
       <AndroidBackHandler onBackPress={() => true}>
         {!error ? (
@@ -404,20 +407,26 @@ export class Loading extends Component {
                     </View>
                   )}
 
-                  {downloadingMap || sync.maps ? (
+                  {mapsDownloaded || downloadingMap ? (
                     <View>
                       <View style={styles.syncingItem}>
                         <Text
                           style={
-                            sync.maps ? styles.colorGreen : styles.colorDark
+                            !downloadingMap
+                              ? styles.colorGreen
+                              : styles.colorDark
                           }
                         >
-                          {sync.maps ? 'Maps cached' : 'Downloading Maps...'}
+                          {!downloadingMap
+                            ? 'Maps cached'
+                            : 'Downloading Maps...'}
                         </Text>
-                        {!sync.maps ? (
+                        {downloadingMap ? (
                           <Text
                             style={
-                              sync.maps ? styles.colorGreen : styles.colorDark
+                              !downloadingMap
+                                ? styles.colorGreen
+                                : styles.colorDark
                             }
                           >{`${
                             maps.filter(item => item.status === 100).length
@@ -430,13 +439,13 @@ export class Loading extends Component {
                           />
                         )}
                       </View>
-                      {!sync.maps && (
+                      {downloadingMap && (
                         <View style={styles.syncingItem}>
                           <Text>{currentMapName}</Text>
                           <Text>{`${Math.floor(mapPercent)}%`}</Text>
                         </View>
                       )}
-                      <View style={sync.maps ? { display: 'none' } : {}}>
+                      <View style={!downloadingMap ? { display: 'none' } : {}}>
                         <ProgressBar
                           removePadding
                           hideBorder
@@ -540,6 +549,7 @@ export class Loading extends Component {
 Loading.propTypes = {
   loadFamilies: PropTypes.func.isRequired,
   loadSurveys: PropTypes.func.isRequired,
+  loadMaps: PropTypes.func.isRequired,
   logout: PropTypes.func,
   resetSyncState: PropTypes.func,
   setAppVersion: PropTypes.func,
@@ -550,6 +560,7 @@ Loading.propTypes = {
   navigation: PropTypes.object.isRequired,
   surveys: PropTypes.array.isRequired,
   families: PropTypes.array.isRequired,
+  maps: PropTypes.array.isRequired,
   offline: PropTypes.object.isRequired,
   downloadMapsAndImages: PropTypes.object,
   hydration: PropTypes.bool.isRequired
@@ -594,6 +605,7 @@ export const mapStateToProps = ({
   user,
   offline,
   families,
+  maps,
   hydration,
   downloadMapsAndImages
 }) => ({
@@ -603,6 +615,7 @@ export const mapStateToProps = ({
   user,
   offline,
   families,
+  maps,
   hydration,
   downloadMapsAndImages
 })
@@ -610,6 +623,7 @@ export const mapStateToProps = ({
 const mapDispatchToProps = {
   loadFamilies,
   loadSurveys,
+  loadMaps,
   logout,
   setAppVersion,
   resetSyncState,
