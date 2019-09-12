@@ -23,6 +23,7 @@ import colors from '../../theme.json'
 import countries from 'localized-countries'
 import globalStyles from '../../globalStyles'
 import i18n from '../../i18n'
+import { setListOfLabeles } from '../../screens/utils/accessibilityHelpers'
 
 const countryList = countries(require('localized-countries/data/en')).array()
 
@@ -354,7 +355,13 @@ class Select extends Component {
                     this.toggleDropdown()
                   }}
                 >
-                  <View style={styles.dropdown}>
+                  <View
+                    style={styles.dropdown}
+                    accessible={true}
+                    accessibilityLabel={setListOfLabeles(
+                      countrySelect ? countries : options
+                    )}
+                  >
                     {countrySelect ? (
                       <ScrollView>
                         <FlatList

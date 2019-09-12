@@ -1,12 +1,17 @@
 import i18n from '../../i18n'
 
-// export const setListOfLabeles = options => {
-//   return options
-//     ? options.map((item, index) => `Option ${index + 1}` + item.text).join()
-//     : 'items'
-// }
-
 const pause = '.'
+
+export const setListOfLabeles = options => {
+  if (!options) {
+    return ''
+  }
+  const optionsList = `${options
+    .map(item => item.text || item.label)
+    .join()} ${pause}`
+
+  return `Choose one of the options from the dropdown ${optionsList}`
+}
 
 export const logoutModalAccessibleText = (
   unsyncedDrafts,
