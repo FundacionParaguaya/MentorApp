@@ -30,6 +30,10 @@ import { connect } from 'react-redux'
 import globalStyles from '../globalStyles'
 import { withNamespaces } from 'react-i18next'
 
+const TestFairy = require('react-native-testfairy')
+// get env
+const nodeEnv = process.env
+
 export class Dashboard extends Component {
   acessibleComponent = React.createRef()
   state = {
@@ -188,6 +192,9 @@ export class Dashboard extends Component {
     if (!this.props.user.token) {
       this.props.navigation.navigate('Login')
     } else {
+      nodeEnv.NODE_ENV === 'production'
+        ? TestFairy.setUserId(this.props.user.username)
+        : null
       this.checkAPIVersion()
       if (UIManager.AccessibilityEventTypes) {
         setTimeout(() => {

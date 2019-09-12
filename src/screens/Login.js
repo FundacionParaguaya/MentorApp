@@ -29,7 +29,6 @@ import { connect } from 'react-redux'
 import globalStyles from '../globalStyles'
 import logo from '../../assets/images/logo.png'
 import { url } from '../config'
-const TestFairy = require('react-native-testfairy')
 // get env
 const nodeEnv = process.env
 
@@ -126,7 +125,6 @@ export class Login extends Component {
         .trim()
         .substring(2, this.state.username.trim().length)
     }
-    nodeEnv.NODE_ENV === 'production' ? TestFairy.setUserId(username) : null
 
     this.props.setEnv(env)
     this.props.login(username, this.state.password, url[env]).then(() => {
