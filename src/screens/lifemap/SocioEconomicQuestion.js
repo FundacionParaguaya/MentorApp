@@ -11,7 +11,7 @@ import {
 } from '../utils/conditional_logic'
 import { getTotalScreens, setScreen } from './helpers'
 
-import Checkbox from '../../components/Checkbox'
+import Checkboxes from '../../components/form/Checkboxes'
 import Decoration from '../../components/decoration/Decoration'
 import PropTypes from 'prop-types'
 import Select from '../../components/form/Select'
@@ -41,9 +41,7 @@ export class SocioEconomicQuestion extends Component {
   survey = this.props.navigation.getParam('survey')
   readOnly = this.props.navigation.getParam('readOnly')
   draftId = this.props.navigation.getParam('draftId')
-
   state = {
-    checkboxError: false,
     errors: [],
     showErrors: false
   }
@@ -170,44 +168,31 @@ export class SocioEconomicQuestion extends Component {
         this.props.language === 'en' ? '$1,' : '$1.'
       )
   }
-  onPressCheckbox = (text, field) => {
+  updateCheckbox = async (newAnswers, field) => {
     const draft = !this.readOnly ? this.getDraft() : this.readOnlyDraft
-
     const question = draft.economicSurveyDataList.find(
       item => item.key === field
     )
 
     if (!question) {
-      this.props.updateDraft({
+      await this.props.updateDraft({
         ...draft,
         economicSurveyDataList: [
           ...draft.economicSurveyDataList,
-          { key: field, multipleValue: [text] }
+          { key: field, multipleValue: newAnswers }
         ]
       })
     } else {
-      this.props.updateDraft({
+      await this.props.updateDraft({
         ...draft,
         economicSurveyDataList: [
           ...draft.economicSurveyDataList.filter(item => item.key !== field),
           {
             key: field,
-            multipleValue: question.multipleValue.find(item => item === text)
-              ? question.multipleValue.filter(item => item !== text)
-              : [...question.multipleValue, text]
+            multipleValue: newAnswers
           }
         ]
       })
-    }
-
-    const questionAfterSave = draft.economicSurveyDataList.find(
-      item => item.key === field
-    )
-
-    if (questionAfterSave) {
-      !questionAfterSave.multipleValue.length
-        ? this.setState({ checkboxError: true })
-        : this.setState({ checkboxError: false })
     }
   }
 
@@ -471,8 +456,8 @@ export class SocioEconomicQuestion extends Component {
                 )
               } else if (question.answerType === 'checkbox') {
                 let multipleValue = []
-                //passing multipleValues from the checkbox question
-                draft.economicSurveyDataList.forEach(elem => {
+                //passong the asnwered questions form the checbox , if no questions are answered then send []
+                draft.economicSurveyDataList.find(elem => {
                   if (elem.key === question.codeName) {
                     if (typeof elem.multipleValue !== 'undefined') {
                       if (elem.multipleValue.length) {
@@ -484,38 +469,19 @@ export class SocioEconomicQuestion extends Component {
 
                 return (
                   <View key={question.codeName}>
-                    {this.readOnly && !multipleValue.length ? null : (
-                      <Text style={{ marginLeft: 10 }}>
-                        {!question.required
-                          ? question.questionText
-                          : `${question.questionText}*`}
-                      </Text>
-                    )}
-
-                    {question.options.map(e => {
-                      return (
-                        <View key={e.value}>
-                          <Checkbox
-                            multipleValue={multipleValue}
-                            containerStyle={styles.checkbox}
-                            checkboxColor={colors.green}
-                            onIconPress={() =>
-                              this.onPressCheckbox(e.value, question.codeName)
-                            }
-                            title={e.text}
-                            value={e.value}
-                            codeName={question.codeName}
-                            readonly={!!this.readOnly}
-                            showErrors={showErrors}
-                          />
-                        </View>
-                      )
-                    })}
-                    {question.required && this.state.checkboxError ? (
-                      <Text style={styles.error}>
-                        {t('validation.fieldIsRequired')}{' '}
-                      </Text>
-                    ) : null}
+                    <Checkboxes
+                      question={question}
+                      multipleValue={multipleValue}
+                      readonly={!!this.readOnly}
+                      updateAnswers={update =>
+                        this.updateCheckbox(update, question.codeName)
+                      }
+                      setError={isError =>
+                        this.setError(isError, question.codeName)
+                      }
+                      showErrors={showErrors}
+                      required={question.required}
+                    />
                   </View>
                 )
               } else {
@@ -680,15 +646,6 @@ export class SocioEconomicQuestion extends Component {
 }
 
 const styles = StyleSheet.create({
-  error: {
-    paddingLeft: 15,
-    paddingRight: 25,
-    // lineHeight: 50,
-    paddingTop: 10,
-    paddingBottom: 10,
-    minHeight: 50,
-    color: colors.red
-  },
   memberName: {
     marginHorizontal: 20,
     fontWeight: 'normal',

@@ -29,7 +29,9 @@
     "print": "Imprimir",
     "navigation": "navegación",
     "goback": "atrás",
-    "exit": "salir"
+    "exit": "salir",
+    "attention": "¡Atención!",
+    "syncAll": "¡Sincroniza todos los Mapas de Vida y actualiza la aplicación!"
   },
   "validation": {
     "fieldIsRequired": "Este campo es requerido",

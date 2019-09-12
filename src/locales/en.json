@@ -29,7 +29,9 @@
     "print": "Print",
     "navigation": "navigation",
     "goback": "go back",
-    "exit": "exit"
+    "exit": "exit",
+    "attention": "Important!",
+    "syncAll": "Sync all Life Maps & update the application!"
   },
   "validation": {
     "fieldIsRequired": "This field is required",

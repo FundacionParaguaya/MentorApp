@@ -129,6 +129,8 @@ export default class Mapbox extends React.Component {
     return React.createElement('MapView', this.props, this.props.children)
   }
 
+  static requestAndroidLocationPermissions = () => jest.fn()
+
   static setAccessToken = () => jest.fn()
 
   static offlineManager = {

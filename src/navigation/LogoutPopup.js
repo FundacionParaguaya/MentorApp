@@ -9,15 +9,31 @@ import {
 } from 'react-native'
 import CommunityIcon from 'react-native-vector-icons/MaterialCommunityIcons'
 import Popup from '../components/Popup'
-import Checkbox from '../components/Checkbox'
 import Icon from 'react-native-vector-icons/MaterialIcons'
 import Button from '../components/Button'
 import i18n from '../i18n'
 import colors from '../theme.json'
 import globalStyles from '../globalStyles'
-import { logoutModalAccessibleText } from '../screens/utils/accessibilityHelpers'
+import { CheckBox } from 'react-native-elements'
 
+const initialState = {
+  checkboxDrafts: false,
+  checkboxLifeMaps: false,
+  checkboxFamilyInfo: false,
+  checkboxCachedData: false
+}
 export default class LogoutPopup extends Component {
+  state = initialState
+
+  checkboxChange(checkbox) {
+    this.props.onPressCheckbox(!this.state[checkbox])
+    this.setState({ [checkbox]: !this.state[checkbox] })
+  }
+  onModalCloseFunc() {
+    //resetting the state and closing the modal
+    this.setState(initialState)
+    this.props.onModalClose()
+  }
   render() {
     const {
       navigation,
@@ -26,16 +42,9 @@ export default class LogoutPopup extends Component {
       unsyncedDrafts,
       logUserOut,
       showCheckboxes,
-      onPressCheckbox,
       onModalClose,
       logingOut
     } = this.props
-
-    const accessiblePopUpText = logoutModalAccessibleText(
-      unsyncedDrafts,
-      checkboxesVisible
-    )
-
     return logingOut ? (
       <Popup
         LogoutPopup
@@ -58,167 +67,182 @@ export default class LogoutPopup extends Component {
         onClose={onModalClose}
       >
         <View
+          style={{ alignItems: 'flex-end', paddingVertical: 10 }}
           accessible={true}
-          accessibilityLabel={`${accessiblePopUpText}`}
-          accessibilityLiveRegion="assertive"
+          accessibilityLabel={i18n.t('general.close')}
+          accessibilityRole={'button'}
         >
-          <View
-            style={{
-              alignItems: 'center',
-              paddingVertical: 15,
-              width: 60,
-              marginLeft: 'auto'
-            }}
-            accessible={true}
-            accessibilityLabel={i18n.t('general.close')}
-            accessibilityRole={'button'}
-          >
-            <Icon onPress={onModalClose} name="close" size={30} />
+          <Icon onPress={onModalClose} name="close" size={23} />
+        </View>
+
+        <View style={styles.modalContainer} accessibilityLiveRegion="polite">
+          <View style={{ alignItems: 'center' }}>
+            {!checkboxesVisible ? (
+              <Icon
+                name="sentiment-dissatisfied"
+                color={colors.lightdark}
+                size={44}
+              />
+            ) : (
+              <CommunityIcon
+                name="exclamation"
+                color={colors.palered}
+                size={60}
+              />
+            )}
+            <Text
+              style={[
+                styles.title,
+                checkboxesVisible ? { color: colors.palered } : {}
+              ]}
+            >
+              {!checkboxesVisible
+                ? i18n.t('views.logout.logout')
+                : `${i18n.t('general.warning')}!`}
+            </Text>
           </View>
 
-          <View style={styles.modalContainer}>
-            <View style={{ alignItems: 'center' }}>
-              {!checkboxesVisible ? (
-                <Icon
-                  name="sentiment-dissatisfied"
-                  color={colors.lightdark}
-                  size={44}
-                />
-              ) : (
-                <CommunityIcon
-                  name="exclamation"
-                  color={colors.palered}
-                  size={60}
-                />
-              )}
-              <Text
-                accessible={true}
-                style={[
-                  styles.title,
-                  checkboxesVisible ? { color: colors.palered } : {}
-                ]}
-              >
-                {!checkboxesVisible
-                  ? i18n.t('views.logout.logout')
-                  : `${i18n.t('general.warning')}!`}
-              </Text>
-            </View>
-
-            {/* Popup text */}
-            {!checkboxesVisible ? (
-              <View>
-                {unsyncedDrafts ? (
-                  <View style={{ alignItems: 'center' }}>
-                    <Text style={globalStyles.h3}>
-                      {i18n.t('views.logout.youHaveUnsynchedData')}
-                    </Text>
-                    <Text style={[globalStyles.h3, { color: colors.palered }]}>
-                      {i18n.t('views.logout.thisDataWillBeLost')}
-                    </Text>
-                  </View>
-                ) : (
-                  <View style={{ alignItems: 'center' }}>
-                    <Text style={globalStyles.h3}>
-                      {i18n.t('views.logout.weWillMissYou')}
-                    </Text>
-                    <Text
-                      style={[globalStyles.h3, { color: colors.palegreen }]}
-                    >
-                      {i18n.t('views.logout.comeBackSoon')}
-                    </Text>
-                  </View>
-                )}
-                <Text style={[styles.confirm, globalStyles.h3]}>
-                  {i18n.t('views.logout.areYouSureYouWantToLogOut')}
-                </Text>
-              </View>
-            ) : (
-              // Checkboxes section
-              <View style={{ alignItems: 'center' }}>
-                <View style={{ marginBottom: 25, alignItems: 'center' }}>
-                  <Text style={[globalStyles.h3, { textAlign: 'center' }]}>
-                    {i18n.t('views.logout.looseYourData')}
+          {/* Popup text */}
+          {!checkboxesVisible ? (
+            <View>
+              {unsyncedDrafts ? (
+                <View style={{ alignItems: 'center' }}>
+                  <Text style={globalStyles.h3}>
+                    {i18n.t('views.logout.youHaveUnsynchedData')}
                   </Text>
                   <Text style={[globalStyles.h3, { color: colors.palered }]}>
-                    {i18n.t('views.logout.cannotUndo')}
+                    {i18n.t('views.logout.thisDataWillBeLost')}
                   </Text>
                 </View>
-                <View style={{ marginBottom: 15 }}>
-                  <Checkbox
-                    containerStyle={styles.checkbox}
-                    checkboxColor={colors.palered}
-                    textStyle={styles.checkboxText}
-                    showErrors={showErrors}
-                    onIconPress={onPressCheckbox}
-                    title={`${i18n.t('general.delete')} ${i18n.t(
-                      'general.drafts'
-                    )}`}
-                  />
-                  <Checkbox
-                    containerStyle={styles.checkbox}
-                    checkboxColor={colors.palered}
-                    textStyle={styles.checkboxText}
-                    showErrors={showErrors}
-                    onIconPress={onPressCheckbox}
-                    title={`${i18n.t('general.delete')} ${i18n.t(
-                      'general.lifeMaps'
-                    )}`}
-                  />
-                  <Checkbox
-                    containerStyle={styles.checkbox}
-                    checkboxColor={colors.palered}
-                    textStyle={styles.checkboxText}
-                    showErrors={showErrors}
-                    onIconPress={onPressCheckbox}
-                    title={`${i18n.t('general.delete')} ${i18n.t(
-                      'general.familyInfo'
-                    )}`}
-                  />
-                  <Checkbox
-                    containerStyle={styles.checkbox}
-                    checkboxColor={colors.palered}
-                    textStyle={styles.checkboxText}
-                    showErrors={showErrors}
-                    onIconPress={onPressCheckbox}
-                    title={`${i18n.t('general.delete')} ${i18n.t(
-                      'general.cachedData'
-                    )}`}
-                  />
+              ) : (
+                <View style={{ alignItems: 'center' }}>
+                  <Text style={globalStyles.h3}>
+                    {i18n.t('views.logout.weWillMissYou')}
+                  </Text>
+                  <Text style={[globalStyles.h3, { color: colors.palegreen }]}>
+                    {i18n.t('views.logout.comeBackSoon')}
+                  </Text>
                 </View>
-              </View>
-            )}
-
-            {/* Buttons bar */}
-            <View style={styles.buttonBar}>
-              <Button
-                id="ok-button"
-                outlined
-                text={
-                  checkboxesVisible
-                    ? i18n.t('general.delete')
-                    : i18n.t('general.yes')
-                }
-                borderColor={unsyncedDrafts ? colors.palered : colors.palegreen}
-                style={{ width: 107, marginRight: 20 }}
-                handleClick={
-                  unsyncedDrafts && !checkboxesVisible
-                    ? showCheckboxes
-                    : logUserOut
-                }
-              />
-              <Button
-                id="cancel-button"
-                outlined
-                borderColor={colors.grey}
-                text={
-                  !checkboxesVisible
-                    ? i18n.t('general.no')
-                    : i18n.t('general.cancel')
-                }
-                style={{ width: 107, marginLeft: 20 }}
-                handleClick={onModalClose}
-              />
+              )}
+              <Text style={[styles.confirm, globalStyles.h3]}>
+                {i18n.t('views.logout.areYouSureYouWantToLogOut')}
+              </Text>
             </View>
+          ) : (
+            // Checkboxes section
+            <View style={{ alignItems: 'center' }}>
+              <View style={{ marginBottom: 25, alignItems: 'center' }}>
+                <Text style={[globalStyles.h3, { textAlign: 'center' }]}>
+                  {i18n.t('views.logout.looseYourData')}
+                </Text>
+                <Text style={[globalStyles.h3, { color: colors.palered }]}>
+                  {i18n.t('views.logout.cannotUndo')}
+                </Text>
+              </View>
+              <View style={{ marginBottom: 15 }}>
+                {/* just like in the LogIn.js,here it is more easy to simply use the Checkbox from react-native-elements rather than modifying the Checboxes.js */}
+                <CheckBox
+                  iconType="material"
+                  checkedIcon="check-box"
+                  uncheckedIcon="check-box-outline-blank"
+                  checked={this.state.checkboxDrafts}
+                  containerStyle={styles.checkbox}
+                  checkedColor={colors.palered}
+                  textStyle={
+                    showErrors && !this.state.checkboxDrafts
+                      ? styles.error
+                      : styles.checkboxText
+                  }
+                  onPress={() => this.checkboxChange('checkboxDrafts')}
+                  title={`${i18n.t('general.delete')} ${i18n.t(
+                    'general.drafts'
+                  )}`}
+                />
+                <CheckBox
+                  iconType="material"
+                  checkedIcon="check-box"
+                  uncheckedIcon="check-box-outline-blank"
+                  checked={this.state.checkboxLifeMaps}
+                  containerStyle={styles.checkbox}
+                  checkedColor={colors.palered}
+                  textStyle={
+                    showErrors && !this.state.checkboxLifeMaps
+                      ? styles.error
+                      : styles.checkboxText
+                  }
+                  onPress={() => this.checkboxChange('checkboxLifeMaps')}
+                  title={`${i18n.t('general.delete')} ${i18n.t(
+                    'general.lifeMaps'
+                  )}`}
+                />
+                <CheckBox
+                  iconType="material"
+                  checkedIcon="check-box"
+                  uncheckedIcon="check-box-outline-blank"
+                  checked={this.state.checkboxFamilyInfo}
+                  containerStyle={styles.checkbox}
+                  checkedColor={colors.palered}
+                  textStyle={
+                    showErrors && !this.state.checkboxFamilyInfo
+                      ? styles.error
+                      : styles.checkboxText
+                  }
+                  onPress={() => this.checkboxChange('checkboxFamilyInfo')}
+                  title={`${i18n.t('general.delete')} ${i18n.t(
+                    'general.familyInfo'
+                  )}`}
+                />
+                <CheckBox
+                  iconType="material"
+                  checkedIcon="check-box"
+                  uncheckedIcon="check-box-outline-blank"
+                  checked={this.state.checkboxCachedData}
+                  containerStyle={styles.checkbox}
+                  checkedColor={colors.palered}
+                  textStyle={
+                    showErrors && !this.state.checkboxCachedData
+                      ? styles.error
+                      : styles.checkboxText
+                  }
+                  onPress={() => this.checkboxChange('checkboxCachedData')}
+                  title={`${i18n.t('general.delete')} ${i18n.t(
+                    'general.cachedData'
+                  )}`}
+                />
+              </View>
+            </View>
+          )}
+
+          {/* Buttons bar */}
+          <View style={styles.buttonBar}>
+            <Button
+              id="ok-button"
+              outlined
+              text={
+                checkboxesVisible
+                  ? i18n.t('general.delete')
+                  : i18n.t('general.yes')
+              }
+              borderColor={unsyncedDrafts ? colors.palered : colors.palegreen}
+              style={{ minWidth: 107, marginRight: 20 }}
+              handleClick={
+                unsyncedDrafts && !checkboxesVisible
+                  ? showCheckboxes
+                  : logUserOut
+              }
+            />
+            <Button
+              id="cancel-button"
+              outlined
+              borderColor={colors.grey}
+              text={
+                !checkboxesVisible
+                  ? i18n.t('general.no')
+                  : i18n.t('general.cancel')
+              }
+              style={{ minWidth: 107, marginLeft: 20 }}
+              handleClick={() => this.onModalCloseFunc()}
+            />
           </View>
         </View>
       </Popup>
@@ -274,6 +298,13 @@ const styles = StyleSheet.create({
     paddingVertical: 0,
     backgroundColor: 'transparent',
     borderWidth: 0
+  },
+  error: {
+    fontWeight: 'normal',
+    fontSize: 16,
+    fontFamily: 'Roboto',
+    color: colors.palered,
+    textDecorationLine: 'underline'
   },
   checkboxText: {
     fontWeight: 'normal',

@@ -1,26 +1,30 @@
 import {
   FlatList,
+  Image,
   ScrollView,
   StyleSheet,
   Text,
+  TouchableHighlight,
   UIManager,
   View,
-  findNodeHandle,
-  Image,
-  TouchableHighlight
+  findNodeHandle
 } from 'react-native'
 import React, { Component } from 'react'
+import { markVersionCheked, toggleAPIVersionModal } from '../redux/actions'
+import { supported_API_version, url } from '../config'
 
 import { AndroidBackHandler } from 'react-navigation-backhandler'
+import BottomModal from '../components/BottomModal'
 import Button from '../components/Button'
 import Decoration from '../components/decoration/Decoration'
 import DraftListItem from '../components/DraftListItem'
-import Icon from 'react-native-vector-icons/MaterialCommunityIcons'
 import FilterListItem from '../components/FilterListItem'
-import BottomModal from '../components/BottomModal'
-import arrow from '../../assets/images/selectArrow.png'
+import Icon from 'react-native-vector-icons/MaterialCommunityIcons'
+import NetInfo from '@react-native-community/netinfo'
+import NotificationModal from '../components/NotificationModal'
 import PropTypes from 'prop-types'
 import RoundImage from '../components/RoundImage'
+import arrow from '../../assets/images/selectArrow.png'
 import colors from '../theme.json'
 import { connect } from 'react-redux'
 import globalStyles from '../globalStyles'
@@ -101,10 +105,15 @@ export class Dashboard extends Component {
   navigateToCreateLifemap = () => {
     this.props.navigation.navigate('Surveys')
   }
+
   toggleFilterModal = () => {
     this.setState({
       filterModalIsOpen: !this.state.filterModalIsOpen
     })
+  }
+
+  onNotificationClose = () => {
+    this.props.toggleAPIVersionModal(false)
   }
 
   selectFilter = (filter, label) => {
@@ -129,10 +138,57 @@ export class Dashboard extends Component {
       })
     }
   }
+
+  checkAPIVersion() {
+    const { timestamp } = this.props.apiVersion
+
+    // when this was last checked
+    if (
+      !timestamp ||
+      (timestamp && new Date() - new Date(timestamp) > 24 * 60 * 60 * 1000)
+    ) {
+      // check simply if user is online
+      NetInfo.fetch().then(state => {
+        if (state.isConnected) {
+          // check the API version status compared
+          // to the supported version in config
+          fetch(`${url[this.props.env]}/graphql`, {
+            method: 'POST',
+            headers: {
+              Authorization: `Bearer ${this.props.user.token}`,
+              'content-type': 'application/json;charset=utf8'
+            },
+            body: JSON.stringify({
+              query:
+                'query apiVersionStatus($version:String) { apiVersionStatus(version:$version) {id,status,supportWindow,supportWindowTime,major,minor,patch,version} }',
+              variables: {
+                version: supported_API_version
+              }
+            })
+          })
+            .then(response => {
+              if (response.status === 200) {
+                return response.json()
+              }
+            })
+            .then(json => {
+              this.props.markVersionCheked(new Date())
+              if (json.data.apiVersionStatus.status !== 'up-to-date') {
+                this.props.toggleAPIVersionModal(true)
+              }
+            })
+            .catch(e => e)
+        }
+      })
+    }
+  }
+
   componentDidMount() {
+    // if user has no token navigate to login screen
     if (!this.props.user.token) {
       this.props.navigation.navigate('Login')
     } else {
+      this.checkAPIVersion()
       if (UIManager.AccessibilityEventTypes) {
         setTimeout(() => {
           UIManager.sendAccessibilityEvent(
@@ -147,13 +203,22 @@ export class Dashboard extends Component {
   render() {
     const { t, families, drafts } = this.props
     const { filterModalIsOpen } = this.state
+
     const allDraftFamilies = drafts.filter(
       d => d.status === 'Draft' || d.status === 'Pending sync'
     ).length
+
     const countFamilies = families.length + allDraftFamilies
+
     return (
       <AndroidBackHandler onBackPress={() => true}>
         <View style={globalStyles.ViewMainContainer}>
+          <NotificationModal
+            isOpen={this.props.apiVersion.showModal}
+            onClose={this.onNotificationClose}
+            label={t('general.attention')}
+            subLabel={t('general.syncAll')}
+          ></NotificationModal>
           <ScrollView
             contentContainerStyle={
               drafts.length
@@ -271,15 +336,25 @@ export class Dashboard extends Component {
                     <BottomModal
                       isOpen={filterModalIsOpen}
                       onRequestClose={this.toggleFilterModal}
-                      onEmptyClose={() => this.selectFilter(false)}
+                      onEmptyClose={() =>
+                        this.setState({ filterModalIsOpen: false })
+                      }
                     >
                       <View style={styles.dropdown}>
                         <FilterListItem
+                          id="all"
+                          dashboard
+                          onPress={() => this.selectFilter(false)}
+                          text={'All Life Maps'}
+                        />
+                        <FilterListItem
+                          id="drafts"
                           dashboard
                           onPress={() => this.selectFilter('Draft', 'Drafts')}
                           text={'Drafts'}
                         />
                         <FilterListItem
+                          id="pending"
                           dashboard
                           onPress={() =>
                             this.selectFilter('Pending sync', 'Sync Pending')
@@ -287,6 +362,7 @@ export class Dashboard extends Component {
                           text={'Sync Pending'}
                         />
                         <FilterListItem
+                          id="error"
                           dashboard
                           onPress={() =>
                             this.selectFilter('Sync error', 'Sync Error')
@@ -294,6 +370,7 @@ export class Dashboard extends Component {
                           text={'Sync Error'}
                         />
                         <FilterListItem
+                          id="synced"
                           dashboard
                           onPress={() =>
                             this.selectFilter('Synced', 'Completed')
@@ -418,11 +495,13 @@ const styles = StyleSheet.create({
 
 Dashboard.propTypes = {
   navigation: PropTypes.object.isRequired,
+  toggleAPIVersionModal: PropTypes.func.isRequired,
+  markVersionCheked: PropTypes.func.isRequired,
   t: PropTypes.func.isRequired,
   drafts: PropTypes.array.isRequired,
   env: PropTypes.oneOf(['production', 'demo', 'testing', 'development']),
   user: PropTypes.object.isRequired,
-
+  apiVersion: PropTypes.object.isRequired,
   offline: PropTypes.object,
   lng: PropTypes.string.isRequired,
   surveys: PropTypes.array,
@@ -438,7 +517,8 @@ export const mapStateToProps = ({
   string,
   surveys,
   families,
-  sync
+  sync,
+  apiVersion
 }) => ({
   env,
   user,
@@ -447,10 +527,11 @@ export const mapStateToProps = ({
   string,
   surveys,
   families,
-  sync
+  sync,
+  apiVersion
 })
 
-const mapDispatchToProps = {}
+const mapDispatchToProps = { markVersionCheked, toggleAPIVersionModal }
 
 export default withNamespaces()(
   connect(
