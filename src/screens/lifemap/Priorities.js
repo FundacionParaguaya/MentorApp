@@ -168,10 +168,11 @@ export class Priorities extends Component {
     const { filterModalIsOpen, selectedFilter, filterLabel } = this.state
     const draft = this.getDraft()
     const mandatoryPrioritiesCount = this.getMandatoryPrioritiesCount(draft)
-    const screenAccessibilityContent = prioritiesScreen(
-      this.state.tipIsVisible,
-      this.getTipDescription(mandatoryPrioritiesCount, true)
-    )
+    const screenAccessibilityContent =
+      prioritiesScreen(
+        this.state.tipIsVisible,
+        this.getTipDescription(mandatoryPrioritiesCount, true)
+      ) || ''
 
     return (
       <StickyFooter

@@ -144,3 +144,38 @@ export const prioritiesScreen = (tipVisible, tipDescription) => {
     ${prioritiesTip}
   `
 }
+
+export const setAccessibleColorName = (colors, item) => {
+  if (!item) {
+    return ''
+  }
+  const type = Object.keys(colors).find(key => colors[key] === item)
+  const colorSchema = {
+    gold: () => {
+      return `${i18n.t('views.lifemap.yellow')}`
+    },
+    palegreen: () => {
+      return `${i18n.t('views.lifemap.green')}`
+    },
+    palered: () => {
+      return `${i18n.t('views.lifemap.red')}`
+    },
+    palegrey: () => {
+      return 'No answer selected'
+    }
+  }
+
+  return (typeof colorSchema[type] === 'function' && colorSchema[type]()) || ''
+}
+
+export const setAccessibleIndicatorName = indicatorCodeName => {
+  if (!indicatorCodeName) {
+    return ''
+  }
+
+  // this line splits the camel cased codenames coming from the server
+  // and adds pause between each word
+  return (
+    indicatorCodeName.replace(/([a-z0-9])([A-Z])/g, `$1 ${pause} $2`) + pause
+  )
+}
