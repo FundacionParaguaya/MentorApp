@@ -232,8 +232,7 @@ export class Loading extends Component {
   }
 
   checkState() {
-    const { families, surveys, images, appVersion, maps } = this.props.sync
-
+    const { families, surveys, images, appVersion } = this.props.sync
     if (!this.props.user.token) {
       // if user hasn't logged in, navigate to login
       this.props.navigation.navigate('Login')
@@ -246,7 +245,6 @@ export class Loading extends Component {
     } else if (
       families &&
       surveys &&
-      maps &&
       !!images.total &&
       images.total === images.synced
     ) {
@@ -322,7 +320,11 @@ export class Loading extends Component {
     }
     // if there is a map download error
     if (!prevProps.sync.mapsError && this.props.sync.mapsError) {
-      this.showError('We seem to have a problem downloading your maps.')
+      //in case of error we dont show the error... we just skip the maps.
+      this.setState({
+        mapsDownloaded: true,
+        downloadingMap: false
+      })
     }
     // if there is a download error
     if (!prevProps.sync.familiesError && this.props.sync.familiesError) {

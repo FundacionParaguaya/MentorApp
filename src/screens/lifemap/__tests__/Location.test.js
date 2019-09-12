@@ -84,6 +84,7 @@ const navigation = {
 }
 
 const createTestProps = props => ({
+  maps: [],
   drafts: [draft, { draftId: 2 }],
   t: value => value,
   navigation,
@@ -330,15 +331,15 @@ describe('user is offline', () => {
     const surveyWithMaps = {
       ...survey,
       surveyConfig: {
-        ...survey.surveyConfig,
-        offlineMaps: [
-          { name: 'Test Location', from: [1, 1], to: [3, 3], center: [2, 2] },
-          { name: 'Test Place', from: [4, 1], to: [6, 6], center: [5, 5] }
-        ]
+        ...survey.surveyConfig
       }
     }
 
     props = createTestProps({
+      maps: [
+        { name: 'Test Location', from: [1, 1], to: [3, 3], center: [2, 2] },
+        { name: 'Test Place', from: [4, 1], to: [6, 6], center: [5, 5] }
+      ],
       navigation: {
         ...navigation,
         getParam: jest.fn(param => {
