@@ -35,35 +35,6 @@ export const prepareDraftForSubmit = (draft, survey) => {
       survey.surveyConfig.surveyLocation.country
   }
 
-  // filter out ghost family members
-  result.familyData.familyMembersList = result.familyData.familyMembersList.filter(
-    member => member.firstName
-  )
-
-  // check for family members with no firstParticipant property
-  result.familyData.familyMembersList.map(member => {
-    if (typeof member.firstParticipant === 'undefined') {
-      return {
-        ...member,
-        firstParticipant: false
-      }
-    } else {
-      return member
-    }
-  })
-
-  // check for participants with a false firstParticipant value
-  if (
-    result.familyData.countFamilyMembers ===
-      result.familyData.familyMembersList.length &&
-    !result.familyData.familyMembersList.some(member => member.firstParticipant)
-  ) {
-    result.familyData.familyMembersList[0].firstParticipant = true
-  }
-
-  result.familyData.countFamilyMembers =
-    result.familyData.familyMembersList.length
-
   return result
 }
 
