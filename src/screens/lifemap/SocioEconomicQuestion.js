@@ -168,6 +168,9 @@ export class SocioEconomicQuestion extends Component {
         this.props.language === 'en' ? '$1,' : '$1.'
       )
   }
+
+  /*
+    THIS SHOULD BE DELETED AND USE updateEconomicAnswer instead
   updateCheckbox = async (newAnswers, field) => {
     const draft = !this.readOnly ? this.getDraft() : this.readOnlyDraft
     const question = draft.economicSurveyDataList.find(
@@ -194,7 +197,7 @@ export class SocioEconomicQuestion extends Component {
         ]
       })
     }
-  }
+  } */
 
   updateEconomicAnswer = (question, value, memberIndex) => {
     const draft = !this.readOnly ? this.getDraft() : this.readOnlyDraft
@@ -205,9 +208,10 @@ export class SocioEconomicQuestion extends Component {
 
     // We get a draft with updated answer
     let currentDraft
+    const keyName = !Array.isArray(value) ? 'value' : 'multipleValue'
     const newAnswer = {
       key: question.codeName,
-      value:
+      [keyName]:
         question.answerType === 'number' ? value.replace(/[,.]/g, '') : value
     }
     if (question.forFamilyMember) {
@@ -475,7 +479,7 @@ export class SocioEconomicQuestion extends Component {
                       multipleValue={multipleValue}
                       readonly={!!this.readOnly}
                       updateAnswers={update =>
-                        this.updateCheckbox(update, question.codeName)
+                        this.updateEconomicAnswer(question, update, false)
                       }
                       setError={isError =>
                         this.setError(isError, question.codeName)
