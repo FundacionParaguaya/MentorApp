@@ -79,7 +79,9 @@ export const setScreen = (screenData, draft, step) => {
         ? screenData.currentScreen - 2 //
         : screenData.currentScreen
     ]
+
   if (
+    QUESTIONS_FOR_NEXT_SCREEN &&
     !(
       QUESTIONS_FOR_NEXT_SCREEN.forFamily &&
       QUESTIONS_FOR_NEXT_SCREEN.forFamily.length

@@ -229,13 +229,13 @@ it('gets proper draft from draftId', () => {
   expect(wrapper.instance().getDraft()).toBe(draft)
 })
 
-it('navigates to begin lifemap on continue ', () => {
-  wrapper.instance().onContinue()
-  expect(props.navigation.navigate).toHaveBeenCalledWith('BeginLifemap', {
-    survey,
-    draftId
-  })
-})
+// it('navigates to begin lifemap on continue ', () => {
+//   wrapper.instance().onContinue()
+//   expect(props.navigation.navigate).toHaveBeenCalledWith('BeginLifemap', {
+//     survey,
+//     draftId
+//   })
+// })
 
 it('updates only when focused', () => {
   expect(wrapper.instance().shouldComponentUpdate()).toEqual(true)
