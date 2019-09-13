@@ -470,7 +470,8 @@ export class SocioEconomicQuestion extends Component {
                 return (
                   <View key={question.codeName}>
                     <Checkboxes
-                      question={question}
+                      placeholder={question.questionText}
+                      options={getConditionalOptions(question, draft)}
                       multipleValue={multipleValue}
                       readonly={!!this.readOnly}
                       updateAnswers={update =>

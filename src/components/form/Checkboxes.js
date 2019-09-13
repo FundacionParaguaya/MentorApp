@@ -77,30 +77,32 @@ class Checkboxes extends Component {
   }
 
   render() {
-    const { required, question, readonly } = this.props
+    const { required, placeholder, options, readonly } = this.props
     const { errorMsg, error, checkedAnswers } = this.state
 
     return (
       <View>
         <Text style={{ marginLeft: 10 }}>
-          {!required ? question.questionText : `${question.questionText}*`}
+          {!required ? placeholder : `${placeholder}*`}
         </Text>
 
-        {question.options.map((e, i) => (
+        {options.map((option, i) => (
           <CheckBox
             key={i}
-            onPress={!readonly ? () => this.onIconPress(e.value) : null}
-            title={e.text}
+            onPress={!readonly ? () => this.onIconPress(option.value) : null}
+            title={option.text}
             iconType="material"
             checkedColor={colors.green}
             checkedIcon="check-box"
             uncheckedIcon="check-box-outline-blank"
-            checked={checkedAnswers.includes(e.value)}
+            checked={checkedAnswers.includes(option.value)}
             containerStyle={styles.containerStyle}
             textStyle={[styles.label]}
-            accessibilityLabel={`${e.text}${
-              !!errorMsg && !checkedAnswers.includes(e.value) ? ' *' : ''
-            } ${checkedAnswers.includes(e.value) ? 'checked' : 'unchecked'}`}
+            accessibilityLabel={`${option.text}${
+              !!errorMsg && !checkedAnswers.includes(option.value) ? ' *' : ''
+            } ${
+              checkedAnswers.includes(option.value) ? 'checked' : 'unchecked'
+            }`}
           />
         ))}
         {error && !!errorMsg ? (
@@ -115,7 +117,8 @@ class Checkboxes extends Component {
 
 Checkboxes.propTypes = {
   multipleValue: PropTypes.array.isRequired,
-  question: PropTypes.object,
+  placeholder: PropTypes.string.isRequired,
+  options: PropTypes.array,
   updateAnswers: PropTypes.func,
   setError: PropTypes.func,
   checkboxColor: PropTypes.string,
