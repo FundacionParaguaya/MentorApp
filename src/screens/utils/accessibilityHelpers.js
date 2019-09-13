@@ -107,7 +107,7 @@ export const screenSyncScreenContent = (
   } else if (syncInProgress) {
     syncBody = `${i18n.t('views.sync.inProgress')} `
   } else if (syncOffline) {
-    syncBody = `${'Sync in progress'}`
+    syncBody = `${i18n.t('views.sync.offline')}`
   } else if (syncRetry) {
     syncBody = `${
       draftsWithError === 1
