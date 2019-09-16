@@ -50,7 +50,7 @@ export default class Popup extends Component {
                 </ScrollView>
               </View>
             ) : (
-              <View>
+              <View style={{ flex: 1 }}>
                 <TouchableHighlight
                   underlayColor={'rgba(47,38,28, 0.2)'}
                   style={styles.container}
@@ -121,7 +121,6 @@ const styles = StyleSheet.create({
   },
   modal: {
     width: 300,
-
     backgroundColor: colors.white,
     paddingVertical: 23,
     padding: 28,
