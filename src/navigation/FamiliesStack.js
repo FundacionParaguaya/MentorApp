@@ -13,7 +13,9 @@ export default createStackNavigator(
       navigationOptions: ({ navigation }) => ({
         ...generateNavStyles({ navigation }),
         ...addMenuIcon(navigation),
-        headerTitle: <Title title="views.families" />
+        headerTitle: (
+          <Title title="views.families" accessibilityAssertiveType="none" />
+        )
       })
     },
     Family: {

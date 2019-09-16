@@ -27,6 +27,9 @@
     "confirm": "Confirm",
     "download": "Download",
     "print": "Print",
+    "navigation": "navigation",
+    "goback": "go back",
+    "exit": "exit",
     "attention": "Important!",
     "syncAll": "Sync all Life Maps & update the application!"
   },
@@ -37,7 +40,8 @@
     "lessThan50Characters": "Value must be less than 50 characters",
     "alphabeticCharacters": "Please enter alphabetic characters",
     "validPhoneNumber": "Please enter a valid phone number",
-    "validNumber": "Please enter a valid number"
+    "validNumber": "Please enter a valid number",
+    "fieldIsRequiredAccessibilityLabel": "This is a mandatory field"
   },
   "months": {
     "january": "January",
@@ -90,6 +94,7 @@
       "phone": "Phone",
       "gender": "Gender",
       "dateOfBirth": "Date of birth",
+      "dateOfBirthAbbr": "D.O.B",
       "documentType": "Document type",
       "countryOfBirth": "Country of birth",
       "selectMonth": "Select month",

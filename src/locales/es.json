@@ -27,6 +27,9 @@
     "confirm": "Confirmar",
     "download": "Descargar",
     "print": "Imprimir",
+    "navigation": "navegación",
+    "goback": "atrás",
+    "exit": "salir",
     "attention": "¡Atención!",
     "syncAll": "¡Sincroniza todos los Mapas de Vida y actualiza la aplicación!"
   },
@@ -37,7 +40,8 @@
     "lessThan50Characters": "El valor debe ser menos de 50 caracteres.",
     "alphabeticCharacters": "Favor ingrese los caracteres alfabéticos",
     "validPhoneNumber": "Favor ingrese un número de teléfono válido",
-    "validNumber": "Favor ingrese un número válido"
+    "validNumber": "Favor ingrese un número válido",
+    "fieldIsRequiredAccessibilityLabel": "Este campo es requerido"
   },
   "months": {
     "january": "Enero",
@@ -90,6 +94,8 @@
       "email": "Correo electrónico",
       "phone": "Teléfono",
       "gender": "Género",
+      "dateOfBirth": "Fecha de nacimiento",
+      "dateOfBirthAbbr": "Fec. Nac.",
       "dateOfBirth": "Fecha de nacimiento",
       "documentType": "Tipo de documento",
       "countryOfBirth": "País de nacimiento",

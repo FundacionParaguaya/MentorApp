@@ -7,10 +7,11 @@ import 'moment/locale/es'
 import colors from '../theme.json'
 import globalStyles from '../globalStyles'
 import ListItem from './ListItem'
+import { withNamespaces } from 'react-i18next'
 
 moment.locale('en')
 
-class FamiliesListItem extends Component {
+export class FamiliesListItem extends Component {
   capitalize = s => {
     if (typeof s !== 'string') return ''
     const string = s.split('.').join('')
@@ -18,7 +19,7 @@ class FamiliesListItem extends Component {
   }
 
   render() {
-    const { family, lng } = this.props
+    const { family, lng, t } = this.props
     const firstParticipant =
       family.snapshotList && family.snapshotList.length
         ? family.snapshotList[0].familyData.familyMembersList.find(
@@ -32,6 +33,14 @@ class FamiliesListItem extends Component {
     const birthDateWithLocale = moment.unix(birthDate)
     birthDateWithLocale.locale(lng)
 
+    const familyMembersCount =
+      family.snapshotList &&
+      family.snapshotList[0] &&
+      family.snapshotList[0].familyData.countFamilyMembers &&
+      family.snapshotList[0].familyData.countFamilyMembers > 1
+        ? family.snapshotList[0].familyData.countFamilyMembers - 1
+        : 0
+
     return (
       <ListItem
         style={{ ...styles.listItem }}
@@ -39,18 +48,18 @@ class FamiliesListItem extends Component {
         disabled={family.snapshotList && !family.snapshotList.length}
       >
         <View>
-          {family.snapshotList &&
-            family.snapshotList[0] &&
-            family.snapshotList[0].familyData.countFamilyMembers &&
-            family.snapshotList[0].familyData.countFamilyMembers > 1 && (
-              <View style={styles.countCircleWrapper}>
-                <View style={styles.countCircle}>
-                  <Text style={[globalStyles.h4, { color: colors.lightdark }]}>
-                    + {family.snapshotList[0].familyData.countFamilyMembers - 1}
-                  </Text>
-                </View>
+          {familyMembersCount ? (
+            <View
+              style={styles.countCircleWrapper}
+              importantForAccessibility="no-hide-descendants"
+            >
+              <View style={styles.countCircle}>
+                <Text style={[globalStyles.h4, { color: colors.lightdark }]}>
+                  + {familyMembersCount}
+                </Text>
               </View>
-            )}
+            </View>
+          ) : null}
 
           <Icon name="face" color={colors.grey} size={40} />
         </View>
@@ -62,14 +71,17 @@ class FamiliesListItem extends Component {
               style={{ ...globalStyles.subline, ...styles.p }}
               accessibilityLabel={
                 birthDate
-                  ? `Date Of Birth: ${birthDateWithLocale
-                      .utc()
-                      .format('MMMM DD, YYYY')}`
+                  ? `
+                  ${familyMembersCount}
+                  ${t('views.familyMembers')}
+                  ${t(
+                    'views.family.dateOfBirth'
+                  )} ${birthDateWithLocale.utc().format('MMMM DD, YYYY')}`
                   : ''
               }
             >
               {birthDate
-                ? `D.O.B: ${this.capitalize(
+                ? `${t('views.family.dateOfBirthAbbr')}: ${this.capitalize(
                     birthDateWithLocale.utc().format('MMM DD, YYYY')
                   )}`
                 : ''}
@@ -96,7 +108,8 @@ FamiliesListItem.propTypes = {
   handleClick: PropTypes.func.isRequired,
   error: PropTypes.string,
   birthDate: PropTypes.number,
-  lng: PropTypes.string.isRequired
+  lng: PropTypes.string.isRequired,
+  t: PropTypes.func
 }
 
 const styles = StyleSheet.create({
@@ -140,4 +153,4 @@ const styles = StyleSheet.create({
   }
 })
 
-export default FamiliesListItem
+export default withNamespaces()(FamiliesListItem)

@@ -29,7 +29,7 @@ export default class Popup extends Component {
         presentationStyle="overFullScreen"
       >
         {modifiedPopUp ? (
-          <React.Fragment>
+          <View style={{ flex: 1 }}>
             {definition || LogoutPopup ? (
               <View style={styles.definitionParent}>
                 <TouchableHighlight
@@ -68,7 +68,7 @@ export default class Popup extends Component {
                 </View>
               </View>
             ) : (
-              <React.Fragment>
+              <View style={{ flex: 1 }}>
                 <TouchableHighlight
                   underlayColor={'rgba(47,38,28, 0.2)'}
                   style={styles.container}
@@ -77,17 +77,12 @@ export default class Popup extends Component {
                 >
                   <View />
                 </TouchableHighlight>
-                <View
-                  id="modal"
-                  style={styles.priorOrAchievementModal}
-                  accessible={true}
-                  accessibilityLiveRegion="assertive"
-                >
+                <View id="modal" style={styles.priorOrAchievementModal}>
                   {children}
                 </View>
-              </React.Fragment>
+              </View>
             )}
-          </React.Fragment>
+          </View>
         ) : (
           <TouchableHighlight
             underlayColor={'rgba(47,38,28, 0.2)'}
@@ -95,12 +90,7 @@ export default class Popup extends Component {
             onPress={onClose}
             id="overlay"
           >
-            <View
-              id="modal"
-              style={styles.modal}
-              accessible={true}
-              accessibilityLiveRegion="assertive"
-            >
+            <View id="modal" style={styles.modal}>
               {children}
             </View>
           </TouchableHighlight>

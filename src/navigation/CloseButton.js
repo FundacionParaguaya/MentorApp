@@ -1,5 +1,6 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
+import i18n from '../i18n'
 import IconButton from '../components/IconButton'
 
 class CloseButton extends Component {
@@ -25,7 +26,7 @@ class CloseButton extends Component {
         icon="close"
         size={25}
         accessible={true}
-        accessibilityLabel={'Exit'}
+        accessibilityLabel={i18n.t('general.exit')}
       />
     )
   }

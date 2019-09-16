@@ -68,7 +68,7 @@ export class DrawerContent extends Component {
 
     this.setState({ activeTab: screen })
     navigation.closeDrawer()
-    navigation.navigate(screen)
+    navigation.push(screen)
   }
 
   onLayout = e => {

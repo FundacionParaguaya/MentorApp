@@ -23,6 +23,7 @@ import colors from '../../theme.json'
 import countries from 'localized-countries'
 import globalStyles from '../../globalStyles'
 import i18n from '../../i18n'
+import { setListOfLabeles } from '../../screens/utils/accessibilityHelpers'
 
 const countryList = countries(require('localized-countries/data/en')).array()
 
@@ -228,6 +229,12 @@ class Select extends Component {
           underlayColor={'transparent'}
           activeOpacity={1}
           onPress={this.toggleDropdown}
+          accessible={true}
+          accessibilityLabel={`${placeholder}${
+            required
+              ? i18n.t('validation.fieldIsRequiredAccessibilityLabel')
+              : ''
+          }`}
         >
           <View style={styles.wrapper}>
             {this.props.radio ? (
@@ -326,9 +333,6 @@ class Select extends Component {
                           color: colors.palegreen
                         }
                     ]}
-                    accessibilityLabel={`${placeholder} ${
-                      required && !readonly ? ' This is a mandatory field.' : ''
-                    }`}
                   >{`${placeholder}${required && !readonly ? ' *' : ''}`}</Text>
                 )}
                 <Text
@@ -336,9 +340,6 @@ class Select extends Component {
                     styles.placeholder,
                     errorMsg ? { color: colors.red } : {}
                   ]}
-                  accessibilityLabel={`${placeholder}${
-                    required ? ' This is a mandatory field.' : ''
-                  }`}
                 >
                   {value ? text : `${placeholder}${required ? ' *' : ''}`}
                 </Text>
@@ -354,7 +355,13 @@ class Select extends Component {
                     this.toggleDropdown()
                   }}
                 >
-                  <View style={styles.dropdown}>
+                  <View
+                    style={styles.dropdown}
+                    accessible={true}
+                    accessibilityLabel={setListOfLabeles(
+                      countrySelect ? countries : options
+                    )}
+                  >
                     {countrySelect ? (
                       <ScrollView>
                         <FlatList

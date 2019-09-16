@@ -32,6 +32,10 @@ import marker from '../../../assets/images/marker.png'
 import sad from '../../../assets/images/sad.png'
 import { updateDraft } from '../../redux/actions'
 import { withNamespaces } from 'react-i18next'
+import Geocoder from 'react-native-geocoding'
+
+const GOOGLE_GEO_API_KEY = 'AIzaSyBLGYYy86_7QPT-dKgUnFMIJyhUE6AGVwM'
+Geocoder.init(GOOGLE_GEO_API_KEY)
 
 export class Location extends Component {
   survey = this.props.navigation.getParam('survey')
@@ -54,7 +58,8 @@ export class Location extends Component {
     zoom: 15,
     appState: AppState.currentState,
     errors: [],
-    showErrors: false
+    showErrors: false,
+    currentAddress: ''
   }
 
   getDraft = () =>
@@ -87,6 +92,14 @@ export class Location extends Component {
     }
   }
 
+  getCurrentAddress = (latitude, longitude) => {
+    Geocoder.from(latitude, longitude)
+      .then(json => {
+        this.setState({ currentAddress: json.results[0].formatted_address })
+      })
+      .catch(() => ({}))
+  }
+
   onDragMap = region => {
     const draft = !this.readOnly ? this.getDraft() : this.readOnlyDraft
     const { zoom } = this.state
@@ -94,6 +107,8 @@ export class Location extends Component {
     const { coordinates } = region.geometry
     const longitude = coordinates[0]
     const latitude = coordinates[1]
+
+    this.getCurrentAddress(latitude, longitude)
 
     // prevent jumping of the marker by updating only when the region changes
     if (
@@ -689,7 +704,7 @@ export class Location extends Component {
               fetchDetails={true}
               onPress={this.goToSearch}
               query={{
-                key: 'AIzaSyBLGYYy86_7QPT-dKgUnFMIJyhUE6AGVwM',
+                key: GOOGLE_GEO_API_KEY,
                 language: 'en', // language of the results
                 types: '(cities)' // default: 'geocode'
               }}
@@ -709,6 +724,8 @@ export class Location extends Component {
             />
           )}
           <MapboxGL.MapView
+            accessible={true}
+            accessibilityLabel={`Your current locations is ${this.state.currentAddress}`}
             style={{ width: '100%', flexGrow: 2 }}
             logoEnabled={false}
             zoomEnabled={!this.readOnly}

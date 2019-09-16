@@ -3,6 +3,11 @@ import PropTypes from 'prop-types'
 import { StyleSheet, View } from 'react-native'
 import Icon from 'react-native-vector-icons/MaterialIcons'
 import colors from '../theme.json'
+import {
+  setAccessibleColorName,
+  setAccessibleIndicatorName
+} from '../screens/utils/accessibilityHelpers'
+
 class LifemapVisual extends Component {
   getColors = this.props.questions.map(item => {
     switch (item.value) {
@@ -47,12 +52,10 @@ class LifemapVisual extends Component {
           <View
             key={i}
             accessible={true}
-            accessibilityLabel={this.props.questions[i].key}
-            accessibilityHint={
-              Object.keys(colors).find(key => colors[key] === item) === 'gold'
-                ? 'yellow'
-                : Object.keys(colors).find(key => colors[key] === item)
+            accessibilityLabel={
+              setAccessibleIndicatorName(this.props.questions[i].key) || ''
             }
+            accessibilityHint={setAccessibleColorName(colors, item) || ''}
           >
             {prioritiesAndAchievements.includes(this.props.questions[i].key) &&
             this.props.questions[i].value ? (
