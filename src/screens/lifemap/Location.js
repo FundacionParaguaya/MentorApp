@@ -474,29 +474,9 @@ export class Location extends Component {
     }
   }
 
-  componentDidMount() {
+  componentDidMount = async () => {
     this.setState({
       loading: true
-    })
-
-    if (!this.readOnly) {
-      this.requestLocationPermission()
-    }
-
-    // check if online first
-    NetInfo.fetch().then(state => {
-      this.determineScreenState(state.isConnected)
-      this.setState({ status: state.isConnected })
-    })
-
-    // monitor for connection changes
-    this.unsubscribeNetChange = NetInfo.addEventListener(state => {
-      const { status } = this.state
-
-      if (status !== undefined && status !== state.isConnected) {
-        this.setState({ status: state.isConnected })
-        this.determineScreenState(state.isConnected)
-      }
     })
 
     const draft = !this.readOnly ? this.getDraft() : this.readOnlyDraft
@@ -517,7 +497,6 @@ export class Location extends Component {
         }
       })
     }
-
     AppState.addEventListener('change', this._handleAppStateChange)
     this.getMapOfflinePacks()
 
@@ -530,6 +509,27 @@ export class Location extends Component {
       'keyboardDidHide',
       this._keyboardDidHide
     )
+    //before getting the coordinates with Geolocation.getCurrentPosition,
+    //we first need to wait for user permission.Otherwise the app will crash if offline.
+    if (!this.readOnly) {
+      await this.requestLocationPermission()
+    }
+
+    // check if online first
+    NetInfo.fetch().then(state => {
+      this.determineScreenState(state.isConnected)
+      this.setState({ status: state.isConnected })
+    })
+
+    // monitor for connection changes
+    this.unsubscribeNetChange = NetInfo.addEventListener(state => {
+      const { status } = this.state
+
+      if (status !== undefined && status !== state.isConnected) {
+        this.setState({ status: state.isConnected })
+        this.determineScreenState(state.isConnected)
+      }
+    })
   }
 
   shouldComponentUpdate() {
