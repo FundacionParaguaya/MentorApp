@@ -223,8 +223,10 @@ export class Location extends Component {
     const draft = !this.readOnly ? this.getDraft() : this.readOnlyDraft
     const { familyData } = draft
     this.setState({ askingForPermission: true })
+    // if we have an emty array [] or an array with an empty object [{}] then dont show the offline maps because we dont have any.
     if (
-      this.survey.surveyConfig.offlineMaps &&
+      this.props.maps.length &&
+      !!this.props.maps[0].name &&
       !this.state.showOfflineMapsList
     ) {
       this.setState({
@@ -487,29 +489,9 @@ export class Location extends Component {
     }
   }
 
-  componentDidMount() {
+  componentDidMount = async () => {
     this.setState({
       loading: true
-    })
-
-    if (!this.readOnly) {
-      this.requestLocationPermission()
-    }
-
-    // check if online first
-    NetInfo.fetch().then(state => {
-      this.determineScreenState(state.isConnected)
-      this.setState({ status: state.isConnected })
-    })
-
-    // monitor for connection changes
-    this.unsubscribeNetChange = NetInfo.addEventListener(state => {
-      const { status } = this.state
-
-      if (status !== undefined && status !== state.isConnected) {
-        this.setState({ status: state.isConnected })
-        this.determineScreenState(state.isConnected)
-      }
     })
 
     const draft = !this.readOnly ? this.getDraft() : this.readOnlyDraft
@@ -530,7 +512,6 @@ export class Location extends Component {
         }
       })
     }
-
     AppState.addEventListener('change', this._handleAppStateChange)
     this.getMapOfflinePacks()
 
@@ -543,6 +524,27 @@ export class Location extends Component {
       'keyboardDidHide',
       this._keyboardDidHide
     )
+    //before getting the coordinates with Geolocation.getCurrentPosition,
+    //we first need to wait for user permission.Otherwise the app will crash if offline.
+    if (!this.readOnly) {
+      await this.requestLocationPermission()
+    }
+
+    // check if online first
+    NetInfo.fetch().then(state => {
+      this.determineScreenState(state.isConnected)
+      this.setState({ status: state.isConnected })
+    })
+
+    // monitor for connection changes
+    this.unsubscribeNetChange = NetInfo.addEventListener(state => {
+      const { status } = this.state
+
+      if (status !== undefined && status !== state.isConnected) {
+        this.setState({ status: state.isConnected })
+        this.determineScreenState(state.isConnected)
+      }
+    })
   }
 
   shouldComponentUpdate() {
@@ -626,7 +628,7 @@ export class Location extends Component {
                   borderTopColor: colors.palegrey
                 }}
               >
-                {this.survey.surveyConfig.offlineMaps.map(map => (
+                {this.props.maps.map(map => (
                   <TouchableHighlight
                     underlayColor={colors.primary}
                     onPress={() => this.centerOnOfflineMap(map)}
@@ -960,14 +962,15 @@ Location.propTypes = {
   t: PropTypes.func.isRequired,
   updateDraft: PropTypes.func.isRequired,
   navigation: PropTypes.object.isRequired,
-  drafts: PropTypes.array.isRequired
+  drafts: PropTypes.array.isRequired,
+  maps: PropTypes.array
 }
 
 const mapDispatchToProps = {
   updateDraft
 }
 
-const mapStateToProps = ({ drafts }) => ({ drafts })
+const mapStateToProps = ({ drafts, maps }) => ({ drafts, maps })
 
 export default withNamespaces()(
   connect(
