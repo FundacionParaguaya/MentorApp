@@ -139,9 +139,16 @@ export class SocioEconomicQuestion extends Component {
   onContinue = () => {
     const socioEconomics = this.props.navigation.getParam('socioEconomics')
     const STEP_FORWARD = 1
+    const NEXT_SCREEN_NUMBER = setScreen(
+      socioEconomics,
+      this.getDraft(),
+      STEP_FORWARD
+    )
 
     !socioEconomics ||
-    socioEconomics.currentScreen === socioEconomics.totalScreens
+    (socioEconomics &&
+      socioEconomics.currentScreen === socioEconomics.totalScreens) ||
+    (socioEconomics && NEXT_SCREEN_NUMBER > socioEconomics.totalScreens)
       ? this.props.navigation.navigate('BeginLifemap', {
           survey: this.survey,
           draftId: this.draftId
@@ -150,11 +157,7 @@ export class SocioEconomicQuestion extends Component {
           survey: this.survey,
           draftId: this.draftId,
           socioEconomics: {
-            currentScreen: setScreen(
-              socioEconomics,
-              this.getDraft(),
-              STEP_FORWARD
-            ),
+            currentScreen: NEXT_SCREEN_NUMBER,
             questionsPerScreen: socioEconomics.questionsPerScreen,
             totalScreens: socioEconomics.totalScreens
           }
@@ -168,33 +171,6 @@ export class SocioEconomicQuestion extends Component {
         this.props.language === 'en' ? '$1,' : '$1.'
       )
   }
-  updateCheckbox = async (newAnswers, field) => {
-    const draft = !this.readOnly ? this.getDraft() : this.readOnlyDraft
-    const question = draft.economicSurveyDataList.find(
-      item => item.key === field
-    )
-
-    if (!question) {
-      await this.props.updateDraft({
-        ...draft,
-        economicSurveyDataList: [
-          ...draft.economicSurveyDataList,
-          { key: field, multipleValue: newAnswers }
-        ]
-      })
-    } else {
-      await this.props.updateDraft({
-        ...draft,
-        economicSurveyDataList: [
-          ...draft.economicSurveyDataList.filter(item => item.key !== field),
-          {
-            key: field,
-            multipleValue: newAnswers
-          }
-        ]
-      })
-    }
-  }
 
   updateEconomicAnswer = (question, value, memberIndex) => {
     const draft = !this.readOnly ? this.getDraft() : this.readOnlyDraft
@@ -205,9 +181,10 @@ export class SocioEconomicQuestion extends Component {
 
     // We get a draft with updated answer
     let currentDraft
+    const keyName = !Array.isArray(value) ? 'value' : 'multipleValue'
     const newAnswer = {
       key: question.codeName,
-      value:
+      [keyName]:
         question.answerType === 'number' ? value.replace(/[,.]/g, '') : value
     }
     if (question.forFamilyMember) {
@@ -458,23 +435,24 @@ export class SocioEconomicQuestion extends Component {
                 let multipleValue = []
                 //passong the asnwered questions form the checbox , if no questions are answered then send []
                 draft.economicSurveyDataList.find(elem => {
-                  if (elem.key === question.codeName) {
-                    if (typeof elem.multipleValue !== 'undefined') {
-                      if (elem.multipleValue.length) {
-                        multipleValue = elem.multipleValue
-                      }
-                    }
+                  if (
+                    elem.key === question.codeName &&
+                    typeof elem.multipleValue !== 'undefined' &&
+                    elem.multipleValue.length
+                  ) {
+                    multipleValue = elem.multipleValue
                   }
                 })
 
                 return (
                   <View key={question.codeName}>
                     <Checkboxes
-                      question={question}
+                      placeholder={question.questionText}
+                      options={getConditionalOptions(question, draft)}
                       multipleValue={multipleValue}
                       readonly={!!this.readOnly}
                       updateAnswers={update =>
-                        this.updateCheckbox(update, question.codeName)
+                        this.updateEconomicAnswer(question, update, false)
                       }
                       setError={isError =>
                         this.setError(isError, question.codeName)

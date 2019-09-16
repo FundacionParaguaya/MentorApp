@@ -8,10 +8,8 @@ const createTestProps = props => ({
   updateAnswers: jest.fn(),
   title: 'Some checkbox text',
   multipleValue: [],
-  question: {
-    questionText: 'not bad',
-    options: [{ text: 'wow', value: 'dog' }]
-  },
+  placeholder: 'not bad',
+  options: [{ text: 'wow', value: 'dog' }],
   readonly: false,
   ...props
 })
