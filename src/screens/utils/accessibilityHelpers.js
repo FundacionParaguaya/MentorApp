@@ -86,8 +86,7 @@ export const exitModalAccessibleText = (draftId, deleteDraftOnExit) => {
 export const screenSyncScreenContent = (
   offline,
   pendingDrafts,
-  draftsWithError,
-  lastSync
+  draftsWithError
 ) => {
   const screenTitle = `${i18n.t('views.synced')}${pause}`
 
@@ -101,9 +100,7 @@ export const screenSyncScreenContent = (
   let syncBody
 
   if (syncUptoDate) {
-    syncBody = `${i18n.t('views.sync.upToDate')} ${
-      lastSync ? 'Last sync date should be added' : ''
-    }`
+    syncBody = `${i18n.t('views.sync.upToDate')}`
   } else if (syncInProgress) {
     syncBody = `${i18n.t('views.sync.inProgress')} `
   } else if (syncOffline) {
