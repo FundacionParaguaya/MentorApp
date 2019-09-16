@@ -184,3 +184,10 @@ export const setAccessibleIndicatorName = indicatorCodeName => {
     indicatorCodeName.replace(/([a-z0-9])([A-Z])/g, `$1 ${pause} $2`) + pause
   )
 }
+
+export const setAccessibilityTextForFamilies = () => {
+  const pageTitle = i18n.t('view.families')
+  return `
+    ${pageTitle}
+  `
+}

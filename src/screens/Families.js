@@ -1,13 +1,5 @@
 import React, { Component } from 'react'
-import {
-  StyleSheet,
-  FlatList,
-  View,
-  Text,
-  Image,
-  UIManager,
-  findNodeHandle
-} from 'react-native'
+import { StyleSheet, FlatList, View, Text, Image } from 'react-native'
 import { connect } from 'react-redux'
 import PropTypes from 'prop-types'
 import { withNamespaces } from 'react-i18next'
@@ -19,6 +11,7 @@ import SearchBar from '../components/SearchBar'
 import mapPlaceholderLarge from '../../assets/images/map_placeholder_1000.png'
 import FamiliesListItem from '../components/FamiliesListItem'
 import { replaceSpecialChars as sanitize } from '../utils'
+import { setAccessibilityTextForFamilies } from '../screens/utils/accessibilityHelpers'
 
 export class Families extends Component {
   state = { search: '' }
@@ -45,17 +38,6 @@ export class Families extends Component {
     this.props.loadFamilies(url[this.props.env], this.props.user.token)
   }
 
-  componentDidMount() {
-    if (UIManager.AccessibilityEventTypes) {
-      setTimeout(() => {
-        UIManager.sendAccessibilityEvent(
-          findNodeHandle(this.acessibleComponent.current),
-          UIManager.AccessibilityEventTypes.typeViewFocused
-        )
-      }, 1)
-    }
-  }
-
   render() {
     const { t } = this.props
     // show not synced families from drafts
@@ -80,8 +62,15 @@ export class Families extends Component {
         (family.code && family.code.includes(this.state.search))
     )
 
+    const screenAccessibilityContent = setAccessibilityTextForFamilies()
+
     return (
-      <View style={[globalStyles.background, styles.container]}>
+      <View
+        style={[globalStyles.background, styles.container]}
+        accessible={true}
+        accessibilityLabel={screenAccessibilityContent}
+        accessibilityLiveRegion="assertive"
+      >
         <View style={styles.imagePlaceholderContainer}>
           <View style={styles.searchContainer}>
             <SearchBar
@@ -103,7 +92,7 @@ export class Families extends Component {
             {filteredFamilies.length} {t('views.families').toLowerCase()}
           </Text>
         </View>
-        <View ref={this.acessibleComponent} accessible={true}>
+        <View>
           <FlatList
             refreshing={
               !!this.props.offline.online &&

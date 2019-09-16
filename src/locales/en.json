@@ -94,6 +94,7 @@
       "phone": "Phone",
       "gender": "Gender",
       "dateOfBirth": "Date of birth",
+      "dateOfBirthAbbr": "D.O.B",
       "documentType": "Document type",
       "countryOfBirth": "Country of birth",
       "selectMonth": "Select month",
