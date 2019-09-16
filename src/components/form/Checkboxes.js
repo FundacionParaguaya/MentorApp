@@ -29,6 +29,16 @@ class Checkboxes extends Component {
   }
 
   componentDidUpdate(prevProps) {
+    if (
+      JSON.stringify(prevProps.options) !== JSON.stringify(this.props.options)
+    ) {
+      // reset state
+      this.setState({
+        checkedAnswers: []
+      })
+
+      this.props.updateAnswers([])
+    }
     if (prevProps.showErrors !== this.props.showErrors) {
       this.validateInput(this.props.multipleValue)
     }

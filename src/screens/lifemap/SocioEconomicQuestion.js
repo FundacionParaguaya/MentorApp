@@ -325,7 +325,7 @@ export class SocioEconomicQuestion extends Component {
       ? socioEconomics.questionsPerScreen[socioEconomics.currentScreen - 1]
       : {}
 
-    const draft = !this.readOnly ? this.getDraft() : this.readOnlyDrafts
+    const draft = !this.readOnly ? this.getDraft() : this.readOnlyDraft
 
     const showMemberName = (member, memberIndex, questionsForFamilyMember) => {
       const memberHasQuestions = questionsForFamilyMember.filter(question =>
