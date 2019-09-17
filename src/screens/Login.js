@@ -21,7 +21,7 @@ import {
 
 import Button from '../components/Button'
 import { CheckBox } from 'react-native-elements'
-import DeviceInfo from 'react-native-device-info'
+import RNFetchBlob from 'rn-fetch-blob'
 import NetInfo from '@react-native-community/netinfo'
 import PropTypes from 'prop-types'
 import colors from '../theme.json'
@@ -93,8 +93,8 @@ export class Login extends Component {
     })
   }
 
-  onLogin = () => {
-    if (!this.isStorageSpaceEnough()) {
+  onLogin = async () => {
+    if (!(await this.isStorageSpaceEnough())) {
       this.setState({ notEnoughStorageSpace: true })
       return
     }
@@ -153,9 +153,11 @@ export class Login extends Component {
   handleAppStateChange = nextAppState =>
     this.setState({ appState: nextAppState })
 
-  isStorageSpaceEnough = () => {
+  isStorageSpaceEnough = async () => {
+    const freeSpace = await RNFetchBlob.fs.df()
+
     return (
-      DeviceInfo.getFreeDiskStorage() > MINIMUM_REQUIRED_STORAGE_SPACE_500_MB
+      Number(freeSpace.internal_free) > MINIMUM_REQUIRED_STORAGE_SPACE_500_MB
     )
   }
 
