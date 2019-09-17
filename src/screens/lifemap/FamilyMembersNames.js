@@ -218,9 +218,9 @@ export class FamilyMembersNames extends Component {
                   'gender',
                   false
                 )}
-                otherField={`${i}.customGender`}
+                otherField={`${i + 1}.customGender`}
                 otherPlaceholder={t('views.family.specifyGender')}
-                otherValue={familyMembersList[i + 1].customGender || ''}
+                initialOtherValue={familyMembersList[i + 1].customGender || ''}
                 readonly={!!this.readOnly}
                 showErrors={showErrors}
                 setError={isError => this.setError(isError, `${i + 1}.gender`)}
