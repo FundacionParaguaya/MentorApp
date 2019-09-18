@@ -102,17 +102,26 @@ export class FamilyParticipant extends Component {
 
     const numberOfMembers =
       countFamilyMembers === PREFER_NOT_TO_SAY ? 1 : countFamilyMembers
+    const valueIsNumber = typeof value === 'number'
 
-    if (value !== PREFER_NOT_TO_SAY && numberOfMembers > value) {
+    if (
+      valueIsNumber &&
+      value !== PREFER_NOT_TO_SAY &&
+      numberOfMembers > value
+    ) {
       familyMembersList.splice(value, familyMembersList.length - 1)
     } else if (
+      valueIsNumber &&
       value !== PREFER_NOT_TO_SAY &&
       (numberOfMembers < value || !numberOfMembers)
     ) {
       for (var i = 0; i < value - (numberOfMembers || 1); i++) {
         familyMembersList.push({ firstParticipant: false })
       }
-    } else if (value === PREFER_NOT_TO_SAY) {
+    } else if (
+      (valueIsNumber && value === PREFER_NOT_TO_SAY) ||
+      !valueIsNumber
+    ) {
       familyMembersList.splice(1, familyMembersList.length - 1)
     }
 
@@ -120,7 +129,7 @@ export class FamilyParticipant extends Component {
       ...draft,
       familyData: {
         ...draft.familyData,
-        countFamilyMembers: value,
+        countFamilyMembers: valueIsNumber ? value : undefined,
         familyMembersList
       }
     })
