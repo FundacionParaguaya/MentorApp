@@ -173,11 +173,6 @@ export class SocioEconomicQuestion extends Component {
   }
 
   updateEconomicAnswer = (question, value, memberIndex) => {
-    const isOtherOption =
-      typeof value === 'object' && value.hasOwnProperty('other')
-    const otherOptionKey = question.options.find(
-      option => option.otherOption === true
-    )
     const draft = !this.readOnly ? this.getDraft() : this.readOnlyDraft
     const {
       conditionalQuestions,
@@ -187,6 +182,11 @@ export class SocioEconomicQuestion extends Component {
     // We get a draft with updated answer
     let currentDraft
     const keyName = !Array.isArray(value) ? 'value' : 'multipleValue'
+    const isOtherOption =
+      typeof value === 'object' && value.hasOwnProperty('other')
+    const otherOptionKey = question.options.find(
+      option => option.otherOption === true
+    )
     const newAnswer = {
       key: question.codeName,
       ...(isOtherOption
