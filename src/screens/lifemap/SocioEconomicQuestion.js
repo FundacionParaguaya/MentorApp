@@ -404,6 +404,9 @@ export class SocioEconomicQuestion extends Component {
                       setError={isError =>
                         this.setError(isError, question.codeName)
                       }
+                      otherField={'other'}
+                      otherPlaceholder={'Enter other answer'}
+                      initialOtherValue={''}
                     />
                   </View>
                 )
