@@ -118,7 +118,7 @@ export class SocioEconomicQuestion extends Component {
     ]
   }
 
-  getFamilyMemberFieldValue = (field, index) => {
+  getFamilyMemberFieldValue = (field, index, key) => {
     const draft = !this.readOnly ? this.getDraft() : this.readOnlyDraft
 
     if (
@@ -133,7 +133,7 @@ export class SocioEconomicQuestion extends Component {
 
     return draft.familyData.familyMembersList[
       index
-    ].socioEconomicAnswers.filter(item => item.key === field)[0].value
+    ].socioEconomicAnswers.filter(item => item.key === field)[0][key]
   }
 
   onContinue = () => {
@@ -182,10 +182,24 @@ export class SocioEconomicQuestion extends Component {
     // We get a draft with updated answer
     let currentDraft
     const keyName = !Array.isArray(value) ? 'value' : 'multipleValue'
+    const isOtherOption =
+      typeof value === 'object' && value.hasOwnProperty('other')
+    const otherOptionKey = question.options.find(
+      option => option.otherOption === true
+    )
     const newAnswer = {
       key: question.codeName,
-      [keyName]:
-        question.answerType === 'number' ? value.replace(/[,.]/g, '') : value
+      ...(isOtherOption
+        ? {
+            value: otherOptionKey && otherOptionKey.value,
+            other: value.other
+          }
+        : {
+            [keyName]:
+              question.answerType === 'number'
+                ? value.replace(/[,.]/g, '')
+                : value
+          })
     }
     if (question.forFamilyMember) {
       currentDraft = getDraftWithUpdatedFamilyEconomics(
@@ -390,8 +404,14 @@ export class SocioEconomicQuestion extends Component {
                       id={question.codeName}
                       radio={question.answerType === 'radio' ? true : false}
                       required={question.required}
-                      onChange={value =>
-                        this.updateEconomicAnswer(question, value, false)
+                      onChange={(value, otherOptionId) =>
+                        this.updateEconomicAnswer(
+                          question,
+                          otherOptionId && otherOptionId === 'other'
+                            ? { other: value }
+                            : value,
+                          false
+                        )
                       }
                       placeholder={question.questionText}
                       label={question.questionText}
@@ -403,6 +423,11 @@ export class SocioEconomicQuestion extends Component {
                       showErrors={showErrors}
                       setError={isError =>
                         this.setError(isError, question.codeName)
+                      }
+                      otherField={'other'}
+                      otherPlaceholder={t('views.lifemap.writeYourAnswerHere')}
+                      initialOtherValue={
+                        this.getFieldValue(question.codeName, 'other') || ''
                       }
                     />
                   </View>
@@ -536,15 +561,22 @@ export class SocioEconomicQuestion extends Component {
                             }
                             key={question.codeName}
                             required={question.required}
-                            onChange={value =>
-                              this.updateEconomicAnswer(question, value, i)
+                            onChange={(value, otherOptionId) =>
+                              this.updateEconomicAnswer(
+                                question,
+                                otherOptionId && otherOptionId === 'other'
+                                  ? { other: value }
+                                  : value,
+                                i
+                              )
                             }
                             placeholder={question.questionText}
                             label={question.questionText}
                             initialValue={
                               this.getFamilyMemberFieldValue(
                                 question.codeName,
-                                i
+                                i,
+                                'value'
                               ) || ''
                             }
                             options={getConditionalOptions(question, draft, i)}
@@ -553,6 +585,17 @@ export class SocioEconomicQuestion extends Component {
                             showErrors={showErrors}
                             setError={isError =>
                               this.setError(isError, question.codeName)
+                            }
+                            otherField={'other'}
+                            otherPlaceholder={t(
+                              'views.lifemap.writeYourAnswerHere'
+                            )}
+                            initialOtherValue={
+                              this.getFamilyMemberFieldValue(
+                                question.codeName,
+                                i,
+                                'other'
+                              ) || ''
                             }
                           />
                         </View>
@@ -572,7 +615,8 @@ export class SocioEconomicQuestion extends Component {
                           initialValue={this.addDots(
                             this.getFamilyMemberFieldValue(
                               question.codeName,
-                              i
+                              i,
+                              'value'
                             ) || ''
                           )}
                           validation="number"
@@ -598,7 +642,8 @@ export class SocioEconomicQuestion extends Component {
                           initialValue={
                             this.getFamilyMemberFieldValue(
                               question.codeName,
-                              i
+                              i,
+                              'value'
                             ) || ''
                           }
                           readonly={!!this.readOnly}

@@ -47,8 +47,9 @@ class Select extends Component {
   }
 
   validateInput = (value, isOtherOption) => {
+    const valueKey = this.props.radio ? 'radioChecked' : 'value'
     this.setState({
-      value: value,
+      [valueKey]: value,
       isOpen: false,
       showOther: isOtherOption
     })
@@ -76,28 +77,6 @@ class Select extends Component {
     this.props.onChange(otherValue, this.props.otherField)
   }
 
-  validateInputRadio = value => {
-    this.setState({
-      isOpen: false,
-      radioChecked: value
-    })
-    if (this.props.required && !value) {
-      this.handleError(i18n.t('validation.fieldIsRequired'))
-      this.setState({
-        errorMsg: i18n.t('validation.fieldIsRequired')
-      })
-    } else {
-      this.props.onChange(value, this.props.id)
-      this.setState({
-        errorMsg: null
-      })
-
-      if (typeof this.props.setError === 'function' && this.props.id) {
-        this.props.setError(false, this.props.id, this.props.memberIndex)
-      }
-    }
-  }
-
   handleError(errorMsg) {
     if (typeof this.props.setError === 'function') {
       this.props.setError(true, this.props.id, this.props.memberIndex)
@@ -109,16 +88,11 @@ class Select extends Component {
   }
 
   generateRadioOptions() {
-    let radio_props = []
-
-    this.props.options.forEach(e => {
-      radio_props.push({ label: e.text, value: e.value })
-    })
-
     this.setState({
       radioOptions: this.props.options.map(item => ({
         label: item.text,
-        value: item.value
+        value: item.value,
+        otherOption: item.otherOption
       }))
     })
   }
@@ -248,19 +222,19 @@ class Select extends Component {
                     flexWrap: 'wrap'
                   }}
                 >
-                  {radioOptions.map((obj, i) => {
+                  {radioOptions.map((option, i) => {
                     if (readonly) {
-                      if (this.state.radioChecked === obj.value) {
+                      if (this.state.radioChecked === option.value) {
                         return (
                           <View key={i} style={{ marginRight: 'auto' }}>
                             <View style={{ marginLeft: 12 }}>
                               <RadioButton labelHorizontal={true}>
                                 <RadioButtonInput
                                   disabled={true}
-                                  obj={obj}
+                                  obj={option}
                                   index={i}
                                   isSelected={
-                                    this.state.radioChecked === obj.value
+                                    this.state.radioChecked === option.value
                                   }
                                   borderWidth={2}
                                   buttonInnerColor={colors.palegreen}
@@ -272,7 +246,7 @@ class Select extends Component {
                                 />
                                 <RadioButtonLabel
                                   onPress={() => {}}
-                                  obj={obj}
+                                  obj={option}
                                   index={i}
                                   labelHorizontal={true}
                                   labelStyle={{
@@ -290,10 +264,17 @@ class Select extends Component {
                       return (
                         <RadioButton labelHorizontal={true} key={i}>
                           <RadioButtonInput
-                            obj={obj}
+                            obj={option}
                             index={i}
-                            isSelected={this.state.radioChecked === obj.value}
-                            onPress={this.validateInputRadio}
+                            isSelected={
+                              this.state.radioChecked === option.value
+                            }
+                            onPress={() =>
+                              this.validateInput(
+                                option.value,
+                                option.otherOption
+                              )
+                            }
                             borderWidth={2}
                             buttonInnerColor={colors.palegreen}
                             buttonOuterColor={colors.palegrey}
@@ -302,10 +283,15 @@ class Select extends Component {
                             buttonStyle={{}}
                           />
                           <RadioButtonLabel
-                            obj={obj}
+                            obj={option}
                             index={i}
                             labelHorizontal={true}
-                            onPress={this.validateInputRadio}
+                            onPress={() =>
+                              this.validateInput(
+                                option.value,
+                                option.otherOption
+                              )
+                            }
                             labelStyle={{ fontSize: 17, color: '#4a4a4a' }}
                             labelWrapStyle={{}}
                           />
