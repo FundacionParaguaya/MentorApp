@@ -166,6 +166,7 @@ class TextInput extends Component {
         >
           {!showPlaceholder && !label ? (
             <Text
+              id="topLabel"
               style={{
                 ...styles.text,
                 color: this.defineTextColor(status)
@@ -210,7 +211,7 @@ class TextInput extends Component {
           </FormInput>
         </View>
         {status === 'error' && errorMsg ? (
-          <View style={{ marginLeft: 30 }}>
+          <View id="errorWrapper" style={{ marginLeft: 30 }}>
             <Text style={{ color: colors.red }}>{errorMsg}</Text>
           </View>
         ) : null}

@@ -12,6 +12,7 @@ const createTestProps = props => ({
   t: value => value,
   label: 'Some label',
   field: 'birthDate',
+  showErrors: false,
   ...props
 })
 
@@ -56,6 +57,13 @@ describe('DateInput Component', () => {
       props = createTestProps({ required: true, validation: 'string' })
 
       wrapper.setState({ date: '1 June 2019' })
+    })
+
+    it('calls validateDate on mount', () => {
+      const spy = jest.spyOn(wrapper.instance(), 'validateDate')
+
+      wrapper.setProps({ showErrors: true })
+      expect(spy).toHaveBeenCalledTimes(1)
     })
   })
 })
