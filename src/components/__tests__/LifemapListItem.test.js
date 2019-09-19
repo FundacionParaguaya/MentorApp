@@ -1,49 +1,34 @@
 import React from 'react'
 import { shallow } from 'enzyme'
 import { Text } from 'react-native'
-import FamilyListItem from '../FamilyListItem'
+import LifemapListItem from '../LifemapListItem'
 import ListItem from '../ListItem'
-import Icon from 'react-native-vector-icons/MaterialIcons'
 
 const createTestProps = props => ({
+  name: 'Chile - Geco',
   handleClick: jest.fn(),
-  text: 'Socio Economic title',
-  icon: true,
   ...props
 })
 
-describe('FamilyListItem Component', () => {
-  let wrapper
-  let props
-  beforeEach(() => {
-    props = createTestProps()
-    wrapper = shallow(<FamilyListItem {...props} />)
-  })
+let wrapper, props
 
-  describe('rendering', () => {
-    it('renders <ListItem />', () => {
-      expect(wrapper.find(ListItem)).toHaveLength(1)
-    })
-    it('renders the face icon <Icon />', () => {
-      expect(wrapper.find(Icon)).toHaveLength(2)
-    })
+beforeEach(() => {
+  props = createTestProps()
+  wrapper = shallow(<LifemapListItem {...props} />)
+})
 
-    it('renders the correct name in Text component', () => {
-      expect(
-        wrapper
-          .find(Text)
-          .first()
-          .props().children
-      ).toEqual('Socio Economic title')
-    })
-  })
-  describe('functionality', () => {
-    it('should call handleClick onPress', () => {
-      wrapper
-        .find(ListItem)
-        .props()
-        .onPress()
-      expect(wrapper.instance().props.handleClick).toHaveBeenCalledTimes(1)
-    })
-  })
+it('renders the list item', () => {
+  expect(wrapper.find(ListItem)).toHaveLength(1)
+})
+
+it('sets the correct survey name', () => {
+  expect(wrapper.find(Text)).toHaveHTML(
+    '<react-native-mock>Chile - Geco</react-native-mock>'
+  )
+})
+
+it('calls function when press on item', () => {
+  const listItem = wrapper.find(ListItem)
+  listItem.props().onPress()
+  expect(props.handleClick).toHaveBeenCalledTimes(1)
 })
