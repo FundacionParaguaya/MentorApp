@@ -27,7 +27,7 @@ it('sets the correct survey name', () => {
   )
 })
 
-it('calls function when press on item', () => {
+it('triggers handleClick function when press on the list item', () => {
   const listItem = wrapper.find(ListItem)
   listItem.props().onPress()
   expect(props.handleClick).toHaveBeenCalledTimes(1)
