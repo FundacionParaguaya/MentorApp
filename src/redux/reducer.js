@@ -418,31 +418,6 @@ export const rootReducer = (state, action) => {
     }
   }
 
-  if (action.type === USER_LOGOUT) {
-    // reset store
-    state = {
-      ...state,
-      user: { token: null, status: null, username: null, role: null },
-      drafts: [],
-      surveys: [],
-      maps: [],
-      families: [],
-      env: 'production',
-      sync: {
-        appVersion: null,
-        surveys: false,
-        surveysError: false,
-        mapsError: false,
-        families: false,
-        familiesError: false,
-        images: {
-          total: 0,
-          synced: 0
-        }
-      }
-    }
-  }
-
   // create detailed Bugsnag report on sync error
   if (action.type === SUBMIT_DRAFT_ROLLBACK) {
     const { families, surveys, ...currentState } = state
@@ -455,23 +430,29 @@ export const rootReducer = (state, action) => {
       action.meta.sanitizedSnapshot.surveyId &&
       state.surveys.find(s => s.id === action.meta.sanitizedSnapshot.surveyId)
 
-    bugsnag.clearUser()
-    bugsnag.setUser(state.user.token, state.user.username)
-    bugsnag.notify(new Error('Sync Error'), report => {
-      report.metadata = {
-        ...(report.metaData || {}),
-        userDraft:
-          (action.meta.sanitizedSnapshot && action.meta.sanitizedSnapshot) ||
-          {},
-        serverError: (action.payload.response && action.payload.response) || {},
-        reduxStore: currentState || {},
-        currentSurvey: draftSurvey || {},
-        draftjson: {
-          data: JSON.stringify(action.meta.sanitizedSnapshot || {})
-        },
-        environment: { environment: state.env }
-      }
-    })
+    bugsnag.clearUser ? bugsnag.clearUser() : null
+    bugsnag.setUser
+      ? bugsnag.setUser(state.user.token, state.user.username)
+      : null
+    bugsnag.notify
+      ? bugsnag.notify(new Error('Sync Error'), report => {
+          report.metadata = {
+            ...(report.metaData || {}),
+            userDraft:
+              (action.meta.sanitizedSnapshot &&
+                action.meta.sanitizedSnapshot) ||
+              {},
+            serverError:
+              (action.payload.response && action.payload.response) || {},
+            reduxStore: currentState || {},
+            currentSurvey: draftSurvey || {},
+            draftjson: {
+              data: JSON.stringify(action.meta.sanitizedSnapshot || {})
+            },
+            environment: { environment: state.env }
+          }
+        })
+      : null
   }
 
   return appReducer(state, action)
