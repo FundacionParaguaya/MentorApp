@@ -1,5 +1,58 @@
 # Change Log
 
+## [Unreleased](https://github.com/FundacionParaguaya/MentorApp/tree/HEAD)
+
+[Full Changelog](https://github.com/FundacionParaguaya/MentorApp/compare/v1.10.2...HEAD)
+
+**Implemented enhancements:**
+
+- TestFairy: Set user id for users that haven't logged out [\#1095](https://github.com/FundacionParaguaya/MentorApp/issues/1095)
+- Redo Checkbox component [\#1086](https://github.com/FundacionParaguaya/MentorApp/issues/1086)
+- Download maps by account rather than by survey [\#1080](https://github.com/FundacionParaguaya/MentorApp/issues/1080)
+- Server failsafe for null values [\#912](https://github.com/FundacionParaguaya/MentorApp/issues/912)
+- App Updates Messages [\#857](https://github.com/FundacionParaguaya/MentorApp/issues/857)
+- Unit tests - 2nd round [\#832](https://github.com/FundacionParaguaya/MentorApp/issues/832)
+- Automated GQL response checking [\#262](https://github.com/FundacionParaguaya/MentorApp/issues/262)
+
+**Fixed bugs:**
+
+- Checkboxes in Socio Economic screen not working with conditional surveys [\#1099](https://github.com/FundacionParaguaya/MentorApp/issues/1099)
+- Error thrown in SocioEconomics screens [\#1098](https://github.com/FundacionParaguaya/MentorApp/issues/1098)
+- App crashes when offline while no location permissions are set. [\#1094](https://github.com/FundacionParaguaya/MentorApp/issues/1094)
+- Sync error - missing last name [\#1092](https://github.com/FundacionParaguaya/MentorApp/issues/1092)
+- Missing all lifemaps filter in Dashboard [\#1081](https://github.com/FundacionParaguaya/MentorApp/issues/1081)
+- Log out pop-ups are too big [\#1039](https://github.com/FundacionParaguaya/MentorApp/issues/1039)
+- The "Cancelar" text in log out button does not fit [\#1038](https://github.com/FundacionParaguaya/MentorApp/issues/1038)
+- Map download errors  [\#1014](https://github.com/FundacionParaguaya/MentorApp/issues/1014)
+- Cannot save draft for Demo surveys [\#992](https://github.com/FundacionParaguaya/MentorApp/issues/992)
+- Crash while caching images on old Android devices [\#631](https://github.com/FundacionParaguaya/MentorApp/issues/631)
+
+**Closed issues:**
+
+- checkboxes error validation [\#1000](https://github.com/FundacionParaguaya/MentorApp/issues/1000)
+- A demo survey with NO mandatory questions [\#781](https://github.com/FundacionParaguaya/MentorApp/issues/781)
+- 2nd Testing Round with Talkback [\#476](https://github.com/FundacionParaguaya/MentorApp/issues/476)
+- Error Messaging and the App [\#384](https://github.com/FundacionParaguaya/MentorApp/issues/384)
+- Send logout request to server [\#165](https://github.com/FundacionParaguaya/MentorApp/issues/165)
+- Is it possible to delete a local draft? [\#126](https://github.com/FundacionParaguaya/MentorApp/issues/126)
+
+**Merged pull requests:**
+
+- 1099 conditional checkboxes [\#1103](https://github.com/FundacionParaguaya/MentorApp/pull/1103) ([vasildimitroffhristoff](https://github.com/vasildimitroffhristoff))
+- Feature/accessibility [\#1102](https://github.com/FundacionParaguaya/MentorApp/pull/1102) ([vasildimitroffhristoff](https://github.com/vasildimitroffhristoff))
+- Remove prepare draft helpers related to outdated geco issue [\#1101](https://github.com/FundacionParaguaya/MentorApp/pull/1101) ([Danman7](https://github.com/Danman7))
+- bugfix/location-offline-permission-crash-\#1094 [\#1100](https://github.com/FundacionParaguaya/MentorApp/pull/1100) ([zommerberg](https://github.com/zommerberg))
+- bugfix/tablet-logout-popup-size-\#1039 [\#1097](https://github.com/FundacionParaguaya/MentorApp/pull/1097) ([zommerberg](https://github.com/zommerberg))
+- feature/testfairy-dashboard-setUp-\#1095 [\#1096](https://github.com/FundacionParaguaya/MentorApp/pull/1096) ([zommerberg](https://github.com/zommerberg))
+- feature/download-maps-by-account-\#1080 [\#1091](https://github.com/FundacionParaguaya/MentorApp/pull/1091) ([zommerberg](https://github.com/zommerberg))
+- Add notification modal for api warnings [\#1090](https://github.com/FundacionParaguaya/MentorApp/pull/1090) ([Danman7](https://github.com/Danman7))
+- Bugfix/checkboxes fix \#1086 [\#1089](https://github.com/FundacionParaguaya/MentorApp/pull/1089) ([zommerberg](https://github.com/zommerberg))
+- Feature/demo surveys [\#1087](https://github.com/FundacionParaguaya/MentorApp/pull/1087) ([vasildimitroffhristoff](https://github.com/vasildimitroffhristoff))
+- fix/text-not-fit-fix-\#1038 [\#1085](https://github.com/FundacionParaguaya/MentorApp/pull/1085) ([zommerberg](https://github.com/zommerberg))
+- dashboard-filter-improve-\#1081 [\#1084](https://github.com/FundacionParaguaya/MentorApp/pull/1084) ([zommerberg](https://github.com/zommerberg))
+- Bump eslint-utils from 1.3.1 to 1.4.2 [\#1077](https://github.com/FundacionParaguaya/MentorApp/pull/1077) ([dependabot[bot]](https://github.com/apps/dependabot))
+- checkbox-validation-andTests-1000 [\#1076](https://github.com/FundacionParaguaya/MentorApp/pull/1076) ([zommerberg](https://github.com/zommerberg))
+
 ## [v1.10.2](https://github.com/FundacionParaguaya/MentorApp/tree/v1.10.2) (2019-08-26)
 [Full Changelog](https://github.com/FundacionParaguaya/MentorApp/compare/v1.10.1...v1.10.2)
 
