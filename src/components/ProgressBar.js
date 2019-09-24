@@ -44,7 +44,7 @@ ProgressBarComponent.propTypes = {
   removePadding: PropTypes.bool
 }
 
-const styles = StyleSheet.create({
+export const styles = StyleSheet.create({
   containerNoPadding: {
     borderBottomColor: colors.headerBorder
   },

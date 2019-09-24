@@ -5,12 +5,13 @@ import TextInput from '../form/TextInput'
 import { shallow } from 'enzyme'
 
 const createTestProps = props => ({
-  ...props,
   onChangeText: jest.fn(),
-  detectError: jest.fn(),
+  setError: jest.fn(),
   label: 'Some label',
+  placeholder: 'Some label',
   value: '',
-  field: 'phoneNumber'
+  id: 'phoneNumber',
+  ...props
 })
 
 describe('TextInput Component', () => {
@@ -28,9 +29,9 @@ describe('TextInput Component', () => {
       expect(wrapper.find(Text)).toHaveLength(2)
     })
     it('renders error message when there is an error', () => {
-      expect(wrapper.find(Text)).toHaveLength(2)
+      expect(wrapper.find('#errorWrapper')).toHaveLength(0)
       wrapper.setState({ status: 'error', errorMsg: 'error' })
-      expect(wrapper.find(Text)).toHaveLength(3)
+      expect(wrapper.find('#errorWrapper')).toHaveLength(1)
     })
   })
   describe('functionality', () => {
@@ -77,6 +78,17 @@ describe('TextInput Component', () => {
         .props()
         .onBlur()
       expect(wrapper.instance().state.status).toEqual('blur')
+    })
+
+    it('shows top label when input field is active', () => {
+      props = createTestProps({
+        label: '',
+        status: 'filled',
+        readonly: false
+      })
+      wrapper = shallow(<TextInput {...props} />)
+      wrapper.setState({ text: '', status: 'filled' })
+      expect(wrapper.find('#topLabel')).toHaveLength(1)
     })
   })
 })
