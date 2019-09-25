@@ -11,6 +11,7 @@ import {
 import React, { Component } from 'react'
 
 import CommunityIcon from 'react-native-vector-icons/MaterialCommunityIcons'
+import Geocoder from 'react-native-geocoding'
 import Geolocation from '@react-native-community/geolocation'
 /* eslint-disable import/named */
 import { GooglePlacesAutocomplete } from 'react-native-google-places-autocomplete'
@@ -32,7 +33,6 @@ import marker from '../../../assets/images/marker.png'
 import sad from '../../../assets/images/sad.png'
 import { updateDraft } from '../../redux/actions'
 import { withNamespaces } from 'react-i18next'
-import Geocoder from 'react-native-geocoding'
 
 const GOOGLE_GEO_API_KEY = 'AIzaSyBLGYYy86_7QPT-dKgUnFMIJyhUE6AGVwM'
 Geocoder.init(GOOGLE_GEO_API_KEY)
@@ -163,6 +163,7 @@ export class Location extends Component {
     const draft = !this.readOnly ? this.getDraft() : this.readOnlyDraft
     const { familyData } = draft
     this.setState({ askingForPermission: true })
+
     Geolocation.getCurrentPosition(
       // if location is available and we are online center on it
       position => {
@@ -212,8 +213,8 @@ export class Location extends Component {
         }
       },
       {
-        enableHighAccuracy: false,
-        timeout: 10000,
+        enableHighAccuracy: true,
+        timeout: 15000,
         maximumAge: 0
       }
     )
@@ -277,8 +278,8 @@ export class Location extends Component {
           })
         },
         {
-          enableHighAccuracy: false,
-          timeout: 10000,
+          enableHighAccuracy: true,
+          timeout: 15000,
           maximumAge: 0
         }
       )
