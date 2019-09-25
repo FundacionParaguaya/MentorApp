@@ -29,7 +29,6 @@ const countryList = countries(require('localized-countries/data/en')).array()
 
 class Select extends Component {
   state = {
-    value: this.props.initialValue,
     radioOptions: [],
     isOpen: false,
     errorMsg: '',
@@ -159,12 +158,6 @@ class Select extends Component {
     }
   }
 
-  componentDidUpdate(prevProps) {
-    if (prevProps.showErrors !== this.props.showErrors) {
-      this.validateInput(this.props.initialValue || '')
-    }
-  }
-
   componentWillUnmount() {
     if (this.props.cleanErrorsOnUnmount) {
       this.props.cleanErrorsOnUnmount(this.props.id, this.props.memberIndex)
@@ -172,15 +165,9 @@ class Select extends Component {
   }
 
   render() {
+    const { errorMsg, isOpen, showOther, radioOptions, countries } = this.state
     const {
-      errorMsg,
-      isOpen,
-      showOther,
-      radioOptions,
-      value,
-      countries
-    } = this.state
-    const {
+      initialValue,
       placeholder,
       required,
       options,
@@ -191,10 +178,13 @@ class Select extends Component {
     } = this.props
 
     let text = ''
-    if (countrySelect && countries.find(item => item.code === value)) {
-      text = countries.find(item => item.code === value).label
-    } else if (!countrySelect && options.find(item => item.value === value)) {
-      text = options.find(item => item.value === value).text
+    if (countrySelect && countries.find(item => item.code === initialValue)) {
+      text = countries.find(item => item.code === initialValue).label
+    } else if (
+      !countrySelect &&
+      options.find(item => item.value === initialValue)
+    ) {
+      text = options.find(item => item.value === initialValue).text
     }
 
     return readonly && !this.props.initialValue ? null : (
@@ -305,12 +295,12 @@ class Select extends Component {
               <View
                 style={[
                   styles.container,
-                  !value && styles.withoutValue,
+                  !initialValue && styles.withoutValue,
                   errorMsg && styles.error,
                   isOpen && styles.active
                 ]}
               >
-                {!!value && (
+                {!!initialValue && (
                   <Text
                     style={[
                       styles.title,
@@ -327,7 +317,9 @@ class Select extends Component {
                     errorMsg ? { color: colors.red } : {}
                   ]}
                 >
-                  {value ? text : `${placeholder}${required ? ' *' : ''}`}
+                  {initialValue
+                    ? text
+                    : `${placeholder}${required ? ' *' : ''}`}
                 </Text>
                 {!readonly ? (
                   <Image source={arrow} style={styles.arrow} />
@@ -362,7 +354,7 @@ class Select extends Component {
                               <Text
                                 style={[
                                   styles.option,
-                                  value === item.code && styles.selected
+                                  initialValue === item.code && styles.selected
                                 ]}
                                 accessibilityLabel={`${item.label}`}
                               >
@@ -391,7 +383,7 @@ class Select extends Component {
                               <Text
                                 style={[
                                   styles.option,
-                                  value === item.value && styles.selected
+                                  initialValue === item.value && styles.selected
                                 ]}
                                 accessibilityLabel={`${item.text}`}
                               >
