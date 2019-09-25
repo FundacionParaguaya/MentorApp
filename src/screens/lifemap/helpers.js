@@ -75,7 +75,7 @@ export const setScreen = (screenData, draft, step) => {
 
   const QUESTIONS_FOR_NEXT_SCREEN =
     screenData.questionsPerScreen[
-      screenData.currentScreen === screenData.totalScreens && step === -1
+      step === -1
         ? screenData.currentScreen - 2 //
         : screenData.currentScreen
     ]
