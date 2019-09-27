@@ -157,7 +157,6 @@ dependencies {
     implementation project(':react-native-print')
     implementation project(':@react-native-mapbox-gl_maps')
     implementation 'androidx.multidex:multidex:2.0.1'
-    implementation project(':@react-native-community_async-storage')
     implementation project(':@react-native-community_netinfo')
     implementation project(':react-native-gesture-handler')
     implementation project(':@react-native-community_geolocation')
