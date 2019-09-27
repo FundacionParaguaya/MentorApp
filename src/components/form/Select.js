@@ -158,6 +158,12 @@ class Select extends Component {
     }
   }
 
+  componentDidUpdate(prevProps) {
+    if (prevProps.showErrors !== this.props.showErrors) {
+      this.validateInput(this.props.initialValue || '')
+    }
+  }
+
   componentWillUnmount() {
     if (this.props.cleanErrorsOnUnmount) {
       this.props.cleanErrorsOnUnmount(this.props.id, this.props.memberIndex)
@@ -256,9 +262,7 @@ class Select extends Component {
                           <RadioButtonInput
                             obj={option}
                             index={i}
-                            isSelected={
-                              this.state.radioChecked === option.value
-                            }
+                            isSelected={initialValue === option.value}
                             onPress={() =>
                               this.validateInput(
                                 option.value,

@@ -330,6 +330,18 @@ export class SocioEconomicQuestion extends Component {
     }
   }
 
+  cleanErrorsCodenamesOnUnmount = (field, memberIndex) => {
+    let { errors } = this.state
+    const fieldName = memberIndex ? `${field}-${memberIndex}` : field
+    if (fieldName) {
+      errors = errors.filter(item => item !== fieldName)
+    }
+
+    this.setState({
+      errors
+    })
+  }
+
   render() {
     const { t } = this.props
     const { showErrors } = this.state
@@ -421,14 +433,13 @@ export class SocioEconomicQuestion extends Component {
                       options={getConditionalOptions(question, draft)}
                       readonly={!!this.readOnly}
                       showErrors={showErrors}
-                      setError={isError =>
-                        this.setError(isError, question.codeName)
-                      }
+                      setError={this.setError}
                       otherField={'other'}
                       otherPlaceholder={t('views.lifemap.writeYourAnswerHere')}
                       initialOtherValue={
                         this.getFieldValue(question.codeName, 'other') || ''
                       }
+                      cleanErrorsOnUnmount={this.cleanErrorsCodenamesOnUnmount}
                     />
                   </View>
                 )
@@ -583,9 +594,7 @@ export class SocioEconomicQuestion extends Component {
                             memberIndex={i + 1}
                             readonly={!!this.readOnly}
                             showErrors={showErrors}
-                            setError={isError =>
-                              this.setError(isError, question.codeName)
-                            }
+                            setError={this.setError}
                             otherField={'other'}
                             otherPlaceholder={t(
                               'views.lifemap.writeYourAnswerHere'
@@ -596,6 +605,9 @@ export class SocioEconomicQuestion extends Component {
                                 i,
                                 'other'
                               ) || ''
+                            }
+                            cleanErrorsOnUnmount={
+                              this.cleanErrorsCodenamesOnUnmount
                             }
                           />
                         </View>
