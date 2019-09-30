@@ -1,3 +1,6 @@
+import countries from 'localized-countries'
+import PropTypes from 'prop-types'
+import React, { Component } from 'react'
 import {
   FlatList,
   Image,
@@ -12,18 +15,15 @@ import RadioForm, {
   RadioButtonInput,
   RadioButtonLabel
 } from 'react-native-simple-radio-button'
-import React, { Component } from 'react'
 
-import BottomModal from '../BottomModal'
-import ListItem from '../ListItem'
-import PropTypes from 'prop-types'
-import TextInput from './TextInput'
 import arrow from '../../../assets/images/selectArrow.png'
-import colors from '../../theme.json'
-import countries from 'localized-countries'
 import globalStyles from '../../globalStyles'
 import i18n from '../../i18n'
 import { setListOfLabeles } from '../../screens/utils/accessibilityHelpers'
+import colors from '../../theme.json'
+import BottomModal from '../BottomModal'
+import ListItem from '../ListItem'
+import TextInput from './TextInput'
 
 const countryList = countries(require('localized-countries/data/en')).array()
 
@@ -143,6 +143,7 @@ class Select extends Component {
       this.validateInput(this.props.initialValue || '')
     }
     // on mount validate empty required fields with out showing an errors message
+
     if (
       typeof this.props.setError === 'function' &&
       this.props.required &&
