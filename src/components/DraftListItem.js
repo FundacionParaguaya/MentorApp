@@ -73,6 +73,7 @@ class DraftListItem extends Component {
       >
         <View>
           <Text
+            id="dateCreated"
             style={globalStyles.tag}
             accessibilityLabel={itemCreateDateWithLocale.format(
               'MMMM DD, YYYY'
@@ -80,8 +81,11 @@ class DraftListItem extends Component {
           >
             {this.capitalize(itemCreateDateWithLocale.format('MMM DD, YYYY'))}
           </Text>
-          <Text style={globalStyles.p}>{name}</Text>
+          <Text id="fullName" style={globalStyles.p}>
+            {name}
+          </Text>
           <Text
+            id="status"
             style={{
               ...styles.label,
               backgroundColor: this.getColor(this.props.item.status),

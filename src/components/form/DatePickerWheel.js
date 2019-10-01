@@ -98,6 +98,7 @@ class DatePickerWheel extends Component {
 
     return (
       <TouchableHighlight
+        id="datePicker"
         underlayColor={'transparent'}
         activeOpacity={1}
         onPress={this.toggleDropdown}
@@ -131,6 +132,7 @@ class DatePickerWheel extends Component {
               >{`${placeholder}`}</Text>
             )}
             <Text
+              id="placeholder"
               style={[
                 styles.placeholder,
                 hasError ? { color: colors.red } : {}
@@ -152,6 +154,7 @@ class DatePickerWheel extends Component {
                 <View style={{ marginTop: -25 }}>
                   <View style={styles.wheelPickerHeader}>
                     <TouchableOpacity
+                      id="confirm"
                       onPress={() => {
                         const date = this.getSelectedDate(wheelDays, wheelYears)
                         this.validateInput(date)
@@ -164,6 +167,7 @@ class DatePickerWheel extends Component {
                   </View>
                   <View style={styles.wheelsContainer}>
                     <WheelPicker
+                      id="dayWheel"
                       onItemSelected={this.setDay}
                       isCurved={true}
                       data={wheelDays}
@@ -177,6 +181,7 @@ class DatePickerWheel extends Component {
                       selectedItemPosition={daysWheelPosition}
                     />
                     <WheelPicker
+                      id="monthWheel"
                       onItemSelected={this.setMonth}
                       isCurved={true}
                       data={wheelMonths}
@@ -190,6 +195,7 @@ class DatePickerWheel extends Component {
                       selectedItemPosition={monthsWheelPosition}
                     />
                     <WheelPicker
+                      id="yearWheel"
                       onItemSelected={this.setYear}
                       isCurved={true}
                       data={wheelYears}

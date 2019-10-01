@@ -1,7 +1,7 @@
 import React from 'react'
 import { shallow } from 'enzyme'
 import { Slider } from '../Slider'
-import { ScrollView } from 'react-native'
+
 import SliderItem from '../SliderItem'
 
 const createTestProps = props => ({
@@ -32,20 +32,19 @@ const createTestProps = props => ({
   ...props
 })
 
-describe('Slider Component', () => {
-  let wrapper
-  let props
-  beforeEach(() => {
-    props = createTestProps()
-    wrapper = shallow(<Slider {...props} />)
-  })
-  describe('rendering', () => {
-    it('renders ScrollView', () => {
-      expect(wrapper.find(ScrollView)).toHaveLength(1)
-    })
+let wrapper, props
 
-    it('renders SliderItem', () => {
-      expect(wrapper.find(SliderItem)).toHaveLength(3)
-    })
-  })
+beforeEach(() => {
+  props = createTestProps()
+  wrapper = shallow(<Slider {...props} />)
+})
+
+it('renders SliderItem', () => {
+  expect(wrapper.find(SliderItem)).toHaveLength(3)
+})
+
+it('selects an answer', () => {
+  const slideItem = wrapper.find(SliderItem).first()
+  slideItem.props().onPress()
+  expect(props.selectAnswer).toHaveBeenCalledWith(props.slides[0].value)
 })

@@ -1,5 +1,16 @@
-import { Platform, StyleSheet, Text, View } from 'react-native'
+import PropTypes from 'prop-types'
 import React, { Component } from 'react'
+import { withNamespaces } from 'react-i18next'
+import { Platform, StyleSheet, Text, View } from 'react-native'
+import { connect } from 'react-redux'
+
+import Decoration from '../../components/decoration/Decoration'
+import Checkboxes from '../../components/form/Checkboxes'
+import Select from '../../components/form/Select'
+import TextInput from '../../components/form/TextInput'
+import StickyFooter from '../../components/StickyFooter'
+import { updateDraft } from '../../redux/actions'
+import colors from '../../theme.json'
 import {
   getConditionalOptions,
   getConditionalQuestions,
@@ -10,17 +21,6 @@ import {
   shouldShowQuestion
 } from '../utils/conditional_logic'
 import { getTotalScreens, setScreen } from './helpers'
-
-import Checkboxes from '../../components/form/Checkboxes'
-import Decoration from '../../components/decoration/Decoration'
-import PropTypes from 'prop-types'
-import Select from '../../components/form/Select'
-import StickyFooter from '../../components/StickyFooter'
-import TextInput from '../../components/form/TextInput'
-import colors from '../../theme.json'
-import { connect } from 'react-redux'
-import { updateDraft } from '../../redux/actions'
-import { withNamespaces } from 'react-i18next'
 
 export class SocioEconomicQuestion extends Component {
   readOnlyDraft = this.props.navigation.getParam('family') || []
@@ -330,6 +330,18 @@ export class SocioEconomicQuestion extends Component {
     }
   }
 
+  cleanErrorsCodenamesOnUnmount = (field, memberIndex) => {
+    let { errors } = this.state
+    const fieldName = memberIndex ? `${field}-${memberIndex}` : field
+    if (fieldName) {
+      errors = errors.filter(item => item !== fieldName)
+    }
+
+    this.setState({
+      errors
+    })
+  }
+
   render() {
     const { t } = this.props
     const { showErrors } = this.state
@@ -376,7 +388,7 @@ export class SocioEconomicQuestion extends Component {
                   : false
                 : question
             )
-            .map((question, index) => {
+            .map(question => {
               if (
                 question.answerType === 'select' ||
                 question.answerType === 'radio'
@@ -387,7 +399,7 @@ export class SocioEconomicQuestion extends Component {
                   ) || false
 
                 return (
-                  <View key={index}>
+                  <View key={question.codeName}>
                     {this.readOnly && !radioQuestionSelected ? null : (
                       <View>
                         {question.answerType === 'radio' ? (
@@ -421,14 +433,13 @@ export class SocioEconomicQuestion extends Component {
                       options={getConditionalOptions(question, draft)}
                       readonly={!!this.readOnly}
                       showErrors={showErrors}
-                      setError={isError =>
-                        this.setError(isError, question.codeName)
-                      }
+                      setError={this.setError}
                       otherField={'other'}
                       otherPlaceholder={t('views.lifemap.writeYourAnswerHere')}
                       initialOtherValue={
                         this.getFieldValue(question.codeName, 'other') || ''
                       }
+                      cleanErrorsOnUnmount={this.cleanErrorsCodenamesOnUnmount}
                     />
                   </View>
                 )
@@ -583,9 +594,7 @@ export class SocioEconomicQuestion extends Component {
                             memberIndex={i + 1}
                             readonly={!!this.readOnly}
                             showErrors={showErrors}
-                            setError={isError =>
-                              this.setError(isError, question.codeName)
-                            }
+                            setError={this.setError}
                             otherField={'other'}
                             otherPlaceholder={t(
                               'views.lifemap.writeYourAnswerHere'
@@ -596,6 +605,9 @@ export class SocioEconomicQuestion extends Component {
                                 i,
                                 'other'
                               ) || ''
+                            }
+                            cleanErrorsOnUnmount={
+                              this.cleanErrorsCodenamesOnUnmount
                             }
                           />
                         </View>

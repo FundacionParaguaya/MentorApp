@@ -9,8 +9,6 @@ include ':react-native-print'
 project(':react-native-print').projectDir = new File(rootProject.projectDir, '../node_modules/react-native-print/android')
 include ':@react-native-mapbox-gl_maps'
 project(':@react-native-mapbox-gl_maps').projectDir = new File(rootProject.projectDir, '../node_modules/@react-native-mapbox-gl/maps/android/rctmgl')
-include ':@react-native-community_async-storage'
-project(':@react-native-community_async-storage').projectDir = new File(rootProject.projectDir, '../node_modules/@react-native-community/async-storage/android')
 include ':@react-native-community_netinfo'
 project(':@react-native-community_netinfo').projectDir = new File(rootProject.projectDir, '../node_modules/@react-native-community/netinfo/android')
 include ':react-native-gesture-handler'

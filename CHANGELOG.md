@@ -1,7 +1,38 @@
 # Change Log
 
+<<<<<<< HEAD
 ## [v1.10.3](https://github.com/FundacionParaguaya/MentorApp/tree/v1.10.3) (2019-09-24)
 
+=======
+## [v1.10.4](https://github.com/FundacionParaguaya/MentorApp/tree/v1.10.4) (2019-10-01)
+[Full Changelog](https://github.com/FundacionParaguaya/MentorApp/compare/v1.10.3...v1.10.4)
+
+**Implemented enhancements:**
+
+- Change text in buttons to create a survey [\#1113](https://github.com/FundacionParaguaya/MentorApp/issues/1113)
+- Status Page [\#1050](https://github.com/FundacionParaguaya/MentorApp/issues/1050)
+
+**Fixed bugs:**
+
+- Can continue without entering required field [\#1129](https://github.com/FundacionParaguaya/MentorApp/issues/1129)
+- Map shows blue screen initially [\#1128](https://github.com/FundacionParaguaya/MentorApp/issues/1128)
+- Required conditional allows you to continue if not answered [\#1126](https://github.com/FundacionParaguaya/MentorApp/issues/1126)
+- Required questions don't show error message when continuing [\#1125](https://github.com/FundacionParaguaya/MentorApp/issues/1125)
+- Select dropdown wrong behavior for required [\#1124](https://github.com/FundacionParaguaya/MentorApp/issues/1124)
+- Radio buttons wrong behavior [\#1123](https://github.com/FundacionParaguaya/MentorApp/issues/1123)
+- Crash on socioeconomics - E.forFamily not an object [\#1119](https://github.com/FundacionParaguaya/MentorApp/issues/1119)
+- Strange map showing in location when online [\#1118](https://github.com/FundacionParaguaya/MentorApp/issues/1118)
+
+**Merged pull requests:**
+
+- Bring back missing error cleaning on unmounting, fixed wrong parramet… [\#1127](https://github.com/FundacionParaguaya/MentorApp/pull/1127) ([vasildimitroffhristoff](https://github.com/vasildimitroffhristoff))
+- Replace internal select value with initial value [\#1122](https://github.com/FundacionParaguaya/MentorApp/pull/1122) ([Danman7](https://github.com/Danman7))
+- Remove total screens check in determining whether to skip a screen [\#1121](https://github.com/FundacionParaguaya/MentorApp/pull/1121) ([zommerberg](https://github.com/zommerberg))
+- Enable high accuracy location and increase timeout [\#1120](https://github.com/FundacionParaguaya/MentorApp/pull/1120) ([Danman7](https://github.com/Danman7))
+- Release/1.10.3 [\#1116](https://github.com/FundacionParaguaya/MentorApp/pull/1116) ([Danman7](https://github.com/Danman7))
+
+## [v1.10.3](https://github.com/FundacionParaguaya/MentorApp/tree/v1.10.3) (2019-09-24)
+>>>>>>> develop
 [Full Changelog](https://github.com/FundacionParaguaya/MentorApp/compare/v1.10.2...v1.10.3)
 
 **Implemented enhancements:**

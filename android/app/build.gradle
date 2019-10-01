@@ -100,8 +100,8 @@ android {
         applicationId "com.povertystoplightapp"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
-        versionCode 92
-        versionName "1.10.3"
+        versionCode 97
+        versionName "1.10.4"
         multiDexEnabled true
         testBuildType System.getProperty('testBuildType', 'debug')  // This will later be used to control the test apk build type
         testInstrumentationRunner 'androidx.test.runner.AndroidJUnitRunner'
@@ -157,7 +157,6 @@ dependencies {
     implementation project(':react-native-print')
     implementation project(':@react-native-mapbox-gl_maps')
     implementation 'androidx.multidex:multidex:2.0.1'
-    implementation project(':@react-native-community_async-storage')
     implementation project(':@react-native-community_netinfo')
     implementation project(':react-native-gesture-handler')
     implementation project(':@react-native-community_geolocation')

@@ -329,7 +329,7 @@ AddPriorityAndAchievementModal.propTypes = {
   color: PropTypes.number,
   onClose: PropTypes.func,
   updateDraft: PropTypes.func.isRequired,
-  draftId: PropTypes.string,
+  draftId: PropTypes.number,
   drafts: PropTypes.array.isRequired
 }
 

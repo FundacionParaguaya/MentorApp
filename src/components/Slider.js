@@ -66,7 +66,7 @@ export class Slider extends Component {
   }
 
   vibrate = () => {
-    Vibration.vibrate(VIBRATION_DURATION)
+    Vibration ? Vibration.vibrate(VIBRATION_DURATION) : null
   }
 
   render() {

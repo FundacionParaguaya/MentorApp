@@ -1,3 +1,9 @@
+import Geolocation from '@react-native-community/geolocation'
+import NetInfo from '@react-native-community/netinfo'
+import MapboxGL from '@react-native-mapbox-gl/maps'
+import PropTypes from 'prop-types'
+import React, { Component } from 'react'
+import { withNamespaces } from 'react-i18next'
 import {
   ActivityIndicator,
   AppState,
@@ -8,31 +14,25 @@ import {
   TouchableHighlight,
   View
 } from 'react-native'
-import React, { Component } from 'react'
-
-import CommunityIcon from 'react-native-vector-icons/MaterialCommunityIcons'
-import Geolocation from '@react-native-community/geolocation'
+import Geocoder from 'react-native-geocoding'
 /* eslint-disable import/named */
 import { GooglePlacesAutocomplete } from 'react-native-google-places-autocomplete'
+import CommunityIcon from 'react-native-vector-icons/MaterialCommunityIcons'
 /* eslint-enable import/named */
 import Icon from 'react-native-vector-icons/MaterialIcons'
-import MapboxGL from '@react-native-mapbox-gl/maps'
-import NetInfo from '@react-native-community/netinfo'
-import PropTypes from 'prop-types'
-import Select from '../../components/form/Select'
-import StickyFooter from '../../components/StickyFooter'
-import TextInput from '../../components/form/TextInput'
-import center from '../../../assets/images/centerMap.png'
-import colors from '../../theme.json'
 import { connect } from 'react-redux'
-import { getTotalScreens } from './helpers'
-import globalStyles from '../../globalStyles'
+
+import center from '../../../assets/images/centerMap.png'
 import happy from '../../../assets/images/happy.png'
 import marker from '../../../assets/images/marker.png'
 import sad from '../../../assets/images/sad.png'
+import Select from '../../components/form/Select'
+import TextInput from '../../components/form/TextInput'
+import StickyFooter from '../../components/StickyFooter'
+import globalStyles from '../../globalStyles'
 import { updateDraft } from '../../redux/actions'
-import { withNamespaces } from 'react-i18next'
-import Geocoder from 'react-native-geocoding'
+import colors from '../../theme.json'
+import { getTotalScreens } from './helpers'
 
 const GOOGLE_GEO_API_KEY = 'AIzaSyBLGYYy86_7QPT-dKgUnFMIJyhUE6AGVwM'
 Geocoder.init(GOOGLE_GEO_API_KEY)
@@ -163,6 +163,7 @@ export class Location extends Component {
     const draft = !this.readOnly ? this.getDraft() : this.readOnlyDraft
     const { familyData } = draft
     this.setState({ askingForPermission: true })
+
     Geolocation.getCurrentPosition(
       // if location is available and we are online center on it
       position => {
@@ -212,8 +213,8 @@ export class Location extends Component {
         }
       },
       {
-        enableHighAccuracy: false,
-        timeout: 10000,
+        enableHighAccuracy: true,
+        timeout: 15000,
         maximumAge: 0
       }
     )
@@ -235,7 +236,6 @@ export class Location extends Component {
       })
     } else {
       this.setState({
-        loading: false,
         showOfflineMapsList: false
       })
       Geolocation.getCurrentPosition(
@@ -277,8 +277,8 @@ export class Location extends Component {
           })
         },
         {
-          enableHighAccuracy: false,
-          timeout: 10000,
+          enableHighAccuracy: true,
+          timeout: 15000,
           maximumAge: 0
         }
       )
@@ -424,8 +424,7 @@ export class Location extends Component {
 
     if (isGranted) {
       this.setState({
-        askingForPermission: false,
-        loading: false
+        askingForPermission: false
       })
     } else {
       this.setState({

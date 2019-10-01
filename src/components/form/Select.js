@@ -1,3 +1,6 @@
+import countries from 'localized-countries'
+import PropTypes from 'prop-types'
+import React, { Component } from 'react'
 import {
   FlatList,
   Image,
@@ -12,24 +15,20 @@ import RadioForm, {
   RadioButtonInput,
   RadioButtonLabel
 } from 'react-native-simple-radio-button'
-import React, { Component } from 'react'
 
-import BottomModal from '../BottomModal'
-import ListItem from '../ListItem'
-import PropTypes from 'prop-types'
-import TextInput from './TextInput'
 import arrow from '../../../assets/images/selectArrow.png'
-import colors from '../../theme.json'
-import countries from 'localized-countries'
 import globalStyles from '../../globalStyles'
 import i18n from '../../i18n'
 import { setListOfLabeles } from '../../screens/utils/accessibilityHelpers'
+import colors from '../../theme.json'
+import BottomModal from '../BottomModal'
+import ListItem from '../ListItem'
+import TextInput from './TextInput'
 
 const countryList = countries(require('localized-countries/data/en')).array()
 
 class Select extends Component {
   state = {
-    value: this.props.initialValue,
     radioOptions: [],
     isOpen: false,
     errorMsg: '',
@@ -144,6 +143,7 @@ class Select extends Component {
       this.validateInput(this.props.initialValue || '')
     }
     // on mount validate empty required fields with out showing an errors message
+
     if (
       typeof this.props.setError === 'function' &&
       this.props.required &&
@@ -172,15 +172,9 @@ class Select extends Component {
   }
 
   render() {
+    const { errorMsg, isOpen, showOther, radioOptions, countries } = this.state
     const {
-      errorMsg,
-      isOpen,
-      showOther,
-      radioOptions,
-      value,
-      countries
-    } = this.state
-    const {
+      initialValue,
       placeholder,
       required,
       options,
@@ -191,10 +185,13 @@ class Select extends Component {
     } = this.props
 
     let text = ''
-    if (countrySelect && countries.find(item => item.code === value)) {
-      text = countries.find(item => item.code === value).label
-    } else if (!countrySelect && options.find(item => item.value === value)) {
-      text = options.find(item => item.value === value).text
+    if (countrySelect && countries.find(item => item.code === initialValue)) {
+      text = countries.find(item => item.code === initialValue).label
+    } else if (
+      !countrySelect &&
+      options.find(item => item.value === initialValue)
+    ) {
+      text = options.find(item => item.value === initialValue).text
     }
 
     return readonly && !this.props.initialValue ? null : (
@@ -266,9 +263,7 @@ class Select extends Component {
                           <RadioButtonInput
                             obj={option}
                             index={i}
-                            isSelected={
-                              this.state.radioChecked === option.value
-                            }
+                            isSelected={initialValue === option.value}
                             onPress={() =>
                               this.validateInput(
                                 option.value,
@@ -305,12 +300,12 @@ class Select extends Component {
               <View
                 style={[
                   styles.container,
-                  !value && styles.withoutValue,
+                  !initialValue && styles.withoutValue,
                   errorMsg && styles.error,
                   isOpen && styles.active
                 ]}
               >
-                {!!value && (
+                {!!initialValue && (
                   <Text
                     style={[
                       styles.title,
@@ -327,7 +322,9 @@ class Select extends Component {
                     errorMsg ? { color: colors.red } : {}
                   ]}
                 >
-                  {value ? text : `${placeholder}${required ? ' *' : ''}`}
+                  {initialValue
+                    ? text
+                    : `${placeholder}${required ? ' *' : ''}`}
                 </Text>
                 {!readonly ? (
                   <Image source={arrow} style={styles.arrow} />
@@ -362,7 +359,7 @@ class Select extends Component {
                               <Text
                                 style={[
                                   styles.option,
-                                  value === item.code && styles.selected
+                                  initialValue === item.code && styles.selected
                                 ]}
                                 accessibilityLabel={`${item.label}`}
                               >
@@ -391,7 +388,7 @@ class Select extends Component {
                               <Text
                                 style={[
                                   styles.option,
-                                  value === item.value && styles.selected
+                                  initialValue === item.value && styles.selected
                                 ]}
                                 accessibilityLabel={`${item.text}`}
                               >

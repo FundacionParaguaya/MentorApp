@@ -7,7 +7,6 @@ import com.testfairy.react.TestFairyPackage;
 import com.christopherdro.htmltopdf.RNHTMLtoPDFPackage;
 import com.christopherdro.RNPrint.RNPrintPackage;
 import com.mapbox.rctmgl.RCTMGLPackage;
-import com.reactnativecommunity.asyncstorage.AsyncStoragePackage;
 import com.reactnativecommunity.netinfo.NetInfoPackage;
 import com.swmansion.gesturehandler.react.RNGestureHandlerPackage;
 import com.reactnativecommunity.geolocation.GeolocationPackage;
@@ -48,7 +47,6 @@ public class MainApplication extends Application implements ReactApplication {
             new RNHTMLtoPDFPackage(),
             new RNPrintPackage(),
             new RCTMGLPackage(),
-            new AsyncStoragePackage(),
             new NetInfoPackage(),
             new RNGestureHandlerPackage(),
             new GeolocationPackage(),
