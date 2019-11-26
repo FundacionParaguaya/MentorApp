@@ -1,11 +1,13 @@
-import colors from '../../theme.json'
-import moment from 'moment'
 import 'moment/locale/es'
+
+import moment from 'moment'
+
+import colors from '../../theme.json'
 import {
-  priorityIcon,
   achievementIcon,
-  styles,
-  priorityIconWithoutStyles
+  priorityIcon,
+  priorityIconWithoutStyles,
+  styles
 } from './assets'
 
 moment.locale('en')
@@ -200,7 +202,7 @@ export const buildPrintOptions = (draft, survey, lng, t) => {
 export const buildPDFOptions = (draft, survey, lng, t) => {
   return {
     html: generateLifeMapHtmlTemplate(draft, survey, lng, t),
-    fileName: `${getReportTitle(draft)}, Life Map`,
+    fileName: 'lifemap.pdf',
     directory: 'docs',
     padding: 0,
     height: 842,
