@@ -19,6 +19,7 @@ import RoundImage from '../../components/RoundImage'
 import { url } from '../../config'
 import globalStyles from '../../globalStyles'
 import { submitDraft, updateDraft } from '../../redux/actions'
+import EmailSentModal from '../modals/EmailSentModal'
 import { prepareDraftForSubmit } from '../utils/helpers'
 import {
   buildPDFOptions,
@@ -33,7 +34,9 @@ export class Final extends Component {
     loading: false,
     downloading: false,
     printing: false,
-    sendingEmail: false
+    sendingEmail: false,
+    modalOpen: false,
+    mailSentError: false
   }
 
   onPressBack = () => {
@@ -195,9 +198,15 @@ export class Final extends Component {
 
           // console.log('response from the sent email ', mailSent)
           if (mailSent.respInfo.status === 200) {
-            this.setState({ sendingEmail: false })
+            this.setState({ sendingEmail: false, modalOpen: true })
 
             // console.log('res status is : ', mailSent.respInfo.status)
+          } else {
+            this.setState({
+              sendingEmail: false,
+              modalOpen: true,
+              mailSentError: true
+            })
           }
         })
       })
@@ -205,6 +214,8 @@ export class Final extends Component {
       alert(err)
     }
   }
+
+  handleCloseModal = () => this.setState({ modalOpen: false })
 
   shouldComponentUpdate() {
     return this.props.navigation.isFocused()
@@ -291,6 +302,11 @@ export class Final extends Component {
               loading={this.state.printing}
             />
           </View>
+          <EmailSentModal
+            close={this.handleCloseModal}
+            isOpen={this.state.modalOpen}
+            error={this.state.mailSentError}
+          />
         </View>
         <View style={{ height: 50 }}>
           <Button
