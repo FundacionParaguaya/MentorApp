@@ -214,7 +214,7 @@
     "final": {
       "emailSent": "Tu Mapa de Vida ha sido enviado exitosamente vía email. ¡No te olvides de seleccionar Guardar & cerrar!",
       "emailError": "Error al enviar tu Mapa de Vida vía email",
-      "offlineText": "Please enable your internet connection to receive your Life Map via email."
+      "offlineText": "Por favor, activa tu conexión a Internet para recibir tu Mapa de Vida vía email"
     }
   }
 }
