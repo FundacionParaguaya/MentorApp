@@ -1,3 +1,4 @@
+import NetInfo from '@react-native-community/netinfo'
 import PropTypes from 'prop-types'
 import React, { Component } from 'react'
 import { withNamespaces } from 'react-i18next'
@@ -28,6 +29,7 @@ import {
 } from '../utils/pdfs'
 
 export class Final extends Component {
+  unsubscribeNetChange
   survey = this.props.navigation.getParam('survey')
   draft = this.props.navigation.getParam('draft')
   state = {
@@ -36,7 +38,8 @@ export class Final extends Component {
     printing: false,
     sendingEmail: false,
     modalOpen: false,
-    mailSentError: false
+    mailSentError: false,
+    connection: false
   }
 
   onPressBack = () => {
@@ -194,19 +197,20 @@ export class Final extends Component {
 
       RNFetchBlob.fs.cp(pdf.filePath, filePath).then(async () => {
         RNFetchBlob.fs.readFile(filePath, 'base64').then(async () => {
-          const mailSent = await this.sendMailService(email, pdf.filePath)
+          if (this.state.connection) {
+            const mailSent = await this.sendMailService(email, pdf.filePath)
 
-          // console.log('response from the sent email ', mailSent)
-          if (mailSent.respInfo.status === 200) {
-            this.setState({ sendingEmail: false, modalOpen: true })
-
-            // console.log('res status is : ', mailSent.respInfo.status)
+            if (mailSent.respInfo.status === 200) {
+              this.setState({ sendingEmail: false, modalOpen: true })
+            } else {
+              this.setState({
+                sendingEmail: false,
+                modalOpen: true,
+                mailSentError: true
+              })
+            }
           } else {
-            this.setState({
-              sendingEmail: false,
-              modalOpen: true,
-              mailSentError: true
-            })
+            this.setState({ modalOpen: true, sendingEmail: false })
           }
         })
       })
@@ -217,14 +221,31 @@ export class Final extends Component {
 
   handleCloseModal = () => this.setState({ modalOpen: false })
 
+  setConnectivityState = isConnected => {
+    isConnected
+      ? this.setState({ connection: true, error: '' })
+      : this.setState({ connection: false, error: 'No connection' })
+  }
+
   shouldComponentUpdate() {
     return this.props.navigation.isFocused()
   }
+
   componentDidMount() {
     this.props.updateDraft(this.draft)
     this.props.navigation.setParams({
       onPressBack: this.onPressBack
     })
+    NetInfo.fetch().then(state => this.setConnectivityState(state.isConnected))
+    this.unsubscribeNetChange = NetInfo.addEventListener(state => {
+      this.setConnectivityState(state.isConnected)
+    })
+  }
+
+  componentWillUnmount() {
+    if (this.unsubscribeNetChange) {
+      this.unsubscribeNetChange()
+    }
   }
 
   render() {
@@ -306,6 +327,7 @@ export class Final extends Component {
             close={this.handleCloseModal}
             isOpen={this.state.modalOpen}
             error={this.state.mailSentError}
+            userIsOnline={this.state.connection}
           />
         </View>
         <View style={{ height: 50 }}>

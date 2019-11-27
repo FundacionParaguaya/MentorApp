@@ -27,7 +27,7 @@
     "confirm": "Confirmar",
     "download": "Descargar",
     "print": "Imprimir",
-    "sendEmail": "Send email",
+    "sendEmail": "Email",
     "navigation": "navegación",
     "goback": "atrás",
     "exit": "salir",
@@ -213,7 +213,8 @@
     },
     "final": {
       "emailSent": "Tu Mapa de Vida ha sido enviado exitosamente vía email. ¡No te olvides de seleccionar Guardar & cerrar!",
-      "emailError": "Error al enviar tu Mapa de Vida vía email"
+      "emailError": "Error al enviar tu Mapa de Vida vía email",
+      "offlineText": "You are currently offline. The email will be sent as soon as you get back online"
     }
   }
 }

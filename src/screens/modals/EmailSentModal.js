@@ -11,40 +11,58 @@ import colors from '../../theme.json'
 
 class EmailSentModal extends Component {
   render() {
-    const { close, isOpen, error } = this.props
+    const { close, isOpen, error, userIsOnline } = this.props
     return (
       <Popup isOpen={isOpen} onClose={close}>
         <View style={{ paddingVertical: 60 }}>
-          {error && (
-            <CommunityIcon
-              name="exclamation"
-              color={colors.palered}
-              size={60}
-              style={styles.warningIcon}
+          <View>
+            {error ||
+              (!userIsOnline && (
+                <CommunityIcon
+                  name="exclamation"
+                  color={colors.palered}
+                  size={60}
+                  style={styles.warningIcon}
+                />
+              ))}
+            {userIsOnline ? (
+              <View>
+                <Text
+                  style={[
+                    styles.heading,
+                    {
+                      color: error ? `${colors.palered}` : `${colors.palegreen}`
+                    }
+                  ]}
+                >
+                  {error
+                    ? `${i18n.t('general.warning')}`
+                    : `${i18n.t('general.thankYou')}`}
+                </Text>
+                <Text style={styles.paragraph}>
+                  {error
+                    ? `${i18n.t('views.final.emailError')}`
+                    : `${i18n.t('views.final.emailSent')}`}
+                </Text>
+              </View>
+            ) : (
+              <View>
+                <Text style={styles.paragraph}>
+                  {i18n.t('views.final.offlineText')}
+                </Text>
+              </View>
+            )}
+
+            <Button
+              outlined
+              borderColor={
+                error || !userIsOnline ? colors.palered : colors.palegreen
+              }
+              text={i18n.t('general.gotIt')}
+              style={styles.closeButton}
+              handleClick={close}
             />
-          )}
-          <Text
-            style={[
-              styles.heading,
-              { color: error ? `${colors.palered}` : `${colors.palegreen}` }
-            ]}
-          >
-            {error
-              ? `${i18n.t('general.warning')}`
-              : `${i18n.t('general.thankYou')}`}
-          </Text>
-          <Text style={styles.paragraph}>
-            {error
-              ? `${i18n.t('views.final.emailError')}`
-              : `${i18n.t('views.final.emailSent')}`}
-          </Text>
-          <Button
-            outlined
-            borderColor={error ? colors.palered : colors.palegreen}
-            text={i18n.t('general.gotIt')}
-            style={styles.closeButton}
-            handleClick={close}
-          />
+          </View>
         </View>
       </Popup>
     )
@@ -54,7 +72,8 @@ class EmailSentModal extends Component {
 EmailSentModal.propTypes = {
   close: PropTypes.func.isRequired,
   isOpen: PropTypes.bool.isRequired,
-  error: PropTypes.bool.isRequired
+  error: PropTypes.bool.isRequired,
+  userIsOnline: PropTypes.bool.isRequired
 }
 
 const styles = StyleSheet.create({

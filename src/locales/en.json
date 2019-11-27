@@ -27,7 +27,7 @@
     "confirm": "Confirm",
     "download": "Download",
     "print": "Print",
-    "sendEmail": "Send email",
+    "sendEmail": "Email",
     "navigation": "navigation",
     "goback": "go back",
     "exit": "exit",
@@ -212,7 +212,8 @@
     },
     "final": {
       "emailSent": "Your Life Map has been successfully sent via email. Don't forget to click on Save & Close!",
-      "emailError": "Error while trying to send your Life Map via email"
+      "emailError": "Error while trying to send your Life Map via email",
+      "offlineText": "You are currently offline. The email will be sent as soon as you get back online"
     }
   }
 }
