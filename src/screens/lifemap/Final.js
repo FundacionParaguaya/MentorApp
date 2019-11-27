@@ -140,28 +140,26 @@ export class Final extends Component {
     }
   }
 
-  sendMailService(document, mail = 'vasildimitrovhristov@gmail.com') {
+  sendMailService(mail, filePath) {
     const { user, env, lng } = this.props
-    const formData = new FormData()
+    const normalizeLang = lng === 'en' ? 'en_US' : 'es_PY'
 
-    formData.append('file', {
-      ...document,
-      name: 'lifemap.pdf',
-      type: 'application/pdf'
-    })
-
-    // console.log('log me the incoming document ', document)
-    // console.log('log me the form data ', formData)
-
-    return fetch(`${url[env]}/api/lifemap/send?familyEmail=${mail}`, {
-      method: 'POST',
-      headers: {
+    return RNFetchBlob.fetch(
+      'POST',
+      `${url[env]}/api/lifemap/send?familyEmail=${mail}`,
+      {
         Authorization: `Bearer ${user.token}`,
         'Content-Type': 'multipart/form-data',
-        'X-locale': lng
+        'X-locale': normalizeLang
       },
-      data: formData
-    })
+      [
+        {
+          name: 'file',
+          filename: 'lifemap.pdf',
+          data: RNFetchBlob.wrap(filePath)
+        }
+      ]
+    )
   }
 
   async sendMailToUser(email) {
@@ -192,16 +190,15 @@ export class Final extends Component {
       const pdf = await RNHTMLtoPDF.convert(pdfOptions)
 
       RNFetchBlob.fs.cp(pdf.filePath, filePath).then(async () => {
-        RNFetchBlob.fs.readFile(filePath, 'base64').then(async data => {
-          const document = new File([data], 'lifemap.pdf', {
-            type: 'application/pdf'
-          })
+        RNFetchBlob.fs.readFile(filePath, 'base64').then(async () => {
+          const mailSent = await this.sendMailService(email, pdf.filePath)
 
-          await this.sendMailService(document, email)
-          // const mailSent = await this.sendMailService(document, email)
+          // console.log('response from the sent email ', mailSent)
+          if (mailSent.respInfo.status === 200) {
+            this.setState({ sendingEmail: false })
 
-          //   .then(res => res.json())
-          //   .then(obj => console.log('server obj : ', obj))
+            // console.log('res status is : ', mailSent.respInfo.status)
+          }
         })
       })
     } catch (err) {
@@ -221,7 +218,6 @@ export class Final extends Component {
 
   render() {
     const { t } = this.props
-    // console.log('draft ', this.draft)
     const {
       familyData: { familyMembersList }
     } = this.draft
