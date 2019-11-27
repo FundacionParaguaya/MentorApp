@@ -210,7 +210,7 @@ export class Final extends Component {
               })
             }
           } else {
-            this.setState({ modalOpen: true, sendingEmail: false })
+            this.setState({ sendingEmail: false, modalOpen: true })
           }
         })
       })
