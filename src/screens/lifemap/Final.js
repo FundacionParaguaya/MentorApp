@@ -169,7 +169,6 @@ export class Final extends Component {
   }
 
   async sendMailToUser(email) {
-    this.setState({ sendingEmail: true })
     const permissionsGranted = await PermissionsAndroid.request(
       PermissionsAndroid.PERMISSIONS.WRITE_EXTERNAL_STORAGE,
       {
@@ -186,34 +185,30 @@ export class Final extends Component {
       throw new Error()
     }
     try {
-      const filePath = `${RNFetchBlob.fs.dirs.DownloadDir}/lifemap.pdf`
-      const pdfOptions = buildPDFOptions(
-        this.draft,
-        this.survey,
-        this.props.lng || 'en',
-        this.props.t
-      )
-      const pdf = await RNHTMLtoPDF.convert(pdfOptions)
+      this.setState({ sendingEmail: true })
 
-      RNFetchBlob.fs.cp(pdf.filePath, filePath).then(async () => {
-        RNFetchBlob.fs.readFile(filePath, 'base64').then(async () => {
-          if (this.state.connection) {
-            const mailSent = await this.sendMailService(email, pdf.filePath)
+      if (this.state.connection) {
+        const pdfOptions = buildPDFOptions(
+          this.draft,
+          this.survey,
+          this.props.lng || 'en',
+          this.props.t
+        )
+        const pdf = await RNHTMLtoPDF.convert(pdfOptions)
+        const mailSent = await this.sendMailService(email, pdf.filePath)
 
-            if (mailSent.respInfo.status === 200) {
-              this.setState({ sendingEmail: false, modalOpen: true })
-            } else {
-              this.setState({
-                sendingEmail: false,
-                modalOpen: true,
-                mailSentError: true
-              })
-            }
-          } else {
-            this.setState({ sendingEmail: false, modalOpen: true })
-          }
-        })
-      })
+        if (mailSent.respInfo.status === 200) {
+          this.setState({ sendingEmail: false, modalOpen: true })
+        } else {
+          this.setState({
+            sendingEmail: false,
+            modalOpen: true,
+            mailSentError: true
+          })
+        }
+      } else {
+        this.setState({ sendingEmail: false, modalOpen: true })
+      }
     } catch (err) {
       alert(err)
     }
