@@ -1,3 +1,7 @@
+import NetInfo from '@react-native-community/netinfo'
+import PropTypes from 'prop-types'
+import React, { Component } from 'react'
+import { withNamespaces } from 'react-i18next'
 import {
   PermissionsAndroid,
   ScrollView,
@@ -5,34 +9,38 @@ import {
   Text,
   View
 } from 'react-native'
-import React, { Component } from 'react'
+import RNHTMLtoPDF from 'react-native-html-to-pdf'
+import RNPrint from 'react-native-print'
+import { connect } from 'react-redux'
+import RNFetchBlob from 'rn-fetch-blob'
+
+import Button from '../../components/Button'
+import LifemapVisual from '../../components/LifemapVisual'
+import RoundImage from '../../components/RoundImage'
+import { url } from '../../config'
+import globalStyles from '../../globalStyles'
+import { submitDraft, updateDraft } from '../../redux/actions'
+import EmailSentModal from '../modals/EmailSentModal'
+import { prepareDraftForSubmit } from '../utils/helpers'
 import {
   buildPDFOptions,
   buildPrintOptions,
   getReportTitle
 } from '../utils/pdfs'
-import { submitDraft, updateDraft } from '../../redux/actions'
-
-import Button from '../../components/Button'
-import LifemapVisual from '../../components/LifemapVisual'
-import PropTypes from 'prop-types'
-import RNFetchBlob from 'rn-fetch-blob'
-import RNHTMLtoPDF from 'react-native-html-to-pdf'
-import RNPrint from 'react-native-print'
-import RoundImage from '../../components/RoundImage'
-import { connect } from 'react-redux'
-import globalStyles from '../../globalStyles'
-import { prepareDraftForSubmit } from '../utils/helpers'
-import { url } from '../../config'
-import { withNamespaces } from 'react-i18next'
 
 export class Final extends Component {
+  unsubscribeNetChange
   survey = this.props.navigation.getParam('survey')
   draft = this.props.navigation.getParam('draft')
   state = {
     loading: false,
     downloading: false,
-    printing: false
+    printing: false,
+    sendingEmail: false,
+    modalOpen: false,
+    mailSentError: false,
+    connection: false,
+    disabled: false
   }
 
   onPressBack = () => {
@@ -139,18 +147,117 @@ export class Final extends Component {
     }
   }
 
+  sendMailService(mail, filePath) {
+    const { user, env, lng } = this.props
+    const normalizeLang = lng === 'en' ? 'en_US' : 'es_PY'
+
+    return RNFetchBlob.fetch(
+      'POST',
+      `${url[env]}/api/lifemap/send?familyEmail=${mail}`,
+      {
+        Authorization: `Bearer ${user.token}`,
+        'Content-Type': 'multipart/form-data',
+        'X-locale': normalizeLang
+      },
+      [
+        {
+          name: 'file',
+          filename: 'lifemap.pdf',
+          data: RNFetchBlob.wrap(filePath)
+        }
+      ]
+    )
+  }
+
+  async sendMailToUser(email) {
+    const permissionsGranted = await PermissionsAndroid.request(
+      PermissionsAndroid.PERMISSIONS.WRITE_EXTERNAL_STORAGE,
+      {
+        title: 'Permission to save file into the file storage',
+        message:
+          'The app needs access to your file storage so you can download the file',
+        buttonNeutral: 'Ask Me Later',
+        buttonNegative: 'Cancel',
+        buttonPositive: 'OK'
+      }
+    )
+
+    if (permissionsGranted !== PermissionsAndroid.RESULTS.GRANTED) {
+      throw new Error()
+    }
+    try {
+      this.setState({ sendingEmail: true })
+
+      if (this.state.connection) {
+        const pdfOptions = buildPDFOptions(
+          this.draft,
+          this.survey,
+          this.props.lng || 'en',
+          this.props.t
+        )
+        const pdf = await RNHTMLtoPDF.convert(pdfOptions)
+        const mailSent = await this.sendMailService(email, pdf.filePath)
+
+        if (mailSent.respInfo.status === 200) {
+          this.setState({
+            sendingEmail: false,
+            modalOpen: true,
+            disabled: true
+          })
+        } else {
+          this.setState({
+            sendingEmail: false,
+            modalOpen: true,
+            mailSentError: true
+          })
+        }
+      } else {
+        this.setState({ sendingEmail: false, modalOpen: true })
+      }
+    } catch (err) {
+      alert(err)
+    }
+  }
+
+  handleCloseModal = () => this.setState({ modalOpen: false })
+
+  setConnectivityState = isConnected => {
+    isConnected
+      ? this.setState({ connection: true, error: '' })
+      : this.setState({ connection: false, error: 'No connection' })
+  }
+
   shouldComponentUpdate() {
     return this.props.navigation.isFocused()
   }
+
   componentDidMount() {
     this.props.updateDraft(this.draft)
     this.props.navigation.setParams({
       onPressBack: this.onPressBack
     })
+    NetInfo.fetch().then(state => this.setConnectivityState(state.isConnected))
+    this.unsubscribeNetChange = NetInfo.addEventListener(state => {
+      this.setConnectivityState(state.isConnected)
+    })
+  }
+
+  componentWillUnmount() {
+    if (this.unsubscribeNetChange) {
+      this.unsubscribeNetChange()
+    }
   }
 
   render() {
     const { t } = this.props
+    const {
+      familyData: { familyMembersList }
+    } = this.draft
+
+    const userEmail =
+      !!familyMembersList &&
+      familyMembersList.length &&
+      familyMembersList.find(user => user.email)
 
     return (
       <ScrollView
@@ -183,6 +290,18 @@ export class Final extends Component {
             achievements={this.draft.achievements}
           />
           <View style={styles.buttonBar}>
+            {userEmail && (
+              <Button
+                id="email"
+                style={styles.emailButton}
+                handleClick={this.sendMailToUser.bind(this, userEmail.email)}
+                icon="email"
+                outlined
+                text={t('general.sendEmail')}
+                loading={this.state.sendingEmail}
+                disabled={this.state.disabled}
+              />
+            )}
             <Button
               id="download"
               style={{ width: '49%', alignSelf: 'center', marginTop: 20 }}
@@ -202,6 +321,12 @@ export class Final extends Component {
               loading={this.state.printing}
             />
           </View>
+          <EmailSentModal
+            close={this.handleCloseModal}
+            isOpen={this.state.modalOpen}
+            error={this.state.mailSentError}
+            userIsOnline={this.state.connection}
+          />
         </View>
         <View style={{ height: 50 }}>
           <Button
@@ -228,7 +353,12 @@ const styles = StyleSheet.create({
   buttonBar: {
     marginBottom: 30,
     flexDirection: 'row',
-    justifyContent: 'space-between'
+    justifyContent: 'space-between',
+    flexWrap: 'wrap'
+  },
+  emailButton: {
+    width: '100%',
+    marginTop: 10
   }
 })
 
