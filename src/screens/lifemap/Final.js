@@ -39,7 +39,8 @@ export class Final extends Component {
     sendingEmail: false,
     modalOpen: false,
     mailSentError: false,
-    connection: false
+    connection: false,
+    disabled: false
   }
 
   onPressBack = () => {
@@ -198,7 +199,11 @@ export class Final extends Component {
         const mailSent = await this.sendMailService(email, pdf.filePath)
 
         if (mailSent.respInfo.status === 200) {
-          this.setState({ sendingEmail: false, modalOpen: true })
+          this.setState({
+            sendingEmail: false,
+            modalOpen: true,
+            disabled: true
+          })
         } else {
           this.setState({
             sendingEmail: false,
@@ -288,15 +293,13 @@ export class Final extends Component {
             {userEmail && (
               <Button
                 id="email"
-                style={{
-                  width: '100%',
-                  marginTop: 10
-                }}
+                style={styles.emailButton}
                 handleClick={this.sendMailToUser.bind(this, userEmail.email)}
                 icon="email"
                 outlined
                 text={t('general.sendEmail')}
                 loading={this.state.sendingEmail}
+                disabled={this.state.disabled}
               />
             )}
             <Button
@@ -352,6 +355,10 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     flexWrap: 'wrap'
+  },
+  emailButton: {
+    width: '100%',
+    marginTop: 10
   }
 })
 
