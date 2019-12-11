@@ -46,7 +46,7 @@ PATH=$PATH:$ANDROID_HOME/tools/bin
 export PATH
 ```
 
-Save the changes and run `source ~/.bash_profile file` or safer yet, restart all terminal instances, for them to take effect. See if you have the `avdmanager` command in bash.
+Save the changes and run `source ~/.bash_profile` file or safer yet, restart all terminal instances, for them to take effect. See if you have the `avdmanager` command in bash.
 
 We can also check if the `sdkmanager` is up to date
 
