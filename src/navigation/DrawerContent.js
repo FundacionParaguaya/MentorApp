@@ -189,19 +189,25 @@ export class DrawerContent extends Component {
                 textStyle={styles.label}
                 text={i18n.t('views.createLifemap')}
               />
-              <IconButton
-                id="families"
-                style={{
-                  ...styles.navItem,
-                  backgroundColor:
-                    this.state.activeTab === 'Families' ? colors.primary : null
-                }}
-                onPress={() => this.navigateToScreen('Families', currentStack)}
-                imageSource={familyNavIcon}
-                size={20}
-                text={i18n.t('views.families')}
-                textStyle={styles.label}
-              />
+              {this.props.user.role !== 'ROLE_SURVEY_TAKER' && (
+                <IconButton
+                  id="families"
+                  style={{
+                    ...styles.navItem,
+                    backgroundColor:
+                      this.state.activeTab === 'Families'
+                        ? colors.primary
+                        : null
+                  }}
+                  onPress={() =>
+                    this.navigateToScreen('Families', currentStack)
+                  }
+                  imageSource={familyNavIcon}
+                  size={20}
+                  text={i18n.t('views.families')}
+                  textStyle={styles.label}
+                />
+              )}
               <IconButton
                 id="sync"
                 style={{
