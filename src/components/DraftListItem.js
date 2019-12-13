@@ -70,6 +70,7 @@ class DraftListItem extends Component {
       <ListItem
         style={{ ...styles.listItem, ...styles.borderBottom }}
         onPress={this.handleClick}
+        disabled={this.props.user.role == 'ROLE_SURVEY_TAKER' ? true : false}
       >
         <View>
           <Text
@@ -96,7 +97,9 @@ class DraftListItem extends Component {
             {this.setStatusTitle(this.props.item.status)}
           </Text>
         </View>
-        <Icon name="navigate-next" size={23} color={colors.lightdark} />
+        {this.props.user.role !== 'ROLE_SURVEY_TAKER' && (
+          <Icon name="navigate-next" size={23} color={colors.lightdark} />
+        )}
       </ListItem>
     )
   }
@@ -105,7 +108,8 @@ class DraftListItem extends Component {
 DraftListItem.propTypes = {
   item: PropTypes.object.isRequired,
   handleClick: PropTypes.func.isRequired,
-  lng: PropTypes.string.isRequired
+  lng: PropTypes.string.isRequired,
+  user: PropTypes.object.isRequired
 }
 
 const styles = StyleSheet.create({

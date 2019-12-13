@@ -401,6 +401,7 @@ export class Dashboard extends Component {
                       item={item}
                       handleClick={this.handleClickOnListItem}
                       lng={this.props.lng}
+                      user={this.props.user}
                     />
                   )}
                 />
