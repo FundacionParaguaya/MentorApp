@@ -48,7 +48,7 @@ class EmailSentModal extends Component {
             ) : (
               <View>
                 <Text style={styles.paragraph}>
-                  {i18n.t('views.final.offlineText')}
+                  {i18n.t('views.final.yourLifeMaWillBeSentWithSurveySync')}
                 </Text>
               </View>
             )}
