@@ -1,8 +1,9 @@
-import { FamilyParticipant } from '../FamilyParticipant'
-import React from 'react'
-import StickyFooter from '../../../components/StickyFooter'
-import TextInput from '../../../components/form/TextInput'
 import { shallow } from 'enzyme'
+import React from 'react'
+
+import TextInput from '../../../components/form/TextInput'
+import StickyFooter from '../../../components/StickyFooter'
+import { FamilyParticipant } from '../FamilyParticipant'
 
 // props
 const survey = {
@@ -50,6 +51,7 @@ const survey = {
 
 const defaultDraft = {
   draftId: expect.any(String),
+  sendEmail: false,
   created: expect.any(Number),
   status: 'Draft',
   surveyId: 1,

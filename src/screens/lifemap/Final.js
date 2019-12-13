@@ -40,7 +40,8 @@ export class Final extends Component {
     modalOpen: false,
     mailSentError: false,
     connection: false,
-    disabled: false
+    disabled: false,
+    sendEmailFlag: false
   }
 
   onPressBack = () => {
@@ -62,12 +63,11 @@ export class Final extends Component {
   prepareDraftForSubmit() {
     if (this.state.loading) {
       const draft = prepareDraftForSubmit(this.draft, this.survey)
-
       this.props.submitDraft(
         url[this.props.env],
         this.props.user.token,
         draft.draftId,
-        draft
+        { ...draft, sendEmail: this.state.sendEmailFlag }
       )
 
       setTimeout(() => {
@@ -147,75 +147,15 @@ export class Final extends Component {
     }
   }
 
-  sendMailService(mail, filePath) {
-    const { user, env, lng } = this.props
-    const normalizeLang = lng === 'en' ? 'en_US' : 'es_PY'
+  sendMailToUser() {
+    this.setState({ sendingEmail: true, sendEmailFlag: true })
 
-    return RNFetchBlob.fetch(
-      'POST',
-      `${url[env]}/api/lifemap/send?familyEmail=${mail}`,
-      {
-        Authorization: `Bearer ${user.token}`,
-        'Content-Type': 'multipart/form-data',
-        'X-locale': normalizeLang
-      },
-      [
-        {
-          name: 'file',
-          filename: 'lifemap.pdf',
-          data: RNFetchBlob.wrap(filePath)
-        }
-      ]
-    )
-  }
-
-  async sendMailToUser(email) {
-    const permissionsGranted = await PermissionsAndroid.request(
-      PermissionsAndroid.PERMISSIONS.WRITE_EXTERNAL_STORAGE,
-      {
-        title: 'Permission to save file into the file storage',
-        message:
-          'The app needs access to your file storage so you can download the file',
-        buttonNeutral: 'Ask Me Later',
-        buttonNegative: 'Cancel',
-        buttonPositive: 'OK'
-      }
-    )
-
-    if (permissionsGranted !== PermissionsAndroid.RESULTS.GRANTED) {
-      throw new Error()
-    }
-    try {
-      this.setState({ sendingEmail: true })
-
-      if (this.state.connection) {
-        const pdfOptions = buildPDFOptions(
-          this.draft,
-          this.survey,
-          this.props.lng || 'en',
-          this.props.t
-        )
-        const pdf = await RNHTMLtoPDF.convert(pdfOptions)
-        const mailSent = await this.sendMailService(email, pdf.filePath)
-
-        if (mailSent.respInfo.status === 200) {
-          this.setState({
-            sendingEmail: false,
-            modalOpen: true,
-            disabled: true
-          })
-        } else {
-          this.setState({
-            sendingEmail: false,
-            modalOpen: true,
-            mailSentError: true
-          })
-        }
-      } else {
-        this.setState({ sendingEmail: false, modalOpen: true })
-      }
-    } catch (err) {
-      alert(err)
+    if (this.state.connection) {
+      setTimeout(() => {
+        this.setState({ sendingEmail: false })
+      }, 300)
+    } else {
+      this.setState({ sendingEmail: false, modalOpen: true })
     }
   }
 
@@ -290,21 +230,9 @@ export class Final extends Component {
             achievements={this.draft.achievements}
           />
           <View style={styles.buttonBar}>
-            {userEmail && (
-              <Button
-                id="email"
-                style={styles.emailButton}
-                handleClick={this.sendMailToUser.bind(this, userEmail.email)}
-                icon="email"
-                outlined
-                text={t('general.sendEmail')}
-                loading={this.state.sendingEmail}
-                disabled={this.state.disabled}
-              />
-            )}
             <Button
               id="download"
-              style={{ width: '49%', alignSelf: 'center', marginTop: 20 }}
+              style={styles.button}
               handleClick={this.exportPDF.bind(this)}
               icon="cloud-download"
               outlined
@@ -313,13 +241,25 @@ export class Final extends Component {
             />
             <Button
               id="print"
-              style={{ width: '49%', alignSelf: 'center', marginTop: 20 }}
+              style={styles.button}
               handleClick={this.print.bind(this)}
               icon="print"
               outlined
               text={t('general.print')}
               loading={this.state.printing}
             />
+            {userEmail && (
+              <Button
+                id="email"
+                style={{ ...styles.button, ...styles.emailButton }}
+                handleClick={this.sendMailToUser.bind(this)}
+                icon="email"
+                outlined
+                text={t('general.sendEmail')}
+                loading={this.state.sendingEmail}
+                disabled={this.state.disabled}
+              />
+            )}
           </View>
           <EmailSentModal
             close={this.handleCloseModal}
@@ -354,11 +294,16 @@ const styles = StyleSheet.create({
     marginBottom: 30,
     flexDirection: 'row',
     justifyContent: 'space-between',
-    flexWrap: 'wrap'
+    flexWrap: 'wrap',
+    alignItems: 'center'
   },
+  button: { width: '49%', alignSelf: 'center', marginTop: 20 },
+
   emailButton: {
-    width: '100%',
-    marginTop: 10
+    marginTop: 7,
+    marginLeft: 'auto',
+    marginRight: 'auto',
+    alignSelf: 'center'
   }
 })
 
