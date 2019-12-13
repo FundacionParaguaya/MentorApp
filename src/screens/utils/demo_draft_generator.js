@@ -7,6 +7,7 @@ export const generateRandomDraftData = (
 ) => {
   return {
     status: 'Draft',
+    sendEmail: false,
     surveyId,
     created: Date.now(),
     draftId,
