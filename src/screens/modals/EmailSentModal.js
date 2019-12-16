@@ -43,13 +43,6 @@ EmailSentModal.propTypes = {
 }
 
 const styles = StyleSheet.create({
-  // heading: {
-  //   textAlign: 'center',
-  //   fontSize: 25,
-  //   lineHeight: 30,
-  //   marginVertical: 15,
-  //   fontFamily: 'Poppins Medium'
-  // },
   paragraph: {
     textAlign: 'center',
     fontSize: 18,
@@ -62,9 +55,6 @@ const styles = StyleSheet.create({
     width: 120,
     alignSelf: 'center'
   }
-  // warningIcon: {
-  //   alignSelf: 'center'
-  // }
 })
 
 export default withNamespaces()(EmailSentModal)
