@@ -150,13 +150,9 @@ export class Final extends Component {
   sendMailToUser() {
     this.setState({ sendingEmail: true, sendEmailFlag: true })
 
-    if (this.state.connection) {
-      setTimeout(() => {
-        this.setState({ sendingEmail: false })
-      }, 300)
-    } else {
+    setTimeout(() => {
       this.setState({ sendingEmail: false, modalOpen: true })
-    }
+    }, 300)
   }
 
   handleCloseModal = () => this.setState({ modalOpen: false })
