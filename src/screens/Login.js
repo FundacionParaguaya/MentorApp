@@ -133,7 +133,10 @@ export class Login extends Component {
           loading: false
         })
         this.setState({ error: 'Wrong username or password' })
-      } else if (this.props.user.role !== 'ROLE_SURVEY_USER') {
+      } else if (
+        this.props.user.role !== 'ROLE_SURVEY_USER' &&
+        this.props.user.role !== 'ROLE_SURVEY_TAKER'
+      ) {
         this.setState({
           loading: false
         })

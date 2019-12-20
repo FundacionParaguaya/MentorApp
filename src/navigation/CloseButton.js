@@ -2,12 +2,18 @@ import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import i18n from '../i18n'
 import IconButton from '../components/IconButton'
+import { connect } from 'react-redux'
 
 class CloseButton extends Component {
   handlePress = () => {
     const { navigation } = this.props
     const draftId = navigation.getParam('draftId')
-    const deleteDraftOnExit = navigation.getParam('deleteDraftOnExit')
+    const deleteDraftOnExit =
+      this.props.user.role === 'ROLE_SURVEY_TAKER'
+        ? true
+        : navigation.getParam('deleteDraftOnExit')
+    //console.log('this.props.user.role', this.props.user.role);
+    //console.log('deleteDraftOnExit', deleteDraftOnExit);
     const survey =
       navigation.state.params.survey && navigation.getParam('survey')
 
@@ -34,6 +40,11 @@ class CloseButton extends Component {
 
 CloseButton.propTypes = {
   style: PropTypes.object,
-  navigation: PropTypes.object.isRequired
+  navigation: PropTypes.object.isRequired,
+  user: PropTypes.object.isRequired
 }
-export default CloseButton
+
+export const mapStateToProps = ({ user }) => ({
+  user
+})
+export default connect(mapStateToProps)(CloseButton)
