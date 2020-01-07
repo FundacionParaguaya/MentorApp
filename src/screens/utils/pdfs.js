@@ -81,6 +81,7 @@ const createTableRow = (indicatorsArray, survey, achievements, priorities) => {
             </tr>`
 }
 
+/* PRIORITIES TABLE */
 const generateTableHeaderForPriorities = (dateCreated, t) => `
   <div style="${styles.wrapperPriority};page-break-before: always;">
               <h2 style="${styles.title}">${t(
@@ -152,6 +153,74 @@ const generatePrioritiesTable = (
             
           </table>`
 }
+/* END PRIORITIES TABLE */
+
+/* ACHIEVEMENTS TABLE */
+const generateTableHeaderForAchievements = (dateCreated, t) => `
+  <div style="${styles.wrapperPriority};page-break-before: always;">
+              <h2 style="${styles.title}">${t(
+  'views.lifemap.myAchievements'
+)} ${priorityIconWithoutStyles}</h2>
+              <h2 style="${styles.date};margin-top:40px;">${dateCreated}</h2>
+            </div>
+  <tr>
+    <th style="${styles.tHeader}">${t('views.lifemap.status')}</th>
+    <th style="${styles.tHeader};text-align:left;">${t(
+  'views.lifemap.indicator'
+)}</th>
+    <th style="${styles.tHeader}">${t('views.lifemap.howDidYouGetIt')}</th>
+    <th style="${styles.tHeader}">${t(
+  'views.lifemap.whatDidItTakeToAchieveThis'
+)}</th>
+    </tr>`
+
+const generateAchievementsTable = (
+  achievements,
+  dateCreated,
+  survey,
+  indicatorsArray,
+  lng,
+  t
+) => {
+  return `
+              <table cellspacing="0" stye="${
+                styles.tableWithHeader
+              };page-break-after: always;">
+                ${generateTableHeaderForAchievements(dateCreated, t)}
+                ${achievements
+                  .map((achievement, index) => {
+                    const stripe = index % 2 !== 0
+                    const { action, roadmap, indicator } = achievement
+                    const indicatorValue = indicatorsArray.find(
+                      i => i.key === indicator
+                    ).value
+                    const color = getColor(indicatorValue)
+
+                    return `<tr style="${
+                      stripe ? 'background-color:#eeeeee' : ''
+                    }">
+                              <td style="${styles.tData}">
+                                <div style="${styles.indicatorWrapper}">
+                                  <div style="${
+                                    styles.smallBall
+                                  }background-color:${color};"></div>
+                                <div>
+                            </td>
+                              <td style="${
+                                styles.tData
+                              }text-transform:capitalize;text-align:left;">${getIndicatorQuestionByCodeName(
+                      indicator,
+                      survey
+                    )}</td>
+                              <td style="${styles.tData}">${action}</td>
+                              <td style="${styles.tData}">${roadmap}</td>
+                            </tr>`
+                  })
+                  .join('')}
+                
+              </table>`
+}
+/* END ACHIEVEMENTS TABLE */
 
 const generateLifeMapHtmlTemplate = (draft, survey, lng, t) => {
   const indicatorsList = draft.indicatorSurveyDataList
@@ -184,6 +253,14 @@ const generateLifeMapHtmlTemplate = (draft, survey, lng, t) => {
         </table>
         ${generatePrioritiesTable(
           priorities,
+          dateCreated,
+          survey,
+          indicatorsList,
+          lng,
+          t
+        )}
+        ${generateAchievementsTable(
+          achievements,
           dateCreated,
           survey,
           indicatorsList,
