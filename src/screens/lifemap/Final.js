@@ -105,8 +105,7 @@ export class Final extends Component {
       const pdfOptions = buildPDFOptions(
         this.draft,
         this.survey,
-        this.props.lng || 'en',
-        this.props.t
+        this.props.lng || 'en'
       )
       const pdf = await RNHTMLtoPDF.convert(pdfOptions)
 
@@ -136,8 +135,7 @@ export class Final extends Component {
     const options = buildPrintOptions(
       this.draft,
       this.survey,
-      this.props.lng || 'en',
-      this.props.t
+      this.props.lng || 'en'
     )
     try {
       await RNPrint.print(options)

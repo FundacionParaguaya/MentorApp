@@ -2,9 +2,11 @@ import 'moment/locale/es'
 
 import moment from 'moment'
 
+import i18n from '../../i18n'
 import colors from '../../theme.json'
 import {
   achievementIcon,
+  achievementIconWithoutStyles,
   priorityIcon,
   priorityIconWithoutStyles,
   styles
@@ -82,24 +84,26 @@ const createTableRow = (indicatorsArray, survey, achievements, priorities) => {
 }
 
 /* PRIORITIES TABLE */
-const generateTableHeaderForPriorities = (dateCreated, t) => `
+const generateTableHeaderForPriorities = dateCreated => `
   <div style="${styles.wrapperPriority};page-break-before: always;">
-              <h2 style="${styles.title}">${t(
+              <h2 style="${styles.title}">${i18n.t(
   'views.lifemap.myPriorities'
 )} ${priorityIconWithoutStyles}</h2>
               <h2 style="${styles.date};margin-top:40px;">${dateCreated}</h2>
             </div>
   <tr>
-    <th style="${styles.tHeader}">${t('views.lifemap.status')}</th>
-    <th style="${styles.tHeader};text-align:left;">${t(
+    <th style="${styles.tHeader}">${i18n.t('views.lifemap.status')}</th>
+    <th style="${styles.tHeader};text-align:left;">${i18n.t(
   'views.lifemap.indicator'
 )}</th>
-    <th style="${styles.tHeader}">${t('views.lifemap.whyDontYouHaveIt')}</th>
-    <th style="${styles.tHeader}">${t(
+    <th style="${styles.tHeader}">${i18n.t(
+  'views.lifemap.whyDontYouHaveIt'
+)}</th>
+    <th style="${styles.tHeader}">${i18n.t(
   'views.lifemap.whatWillYouDoToGetIt'
 )}</th>
-    <th style="${styles.tHeader}">${t('views.lifemap.monthsRequired')}</th>
-    <th style="${styles.tHeader}">${t('views.lifemap.reviewDate')}</th>
+    <th style="${styles.tHeader}">${i18n.t('views.lifemap.monthsRequired')}</th>
+    <th style="${styles.tHeader}">${i18n.t('views.lifemap.reviewDate')}</th>
     </tr>`
 
 const generatePrioritiesTable = (
@@ -107,14 +111,13 @@ const generatePrioritiesTable = (
   dateCreated,
   survey,
   indicatorsArray,
-  lng,
-  t
+  lng
 ) => {
   return `
           <table cellspacing="0" stye="${
             styles.tableWithHeader
           };page-break-after: always;">
-            ${generateTableHeaderForPriorities(dateCreated, t)}
+            ${generateTableHeaderForPriorities(dateCreated)}
             ${priorities
               .map((priority, index) => {
                 const stripe = index % 2 !== 0
@@ -156,20 +159,20 @@ const generatePrioritiesTable = (
 /* END PRIORITIES TABLE */
 
 /* ACHIEVEMENTS TABLE */
-const generateTableHeaderForAchievements = (dateCreated, t) => `
+const generateTableHeaderForAchievements = dateCreated => `
   <div style="${styles.wrapperPriority};page-break-before: always;">
-              <h2 style="${styles.title}">${t(
+              <h2 style="${styles.title}">${i18n.t(
   'views.lifemap.myAchievements'
-)} ${priorityIconWithoutStyles}</h2>
+)} ${achievementIconWithoutStyles}</h2>
               <h2 style="${styles.date};margin-top:40px;">${dateCreated}</h2>
             </div>
   <tr>
-    <th style="${styles.tHeader}">${t('views.lifemap.status')}</th>
-    <th style="${styles.tHeader};text-align:left;">${t(
+    <th style="${styles.tHeader}">${i18n.t('views.lifemap.status')}</th>
+    <th style="${styles.tHeader};text-align:left;">${i18n.t(
   'views.lifemap.indicator'
 )}</th>
-    <th style="${styles.tHeader}">${t('views.lifemap.howDidYouGetIt')}</th>
-    <th style="${styles.tHeader}">${t(
+    <th style="${styles.tHeader}">${i18n.t('views.lifemap.howDidYouGetIt')}</th>
+    <th style="${styles.tHeader}">${i18n.t(
   'views.lifemap.whatDidItTakeToAchieveThis'
 )}</th>
     </tr>`
@@ -178,15 +181,13 @@ const generateAchievementsTable = (
   achievements,
   dateCreated,
   survey,
-  indicatorsArray,
-  lng,
-  t
+  indicatorsArray
 ) => {
   return `
               <table cellspacing="0" stye="${
                 styles.tableWithHeader
               };page-break-after: always;">
-                ${generateTableHeaderForAchievements(dateCreated, t)}
+                ${generateTableHeaderForAchievements(dateCreated)}
                 ${achievements
                   .map((achievement, index) => {
                     const stripe = index % 2 !== 0
@@ -222,7 +223,7 @@ const generateAchievementsTable = (
 }
 /* END ACHIEVEMENTS TABLE */
 
-const generateLifeMapHtmlTemplate = (draft, survey, lng, t) => {
+const generateLifeMapHtmlTemplate = (draft, survey, lng) => {
   const indicatorsList = draft.indicatorSurveyDataList
   const achievements = draft.achievements
   const priorities = draft.priorities
@@ -233,7 +234,7 @@ const generateLifeMapHtmlTemplate = (draft, survey, lng, t) => {
   const reportTitle = getReportTitle(draft)
 
   return `<div style="${styles.wrapper}">
-            <h2 style="${styles.title}">${reportTitle}, ${t(
+            <h2 style="${styles.title}">${reportTitle}, ${i18n.t(
     'views.lifemap.lifeMap'
   )}</h2>
             <h2 style="${styles.date}">${dateCreated}</h2>
@@ -256,29 +257,27 @@ const generateLifeMapHtmlTemplate = (draft, survey, lng, t) => {
           dateCreated,
           survey,
           indicatorsList,
-          lng,
-          t
+          lng
         )}
         ${generateAchievementsTable(
           achievements,
           dateCreated,
           survey,
           indicatorsList,
-          lng,
-          t
+          lng
         )}
         `
 }
 
-export const buildPrintOptions = (draft, survey, lng, t) => {
+export const buildPrintOptions = (draft, survey, lng) => {
   return {
-    html: generateLifeMapHtmlTemplate(draft, survey, lng, t)
+    html: generateLifeMapHtmlTemplate(draft, survey, lng)
   }
 }
 
-export const buildPDFOptions = (draft, survey, lng, t) => {
+export const buildPDFOptions = (draft, survey, lng) => {
   return {
-    html: generateLifeMapHtmlTemplate(draft, survey, lng, t),
+    html: generateLifeMapHtmlTemplate(draft, survey, lng),
     fileName: 'lifemap.pdf',
     directory: 'docs',
     padding: 0,
