@@ -252,20 +252,28 @@ const generateLifeMapHtmlTemplate = (draft, survey, lng) => {
     })
     .join('')}
         </table>
-        ${generatePrioritiesTable(
-          priorities,
-          dateCreated,
-          survey,
-          indicatorsList,
-          lng
-        )}
-        ${generateAchievementsTable(
-          achievements,
-          dateCreated,
-          survey,
-          indicatorsList,
-          lng
-        )}
+        ${
+          priorities.length > 0
+            ? generatePrioritiesTable(
+                priorities,
+                dateCreated,
+                survey,
+                indicatorsList,
+                lng
+              )
+            : ''
+        }
+        ${
+          achievements.length > 0
+            ? generateAchievementsTable(
+                achievements,
+                dateCreated,
+                survey,
+                indicatorsList,
+                lng
+              )
+            : ''
+        }
         `
 }
 
