@@ -1,7 +1,7 @@
 export const styles = {
   wrapper:
     'display:flex;align-content: space-between;border-bottom: 1px solid #ddd;margin-bottom: 20px;',
-  wrapperPriority: 'display:flex;align-content: space-between;',
+  wrapperHeader: 'display:flex;align-content: space-between;',
   title: 'width:50%;height:40px;font-size:20px;',
   date:
     'width: 50%;height:40px;margin-left: auto;text-align:right;font-size:18px;',

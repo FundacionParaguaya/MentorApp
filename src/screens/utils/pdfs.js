@@ -85,7 +85,7 @@ const createTableRow = (indicatorsArray, survey, achievements, priorities) => {
 
 /* PRIORITIES TABLE */
 const generateTableHeaderForPriorities = dateCreated => `
-  <div style="${styles.wrapperPriority};page-break-before: always;">
+  <div style="${styles.wrapperHeader};page-break-before: always;">
               <h2 style="${styles.title}">${i18n.t(
   'views.lifemap.myPriorities'
 )} ${priorityIconWithoutStyles}</h2>
@@ -160,7 +160,7 @@ const generatePrioritiesTable = (
 
 /* ACHIEVEMENTS TABLE */
 const generateTableHeaderForAchievements = dateCreated => `
-  <div style="${styles.wrapperPriority};page-break-before: always;">
+  <div style="${styles.wrapperHeader};page-break-before: always;">
               <h2 style="${styles.title}">${i18n.t(
   'views.lifemap.myAchievements'
 )} ${achievementIconWithoutStyles}</h2>
