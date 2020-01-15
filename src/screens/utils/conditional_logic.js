@@ -327,7 +327,14 @@ export const shouldCleanUp = (
       ea => ea.key === conditionalQuestion.codeName
     )
   }
-  if (!currentAnswer || !currentAnswer.value) {
+
+  const answerWithEmptyValue = currentAnswer
+    ? currentAnswer.multipleValue
+      ? !currentAnswer.multipleValue.length
+      : !currentAnswer.value
+    : null
+
+  if (!currentAnswer || answerWithEmptyValue) {
     return false
   }
   let cleanUp = false
