@@ -255,10 +255,11 @@ export class Dashboard extends Component {
                         size={60}
                       />
                     </View>
-
-                    <Text style={{ ...styles.familiesCount }}>
-                      {countFamilies} {t('views.families')}
-                    </Text>
+                    {this.props.user.role !== 'ROLE_SURVEY_TAKER' && (
+                      <Text style={{ ...styles.familiesCount }}>
+                        {countFamilies} {t('views.families')}
+                      </Text>
+                    )}
                   </View>
                   <View
                     style={{
