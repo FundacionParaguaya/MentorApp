@@ -165,8 +165,8 @@ export class Final extends Component {
     }, 300)
   }
 
-
-  handleCloseModal = () => this.setState({ modalOpen: false, whatsappModalOpen: false })
+  handleCloseModal = () =>
+    this.setState({ modalOpen: false, whatsappModalOpen: false })
 
   setConnectivityState = isConnected => {
     isConnected
@@ -272,7 +272,7 @@ export class Final extends Component {
                 disabled={this.state.disabled}
               />
             )}
-            {true && (
+            {userTelephone && (
               <Button
                 id="whatsapp"
                 style={{ ...styles.button, ...styles.emailButton }}
