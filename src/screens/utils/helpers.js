@@ -1,5 +1,9 @@
-import { generateRandomDraftData } from './demo_draft_generator'
 import { getTotalScreens } from '../lifemap/helpers'
+import {
+  getConditionalQuestions,
+  getDraftWithUpdatedQuestionsCascading
+} from '../utils/conditional_logic'
+import { generateRandomDraftData } from './demo_draft_generator'
 
 const LATIN_CHARS = /^[A-Za-z0-9]*$/
 
@@ -18,8 +22,18 @@ export const checkAndReplaceSpecialChars = question => {
 }
 
 export const prepareDraftForSubmit = (draft, survey) => {
+  const conditionalQuestions = getConditionalQuestions(survey)
+  const currentDraft = getDraftWithUpdatedQuestionsCascading(
+    draft,
+    conditionalQuestions,
+    false
+  )
+
   // remove unnecessary for sync properties from saved draft
-  const { progress, errors, status, ...result } = Object.assign({}, draft)
+  const { progress, errors, status, ...result } = Object.assign(
+    {},
+    currentDraft
+  )
 
   // we remove
   progress
