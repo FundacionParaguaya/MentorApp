@@ -328,13 +328,13 @@ export const shouldCleanUp = (
     )
   }
 
-  const answerWithNoKey = currentAnswer
+  const answerWithEmptyValue = currentAnswer
     ? currentAnswer.multipleValue
-      ? !currentAnswer.multipleValue
+      ? !currentAnswer.multipleValue.length
       : !currentAnswer.value
     : null
 
-  if (!currentAnswer || answerWithNoKey) {
+  if (!currentAnswer || answerWithEmptyValue) {
     return false
   }
   let cleanUp = false
