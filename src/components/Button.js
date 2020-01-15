@@ -1,6 +1,7 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import Icon from 'react-native-vector-icons/MaterialIcons'
+import CommunityIcon from 'react-native-vector-icons/FontAwesome'
 import {
   Text,
   TouchableHighlight,
@@ -29,6 +30,7 @@ class Button extends Component {
       colored,
       outlined,
       icon,
+      communityIcon,
       handleClick,
       underlined,
       text,
@@ -75,6 +77,14 @@ class Button extends Component {
         accessibilityHint={disabled || loading ? 'disabled' : ''}
       >
         <View style={{ flexDirection: 'row' }}>
+          {communityIcon && !loading && (
+            <CommunityIcon
+              name={communityIcon}
+              size={21}
+              color={colors.palegreen}
+              style={styles.icon}
+            />
+          )}
           {icon && !loading ? (
             <Icon
               name={icon}
@@ -134,6 +144,7 @@ Button.propTypes = {
   outlined: PropTypes.bool,
   loading: PropTypes.bool,
   icon: PropTypes.string,
+  communityIcon: PropTypes.string,
   testID: PropTypes.string,
   disabled: PropTypes.bool,
   style: PropTypes.object

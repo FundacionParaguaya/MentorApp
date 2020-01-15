@@ -21,6 +21,7 @@ import { url } from '../../config'
 import globalStyles from '../../globalStyles'
 import { submitDraft, updateDraft } from '../../redux/actions'
 import EmailSentModal from '../modals/EmailSentModal'
+import WhatsappSentModal from '../modals/WhatsappSentModal'
 import { prepareDraftForSubmit } from '../utils/helpers'
 import {
   buildPDFOptions,
@@ -37,8 +38,11 @@ export class Final extends Component {
     downloading: false,
     printing: false,
     sendingEmail: false,
+    sendingWhatsapp: false,
     modalOpen: false,
+    whatsappModalOpen: false,
     mailSentError: false,
+    whatsappSentError: false,
     connection: false,
     disabled: false,
     sendEmailFlag: false
@@ -153,7 +157,16 @@ export class Final extends Component {
     }, 300)
   }
 
-  handleCloseModal = () => this.setState({ modalOpen: false })
+  sendWhatsappToUser() {
+    this.setState({ sendingWhatsapp: true })
+
+    setTimeout(() => {
+      this.setState({ sendingWhatsapp: false, whatsappModalOpen: true })
+    }, 300)
+  }
+
+  handleCloseModal = () =>
+    this.setState({ modalOpen: false, whatsappModalOpen: false })
 
   setConnectivityState = isConnected => {
     isConnected
@@ -192,6 +205,11 @@ export class Final extends Component {
       !!familyMembersList &&
       familyMembersList.length &&
       familyMembersList.find(user => user.email)
+
+    const userTelephone =
+      !!familyMembersList &&
+      familyMembersList.length &&
+      familyMembersList.find(user => user.phoneNumber)
 
     return (
       <ScrollView
@@ -254,11 +272,29 @@ export class Final extends Component {
                 disabled={this.state.disabled}
               />
             )}
+            {userTelephone && (
+              <Button
+                id="whatsapp"
+                style={{ ...styles.button, ...styles.emailButton }}
+                handleClick={this.sendWhatsappToUser.bind(this)}
+                outlined
+                communityIcon="whatsapp"
+                text={t('general.sendWhatsapp')}
+                loading={this.state.sendingWhatsapp}
+                disabled={this.state.disabled}
+              />
+            )}
           </View>
           <EmailSentModal
             close={this.handleCloseModal}
             isOpen={this.state.modalOpen}
             error={this.state.mailSentError}
+            userIsOnline={this.state.connection}
+          />
+          <WhatsappSentModal
+            close={this.handleCloseModal}
+            isOpen={this.state.whatsappModalOpen}
+            error={this.state.whatsappSentError}
             userIsOnline={this.state.connection}
           />
         </View>
