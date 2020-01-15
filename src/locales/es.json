@@ -28,6 +28,7 @@
     "download": "Descargar",
     "print": "Imprimir",
     "sendEmail": "Email",
+    "sendWhatsapp": "Whatsapp",
     "navigation": "navegación",
     "goback": "atrás",
     "exit": "salir",
@@ -216,7 +217,8 @@
       "emailSent": "Tu Mapa de Vida ha sido enviado exitosamente vía email. ¡No te olvides de seleccionar Guardar & cerrar!",
       "emailError": "Error al enviar tu Mapa de Vida vía email",
       "offlineText": "Por favor, activa tu conexión a Internet para recibir tu Mapa de Vida vía email",
-      "yourLifeMaWillBeSentWithSurveySync": "Tu Mapa de Vida será enviado a tu correo cuando tu encuesta esté sincronizada. ¡Selecciona 'Cerrar' para terminar la encuesta!"
+      "yourLifeMaWillBeSentWithSurveySync": "Tu Mapa de Vida será enviado a tu correo cuando tu encuesta esté sincronizada. ¡Selecciona 'Cerrar' para terminar la encuesta!",
+      "yourLifeMaWillBeSentWithWhatSurveySync": "Para recibir tu Mapa de Vida al whatsapp, envía \"Hola\" al número: +5521933007184 después de sincronizar la encuesta."
     }
   }
 }
