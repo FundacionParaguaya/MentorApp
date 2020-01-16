@@ -75,6 +75,8 @@
 		528842F709D74897A04F08AF /* RNHTMLtoPDFTests.xctest in Resources */ = {isa = PBXBuildFile; fileRef = FFCAC76B9F3B47129896CC4E /* RNHTMLtoPDFTests.xctest */; };
 		7C01F2A8220D494A987F34DA /* libReactNativeTestFairy.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 0736B30F1C574AB7A98E402F /* libReactNativeTestFairy.a */; };
 		2988737A713C4AB5A4B1A542 /* libBugsnagReactNative.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 63CAE0F52CD244D187B81E8D /* libBugsnagReactNative.a */; };
+		65B8F5A3FEC34234842424FA /* libRNLanguages.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 90E168B282B54A3B91F4D3D7 /* libRNLanguages.a */; };
+		598BE9F0BD62477BAB6C42A9 /* libRNLanguages-tvOS.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 80D546049E4146EB99F9AF7F /* libRNLanguages-tvOS.a */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -430,6 +432,9 @@
 		0736B30F1C574AB7A98E402F /* libReactNativeTestFairy.a */ = {isa = PBXFileReference; name = "libReactNativeTestFairy.a"; path = "libReactNativeTestFairy.a"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = archive.ar; explicitFileType = undefined; includeInIndex = 0; };
 		FA0085CD2F704A7E87999C0D /* BugsnagReactNative.xcodeproj */ = {isa = PBXFileReference; name = "BugsnagReactNative.xcodeproj"; path = "../node_modules/bugsnag-react-native/cocoa/BugsnagReactNative.xcodeproj"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = wrapper.pb-project; explicitFileType = undefined; includeInIndex = 0; };
 		63CAE0F52CD244D187B81E8D /* libBugsnagReactNative.a */ = {isa = PBXFileReference; name = "libBugsnagReactNative.a"; path = "libBugsnagReactNative.a"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = archive.ar; explicitFileType = undefined; includeInIndex = 0; };
+		0A65C17B5A8848E78A2D82E3 /* RNLanguages.xcodeproj */ = {isa = PBXFileReference; name = "RNLanguages.xcodeproj"; path = "../node_modules/react-native-languages/ios/RNLanguages.xcodeproj"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = wrapper.pb-project; explicitFileType = undefined; includeInIndex = 0; };
+		90E168B282B54A3B91F4D3D7 /* libRNLanguages.a */ = {isa = PBXFileReference; name = "libRNLanguages.a"; path = "libRNLanguages.a"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = archive.ar; explicitFileType = undefined; includeInIndex = 0; };
+		80D546049E4146EB99F9AF7F /* libRNLanguages-tvOS.a */ = {isa = PBXFileReference; name = "libRNLanguages-tvOS.a"; path = "libRNLanguages-tvOS.a"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = archive.ar; explicitFileType = undefined; includeInIndex = 0; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -472,6 +477,7 @@
 				528842F709D74897A04F08AF /* RNHTMLtoPDFTests.xctest in Resources */,
 				7C01F2A8220D494A987F34DA /* libReactNativeTestFairy.a in Frameworks */,
 				2988737A713C4AB5A4B1A542 /* libBugsnagReactNative.a in Frameworks */,
+				65B8F5A3FEC34234842424FA /* libRNLanguages.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -492,6 +498,7 @@
 				39E6E697B7F640C683A8CBF6 /* libRNVectorIcons-tvOS.a in Frameworks */,
 				A83C87E2251A42D8AEBE0BAB /* libRNGestureHandler-tvOS.a in Frameworks */,
 				63C699EDECC54FE48528F854 /* libRNCNetInfo-tvOS.a in Frameworks */,
+				598BE9F0BD62477BAB6C42A9 /* libRNLanguages-tvOS.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -676,6 +683,7 @@
 				27606EDD8A924775BE24B571 /* RNHTMLtoPDF.xcodeproj */,
 				6A468430C6F64B5185DD4D2B /* ReactNativeTestFairy.xcodeproj */,
 				FA0085CD2F704A7E87999C0D /* BugsnagReactNative.xcodeproj */,
+				0A65C17B5A8848E78A2D82E3 /* RNLanguages.xcodeproj */,
 			);
 			name = Libraries;
 			sourceTree = "<group>";
@@ -1400,6 +1408,8 @@
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/PovertyStoplightApp.app/PovertyStoplightApp";
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 				);
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
@@ -1415,6 +1425,7 @@
 					"$(SRCROOT)/../node_modules/react-native-html-to-pdf/ios/RNHTMLtoPDF",
 					"$(SRCROOT)/../node_modules/react-native-testfairy/ios",
 					"$(SRCROOT)/../node_modules/bugsnag-react-native/cocoa/**",
+					"$(SRCROOT)/../node_modules/react-native-languages/ios",
 				);
 				FRAMEWORK_SEARCH_PATHS = (
 				);
@@ -1438,6 +1449,8 @@
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/PovertyStoplightApp.app/PovertyStoplightApp";
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 				);
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
@@ -1453,6 +1466,7 @@
 					"$(SRCROOT)/../node_modules/react-native-html-to-pdf/ios/RNHTMLtoPDF",
 					"$(SRCROOT)/../node_modules/react-native-testfairy/ios",
 					"$(SRCROOT)/../node_modules/bugsnag-react-native/cocoa/**",
+					"$(SRCROOT)/../node_modules/react-native-languages/ios",
 				);
 				FRAMEWORK_SEARCH_PATHS = (
 				);
@@ -1489,6 +1503,7 @@
 					"$(SRCROOT)/../node_modules/react-native-html-to-pdf/ios/RNHTMLtoPDF",
 					"$(SRCROOT)/../node_modules/react-native-testfairy/ios",
 					"$(SRCROOT)/../node_modules/bugsnag-react-native/cocoa/**",
+					"$(SRCROOT)/../node_modules/react-native-languages/ios",
 				);
 				FRAMEWORK_SEARCH_PATHS = (
 				);
@@ -1524,6 +1539,7 @@
 					"$(SRCROOT)/../node_modules/react-native-html-to-pdf/ios/RNHTMLtoPDF",
 					"$(SRCROOT)/../node_modules/react-native-testfairy/ios",
 					"$(SRCROOT)/../node_modules/bugsnag-react-native/cocoa/**",
+					"$(SRCROOT)/../node_modules/react-native-languages/ios",
 				);
 				FRAMEWORK_SEARCH_PATHS = (
 				);
@@ -1555,6 +1571,8 @@
 				TVOS_DEPLOYMENT_TARGET = 9.2;
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 				);
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
@@ -1570,6 +1588,7 @@
 					"$(SRCROOT)/../node_modules/react-native-html-to-pdf/ios/RNHTMLtoPDF",
 					"$(SRCROOT)/../node_modules/react-native-testfairy/ios",
 					"$(SRCROOT)/../node_modules/bugsnag-react-native/cocoa/**",
+					"$(SRCROOT)/../node_modules/react-native-languages/ios",
 				);
 				FRAMEWORK_SEARCH_PATHS = (
 				);
@@ -1601,6 +1620,8 @@
 				TVOS_DEPLOYMENT_TARGET = 9.2;
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 				);
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
@@ -1616,6 +1637,7 @@
 					"$(SRCROOT)/../node_modules/react-native-html-to-pdf/ios/RNHTMLtoPDF",
 					"$(SRCROOT)/../node_modules/react-native-testfairy/ios",
 					"$(SRCROOT)/../node_modules/bugsnag-react-native/cocoa/**",
+					"$(SRCROOT)/../node_modules/react-native-languages/ios",
 				);
 				FRAMEWORK_SEARCH_PATHS = (
 				);
@@ -1646,6 +1668,8 @@
 				TVOS_DEPLOYMENT_TARGET = 10.1;
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 				);
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
@@ -1661,6 +1685,7 @@
 					"$(SRCROOT)/../node_modules/react-native-html-to-pdf/ios/RNHTMLtoPDF",
 					"$(SRCROOT)/../node_modules/react-native-testfairy/ios",
 					"$(SRCROOT)/../node_modules/bugsnag-react-native/cocoa/**",
+					"$(SRCROOT)/../node_modules/react-native-languages/ios",
 				);
 				FRAMEWORK_SEARCH_PATHS = (
 				);
@@ -1691,6 +1716,8 @@
 				TVOS_DEPLOYMENT_TARGET = 10.1;
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 				);
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
@@ -1706,6 +1733,7 @@
 					"$(SRCROOT)/../node_modules/react-native-html-to-pdf/ios/RNHTMLtoPDF",
 					"$(SRCROOT)/../node_modules/react-native-testfairy/ios",
 					"$(SRCROOT)/../node_modules/bugsnag-react-native/cocoa/**",
+					"$(SRCROOT)/../node_modules/react-native-languages/ios",
 				);
 				FRAMEWORK_SEARCH_PATHS = (
 				);

@@ -2,6 +2,7 @@ package com.povertystoplightapp;
 import com.povertystoplightapp.CustomDeletePackage;
 import android.app.Application;
 import com.facebook.react.ReactApplication;
+import com.reactcommunity.rnlanguages.RNLanguagesPackage;
 import com.bugsnag.BugsnagReactNative;
 import com.testfairy.react.TestFairyPackage;
 import com.christopherdro.htmltopdf.RNHTMLtoPDFPackage;
@@ -41,6 +42,7 @@ public class MainApplication extends Application implements ReactApplication {
       return Arrays.<ReactPackage>asList(
         
           new MainReactPackage(),
+            new RNLanguagesPackage(),
             BugsnagReactNative.getPackage(),
             new TestFairyPackage(),
           new CustomDeletePackage(),
