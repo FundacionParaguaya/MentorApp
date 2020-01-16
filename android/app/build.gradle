@@ -151,6 +151,7 @@ android {
 }
 
 dependencies {
+    implementation project(':react-native-localize')
     implementation project(':bugsnag-react-native')
     implementation project(':react-native-testfairy')
     implementation project(':react-native-html-to-pdf')
