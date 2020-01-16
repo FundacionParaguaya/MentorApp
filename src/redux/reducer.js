@@ -1,3 +1,7 @@
+import { combineReducers } from 'redux'
+
+import { bugsnag } from '../screens/utils/bugsnag'
+import { getDeviceLanguage } from '../utils'
 import {
   ADD_SURVEY_DATA,
   CREATE_DRAFT,
@@ -27,9 +31,7 @@ import {
   USER_LOGOUT
 } from './actions'
 
-import { bugsnag } from '../screens/utils/bugsnag'
-import { combineReducers } from 'redux'
-
+const defaultLanguage = getDeviceLanguage() || 'en'
 //Login
 
 export const user = (
@@ -251,7 +253,7 @@ export const drafts = (state = [], action) => {
 }
 
 // Language
-export const language = (state = 'en', action) => {
+export const language = (state = defaultLanguage, action) => {
   switch (action.type) {
     case SWITCH_LANGUAGE:
       return action.language
