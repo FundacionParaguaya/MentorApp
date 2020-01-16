@@ -14,7 +14,6 @@ import com.learnium.RNDeviceInfo.RNDeviceInfo;
 import com.delightfulstudio.wheelpicker.WheelPickerPackage;
 import org.devio.rn.splashscreen.SplashScreenReactPackage;
 import com.oblador.vectoricons.VectorIconsPackage;
-import com.reactcommunity.rnlanguages.RNLanguagesPackage;
 import com.RNFetchBlob.RNFetchBlobPackage;
 import com.facebook.react.ReactNativeHost;
 import com.facebook.react.ReactPackage;

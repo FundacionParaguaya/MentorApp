@@ -59,8 +59,6 @@
 		5A2878AFA66B493F988D52C0 /* Zocial.ttf in Resources */ = {isa = PBXBuildFile; fileRef = BBC6BA78E78E4DB5AD1F6543 /* Zocial.ttf */; };
 		3D1A356C60454CDE907DA50B /* libRCTMGL.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 95D18F08485045AC9BA864EA /* libRCTMGL.a */; };
 		AAD26BF0E07E48048338FE4D /* libRNCGeolocation.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 844D8F926B9A4F1DB139C6B5 /* libRNCGeolocation.a */; };
-		C694EF7092AF4AFDA616162C /* libRNLanguages.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 5CEA593897724776B1BEF02E /* libRNLanguages.a */; };
-		E2B4674B0C4B428C81F99CD9 /* libRNLanguages-tvOS.a in Frameworks */ = {isa = PBXBuildFile; fileRef = A8526E61967149C1B3A05BB8 /* libRNLanguages-tvOS.a */; };
 		49295872D4844738A14A0A34 /* libz.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 3BC1921C61F6439F837F6B40 /* libz.tbd */; };
 		4BAD099D67EC4C618EA74FF2 /* libSplashScreen.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 748626BDDA6A4A3CABBC7BED /* libSplashScreen.a */; };
 		401F13DF44D743D5921FD641 /* libRNVectorIcons.a in Frameworks */ = {isa = PBXBuildFile; fileRef = E775DA00AA4A44B9B7E3092C /* libRNVectorIcons.a */; };
@@ -407,9 +405,6 @@
 		95D18F08485045AC9BA864EA /* libRCTMGL.a */ = {isa = PBXFileReference; name = "libRCTMGL.a"; path = "libRCTMGL.a"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = archive.ar; explicitFileType = undefined; includeInIndex = 0; };
 		80D36390BA32445BB0E7FEAE /* RNCGeolocation.xcodeproj */ = {isa = PBXFileReference; name = "RNCGeolocation.xcodeproj"; path = "../node_modules/@react-native-community/geolocation/ios/RNCGeolocation.xcodeproj"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = wrapper.pb-project; explicitFileType = undefined; includeInIndex = 0; };
 		844D8F926B9A4F1DB139C6B5 /* libRNCGeolocation.a */ = {isa = PBXFileReference; name = "libRNCGeolocation.a"; path = "libRNCGeolocation.a"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = archive.ar; explicitFileType = undefined; includeInIndex = 0; };
-		1977BC90DDAF42058004EDA9 /* RNLanguages.xcodeproj */ = {isa = PBXFileReference; name = "RNLanguages.xcodeproj"; path = "../node_modules/react-native-languages/ios/RNLanguages.xcodeproj"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = wrapper.pb-project; explicitFileType = undefined; includeInIndex = 0; };
-		5CEA593897724776B1BEF02E /* libRNLanguages.a */ = {isa = PBXFileReference; name = "libRNLanguages.a"; path = "libRNLanguages.a"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = archive.ar; explicitFileType = undefined; includeInIndex = 0; };
-		A8526E61967149C1B3A05BB8 /* libRNLanguages-tvOS.a */ = {isa = PBXFileReference; name = "libRNLanguages-tvOS.a"; path = "libRNLanguages-tvOS.a"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = archive.ar; explicitFileType = undefined; includeInIndex = 0; };
 		3BC1921C61F6439F837F6B40 /* libz.tbd */ = {isa = PBXFileReference; name = "libz.tbd"; path = "usr/lib/libz.tbd"; sourceTree = SDKROOT; fileEncoding = undefined; lastKnownFileType = sourcecode.text-based-dylib-definition; explicitFileType = undefined; includeInIndex = 0; };
 		5B6AD3823FA849B0B8EC2B38 /* SplashScreen.xcodeproj */ = {isa = PBXFileReference; name = "SplashScreen.xcodeproj"; path = "../node_modules/react-native-splash-screen/ios/SplashScreen.xcodeproj"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = wrapper.pb-project; explicitFileType = undefined; includeInIndex = 0; };
 		748626BDDA6A4A3CABBC7BED /* libSplashScreen.a */ = {isa = PBXFileReference; name = "libSplashScreen.a"; path = "libSplashScreen.a"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = archive.ar; explicitFileType = undefined; includeInIndex = 0; };
@@ -465,7 +460,6 @@
 				3B5E37C680CD4EB0B3E18974 /* libRNDeviceInfo.a in Frameworks */,
 				3D1A356C60454CDE907DA50B /* libRCTMGL.a in Frameworks */,
 				AAD26BF0E07E48048338FE4D /* libRNCGeolocation.a in Frameworks */,
-				C694EF7092AF4AFDA616162C /* libRNLanguages.a in Frameworks */,
 				49295872D4844738A14A0A34 /* libz.tbd in Frameworks */,
 				4BAD099D67EC4C618EA74FF2 /* libSplashScreen.a in Frameworks */,
 				401F13DF44D743D5921FD641 /* libRNVectorIcons.a in Frameworks */,
@@ -673,7 +667,6 @@
 				613A2FEA7BC14EEFA11F8FAA /* RNDeviceInfo.xcodeproj */,
 				CA73F8479C264A5AAB3FA3C7 /* RCTMGL.xcodeproj */,
 				80D36390BA32445BB0E7FEAE /* RNCGeolocation.xcodeproj */,
-				1977BC90DDAF42058004EDA9 /* RNLanguages.xcodeproj */,
 				5B6AD3823FA849B0B8EC2B38 /* SplashScreen.xcodeproj */,
 				EB89CEC57C4043118AEA77A6 /* RNVectorIcons.xcodeproj */,
 				391524EE0F134D10B5B17134 /* RNFetchBlob.xcodeproj */,
@@ -1413,7 +1406,6 @@
 					"$(SRCROOT)/../node_modules/react-native-device-info/ios/RNDeviceInfo",
 					"$(SRCROOT)/../node_modules/@mapbox/react-native-mapbox-gl/ios/RCTMGL/**",
 					"$(SRCROOT)/../node_modules/@react-native-community/geolocation/ios",
-					"$(SRCROOT)/../node_modules/react-native-languages/ios",
 					"$(SRCROOT)/../node_modules/react-native-splash-screen/ios",
 					"$(SRCROOT)/../node_modules/react-native-vector-icons/RNVectorIconsManager",
 					"$(SRCROOT)/../node_modules/rn-fetch-blob/ios/**",
@@ -1452,7 +1444,6 @@
 					"$(SRCROOT)/../node_modules/react-native-device-info/ios/RNDeviceInfo",
 					"$(SRCROOT)/../node_modules/@mapbox/react-native-mapbox-gl/ios/RCTMGL/**",
 					"$(SRCROOT)/../node_modules/@react-native-community/geolocation/ios",
-					"$(SRCROOT)/../node_modules/react-native-languages/ios",
 					"$(SRCROOT)/../node_modules/react-native-splash-screen/ios",
 					"$(SRCROOT)/../node_modules/react-native-vector-icons/RNVectorIconsManager",
 					"$(SRCROOT)/../node_modules/rn-fetch-blob/ios/**",
@@ -1489,7 +1480,6 @@
 					"$(SRCROOT)/../node_modules/react-native-device-info/ios/RNDeviceInfo",
 					"$(SRCROOT)/../node_modules/@mapbox/react-native-mapbox-gl/ios/RCTMGL/**",
 					"$(SRCROOT)/../node_modules/@react-native-community/geolocation/ios",
-					"$(SRCROOT)/../node_modules/react-native-languages/ios",
 					"$(SRCROOT)/../node_modules/react-native-splash-screen/ios",
 					"$(SRCROOT)/../node_modules/react-native-vector-icons/RNVectorIconsManager",
 					"$(SRCROOT)/../node_modules/rn-fetch-blob/ios/**",
@@ -1525,7 +1515,6 @@
 					"$(SRCROOT)/../node_modules/react-native-device-info/ios/RNDeviceInfo",
 					"$(SRCROOT)/../node_modules/@mapbox/react-native-mapbox-gl/ios/RCTMGL/**",
 					"$(SRCROOT)/../node_modules/@react-native-community/geolocation/ios",
-					"$(SRCROOT)/../node_modules/react-native-languages/ios",
 					"$(SRCROOT)/../node_modules/react-native-splash-screen/ios",
 					"$(SRCROOT)/../node_modules/react-native-vector-icons/RNVectorIconsManager",
 					"$(SRCROOT)/../node_modules/rn-fetch-blob/ios/**",
@@ -1572,7 +1561,6 @@
 					"$(SRCROOT)/../node_modules/react-native-device-info/ios/RNDeviceInfo",
 					"$(SRCROOT)/../node_modules/@mapbox/react-native-mapbox-gl/ios/RCTMGL/**",
 					"$(SRCROOT)/../node_modules/@react-native-community/geolocation/ios",
-					"$(SRCROOT)/../node_modules/react-native-languages/ios",
 					"$(SRCROOT)/../node_modules/react-native-splash-screen/ios",
 					"$(SRCROOT)/../node_modules/react-native-vector-icons/RNVectorIconsManager",
 					"$(SRCROOT)/../node_modules/rn-fetch-blob/ios/**",
@@ -1619,7 +1607,6 @@
 					"$(SRCROOT)/../node_modules/react-native-device-info/ios/RNDeviceInfo",
 					"$(SRCROOT)/../node_modules/@mapbox/react-native-mapbox-gl/ios/RCTMGL/**",
 					"$(SRCROOT)/../node_modules/@react-native-community/geolocation/ios",
-					"$(SRCROOT)/../node_modules/react-native-languages/ios",
 					"$(SRCROOT)/../node_modules/react-native-splash-screen/ios",
 					"$(SRCROOT)/../node_modules/react-native-vector-icons/RNVectorIconsManager",
 					"$(SRCROOT)/../node_modules/rn-fetch-blob/ios/**",
@@ -1665,7 +1652,6 @@
 					"$(SRCROOT)/../node_modules/react-native-device-info/ios/RNDeviceInfo",
 					"$(SRCROOT)/../node_modules/@mapbox/react-native-mapbox-gl/ios/RCTMGL/**",
 					"$(SRCROOT)/../node_modules/@react-native-community/geolocation/ios",
-					"$(SRCROOT)/../node_modules/react-native-languages/ios",
 					"$(SRCROOT)/../node_modules/react-native-splash-screen/ios",
 					"$(SRCROOT)/../node_modules/react-native-vector-icons/RNVectorIconsManager",
 					"$(SRCROOT)/../node_modules/rn-fetch-blob/ios/**",
@@ -1711,7 +1697,6 @@
 					"$(SRCROOT)/../node_modules/react-native-device-info/ios/RNDeviceInfo",
 					"$(SRCROOT)/../node_modules/@mapbox/react-native-mapbox-gl/ios/RCTMGL/**",
 					"$(SRCROOT)/../node_modules/@react-native-community/geolocation/ios",
-					"$(SRCROOT)/../node_modules/react-native-languages/ios",
 					"$(SRCROOT)/../node_modules/react-native-splash-screen/ios",
 					"$(SRCROOT)/../node_modules/react-native-vector-icons/RNVectorIconsManager",
 					"$(SRCROOT)/../node_modules/rn-fetch-blob/ios/**",

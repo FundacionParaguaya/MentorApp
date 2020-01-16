@@ -164,7 +164,6 @@ dependencies {
     implementation project(':@delightfulstudio_react-native-wheel-picker-android')
     implementation project(':react-native-splash-screen')
     implementation project(':react-native-vector-icons')
-    implementation project(':react-native-languages')
     implementation project(':rn-fetch-blob')
     implementation fileTree(dir: "libs", include: ["*.jar"])
     implementation 'androidx.appcompat:appcompat:1.0.0'
