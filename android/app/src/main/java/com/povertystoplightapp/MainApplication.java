@@ -21,6 +21,7 @@ import com.facebook.react.shell.MainReactPackage;
 import com.facebook.soloader.SoLoader;
 import com.facebook.react.modules.storage.ReactDatabaseSupplier;
 
+
 import androidx.multidex.MultiDex;
 import android.content.Context;
 
@@ -53,7 +54,6 @@ public class MainApplication extends Application implements ReactApplication {
           new WheelPickerPackage(),
           new SplashScreenReactPackage(),
           new VectorIconsPackage(),
-          new RNLanguagesPackage(),
           new RNFetchBlobPackage()
       );
     }
