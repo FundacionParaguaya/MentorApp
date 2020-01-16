@@ -31,7 +31,7 @@ import {
   USER_LOGOUT
 } from './actions'
 
-const defaultLanguage = getDeviceLanguage() || 'en'
+const defaultLanguage = getDeviceLanguage()
 //Login
 
 export const user = (

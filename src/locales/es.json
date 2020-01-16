@@ -80,6 +80,13 @@
     "gendersBirthDates": "Géneros & fechas de nacimiento",
     "skippedIndicators": "Preguntas omitidas",
     "readCarefully": "Favor lea atentamente antes de crear el Mapa de Vida",
+    "login": {
+      "welcome": "Welcome back! ES",
+      "letsGetStarted": "Let's get started... ES",
+      "username": "USERNAME ES",
+      "password": "PASSWORD ES",
+      "buttonText": "Login ES"
+    },
     "family": {
       "primaryParticipantHeading": "¡Cuéntanos sobre tí!",
       "familyMembersHeading": "Ahora, ¡cuéntanos sobre las personas con las que vives!",

@@ -80,6 +80,13 @@
     "gendersBirthDates": "Genders & Birth dates",
     "skippedIndicators": "Skipped questions",
     "readCarefully": "Please read carefully before creating the Life Map",
+    "login": {
+      "welcome": "Welcome back!",
+      "letsGetStarted": "Let&lsquo;s get started...",
+      "username": "USERNAME",
+      "password": "PASSWORD",
+      "buttonText": "Login"
+    },
     "family": {
       "primaryParticipantHeading": "Tell us about yourself!",
       "familyMembersHeading": "Now, tell us about all the people you live with!",

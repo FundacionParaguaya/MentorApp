@@ -28,8 +28,7 @@ export const replaceSpecialChars = text => {
 export const getDeviceLanguage = () => {
   const deviceLanguages = RNLocalize.getLocales()
   const userPreferredLanguage = deviceLanguages[0].languageCode
-  return (userPreferredLanguage && userPreferredLanguage === 'en') ||
-    userPreferredLanguage === 'es'
+  return userPreferredLanguage === 'en' || userPreferredLanguage === 'es'
     ? userPreferredLanguage
     : 'en'
 }
