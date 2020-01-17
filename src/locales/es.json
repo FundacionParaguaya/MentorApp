@@ -85,7 +85,8 @@
       "letsGetStarted": "¡Empecemos!",
       "username": "NOMBRE DE USUARIO",
       "password": "CONTRASEÑA",
-      "buttonText": "Ingresar"
+      "buttonText": "Ingresar",
+      "loggingIn": "Iniciando sesión ..."
     },
     "loading": {
       "weArePreparingTheApp": "Estamos preparando la aplicación",

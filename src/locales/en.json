@@ -85,7 +85,8 @@
       "letsGetStarted": "Let's get started...",
       "username": "USERNAME",
       "password": "PASSWORD",
-      "buttonText": "Login"
+      "buttonText": "Login",
+      "loggingIn": "Logging in ..."
     },
     "loading": {
       "weArePreparingTheApp": "We are preparing the app.",

@@ -1,4 +1,5 @@
 import NetInfo from '@react-native-community/netinfo'
+import i18n from 'i18next'
 import PropTypes from 'prop-types'
 import React, { Component } from 'react'
 import { withNamespaces } from 'react-i18next'
@@ -27,6 +28,7 @@ import {
   setEnv
 } from '../redux/actions'
 import colors from '../theme.json'
+import { getDeviceLanguage } from '../utils'
 import InternalStorageFullModal, {
   MINIMUM_REQUIRED_STORAGE_SPACE_500_MB
 } from './modals/InternalStorageFullModal'
@@ -49,6 +51,9 @@ export class Login extends Component {
     notEnoughStorageSpace: false
   }
   componentDidMount() {
+    const lng = getDeviceLanguage()
+    i18n.changeLanguage(lng)
+
     // if use has logged in navigate to Loading
     if (this.props.user.token) {
       this.props.navigation.navigate('Loading')
@@ -276,7 +281,7 @@ export class Login extends Component {
                   }}
                   id="login-button"
                   handleClick={() => this.onLogin()}
-                  text="Logging in ..."
+                  text={t('views.login.loggingIn')}
                   disabled={true}
                   colored
                 />
