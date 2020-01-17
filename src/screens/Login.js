@@ -51,8 +51,10 @@ export class Login extends Component {
     notEnoughStorageSpace: false
   }
   componentDidMount() {
-    const lng = getDeviceLanguage()
-    i18n.changeLanguage(lng)
+    this.props.navigation.addListener('didFocus', () => {
+      const lng = getDeviceLanguage()
+      i18n.changeLanguage(lng)
+    })
 
     // if use has logged in navigate to Loading
     if (this.props.user.token) {
