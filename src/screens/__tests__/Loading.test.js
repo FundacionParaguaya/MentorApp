@@ -1,5 +1,6 @@
-import React from 'react'
 import { shallow } from 'enzyme'
+import React from 'react'
+
 import { Loading } from '../Loading'
 
 jest.useFakeTimers()
@@ -26,6 +27,7 @@ const createTestProps = props => ({
   surveys: [],
   families: [],
   offline: { outbox: [] },
+  t: jest.fn(),
   ...props
 })
 

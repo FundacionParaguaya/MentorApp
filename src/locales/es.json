@@ -80,6 +80,26 @@
     "gendersBirthDates": "Géneros & fechas de nacimiento",
     "skippedIndicators": "Preguntas omitidas",
     "readCarefully": "Favor lea atentamente antes de crear el Mapa de Vida",
+    "login": {
+      "welcome": "¡Bienvenido!",
+      "letsGetStarted": "¡Empecemos!",
+      "username": "NOMBRE DE USUARIO",
+      "password": "CONTRASEÑA",
+      "buttonText": "Ingresar",
+      "loggingIn": "Iniciando sesión ..."
+    },
+    "loading": {
+      "weArePreparingTheApp": "Estamos preparando la aplicación",
+      "surveysCached": "Encuestas sincronizadas",
+      "downloadingSurveys":"Descargando encuestas",
+      "familiesCached": "Familias en sincronizadas",
+      "downloadingFamilies": "Descargando familias",
+      "mapsCached": "Mapas sincronizados",
+      "mapsDownloading": "Descargando mapas",
+      "offlineMaps": "Mapas sin conexión",
+      "images": "Imágenes",
+      "calcilatingTotalImages": "Calculando imágenes a sincronizar"
+    },
     "family": {
       "primaryParticipantHeading": "¡Cuéntanos sobre tí!",
       "familyMembersHeading": "Ahora, ¡cuéntanos sobre las personas con las que vives!",

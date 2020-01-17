@@ -80,6 +80,26 @@
     "gendersBirthDates": "Genders & Birth dates",
     "skippedIndicators": "Skipped questions",
     "readCarefully": "Please read carefully before creating the Life Map",
+    "login": {
+      "welcome": "Welcome back!",
+      "letsGetStarted": "Let's get started...",
+      "username": "USERNAME",
+      "password": "PASSWORD",
+      "buttonText": "Login",
+      "loggingIn": "Logging in ..."
+    },
+    "loading": {
+      "weArePreparingTheApp": "We are preparing the app.",
+      "surveysCached": "Surveys cached",
+      "downloadingSurveys":"Downloading surveys...",
+      "familiesCached": "Families cached",
+      "downloadingFamilies": "Downloading families...",
+      "mapsCached": "Maps cached",
+      "mapsDownloading": "Downloading Maps...",
+      "offlineMaps": "Offline Maps",
+      "images": "Images",
+      "calcilatingTotalImages": "Calculating total images to cache.."
+    },
     "family": {
       "primaryParticipantHeading": "Tell us about yourself!",
       "familyMembersHeading": "Now, tell us about all the people you live with!",

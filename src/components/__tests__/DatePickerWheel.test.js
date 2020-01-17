@@ -1,7 +1,8 @@
-import BottomModal from '../BottomModal'
-import React from 'react'
-import DatePickerWheel from '../form/DatePickerWheel'
 import { shallow } from 'enzyme'
+import React from 'react'
+
+import BottomModal from '../BottomModal'
+import DatePickerWheel from '../form/DatePickerWheel'
 
 const years = Array.from({ length: 101 }, (v, i) => {
   let d = new Date()
@@ -68,7 +69,7 @@ it('sets correct date when pressed', () => {
     .onPress()
 
   expect(props.onChange).toHaveBeenCalledTimes(1)
-  expect(props.onChange).toHaveBeenCalledWith('1 January 2019')
+  expect(props.onChange).toHaveBeenCalledWith('1 January 2020')
   expect(wrapper.find(BottomModal)).toHaveProp({ isOpen: false })
 })
 
