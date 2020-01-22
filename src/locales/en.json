@@ -155,7 +155,8 @@
       "created": "Created on",
       "weFoundYou": "We found you!",
       "weCannotLocate": "We cannot locate you!",
-      "tellUsMore": "You can tell us more about this location in the form below!"
+      "tellUsMore": "You can tell us more about this location in the form below!",
+      "searchByName": "Search by name"
     },
     "lifemap": {
       "indicatorDefinition": "Indicator Definition",
@@ -239,5 +240,19 @@
       "yourLifeMaWillBeSentWithSurveySync": "Your Life Map will be sent to your email as soon as the survey is synced. Click 'Close' to finish the survey!",
       "yourLifeMaWillBeSentWithWhatSurveySync": "To receive your Life Map to whatsapp, send \"Hello\" to this number: +5521933007184 after the survey has been synced."
     }
-  }
+  },
+      "filterLabels": {
+        "lifeMaps": "Surveys",
+        "allSurveys": "All surveys",
+        "drafts": "Drafts",
+        "syncPending": "Sync pending",
+        "syncError": "Sync error",
+        "completed": "Completed"
+      } ,
+      "draftStatus": {
+        "completed": "Completed",
+        "syncError": "Sync error",
+        "syncPending": "Sync pending",
+        "draft": "Draft"
+      }
 }

@@ -92,7 +92,7 @@
       "weArePreparingTheApp": "Estamos preparando la aplicación",
       "surveysCached": "Encuestas sincronizadas",
       "downloadingSurveys":"Descargando encuestas",
-      "familiesCached": "Familias en sincronizadas",
+      "familiesCached": "Familias sincronizadas",
       "downloadingFamilies": "Descargando familias",
       "mapsCached": "Mapas sincronizados",
       "mapsDownloading": "Descargando mapas",
@@ -156,7 +156,8 @@
       "created": "Creado",
       "weFoundYou": "¡Te encontramos!",
       "weCannotLocate": "¡No podemos localizarte!",
-      "tellUsMore": "Puede decirnos más acerca de esta ubicación en el siguiente formulario"
+      "tellUsMore": "Puede decirnos más acerca de esta ubicación en el siguiente formulario",
+      "searchByName": "Buscar"
     },
     "lifemap": {
       "indicatorDefinition": "Definición del indicador",
@@ -240,5 +241,19 @@
       "yourLifeMaWillBeSentWithSurveySync": "Tu Mapa de Vida será enviado a tu correo cuando tu encuesta esté sincronizada. ¡Selecciona 'Cerrar' para terminar la encuesta!",
       "yourLifeMaWillBeSentWithWhatSurveySync": "Para recibir tu Mapa de Vida al whatsapp, envía \"Hola\" al número: +5521933007184 después de sincronizar la encuesta."
     }
-  }
+  },
+      "filterLabels": {
+        "lifeMaps": "Encuestas",
+        "allSurveys": "Todas las encuestas",
+        "drafts": "Borradores",
+        "syncPending": "Pendientes",
+        "syncError": "Errores",
+        "completed": "Completados"
+      },
+      "draftStatus": {
+        "completed": "Completado",
+        "syncError": "Error",
+        "syncPending": "Pendiente",
+        "draft": "Borrador"
+      }
 }

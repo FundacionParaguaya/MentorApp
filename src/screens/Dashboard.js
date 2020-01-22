@@ -1,3 +1,7 @@
+import NetInfo from '@react-native-community/netinfo'
+import PropTypes from 'prop-types'
+import React, { Component } from 'react'
+import { withNamespaces } from 'react-i18next'
 import {
   FlatList,
   Image,
@@ -9,26 +13,22 @@ import {
   View,
   findNodeHandle
 } from 'react-native'
-import React, { Component } from 'react'
-import { markVersionCheked, toggleAPIVersionModal } from '../redux/actions'
-import { supported_API_version, url } from '../config'
-
+import Icon from 'react-native-vector-icons/MaterialCommunityIcons'
 import { AndroidBackHandler } from 'react-navigation-backhandler'
+import { connect } from 'react-redux'
+
+import arrow from '../../assets/images/selectArrow.png'
 import BottomModal from '../components/BottomModal'
 import Button from '../components/Button'
 import Decoration from '../components/decoration/Decoration'
 import DraftListItem from '../components/DraftListItem'
 import FilterListItem from '../components/FilterListItem'
-import Icon from 'react-native-vector-icons/MaterialCommunityIcons'
-import NetInfo from '@react-native-community/netinfo'
 import NotificationModal from '../components/NotificationModal'
-import PropTypes from 'prop-types'
 import RoundImage from '../components/RoundImage'
-import arrow from '../../assets/images/selectArrow.png'
-import colors from '../theme.json'
-import { connect } from 'react-redux'
+import { supported_API_version, url } from '../config'
 import globalStyles from '../globalStyles'
-import { withNamespaces } from 'react-i18next'
+import { markVersionCheked, toggleAPIVersionModal } from '../redux/actions'
+import colors from '../theme.json'
 
 const TestFairy = require('react-native-testfairy')
 // get env
@@ -332,7 +332,7 @@ export class Dashboard extends Component {
                               </Text>
                             ) : (
                               <Text style={globalStyles.subline}>
-                                {t('general.lifeMaps')}
+                                {t('filterLabels.lifeMaps')}
                               </Text>
                             )}
                           </View>
@@ -353,37 +353,48 @@ export class Dashboard extends Component {
                           id="all"
                           dashboard
                           onPress={() => this.selectFilter(false)}
-                          text={'All Life Maps'}
+                          text={t('filterLabels.allSurveys')}
                         />
                         <FilterListItem
                           id="drafts"
                           dashboard
-                          onPress={() => this.selectFilter('Draft', 'Drafts')}
-                          text={'Drafts'}
+                          onPress={() =>
+                            this.selectFilter('Draft', t('filterLabels.drafts'))
+                          }
+                          text={t('filterLabels.drafts')}
                         />
                         <FilterListItem
                           id="pending"
                           dashboard
                           onPress={() =>
-                            this.selectFilter('Pending sync', 'Sync Pending')
+                            this.selectFilter(
+                              'Pending sync',
+                              t('filterLabels.syncPending')
+                            )
                           }
-                          text={'Sync Pending'}
+                          text={t('filterLabels.syncPending')}
                         />
                         <FilterListItem
                           id="error"
                           dashboard
                           onPress={() =>
-                            this.selectFilter('Sync error', 'Sync Error')
+                            this.selectFilter(
+                              'Sync error',
+                              t('filterLabels.syncError')
+                            )
                           }
-                          text={'Sync Error'}
+                          text={t('filterLabels.syncError')}
                         />
                         <FilterListItem
                           id="synced"
                           dashboard
                           onPress={() =>
-                            this.selectFilter('Synced', 'Completed')
+                            this.selectFilter(
+                              'Synced',
+                              t('filterLabels.completed')
+                            )
                           }
-                          text={'Completed'}
+                          text={t('filterLabels.completed')}
                         />
                       </View>
                     </BottomModal>
