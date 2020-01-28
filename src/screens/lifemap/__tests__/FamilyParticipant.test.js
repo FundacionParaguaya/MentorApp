@@ -69,7 +69,8 @@ const defaultDraft = {
       {
         firstParticipant: true,
         socioEconomicAnswers: [],
-        birthCountry: 'BG'
+        birthCountry: 'BG',
+        phoneCode: '359'
       }
     ]
   }
@@ -88,6 +89,7 @@ const resumedDraft = {
         documentType: '0',
         email: 'juan@gmail.com',
         birthCountry: 'PY',
+        phoneCode: '595',
         gender: 'M',
         birthDate: 12345,
         firstParticipant: true,
