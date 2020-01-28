@@ -1,6 +1,6 @@
 {
   "name": "povertystoplightapp",
-  "version": "1.11.5",
+  "version": "1.11.6",
   "private": true,
   "scripts": {
     "start": "node node_modules/react-native/local-cli/cli.js start -- --reset-cache",
@@ -34,7 +34,7 @@
     "react-native-gesture-handler": "^1.4.1",
     "react-native-google-places-autocomplete": "^1.3.9",
     "react-native-html-to-pdf": "^0.8.0",
-    "react-native-languages": "^3.0.1",
+    "react-native-localize": "^1.3.2",
     "react-native-print": "^0.6.0",
     "react-native-simple-radio-button": "^2.7.3",
     "react-native-snap-carousel": "^3.8.0",
@@ -95,7 +95,7 @@
       "e2e/"
     ],
     "transformIgnorePatterns": [
-      "node_modules/(?!react-native|react-native-languages|react-navigation|rn-fetch-blob|@react-native-community|@delightfulstudio|react-native-device-info)"
+      "node_modules/(?!react-native|react-navigation|rn-fetch-blob|@react-native-community|@delightfulstudio|react-native-device-info)"
     ]
   },
   "husky": {

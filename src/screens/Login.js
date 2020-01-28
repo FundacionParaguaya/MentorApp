@@ -1,3 +1,8 @@
+import NetInfo from '@react-native-community/netinfo'
+import i18n from 'i18next'
+import PropTypes from 'prop-types'
+import React, { Component } from 'react'
+import { withNamespaces } from 'react-i18next'
 import {
   AppState,
   Dimensions,
@@ -8,27 +13,26 @@ import {
   TextInput,
   View
 } from 'react-native'
-import InternalStorageFullModal, {
-  MINIMUM_REQUIRED_STORAGE_SPACE_500_MB
-} from './modals/InternalStorageFullModal'
-import React, { Component } from 'react'
+import { CheckBox } from 'react-native-elements'
+import { connect } from 'react-redux'
+import RNFetchBlob from 'rn-fetch-blob'
+
+import logo from '../../assets/images/logo.png'
+import Button from '../components/Button'
+import { url } from '../config'
+import globalStyles from '../globalStyles'
 import {
   login,
   setDimensions,
   setDownloadMapsAndImages,
   setEnv
 } from '../redux/actions'
-
-import Button from '../components/Button'
-import { CheckBox } from 'react-native-elements'
-import RNFetchBlob from 'rn-fetch-blob'
-import NetInfo from '@react-native-community/netinfo'
-import PropTypes from 'prop-types'
 import colors from '../theme.json'
-import { connect } from 'react-redux'
-import globalStyles from '../globalStyles'
-import logo from '../../assets/images/logo.png'
-import { url } from '../config'
+import { getDeviceLanguage } from '../utils'
+import InternalStorageFullModal, {
+  MINIMUM_REQUIRED_STORAGE_SPACE_500_MB
+} from './modals/InternalStorageFullModal'
+
 // get env
 const nodeEnv = process.env
 
@@ -47,6 +51,11 @@ export class Login extends Component {
     notEnoughStorageSpace: false
   }
   componentDidMount() {
+    this.props.navigation.addListener('didFocus', () => {
+      const lng = getDeviceLanguage()
+      i18n.changeLanguage(lng)
+    })
+
     // if use has logged in navigate to Loading
     if (this.props.user.token) {
       this.props.navigation.navigate('Loading')
@@ -174,6 +183,8 @@ export class Login extends Component {
   }
 
   render() {
+    const { t } = this.props
+
     return (
       <View key={this.state.appState} style={globalStyles.container}>
         <ScrollView style={globalStyles.content}>
@@ -185,7 +196,7 @@ export class Login extends Component {
           ) : (
             <View>
               <Image style={styles.logo} source={logo} />
-              <Text style={globalStyles.h1}>Welcome back!</Text>
+              <Text style={globalStyles.h1}>{t('views.login.welcome')}</Text>
               <Text
                 style={{
                   ...globalStyles.h4,
@@ -193,7 +204,7 @@ export class Login extends Component {
                   color: colors.lightdark
                 }}
               >
-                Let&lsquo;s get started...
+                {t('views.login.letsGetStarted')}
               </Text>
               <View
                 style={{
@@ -203,7 +214,7 @@ export class Login extends Component {
                   marginRight: 'auto'
                 }}
               >
-                <Text style={globalStyles.h5}>USERNAME</Text>
+                <Text style={globalStyles.h5}>{t('views.login.username')}</Text>
               </View>
               <TextInput
                 id="username"
@@ -223,7 +234,7 @@ export class Login extends Component {
                   marginRight: 'auto'
                 }}
               >
-                <Text style={globalStyles.h5}>PASSWORD</Text>
+                <Text style={globalStyles.h5}>{t('views.login.password')}</Text>
               </View>
 
               <TextInput
@@ -272,7 +283,7 @@ export class Login extends Component {
                   }}
                   id="login-button"
                   handleClick={() => this.onLogin()}
-                  text="Logging in ..."
+                  text={t('views.login.loggingIn')}
                   disabled={true}
                   colored
                 />
@@ -287,7 +298,7 @@ export class Login extends Component {
                   id="login-button"
                   testID="login-button"
                   handleClick={() => this.onLogin()}
-                  text="Login"
+                  text={t('views.login.buttonText')}
                   colored
                   disabled={this.state.error === 'No connection' ? true : false}
                 />
@@ -327,7 +338,8 @@ Login.propTypes = {
   navigation: PropTypes.object.isRequired,
   setDownloadMapsAndImages: PropTypes.func.isRequired,
   dimensions: PropTypes.object,
-  user: PropTypes.object.isRequired
+  user: PropTypes.object.isRequired,
+  t: PropTypes.func
 }
 
 const styles = StyleSheet.create({
@@ -378,7 +390,9 @@ const mapDispatchToProps = {
   setDownloadMapsAndImages
 }
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(Login)
+export default withNamespaces()(
+  connect(
+    mapStateToProps,
+    mapDispatchToProps
+  )(Login)
+)

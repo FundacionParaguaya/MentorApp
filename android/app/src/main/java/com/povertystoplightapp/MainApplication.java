@@ -2,6 +2,7 @@ package com.povertystoplightapp;
 import com.povertystoplightapp.CustomDeletePackage;
 import android.app.Application;
 import com.facebook.react.ReactApplication;
+import com.reactcommunity.rnlocalize.RNLocalizePackage;
 import com.bugsnag.BugsnagReactNative;
 import com.testfairy.react.TestFairyPackage;
 import com.christopherdro.htmltopdf.RNHTMLtoPDFPackage;
@@ -14,13 +15,13 @@ import com.learnium.RNDeviceInfo.RNDeviceInfo;
 import com.delightfulstudio.wheelpicker.WheelPickerPackage;
 import org.devio.rn.splashscreen.SplashScreenReactPackage;
 import com.oblador.vectoricons.VectorIconsPackage;
-import com.reactcommunity.rnlanguages.RNLanguagesPackage;
 import com.RNFetchBlob.RNFetchBlobPackage;
 import com.facebook.react.ReactNativeHost;
 import com.facebook.react.ReactPackage;
 import com.facebook.react.shell.MainReactPackage;
 import com.facebook.soloader.SoLoader;
 import com.facebook.react.modules.storage.ReactDatabaseSupplier;
+
 
 import androidx.multidex.MultiDex;
 import android.content.Context;
@@ -41,6 +42,7 @@ public class MainApplication extends Application implements ReactApplication {
       return Arrays.<ReactPackage>asList(
         
           new MainReactPackage(),
+            new RNLocalizePackage(),
             BugsnagReactNative.getPackage(),
             new TestFairyPackage(),
           new CustomDeletePackage(),
@@ -54,7 +56,6 @@ public class MainApplication extends Application implements ReactApplication {
           new WheelPickerPackage(),
           new SplashScreenReactPackage(),
           new VectorIconsPackage(),
-          new RNLanguagesPackage(),
           new RNFetchBlobPackage()
       );
     }

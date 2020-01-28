@@ -1,3 +1,5 @@
+import * as RNLocalize from 'react-native-localize'
+
 export const replaceSpecialChars = text => {
   const SYMBOLS_MAP = {
     'Ã³': 'ó',
@@ -21,4 +23,12 @@ export const replaceSpecialChars = text => {
     }
   }
   return JSON.parse(textToBeCleaned)
+}
+
+export const getDeviceLanguage = () => {
+  const APP_LANGUAGES = ['en', 'es']
+  const deviceLanguages = RNLocalize.getLocales()
+  const { languageCode } = deviceLanguages[0]
+
+  return APP_LANGUAGES.some(lang => lang === languageCode) ? languageCode : 'en'
 }

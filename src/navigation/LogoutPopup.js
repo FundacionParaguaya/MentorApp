@@ -1,21 +1,22 @@
-import React, { Component } from 'react'
 import PropTypes from 'prop-types'
+import React, { Component } from 'react'
 import {
-  Text,
-  StyleSheet,
-  View,
+  ActivityIndicator,
   Platform,
-  ActivityIndicator
+  StyleSheet,
+  Text,
+  View
 } from 'react-native'
-import CommunityIcon from 'react-native-vector-icons/MaterialCommunityIcons'
-import Popup from '../components/Popup'
-import Icon from 'react-native-vector-icons/MaterialIcons'
-import Button from '../components/Button'
-import i18n from '../i18n'
-import colors from '../theme.json'
-import globalStyles from '../globalStyles'
 import { CheckBox } from 'react-native-elements'
+import CommunityIcon from 'react-native-vector-icons/MaterialCommunityIcons'
+import Icon from 'react-native-vector-icons/MaterialIcons'
+
+import Button from '../components/Button'
+import Popup from '../components/Popup'
+import globalStyles from '../globalStyles'
+import i18n from '../i18n'
 import { logoutModalAccessibleText } from '../screens/utils/accessibilityHelpers'
+import colors from '../theme.json'
 
 const initialState = {
   checkboxDrafts: false,
@@ -190,7 +191,7 @@ export default class LogoutPopup extends Component {
                     }
                     onPress={() => this.checkboxChange('checkboxLifeMaps')}
                     title={`${i18n.t('general.delete')} ${i18n.t(
-                      'general.lifeMaps'
+                      'filterLabels.lifeMaps'
                     )}`}
                   />
                   <CheckBox
