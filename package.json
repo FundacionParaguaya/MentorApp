@@ -19,6 +19,7 @@
     "@react-native-mapbox-gl/maps": "^7.0.1",
     "@redux-offline/redux-offline": "^2.5.2",
     "bugsnag-react-native": "^2.23.0",
+    "google-libphonenumber": "^3.2.6",
     "i18next": "^12.1.0",
     "jsc-android": "^245459.0.0",
     "localized-countries": "^1.0.2",
