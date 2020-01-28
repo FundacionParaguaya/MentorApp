@@ -105,7 +105,8 @@ class TextInput extends Component {
     }
     if (
       this.props.validation === 'phoneNumber' &&
-      !/^[+]*[(]{0,1}[0-9]{1,4}[)]{0,1}[-\s./0-9]*$/.test(text) &&
+      (!this.props.phoneValidation(text) ||
+        !/^[+]*[(]{0,1}[0-9]{1,4}[)]{0,1}[-\s./0-9]*$/.test(text)) &&
       !validator.isEmpty(text)
     ) {
       return this.handleError(i18n.t('validation.validPhoneNumber'))
@@ -296,6 +297,7 @@ TextInput.propTypes = {
   showErrors: PropTypes.bool,
   lng: PropTypes.string,
   keyboardType: PropTypes.string,
+  phoneValidation: PropTypes.func,
   validation: PropTypes.oneOf([
     'email',
     'string',
