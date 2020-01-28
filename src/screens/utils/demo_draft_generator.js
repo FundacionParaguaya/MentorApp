@@ -18,6 +18,7 @@ export const generateRandomDraftData = (
           firstParticipant: true,
           socioEconomicAnswers: [],
           birthCountry: 'PY',
+          phoneCode: '595',
           firstName: 'Stoplight Demo',
           lastName: `${getRandomName()}`,
           gender: 'M',
