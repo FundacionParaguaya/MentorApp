@@ -94,6 +94,7 @@
       "selectACountry": "Seleccione un/tu país",
       "email": "Correo electrónico",
       "phone": "Teléfono",
+      "phoneCode": "Código de teléfono",
       "gender": "Género",
       "dateOfBirth": "Fecha de nacimiento",
       "dateOfBirthAbbr": "Fec. Nac.",
