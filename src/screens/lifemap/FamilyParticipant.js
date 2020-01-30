@@ -412,23 +412,6 @@ export class FamilyParticipant extends Component {
           setError={isError => this.setError(isError, 'birthCountry')}
         />
 
-        <Select
-          id="countFamilyMembers"
-          label={t('views.family.peopleLivingInThisHousehold')}
-          placeholder={t('views.family.peopleLivingInThisHousehold')}
-          initialValue={draft.familyData.countFamilyMembers || ''}
-          required={setValidationSchema(
-            this.requiredFields,
-            'countFamilyMembers',
-            true
-          )}
-          options={this.familyMembersArray}
-          readonly={!!this.readOnly}
-          onChange={this.addFamilyCount}
-          showErrors={showErrors}
-          setError={isError => this.setError(isError, 'countFamilyMembers')}
-        />
-
         <TextInput
           id="email"
           initialValue={participant.email}
@@ -461,6 +444,23 @@ export class FamilyParticipant extends Component {
           onChangeText={this.updateParticipant}
           showErrors={showErrors}
           setError={isError => this.setError(isError, 'phoneNumber')}
+        />
+
+        <Select
+          id="countFamilyMembers"
+          label={t('views.family.peopleLivingInThisHousehold')}
+          placeholder={t('views.family.peopleLivingInThisHousehold')}
+          initialValue={draft.familyData.countFamilyMembers || ''}
+          required={setValidationSchema(
+            this.requiredFields,
+            'countFamilyMembers',
+            true
+          )}
+          options={this.familyMembersArray}
+          readonly={!!this.readOnly}
+          onChange={this.addFamilyCount}
+          showErrors={showErrors}
+          setError={isError => this.setError(isError, 'countFamilyMembers')}
         />
       </StickyFooter>
     ) : null
