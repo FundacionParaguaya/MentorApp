@@ -6,6 +6,8 @@ import Icon from 'react-native-vector-icons/MaterialIcons'
 import { connect } from 'react-redux'
 import uuid from 'uuid/v1'
 
+import CallingCodes from './CallingCodes'
+import { PhoneNumberUtil } from 'google-libphonenumber'
 import Decoration from '../../components/decoration/Decoration'
 import DateInput from '../../components/form/DateInput'
 import Select from '../../components/form/Select'
@@ -21,6 +23,15 @@ export class FamilyParticipant extends Component {
   survey = this.props.navigation.getParam('survey')
   draftId = this.props.navigation.getParam('draftId')
   readOnly = this.props.navigation.getParam('readOnly')
+  phoneCodes = CallingCodes.map(element => ({
+    ...element,
+    text: `${element.country} - (+${element.value})`
+  }))
+
+  initialPhoneCode = this.phoneCodes.find(
+    e => e.code == this.survey.surveyConfig.surveyLocation.country
+  ).value
+
   requiredFields =
     (this.survey.surveyConfig &&
       this.survey.surveyConfig.requiredFields &&
@@ -147,6 +158,23 @@ export class FamilyParticipant extends Component {
     }
   ]
 
+  phoneValidation = value => {
+    const phoneUtil = PhoneNumberUtil.getInstance()
+    try {
+      const draft = !this.readOnly ? this.getDraft() : this.readOnlyDraft
+      const phoneCode = draft.familyData.familyMembersList[0].phoneCode
+        ? draft.familyData.familyMembersList[0].phoneCode
+        : this.initialPhoneCode
+      const contryCode = this.phoneCodes.find(x => x.value === phoneCode).code
+      const international = '+' + phoneCode + ' ' + value
+      const phone = phoneUtil.parse(international, contryCode)
+      let validation = phoneUtil.isValidNumber(phone)
+      return validation
+    } catch (e) {
+      return false
+    }
+  }
+
   updateParticipant = (value, field) => {
     if (this.readOnly) {
       return
@@ -212,7 +240,8 @@ export class FamilyParticipant extends Component {
           {
             firstParticipant: true,
             socioEconomicAnswers: [],
-            birthCountry: this.survey.surveyConfig.surveyLocation.country
+            birthCountry: this.survey.surveyConfig.surveyLocation.country,
+            phoneCode: this.initialPhoneCode
           }
         ]
       }
@@ -411,11 +440,23 @@ export class FamilyParticipant extends Component {
           setError={isError => this.setError(isError, 'email')}
         />
 
+        <Select
+          id="phoneCode"
+          label={t('views.family.phoneCode')}
+          placeholder={t('views.family.phoneCode')}
+          initialValue={participant.phoneCode || this.initialPhoneCode}
+          options={this.phoneCodes}
+          onChange={this.updateParticipant}
+          showErrors={showErrors}
+          setError={isError => this.setError(isError, 'phoneCode')}
+        />
+
         <TextInput
           id="phoneNumber"
           initialValue={participant.phoneNumber}
           placeholder={t('views.family.phone')}
           validation="phoneNumber"
+          phoneValidation={this.phoneValidation}
           readonly={!!this.readOnly}
           onChangeText={this.updateParticipant}
           showErrors={showErrors}

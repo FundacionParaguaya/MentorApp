@@ -1,4 +1,5 @@
 // Login
+import { PhoneNumberUtil } from 'google-libphonenumber'
 
 export const SET_LOGIN_STATE = 'SET_LOGIN_STATE'
 export const USER_LOGOUT = 'USER_LOGOUT'
@@ -147,7 +148,7 @@ export const loadFamilies = (env, token) => ({
         },
         body: JSON.stringify({
           query:
-            'query { familiesNewStructure {familyId name code snapshotList { surveyId createdAt familyData { familyMembersList { birthCountry birthDate documentNumber documentType email familyId firstName firstParticipant gender id lastName memberIdentifier phoneNumber socioEconomicAnswers { key value}  }  countFamilyMembers latitude longitude country accuracy } economicSurveyDataList { key value multipleValue } indicatorSurveyDataList { key value } achievements { action indicator roadmap } priorities { action estimatedDate indicator reason } } } }'
+            'query { familiesNewStructure {familyId name code snapshotList { surveyId createdAt familyData { familyMembersList { birthCountry birthDate documentNumber documentType email familyId firstName firstParticipant gender id lastName memberIdentifier phoneCode phoneNumber socioEconomicAnswers { key value}  }  countFamilyMembers latitude longitude country accuracy } economicSurveyDataList { key value multipleValue } indicatorSurveyDataList { key value } achievements { action indicator roadmap } priorities { action estimatedDate indicator reason } } } }'
         })
       },
       commit: { type: LOAD_FAMILIES_COMMIT },
@@ -189,6 +190,16 @@ export const addSurveyData = (id, category, payload) => ({
   payload
 })
 
+const formatPhone = (code, phone) => {
+  const phoneUtil = PhoneNumberUtil.getInstance()
+  if (phone && phone.length > 0) {
+    const international = '+' + code + ' ' + phone
+    let phoneNumber = phoneUtil.parse(international, code)
+    phone = phoneNumber.getNationalNumber()
+  }
+  return phone
+}
+
 export const submitDraft = (env, token, id, payload) => {
   const sanitizedSnapshot = { ...payload }
   let { economicSurveyDataList } = payload
@@ -201,6 +212,7 @@ export const submitDraft = (env, token, id, payload) => {
   sanitizedSnapshot.economicSurveyDataList = economicSurveyDataList
   sanitizedSnapshot.familyData.familyMembersList.forEach(member => {
     let { socioEconomicAnswers = [] } = member
+    member.phoneNumber = formatPhone(member.phoneCode, member.phoneNumber)
     socioEconomicAnswers = socioEconomicAnswers.filter(validEconomicIndicator)
     // eslint-disable-next-line no-param-reassign
     member.socioEconomicAnswers = socioEconomicAnswers

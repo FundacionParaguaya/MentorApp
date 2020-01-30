@@ -114,6 +114,7 @@
       "selectACountry": "Select a country",
       "email": "Email",
       "phone": "Phone",
+      "phoneCode": "Country Code Number",
       "gender": "Gender",
       "dateOfBirth": "Date of birth",
       "dateOfBirthAbbr": "D.O.B",
