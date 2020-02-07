@@ -1,8 +1,9 @@
-import { FormInput } from 'react-native-elements'
+import { shallow } from 'enzyme'
 import React from 'react'
 import { Text } from 'react-native'
+import { FormInput } from 'react-native-elements'
+
 import TextInput from '../form/TextInput'
-import { shallow } from 'enzyme'
 
 const createTestProps = props => ({
   onChangeText: jest.fn(),
@@ -49,7 +50,8 @@ describe('TextInput Component', () => {
       expect(wrapper.instance().state).toEqual({
         text: '',
         status: 'blur',
-        errorMsg: null
+        errorMsg: null,
+        hasError: false
       })
     })
 
