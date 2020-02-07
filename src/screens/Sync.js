@@ -1,26 +1,26 @@
+import PropTypes from 'prop-types'
 import React, { Component } from 'react'
+import { withNamespaces } from 'react-i18next'
 import {
-  StyleSheet,
-  ScrollView,
   FlatList,
-  View,
+  ScrollView,
+  StyleSheet,
   UIManager,
+  View,
   findNodeHandle
 } from 'react-native'
 import { connect } from 'react-redux'
-import PropTypes from 'prop-types'
-import globalStyles from '../globalStyles'
-import { withNamespaces } from 'react-i18next'
-import { submitDraft } from '../redux/actions'
-import { url } from '../config'
-import { prepareDraftForSubmit } from './utils/helpers'
 
-import SyncUpToDate from '../components/sync/SyncUpToDate'
-import SyncOffline from '../components/sync/SyncOffline'
 import SyncInProgress from '../components/sync/SyncInProgress'
 import SyncListItem from '../components/sync/SyncListItem'
+import SyncOffline from '../components/sync/SyncOffline'
 import SyncRetry from '../components/sync/SyncRetry'
+import SyncUpToDate from '../components/sync/SyncUpToDate'
+import { url } from '../config'
+import globalStyles from '../globalStyles'
+import { submitDraft } from '../redux/actions'
 import { screenSyncScreenContent } from '../screens/utils/accessibilityHelpers'
+import { prepareDraftForSubmit } from './utils/helpers'
 
 export class Sync extends Component {
   acessibleComponent = React.createRef()
@@ -33,14 +33,14 @@ export class Sync extends Component {
       draft.progress.screen !== 'Overview'
     ) {
       this.props.navigation.navigate(draft.progress.screen, {
-        draft,
+        draftId: draft.draftId,
         survey: this.props.surveys.find(survey => survey.id === draft.surveyId),
         step: draft.progress.step,
         socioEconomics: draft.progress.socioEconomics
       })
     } else
       this.props.navigation.navigate('Overview', {
-        draft,
+        draftId: draft.draftId,
         survey: this.props.surveys.find(survey => survey.id === draft.surveyId),
         resumeDraft: true
       })
