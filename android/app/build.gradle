@@ -101,7 +101,7 @@ android {
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
         versionCode 108
-        versionName "1.11.6"
+        versionName "1.11.7"
         multiDexEnabled true
         testBuildType System.getProperty('testBuildType', 'debug')  // This will later be used to control the test apk build type
         testInstrumentationRunner 'androidx.test.runner.AndroidJUnitRunner'
