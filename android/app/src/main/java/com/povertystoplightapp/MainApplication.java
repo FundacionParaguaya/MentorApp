@@ -2,6 +2,7 @@ package com.povertystoplightapp;
 import com.povertystoplightapp.CustomDeletePackage;
 import android.app.Application;
 import com.facebook.react.ReactApplication;
+import com.reactnativecommunity.asyncstorage.AsyncStoragePackage;
 import com.reactcommunity.rnlocalize.RNLocalizePackage;
 import com.bugsnag.BugsnagReactNative;
 import com.testfairy.react.TestFairyPackage;
@@ -42,6 +43,7 @@ public class MainApplication extends Application implements ReactApplication {
       return Arrays.<ReactPackage>asList(
         
           new MainReactPackage(),
+            new AsyncStoragePackage(),
             new RNLocalizePackage(),
             BugsnagReactNative.getPackage(),
             new TestFairyPackage(),

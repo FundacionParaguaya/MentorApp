@@ -89,7 +89,9 @@ const generateTableHeaderForPriorities = dateCreated => `
               <h2 style="${styles.title}">${i18n.t(
   'views.lifemap.myPriorities'
 )} ${priorityIconWithoutStyles}</h2>
-              <h2 style="${styles.date};margin-top:40px;">${dateCreated}</h2>
+              <h2 style="${styles.date};margin-top:40px;">${dateCreated.format(
+  'MMMM D, YYYY'
+)}</h2>
             </div>
   <tr>
     <th style="${styles.tHeader}">${i18n.t('views.lifemap.status')}</th>
@@ -164,7 +166,9 @@ const generateTableHeaderForAchievements = dateCreated => `
               <h2 style="${styles.title}">${i18n.t(
   'views.lifemap.myAchievements'
 )} ${achievementIconWithoutStyles}</h2>
-              <h2 style="${styles.date};margin-top:40px;">${dateCreated}</h2>
+              <h2 style="${styles.date};margin-top:40px;">${dateCreated.format(
+  'MMMM D, YYYY'
+)}</h2>
             </div>
   <tr>
     <th style="${styles.tHeader}">${i18n.t('views.lifemap.status')}</th>
@@ -227,17 +231,18 @@ const generateLifeMapHtmlTemplate = (draft, survey, lng) => {
   const indicatorsList = draft.indicatorSurveyDataList
   const achievements = draft.achievements
   const priorities = draft.priorities
-  const dateCreatedWithLocale =
-    draft && draft.created && moment.utc(draft.created)
-  dateCreatedWithLocale.locale(lng)
-  const dateCreated = dateCreatedWithLocale.format('MMMM D, YYYY')
+  let dateCreated = draft && draft.created && moment.utc(draft.created)
+  dateCreated.locale(lng)
+
   const reportTitle = getReportTitle(draft)
 
   return `<div style="${styles.wrapper}">
             <h2 style="${styles.title}">${reportTitle}, ${i18n.t(
     'views.lifemap.lifeMap'
   )}</h2>
-            <h2 style="${styles.date}">${dateCreated}</h2>
+            <h2 style="${styles.date}">${dateCreated.format(
+    'MMMM D, YYYY'
+  )}</h2>
           </div>
           <table style="${styles.table}">${indicatorsList
     .map((indicator, index) => {

@@ -77,6 +77,7 @@
 		2988737A713C4AB5A4B1A542 /* libBugsnagReactNative.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 63CAE0F52CD244D187B81E8D /* libBugsnagReactNative.a */; };
 		8EDE79A800E445279776FE35 /* libRNLocalize.a in Frameworks */ = {isa = PBXBuildFile; fileRef = E4325BF1BCBA4A489CDAC196 /* libRNLocalize.a */; };
 		6D40B39D94544196A765521B /* libRNLocalize-tvOS.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 3D500175A63F48F2959C3D03 /* libRNLocalize-tvOS.a */; };
+		3FE03DA1C27F45278726C684 /* libRNCAsyncStorage.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 783689A3F6B34C0AB280DEFD /* libRNCAsyncStorage.a */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -435,6 +436,8 @@
 		A8094C8DB9EE4A8984415F8E /* RNLocalize.xcodeproj */ = {isa = PBXFileReference; name = "RNLocalize.xcodeproj"; path = "../node_modules/react-native-localize/ios/RNLocalize.xcodeproj"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = wrapper.pb-project; explicitFileType = undefined; includeInIndex = 0; };
 		E4325BF1BCBA4A489CDAC196 /* libRNLocalize.a */ = {isa = PBXFileReference; name = "libRNLocalize.a"; path = "libRNLocalize.a"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = archive.ar; explicitFileType = undefined; includeInIndex = 0; };
 		3D500175A63F48F2959C3D03 /* libRNLocalize-tvOS.a */ = {isa = PBXFileReference; name = "libRNLocalize-tvOS.a"; path = "libRNLocalize-tvOS.a"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = archive.ar; explicitFileType = undefined; includeInIndex = 0; };
+		FABC8B31A51E4BA5A5726466 /* RNCAsyncStorage.xcodeproj */ = {isa = PBXFileReference; name = "RNCAsyncStorage.xcodeproj"; path = "../node_modules/@react-native-community/async-storage/ios/RNCAsyncStorage.xcodeproj"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = wrapper.pb-project; explicitFileType = undefined; includeInIndex = 0; };
+		783689A3F6B34C0AB280DEFD /* libRNCAsyncStorage.a */ = {isa = PBXFileReference; name = "libRNCAsyncStorage.a"; path = "libRNCAsyncStorage.a"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = archive.ar; explicitFileType = undefined; includeInIndex = 0; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -478,6 +481,7 @@
 				7C01F2A8220D494A987F34DA /* libReactNativeTestFairy.a in Frameworks */,
 				2988737A713C4AB5A4B1A542 /* libBugsnagReactNative.a in Frameworks */,
 				8EDE79A800E445279776FE35 /* libRNLocalize.a in Frameworks */,
+				3FE03DA1C27F45278726C684 /* libRNCAsyncStorage.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -685,6 +689,7 @@
 				6A468430C6F64B5185DD4D2B /* ReactNativeTestFairy.xcodeproj */,
 				FA0085CD2F704A7E87999C0D /* BugsnagReactNative.xcodeproj */,
 				A8094C8DB9EE4A8984415F8E /* RNLocalize.xcodeproj */,
+				FABC8B31A51E4BA5A5726466 /* RNCAsyncStorage.xcodeproj */,
 			);
 			name = Libraries;
 			sourceTree = "<group>";
@@ -1411,6 +1416,7 @@
 					"$(inherited)",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 				);
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
@@ -1427,6 +1433,7 @@
 					"$(SRCROOT)/../node_modules/react-native-testfairy/ios",
 					"$(SRCROOT)/../node_modules/bugsnag-react-native/cocoa/**",
 					"$(SRCROOT)/../node_modules/react-native-localize/ios",
+					"$(SRCROOT)/../node_modules/@react-native-community/async-storage/ios",
 				);
 				FRAMEWORK_SEARCH_PATHS = (
 				);
@@ -1452,6 +1459,7 @@
 					"$(inherited)",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 				);
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
@@ -1468,6 +1476,7 @@
 					"$(SRCROOT)/../node_modules/react-native-testfairy/ios",
 					"$(SRCROOT)/../node_modules/bugsnag-react-native/cocoa/**",
 					"$(SRCROOT)/../node_modules/react-native-localize/ios",
+					"$(SRCROOT)/../node_modules/@react-native-community/async-storage/ios",
 				);
 				FRAMEWORK_SEARCH_PATHS = (
 				);
@@ -1505,6 +1514,7 @@
 					"$(SRCROOT)/../node_modules/react-native-testfairy/ios",
 					"$(SRCROOT)/../node_modules/bugsnag-react-native/cocoa/**",
 					"$(SRCROOT)/../node_modules/react-native-localize/ios",
+					"$(SRCROOT)/../node_modules/@react-native-community/async-storage/ios",
 				);
 				FRAMEWORK_SEARCH_PATHS = (
 				);
@@ -1541,6 +1551,7 @@
 					"$(SRCROOT)/../node_modules/react-native-testfairy/ios",
 					"$(SRCROOT)/../node_modules/bugsnag-react-native/cocoa/**",
 					"$(SRCROOT)/../node_modules/react-native-localize/ios",
+					"$(SRCROOT)/../node_modules/@react-native-community/async-storage/ios",
 				);
 				FRAMEWORK_SEARCH_PATHS = (
 				);
@@ -1574,6 +1585,7 @@
 					"$(inherited)",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 				);
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
@@ -1590,6 +1602,7 @@
 					"$(SRCROOT)/../node_modules/react-native-testfairy/ios",
 					"$(SRCROOT)/../node_modules/bugsnag-react-native/cocoa/**",
 					"$(SRCROOT)/../node_modules/react-native-localize/ios",
+					"$(SRCROOT)/../node_modules/@react-native-community/async-storage/ios",
 				);
 				FRAMEWORK_SEARCH_PATHS = (
 				);
@@ -1623,6 +1636,7 @@
 					"$(inherited)",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 				);
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
@@ -1639,6 +1653,7 @@
 					"$(SRCROOT)/../node_modules/react-native-testfairy/ios",
 					"$(SRCROOT)/../node_modules/bugsnag-react-native/cocoa/**",
 					"$(SRCROOT)/../node_modules/react-native-localize/ios",
+					"$(SRCROOT)/../node_modules/@react-native-community/async-storage/ios",
 				);
 				FRAMEWORK_SEARCH_PATHS = (
 				);
@@ -1671,6 +1686,7 @@
 					"$(inherited)",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 				);
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
@@ -1687,6 +1703,7 @@
 					"$(SRCROOT)/../node_modules/react-native-testfairy/ios",
 					"$(SRCROOT)/../node_modules/bugsnag-react-native/cocoa/**",
 					"$(SRCROOT)/../node_modules/react-native-localize/ios",
+					"$(SRCROOT)/../node_modules/@react-native-community/async-storage/ios",
 				);
 				FRAMEWORK_SEARCH_PATHS = (
 				);
@@ -1719,6 +1736,7 @@
 					"$(inherited)",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 				);
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
@@ -1735,6 +1753,7 @@
 					"$(SRCROOT)/../node_modules/react-native-testfairy/ios",
 					"$(SRCROOT)/../node_modules/bugsnag-react-native/cocoa/**",
 					"$(SRCROOT)/../node_modules/react-native-localize/ios",
+					"$(SRCROOT)/../node_modules/@react-native-community/async-storage/ios",
 				);
 				FRAMEWORK_SEARCH_PATHS = (
 				);
