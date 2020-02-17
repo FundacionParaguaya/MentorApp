@@ -59,10 +59,9 @@ export class SigIn extends Component {
 
   onClear = () => {
     this.isEmpty = true
-    this.props.updateDraft({
-      ...this.draft,
-      sign: ''
-    })
+    let updatedDraft = this.draft
+    updatedDraft.sign = ''
+    this.props.updateDraft(updatedDraft)
   }
 
   customHtml = () => {}
