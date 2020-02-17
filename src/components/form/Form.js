@@ -2,14 +2,14 @@
 // component after building in Android studio. Probably related to
 // React.cloneChild. We are for now forced to use in screen view validation.
 
-import { Keyboard, ScrollView, StyleSheet, View } from 'react-native'
+import PropTypes from 'prop-types'
 import React, { Component } from 'react'
+import { Keyboard, ScrollView, StyleSheet, View } from 'react-native'
 
+import globalStyles from '../../globalStyles'
 import Button from '../Button'
 import ProgressBar from '../ProgressBar'
-import PropTypes from 'prop-types'
 import Tip from '../Tip'
-import globalStyles from '../../globalStyles'
 
 const formTypes = ['TextInput', 'Select', 'LoadNamespace(DateInputComponent)']
 
@@ -85,7 +85,7 @@ export default class Form extends Component {
 
   generateClonedChild = child =>
     React.cloneElement(child, {
-      readonly: this.props.readonly,
+      readOnly: this.props.readOnly,
       setError: isError =>
         this.setError(isError, child.props.id, child.props.memberIndex || null),
       cleanErrorsOnUnmount:
@@ -169,7 +169,7 @@ export default class Form extends Component {
           <ScrollView>{children}</ScrollView>
         )}
 
-        {!this.props.readonly &&
+        {!this.props.readOnly &&
         (this.props.visible && this.state.continueVisible) ? (
           <View>
             {/* i have changed the height to 61 because there was a weird whitespace if we dont have the progress bar */}
@@ -209,7 +209,7 @@ Form.propTypes = {
   fullHeight: PropTypes.bool,
   tipDescription: PropTypes.string,
   onTipClose: PropTypes.func,
-  readonly: PropTypes.bool,
+  readOnly: PropTypes.bool,
   progress: PropTypes.number,
   currentScreen: PropTypes.string
 }

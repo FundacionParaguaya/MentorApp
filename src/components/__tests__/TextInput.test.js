@@ -86,7 +86,7 @@ describe('TextInput Component', () => {
       props = createTestProps({
         label: '',
         status: 'filled',
-        readonly: false
+        readOnly: false
       })
       wrapper = shallow(<TextInput {...props} />)
       wrapper.setState({ text: '', status: 'filled' })

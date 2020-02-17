@@ -664,7 +664,7 @@ describe('resuming a draft', () => {
   })
 })
 
-describe('readonly mode', () => {
+describe('readOnly mode', () => {
   beforeEach(() => {
     props = createTestProps({
       drafts: [
@@ -682,7 +682,7 @@ describe('readonly mode', () => {
             return survey
           } else if (param === 'draftId') {
             return 1
-          } else if (param === 'readonly') {
+          } else if (param === 'readOnly') {
             return true
           } else {
             return 1
@@ -694,10 +694,10 @@ describe('readonly mode', () => {
   })
 
   it('disables editing fields', () => {
-    expect(wrapper.find(TextInput).first()).toHaveProp({ readonly: true })
+    expect(wrapper.find(TextInput).first()).toHaveProp({ readOnly: true })
   })
 
-  it('does not update in readonly mode', () => {
+  it('does not update in readOnly mode', () => {
     expect(wrapper.instance().updateParticipant()).toBeFalsy()
     expect(wrapper.instance().addFamilyCount()).toBeFalsy()
     expect(wrapper.instance().onContinue()).toBeFalsy()

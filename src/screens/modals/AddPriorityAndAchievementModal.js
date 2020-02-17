@@ -1,18 +1,18 @@
-import React, { Component } from 'react'
-import { StyleSheet, Text, View } from 'react-native'
-
-import Icon2 from 'react-native-vector-icons/MaterialCommunityIcons'
-import Orb from '../../components/decoration/Orb'
-import Popup from '../../components/Popup'
 import PropTypes from 'prop-types'
-import Select from '../../components/form/Select'
-import StickyFooter from '../../components/StickyFooter'
-import TextInput from '../../components/form/TextInput'
-import colors from '../../theme.json'
+import React, { Component } from 'react'
+import { withNamespaces } from 'react-i18next'
+import { StyleSheet, Text, View } from 'react-native'
+import Icon2 from 'react-native-vector-icons/MaterialCommunityIcons'
 import { connect } from 'react-redux'
+
+import Orb from '../../components/decoration/Orb'
+import Select from '../../components/form/Select'
+import TextInput from '../../components/form/TextInput'
+import Popup from '../../components/Popup'
+import StickyFooter from '../../components/StickyFooter'
 import globalStyles from '../../globalStyles'
 import { updateDraft } from '../../redux/actions'
-import { withNamespaces } from 'react-i18next'
+import colors from '../../theme.json'
 
 export class AddPriorityAndAchievementModal extends Component {
   draftId = this.props.draftId
@@ -207,7 +207,7 @@ export class AddPriorityAndAchievementModal extends Component {
           }
           type="button"
           visible={true}
-          readonly={isReadOnly}
+          readOnly={isReadOnly}
         >
           <View>
             <View>
@@ -245,7 +245,7 @@ export class AddPriorityAndAchievementModal extends Component {
                   placeholder={t('views.lifemap.whyDontYouHaveIt')}
                   initialValue={priority ? priority.reason : ''}
                   multiline
-                  readonly={!!this.readOnly}
+                  readOnly={!!this.readOnly}
                   showErrors={showErrors}
                   setError={isError =>
                     this.setError(isError, 'whyDontYouHaveIt')
@@ -257,7 +257,7 @@ export class AddPriorityAndAchievementModal extends Component {
                   placeholder={t('views.lifemap.whatWillYouDoToGetIt')}
                   initialValue={priority ? priority.action : ''}
                   multiline
-                  readonly={!!this.readOnly}
+                  readOnly={!!this.readOnly}
                   showErrors={showErrors}
                   setError={isError =>
                     this.setError(isError, 'whatWillYouDoToGetIt')
@@ -271,7 +271,7 @@ export class AddPriorityAndAchievementModal extends Component {
                     placeholder={t('views.lifemap.howManyMonthsWillItTake')}
                     initialValue={priority ? priority.estimatedDate : ''}
                     options={this.state.allOptionsNums}
-                    readonly={!!this.readOnly}
+                    readOnly={!!this.readOnly}
                     showErrors={showErrors}
                     setError={isError =>
                       this.setError(isError, 'howManyMonthsWillItTake')
@@ -288,7 +288,7 @@ export class AddPriorityAndAchievementModal extends Component {
                   initialValue={achievement ? achievement.action : ''}
                   required
                   multiline
-                  readonly={!!this.readOnly}
+                  readOnly={!!this.readOnly}
                   showErrors={showErrors}
                   setError={isError => this.setError(isError, 'howDidYouGetIt')}
                 />
@@ -299,7 +299,7 @@ export class AddPriorityAndAchievementModal extends Component {
                   placeholder={t('views.lifemap.whatDidItTakeToAchieveThis')}
                   initialValue={achievement ? achievement.roadmap : ''}
                   multiline
-                  readonly={!!this.readOnly}
+                  readOnly={!!this.readOnly}
                   showErrors={showErrors}
                   setError={isError =>
                     this.setError(isError, 'whatDidItTakeToAchieveThis')

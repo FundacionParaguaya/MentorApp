@@ -848,7 +848,7 @@ export class Location extends Component {
             required
             defaultCountry={this.survey.surveyConfig.surveyLocation.country}
             onChange={this.updateFamilyData}
-            readonly={!!this.readOnly}
+            readOnly={!!this.readOnly}
             showErrors={showErrors}
             setError={isError => this.setError(isError, 'country')}
           />
@@ -857,7 +857,7 @@ export class Location extends Component {
             onChangeText={this.updateFamilyData}
             initialValue={draft.familyData.postCode || ''}
             placeholder={t('views.family.postcode')}
-            readonly={!!this.readOnly}
+            readOnly={!!this.readOnly}
             showErrors={showErrors}
             setError={isError => this.setError(isError, 'postCode')}
           />
@@ -868,7 +868,7 @@ export class Location extends Component {
             placeholder={t('views.family.streetOrHouseDescription')}
             validation="long-string"
             multiline
-            readonly={!!this.readOnly}
+            readOnly={!!this.readOnly}
             showErrors={showErrors}
             setError={isError => this.setError(isError, 'address')}
           />

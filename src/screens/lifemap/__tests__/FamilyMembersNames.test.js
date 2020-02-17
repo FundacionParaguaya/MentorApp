@@ -1,10 +1,11 @@
-import DateInput from '../../../components/form/DateInput'
-import { FamilyMembersNames } from '../FamilyMembersNames'
-import React from 'react'
-import Select from '../../../components/form/Select'
-import StickyFooter from '../../../components/StickyFooter'
-import TextInput from '../../../components/form/TextInput'
 import { shallow } from 'enzyme'
+import React from 'react'
+
+import DateInput from '../../../components/form/DateInput'
+import Select from '../../../components/form/Select'
+import TextInput from '../../../components/form/TextInput'
+import StickyFooter from '../../../components/StickyFooter'
+import { FamilyMembersNames } from '../FamilyMembersNames'
 
 const survey = {
   surveyStoplightQuestions: [],
@@ -300,7 +301,7 @@ describe('from resumed draft', () => {
   })
 })
 
-describe('readonly mode', () => {
+describe('readOnly mode', () => {
   beforeEach(() => {
     props = createTestProps({
       drafts: [

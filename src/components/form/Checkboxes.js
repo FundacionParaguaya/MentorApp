@@ -1,9 +1,10 @@
-import React, { Component } from 'react'
 import PropTypes from 'prop-types'
-import { StyleSheet, View, Text } from 'react-native'
+import React, { Component } from 'react'
+import { StyleSheet, Text, View } from 'react-native'
 import { CheckBox } from 'react-native-elements'
-import colors from '../../theme.json'
+
 import i18n from '../../i18n'
+import colors from '../../theme.json'
 
 class Checkboxes extends Component {
   state = { checkedAnswers: [], error: false, errorMsg: null }
@@ -87,7 +88,7 @@ class Checkboxes extends Component {
   }
 
   render() {
-    const { required, placeholder, options, readonly } = this.props
+    const { required, placeholder, options, readOnly } = this.props
     const { errorMsg, error, checkedAnswers } = this.state
 
     return (
@@ -99,7 +100,7 @@ class Checkboxes extends Component {
         {options.map((option, i) => (
           <CheckBox
             key={i}
-            onPress={!readonly ? () => this.onIconPress(option.value) : null}
+            onPress={!readOnly ? () => this.onIconPress(option.value) : null}
             title={option.text}
             iconType="material"
             checkedColor={colors.green}
@@ -133,7 +134,7 @@ Checkboxes.propTypes = {
   setError: PropTypes.func,
   checkboxColor: PropTypes.string,
   showErrors: PropTypes.bool,
-  readonly: PropTypes.bool,
+  readOnly: PropTypes.bool,
   required: PropTypes.bool
 }
 

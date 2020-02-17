@@ -157,7 +157,7 @@ class TextInput extends Component {
       label,
       placeholder,
       required,
-      readonly,
+      readOnly,
       multiline,
       autoFocus,
       upperCase
@@ -165,23 +165,23 @@ class TextInput extends Component {
     const status = this.props.status || this.state.status
 
     let showPlaceholder = status === 'blur' && !text
-    return readonly && !text ? null : (
+    return readOnly && !text ? null : (
       <View style={{ marginBottom: 15 }}>
         {label && (
           <Text
             style={styles.label}
             accessibilityLabel={`${label} ${
-              required && !readonly
+              required && !readOnly
                 ? i18n.t('validation.fieldIsRequiredAccessibilityLabel')
                 : ''
             }`}
-          >{`${label}${required && !readonly ? ' *' : ''}`}</Text>
+          >{`${label}${required && !readOnly ? ' *' : ''}`}</Text>
         )}
         <View
           style={[styles.container, styles[status]]}
           accessible={true}
           accessibilityLabel={`${placeholder} ${
-            required && !label && !readonly
+            required && !label && !readOnly
               ? i18n.t('validation.fieldIsRequiredAccessibilityLabel')
               : ''
           }`}
@@ -194,12 +194,12 @@ class TextInput extends Component {
                 color: this.defineTextColor(status)
               }}
               accessibilityLabel={`${placeholder} ${
-                required && !label && !readonly
+                required && !label && !readOnly
                   ? i18n.t('validation.fieldIsRequiredAccessibilityLabel')
                   : ''
               }`}
             >
-              {`${placeholder} ${required && !label && !readonly ? '*' : ''}`}
+              {`${placeholder} ${required && !label && !readOnly ? '*' : ''}`}
               {'\n'}
             </Text>
           ) : (
@@ -217,7 +217,7 @@ class TextInput extends Component {
               styles.inputStyle,
               !showPlaceholder ? styles.activeInput : {}
             ]}
-            editable={!readonly}
+            editable={!readOnly}
             multiline={multiline}
             importantForAccessibility="no-hide-descendants"
           >
@@ -306,7 +306,7 @@ TextInput.propTypes = {
   initialValue: PropTypes.string,
   placeholder: PropTypes.string,
   required: PropTypes.bool,
-  readonly: PropTypes.bool,
+  readOnly: PropTypes.bool,
   onChangeText: PropTypes.func.isRequired,
   autoFocus: PropTypes.bool,
   upperCase: PropTypes.bool,

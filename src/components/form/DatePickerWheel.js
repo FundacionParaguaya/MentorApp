@@ -1,3 +1,6 @@
+import { WheelPicker } from '@delightfulstudio/react-native-wheel-picker-android'
+import PropTypes from 'prop-types'
+import React, { Component } from 'react'
 import {
   Image,
   StyleSheet,
@@ -6,15 +9,12 @@ import {
   TouchableOpacity,
   View
 } from 'react-native'
-import React, { Component } from 'react'
 
-import BottomModal from '../BottomModal'
-import PropTypes from 'prop-types'
-import { WheelPicker } from '@delightfulstudio/react-native-wheel-picker-android'
 import arrow from '../../../assets/images/selectArrow.png'
-import colors from '../../theme.json'
 import globalStyles from '../../globalStyles'
 import i18n from '../../i18n'
+import colors from '../../theme.json'
+import BottomModal from '../BottomModal'
 
 class DatePickerWheel extends Component {
   state = {
@@ -25,7 +25,7 @@ class DatePickerWheel extends Component {
   }
 
   toggleDropdown = () => {
-    if (!this.props.readonly) {
+    if (!this.props.readOnly) {
       this.setState({
         isOpen: !this.state.isOpen
       })
@@ -81,7 +81,7 @@ class DatePickerWheel extends Component {
       years,
       value,
       placeholder,
-      readonly,
+      readOnly,
       hasError,
       required
     } = this.props
@@ -104,7 +104,7 @@ class DatePickerWheel extends Component {
         onPress={this.toggleDropdown}
         accessible={true}
         accessibilityLabel={
-          required && !readonly
+          required && !readOnly
             ? `${placeholder.replace('*', '')} ${i18n.t(
                 'validation.fieldIsRequiredAccessibilityLabel'
               )}`
@@ -140,7 +140,7 @@ class DatePickerWheel extends Component {
             >
               {value ? text : `${placeholder}`}
             </Text>
-            {!readonly ? <Image source={arrow} style={styles.arrow} /> : null}
+            {!readOnly ? <Image source={arrow} style={styles.arrow} /> : null}
 
             <BottomModal
               isOpen={isOpen}
@@ -304,7 +304,7 @@ DatePickerWheel.propTypes = {
   onChange: PropTypes.func.isRequired,
   value: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
   placeholder: PropTypes.string.isRequired,
-  readonly: PropTypes.bool,
+  readOnly: PropTypes.bool,
   required: PropTypes.bool,
   hasError: PropTypes.bool,
   days: PropTypes.array.isRequired,
