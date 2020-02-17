@@ -27,6 +27,7 @@
       "accuracy": 18.878000259399414
     },
     "priorities": [],
+    "sign": "",
     "indicatorSurveyDataList": [
       { "key": "familySavings", "value": 3 },
       { "key": "garbageDisposal", "value": 3 },
@@ -49,6 +50,7 @@
     "indicatorSurveyDataList": [],
     "priorities": [],
     "achievements": [],
+    "sign": "",
     "familyData": {
       "familyMembersList": [
         {
