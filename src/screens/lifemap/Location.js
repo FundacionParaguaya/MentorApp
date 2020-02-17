@@ -214,7 +214,7 @@ export class Location extends Component {
       },
       {
         enableHighAccuracy: true,
-        timeout: 15000,
+        timeout: 25000,
         maximumAge: 0
       }
     )
@@ -278,7 +278,7 @@ export class Location extends Component {
         },
         {
           enableHighAccuracy: true,
-          timeout: 15000,
+          timeout: 25000,
           maximumAge: 0
         }
       )
