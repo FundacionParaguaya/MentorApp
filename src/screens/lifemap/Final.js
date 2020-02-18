@@ -49,21 +49,20 @@ export class Final extends Component {
   }
 
   onPressBack = () => {
-    console.log('Press back');
-    console.log(this.draft.stoplightSkipped);
-    if(this.draft.stoplightSkipped){
+    console.log('Press back')
+    console.log(this.draft.stoplightSkipped)
+    if (this.draft.stoplightSkipped) {
       this.props.navigation.navigate('BeginLifemap', {
         survey: this.survey,
         draftId: this.draftId
       })
-    }else{
+    } else {
       this.props.navigation.replace('Priorities', {
         resumeDraft: false,
         draftId: this.draft.draftId,
         survey: this.survey
       })
     }
-    
   }
 
   saveDraft = () => {

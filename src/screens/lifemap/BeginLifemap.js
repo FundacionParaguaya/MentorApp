@@ -19,7 +19,6 @@ export class BeginLifemap extends Component {
   // the draft is not mutated in this screen (only its progress),
   // we need it for progress bar
   draft = this.props.drafts.find(draft => draft.draftId === this.draftId)
-  
 
   onPressBack = () => {
     const previousPage =
@@ -40,7 +39,7 @@ export class BeginLifemap extends Component {
       ...this.draft,
       stoplightSkipped: false
     })
-    this.draft.stoplightSkipped=false;
+    this.draft.stoplightSkipped = false
     this.props.navigation.navigate('Question', {
       step: 0,
       survey: this.survey,
@@ -48,17 +47,17 @@ export class BeginLifemap extends Component {
     })
   }
 
-  onSaveSnapshot = () =>{
-    console.log('Skipped Stoplight Section');
-    console.log('Draft');
-    console.log(this.draft);
-    //TODO redirect to uploadPictures or sign 
-    
+  onSaveSnapshot = () => {
+    console.log('Skipped Stoplight Section')
+    console.log('Draft')
+    console.log(this.draft)
+    //TODO redirect to uploadPictures or sign
+
     this.props.updateDraft({
       ...this.draft,
       stoplightSkipped: true
     })
-    this.draft.stoplightSkipped=true;
+    this.draft.stoplightSkipped = true
     this.props.navigation.navigate('Final', {
       fromBeginLifemap: true,
       survey: this.survey,
@@ -85,11 +84,14 @@ export class BeginLifemap extends Component {
   render() {
     const { t } = this.props
 
-   
     return (
       <StickyFooter
         onContinue={this.onContinue}
-        continueLabel={this.survey.surveyConfig.stoplightOptional ? t('general.completeStoplight') : t('general.continue')}
+        continueLabel={
+          this.survey.surveyConfig.stoplightOptional
+            ? t('general.completeStoplight')
+            : t('general.continue')
+        }
         progress={
           ((this.draft.familyData.countFamilyMembers > 1 ? 4 : 3) +
             getTotalEconomicScreens(this.survey)) /
@@ -108,7 +110,7 @@ export class BeginLifemap extends Component {
               this.survey.surveyStoplightQuestions.length
             )}
           </Text>
-          
+
           <Decoration variation="terms">
             <RoundImage source="stoplight" />
           </Decoration>
@@ -122,7 +124,7 @@ export class BeginLifemap extends Component {
             outlined
             text={t('general.closeAndSign')}
           />
-            )}
+        )}
       </StickyFooter>
     )
   }
