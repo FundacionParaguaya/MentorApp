@@ -100,7 +100,10 @@ export class Loading extends Component {
   // STEP 3 - check and cache the offline maps
   checkOfflineMaps = async () => {
     MapboxGL.offlineManager.setTileCountLimit(200000)
-    if (!this.props.downloadMapsAndImages.downloadMaps) {
+    if (
+      !this.props.downloadMapsAndImages.downloadMaps ||
+      this.props.maps.length
+    ) {
       //when we decide to skip the maps form the dev options , we simply pretend that they are already downloaded
       this.setState({
         mapsDownloaded: true
