@@ -67,6 +67,11 @@
     "DashYellow": "Yellow",
     "DashRed": "Red",
     "synced": "Sync",
+    "sign": {
+      "signHere": "Sign your survey here",
+      "erase": "Erase",
+      "continue": "Continue"
+    },
     "dashboard": "Stoplight Mobile",
     "home": "Home",
     "families": "Families",

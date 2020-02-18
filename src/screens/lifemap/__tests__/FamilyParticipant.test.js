@@ -52,6 +52,7 @@ const survey = {
 const defaultDraft = {
   draftId: expect.any(String),
   sendEmail: false,
+  sign: '',
   created: expect.any(Number),
   status: 'Draft',
   surveyId: 1,

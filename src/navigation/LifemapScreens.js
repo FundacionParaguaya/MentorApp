@@ -1,6 +1,7 @@
 import { addCloseIcon, generateNavStyles } from './helpers'
 
 import BeginLifemapView from '../screens/lifemap/BeginLifemap'
+import SignIn from '../screens/lifemap/SignIn'
 import CustomHeaderSurvey from './CustomHeaderSurvey'
 import FamilyMemberView from '../screens/lifemap/FamilyMember'
 import FamilyMembersNamesView from '../screens/lifemap/FamilyMembersNames'
@@ -99,6 +100,19 @@ export default {
       headerTitle: (
         <Title
           title="views.yourLifeMap"
+          style={{ marginLeft: 'auto', marginRight: 'auto' }}
+        />
+      )
+    })
+  },
+  Signin: {
+    screen: SignIn,
+    navigationOptions: ({ navigation }) => ({
+      ...generateNavStyles({ navigation, shadowHeader: false }),
+      ...addCloseIcon(navigation),
+      headerTitle: (
+        <Title
+          title="views.sign.signHere"
           style={{ marginLeft: 'auto', marginRight: 'auto' }}
         />
       )

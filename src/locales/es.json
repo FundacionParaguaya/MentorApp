@@ -67,6 +67,11 @@
     "DashYellow": "Amarillo",
     "DashRed": "Rojo",
     "synced": "Sincronización",
+    "sign": {
+      "signHere": "Firme aquí su encuesta",
+      "erase": "Limpiar",
+      "continue": "Continuar"
+    },
     "families": "Familias",
     "dashboard": "Stoplight Mobile",
     "home": "Inicio",
