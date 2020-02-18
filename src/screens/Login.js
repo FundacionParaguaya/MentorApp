@@ -144,15 +144,13 @@ export class Login extends Component {
         this.setState({ error: 'Wrong username or password' })
       } else if (
         this.props.user.role !== 'ROLE_SURVEY_USER' &&
-        this.props.user.role !== 'ROLE_SURVEY_TAKER'
+        this.props.user.role !== 'ROLE_SURVEY_TAKER' &&
+        this.props.user.role !== 'ROLE_SURVEY_USER_ADMIN'
       ) {
         this.setState({
           loading: false
         })
-        this.setState({
-          error: 'Only facilitators can access the app',
-          error2: 'Únicamente los facilitadores pueden acceder a la aplicación'
-        })
+        this.setState({ error: 'Wrong username or password' })
       } else {
         this.setState({
           loading: false
