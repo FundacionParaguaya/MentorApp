@@ -430,6 +430,7 @@ export class FamilyParticipant extends Component {
           initialValue={participant.phoneCode || this.initialPhoneCode}
           options={this.phoneCodes}
           onChange={this.updateParticipant}
+          readOnly={!!this.readOnly}
           showErrors={showErrors}
           setError={isError => this.setError(isError, 'phoneCode')}
         />

@@ -245,7 +245,7 @@ export class AddPriorityAndAchievementModal extends Component {
                   placeholder={t('views.lifemap.whyDontYouHaveIt')}
                   initialValue={priority ? priority.reason : ''}
                   multiline
-                  readOnly={!!this.readOnly}
+                  readOnly={isReadOnly}
                   showErrors={showErrors}
                   setError={isError =>
                     this.setError(isError, 'whyDontYouHaveIt')
@@ -257,7 +257,7 @@ export class AddPriorityAndAchievementModal extends Component {
                   placeholder={t('views.lifemap.whatWillYouDoToGetIt')}
                   initialValue={priority ? priority.action : ''}
                   multiline
-                  readOnly={!!this.readOnly}
+                  readOnly={isReadOnly}
                   showErrors={showErrors}
                   setError={isError =>
                     this.setError(isError, 'whatWillYouDoToGetIt')
@@ -271,7 +271,7 @@ export class AddPriorityAndAchievementModal extends Component {
                     placeholder={t('views.lifemap.howManyMonthsWillItTake')}
                     initialValue={priority ? priority.estimatedDate : ''}
                     options={this.state.allOptionsNums}
-                    readOnly={!!this.readOnly}
+                    readOnly={isReadOnly}
                     showErrors={showErrors}
                     setError={isError =>
                       this.setError(isError, 'howManyMonthsWillItTake')
@@ -288,7 +288,7 @@ export class AddPriorityAndAchievementModal extends Component {
                   initialValue={achievement ? achievement.action : ''}
                   required
                   multiline
-                  readOnly={!!this.readOnly}
+                  readOnly={isReadOnly}
                   showErrors={showErrors}
                   setError={isError => this.setError(isError, 'howDidYouGetIt')}
                 />
@@ -299,7 +299,7 @@ export class AddPriorityAndAchievementModal extends Component {
                   placeholder={t('views.lifemap.whatDidItTakeToAchieveThis')}
                   initialValue={achievement ? achievement.roadmap : ''}
                   multiline
-                  readOnly={!!this.readOnly}
+                  readOnly={isReadOnly}
                   showErrors={showErrors}
                   setError={isError =>
                     this.setError(isError, 'whatDidItTakeToAchieveThis')
