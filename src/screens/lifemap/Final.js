@@ -220,6 +220,8 @@ export class Final extends Component {
       familyMembersList.length &&
       familyMembersList.find(user => user.phoneNumber)
 
+    const stoplightSkipped = this.draft.stoplightSkipped;
+    console.log('stoplightSkipped',stoplightSkipped);
     return (
       <ScrollView
         style={globalStyles.background}
@@ -243,13 +245,16 @@ export class Final extends Component {
             {t('views.lifemap.youHaveCompletedTheLifemap')}
           </Text>
           <RoundImage source="partner" />
+          {!stoplightSkipped && (
           <LifemapVisual
             bigMargin
             questions={this.draft.indicatorSurveyDataList}
             questionsLength={this.survey.surveyStoplightQuestions.length}
             priorities={this.draft.priorities}
             achievements={this.draft.achievements}
-          />
+          />)}
+         
+         {!stoplightSkipped && (
           <View style={styles.buttonBar}>
             <Button
               id="download"
@@ -294,6 +299,7 @@ export class Final extends Component {
               />
             )}
           </View>
+          )}
           <EmailSentModal
             close={this.handleCloseModal}
             isOpen={this.state.modalOpen}
