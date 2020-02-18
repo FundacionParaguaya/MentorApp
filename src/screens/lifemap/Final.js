@@ -220,8 +220,8 @@ export class Final extends Component {
       familyMembersList.length &&
       familyMembersList.find(user => user.phoneNumber)
 
-    const stoplightSkipped = this.draft.stoplightSkipped;
-    console.log('stoplightSkipped',stoplightSkipped);
+    const stoplightSkipped = this.draft.stoplightSkipped
+    console.log('stoplightSkipped', stoplightSkipped)
     return (
       <ScrollView
         style={globalStyles.background}
@@ -246,59 +246,60 @@ export class Final extends Component {
           </Text>
           <RoundImage source="partner" />
           {!stoplightSkipped && (
-          <LifemapVisual
-            bigMargin
-            questions={this.draft.indicatorSurveyDataList}
-            questionsLength={this.survey.surveyStoplightQuestions.length}
-            priorities={this.draft.priorities}
-            achievements={this.draft.achievements}
-          />)}
-         
-         {!stoplightSkipped && (
-          <View style={styles.buttonBar}>
-            <Button
-              id="download"
-              style={styles.button}
-              handleClick={this.exportPDF.bind(this)}
-              icon="cloud-download"
-              outlined
-              text={t('general.download')}
-              loading={this.state.downloading}
+            <LifemapVisual
+              bigMargin
+              questions={this.draft.indicatorSurveyDataList}
+              questionsLength={this.survey.surveyStoplightQuestions.length}
+              priorities={this.draft.priorities}
+              achievements={this.draft.achievements}
             />
-            <Button
-              id="print"
-              style={styles.button}
-              handleClick={this.print.bind(this)}
-              icon="print"
-              outlined
-              text={t('general.print')}
-              loading={this.state.printing}
-            />
-            {userEmail && (
+          )}
+
+          {!stoplightSkipped && (
+            <View style={styles.buttonBar}>
               <Button
-                id="email"
-                style={{ ...styles.button, ...styles.emailButton }}
-                handleClick={this.sendMailToUser.bind(this)}
-                icon="email"
+                id="download"
+                style={styles.button}
+                handleClick={this.exportPDF.bind(this)}
+                icon="cloud-download"
                 outlined
-                text={t('general.sendEmail')}
-                loading={this.state.sendingEmail}
-                disabled={this.state.disabled}
+                text={t('general.download')}
+                loading={this.state.downloading}
               />
-            )}
-            {userTelephone && (
               <Button
-                id="whatsapp"
-                style={{ ...styles.button, ...styles.emailButton }}
-                handleClick={this.sendWhatsappToUser.bind(this)}
+                id="print"
+                style={styles.button}
+                handleClick={this.print.bind(this)}
+                icon="print"
                 outlined
-                communityIcon="whatsapp"
-                text={t('general.sendWhatsapp')}
-                loading={this.state.sendingWhatsapp}
-                disabled={this.state.disabled}
+                text={t('general.print')}
+                loading={this.state.printing}
               />
-            )}
-          </View>
+              {userEmail && (
+                <Button
+                  id="email"
+                  style={{ ...styles.button, ...styles.emailButton }}
+                  handleClick={this.sendMailToUser.bind(this)}
+                  icon="email"
+                  outlined
+                  text={t('general.sendEmail')}
+                  loading={this.state.sendingEmail}
+                  disabled={this.state.disabled}
+                />
+              )}
+              {userTelephone && (
+                <Button
+                  id="whatsapp"
+                  style={{ ...styles.button, ...styles.emailButton }}
+                  handleClick={this.sendWhatsappToUser.bind(this)}
+                  outlined
+                  communityIcon="whatsapp"
+                  text={t('general.sendWhatsapp')}
+                  loading={this.state.sendingWhatsapp}
+                  disabled={this.state.disabled}
+                />
+              )}
+            </View>
           )}
           <EmailSentModal
             close={this.handleCloseModal}
