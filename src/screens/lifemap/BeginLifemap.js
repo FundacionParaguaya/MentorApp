@@ -51,7 +51,6 @@ export class BeginLifemap extends Component {
     console.log('Skipped Stoplight Section')
     console.log('Draft')
     console.log(this.draft)
-    
 
     this.props.updateDraft({
       ...this.draft,
@@ -60,14 +59,14 @@ export class BeginLifemap extends Component {
     this.draft.stoplightSkipped = true
 
     //TODO redirect to uploadPictures or sign
-    if(this.survey.signSupport){
+    if (this.survey.signSupport) {
       this.props.navigation.navigate('SignIn', {
         fromBeginLifemap: true,
         survey: this.survey,
         draftId: this.draftId,
         draft: this.draft
       })
-    }else{
+    } else {
       this.props.navigation.navigate('Final', {
         fromBeginLifemap: true,
         survey: this.survey,
