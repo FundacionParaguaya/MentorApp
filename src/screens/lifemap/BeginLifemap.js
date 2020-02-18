@@ -59,7 +59,6 @@ export class BeginLifemap extends Component {
     this.draft.stoplightSkipped = true
 
     //TODO redirect to uploadPictures or sign
-    console.log('this.survey.signSupport',this.survey.surveyConfig.signSupport)
     if (this.survey.surveyConfig.signSupport) {
       this.props.navigation.navigate('Signin', {
         step: 0,
