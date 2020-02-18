@@ -33,7 +33,10 @@
     "goback": "go back",
     "exit": "exit",
     "attention": "Important!",
-    "syncAll": "Sync all Life Maps & update the application!"
+    "syncAll": "Sync all Life Maps & update the application!",
+    "closeAndSign": "Save survey",
+    "completeStoplight": "Finish Stoplight"
+
   },
   "validation": {
     "fieldIsRequired": "This field is required",

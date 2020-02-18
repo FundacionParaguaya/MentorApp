@@ -33,7 +33,10 @@
     "goback": "atrás",
     "exit": "salir",
     "attention": "¡Atención!",
-    "syncAll": "¡Sincroniza todos los Mapas de Vida y actualiza la aplicación!"
+    "syncAll": "¡Sincroniza todos los Mapas de Vida y actualiza la aplicación!",
+    "closeAndSign": "Guardar encuesta",
+    "completeStoplight": "Completar Semáforo"
+
   },
   "validation": {
     "fieldIsRequired": "Este campo es requerido",
