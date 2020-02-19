@@ -23,12 +23,12 @@ export class SigIn extends Component {
   }
 
   componentDidMount() {
-    if (this.draft.progress.screen !== 'SignIn') {
+    if (this.draft.progress.screen !== 'Signin') {
       this.props.updateDraft({
         ...this.draft,
         progress: {
           ...this.draft.progress,
-          screen: 'SignIn'
+          screen: 'Signin'
         }
       })
     }
@@ -64,18 +64,33 @@ export class SigIn extends Component {
     this.props.updateDraft(updatedDraft)
   }
 
-  customHtml = () => {}
-
   render() {
     const { t } = this.props
     const style = `.m-signature-pad--footer
         .button {
           background-color: #50AA47;
           color: #FFF;
+          height: 50px;
+          margin-top: 50px;
+          margin-bottom: -21px;
+          margin-right: -21px;
+          flex-direction: row;
+          align-items: center;
+          justify-content: center;
+          font-family: Poppins;
+          font-weight: 600;
+          font-size: 18px;
+          width: 58%;
         }
         .button.clear {
-            background-color: #E6E4E2;
-            color: #FFF;
+          margin-left: -21px;
+          margin-right: 0px;
+          text-decoration-line: underline;
+          text-decoration-style: solid;
+          text-decoration-color: #50AA47;
+          background-color: #FFFFFF;
+          color: #50AA47;
+          font-size:14px;
           }`
     return (
       <View style={{ flex: 1 }}>
@@ -101,7 +116,6 @@ export class SigIn extends Component {
           confirmText={t('general.continue')}
           webStyle={style}
           autoClear={false}
-          customHtml={this.customHtml}
         />
       </View>
     )

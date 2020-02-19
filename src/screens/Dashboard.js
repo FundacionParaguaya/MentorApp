@@ -66,6 +66,7 @@ export class Dashboard extends Component {
       draft.progress.screen === 'Question' ||
       draft.progress.screen === 'Skipped' ||
       draft.progress.screen === 'Final' ||
+      draft.progress.screen === 'Signin' ||
       draft.progress.screen === 'Overview'
     ) {
       this.props.navigation.navigate('Overview', {
