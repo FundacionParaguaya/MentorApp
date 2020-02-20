@@ -1,0 +1,9 @@
+{
+  "url": {
+    "production": "http://10.7.100.110:8080",
+    "demo": "http://10.7.100.110:8080",
+    "testing": "http://10.7.100.110:8080",
+    "development": "http://localhost:8080"
+  },
+  "supported_API_version": "1.8.1"
+}
