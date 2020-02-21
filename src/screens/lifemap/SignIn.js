@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import { Image, StyleSheet, View } from 'react-native'
 import PropTypes from 'prop-types'
-import SignatureCanvas from 'react-native-signature-canvas'
+import SignatureCapture from 'react-native-signature-capture';
 import { connect } from 'react-redux'
 import { getTotalEconomicScreens } from './helpers'
 import { updateDraft } from '../../redux/actions'
@@ -93,31 +93,16 @@ export class SigIn extends Component {
           font-size:14px;
           }`
     return (
-      <View style={{ flex: 1 }}>
-        <ProgressBar
-          progress={
-            ((this.draft.familyData.countFamilyMembers > 1 ? 4 : 3) +
-              getTotalEconomicScreens(this.survey)) /
-            this.draft.progress.total
-          }
-          currentScreen={'Signin'}
-        />
-        <View style={{ ...styles.iconPriorityBorder }} variant="stretch">
-          <Image
-            style={{ ...styles.iconPriority }}
-            source={require('../../../assets/images/pen_icon.png')}
-          />
-        </View>
-        <SignatureCanvas
-          onOK={this.onSave}
-          onEmpty={this.onClear}
-          descriptionText=""
-          clearText={t('views.sign.erase')}
-          confirmText={t('general.continue')}
-          webStyle={style}
-          autoClear={false}
-        />
-      </View>
+      <SignatureCapture
+        style={[{ flex: 1 }, styles.signature]}
+        ref="sign"
+        onSaveEvent={this.onSave}
+        saveImageFileInExtStorage={false}
+        showNativeButtons={false}
+        showTitleLabel={false}
+        viewMode={"portrait"} />
+
+
     )
   }
 }
