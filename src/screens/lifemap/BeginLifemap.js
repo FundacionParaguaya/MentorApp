@@ -60,11 +60,17 @@ export class BeginLifemap extends Component {
 
     //TODO redirect to uploadPictures or sign
     if (this.survey.surveyConfig.signSupport) {
-      this.props.navigation.navigate('Signin', {
+      this.props.navigation.navigate('Final', {
+        fromBeginLifemap: true,
+        survey: this.survey,
+        draftId: this.draftId,
+        draft: this.draft
+      })
+      /*this.props.navigation.navigate('Signin', {
         step: 0,
         survey: this.survey,
         draftId: this.draftId
-      })
+      })*/
     } else {
       this.props.navigation.navigate('Final', {
         fromBeginLifemap: true,
@@ -109,10 +115,12 @@ export class BeginLifemap extends Component {
       >
         <View
           style={{
-            ...globalStyles.container,
-            padding: 0
+            ...globalStyles.containerNoPadding,
+            padding: 0,
+            paddingTop:0
           }}
         >
+        
           <Text id="label" style={{ ...globalStyles.h3, ...styles.text }}>
             {t('views.lifemap.thisLifeMapHas').replace(
               '%n',
