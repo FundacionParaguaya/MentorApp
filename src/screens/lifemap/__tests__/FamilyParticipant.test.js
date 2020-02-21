@@ -53,6 +53,7 @@ const defaultDraft = {
   draftId: expect.any(String),
   sendEmail: false,
   sign: '',
+  pictures: [],
   created: expect.any(Number),
   status: 'Draft',
   surveyId: 1,
@@ -61,6 +62,7 @@ const defaultDraft = {
   indicatorSurveyDataList: [],
   priorities: [],
   achievements: [],
+  stoplightSkipped: false,
   progress: {
     screen: 'FamilyParticipant',
     total: 5

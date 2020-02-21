@@ -36,7 +36,6 @@
     "syncAll": "¡Sincroniza todos los Mapas de Vida y actualiza la aplicación!",
     "closeAndSign": "Guardar encuesta",
     "completeStoplight": "Completar Semáforo"
-
   },
   "validation": {
     "fieldIsRequired": "Este campo es requerido",
@@ -67,6 +66,13 @@
     "DashYellow": "Amarillo",
     "DashRed": "Rojo",
     "synced": "Sincronización",
+    "pictures": {
+      "uploadPictures": "Subir imágenes",
+      "takeAPicture": "Tomar una foto",
+      "orUploadFromGalery": "O subir de la galería",
+      "uploadingImage": "Subiendo imagen...",
+      "uploadedPicture": "Imagen cargada"
+    },
     "sign": {
       "signHere": "Firme aquí su encuesta",
       "erase": "Limpiar",
@@ -99,7 +105,7 @@
     "loading": {
       "weArePreparingTheApp": "Estamos preparando la aplicación",
       "surveysCached": "Encuestas sincronizadas",
-      "downloadingSurveys":"Descargando encuestas",
+      "downloadingSurveys": "Descargando encuestas",
       "familiesCached": "Familias sincronizadas",
       "downloadingFamilies": "Descargando familias",
       "mapsCached": "Mapas sincronizados",
@@ -251,18 +257,18 @@
       "yourLifeMaWillBeSentWithWhatSurveySync": "Para recibir tu Mapa de Vida al whatsapp, envía \"Hola\" al número: +5521933007184 después de sincronizar la encuesta."
     }
   },
-      "filterLabels": {
-        "lifeMaps": "Encuestas",
-        "allSurveys": "Todas las encuestas",
-        "drafts": "Borradores",
-        "syncPending": "Pendientes",
-        "syncError": "Errores",
-        "completed": "Completados"
-      },
-      "draftStatus": {
-        "completed": "Completado",
-        "syncError": "Error",
-        "syncPending": "Pendiente",
-        "draft": "Borrador"
-      }
+  "filterLabels": {
+    "lifeMaps": "Encuestas",
+    "allSurveys": "Todas las encuestas",
+    "drafts": "Borradores",
+    "syncPending": "Pendientes",
+    "syncError": "Errores",
+    "completed": "Completados"
+  },
+  "draftStatus": {
+    "completed": "Completado",
+    "syncError": "Error",
+    "syncPending": "Pendiente",
+    "draft": "Borrador"
+  }
 }

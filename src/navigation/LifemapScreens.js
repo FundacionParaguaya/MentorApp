@@ -1,20 +1,21 @@
-import { addCloseIcon, generateNavStyles } from './helpers'
+import React from 'react'
 
 import BeginLifemapView from '../screens/lifemap/BeginLifemap'
-import SignIn from '../screens/lifemap/SignIn'
-import CustomHeaderSurvey from './CustomHeaderSurvey'
 import FamilyMemberView from '../screens/lifemap/FamilyMember'
 import FamilyMembersNamesView from '../screens/lifemap/FamilyMembersNames'
 import FamilyParticipantView from '../screens/lifemap/FamilyParticipant'
 import FinalView from '../screens/lifemap/Final'
 import LocationView from '../screens/lifemap/Location'
 import OverviewView from '../screens/lifemap/Overview'
+import Picture from '../screens/lifemap/Picture'
 import PrioritiesView from '../screens/lifemap/Priorities'
 import QuestionView from '../screens/lifemap/Question'
-import React from 'react'
+import SignIn from '../screens/lifemap/SignIn'
 import SkippedView from '../screens/lifemap/Skipped'
 import SocioEconomicQuestionView from '../screens/lifemap/SocioEconomicQuestion'
 import TermsView from '../screens/lifemap/Terms'
+import CustomHeaderSurvey from './CustomHeaderSurvey'
+import { addCloseIcon, generateNavStyles } from './helpers'
 import Title from './Title'
 
 // Reusable object for all screens related to a draft
@@ -113,6 +114,19 @@ export default {
       headerTitle: (
         <Title
           title="views.sign.signHere"
+          style={{ marginLeft: 'auto', marginRight: 'auto' }}
+        />
+      )
+    })
+  },
+  Picture: {
+    screen: Picture,
+    navigationOptions: ({ navigation }) => ({
+      ...generateNavStyles({ navigation, shadowHeader: false }),
+      ...addCloseIcon(navigation),
+      headerTitle: (
+        <Title
+          title="views.pictures.uploadPictures"
           style={{ marginLeft: 'auto', marginRight: 'auto' }}
         />
       )

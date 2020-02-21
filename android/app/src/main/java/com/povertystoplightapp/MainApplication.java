@@ -2,6 +2,7 @@ package com.povertystoplightapp;
 import com.povertystoplightapp.CustomDeletePackage;
 import android.app.Application;
 import com.facebook.react.ReactApplication;
+import com.imagepicker.ImagePickerPackage;
 import com.swmansion.rnscreens.RNScreensPackage;
 import com.swmansion.reanimated.ReanimatedPackage;
 import com.reactnativecommunity.asyncstorage.AsyncStoragePackage;
@@ -45,6 +46,7 @@ public class MainApplication extends Application implements ReactApplication {
       return Arrays.<ReactPackage>asList(
         
           new MainReactPackage(),
+            new ImagePickerPackage(),
             new RNScreensPackage(),
             new ReanimatedPackage(),
             new AsyncStoragePackage(),

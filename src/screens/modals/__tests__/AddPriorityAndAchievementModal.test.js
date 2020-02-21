@@ -1,9 +1,9 @@
-import { AddPriorityAndAchievementModal } from '../AddPriorityAndAchievementModal'
-import React from 'react'
-import TextInput from '../../../components/form/TextInput'
-import Select from '../../../components/form/Select'
-
 import { shallow } from 'enzyme'
+import React from 'react'
+
+import Select from '../../../components/form/Select'
+import TextInput from '../../../components/form/TextInput'
+import { AddPriorityAndAchievementModal } from '../AddPriorityAndAchievementModal'
 
 const draftId = 1
 
