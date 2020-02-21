@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import { Image, StyleSheet, View } from 'react-native'
 import PropTypes from 'prop-types'
-import SignatureCapture from 'react-native-signature-capture';
+import SignatureCapture from 'react-native-signature-capture'
 import { connect } from 'react-redux'
 import { getTotalEconomicScreens } from './helpers'
 import { updateDraft } from '../../redux/actions'
@@ -100,9 +100,8 @@ export class SigIn extends Component {
         saveImageFileInExtStorage={false}
         showNativeButtons={false}
         showTitleLabel={false}
-        viewMode={"portrait"} />
-
-
+        viewMode={'portrait'}
+      />
     )
   }
 }
