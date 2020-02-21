@@ -35,7 +35,8 @@
     "attention": "¡Atención!",
     "syncAll": "¡Sincroniza todos los Mapas de Vida y actualiza la aplicación!",
     "closeAndSign": "Guardar encuesta",
-    "completeStoplight": "Completar Semáforo"
+    "completeStoplight": "Completar Semáforo",
+    "finish": "Finalizar"
 
   },
   "validation": {
@@ -187,9 +188,9 @@
       "achievement": "Logro",
       "howDidYouGetIt": "¿Qué hiciste para conseguirlo?",
       "whatDidItTakeToAchieveThis": "¿Quién o qué te motivó a alcanzarlo?",
-      "great": "¡Fantástico!",
+      "great": "¡Felicidades!",
       "noPriorities": "¡Elige de los indicadores y explica por qué son importantes y que harás para conseguirlos!",
-      "youHaveCompletedTheLifemap": "Has completado tu Mapa de Vida",
+      "youHaveCompletedTheLifemap": "Terminaste la encuesta. Ahora solo selecciona finalizar.",
       "youNeedToAddPriotity": "Necesitas agregar una prioridad",
       "youNeedToAddPriorities": "¡Elige %n indicadores y explica por qué son importantes y que harás para conseguirlos!",
       "beforeTheLifeMapIsCompleted": "Antes de que se complete el Mapa de Vida....",

@@ -319,7 +319,7 @@ export class Final extends Component {
             id="save-draft"
             colored
             loading={this.state.loading}
-            text={t('general.close')}
+            text={t('general.finish')}
             handleClick={this.saveDraft}
           />
         </View>
