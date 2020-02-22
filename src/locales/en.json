@@ -27,6 +27,8 @@
     "confirm": "Confirm",
     "download": "Download",
     "print": "Print",
+    "sendEmail": "Email",
+    "sendWhatsapp": "Whatsapp",
     "navigation": "navigation",
     "goback": "go back",
     "exit": "exit",
@@ -78,6 +80,26 @@
     "gendersBirthDates": "Genders & Birth dates",
     "skippedIndicators": "Skipped questions",
     "readCarefully": "Please read carefully before creating the Life Map",
+    "login": {
+      "welcome": "Welcome back!",
+      "letsGetStarted": "Let's get started...",
+      "username": "USERNAME",
+      "password": "PASSWORD",
+      "buttonText": "Login",
+      "loggingIn": "Logging in ..."
+    },
+    "loading": {
+      "weArePreparingTheApp": "We are preparing the app.",
+      "surveysCached": "Surveys cached",
+      "downloadingSurveys":"Downloading surveys...",
+      "familiesCached": "Families cached",
+      "downloadingFamilies": "Downloading families...",
+      "mapsCached": "Maps cached",
+      "mapsDownloading": "Downloading Maps...",
+      "offlineMaps": "Offline Maps",
+      "images": "Images",
+      "calcilatingTotalImages": "Calculating total images to cache.."
+    },
     "family": {
       "primaryParticipantHeading": "Tell us about yourself!",
       "familyMembersHeading": "Now, tell us about all the people you live with!",
@@ -92,6 +114,7 @@
       "selectACountry": "Select a country",
       "email": "Email",
       "phone": "Phone",
+      "phoneCode": "Country Code Number",
       "gender": "Gender",
       "dateOfBirth": "Date of birth",
       "dateOfBirthAbbr": "D.O.B",
@@ -133,7 +156,8 @@
       "created": "Created on",
       "weFoundYou": "We found you!",
       "weCannotLocate": "We cannot locate you!",
-      "tellUsMore": "You can tell us more about this location in the form below!"
+      "tellUsMore": "You can tell us more about this location in the form below!",
+      "searchByName": "Search by name"
     },
     "lifemap": {
       "indicatorDefinition": "Indicator Definition",
@@ -173,6 +197,7 @@
       "monthsRequired": "Months required",
       "reviewDate": "REVIEW DATE",
       "myPriorities": "My priorities",
+      "myAchievements": "My achievements",
       "lifeMap": "Life Map"
     },
     "modals": {
@@ -208,6 +233,27 @@
       "syncErrProblem": "Looks like we have a problem!",
       "itemHasError": "%n item has a sync error",
       "itemsHaveError": "%n items have a sync error"
+    },
+    "final": {
+      "emailSent": "Your Life Map has been successfully sent via email. Don't forget to click on Save & Close!",
+      "emailError": "Error while trying to send your Life Map via email",
+      "offlineText": "Please enable your internet connection to receive your Life Map via email.",
+      "yourLifeMaWillBeSentWithSurveySync": "Your Life Map will be sent to your email as soon as the survey is synced. Click 'Close' to finish the survey!",
+      "yourLifeMaWillBeSentWithWhatSurveySync": "To receive your Life Map to whatsapp, send \"Hello\" to this number: +5521933007184 after the survey has been synced."
     }
-  }
+  },
+      "filterLabels": {
+        "lifeMaps": "Surveys",
+        "allSurveys": "All surveys",
+        "drafts": "Drafts",
+        "syncPending": "Sync pending",
+        "syncError": "Sync error",
+        "completed": "Completed"
+      } ,
+      "draftStatus": {
+        "completed": "Completed",
+        "syncError": "Sync error",
+        "syncPending": "Sync pending",
+        "draft": "Draft"
+      }
 }

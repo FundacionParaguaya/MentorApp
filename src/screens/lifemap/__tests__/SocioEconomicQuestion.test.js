@@ -1,7 +1,8 @@
+import { shallow } from 'enzyme'
 import React from 'react'
+
 import Select from '../../../components/form/Select'
 import { SocioEconomicQuestion } from '../SocioEconomicQuestion'
-import { shallow } from 'enzyme'
 
 const survey = {
   title: 'Chile - Geco',
@@ -522,7 +523,7 @@ describe('resuming a draft', () => {
   })
 })
 
-describe('readonly mode', () => {
+describe('readOnly mode', () => {
   beforeEach(() => {
     props = createTestProps({
       navigation: {

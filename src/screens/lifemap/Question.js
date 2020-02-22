@@ -1,17 +1,17 @@
+import PropTypes from 'prop-types'
 import React, { Component } from 'react'
+import { withNamespaces } from 'react-i18next'
 import { StyleSheet, Text, View } from 'react-native'
-
 import Icon from 'react-native-vector-icons/MaterialIcons'
+import { connect } from 'react-redux'
+
 import IconButton from '../../components/IconButton'
 import Popup from '../../components/Popup'
-import PropTypes from 'prop-types'
 import SliderComponent from '../../components/Slider'
 import StickyFooter from '../../components/StickyFooter'
-import colors from '../../theme.json'
-import { connect } from 'react-redux'
-import { getTotalEconomicScreens } from './helpers'
 import { updateDraft } from '../../redux/actions'
-import { withNamespaces } from 'react-i18next'
+import colors from '../../theme.json'
+import { getTotalEconomicScreens } from './helpers'
 
 export class Question extends Component {
   step = this.props.navigation.getParam('step')
@@ -200,7 +200,7 @@ export class Question extends Component {
     return (
       <StickyFooter
         visible={false}
-        readonly
+        readOnly
         progress={
           ((draft.familyData.countFamilyMembers > 1 ? 5 : 4) + this.step) /
             draft.progress.total || getTotalEconomicScreens(this.survey)

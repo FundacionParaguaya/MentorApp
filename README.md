@@ -4,20 +4,18 @@ This is the source repository for the Poverty Stoplight native mobile app. If yo
 
 ### For OSX
 
-- Install **xcode** from the App Store
-- Install **brew** from [here](https://brew.sh)
-- Install **node** via Brew (this will also install **npm** which you need to install required packages for the app) - `brew install node`
+- Install **node** at least version 8, via Brew (this will also install **npm** which you need to install required packages for the app) - `brew install node`
 - Install **react-native command line interface** globally via npm - `npm install -g react-native-cli`
-- Get **Watchman** via Brew - `brew install watchman`
 - Install [Android Studio](https://developer.android.com/distribute/) (with default settings), which also needs [Java SE Development Kit 8](https://www.oracle.com/technetwork/java/javase/downloads/jdk8-downloads-2133151.html)
   - [Here](https://stackoverflow.com/a/47699905) is how to install Java with Brew (and manage multiple Java versions)
+- If and only if you don't like Android Studio you can install **xcode** from the App Store as an alternative
 
 ## To install
 
 1.  `git clone git@github.com:FundacionParaguaya/MentorApp.git` to clone the repo
 2.  `cd povertystoplightapp` to go into repo folder
 3.  `npm i` from repo folder to install all dependencies
-4.  `convert-androidx` to convert all sub dependencies to the proper format for Android
+4.  `npm run convert-androidx` to convert all sub dependencies to the proper format for Android
 5.  `react-native link` to link all native packages. If `react-native` command is not defined run `npm install -g react-native-cli` first.
 
 ## To run

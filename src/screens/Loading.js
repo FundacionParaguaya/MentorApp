@@ -1,30 +1,32 @@
-import React, { Component } from 'react'
-import PropTypes from 'prop-types'
-import { Text, StyleSheet, View, ActivityIndicator } from 'react-native'
-import Decoration from '../components/decoration/Decoration'
-import { connect } from 'react-redux'
-import { bugsnag } from '../screens/utils/bugsnag'
-import ProgressBar from '../components/ProgressBar'
 import NetInfo from '@react-native-community/netinfo'
 import MapboxGL from '@react-native-mapbox-gl/maps'
-import Icon from 'react-native-vector-icons/MaterialIcons'
-import CommunityIcon from 'react-native-vector-icons/MaterialCommunityIcons'
-import { AndroidBackHandler } from 'react-navigation-backhandler'
+import PropTypes from 'prop-types'
+import React, { Component } from 'react'
+import { withNamespaces } from 'react-i18next'
+import { ActivityIndicator, StyleSheet, Text, View } from 'react-native'
 import DeviceInfo from 'react-native-device-info'
+import CommunityIcon from 'react-native-vector-icons/MaterialCommunityIcons'
+import Icon from 'react-native-vector-icons/MaterialIcons'
+import { AndroidBackHandler } from 'react-navigation-backhandler'
+import { connect } from 'react-redux'
+
+import { initImageCaching } from '../cache'
+import Button from '../components/Button'
+import Decoration from '../components/decoration/Decoration'
+import ProgressBar from '../components/ProgressBar'
+import { url } from '../config'
+import globalStyles from '../globalStyles'
 import {
   loadFamilies,
-  loadSurveys,
   loadMaps,
+  loadSurveys,
   logout,
-  setAppVersion,
   resetSyncState,
+  setAppVersion,
   setSyncedState
 } from '../redux/actions'
-import Button from '../components/Button'
+import { bugsnag } from '../screens/utils/bugsnag'
 import colors from '../theme.json'
-import globalStyles from '../globalStyles'
-import { url } from '../config'
-import { initImageCaching } from '../cache'
 
 export class Loading extends Component {
   state = {
@@ -98,7 +100,10 @@ export class Loading extends Component {
   // STEP 3 - check and cache the offline maps
   checkOfflineMaps = async () => {
     MapboxGL.offlineManager.setTileCountLimit(200000)
-    if (!this.props.downloadMapsAndImages.downloadMaps) {
+    if (
+      !this.props.downloadMapsAndImages.downloadMaps ||
+      this.props.maps.length
+    ) {
       //when we decide to skip the maps form the dev options , we simply pretend that they are already downloaded
       this.setState({
         mapsDownloaded: true
@@ -337,7 +342,8 @@ export class Loading extends Component {
   }
 
   render() {
-    const { sync, families, surveys } = this.props
+    const { sync, families, surveys, t } = this.props
+
     const {
       syncingServerData,
       cachingImages,
@@ -364,7 +370,7 @@ export class Loading extends Component {
                   }
                 ]}
               >
-                We are preparing the app.
+                {t('views.loading.weArePreparingTheApp')}
               </Text>
 
               {syncingServerData && (
@@ -376,8 +382,10 @@ export class Loading extends Component {
                       }
                     >
                       {sync.surveys
-                        ? `${surveys.length} Surveys cached`
-                        : 'Downloading surveys...'}
+                        ? `${surveys.length} ${t(
+                            'views.loading.surveysCached'
+                          )}`
+                        : t('views.loading.downloadingSurveys')}
                     </Text>
                     {sync.surveys ? (
                       <Icon name="check" color={colors.palegreen} size={23} />
@@ -386,7 +394,7 @@ export class Loading extends Component {
                     )}
                   </View>
                   {!sync.surveys ? (
-                    <Text style={styles.colorDark}>Families</Text>
+                    <Text style={styles.colorDark}>{t('views.families')}</Text>
                   ) : null}
                   {sync.surveys && (
                     <View style={styles.syncingItem}>
@@ -396,8 +404,10 @@ export class Loading extends Component {
                         }
                       >
                         {sync.families
-                          ? `${families.length} Families cached`
-                          : 'Downloading families...'}
+                          ? `${families.length} ${t(
+                              'views.loading.familiesCached'
+                            )}`
+                          : t('views.loading.downloadingFamilies')}
                       </Text>
                       {sync.families ? (
                         <Icon name="check" color={colors.palegreen} size={23} />
@@ -418,8 +428,8 @@ export class Loading extends Component {
                           }
                         >
                           {!downloadingMap
-                            ? 'Maps cached'
-                            : 'Downloading Maps...'}
+                            ? t('views.loading.mapsCached')
+                            : t('views.loading.mapsDownloading')}
                         </Text>
                         {downloadingMap ? (
                           <Text
@@ -454,10 +464,14 @@ export class Loading extends Component {
                       </View>
                     </View>
                   ) : (
-                    <Text style={styles.colorDark}>Offline Maps</Text>
+                    <Text style={styles.colorDark}>
+                      {t('views.loading.offlineMaps')}
+                    </Text>
                   )}
                   {!cachingImages ? (
-                    <Text style={styles.colorDark}>Images</Text>
+                    <Text style={styles.colorDark}>
+                      {t('views.loading.images')}
+                    </Text>
                   ) : null}
 
                   {cachingImages && (
@@ -472,7 +486,7 @@ export class Loading extends Component {
                                   : styles.colorDark
                               }
                             >
-                              Images
+                              {t('views.loading.images')}
                             </Text>
                             <Text
                               style={
@@ -508,7 +522,7 @@ export class Loading extends Component {
                             marginBottom: 5
                           }}
                         >
-                          Calculating total images to cache...
+                          {t('views.loading.calcilatingTotalImages')}.
                         </Text>
                       )}
                     </View>
@@ -563,7 +577,8 @@ Loading.propTypes = {
   maps: PropTypes.array.isRequired,
   offline: PropTypes.object.isRequired,
   downloadMapsAndImages: PropTypes.object,
-  hydration: PropTypes.bool.isRequired
+  hydration: PropTypes.bool.isRequired,
+  t: PropTypes.func
 }
 
 const styles = StyleSheet.create({
@@ -630,7 +645,9 @@ const mapDispatchToProps = {
   setSyncedState
 }
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(Loading)
+export default withNamespaces()(
+  connect(
+    mapStateToProps,
+    mapDispatchToProps
+  )(Loading)
+)

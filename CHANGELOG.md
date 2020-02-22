@@ -1,10 +1,7 @@
 # Change Log
 
-<<<<<<< HEAD
-## [v1.10.3](https://github.com/FundacionParaguaya/MentorApp/tree/v1.10.3) (2019-09-24)
-
-=======
 ## [v1.10.4](https://github.com/FundacionParaguaya/MentorApp/tree/v1.10.4) (2019-10-01)
+
 [Full Changelog](https://github.com/FundacionParaguaya/MentorApp/compare/v1.10.3...v1.10.4)
 
 **Implemented enhancements:**
@@ -32,7 +29,7 @@
 - Release/1.10.3 [\#1116](https://github.com/FundacionParaguaya/MentorApp/pull/1116) ([Danman7](https://github.com/Danman7))
 
 ## [v1.10.3](https://github.com/FundacionParaguaya/MentorApp/tree/v1.10.3) (2019-09-24)
->>>>>>> develop
+
 [Full Changelog](https://github.com/FundacionParaguaya/MentorApp/compare/v1.10.2...v1.10.3)
 
 **Implemented enhancements:**
@@ -834,7 +831,7 @@
 - 579 revert old slider [\#591](https://github.com/FundacionParaguaya/MentorApp/pull/591) ([vasildimitroffhristoff](https://github.com/vasildimitroffhristoff))
 - fix \#580 made priorities always appear onMount [\#590](https://github.com/FundacionParaguaya/MentorApp/pull/590) ([zommerberg](https://github.com/zommerberg))
 - changed title for Primary Participant in the spanish version [\#589](https://github.com/FundacionParaguaya/MentorApp/pull/589) ([vasildimitroffhristoff](https://github.com/vasildimitroffhristoff))
-- Fix \#583 removed tell about yourself when readonly [\#588](https://github.com/FundacionParaguaya/MentorApp/pull/588) ([zommerberg](https://github.com/zommerberg))
+- Fix \#583 removed tell about yourself when readOnly [\#588](https://github.com/FundacionParaguaya/MentorApp/pull/588) ([zommerberg](https://github.com/zommerberg))
 - 1\) Capitalized Confirm button in the date picker 2\) Removed family me… [\#585](https://github.com/FundacionParaguaya/MentorApp/pull/585) ([vasildimitroffhristoff](https://github.com/vasildimitroffhristoff))
 
 ## [v1.7.3](https://github.com/FundacionParaguaya/MentorApp/tree/v1.7.3) (2019-04-30)

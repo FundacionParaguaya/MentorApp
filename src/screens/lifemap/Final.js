@@ -1,3 +1,7 @@
+import NetInfo from '@react-native-community/netinfo'
+import PropTypes from 'prop-types'
+import React, { Component } from 'react'
+import { withNamespaces } from 'react-i18next'
 import {
   PermissionsAndroid,
   ScrollView,
@@ -5,34 +9,43 @@ import {
   Text,
   View
 } from 'react-native'
-import React, { Component } from 'react'
+import RNHTMLtoPDF from 'react-native-html-to-pdf'
+import RNPrint from 'react-native-print'
+import { connect } from 'react-redux'
+import RNFetchBlob from 'rn-fetch-blob'
+
+import Button from '../../components/Button'
+import LifemapVisual from '../../components/LifemapVisual'
+import RoundImage from '../../components/RoundImage'
+import { url } from '../../config'
+import globalStyles from '../../globalStyles'
+import { submitDraft, updateDraft } from '../../redux/actions'
+import EmailSentModal from '../modals/EmailSentModal'
+import WhatsappSentModal from '../modals/WhatsappSentModal'
+import { prepareDraftForSubmit } from '../utils/helpers'
 import {
   buildPDFOptions,
   buildPrintOptions,
   getReportTitle
 } from '../utils/pdfs'
-import { submitDraft, updateDraft } from '../../redux/actions'
-
-import Button from '../../components/Button'
-import LifemapVisual from '../../components/LifemapVisual'
-import PropTypes from 'prop-types'
-import RNFetchBlob from 'rn-fetch-blob'
-import RNHTMLtoPDF from 'react-native-html-to-pdf'
-import RNPrint from 'react-native-print'
-import RoundImage from '../../components/RoundImage'
-import { connect } from 'react-redux'
-import globalStyles from '../../globalStyles'
-import { prepareDraftForSubmit } from '../utils/helpers'
-import { url } from '../../config'
-import { withNamespaces } from 'react-i18next'
 
 export class Final extends Component {
+  unsubscribeNetChange
   survey = this.props.navigation.getParam('survey')
   draft = this.props.navigation.getParam('draft')
   state = {
     loading: false,
     downloading: false,
-    printing: false
+    printing: false,
+    sendingEmail: false,
+    sendingWhatsapp: false,
+    modalOpen: false,
+    whatsappModalOpen: false,
+    mailSentError: false,
+    whatsappSentError: false,
+    connection: false,
+    disabled: false,
+    sendEmailFlag: false
   }
 
   onPressBack = () => {
@@ -54,12 +67,11 @@ export class Final extends Component {
   prepareDraftForSubmit() {
     if (this.state.loading) {
       const draft = prepareDraftForSubmit(this.draft, this.survey)
-
       this.props.submitDraft(
         url[this.props.env],
         this.props.user.token,
         draft.draftId,
-        draft
+        { ...draft, sendEmail: this.state.sendEmailFlag }
       )
 
       setTimeout(() => {
@@ -97,8 +109,7 @@ export class Final extends Component {
       const pdfOptions = buildPDFOptions(
         this.draft,
         this.survey,
-        this.props.lng || 'en',
-        this.props.t
+        this.props.lng || 'en'
       )
       const pdf = await RNHTMLtoPDF.convert(pdfOptions)
 
@@ -128,8 +139,7 @@ export class Final extends Component {
     const options = buildPrintOptions(
       this.draft,
       this.survey,
-      this.props.lng || 'en',
-      this.props.t
+      this.props.lng || 'en'
     )
     try {
       await RNPrint.print(options)
@@ -139,18 +149,67 @@ export class Final extends Component {
     }
   }
 
+  sendMailToUser() {
+    this.setState({ sendingEmail: true, sendEmailFlag: true })
+
+    setTimeout(() => {
+      this.setState({ sendingEmail: false, modalOpen: true })
+    }, 300)
+  }
+
+  sendWhatsappToUser() {
+    this.setState({ sendingWhatsapp: true })
+
+    setTimeout(() => {
+      this.setState({ sendingWhatsapp: false, whatsappModalOpen: true })
+    }, 300)
+  }
+
+  handleCloseModal = () =>
+    this.setState({ modalOpen: false, whatsappModalOpen: false })
+
+  setConnectivityState = isConnected => {
+    isConnected
+      ? this.setState({ connection: true, error: '' })
+      : this.setState({ connection: false, error: 'No connection' })
+  }
+
   shouldComponentUpdate() {
     return this.props.navigation.isFocused()
   }
+
   componentDidMount() {
     this.props.updateDraft(this.draft)
     this.props.navigation.setParams({
       onPressBack: this.onPressBack
     })
+    NetInfo.fetch().then(state => this.setConnectivityState(state.isConnected))
+    this.unsubscribeNetChange = NetInfo.addEventListener(state => {
+      this.setConnectivityState(state.isConnected)
+    })
+  }
+
+  componentWillUnmount() {
+    if (this.unsubscribeNetChange) {
+      this.unsubscribeNetChange()
+    }
   }
 
   render() {
     const { t } = this.props
+    const {
+      familyData: { familyMembersList }
+    } = this.draft
+
+    const userEmail =
+      !!familyMembersList &&
+      familyMembersList.length &&
+      familyMembersList.find(user => user.email)
+
+    const userTelephone =
+      !!familyMembersList &&
+      familyMembersList.length &&
+      familyMembersList.find(user => user.phoneNumber)
 
     return (
       <ScrollView
@@ -185,7 +244,7 @@ export class Final extends Component {
           <View style={styles.buttonBar}>
             <Button
               id="download"
-              style={{ width: '49%', alignSelf: 'center', marginTop: 20 }}
+              style={styles.button}
               handleClick={this.exportPDF.bind(this)}
               icon="cloud-download"
               outlined
@@ -194,14 +253,50 @@ export class Final extends Component {
             />
             <Button
               id="print"
-              style={{ width: '49%', alignSelf: 'center', marginTop: 20 }}
+              style={styles.button}
               handleClick={this.print.bind(this)}
               icon="print"
               outlined
               text={t('general.print')}
               loading={this.state.printing}
             />
+            {userEmail && (
+              <Button
+                id="email"
+                style={{ ...styles.button, ...styles.emailButton }}
+                handleClick={this.sendMailToUser.bind(this)}
+                icon="email"
+                outlined
+                text={t('general.sendEmail')}
+                loading={this.state.sendingEmail}
+                disabled={this.state.disabled}
+              />
+            )}
+            {userTelephone && (
+              <Button
+                id="whatsapp"
+                style={{ ...styles.button, ...styles.emailButton }}
+                handleClick={this.sendWhatsappToUser.bind(this)}
+                outlined
+                communityIcon="whatsapp"
+                text={t('general.sendWhatsapp')}
+                loading={this.state.sendingWhatsapp}
+                disabled={this.state.disabled}
+              />
+            )}
           </View>
+          <EmailSentModal
+            close={this.handleCloseModal}
+            isOpen={this.state.modalOpen}
+            error={this.state.mailSentError}
+            userIsOnline={this.state.connection}
+          />
+          <WhatsappSentModal
+            close={this.handleCloseModal}
+            isOpen={this.state.whatsappModalOpen}
+            error={this.state.whatsappSentError}
+            userIsOnline={this.state.connection}
+          />
         </View>
         <View style={{ height: 50 }}>
           <Button
@@ -228,7 +323,17 @@ const styles = StyleSheet.create({
   buttonBar: {
     marginBottom: 30,
     flexDirection: 'row',
-    justifyContent: 'space-between'
+    justifyContent: 'space-between',
+    flexWrap: 'wrap',
+    alignItems: 'center'
+  },
+  button: { width: '49%', alignSelf: 'center', marginTop: 20 },
+
+  emailButton: {
+    marginTop: 7,
+    marginLeft: 'auto',
+    marginRight: 'auto',
+    alignSelf: 'center'
   }
 })
 

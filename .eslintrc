@@ -20,7 +20,7 @@
     "plugin:jest/recommended"
   ],
   "globals": {
-    "process": "readonly"
+    "process": "readOnly"
   },
   "rules": {
     "quotes": ["error", "single"],

@@ -1,26 +1,37 @@
-import React, { Component } from 'react'
-import { StyleSheet, Text } from 'react-native'
-import { createDraft, updateDraft } from '../../redux/actions'
-import { getTotalScreens, setValidationSchema } from './helpers'
-
-import DateInput from '../../components/form/DateInput'
-import Decoration from '../../components/decoration/Decoration'
-import Icon from 'react-native-vector-icons/MaterialIcons'
+import { PhoneNumberUtil } from 'google-libphonenumber'
 import PropTypes from 'prop-types'
-import Select from '../../components/form/Select'
-import StickyFooter from '../../components/StickyFooter'
-import TextInput from '../../components/form/TextInput'
-import colors from '../../theme.json'
-import { connect } from 'react-redux'
-import globalStyles from '../../globalStyles'
-import uuid from 'uuid/v1'
+import React, { Component } from 'react'
 import { withNamespaces } from 'react-i18next'
+import { StyleSheet, Text } from 'react-native'
+import Icon from 'react-native-vector-icons/MaterialIcons'
+import { connect } from 'react-redux'
+import uuid from 'uuid/v1'
+
+import Decoration from '../../components/decoration/Decoration'
+import DateInput from '../../components/form/DateInput'
+import Select from '../../components/form/Select'
+import TextInput from '../../components/form/TextInput'
+import StickyFooter from '../../components/StickyFooter'
+import globalStyles from '../../globalStyles'
+import { createDraft, updateDraft } from '../../redux/actions'
+import colors from '../../theme.json'
 import { generateNewDemoDraft } from '../utils/helpers'
+import CallingCodes from './CallingCodes'
+import { getTotalScreens, setValidationSchema } from './helpers'
 
 export class FamilyParticipant extends Component {
   survey = this.props.navigation.getParam('survey')
   draftId = this.props.navigation.getParam('draftId')
   readOnly = this.props.navigation.getParam('readOnly')
+  phoneCodes = CallingCodes.map(element => ({
+    ...element,
+    text: `${element.country} - (+${element.value})`
+  }))
+
+  initialPhoneCode = this.phoneCodes.find(
+    e => e.code == this.survey.surveyConfig.surveyLocation.country
+  ).value
+
   requiredFields =
     (this.survey.surveyConfig &&
       this.survey.surveyConfig.requiredFields &&
@@ -147,6 +158,23 @@ export class FamilyParticipant extends Component {
     }
   ]
 
+  phoneValidation = value => {
+    const phoneUtil = PhoneNumberUtil.getInstance()
+    try {
+      const draft = !this.readOnly ? this.getDraft() : this.readOnlyDraft
+      const phoneCode = draft.familyData.familyMembersList[0].phoneCode
+        ? draft.familyData.familyMembersList[0].phoneCode
+        : this.initialPhoneCode
+      const contryCode = this.phoneCodes.find(x => x.value === phoneCode).code
+      const international = '+' + phoneCode + ' ' + value
+      const phone = phoneUtil.parse(international, contryCode)
+      let validation = phoneUtil.isValidNumber(phone)
+      return validation
+    } catch (e) {
+      return false
+    }
+  }
+
   updateParticipant = (value, field) => {
     if (this.readOnly) {
       return
@@ -194,6 +222,7 @@ export class FamilyParticipant extends Component {
 
     const regularDraft = {
       draftId,
+      sendEmail: false,
       created: Date.now(),
       status: 'Draft',
       surveyId: this.survey.id,
@@ -211,7 +240,8 @@ export class FamilyParticipant extends Component {
           {
             firstParticipant: true,
             socioEconomicAnswers: [],
-            birthCountry: this.survey.surveyConfig.surveyLocation.country
+            birthCountry: this.survey.surveyConfig.surveyLocation.country,
+            phoneCode: this.initialPhoneCode
           }
         ]
       }
@@ -266,7 +296,7 @@ export class FamilyParticipant extends Component {
           <Icon name="face" color={colors.grey} size={61} style={styles.icon} />
           {!this.readOnly ? (
             <Text
-              readonly={this.readOnly}
+              readOnly={this.readOnly}
               style={[globalStyles.h2Bold, styles.heading]}
             >
               {t('views.family.primaryParticipantHeading')}
@@ -282,7 +312,7 @@ export class FamilyParticipant extends Component {
           initialValue={participant.firstName || ''}
           required={setValidationSchema(this.requiredFields, 'firstName', true)}
           validation="string"
-          readonly={!!this.readOnly}
+          readOnly={!!this.readOnly}
           onChangeText={this.updateParticipant}
           showErrors={showErrors}
           setError={isError => this.setError(isError, 'firstName')}
@@ -295,7 +325,7 @@ export class FamilyParticipant extends Component {
           initialValue={participant.lastName || ''}
           required={setValidationSchema(this.requiredFields, 'lastName', true)}
           validation="string"
-          readonly={!!this.readOnly}
+          readOnly={!!this.readOnly}
           onChangeText={this.updateParticipant}
           showErrors={showErrors}
           setError={isError => this.setError(isError, 'lastName')}
@@ -313,7 +343,7 @@ export class FamilyParticipant extends Component {
           setError={isError => this.setError(isError, 'gender')}
           otherField="customGender"
           otherPlaceholder={t('views.family.specifyGender')}
-          readonly={!!this.readOnly}
+          readOnly={!!this.readOnly}
           initialOtherValue={participant.customGender}
         />
 
@@ -322,7 +352,7 @@ export class FamilyParticipant extends Component {
           required={setValidationSchema(this.requiredFields, 'birthDate', true)}
           label={t('views.family.dateOfBirth')}
           initialValue={participant.birthDate}
-          readonly={!!this.readOnly}
+          readOnly={!!this.readOnly}
           onValidDate={this.updateParticipant}
           showErrors={showErrors}
           setError={isError => this.setError(isError, 'birthDate')}
@@ -342,7 +372,7 @@ export class FamilyParticipant extends Component {
           otherPlaceholder={t('views.family.customDocumentType')}
           otherField="customDocumentType"
           initialOtherValue={participant.customDocumentType}
-          readonly={!!this.readOnly}
+          readOnly={!!this.readOnly}
           onChange={this.updateParticipant}
           showErrors={showErrors}
           setError={isError => this.setError(isError, 'documentType')}
@@ -357,7 +387,7 @@ export class FamilyParticipant extends Component {
             'documentNumber',
             true
           )}
-          readonly={!!this.readOnly}
+          readOnly={!!this.readOnly}
           onChangeText={this.updateParticipant}
           showErrors={showErrors}
           setError={isError => this.setError(isError, 'documentNumber')}
@@ -376,10 +406,45 @@ export class FamilyParticipant extends Component {
           )}
           defaultCountry={this.survey.surveyConfig.surveyLocation.country}
           countriesOnTop={this.survey.surveyConfig.countryOfBirth}
-          readonly={!!this.readOnly}
+          readOnly={!!this.readOnly}
           onChange={this.updateParticipant}
           showErrors={showErrors}
           setError={isError => this.setError(isError, 'birthCountry')}
+        />
+
+        <TextInput
+          id="email"
+          initialValue={participant.email}
+          placeholder={t('views.family.email')}
+          validation="email"
+          readOnly={!!this.readOnly}
+          onChangeText={this.updateParticipant}
+          showErrors={showErrors}
+          setError={isError => this.setError(isError, 'email')}
+        />
+
+        <Select
+          id="phoneCode"
+          label={t('views.family.phoneCode')}
+          placeholder={t('views.family.phoneCode')}
+          initialValue={participant.phoneCode || this.initialPhoneCode}
+          options={this.phoneCodes}
+          onChange={this.updateParticipant}
+          readOnly={!!this.readOnly}
+          showErrors={showErrors}
+          setError={isError => this.setError(isError, 'phoneCode')}
+        />
+
+        <TextInput
+          id="phoneNumber"
+          initialValue={participant.phoneNumber}
+          placeholder={t('views.family.phone')}
+          validation="phoneNumber"
+          phoneValidation={this.phoneValidation}
+          readOnly={!!this.readOnly}
+          onChangeText={this.updateParticipant}
+          showErrors={showErrors}
+          setError={isError => this.setError(isError, 'phoneNumber')}
         />
 
         <Select
@@ -393,32 +458,10 @@ export class FamilyParticipant extends Component {
             true
           )}
           options={this.familyMembersArray}
-          readonly={!!this.readOnly}
+          readOnly={!!this.readOnly}
           onChange={this.addFamilyCount}
           showErrors={showErrors}
           setError={isError => this.setError(isError, 'countFamilyMembers')}
-        />
-
-        <TextInput
-          id="email"
-          initialValue={participant.email}
-          placeholder={t('views.family.email')}
-          validation="email"
-          readonly={!!this.readOnly}
-          onChangeText={this.updateParticipant}
-          showErrors={showErrors}
-          setError={isError => this.setError(isError, 'email')}
-        />
-
-        <TextInput
-          id="phoneNumber"
-          initialValue={participant.phoneNumber}
-          placeholder={t('views.family.phone')}
-          validation="phoneNumber"
-          readonly={!!this.readOnly}
-          onChangeText={this.updateParticipant}
-          showErrors={showErrors}
-          setError={isError => this.setError(isError, 'phoneNumber')}
         />
       </StickyFooter>
     ) : null

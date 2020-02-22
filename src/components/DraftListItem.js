@@ -1,13 +1,15 @@
-import React, { Component } from 'react'
-import PropTypes from 'prop-types'
-import Icon from 'react-native-vector-icons/MaterialIcons'
-import { Text, StyleSheet, View } from 'react-native'
-import moment from 'moment'
 import 'moment/locale/es'
-import ListItem from './ListItem'
 
-import colors from '../theme.json'
+import moment from 'moment'
+import PropTypes from 'prop-types'
+import React, { Component } from 'react'
+import { StyleSheet, Text, View } from 'react-native'
+import Icon from 'react-native-vector-icons/MaterialIcons'
+
 import globalStyles from '../globalStyles'
+import i18n from '../i18n'
+import colors from '../theme.json'
+import ListItem from './ListItem'
 
 moment.locale('en')
 
@@ -30,13 +32,13 @@ class DraftListItem extends Component {
   setStatusTitle = status => {
     switch (status) {
       case 'Draft':
-        return 'Draft'
+        return i18n.t('draftStatus.draft')
       case 'Synced':
-        return 'Completed'
+        return i18n.t('draftStatus.completed')
       case 'Pending sync':
-        return 'Sync Pending'
+        return i18n.t('draftStatus.syncPending')
       case 'Sync error':
-        return 'Sync Error'
+        return i18n.t('draftStatus.syncError')
       default:
         return ''
     }
@@ -70,6 +72,7 @@ class DraftListItem extends Component {
       <ListItem
         style={{ ...styles.listItem, ...styles.borderBottom }}
         onPress={this.handleClick}
+        disabled={this.props.user.role == 'ROLE_SURVEY_TAKER' ? true : false}
       >
         <View>
           <Text
@@ -96,7 +99,9 @@ class DraftListItem extends Component {
             {this.setStatusTitle(this.props.item.status)}
           </Text>
         </View>
-        <Icon name="navigate-next" size={23} color={colors.lightdark} />
+        {this.props.user.role !== 'ROLE_SURVEY_TAKER' && (
+          <Icon name="navigate-next" size={23} color={colors.lightdark} />
+        )}
       </ListItem>
     )
   }
@@ -105,7 +110,8 @@ class DraftListItem extends Component {
 DraftListItem.propTypes = {
   item: PropTypes.object.isRequired,
   handleClick: PropTypes.func.isRequired,
-  lng: PropTypes.string.isRequired
+  lng: PropTypes.string.isRequired,
+  user: PropTypes.object.isRequired
 }
 
 const styles = StyleSheet.create({
@@ -124,7 +130,7 @@ const styles = StyleSheet.create({
   label: {
     borderRadius: 5,
     width: 0,
-    minWidth: 100,
+    minWidth: 120,
     height: 25,
     paddingLeft: 5,
     paddingRight: 5,

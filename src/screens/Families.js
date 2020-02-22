@@ -1,17 +1,18 @@
-import React, { Component } from 'react'
-import { StyleSheet, FlatList, View, Text, Image } from 'react-native'
-import { connect } from 'react-redux'
 import PropTypes from 'prop-types'
+import React, { Component } from 'react'
 import { withNamespaces } from 'react-i18next'
-import { loadFamilies } from '../redux/actions'
-import { url } from '../config'
-import colors from '../theme.json'
-import globalStyles from '../globalStyles'
-import SearchBar from '../components/SearchBar'
+import { FlatList, Image, StyleSheet, Text, View } from 'react-native'
+import { connect } from 'react-redux'
+
 import mapPlaceholderLarge from '../../assets/images/map_placeholder_1000.png'
 import FamiliesListItem from '../components/FamiliesListItem'
-import { replaceSpecialChars as sanitize } from '../utils'
+import SearchBar from '../components/SearchBar'
+import { url } from '../config'
+import globalStyles from '../globalStyles'
+import { loadFamilies } from '../redux/actions'
 import { setAccessibilityTextForFamilies } from '../screens/utils/accessibilityHelpers'
+import colors from '../theme.json'
+import { replaceSpecialChars as sanitize } from '../utils'
 
 export class Families extends Component {
   state = { search: '' }
@@ -76,7 +77,7 @@ export class Families extends Component {
             <SearchBar
               id="searchAddress"
               style={styles.search}
-              placeholder={'Search by name'}
+              placeholder={t('views.family.searchByName')}
               onChangeText={search => this.setState({ search })}
               value={this.state.search}
             />

@@ -1,6 +1,7 @@
-import { Overview } from '../Overview'
-import React from 'react'
 import { shallow } from 'enzyme'
+import React from 'react'
+
+import { Overview } from '../Overview'
 
 const survey = {
   id: 1,
@@ -223,7 +224,7 @@ describe('resuming a draft', () => {
   })
 })
 
-describe('readonly mode', () => {
+describe('readOnly mode', () => {
   beforeEach(() => {
     props = createTestProps({
       drafts: [resumedDraft],
@@ -241,7 +242,7 @@ describe('readonly mode', () => {
             return survey
           } else if (param === 'draftId') {
             return 1
-          } else if (param === 'readonly') {
+          } else if (param === 'readOnly') {
             return true
           } else if (param === 'resumeDraft') {
             return true

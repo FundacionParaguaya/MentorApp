@@ -368,7 +368,7 @@ export class SocioEconomicQuestion extends Component {
       <StickyFooter
         onContinue={this.validateForm}
         continueLabel={t('general.continue')}
-        readonly={!!this.readOnly}
+        readOnly={!!this.readOnly}
         progress={
           !this.readOnly && draft
             ? ((draft.familyData.countFamilyMembers > 1 ? 3 : 2) +
@@ -431,7 +431,7 @@ export class SocioEconomicQuestion extends Component {
                         this.getFieldValue(question.codeName, 'value') || ''
                       }
                       options={getConditionalOptions(question, draft)}
-                      readonly={!!this.readOnly}
+                      readOnly={!!this.readOnly}
                       showErrors={showErrors}
                       setError={this.setError}
                       otherField={'other'}
@@ -460,7 +460,7 @@ export class SocioEconomicQuestion extends Component {
                     )}
                     validation="number"
                     keyboardType="numeric"
-                    readonly={!!this.readOnly}
+                    readOnly={!!this.readOnly}
                     showErrors={showErrors}
                     setError={isError =>
                       this.setError(isError, question.codeName)
@@ -486,7 +486,7 @@ export class SocioEconomicQuestion extends Component {
                       placeholder={question.questionText}
                       options={getConditionalOptions(question, draft)}
                       multipleValue={multipleValue}
-                      readonly={!!this.readOnly}
+                      readOnly={!!this.readOnly}
                       updateAnswers={update =>
                         this.updateEconomicAnswer(question, update, false)
                       }
@@ -512,7 +512,7 @@ export class SocioEconomicQuestion extends Component {
                     initialValue={
                       this.getFieldValue(question.codeName, 'value') || ''
                     }
-                    readonly={!!this.readOnly}
+                    readOnly={!!this.readOnly}
                     showErrors={showErrors}
                     setError={isError =>
                       this.setError(isError, question.codeName)
@@ -592,7 +592,7 @@ export class SocioEconomicQuestion extends Component {
                             }
                             options={getConditionalOptions(question, draft, i)}
                             memberIndex={i + 1}
-                            readonly={!!this.readOnly}
+                            readOnly={!!this.readOnly}
                             showErrors={showErrors}
                             setError={this.setError}
                             otherField={'other'}
@@ -633,7 +633,7 @@ export class SocioEconomicQuestion extends Component {
                           )}
                           validation="number"
                           keyboardType="numeric"
-                          readonly={!!this.readOnly}
+                          readOnly={!!this.readOnly}
                           showErrors={showErrors}
                           setError={isError =>
                             this.setError(isError, question.codeName)
@@ -658,7 +658,7 @@ export class SocioEconomicQuestion extends Component {
                               'value'
                             ) || ''
                           }
-                          readonly={!!this.readOnly}
+                          readOnly={!!this.readOnly}
                           showErrors={showErrors}
                           setError={isError =>
                             this.setError(isError, question.codeName)

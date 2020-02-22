@@ -1,19 +1,19 @@
-import React, { Component } from 'react'
-import { StyleSheet, Text, View } from 'react-native'
-import { getTotalScreens, setValidationSchema } from './helpers'
-
-import DateInput from '../../components/form/DateInput'
-import Decoration from '../../components/decoration/Decoration'
-import Icon from 'react-native-vector-icons/MaterialIcons'
 import PropTypes from 'prop-types'
-import Select from '../../components/form/Select'
-import StickyFooter from '../../components/StickyFooter'
-import TextInput from '../../components/form/TextInput'
-import colors from '../../theme.json'
+import React, { Component } from 'react'
+import { withNamespaces } from 'react-i18next'
+import { StyleSheet, Text, View } from 'react-native'
+import Icon from 'react-native-vector-icons/MaterialIcons'
 import { connect } from 'react-redux'
+
+import Decoration from '../../components/decoration/Decoration'
+import DateInput from '../../components/form/DateInput'
+import Select from '../../components/form/Select'
+import TextInput from '../../components/form/TextInput'
+import StickyFooter from '../../components/StickyFooter'
 import globalStyles from '../../globalStyles'
 import { updateDraft } from '../../redux/actions'
-import { withNamespaces } from 'react-i18next'
+import colors from '../../theme.json'
+import { getTotalScreens, setValidationSchema } from './helpers'
 
 export class FamilyMembersNames extends Component {
   survey = this.props.navigation.getParam('survey')
@@ -115,7 +115,7 @@ export class FamilyMembersNames extends Component {
   componentDidMount() {
     const draft = this.getDraft()
 
-    if (!this.readonly && draft.progress.screen !== 'FamilyMembersNames') {
+    if (!this.readOnly && draft.progress.screen !== 'FamilyMembersNames') {
       this.props.updateDraft({
         ...draft,
         progress: {
@@ -200,7 +200,7 @@ export class FamilyMembersNames extends Component {
                   'firstName',
                   true
                 )}
-                readonly={!!this.readOnly}
+                readOnly={!!this.readOnly}
                 showErrors={showErrors}
                 setError={isError =>
                   this.setError(isError, `${i + 1}.firstName`)
@@ -221,7 +221,7 @@ export class FamilyMembersNames extends Component {
                 otherField={`${i + 1}.customGender`}
                 otherPlaceholder={t('views.family.specifyGender')}
                 initialOtherValue={familyMembersList[i + 1].customGender || ''}
-                readonly={!!this.readOnly}
+                readOnly={!!this.readOnly}
                 showErrors={showErrors}
                 setError={isError => this.setError(isError, `${i + 1}.gender`)}
               />
@@ -236,7 +236,7 @@ export class FamilyMembersNames extends Component {
                   'birthDate',
                   false
                 )}
-                readonly={!!this.readOnly}
+                readOnly={!!this.readOnly}
                 showErrors={showErrors}
                 setError={isError =>
                   this.setError(isError, `${i + 1}.birthDate`)

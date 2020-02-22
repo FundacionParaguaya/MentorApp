@@ -1,10 +1,11 @@
-import { DateInputComponent } from '../form/DateInput'
+import { shallow } from 'enzyme'
 import React from 'react'
 import { Text } from 'react-native'
-import { shallow } from 'enzyme'
+
+import { DateInputComponent } from '../form/DateInput'
 
 const createTestProps = props => ({
-  readonly: true,
+  readOnly: true,
   initialValue: 52454354,
   onValidDate: jest.fn(),
   setError: jest.fn(),

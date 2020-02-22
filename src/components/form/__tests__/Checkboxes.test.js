@@ -1,7 +1,8 @@
-import React from 'react'
 import { shallow } from 'enzyme'
+import React from 'react'
 import { Text } from 'react-native'
 import { CheckBox } from 'react-native-elements'
+
 import Checkboxes from '../Checkboxes'
 
 const createTestProps = props => ({
@@ -10,7 +11,7 @@ const createTestProps = props => ({
   multipleValue: [],
   placeholder: 'not bad',
   options: [{ text: 'wow', value: 'dog' }],
-  readonly: false,
+  readOnly: false,
   ...props
 })
 

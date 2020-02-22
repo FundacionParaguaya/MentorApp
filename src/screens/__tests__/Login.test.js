@@ -1,8 +1,8 @@
+import { shallow } from 'enzyme'
+import React from 'react'
 import { ScrollView, Text } from 'react-native'
 
 import { Login } from '../Login'
-import React from 'react'
-import { shallow } from 'enzyme'
 
 const createTestProps = props => ({
   setEnv: jest.fn(),
@@ -13,8 +13,10 @@ const createTestProps = props => ({
   dimensions: { width: 320, height: 480, scale: 1 },
   user: { status: null },
   navigation: {
-    navigate: arg => arg
+    navigate: arg => arg,
+    addListener: jest.fn()
   },
+  t: jest.fn(),
   ...props
 })
 

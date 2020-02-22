@@ -38,7 +38,7 @@ class Select extends Component {
   }
 
   toggleDropdown = () => {
-    if (!this.props.readonly) {
+    if (!this.props.readOnly) {
       this.setState({
         isOpen: !this.state.isOpen
       })
@@ -179,7 +179,7 @@ class Select extends Component {
       required,
       options,
       countrySelect,
-      readonly,
+      readOnly,
       initialOtherValue,
       otherPlaceholder
     } = this.props
@@ -194,7 +194,7 @@ class Select extends Component {
       text = options.find(item => item.value === initialValue).text
     }
 
-    return readonly && !this.props.initialValue ? null : (
+    return readOnly && !this.props.initialValue ? null : (
       <View>
         <TouchableHighlight
           underlayColor={'transparent'}
@@ -220,7 +220,7 @@ class Select extends Component {
                   }}
                 >
                   {radioOptions.map((option, i) => {
-                    if (readonly) {
+                    if (readOnly) {
                       if (this.state.radioChecked === option.value) {
                         return (
                           <View key={i} style={{ marginRight: 'auto' }}>
@@ -314,7 +314,7 @@ class Select extends Component {
                           color: colors.palegreen
                         }
                     ]}
-                  >{`${placeholder}${required && !readonly ? ' *' : ''}`}</Text>
+                  >{`${placeholder}${required && !readOnly ? ' *' : ''}`}</Text>
                 )}
                 <Text
                   style={[
@@ -326,7 +326,7 @@ class Select extends Component {
                     ? text
                     : `${placeholder}${required ? ' *' : ''}`}
                 </Text>
-                {!readonly ? (
+                {!readOnly ? (
                   <Image source={arrow} style={styles.arrow} />
                 ) : null}
 
@@ -418,7 +418,7 @@ class Select extends Component {
           <TextInput
             id={this.props.otherField || 'otherField'}
             onChangeText={this.onChangeOther}
-            readonly={readonly}
+            readOnly={readOnly}
             placeholder={otherPlaceholder}
             initialValue={initialOtherValue}
           />
@@ -511,7 +511,7 @@ Select.propTypes = {
   otherField: PropTypes.string,
   defaultCountry: PropTypes.string,
   countrySelect: PropTypes.bool,
-  readonly: PropTypes.bool,
+  readOnly: PropTypes.bool,
   showErrors: PropTypes.bool,
   countriesOnTop: PropTypes.array,
   required: PropTypes.bool,

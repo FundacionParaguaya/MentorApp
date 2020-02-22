@@ -1,8 +1,9 @@
-import { FamilyParticipant } from '../FamilyParticipant'
-import React from 'react'
-import StickyFooter from '../../../components/StickyFooter'
-import TextInput from '../../../components/form/TextInput'
 import { shallow } from 'enzyme'
+import React from 'react'
+
+import TextInput from '../../../components/form/TextInput'
+import StickyFooter from '../../../components/StickyFooter'
+import { FamilyParticipant } from '../FamilyParticipant'
 
 // props
 const survey = {
@@ -50,6 +51,7 @@ const survey = {
 
 const defaultDraft = {
   draftId: expect.any(String),
+  sendEmail: false,
   created: expect.any(Number),
   status: 'Draft',
   surveyId: 1,
@@ -67,7 +69,8 @@ const defaultDraft = {
       {
         firstParticipant: true,
         socioEconomicAnswers: [],
-        birthCountry: 'BG'
+        birthCountry: 'BG',
+        phoneCode: '359'
       }
     ]
   }
@@ -86,6 +89,7 @@ const resumedDraft = {
         documentType: '0',
         email: 'juan@gmail.com',
         birthCountry: 'PY',
+        phoneCode: '595',
         gender: 'M',
         birthDate: 12345,
         firstParticipant: true,
@@ -660,7 +664,7 @@ describe('resuming a draft', () => {
   })
 })
 
-describe('readonly mode', () => {
+describe('readOnly mode', () => {
   beforeEach(() => {
     props = createTestProps({
       drafts: [
@@ -678,7 +682,7 @@ describe('readonly mode', () => {
             return survey
           } else if (param === 'draftId') {
             return 1
-          } else if (param === 'readonly') {
+          } else if (param === 'readOnly') {
             return true
           } else {
             return 1
@@ -690,10 +694,10 @@ describe('readonly mode', () => {
   })
 
   it('disables editing fields', () => {
-    expect(wrapper.find(TextInput).first()).toHaveProp({ readonly: true })
+    expect(wrapper.find(TextInput).first()).toHaveProp({ readOnly: true })
   })
 
-  it('does not update in readonly mode', () => {
+  it('does not update in readOnly mode', () => {
     expect(wrapper.instance().updateParticipant()).toBeFalsy()
     expect(wrapper.instance().addFamilyCount()).toBeFalsy()
     expect(wrapper.instance().onContinue()).toBeFalsy()

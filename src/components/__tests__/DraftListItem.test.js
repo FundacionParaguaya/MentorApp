@@ -1,10 +1,11 @@
-import React from 'react'
 import { shallow } from 'enzyme'
+import moment from 'moment'
+import React from 'react'
 import { Text } from 'react-native'
+
+import colors from '../../theme.json'
 import DraftListItem from '../DraftListItem'
 import ListItem from '../ListItem'
-import moment from 'moment'
-import colors from '../../theme.json'
 
 const item = {
   status: 'Synced',
@@ -35,6 +36,7 @@ const createTestProps = props => ({
   item,
   handleClick: jest.fn(),
   lng: 'en',
+  user: { role: 'ROLE_SURVEY_TAKER' },
   ...props
 })
 
@@ -98,7 +100,7 @@ it('reders correct title when status is Pending sync', () => {
   wrapper.setProps({ item: { ...item, status: 'Pending sync' } })
 
   expect(wrapper.find('#status')).toHaveHTML(
-    '<react-native-mock>Sync Pending</react-native-mock>'
+    '<react-native-mock>Sync pending</react-native-mock>'
   )
 })
 
@@ -106,7 +108,7 @@ it('reders correct title when status is Sync error', () => {
   wrapper.setProps({ item: { ...item, status: 'Sync error' } })
 
   expect(wrapper.find('#status')).toHaveHTML(
-    '<react-native-mock>Sync Error</react-native-mock>'
+    '<react-native-mock>Sync error</react-native-mock>'
   )
 })
 

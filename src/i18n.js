@@ -1,9 +1,10 @@
-import { language } from 'react-native-languages'
 import i18n from 'i18next'
 import { reactI18nextModule } from 'react-i18next'
-import store from './redux/store'
+
 import en from './locales/en.json'
 import es from './locales/es.json'
+import store from './redux/store'
+import { getDeviceLanguage } from './utils'
 
 const resources = {
   en: {
@@ -26,7 +27,7 @@ export const setLanguage = () => {
   if (reduxLanguage) {
     lng = reduxLanguage
   } else {
-    lng = language === 'en' || language === 'es' ? language : 'en'
+    lng = getDeviceLanguage()
   }
 
   i18n.changeLanguage(lng)
