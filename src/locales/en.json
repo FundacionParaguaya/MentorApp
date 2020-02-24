@@ -37,7 +37,6 @@
     "closeAndSign": "Save survey",
     "completeStoplight": "Finish Stoplight",
     "finish": "Finish"
-
   },
   "validation": {
     "fieldIsRequired": "This field is required",
@@ -100,7 +99,7 @@
     "loading": {
       "weArePreparingTheApp": "We are preparing the app.",
       "surveysCached": "Surveys cached",
-      "downloadingSurveys":"Downloading surveys...",
+      "downloadingSurveys": "Downloading surveys...",
       "familiesCached": "Families cached",
       "downloadingFamilies": "Downloading families...",
       "mapsCached": "Maps cached",
@@ -172,6 +171,7 @@
       "indicatorDefinition": "Indicator Definition",
       "nowLetsMakeSomePriorities": "Now let's make some priorities!",
       "youCreatedALifeMap": "You created a Life Map",
+      "continueWithSurvey": "Continue where you left off!",
       "congratulations": "Congratulations!",
       "thisLifeMapHas": "This Life Map has %n questions.",
       "responseRequired": "*Response required",
@@ -251,18 +251,18 @@
       "yourLifeMaWillBeSentWithWhatSurveySync": "To receive your Life Map to whatsapp, send \"Hello\" to this number: +5521933007184 after the survey has been synced."
     }
   },
-      "filterLabels": {
-        "lifeMaps": "Surveys",
-        "allSurveys": "All surveys",
-        "drafts": "Drafts",
-        "syncPending": "Sync pending",
-        "syncError": "Sync error",
-        "completed": "Completed"
-      } ,
-      "draftStatus": {
-        "completed": "Completed",
-        "syncError": "Sync error",
-        "syncPending": "Sync pending",
-        "draft": "Draft"
-      }
+  "filterLabels": {
+    "lifeMaps": "Surveys",
+    "allSurveys": "All surveys",
+    "drafts": "Drafts",
+    "syncPending": "Sync pending",
+    "syncError": "Sync error",
+    "completed": "Completed"
+  },
+  "draftStatus": {
+    "completed": "Completed",
+    "syncError": "Sync error",
+    "syncPending": "Sync pending",
+    "draft": "Draft"
+  }
 }

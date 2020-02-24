@@ -37,7 +37,6 @@
     "closeAndSign": "Guardar encuesta",
     "completeStoplight": "Completar Semáforo",
     "finish": "Finalizar"
-
   },
   "validation": {
     "fieldIsRequired": "Este campo es requerido",
@@ -100,7 +99,7 @@
     "loading": {
       "weArePreparingTheApp": "Estamos preparando la aplicación",
       "surveysCached": "Encuestas sincronizadas",
-      "downloadingSurveys":"Descargando encuestas",
+      "downloadingSurveys": "Descargando encuestas",
       "familiesCached": "Familias sincronizadas",
       "downloadingFamilies": "Descargando familias",
       "mapsCached": "Mapas sincronizados",
@@ -173,6 +172,7 @@
       "indicatorDefinition": "Definición del indicador",
       "nowLetsMakeSomePriorities": "Ahora, ¡escribamos algunas prioridades!",
       "youCreatedALifeMap": "Has creado un Mapa de Vida.",
+      "continueWithSurvey": "¡Continúa donde te habías quedado!",
       "congratulations": "¡Felicidades!",
       "thisLifeMapHas": "Este Mapa de Vida tiene %n preguntas.",
       "responseRequired": "*Respuesta requerida",
@@ -252,18 +252,18 @@
       "yourLifeMaWillBeSentWithWhatSurveySync": "Para recibir tu Mapa de Vida al whatsapp, envía \"Hola\" al número: +5521933007184 después de sincronizar la encuesta."
     }
   },
-      "filterLabels": {
-        "lifeMaps": "Encuestas",
-        "allSurveys": "Todas las encuestas",
-        "drafts": "Borradores",
-        "syncPending": "Pendientes",
-        "syncError": "Errores",
-        "completed": "Completados"
-      },
-      "draftStatus": {
-        "completed": "Completado",
-        "syncError": "Error",
-        "syncPending": "Pendiente",
-        "draft": "Borrador"
-      }
+  "filterLabels": {
+    "lifeMaps": "Encuestas",
+    "allSurveys": "Todas las encuestas",
+    "drafts": "Borradores",
+    "syncPending": "Pendientes",
+    "syncError": "Errores",
+    "completed": "Completados"
+  },
+  "draftStatus": {
+    "completed": "Completado",
+    "syncError": "Error",
+    "syncPending": "Pendiente",
+    "draft": "Borrador"
+  }
 }
