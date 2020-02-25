@@ -202,15 +202,23 @@ const formatPhone = (code, phone) => {
 
 export const submitDraft = (env, token, id, payload) => {
   const sanitizedSnapshot = { ...payload }
-  let { economicSurveyDataList } = payload
 
-  payload.pictures.forEach(picture => {
+  let { economicSurveyDataList } = payload
+  var base64Pictures = []
+  for (var index in sanitizedSnapshot.pictures) {
+    var picture = sanitizedSnapshot.pictures[index]
     ImageStore.getBase64ForTag(
       picture.source,
-      success => (picture.source = success),
+      success =>
+        base64Pictures.push({
+          name: picture.name,
+          source: success,
+          type: picture.type
+        }),
       () => console.log('conversion to base64 failed')
     )
-  })
+  }
+  sanitizedSnapshot.pictures = base64Pictures
   const validEconomicIndicator = ec =>
     (ec.value !== null && ec.value !== undefined && ec.value !== '') ||
     (!!ec.multipleValue && ec.multipleValue.length > 0)

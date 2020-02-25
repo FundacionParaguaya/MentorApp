@@ -211,7 +211,7 @@ export class Dashboard extends Component {
   render() {
     const { t, families, drafts } = this.props
     const { filterModalIsOpen } = this.state
-
+    console.log(drafts)
     const allDraftFamilies = drafts.filter(
       d => d.status === 'Draft' || d.status === 'Pending sync'
     ).length
