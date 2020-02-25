@@ -53,7 +53,7 @@ export class Final extends Component {
     console.log(this.draft.stoplightSkipped)
     if (this.draft.stoplightSkipped) {
       if (this.survey.surveyConfig.signSupport) {
-        his.props.navigation.navigate('Signin', {
+        this.props.navigation.navigate('Signin', {
           step: 0,
           survey: this.survey,
           draftId: this.draftId
