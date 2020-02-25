@@ -1,16 +1,16 @@
-import React, { Component } from 'react'
-import { StyleSheet, Text, View } from 'react-native'
-
-import Decoration from '../../components/decoration/Decoration'
 import PropTypes from 'prop-types'
+import React, { Component } from 'react'
+import { withNamespaces } from 'react-i18next'
+import { StyleSheet, Text, View } from 'react-native'
+import { connect } from 'react-redux'
+
+import Button from '../../components/Button'
+import Decoration from '../../components/decoration/Decoration'
 import RoundImage from '../../components/RoundImage'
 import StickyFooter from '../../components/StickyFooter'
-import { connect } from 'react-redux'
-import { getTotalEconomicScreens } from './helpers'
 import globalStyles from '../../globalStyles'
 import { updateDraft } from '../../redux/actions'
-import { withNamespaces } from 'react-i18next'
-import Button from '../../components/Button'
+import { getTotalEconomicScreens } from './helpers'
 
 export class BeginLifemap extends Component {
   survey = this.props.navigation.getParam('survey')
@@ -58,19 +58,17 @@ export class BeginLifemap extends Component {
     })
     this.draft.stoplightSkipped = true
 
-    //TODO redirect to uploadPictures or sign
-    if (this.survey.surveyConfig.signSupport) {
-      this.props.navigation.navigate('Final', {
-        fromBeginLifemap: true,
+    if (this.survey.surveyConfig.pictureSupport) {
+      this.props.navigation.navigate('Picture', {
         survey: this.survey,
-        draftId: this.draftId,
-        draft: this.draft
+        draftId: this.draftId
       })
-      /*this.props.navigation.navigate('Signin', {
+    } else if (this.survey.surveyConfig.signSupport) {
+      this.props.navigation.navigate('Signin', {
         step: 0,
         survey: this.survey,
         draftId: this.draftId
-      })*/
+      })
     } else {
       this.props.navigation.navigate('Final', {
         fromBeginLifemap: true,
@@ -117,10 +115,9 @@ export class BeginLifemap extends Component {
           style={{
             ...globalStyles.containerNoPadding,
             padding: 0,
-            paddingTop:0
+            paddingTop: 0
           }}
         >
-        
           <Text id="label" style={{ ...globalStyles.h3, ...styles.text }}>
             {t('views.lifemap.thisLifeMapHas').replace(
               '%n',

@@ -1,3 +1,4 @@
+import { PhoneNumberUtil } from 'google-libphonenumber'
 import PropTypes from 'prop-types'
 import React, { Component } from 'react'
 import { withNamespaces } from 'react-i18next'
@@ -6,8 +7,6 @@ import Icon from 'react-native-vector-icons/MaterialIcons'
 import { connect } from 'react-redux'
 import uuid from 'uuid/v1'
 
-import CallingCodes from './CallingCodes'
-import { PhoneNumberUtil } from 'google-libphonenumber'
 import Decoration from '../../components/decoration/Decoration'
 import DateInput from '../../components/form/DateInput'
 import Select from '../../components/form/Select'
@@ -17,6 +16,7 @@ import globalStyles from '../../globalStyles'
 import { createDraft, updateDraft } from '../../redux/actions'
 import colors from '../../theme.json'
 import { generateNewDemoDraft } from '../utils/helpers'
+import CallingCodes from './CallingCodes'
 import { getTotalScreens, setValidationSchema } from './helpers'
 
 export class FamilyParticipant extends Component {
@@ -224,6 +224,7 @@ export class FamilyParticipant extends Component {
       draftId,
       stoplightSkipped: false,
       sign: '',
+      pictures: [],
       sendEmail: false,
       created: Date.now(),
       status: 'Draft',

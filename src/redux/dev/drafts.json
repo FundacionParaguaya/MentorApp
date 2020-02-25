@@ -28,6 +28,7 @@
     },
     "priorities": [],
     "sign": "",
+    "pictures": [],
     "indicatorSurveyDataList": [
       { "key": "familySavings", "value": 3 },
       { "key": "garbageDisposal", "value": 3 },
@@ -51,6 +52,7 @@
     "priorities": [],
     "achievements": [],
     "sign": "",
+    "pictures": [],
     "familyData": {
       "familyMembersList": [
         {
