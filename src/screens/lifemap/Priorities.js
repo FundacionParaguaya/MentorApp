@@ -95,7 +95,22 @@ export class Priorities extends Component {
         tipIsVisible: true
       })
     } else {
-      this.navigateToScreen('Final')
+      //If sign support, the go to sign view
+      if (this.survey.surveyConfig.pictureSupport) {
+        this.props.navigation.navigate('Picture', {
+          survey: this.survey,
+          draftId: this.draftId
+        })
+      } else if (this.survey.surveyConfig.signSupport) {
+        this.props.navigation.navigate('Signin', {
+          step: 0,
+          survey: this.survey,
+          draftId: this.draftId
+        })
+      } else {
+        //TODO update according to suvey config
+        this.navigateToScreen('Final')
+      }
     }
   }
 

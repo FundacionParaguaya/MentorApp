@@ -51,26 +51,32 @@ export class Final extends Component {
   onPressBack = () => {
     console.log('Press back')
     console.log(this.draft.stoplightSkipped)
-    if (this.draft.stoplightSkipped) {
-      if (this.survey.surveyConfig.signSupport) {
-        this.props.navigation.navigate('Signin', {
-          step: 0,
-          survey: this.survey,
-          draftId: this.draftId
-        })
-      } else {
-        //TODO check picture upload config
+    //If sign support, the go to sign view
+    if (this.survey.surveyConfig.signSupport) {
+      this.props.navigation.navigate('Signin', {
+        step: 0,
+        survey: this.survey,
+        draftId: this.draftId
+      })
+    } else if (this.survey.surveyConfig.pictureSupport) {
+      this.props.navigation.navigate('Picture', {
+        survey: this.survey,
+        draftId: this.draftId
+      })
+    } else {
+      //TODO check picture upload config
+      if (this.draft.stoplightSkipped) {
         this.props.navigation.navigate('BeginLifemap', {
           survey: this.survey,
           draftId: this.draftId
         })
+      } else {
+        this.props.navigation.replace('Priorities', {
+          resumeDraft: false,
+          draftId: this.draft.draftId,
+          survey: this.survey
+        })
       }
-    } else {
-      this.props.navigation.replace('Priorities', {
-        resumeDraft: false,
-        draftId: this.draft.draftId,
-        survey: this.survey
-      })
     }
   }
 
