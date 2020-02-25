@@ -37,7 +37,6 @@
     "closeAndSign": "Guardar encuesta",
     "completeStoplight": "Completar Semáforo",
     "finish": "Finalizar"
-
   },
   "validation": {
     "fieldIsRequired": "Este campo es requerido",
@@ -180,6 +179,7 @@
       "indicatorDefinition": "Definición del indicador",
       "nowLetsMakeSomePriorities": "Ahora, ¡escribamos algunas prioridades!",
       "youCreatedALifeMap": "Has creado un Mapa de Vida.",
+      "continueWithSurvey": "¡Continúa donde te habías quedado!",
       "congratulations": "¡Felicidades!",
       "thisLifeMapHas": "Este Mapa de Vida tiene %n preguntas.",
       "responseRequired": "*Respuesta requerida",

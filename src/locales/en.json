@@ -37,7 +37,6 @@
     "closeAndSign": "Save survey",
     "completeStoplight": "Finish Stoplight",
     "finish": "Finish"
-
   },
   "validation": {
     "fieldIsRequired": "This field is required",
@@ -179,6 +178,7 @@
       "indicatorDefinition": "Indicator Definition",
       "nowLetsMakeSomePriorities": "Now let's make some priorities!",
       "youCreatedALifeMap": "You created a Life Map",
+      "continueWithSurvey": "Continue where you left off!",
       "congratulations": "Congratulations!",
       "thisLifeMapHas": "This Life Map has %n questions.",
       "responseRequired": "*Response required",

@@ -52,10 +52,19 @@ export class Final extends Component {
     console.log('Press back')
     console.log(this.draft.stoplightSkipped)
     if (this.draft.stoplightSkipped) {
-      this.props.navigation.navigate('BeginLifemap', {
-        survey: this.survey,
-        draftId: this.draftId
-      })
+      if (this.survey.surveyConfig.signSupport) {
+        this.props.navigation.navigate('Signin', {
+          step: 0,
+          survey: this.survey,
+          draftId: this.draftId
+        })
+      } else {
+        //TODO check picture upload config
+        this.props.navigation.navigate('BeginLifemap', {
+          survey: this.survey,
+          draftId: this.draftId
+        })
+      }
     } else {
       this.props.navigation.replace('Priorities', {
         resumeDraft: false,

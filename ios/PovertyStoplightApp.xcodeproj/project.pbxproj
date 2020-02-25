@@ -83,6 +83,7 @@
 		12E50DCD5B984A7CA32BC15E /* libRNScreens.a in Frameworks */ = {isa = PBXBuildFile; fileRef = F068ABD1DED5429DBD4519EC /* libRNScreens.a */; };
 		85A7B99EAC5844B98DA09260 /* libRNScreens-tvOS.a in Frameworks */ = {isa = PBXBuildFile; fileRef = C85885AE20B445399DDF6538 /* libRNScreens-tvOS.a */; };
 		49DD87BCFE874602B8D68D06 /* libRNImagePicker.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 32A92BA719CD453A9F77AE43 /* libRNImagePicker.a */; };
+		A5D9311A946F4A8A957A2E47 /* libRSSignatureCapture.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 7D162ED4A88E4813BA031D3D /* libRSSignatureCapture.a */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -449,8 +450,13 @@
 		396ABD750A974CD38AB11293 /* RNScreens.xcodeproj */ = {isa = PBXFileReference; name = "RNScreens.xcodeproj"; path = "../node_modules/react-native-screens/ios/RNScreens.xcodeproj"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = wrapper.pb-project; explicitFileType = undefined; includeInIndex = 0; };
 		F068ABD1DED5429DBD4519EC /* libRNScreens.a */ = {isa = PBXFileReference; name = "libRNScreens.a"; path = "libRNScreens.a"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = archive.ar; explicitFileType = undefined; includeInIndex = 0; };
 		C85885AE20B445399DDF6538 /* libRNScreens-tvOS.a */ = {isa = PBXFileReference; name = "libRNScreens-tvOS.a"; path = "libRNScreens-tvOS.a"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = archive.ar; explicitFileType = undefined; includeInIndex = 0; };
+<<<<<<< HEAD
 		BD3F6C53AE454733BFEC0385 /* RNImagePicker.xcodeproj */ = {isa = PBXFileReference; name = "RNImagePicker.xcodeproj"; path = "../node_modules/react-native-image-picker/ios/RNImagePicker.xcodeproj"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = wrapper.pb-project; explicitFileType = undefined; includeInIndex = 0; };
 		32A92BA719CD453A9F77AE43 /* libRNImagePicker.a */ = {isa = PBXFileReference; name = "libRNImagePicker.a"; path = "libRNImagePicker.a"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = archive.ar; explicitFileType = undefined; includeInIndex = 0; };
+=======
+		9AA3B2849967426492C9CFB5 /* RSSignatureCapture.xcodeproj */ = {isa = PBXFileReference; name = "RSSignatureCapture.xcodeproj"; path = "../node_modules/react-native-signature-capture/ios/RSSignatureCapture.xcodeproj"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = wrapper.pb-project; explicitFileType = undefined; includeInIndex = 0; };
+		7D162ED4A88E4813BA031D3D /* libRSSignatureCapture.a */ = {isa = PBXFileReference; name = "libRSSignatureCapture.a"; path = "libRSSignatureCapture.a"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = archive.ar; explicitFileType = undefined; includeInIndex = 0; };
+>>>>>>> loorely-signature-capture
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -497,7 +503,11 @@
 				3FE03DA1C27F45278726C684 /* libRNCAsyncStorage.a in Frameworks */,
 				1FDB1C4D0E1B449BBD10A772 /* libRNReanimated.a in Frameworks */,
 				12E50DCD5B984A7CA32BC15E /* libRNScreens.a in Frameworks */,
+<<<<<<< HEAD
 				49DD87BCFE874602B8D68D06 /* libRNImagePicker.a in Frameworks */,
+=======
+				A5D9311A946F4A8A957A2E47 /* libRSSignatureCapture.a in Frameworks */,
+>>>>>>> loorely-signature-capture
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -710,7 +720,11 @@
 				FABC8B31A51E4BA5A5726466 /* RNCAsyncStorage.xcodeproj */,
 				80553508132C4AB587B14767 /* RNReanimated.xcodeproj */,
 				396ABD750A974CD38AB11293 /* RNScreens.xcodeproj */,
+<<<<<<< HEAD
 				BD3F6C53AE454733BFEC0385 /* RNImagePicker.xcodeproj */,
+=======
+				9AA3B2849967426492C9CFB5 /* RSSignatureCapture.xcodeproj */,
+>>>>>>> loorely-signature-capture
 			);
 			name = Libraries;
 			sourceTree = "<group>";
@@ -1462,7 +1476,11 @@
 					"$(SRCROOT)/../node_modules/@react-native-community/async-storage/ios",
 					"$(SRCROOT)/../node_modules/react-native-reanimated/ios/**",
 					"$(SRCROOT)/../node_modules/react-native-screens/ios",
+<<<<<<< HEAD
 					"$(SRCROOT)/../node_modules/react-native-image-picker/ios",
+=======
+					"$(SRCROOT)/../node_modules/react-native-signature-capture/ios/**",
+>>>>>>> loorely-signature-capture
 				);
 				FRAMEWORK_SEARCH_PATHS = (
 				);
@@ -1513,7 +1531,11 @@
 					"$(SRCROOT)/../node_modules/@react-native-community/async-storage/ios",
 					"$(SRCROOT)/../node_modules/react-native-reanimated/ios/**",
 					"$(SRCROOT)/../node_modules/react-native-screens/ios",
+<<<<<<< HEAD
 					"$(SRCROOT)/../node_modules/react-native-image-picker/ios",
+=======
+					"$(SRCROOT)/../node_modules/react-native-signature-capture/ios/**",
+>>>>>>> loorely-signature-capture
 				);
 				FRAMEWORK_SEARCH_PATHS = (
 				);
@@ -1554,7 +1576,11 @@
 					"$(SRCROOT)/../node_modules/@react-native-community/async-storage/ios",
 					"$(SRCROOT)/../node_modules/react-native-reanimated/ios/**",
 					"$(SRCROOT)/../node_modules/react-native-screens/ios",
+<<<<<<< HEAD
 					"$(SRCROOT)/../node_modules/react-native-image-picker/ios",
+=======
+					"$(SRCROOT)/../node_modules/react-native-signature-capture/ios/**",
+>>>>>>> loorely-signature-capture
 				);
 				FRAMEWORK_SEARCH_PATHS = (
 				);
@@ -1594,7 +1620,11 @@
 					"$(SRCROOT)/../node_modules/@react-native-community/async-storage/ios",
 					"$(SRCROOT)/../node_modules/react-native-reanimated/ios/**",
 					"$(SRCROOT)/../node_modules/react-native-screens/ios",
+<<<<<<< HEAD
 					"$(SRCROOT)/../node_modules/react-native-image-picker/ios",
+=======
+					"$(SRCROOT)/../node_modules/react-native-signature-capture/ios/**",
+>>>>>>> loorely-signature-capture
 				);
 				FRAMEWORK_SEARCH_PATHS = (
 				);
@@ -1653,7 +1683,11 @@
 					"$(SRCROOT)/../node_modules/@react-native-community/async-storage/ios",
 					"$(SRCROOT)/../node_modules/react-native-reanimated/ios/**",
 					"$(SRCROOT)/../node_modules/react-native-screens/ios",
+<<<<<<< HEAD
 					"$(SRCROOT)/../node_modules/react-native-image-picker/ios",
+=======
+					"$(SRCROOT)/../node_modules/react-native-signature-capture/ios/**",
+>>>>>>> loorely-signature-capture
 				);
 				FRAMEWORK_SEARCH_PATHS = (
 				);
@@ -1712,7 +1746,11 @@
 					"$(SRCROOT)/../node_modules/@react-native-community/async-storage/ios",
 					"$(SRCROOT)/../node_modules/react-native-reanimated/ios/**",
 					"$(SRCROOT)/../node_modules/react-native-screens/ios",
+<<<<<<< HEAD
 					"$(SRCROOT)/../node_modules/react-native-image-picker/ios",
+=======
+					"$(SRCROOT)/../node_modules/react-native-signature-capture/ios/**",
+>>>>>>> loorely-signature-capture
 				);
 				FRAMEWORK_SEARCH_PATHS = (
 				);
@@ -1770,7 +1808,11 @@
 					"$(SRCROOT)/../node_modules/@react-native-community/async-storage/ios",
 					"$(SRCROOT)/../node_modules/react-native-reanimated/ios/**",
 					"$(SRCROOT)/../node_modules/react-native-screens/ios",
+<<<<<<< HEAD
 					"$(SRCROOT)/../node_modules/react-native-image-picker/ios",
+=======
+					"$(SRCROOT)/../node_modules/react-native-signature-capture/ios/**",
+>>>>>>> loorely-signature-capture
 				);
 				FRAMEWORK_SEARCH_PATHS = (
 				);
@@ -1828,7 +1870,11 @@
 					"$(SRCROOT)/../node_modules/@react-native-community/async-storage/ios",
 					"$(SRCROOT)/../node_modules/react-native-reanimated/ios/**",
 					"$(SRCROOT)/../node_modules/react-native-screens/ios",
+<<<<<<< HEAD
 					"$(SRCROOT)/../node_modules/react-native-image-picker/ios",
+=======
+					"$(SRCROOT)/../node_modules/react-native-signature-capture/ios/**",
+>>>>>>> loorely-signature-capture
 				);
 				FRAMEWORK_SEARCH_PATHS = (
 				);

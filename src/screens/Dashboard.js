@@ -72,6 +72,7 @@ export class Dashboard extends Component {
       this.props.navigation.navigate('Overview', {
         resumeDraft: true,
         draftId: draft.draftId,
+        stoplightSkipped: draft.stoplightSkipped,
         survey
       })
     } else {

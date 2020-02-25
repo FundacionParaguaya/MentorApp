@@ -1,11 +1,12 @@
 import React, { Component } from 'react'
 import { Image, StyleSheet, View } from 'react-native'
 import PropTypes from 'prop-types'
-import SignatureCanvas from 'react-native-signature-canvas'
+import SignatureCapture from 'react-native-signature-capture'
 import { connect } from 'react-redux'
 import { getTotalEconomicScreens } from './helpers'
 import { updateDraft } from '../../redux/actions'
 import { withNamespaces } from 'react-i18next'
+import Button from '../../components/Button'
 import ProgressBar from '../../components/ProgressBar'
 
 export class SigIn extends Component {
@@ -17,6 +18,16 @@ export class SigIn extends Component {
   draft = this.props.drafts.find(draft => draft.draftId === this.draftId)
 
   isEmpty = true
+
+  displaySign = false
+
+  setEmpty = isEmpty => {
+    this.isEmpty = isEmpty
+  }
+
+  setDisplay = displaySign => {
+    this.displaySign = displaySign
+  }
 
   onPressBack = () => {
     this.props.navigation.goBack()
@@ -32,6 +43,10 @@ export class SigIn extends Component {
         }
       })
     }
+    if (this.draft.sign) {
+      this.setEmpty(false)
+      this.setDisplay(true)
+    }
 
     this.props.navigation.setParams({
       onPressBack: this.onPressBack
@@ -39,6 +54,7 @@ export class SigIn extends Component {
   }
 
   handleContinue = () => {
+    this.sign && this.sign.saveImage()
     if (!this.isEmpty) {
       this.props.navigation.push('Final', {
         familyLifemap: this.draft,
@@ -49,16 +65,20 @@ export class SigIn extends Component {
     }
   }
 
-  onSave = img => {
-    this.isEmpty = false
+  _onSaveEvent(result) {
     let updatedDraft = this.draft
-    updatedDraft.sign = img
-    this.props.updateDraft(updatedDraft)
-    this.handleContinue()
+    updatedDraft.sign = 'data:image/png;base64,' + result.encoded
+    this.updateDraft(updatedDraft)
+  }
+
+  _onDragEvent() {
+    this.setEmpty(false)
   }
 
   onClear = () => {
-    this.isEmpty = true
+    this.setEmpty(true)
+    this.setDisplay(false)
+    this.sign && this.sign.resetImage()
     let updatedDraft = this.draft
     updatedDraft.sign = ''
     this.props.updateDraft(updatedDraft)
@@ -66,34 +86,12 @@ export class SigIn extends Component {
 
   render() {
     const { t } = this.props
-    const style = `.m-signature-pad--footer
-        .button {
-          background-color: #50AA47;
-          color: #FFF;
-          height: 50px;
-          margin-top: 50px;
-          margin-bottom: -21px;
-          margin-right: -21px;
-          flex-direction: row;
-          align-items: center;
-          justify-content: center;
-          font-family: Poppins;
-          font-weight: 600;
-          font-size: 18px;
-          width: 58%;
-        }
-        .button.clear {
-          margin-left: -21px;
-          margin-right: 0px;
-          text-decoration-line: underline;
-          text-decoration-style: solid;
-          text-decoration-color: #50AA47;
-          background-color: #FFFFFF;
-          color: #50AA47;
-          font-size:14px;
-          }`
+    if (this.draft.sign) {
+      this.setEmpty(false)
+      this.setDisplay(true)
+    }
     return (
-      <View style={{ flex: 1 }}>
+      <View style={styles.contentContainer}>
         <ProgressBar
           progress={
             ((this.draft.familyData.countFamilyMembers > 1 ? 4 : 3) +
@@ -108,15 +106,41 @@ export class SigIn extends Component {
             source={require('../../../assets/images/pen_icon.png')}
           />
         </View>
-        <SignatureCanvas
-          onOK={this.onSave}
-          onEmpty={this.onClear}
-          descriptionText=""
-          clearText={t('views.sign.erase')}
-          confirmText={t('general.continue')}
-          webStyle={style}
-          autoClear={false}
-        />
+        {this.displaySign ? (
+          <Image style={styles.container} source={{ uri: this.draft.sign }} />
+        ) : (
+          <SignatureCapture
+            style={styles.container}
+            key={'sign'}
+            ref={r => {
+              this.sign = r
+            }}
+            onSaveEvent={this._onSaveEvent}
+            onDragEvent={this._onDragEvent}
+            saveImageFileInExtStorage={false}
+            showNativeButtons={false}
+            showTitleLabel={false}
+            viewMode={'portrait'}
+            draft={this.draft}
+            updateDraft={this.props.updateDraft}
+            setEmpty={this.setEmpty}
+            setDisplay={this.setDisplay}
+          />
+        )}
+        <View style={styles.buttonsBar}>
+          <Button
+            id="erase"
+            text={t('views.sign.erase')}
+            underlined
+            handleClick={this.onClear}
+          />
+          <Button
+            id="continue"
+            colored
+            text={t('general.continue')}
+            handleClick={this.handleContinue}
+          />
+        </View>
       </View>
     )
   }
@@ -132,11 +156,29 @@ const styles = StyleSheet.create({
     marginTop: '-2%',
     position: 'relative'
   },
+  container: {
+    flex: 1,
+    padding: 15,
+    paddingTop: 48,
+    height: 900,
+    borderColor: '#000033'
+  },
   iconPriority: {
     height: 40,
     width: 40,
     backgroundColor: '#FFFFFF',
     justifyContent: 'center'
+  },
+  buttonsBar: {
+    height: 50,
+    marginTop: 50,
+    marginBottom: -2,
+    flexDirection: 'row'
+  },
+  contentContainer: {
+    flexGrow: 1,
+    flexDirection: 'column',
+    justifyContent: 'space-between'
   }
 })
 

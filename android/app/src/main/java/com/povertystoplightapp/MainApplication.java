@@ -3,6 +3,7 @@ import com.povertystoplightapp.CustomDeletePackage;
 import android.app.Application;
 import com.facebook.react.ReactApplication;
 import com.imagepicker.ImagePickerPackage;
+import com.rssignaturecapture.RSSignatureCapturePackage;
 import com.swmansion.rnscreens.RNScreensPackage;
 import com.swmansion.reanimated.ReanimatedPackage;
 import com.reactnativecommunity.asyncstorage.AsyncStoragePackage;
@@ -32,7 +33,7 @@ import android.content.Context;
 
 import java.util.Arrays;
 import java.util.List;
-
+import com.rssignaturecapture.RSSignatureCapturePackage;
 public class MainApplication extends Application implements ReactApplication {
 
   private final ReactNativeHost mReactNativeHost = new ReactNativeHost(this) {
@@ -47,6 +48,7 @@ public class MainApplication extends Application implements ReactApplication {
         
           new MainReactPackage(),
             new ImagePickerPackage(),
+            new RSSignatureCapturePackage(),
             new RNScreensPackage(),
             new ReanimatedPackage(),
             new AsyncStoragePackage(),

@@ -1,4 +1,4 @@
-nvm use 8
+nvm use 12
 npm i
 export ANDROID_HOME=/Users/ggaona/Library/Android/sdk
 npm run convert-androidx
