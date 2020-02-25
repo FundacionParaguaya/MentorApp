@@ -107,17 +107,19 @@ export class Picture extends Component {
     //remove picture from draft
   }
 
-  onContinue = function(surveyProp) {
-    if (surveyProp.surveyConfig.signSupport) {
+  onContinue = function() {
+    let survey = this.props.navigation.getParam('survey')
+
+    if (survey.surveyConfig.signSupport) {
       this.props.navigation.navigate('Signin', {
         step: 0,
-        survey: surveyProp,
+        survey: survey,
         draftId: this.draftId
       })
     } else {
       this.props.navigation.navigate('Final', {
         fromBeginLifemap: true,
-        survey: surveyProp,
+        survey: survey,
         draftId: this.draftId,
         draft: this.draft
       })

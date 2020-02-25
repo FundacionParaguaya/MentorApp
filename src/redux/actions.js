@@ -1,6 +1,6 @@
 // Login
 import { PhoneNumberUtil } from 'google-libphonenumber'
-
+import { ImageStore } from 'react-native'
 export const SET_LOGIN_STATE = 'SET_LOGIN_STATE'
 export const USER_LOGOUT = 'USER_LOGOUT'
 
@@ -204,6 +204,13 @@ export const submitDraft = (env, token, id, payload) => {
   const sanitizedSnapshot = { ...payload }
   let { economicSurveyDataList } = payload
 
+  payload.pictures.forEach(picture => {
+    ImageStore.getBase64ForTag(
+      picture.source,
+      success => (picture.source = success),
+      () => console.log('conversion to base64 failed')
+    )
+  })
   const validEconomicIndicator = ec =>
     (ec.value !== null && ec.value !== undefined && ec.value !== '') ||
     (!!ec.multipleValue && ec.multipleValue.length > 0)
@@ -217,6 +224,7 @@ export const submitDraft = (env, token, id, payload) => {
     // eslint-disable-next-line no-param-reassign
     member.socioEconomicAnswers = socioEconomicAnswers
   })
+
   return {
     type: SUBMIT_DRAFT,
     env,
