@@ -54,7 +54,7 @@ export class SigIn extends Component {
   }
 
   handleContinue = () => {
-    this.sign.saveImage()
+    this.sign && this.sign.saveImage()
     if (!this.isEmpty) {
       this.props.navigation.push('Final', {
         familyLifemap: this.draft,
@@ -67,7 +67,7 @@ export class SigIn extends Component {
 
   _onSaveEvent(result) {
     let updatedDraft = this.draft
-    updatedDraft.sign = result.encoded
+    updatedDraft.sign = 'data:image/png;base64,' + result.encoded
     this.updateDraft(updatedDraft)
   }
 
@@ -86,6 +86,10 @@ export class SigIn extends Component {
 
   render() {
     const { t } = this.props
+    if (this.draft.sign) {
+      this.setEmpty(false)
+      this.setDisplay(true)
+    }
     return (
       <View style={styles.contentContainer}>
         <ProgressBar
@@ -102,13 +106,9 @@ export class SigIn extends Component {
             source={require('../../../assets/images/pen_icon.png')}
           />
         </View>
-        {this.displaySign && (
-          <Image
-            style={styles.container}
-            source={{ uri: `data:image/png;base64,${this.draft.sign}` }}
-          />
-        )}
-        {!this.displaySign && (
+        {this.displaySign ? (
+          <Image style={styles.container} source={{ uri: this.draft.sign }} />
+        ) : (
           <SignatureCapture
             style={styles.container}
             key={'sign'}
