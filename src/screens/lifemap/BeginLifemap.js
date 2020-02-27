@@ -50,7 +50,6 @@ export class BeginLifemap extends Component {
   onSaveSnapshot = () => {
     console.log('Skipped Stoplight Section')
     console.log('Draft')
-    console.log(this.draft)
 
     this.props.updateDraft({
       ...this.draft,

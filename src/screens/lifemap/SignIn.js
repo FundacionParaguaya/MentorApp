@@ -1,13 +1,14 @@
-import React, { Component } from 'react'
-import { Image, StyleSheet, View } from 'react-native'
 import PropTypes from 'prop-types'
+import React, { Component } from 'react'
+import { withNamespaces } from 'react-i18next'
+import { Image, StyleSheet, View } from 'react-native'
 import SignatureCapture from 'react-native-signature-capture'
 import { connect } from 'react-redux'
-import { getTotalEconomicScreens } from './helpers'
-import { updateDraft } from '../../redux/actions'
-import { withNamespaces } from 'react-i18next'
+
 import Button from '../../components/Button'
 import ProgressBar from '../../components/ProgressBar'
+import { updateDraft } from '../../redux/actions'
+import { getTotalEconomicScreens } from './helpers'
 
 export class SigIn extends Component {
   survey = this.props.navigation.getParam('survey')
@@ -30,7 +31,10 @@ export class SigIn extends Component {
   }
 
   onPressBack = () => {
-    this.props.navigation.goBack()
+    this.props.navigation.navigate('Picture', {
+      survey: this.props.navigation.getParam('survey'),
+      draftId: this.draftId
+    })
   }
 
   componentDidMount() {

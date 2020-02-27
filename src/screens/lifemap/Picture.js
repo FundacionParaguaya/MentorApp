@@ -75,7 +75,7 @@ export class Picture extends Component {
               // content: 'data:image/jpeg;base64,' + response.data,
               name: response.fileName,
               type: response.type,
-              source: response.uri
+              content: response.uri
             }
           ]
         })
@@ -85,7 +85,7 @@ export class Picture extends Component {
 
         newArr.push({
           // content: 'data:image/jpeg;base64,' + response.data,
-          source: response.uri,
+          content: response.uri,
           name: response.fileName,
           type: response.type
         })
@@ -96,21 +96,18 @@ export class Picture extends Component {
   }
   removePicture = function(elem) {
     //remove picture from state
-    this.draft.pictures = []
-    this.props.updateDraft(this.draft)
 
     let newState = this.state.pictures.filter(e => e.name != elem.name)
 
+    let updatedDraft = this.draft
+    updatedDraft.pictures = newState
+    this.props.updateDraft(updatedDraft)
     this.setState({ pictures: newState })
-
-    //i use this weird method of updating the state on removal because it dosent update other way, i suppost this is because of the redux setup
-
-    //remove picture from draft
   }
 
   onContinue = function() {
     let survey = this.props.navigation.getParam('survey')
-
+    console.log(this.draft)
     if (survey.surveyConfig.signSupport) {
       this.props.navigation.navigate('Signin', {
         step: 0,
@@ -148,7 +145,7 @@ export class Picture extends Component {
                   // content: 'data:image/jpeg;base64,' + response.data,
                   name: response.fileName,
                   type: response.type,
-                  source: response.uri
+                  content: response.uri
                 }
               ]
             })
@@ -158,7 +155,7 @@ export class Picture extends Component {
 
             newArr.push({
               // content: 'data:image/jpeg;base64,' + response.data,
-              source: response.uri,
+              content: response.uri,
               name: response.fileName,
               type: response.type
             })
@@ -176,7 +173,7 @@ export class Picture extends Component {
 
   render() {
     const { t } = this.props
-
+    console.log(this.draft)
     return (
       <StickyFooter
         onContinue={() => this.onContinue(this.draft)}
@@ -209,7 +206,7 @@ export class Picture extends Component {
                       <Image
                         key={e.content}
                         style={styles.picture}
-                        source={{ uri: e.source }}
+                        source={{ uri: e.content }}
                       />
                       <Text style={styles.centerText}>
                         {t('views.pictures.uploadedPicture')}

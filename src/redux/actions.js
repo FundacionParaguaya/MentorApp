@@ -208,11 +208,11 @@ export const submitDraft = (env, token, id, payload) => {
   for (var index in sanitizedSnapshot.pictures) {
     var picture = sanitizedSnapshot.pictures[index]
     ImageStore.getBase64ForTag(
-      picture.source,
+      picture.content,
       success =>
         base64Pictures.push({
           name: picture.name,
-          source: success,
+          content: success,
           type: picture.type
         }),
       () => console.log('conversion to base64 failed')
