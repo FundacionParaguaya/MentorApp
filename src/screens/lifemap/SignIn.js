@@ -31,10 +31,7 @@ export class SigIn extends Component {
   }
 
   onPressBack = () => {
-    this.props.navigation.navigate('Picture', {
-      survey: this.props.navigation.getParam('survey'),
-      draftId: this.draftId
-    })
+    this.props.navigation.goBack()
   }
 
   componentDidMount() {

@@ -40,7 +40,7 @@ export class Picture extends Component {
   draft = this.props.drafts.find(draft => draft.draftId === this.draftId)
 
   onPressBack = () => {
-    this.props.navigation.navigate('BeginLifemap', {
+    this.props.navigation.replace('BeginLifemap', {
       survey: this.props.navigation.getParam('survey'),
       draftId: this.draftId
     })
@@ -109,13 +109,13 @@ export class Picture extends Component {
     let survey = this.props.navigation.getParam('survey')
     console.log(this.draft)
     if (survey.surveyConfig.signSupport) {
-      this.props.navigation.navigate('Signin', {
+      this.props.navigation.replace('Signin', {
         step: 0,
         survey: survey,
         draftId: this.draftId
       })
     } else {
-      this.props.navigation.navigate('Final', {
+      this.props.navigation.replace('Final', {
         fromBeginLifemap: true,
         survey: survey,
         draftId: this.draftId,
