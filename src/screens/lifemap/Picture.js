@@ -39,21 +39,24 @@ export class Picture extends Component {
   // we need it for progress bar
   draft = this.props.drafts.find(draft => draft.draftId === this.draftId)
 
-  isEmpty = true
-
   onPressBack = () => {
     this.props.navigation.navigate('BeginLifemap', {
-      survey: this.survey,
+      survey: this.props.navigation.getParam('survey'),
       draftId: this.draftId
     })
   }
 
   componentDidMount() {
+    if (this.draft.progress.screen !== 'Picture') {
+      let updatedDraft = this.draft
+      updatedDraft.progress.screen = 'Picture'
+      this.props.updateDraft(updatedDraft)
+    }
+    this.setState({ pictures: this.draft.pictures })
+
     this.props.navigation.setParams({
       onPressBack: this.onPressBack
     })
-
-    this.setState({ pictures: this.draft.pictures })
   }
 
   openGallery = async function() {
@@ -93,17 +96,15 @@ export class Picture extends Component {
   }
   removePicture = function(elem) {
     //remove picture from state
+    this.draft.pictures = []
+    this.props.updateDraft(this.draft)
 
     let newState = this.state.pictures.filter(e => e.name != elem.name)
 
     this.setState({ pictures: newState })
 
     //i use this weird method of updating the state on removal because it dosent update other way, i suppost this is because of the redux setup
-    let updatedDraft = this.draft
-    let newArr = updatedDraft.pictures
-    newArr = this.state.pictures.filter(e => e.name != elem.name)
-    updatedDraft.pictures = newArr
-    this.props.updateDraft(updatedDraft)
+
     //remove picture from draft
   }
 
