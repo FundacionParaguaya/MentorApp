@@ -22,7 +22,7 @@ import globalStyles from '../../globalStyles'
 import { submitDraft, updateDraft } from '../../redux/actions'
 import EmailSentModal from '../modals/EmailSentModal'
 import WhatsappSentModal from '../modals/WhatsappSentModal'
-import { prepareDraftForSubmit , convertImages } from '../utils/helpers'
+import { prepareDraftForSubmit, convertImages } from '../utils/helpers'
 
 import {
   buildPDFOptions,
