@@ -31,7 +31,14 @@ export class SigIn extends Component {
   }
 
   onPressBack = () => {
-    this.props.navigation.goBack()
+    if (this.survey.surveyConfig.pictureSupport) {
+      this.props.navigation.replace('Picture', {
+        survey: this.survey,
+        draftId: this.draftId
+      })
+    } else {
+      this.props.navigation.goBack()
+    }
   }
 
   componentDidMount() {

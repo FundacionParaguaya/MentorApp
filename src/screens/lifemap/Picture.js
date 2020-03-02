@@ -40,7 +40,11 @@ export class Picture extends Component {
   draft = this.props.drafts.find(draft => draft.draftId === this.draftId)
 
   onPressBack = () => {
-    this.props.navigation.replace('BeginLifemap', {
+    const previousPage = this.draft.stoplightSkipped
+      ? 'BeginLifemap'
+      : 'Priorities'
+
+    this.props.navigation.replace(previousPage, {
       survey: this.props.navigation.getParam('survey'),
       draftId: this.draftId
     })
