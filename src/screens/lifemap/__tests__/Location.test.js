@@ -543,7 +543,7 @@ describe('resuming a draft', () => {
   })
 })
 
-describe('readonly mode', () => {
+describe('readOnly mode', () => {
   beforeEach(() => {
     props = createTestProps({
       drafts: [resumedDraft],
@@ -569,6 +569,6 @@ describe('readonly mode', () => {
 
   it('disables editing fields', () => {
     wrapper.instance().determineScreenState(false)
-    expect(wrapper.find(TextInput).first()).toHaveProp({ readonly: true })
+    expect(wrapper.find(TextInput).first()).toHaveProp({ readOnly: true })
   })
 })

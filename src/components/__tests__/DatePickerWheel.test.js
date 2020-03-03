@@ -28,7 +28,7 @@ const createTestProps = props => ({
   days,
   value: '',
   placeholder: 'Select date',
-  readonly: false,
+  readOnly: false,
   hasError: false,
   ...props
 })

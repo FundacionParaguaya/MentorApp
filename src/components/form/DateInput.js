@@ -1,12 +1,12 @@
-import { StyleSheet, Text, View } from 'react-native'
-
-import DatePickerWheel from './DatePickerWheel'
+import moment from 'moment'
 import PropTypes from 'prop-types'
 import React from 'react'
-import colors from '../../theme.json'
-import moment from 'moment'
 import { withNamespaces } from 'react-i18next'
+import { StyleSheet, Text, View } from 'react-native'
+
 import i18n from '../../i18n'
+import colors from '../../theme.json'
+import DatePickerWheel from './DatePickerWheel'
 
 export class DateInputComponent extends React.Component {
   state = {
@@ -90,7 +90,7 @@ export class DateInputComponent extends React.Component {
   }
 
   render() {
-    const { t, readonly, required } = this.props
+    const { t, readOnly, required } = this.props
     const { date } = this.state
     const months = [
       { text: t('months.january'), value: 'January' },
@@ -107,18 +107,18 @@ export class DateInputComponent extends React.Component {
       { text: t('months.december'), value: 'December' }
     ]
 
-    return readonly && !this.props.initialValue ? null : (
+    return readOnly && !this.props.initialValue ? null : (
       <View>
-        {readonly && (
+        {readOnly && (
           <Text
-            style={[styles.text, { marginBottom: readonly ? -15 : 15 }]}
+            style={[styles.text, { marginBottom: readOnly ? -15 : 15 }]}
             accessibilityLabel={`${this.props.label} ${
-              required && !readonly
+              required && !readOnly
                 ? i18n.t('validation.fieldIsRequiredAccessibilityLabel')
                 : ''
             }`}
           >
-            {this.props.label} {required && !readonly ? '*' : ''}
+            {this.props.label} {required && !readOnly ? '*' : ''}
           </Text>
         )}
         <View style={styles.container}>
@@ -126,13 +126,13 @@ export class DateInputComponent extends React.Component {
             <DatePickerWheel
               onChange={this.setDate}
               placeholder={
-                readonly
+                readOnly
                   ? this.state.date
                     ? ''
                     : `${this.props.label}`
-                  : `${this.props.label} ${required && !readonly ? '*' : ''}`
+                  : `${this.props.label} ${required && !readOnly ? '*' : ''}`
               }
-              readonly={readonly}
+              readOnly={readOnly}
               value={date}
               days={this.days}
               months={months}
@@ -171,7 +171,7 @@ DateInputComponent.propTypes = {
   id: PropTypes.string,
   required: PropTypes.bool,
   showErrors: PropTypes.bool,
-  readonly: PropTypes.bool,
+  readOnly: PropTypes.bool,
   setError: PropTypes.func,
   onValidDate: PropTypes.func
 }

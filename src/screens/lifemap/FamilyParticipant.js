@@ -299,7 +299,7 @@ export class FamilyParticipant extends Component {
           <Icon name="face" color={colors.grey} size={61} style={styles.icon} />
           {!this.readOnly ? (
             <Text
-              readonly={this.readOnly}
+              readOnly={this.readOnly}
               style={[globalStyles.h2Bold, styles.heading]}
             >
               {t('views.family.primaryParticipantHeading')}
@@ -315,7 +315,7 @@ export class FamilyParticipant extends Component {
           initialValue={participant.firstName || ''}
           required={setValidationSchema(this.requiredFields, 'firstName', true)}
           validation="string"
-          readonly={!!this.readOnly}
+          readOnly={!!this.readOnly}
           onChangeText={this.updateParticipant}
           showErrors={showErrors}
           setError={isError => this.setError(isError, 'firstName')}
@@ -328,7 +328,7 @@ export class FamilyParticipant extends Component {
           initialValue={participant.lastName || ''}
           required={setValidationSchema(this.requiredFields, 'lastName', true)}
           validation="string"
-          readonly={!!this.readOnly}
+          readOnly={!!this.readOnly}
           onChangeText={this.updateParticipant}
           showErrors={showErrors}
           setError={isError => this.setError(isError, 'lastName')}
@@ -346,7 +346,7 @@ export class FamilyParticipant extends Component {
           setError={isError => this.setError(isError, 'gender')}
           otherField="customGender"
           otherPlaceholder={t('views.family.specifyGender')}
-          readonly={!!this.readOnly}
+          readOnly={!!this.readOnly}
           initialOtherValue={participant.customGender}
         />
 
@@ -355,7 +355,7 @@ export class FamilyParticipant extends Component {
           required={setValidationSchema(this.requiredFields, 'birthDate', true)}
           label={t('views.family.dateOfBirth')}
           initialValue={participant.birthDate}
-          readonly={!!this.readOnly}
+          readOnly={!!this.readOnly}
           onValidDate={this.updateParticipant}
           showErrors={showErrors}
           setError={isError => this.setError(isError, 'birthDate')}
@@ -375,7 +375,7 @@ export class FamilyParticipant extends Component {
           otherPlaceholder={t('views.family.customDocumentType')}
           otherField="customDocumentType"
           initialOtherValue={participant.customDocumentType}
-          readonly={!!this.readOnly}
+          readOnly={!!this.readOnly}
           onChange={this.updateParticipant}
           showErrors={showErrors}
           setError={isError => this.setError(isError, 'documentType')}
@@ -390,7 +390,7 @@ export class FamilyParticipant extends Component {
             'documentNumber',
             true
           )}
-          readonly={!!this.readOnly}
+          readOnly={!!this.readOnly}
           onChangeText={this.updateParticipant}
           showErrors={showErrors}
           setError={isError => this.setError(isError, 'documentNumber')}
@@ -409,7 +409,7 @@ export class FamilyParticipant extends Component {
           )}
           defaultCountry={this.survey.surveyConfig.surveyLocation.country}
           countriesOnTop={this.survey.surveyConfig.countryOfBirth}
-          readonly={!!this.readOnly}
+          readOnly={!!this.readOnly}
           onChange={this.updateParticipant}
           showErrors={showErrors}
           setError={isError => this.setError(isError, 'birthCountry')}
@@ -420,7 +420,7 @@ export class FamilyParticipant extends Component {
           initialValue={participant.email}
           placeholder={t('views.family.email')}
           validation="email"
-          readonly={!!this.readOnly}
+          readOnly={!!this.readOnly}
           onChangeText={this.updateParticipant}
           showErrors={showErrors}
           setError={isError => this.setError(isError, 'email')}
@@ -433,6 +433,7 @@ export class FamilyParticipant extends Component {
           initialValue={participant.phoneCode || this.initialPhoneCode}
           options={this.phoneCodes}
           onChange={this.updateParticipant}
+          readOnly={!!this.readOnly}
           showErrors={showErrors}
           setError={isError => this.setError(isError, 'phoneCode')}
         />
@@ -443,7 +444,7 @@ export class FamilyParticipant extends Component {
           placeholder={t('views.family.phone')}
           validation="phoneNumber"
           phoneValidation={this.phoneValidation}
-          readonly={!!this.readOnly}
+          readOnly={!!this.readOnly}
           onChangeText={this.updateParticipant}
           showErrors={showErrors}
           setError={isError => this.setError(isError, 'phoneNumber')}
@@ -460,7 +461,7 @@ export class FamilyParticipant extends Component {
             true
           )}
           options={this.familyMembersArray}
-          readonly={!!this.readOnly}
+          readOnly={!!this.readOnly}
           onChange={this.addFamilyCount}
           showErrors={showErrors}
           setError={isError => this.setError(isError, 'countFamilyMembers')}

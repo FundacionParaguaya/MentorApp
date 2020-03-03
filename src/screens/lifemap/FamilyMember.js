@@ -1,11 +1,12 @@
-import React, { Component } from 'react'
 import PropTypes from 'prop-types'
-import { View, Text, StyleSheet, Platform } from 'react-native'
+import React, { Component } from 'react'
 import { withNamespaces } from 'react-i18next'
+import { Platform, StyleSheet, Text, View } from 'react-native'
+
+import DateInput from '../../components/form/DateInput'
+import Select from '../../components/form/Select'
 import TextInput from '../../components/form/TextInput'
 import globalStyles from '../../globalStyles'
-import Select from '../../components/form/Select'
-import DateInput from '../../components/form/DateInput'
 import colors from '../../theme.json'
 
 export class FamilyMember extends Component {
@@ -42,14 +43,14 @@ export class FamilyMember extends Component {
           id="readOnlyTextInput"
           placeholder={t('views.family.firstName')}
           initialValue={member.firstName}
-          readonly
+          readOnly
           onChangeText={() => {}}
           setError={() => {}}
         />
 
         <Select
           onChange={() => {}}
-          readonly
+          readOnly
           placeholder={t('views.family.gender')}
           initialValue={member.gender}
           options={[
@@ -63,7 +64,7 @@ export class FamilyMember extends Component {
         <DateInput
           label={t('views.family.dateOfBirth')}
           initialValue={member.birthDate}
-          readonly
+          readOnly
           detectError={() => {}}
           onValidDate={() => {}}
           setError={() => {}}

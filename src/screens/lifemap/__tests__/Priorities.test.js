@@ -1,6 +1,7 @@
-import { Priorities } from '../Priorities'
-import React from 'react'
 import { shallow } from 'enzyme'
+import React from 'react'
+
+import { Priorities } from '../Priorities'
 
 const survey = {
   id: 1,
@@ -136,7 +137,7 @@ describe('check if component render properly', () => {
             return survey
           } else if (param === 'draftId') {
             return 1
-          } else if (param === 'readonly') {
+          } else if (param === 'readOnly') {
             return true
           } else if (param === 'resumeDraft') {
             return true
