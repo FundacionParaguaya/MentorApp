@@ -22,7 +22,8 @@ import globalStyles from '../../globalStyles'
 import { submitDraft, updateDraft } from '../../redux/actions'
 import EmailSentModal from '../modals/EmailSentModal'
 import WhatsappSentModal from '../modals/WhatsappSentModal'
-import { prepareDraftForSubmit } from '../utils/helpers'
+import { prepareDraftForSubmit, convertImages } from '../utils/helpers'
+
 import {
   buildPDFOptions,
   buildPrintOptions,
@@ -91,12 +92,19 @@ export class Final extends Component {
   prepareDraftForSubmit() {
     if (this.state.loading) {
       const draft = prepareDraftForSubmit(this.draft, this.survey)
-      this.props.submitDraft(
-        url[this.props.env],
-        this.props.user.token,
-        draft.draftId,
-        { ...draft, sendEmail: this.state.sendEmailFlag }
-      )
+      convertImages(draft).then(imagesArray => {
+        console.log('end converting images')
+        this.props.submitDraft(
+          url[this.props.env],
+          this.props.user.token,
+          draft.draftId,
+          {
+            ...draft,
+            sendEmail: this.state.sendEmailFlag,
+            pictures: imagesArray
+          }
+        )
+      })
 
       setTimeout(() => {
         this.props.navigation.popToTop()

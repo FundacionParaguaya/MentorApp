@@ -106,19 +106,6 @@ export default {
       )
     })
   },
-  Signin: {
-    screen: SignIn,
-    navigationOptions: ({ navigation }) => ({
-      ...generateNavStyles({ navigation, shadowHeader: false }),
-      ...addCloseIcon(navigation),
-      headerTitle: (
-        <Title
-          title="views.sign.signHere"
-          style={{ marginLeft: 'auto', marginRight: 'auto' }}
-        />
-      )
-    })
-  },
   Picture: {
     screen: Picture,
     navigationOptions: ({ navigation }) => ({
@@ -127,6 +114,19 @@ export default {
       headerTitle: (
         <Title
           title="views.pictures.uploadPictures"
+          style={{ marginLeft: 'auto', marginRight: 'auto' }}
+        />
+      )
+    })
+  },
+  Signin: {
+    screen: SignIn,
+    navigationOptions: ({ navigation }) => ({
+      ...generateNavStyles({ navigation, shadowHeader: false }),
+      ...addCloseIcon(navigation),
+      headerTitle: (
+        <Title
+          title="views.sign.signHere"
           style={{ marginLeft: 'auto', marginRight: 'auto' }}
         />
       )

@@ -27,7 +27,7 @@ export class BeginLifemap extends Component {
         ? 'SocioEconomicQuestion'
         : 'Location'
 
-    this.props.navigation.navigate(previousPage, {
+    this.props.navigation.replace(previousPage, {
       fromBeginLifemap: true,
       survey: this.survey,
       draftId: this.draftId
@@ -51,7 +51,6 @@ export class BeginLifemap extends Component {
     console.log('Skipped Stoplight Section')
     console.log('Draft')
     console.log(this.draft)
-
     this.props.updateDraft({
       ...this.draft,
       stoplightSkipped: true
@@ -59,12 +58,12 @@ export class BeginLifemap extends Component {
     this.draft.stoplightSkipped = true
 
     if (this.survey.surveyConfig.pictureSupport) {
-      this.props.navigation.navigate('Picture', {
+      this.props.navigation.replace('Picture', {
         survey: this.survey,
         draftId: this.draftId
       })
     } else if (this.survey.surveyConfig.signSupport) {
-      this.props.navigation.navigate('Signin', {
+      this.props.navigation.replace('Signin', {
         step: 0,
         survey: this.survey,
         draftId: this.draftId
@@ -78,6 +77,7 @@ export class BeginLifemap extends Component {
       })
     }
   }
+
   componentDidMount() {
     if (this.draft.progress.screen !== 'BeginLifemap') {
       this.props.updateDraft({
