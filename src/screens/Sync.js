@@ -20,7 +20,7 @@ import { url } from '../config'
 import globalStyles from '../globalStyles'
 import { submitDraft } from '../redux/actions'
 import { screenSyncScreenContent } from '../screens/utils/accessibilityHelpers'
-import { prepareDraftForSubmit } from './utils/helpers'
+import { prepareDraftForSubmit, convertImages } from './utils/helpers'
 
 export class Sync extends Component {
   acessibleComponent = React.createRef()
@@ -52,11 +52,13 @@ export class Sync extends Component {
     )
 
     draftsWithError.forEach(draft => {
-      console.log('sanitazedDraft in SYNC');
-      const sanitazedDraft = prepareDraftForSubmit(this.draft, this.props.surveys.find(survey => survey.id === draft.surveyId))
+      console.log('sanitazedDraft in SYNC')
+      const sanitazedDraft = prepareDraftForSubmit(
+        this.draft,
+        this.props.surveys.find(survey => survey.id === draft.surveyId)
+      )
       convertImages(sanitazedDraft).then(imagesArray => {
-
-        console.log('submited Draft with image: ', imagesArray);
+        console.log('submited Draft with image: ', imagesArray)
         this.props.submitDraft(
           url[this.props.env],
           this.props.user.token,
@@ -119,10 +121,10 @@ export class Sync extends Component {
           accessibilityLabel={screenAccessibilityContent}
         >
           {offline.online &&
-            !pendingDrafts.length &&
-            !draftsWithError.length ? (
-              <SyncUpToDate date={lastSync} lng={this.props.lng} />
-            ) : null}
+          !pendingDrafts.length &&
+          !draftsWithError.length ? (
+            <SyncUpToDate date={lastSync} lng={this.props.lng} />
+          ) : null}
           {offline.online && pendingDrafts.length ? (
             <SyncInProgress pendingDraftsLength={pendingDrafts.length} />
           ) : null}
