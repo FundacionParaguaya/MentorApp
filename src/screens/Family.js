@@ -25,7 +25,7 @@ import globalStyles from '../globalStyles'
 import mapPlaceholderLarge from '../../assets/images/map_placeholder_1000.png'
 import marker from '../../assets/images/marker.png'
 import moment from 'moment'
-import { prepareDraftForSubmit } from './utils/helpers'
+import { prepareDraftForSubmit,convertImages } from './utils/helpers'
 import { submitDraft } from '../redux/actions'
 import { url } from '../config'
 import { withNamespaces } from 'react-i18next'
@@ -116,12 +116,17 @@ export class Family extends Component {
     if (this.state.loading) {
       const draft = prepareDraftForSubmit(this.familyLifemap, this.survey)
 
+      convertImages(draft).then(imagesArray => {
       this.props.submitDraft(
         url[this.props.env],
         this.props.user.token,
         draft.draftId,
-        draft
+        {
+          ...draft,
+          pictures: imagesArray
+        }
       )
+    })
       setTimeout(() => {
         this.props.navigation.popToTop()
         this.props.navigation.navigate('Dashboard')

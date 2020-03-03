@@ -52,15 +52,26 @@ export class Sync extends Component {
     )
 
     draftsWithError.forEach(draft => {
-      this.props.submitDraft(
-        url[this.props.env],
-        this.props.user.token,
-        draft.draftId,
-        prepareDraftForSubmit(
-          draft,
-          this.props.surveys.find(survey => survey.id === draft.surveyId)
+      console.log('sanitazedDraft in SYNC');
+      const sanitazedDraft = prepareDraftForSubmit(this.draft, this.props.surveys.find(survey => survey.id === draft.surveyId))
+      convertImages(sanitazedDraft).then(imagesArray => {
+
+        console.log('submited Draft with image: ', imagesArray);
+        this.props.submitDraft(
+          url[this.props.env],
+          this.props.user.token,
+          sanitazedDraft.draftId,
+          {
+            ...sanitazedDraft,
+            sendEmail: this.state.sendEmailFlag,
+            pictures: imagesArray
+          }
         )
-      )
+      })
+      setTimeout(() => {
+        this.props.navigation.popToTop()
+        this.props.navigation.navigate('Dashboard')
+      }, 500)
     })
   }
 
@@ -108,10 +119,10 @@ export class Sync extends Component {
           accessibilityLabel={screenAccessibilityContent}
         >
           {offline.online &&
-          !pendingDrafts.length &&
-          !draftsWithError.length ? (
-            <SyncUpToDate date={lastSync} lng={this.props.lng} />
-          ) : null}
+            !pendingDrafts.length &&
+            !draftsWithError.length ? (
+              <SyncUpToDate date={lastSync} lng={this.props.lng} />
+            ) : null}
           {offline.online && pendingDrafts.length ? (
             <SyncInProgress pendingDraftsLength={pendingDrafts.length} />
           ) : null}
