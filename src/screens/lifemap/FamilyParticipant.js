@@ -222,6 +222,9 @@ export class FamilyParticipant extends Component {
 
     const regularDraft = {
       draftId,
+      stoplightSkipped: false,
+      sign: '',
+      pictures: [],
       sendEmail: false,
       created: Date.now(),
       status: 'Draft',

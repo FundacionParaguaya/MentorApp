@@ -1,6 +1,7 @@
-import { BeginLifemap } from '../BeginLifemap'
-import React from 'react'
 import { shallow } from 'enzyme'
+import React from 'react'
+
+import { BeginLifemap } from '../BeginLifemap'
 
 const survey = {
   id: 1,
@@ -59,6 +60,7 @@ const createTestProps = props => ({
   t: value => value,
   updateDraft: jest.fn(),
   navigation: {
+    replace: jest.fn(),
     navigate: jest.fn(),
     setParams: jest.fn(),
     getParam: jest.fn(param => {
@@ -104,7 +106,7 @@ it('navigates to first Question on continue ', () => {
 it('navigates back to proper Location when no socio economic questions in survey', () => {
   wrapper.instance().onPressBack()
 
-  expect(props.navigation.navigate).toHaveBeenCalledWith('Location', {
+  expect(props.navigation.replace).toHaveBeenCalledWith('Location', {
     fromBeginLifemap: true,
     survey,
     draftId
@@ -126,7 +128,7 @@ it('navigates back to last socio economic screen when it exists in survey', () =
       }
     ],
     navigation: {
-      navigate: jest.fn(),
+      replace: jest.fn(),
       setParams: jest.fn(),
       getParam: jest.fn(param => {
         if (param === 'survey') {
@@ -142,7 +144,7 @@ it('navigates back to last socio economic screen when it exists in survey', () =
 
   wrapper.instance().onPressBack()
 
-  expect(props.navigation.navigate).toHaveBeenCalledWith(
+  expect(props.navigation.replace).toHaveBeenCalledWith(
     'SocioEconomicQuestion',
     {
       fromBeginLifemap: true,

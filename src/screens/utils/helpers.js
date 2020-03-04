@@ -4,6 +4,7 @@ import {
   getDraftWithUpdatedQuestionsCascading
 } from '../utils/conditional_logic'
 import { generateRandomDraftData } from './demo_draft_generator'
+import { ImageStore } from 'react-native'
 
 const LATIN_CHARS = /^[A-Za-z0-9]*$/
 
@@ -50,6 +51,28 @@ export const prepareDraftForSubmit = (draft, survey) => {
   }
 
   return result
+}
+export const convertImages = sanitizedSnapshot => {
+  // var base64Pictures = []
+  const promises = []
+  for (var index in sanitizedSnapshot.pictures) {
+    var picture = sanitizedSnapshot.pictures[index]
+    const imagePromise = new Promise((resolve, reject) => {
+      ImageStore.getBase64ForTag(
+        picture.content,
+        success => {
+          resolve({
+            name: picture.name,
+            content: 'data:' + picture.type + ';base64,' + success,
+            type: picture.type
+          })
+        },
+        () => reject('conversion to base64 failed')
+      )
+    })
+    promises.push(imagePromise)
+  }
+  return Promise.all(promises)
 }
 
 export const generateNewDemoDraft = (survey, draftId) => {

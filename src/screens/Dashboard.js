@@ -66,11 +66,13 @@ export class Dashboard extends Component {
       draft.progress.screen === 'Question' ||
       draft.progress.screen === 'Skipped' ||
       draft.progress.screen === 'Final' ||
+      draft.progress.screen === 'Signin' ||
       draft.progress.screen === 'Overview'
     ) {
       this.props.navigation.navigate('Overview', {
         resumeDraft: true,
         draftId: draft.draftId,
+        stoplightSkipped: draft.stoplightSkipped,
         survey
       })
     } else {
@@ -210,7 +212,7 @@ export class Dashboard extends Component {
   render() {
     const { t, families, drafts } = this.props
     const { filterModalIsOpen } = this.state
-
+    console.log(drafts)
     const allDraftFamilies = drafts.filter(
       d => d.status === 'Draft' || d.status === 'Pending sync'
     ).length

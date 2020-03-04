@@ -9,6 +9,9 @@ export const generateRandomDraftData = (
     status: 'Draft',
     sendEmail: false,
     surveyId,
+
+    sign: '',
+    pictures: [],
     created: Date.now(),
     draftId,
     familyData: {

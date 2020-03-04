@@ -20,7 +20,7 @@ import { url } from '../config'
 import globalStyles from '../globalStyles'
 import { submitDraft } from '../redux/actions'
 import { screenSyncScreenContent } from '../screens/utils/accessibilityHelpers'
-import { prepareDraftForSubmit } from './utils/helpers'
+import { prepareDraftForSubmit, convertImages } from './utils/helpers'
 
 export class Sync extends Component {
   acessibleComponent = React.createRef()
@@ -52,15 +52,28 @@ export class Sync extends Component {
     )
 
     draftsWithError.forEach(draft => {
-      this.props.submitDraft(
-        url[this.props.env],
-        this.props.user.token,
-        draft.draftId,
-        prepareDraftForSubmit(
-          draft,
-          this.props.surveys.find(survey => survey.id === draft.surveyId)
-        )
+      console.log('sanitazedDraft in SYNC')
+      const sanitazedDraft = prepareDraftForSubmit(
+        this.draft,
+        this.props.surveys.find(survey => survey.id === draft.surveyId)
       )
+      convertImages(sanitazedDraft).then(imagesArray => {
+        console.log('submited Draft with image: ', imagesArray)
+        this.props.submitDraft(
+          url[this.props.env],
+          this.props.user.token,
+          sanitazedDraft.draftId,
+          {
+            ...sanitazedDraft,
+            sendEmail: this.state.sendEmailFlag,
+            pictures: imagesArray
+          }
+        )
+      })
+      setTimeout(() => {
+        this.props.navigation.popToTop()
+        this.props.navigation.navigate('Dashboard')
+      }, 500)
     })
   }
 

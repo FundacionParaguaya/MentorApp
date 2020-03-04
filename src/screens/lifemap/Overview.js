@@ -304,25 +304,33 @@ export class Overview extends Component {
             : 0
         }
       >
-        <View style={{ alignItems: 'center' }}>
-          <Text style={[globalStyles.h2Bold, styles.heading]}>
-            {t('views.lifemap.congratulations')}
-          </Text>
-          <Text style={[globalStyles.h2Bold, styles.heading]}>
-            {t('views.lifemap.youCreatedALifeMap')}
-          </Text>
-        </View>
-
+        {!this.props.readOnly ? (
+          <View style={{ alignItems: 'center' }}>
+            {draft.stoplightSkipped && <View style={{ paddingTop: 50 }} />}
+            {!draft.stoplightSkipped && (
+              <Text style={[globalStyles.h2Bold, styles.heading]}>
+                {t('views.lifemap.congratulations')}
+              </Text>
+            )}
+            <Text style={[globalStyles.h2Bold, styles.heading]}>
+              {!draft.stoplightSkipped
+                ? t('views.lifemap.youCreatedALifeMap')
+                : t('views.lifemap.continueWithSurvey')}
+            </Text>
+          </View>
+        ) : null}
         <View style={[globalStyles.background, styles.contentContainer]}>
           <View style={styles.indicatorsContainer}>
-            <LifemapVisual
-              large={this.props.readOnly}
-              extraLarge={!this.props.readOnly}
-              questions={draft.indicatorSurveyDataList}
-              priorities={draft.priorities}
-              achievements={draft.achievements}
-              questionsLength={this.survey.surveyStoplightQuestions.length}
-            />
+            {!draft.stoplightSkipped && (
+              <LifemapVisual
+                large={this.props.readOnly}
+                extraLarge={!this.props.readOnly}
+                questions={draft.indicatorSurveyDataList}
+                priorities={draft.priorities}
+                achievements={draft.achievements}
+                questionsLength={this.survey.surveyStoplightQuestions.length}
+              />
+            )}
             {this.isResumingDraft ? (
               <Button
                 id="resume-draft"
