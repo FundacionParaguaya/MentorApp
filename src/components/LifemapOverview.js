@@ -1,9 +1,10 @@
-import React, { Component } from 'react'
 import PropTypes from 'prop-types'
-import { StyleSheet, View, Text } from 'react-native'
-import LifemapOverviewListItem from './LifemapOverviewListItem'
-import AddPriorityAndAchievementModal from '../screens/modals/AddPriorityAndAchievementModal'
+import React, { Component } from 'react'
+import { StyleSheet, Text, View } from 'react-native'
+
 import globalStyles from '../globalStyles'
+import AddPriorityAndAchievementModal from '../screens/modals/AddPriorityAndAchievementModal'
+import LifemapOverviewListItem from './LifemapOverviewListItem'
 
 class LifemapOverview extends Component {
   dimensions = this.props.surveyData.map(item => item.dimension)
@@ -80,7 +81,7 @@ class LifemapOverview extends Component {
           <AddPriorityAndAchievementModal
             onClose={this.onClose}
             color={this.state.color}
-            draftId={this.props.draftData.draftId}
+            draft={this.props.draftData}
             indicator={this.state.indicator}
             indicatorText={this.state.indicatorText}
           />

@@ -65,8 +65,13 @@ export class AddPriorityAndAchievementModal extends Component {
     return this.setState({ estimatedDate: action })
   }
 
-  getDraft = () =>
-    this.props.drafts.find(draft => draft.draftId === this.draftId)
+  getDraft = () => {
+    if (this.draftId) {
+      return this.props.drafts.find(draft => draft.draftId === this.draftId)
+    } else {
+      return this.props.draft
+    }
+  }
 
   addPriority = () => {
     const draft = this.getDraft()
@@ -184,7 +189,13 @@ export class AddPriorityAndAchievementModal extends Component {
     const draft = this.getDraft()
     const { t } = this.props
     const { validationError, showErrors } = this.state
-    const isReadOnly = draft.status === 'Synced'
+    var isReadOnly = false
+
+    if (draft.status) {
+      isReadOnly = draft.status === 'Synced'
+    } else {
+      isReadOnly = true
+    }
 
     //i cound directly use this.state.action for the values below but
     // it just doesnt work.Thats why i use the old way from the old components
@@ -330,7 +341,8 @@ AddPriorityAndAchievementModal.propTypes = {
   onClose: PropTypes.func,
   updateDraft: PropTypes.func.isRequired,
   draftId: PropTypes.number,
-  drafts: PropTypes.array.isRequired
+  drafts: PropTypes.array.isRequired,
+  readOnly: PropTypes.bool
 }
 
 const styles = StyleSheet.create({
