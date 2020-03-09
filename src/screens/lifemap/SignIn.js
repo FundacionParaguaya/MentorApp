@@ -62,7 +62,9 @@ export class SigIn extends Component {
   }
 
   handleContinue = () => {
-    this.sign && this.sign.saveImage()
+    if (this.sign && !this.isEmpty) {
+      this.sign.saveImage()
+    }
     if (!this.isEmpty) {
       this.props.navigation.push('Final', {
         familyLifemap: this.draft,
