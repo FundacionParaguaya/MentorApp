@@ -62,7 +62,9 @@ export class SigIn extends Component {
   }
 
   handleContinue = () => {
-    this.sign && this.sign.saveImage()
+    if (this.sign && !this.isEmpty) {
+      this.sign.saveImage()
+    }
     if (!this.isEmpty) {
       this.props.navigation.push('Final', {
         familyLifemap: this.draft,
@@ -115,25 +117,29 @@ export class SigIn extends Component {
           />
         </View>
         {this.displaySign ? (
-          <Image style={styles.container} source={{ uri: this.draft.sign }} />
-        ) : (
-          <SignatureCapture
-            style={styles.container}
-            key={'sign'}
-            ref={r => {
-              this.sign = r
-            }}
-            onSaveEvent={this._onSaveEvent}
-            onDragEvent={this._onDragEvent}
-            saveImageFileInExtStorage={false}
-            showNativeButtons={false}
-            showTitleLabel={false}
-            viewMode={'portrait'}
-            draft={this.draft}
-            updateDraft={this.props.updateDraft}
-            setEmpty={this.setEmpty}
-            setDisplay={this.setDisplay}
+          <Image
+            style={[{ margin: 10 }, styles.container]}
+            source={{ uri: this.draft.sign }}
           />
+        ) : (
+          <View style={[{ flex: 2, margin: 10 }, styles.container]}>
+            <SignatureCapture
+              style={[styles.container]}
+              key={'sign'}
+              ref={r => {
+                this.sign = r
+              }}
+              onSaveEvent={this._onSaveEvent}
+              onDragEvent={this._onDragEvent}
+              saveImageFileInExtStorage={false}
+              showNativeButtons={false}
+              showTitleLabel={false}
+              draft={this.draft}
+              updateDraft={this.props.updateDraft}
+              setEmpty={this.setEmpty}
+              setDisplay={this.setDisplay}
+            />
+          </View>
         )}
         <View style={styles.buttonsBar}>
           <Button
@@ -166,10 +172,10 @@ const styles = StyleSheet.create({
   },
   container: {
     flex: 1,
-    padding: 15,
-    paddingTop: 48,
     height: 900,
-    borderColor: '#000033'
+    borderColor: '#309E43',
+    borderWidth: 1,
+    borderRadius: 1
   },
   iconPriority: {
     height: 40,
