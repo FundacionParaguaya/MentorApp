@@ -148,9 +148,6 @@ export class Family extends Component {
     const { familyData } = this.familyLifemap
     const stoplightSkipped = this.familyLifemap.stoplightSkipped
 
-    console.log('stoplightSkipped')
-    console.log(this.familyLifemap)
-    console.log(stoplightSkipped)
     const email =
       familyData &&
       familyData.familyMembersList &&
