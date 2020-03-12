@@ -314,7 +314,7 @@ export class FamilyParticipant extends Component {
           placeholder={t('views.family.firstName')}
           initialValue={participant.firstName || ''}
           required={setValidationSchema(this.requiredFields, 'firstName', true)}
-          validation="string"
+          //validation="string"
           readOnly={!!this.readOnly}
           onChangeText={this.updateParticipant}
           showErrors={showErrors}
@@ -327,7 +327,7 @@ export class FamilyParticipant extends Component {
           placeholder={t('views.family.lastName')}
           initialValue={participant.lastName || ''}
           required={setValidationSchema(this.requiredFields, 'lastName', true)}
-          validation="string"
+          //validation="string"
           readOnly={!!this.readOnly}
           onChangeText={this.updateParticipant}
           showErrors={showErrors}

@@ -191,7 +191,7 @@ export class FamilyMembersNames extends Component {
                 id={`${i + 1}.firstName`}
                 autoFocus={i === 0 && !familyMembersList[i + 1].firstName}
                 upperCase
-                validation="string"
+                //validation="string"
                 onChangeText={this.updateMember}
                 placeholder={`${t('views.family.firstName')}`}
                 initialValue={familyMembersList[i + 1].firstName || ''}
