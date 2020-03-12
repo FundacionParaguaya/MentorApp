@@ -8,8 +8,9 @@ import colors from '../theme.json'
 
 export class CustomHeaderSurveyComponent extends Component {
   render() {
-    const { overview, navigation } = this.props
+    const { overview, separatorScreen, navigation } = this.props
     const survey = navigation.getParam('survey')
+    const stoplightOptional = survey.surveyConfig.stoplightOptional
     const stoplightSkipped = this.props.navigation.getParam('stoplightSkipped')
     return (
       <View
@@ -22,14 +23,14 @@ export class CustomHeaderSurveyComponent extends Component {
         }}
         accessibilityLiveRegion="assertive"
       >
-        {!overview && (
+        {!overview && !separatorScreen && (
           <Text style={styles.dimension}>
             {survey.surveyStoplightQuestions[
               navigation.state.params.step
             ].dimension.toUpperCase()}
           </Text>
         )}
-        {!overview && (
+        {!overview && !separatorScreen && (
           <Text style={styles.title}>
             {
               survey.surveyStoplightQuestions[navigation.state.params.step]
@@ -44,6 +45,13 @@ export class CustomHeaderSurveyComponent extends Component {
               : this.props.t('draftStatus.draft')}
           </Text>
         )}
+        {separatorScreen && (
+          <Text style={styles.headerTitleStyle}>
+            {!stoplightOptional
+              ? this.props.t('views.yourLifeMap')
+              : this.props.t('views.completeStoplight')}
+          </Text>
+        )}
       </View>
     )
   }
@@ -53,7 +61,8 @@ CustomHeaderSurveyComponent.propTypes = {
   navigation: PropTypes.object.isRequired,
   t: PropTypes.func,
   lng: PropTypes.string,
-  overview: PropTypes.bool
+  overview: PropTypes.bool,
+  separatorScreen: PropTypes.bool
 }
 
 const styles = StyleSheet.create({
