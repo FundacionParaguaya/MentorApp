@@ -176,7 +176,7 @@ export class FamilyParticipant extends Component {
   }
 
   updateParticipant = (value, field) => {
-    if (this.readOnly) {
+    if (this.readOnly || (!value && field == 'phoneCode')) {
       return
     }
 
@@ -288,6 +288,7 @@ export class FamilyParticipant extends Component {
     const { showErrors } = this.state
     const draft = !this.readOnly ? this.getDraft() : this.readOnlyDraft
     let participant = draft ? draft.familyData.familyMembersList[0] : {}
+
     return draft ? (
       <StickyFooter
         onContinue={this.validateForm}
