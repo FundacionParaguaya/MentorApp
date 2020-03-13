@@ -191,8 +191,8 @@ export const addSurveyData = (id, category, payload) => ({
 })
 
 const formatPhone = (code, phone) => {
-  const phoneUtil = PhoneNumberUtil.getInstance()
-  if (phone && phone.length > 0) {
+  if (code && phone && phone.length > 0) {
+    const phoneUtil = PhoneNumberUtil.getInstance()
     const international = '+' + code + ' ' + phone
     let phoneNumber = phoneUtil.parse(international, code)
     phone = phoneNumber.getNationalNumber()
