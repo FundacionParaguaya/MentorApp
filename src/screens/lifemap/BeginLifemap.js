@@ -159,9 +159,9 @@ const styles = StyleSheet.create({
   },
   text: {
     textAlign: 'center',
-    paddingLeft: 50,
-    paddingRight: 50,
-    paddingTop: 65,
+    paddingLeft: 30,
+    paddingRight: 30,
+    paddingTop: 35,
     paddingBottom: 30
   }
 })
