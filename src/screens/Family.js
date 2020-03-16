@@ -370,7 +370,7 @@ export class Family extends Component {
                   : null}
               </View>
             </View>
-            {this.props.user.role === 'ROLE_SURVEY_TAKER' ||
+            {this.props.user.role === 'ROLE_SURVEY_USER' ||
               (this.props.user.role === 'ROLE_SURVEY_USER_ADMIN' && (
                 <Button
                   style={styles.buttonSmall}
