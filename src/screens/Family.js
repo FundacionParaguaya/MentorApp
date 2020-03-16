@@ -146,6 +146,7 @@ export class Family extends Component {
     const { activeTab } = this.state
     const { t, navigation } = this.props
     const { familyData } = this.familyLifemap
+    const stoplightSkipped = this.familyLifemap.stoplightSkipped
 
     const email =
       familyData &&
@@ -177,12 +178,15 @@ export class Family extends Component {
             title={t('views.family.details')}
             onPress={() => this.setState({ activeTab: 'Details' })}
             active={activeTab === 'Details'}
+            full={stoplightSkipped ? true : false}
           />
-          <FamilyTab
-            title={t('views.family.lifemap')}
-            onPress={() => this.setState({ activeTab: 'LifeMap' })}
-            active={activeTab === 'LifeMap'}
-          />
+          {!stoplightSkipped && (
+            <FamilyTab
+              title={t('views.family.lifemap')}
+              onPress={() => this.setState({ activeTab: 'LifeMap' })}
+              active={activeTab === 'LifeMap'}
+            />
+          )}
         </View>
 
         {/* Details tab */}

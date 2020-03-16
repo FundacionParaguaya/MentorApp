@@ -148,7 +148,7 @@ export const loadFamilies = (env, token) => ({
         },
         body: JSON.stringify({
           query:
-            'query { familiesNewStructure {familyId name code snapshotList { surveyId createdAt familyData { familyMembersList { birthCountry birthDate documentNumber documentType email familyId firstName firstParticipant gender id lastName memberIdentifier phoneCode phoneNumber socioEconomicAnswers { key value}  }  countFamilyMembers latitude longitude country accuracy } economicSurveyDataList { key value multipleValue } indicatorSurveyDataList { key value } achievements { action indicator roadmap } priorities { action estimatedDate indicator reason } } } }'
+            'query { familiesNewStructure {familyId name code snapshotList { surveyId stoplightSkipped createdAt familyData { familyMembersList { birthCountry birthDate documentNumber documentType email familyId firstName firstParticipant gender id lastName memberIdentifier phoneCode phoneNumber socioEconomicAnswers { key value}  }  countFamilyMembers latitude longitude country accuracy } economicSurveyDataList { key value multipleValue } indicatorSurveyDataList { key value } achievements { action indicator roadmap } priorities { action estimatedDate indicator reason } } } }'
         })
       },
       commit: { type: LOAD_FAMILIES_COMMIT },
@@ -191,8 +191,8 @@ export const addSurveyData = (id, category, payload) => ({
 })
 
 const formatPhone = (code, phone) => {
-  const phoneUtil = PhoneNumberUtil.getInstance()
-  if (phone && phone.length > 0) {
+  if (code && phone && phone.length > 0) {
+    const phoneUtil = PhoneNumberUtil.getInstance()
     const international = '+' + code + ' ' + phone
     let phoneNumber = phoneUtil.parse(international, code)
     phone = phoneNumber.getNationalNumber()
