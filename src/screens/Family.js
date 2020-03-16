@@ -1,3 +1,9 @@
+import NetInfo from '@react-native-community/netinfo'
+import MapboxGL from '@react-native-mapbox-gl/maps'
+import moment from 'moment'
+import PropTypes from 'prop-types'
+import React, { Component } from 'react'
+import { withNamespaces } from 'react-i18next'
 import {
   FlatList,
   Image,
@@ -8,27 +14,21 @@ import {
   TouchableHighlight,
   View
 } from 'react-native'
-import React, { Component } from 'react'
+import Icon from 'react-native-vector-icons/MaterialIcons'
+import { connect } from 'react-redux'
 
+import mapPlaceholderLarge from '../../assets/images/map_placeholder_1000.png'
+import marker from '../../assets/images/marker.png'
 import Button from '../components/Button'
 import FamilyListItem from '../components/FamilyListItem'
 import FamilyTab from '../components/FamilyTab'
-import Icon from 'react-native-vector-icons/MaterialIcons'
-import MapboxGL from '@react-native-mapbox-gl/maps'
-import NetInfo from '@react-native-community/netinfo'
-import OverviewComponent from './lifemap/Overview'
-import PropTypes from 'prop-types'
 import RoundImage from '../components/RoundImage'
-import colors from '../theme.json'
-import { connect } from 'react-redux'
-import globalStyles from '../globalStyles'
-import mapPlaceholderLarge from '../../assets/images/map_placeholder_1000.png'
-import marker from '../../assets/images/marker.png'
-import moment from 'moment'
-import { prepareDraftForSubmit, convertImages } from './utils/helpers'
-import { submitDraft } from '../redux/actions'
 import { url } from '../config'
-import { withNamespaces } from 'react-i18next'
+import globalStyles from '../globalStyles'
+import { submitDraft } from '../redux/actions'
+import colors from '../theme.json'
+import OverviewComponent from './lifemap/Overview'
+import { convertImages, prepareDraftForSubmit } from './utils/helpers'
 
 export class Family extends Component {
   // set the title of the screen to the family name
@@ -370,6 +370,14 @@ export class Family extends Component {
                   : null}
               </View>
             </View>
+            {this.props.user.role === 'ROLE_SURVEY_TAKER' ||
+              (this.props.user.role === 'ROLE_SURVEY_USER_ADMIN' && (
+                <Button
+                  style={styles.buttonSmall}
+                  text={t('views.retakeSurvey')}
+                  handleClick={() => {}}
+                />
+              ))}
           </ScrollView>
         ) : null}
 
@@ -469,11 +477,20 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center'
   },
+  buttonSmall: {
+    alignSelf: 'center',
+    marginVertical: 20,
+    maxWidth: 400,
+    backgroundColor: '#50AA47',
+    paddingLeft: 20,
+    paddingRight: 20
+  },
   button: {
     alignSelf: 'center',
     marginVertical: 20,
     width: '100%',
     maxWidth: 400,
+
     backgroundColor: colors.palered
   },
   familiesIconIcon: {
