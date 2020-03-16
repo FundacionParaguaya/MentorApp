@@ -161,7 +161,7 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     paddingLeft: 50,
     paddingRight: 50,
-    paddingTop: 80,
+    paddingTop: 65,
     paddingBottom: 30
   }
 })
