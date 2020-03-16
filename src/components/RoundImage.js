@@ -1,5 +1,5 @@
-import React, { Component } from 'react'
 import PropTypes from 'prop-types'
+import React, { Component } from 'react'
 import { Image, StyleSheet } from 'react-native'
 
 const images = {
@@ -8,7 +8,8 @@ const images = {
   stoplight: require('../../assets/images/stoplight.png'),
   partner: require('../../assets/images/partner.png'),
   check: require('../../assets/images/check.png'),
-  lifemap: require('../../assets/images/lifemap.png')
+  lifemap: require('../../assets/images/lifemap.png'),
+  picture: require('../../assets/images/takePicture.png')
 }
 
 class RoundImage extends Component {
@@ -24,7 +25,8 @@ RoundImage.propTypes = {
     'stoplight',
     'partner',
     'check',
-    'lifemap'
+    'lifemap',
+    'picture'
   ])
 }
 

@@ -22,7 +22,8 @@ import globalStyles from '../../globalStyles'
 import { submitDraft, updateDraft } from '../../redux/actions'
 import EmailSentModal from '../modals/EmailSentModal'
 import WhatsappSentModal from '../modals/WhatsappSentModal'
-import { prepareDraftForSubmit } from '../utils/helpers'
+import { prepareDraftForSubmit, convertImages } from '../utils/helpers'
+
 import {
   buildPDFOptions,
   buildPrintOptions,
@@ -49,11 +50,35 @@ export class Final extends Component {
   }
 
   onPressBack = () => {
-    this.props.navigation.replace('Priorities', {
-      resumeDraft: false,
-      draftId: this.draft.draftId,
-      survey: this.survey
-    })
+    console.log('Press back')
+    console.log(this.draft.stoplightSkipped)
+    //If sign support, the go to sign view
+    if (this.survey.surveyConfig.signSupport) {
+      this.props.navigation.navigate('Signin', {
+        step: 0,
+        survey: this.survey,
+        draftId: this.draftId
+      })
+    } else if (this.survey.surveyConfig.pictureSupport) {
+      this.props.navigation.navigate('Picture', {
+        survey: this.survey,
+        draftId: this.draftId
+      })
+    } else {
+      //TODO check picture upload config
+      if (this.draft.stoplightSkipped) {
+        this.props.navigation.navigate('BeginLifemap', {
+          survey: this.survey,
+          draftId: this.draftId
+        })
+      } else {
+        this.props.navigation.replace('Priorities', {
+          resumeDraft: false,
+          draftId: this.draft.draftId,
+          survey: this.survey
+        })
+      }
+    }
   }
 
   saveDraft = () => {
@@ -67,12 +92,19 @@ export class Final extends Component {
   prepareDraftForSubmit() {
     if (this.state.loading) {
       const draft = prepareDraftForSubmit(this.draft, this.survey)
-      this.props.submitDraft(
-        url[this.props.env],
-        this.props.user.token,
-        draft.draftId,
-        { ...draft, sendEmail: this.state.sendEmailFlag }
-      )
+      convertImages(draft).then(imagesArray => {
+        console.log('end converting images')
+        this.props.submitDraft(
+          url[this.props.env],
+          this.props.user.token,
+          draft.draftId,
+          {
+            ...draft,
+            sendEmail: this.state.sendEmailFlag,
+            pictures: imagesArray
+          }
+        )
+      })
 
       setTimeout(() => {
         this.props.navigation.popToTop()
@@ -211,6 +243,8 @@ export class Final extends Component {
       familyMembersList.length &&
       familyMembersList.find(user => user.phoneNumber)
 
+    const stoplightSkipped = this.draft.stoplightSkipped
+    console.log('stoplightSkipped', stoplightSkipped)
     return (
       <ScrollView
         style={globalStyles.background}
@@ -234,57 +268,62 @@ export class Final extends Component {
             {t('views.lifemap.youHaveCompletedTheLifemap')}
           </Text>
           <RoundImage source="partner" />
-          <LifemapVisual
-            bigMargin
-            questions={this.draft.indicatorSurveyDataList}
-            questionsLength={this.survey.surveyStoplightQuestions.length}
-            priorities={this.draft.priorities}
-            achievements={this.draft.achievements}
-          />
-          <View style={styles.buttonBar}>
-            <Button
-              id="download"
-              style={styles.button}
-              handleClick={this.exportPDF.bind(this)}
-              icon="cloud-download"
-              outlined
-              text={t('general.download')}
-              loading={this.state.downloading}
+          {!stoplightSkipped && (
+            <LifemapVisual
+              bigMargin
+              questions={this.draft.indicatorSurveyDataList}
+              questionsLength={this.survey.surveyStoplightQuestions.length}
+              priorities={this.draft.priorities}
+              achievements={this.draft.achievements}
             />
-            <Button
-              id="print"
-              style={styles.button}
-              handleClick={this.print.bind(this)}
-              icon="print"
-              outlined
-              text={t('general.print')}
-              loading={this.state.printing}
-            />
-            {userEmail && (
+          )}
+
+          {!stoplightSkipped && (
+            <View style={styles.buttonBar}>
               <Button
-                id="email"
-                style={{ ...styles.button, ...styles.emailButton }}
-                handleClick={this.sendMailToUser.bind(this)}
-                icon="email"
+                id="download"
+                style={styles.button}
+                handleClick={this.exportPDF.bind(this)}
+                icon="cloud-download"
                 outlined
-                text={t('general.sendEmail')}
-                loading={this.state.sendingEmail}
-                disabled={this.state.disabled}
+                text={t('general.download')}
+                loading={this.state.downloading}
               />
-            )}
-            {userTelephone && (
               <Button
-                id="whatsapp"
-                style={{ ...styles.button, ...styles.emailButton }}
-                handleClick={this.sendWhatsappToUser.bind(this)}
+                id="print"
+                style={styles.button}
+                handleClick={this.print.bind(this)}
+                icon="print"
                 outlined
-                communityIcon="whatsapp"
-                text={t('general.sendWhatsapp')}
-                loading={this.state.sendingWhatsapp}
-                disabled={this.state.disabled}
+                text={t('general.print')}
+                loading={this.state.printing}
               />
-            )}
-          </View>
+              {userEmail && (
+                <Button
+                  id="email"
+                  style={{ ...styles.button, ...styles.emailButton }}
+                  handleClick={this.sendMailToUser.bind(this)}
+                  icon="email"
+                  outlined
+                  text={t('general.sendEmail')}
+                  loading={this.state.sendingEmail}
+                  disabled={this.state.disabled}
+                />
+              )}
+              {userTelephone && (
+                <Button
+                  id="whatsapp"
+                  style={{ ...styles.button, ...styles.emailButton }}
+                  handleClick={this.sendWhatsappToUser.bind(this)}
+                  outlined
+                  communityIcon="whatsapp"
+                  text={t('general.sendWhatsapp')}
+                  loading={this.state.sendingWhatsapp}
+                  disabled={this.state.disabled}
+                />
+              )}
+            </View>
+          )}
           <EmailSentModal
             close={this.handleCloseModal}
             isOpen={this.state.modalOpen}
@@ -303,7 +342,7 @@ export class Final extends Component {
             id="save-draft"
             colored
             loading={this.state.loading}
-            text={t('general.close')}
+            text={t('general.finish')}
             handleClick={this.saveDraft}
           />
         </View>

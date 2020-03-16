@@ -1,8 +1,8 @@
-import * as action from '../actions'
-
-import configureStore from 'redux-mock-store' //ES6 modules
 import fetchMock from 'fetch-mock'
+import configureStore from 'redux-mock-store' //ES6 modules
 import thunk from 'redux-thunk'
+
+import * as action from '../actions'
 
 const middlewares = [thunk]
 const mockStore = configureStore(middlewares)
@@ -107,7 +107,7 @@ describe('families actions', () => {
           rollback: { type: 'LOAD_FAMILIES_ROLLBACK' },
           effect: {
             body:
-              '{"query":"query { familiesNewStructure {familyId name code snapshotList { surveyId createdAt familyData { familyMembersList { birthCountry birthDate documentNumber documentType email familyId firstName firstParticipant gender id lastName memberIdentifier phoneCode phoneNumber socioEconomicAnswers { key value}  }  countFamilyMembers latitude longitude country accuracy } economicSurveyDataList { key value multipleValue } indicatorSurveyDataList { key value } achievements { action indicator roadmap } priorities { action estimatedDate indicator reason } } } }"}',
+              '{"query":"query { familiesNewStructure {familyId name code snapshotList { surveyId stoplightSkipped createdAt familyData { familyMembersList { birthCountry birthDate documentNumber documentType email familyId firstName firstParticipant gender id lastName memberIdentifier phoneCode phoneNumber socioEconomicAnswers { key value}  }  countFamilyMembers latitude longitude country accuracy } economicSurveyDataList { key value multipleValue } indicatorSurveyDataList { key value } achievements { action indicator roadmap } priorities { action estimatedDate indicator reason } } } }"}',
             headers: {
               Authorization: 'Bearer token',
               'content-type': 'application/json;charset=utf8'
@@ -137,7 +137,7 @@ describe('surveys actions', () => {
           rollback: { type: 'LOAD_SURVEYS_ROLLBACK' },
           effect: {
             body:
-              '{"query":"query { surveysByUser { title id createdAt description minimumPriorities privacyPolicy { title  text } termsConditions{ title text }  surveyConfig { isDemo documentType {text value otherOption} requiredFields{primaryParticipant, familyMember} gender { text value otherOption } surveyLocation { country latitude longitude}}  surveyEconomicQuestions { questionText codeName answerType topic required forFamilyMember options {text value otherOption conditions{codeName, type, values, operator, valueType, showIfNoData}}, conditions{codeName, type, value, operator}, conditionGroups{groupOperator, joinNextGroup, conditions{codeName, type, value, operator}} } surveyStoplightQuestions { questionText codeName definition dimension id stoplightColors { url value description } required } } }"}',
+              '{"query":"query { surveysByUser { title id createdAt description minimumPriorities privacyPolicy { title  text } termsConditions{ title text }  surveyConfig { stoplightOptional signSupport pictureSupport isDemo documentType {text value otherOption} requiredFields{primaryParticipant, familyMember} gender { text value otherOption } surveyLocation { country latitude longitude}}  surveyEconomicQuestions { questionText codeName answerType topic required forFamilyMember options {text value otherOption conditions{codeName, type, values, operator, valueType, showIfNoData}}, conditions{codeName, type, value, operator}, conditionGroups{groupOperator, joinNextGroup, conditions{codeName, type, value, operator}} } surveyStoplightQuestions { questionText codeName definition dimension id stoplightColors { url value description } required } } }"}',
             headers: {
               Authorization: 'Bearer token',
               'content-type': 'application/json;charset=utf8'

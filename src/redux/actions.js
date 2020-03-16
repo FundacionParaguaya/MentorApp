@@ -1,6 +1,6 @@
 // Login
 import { PhoneNumberUtil } from 'google-libphonenumber'
-
+// import { ImageStore } from 'react-native'
 export const SET_LOGIN_STATE = 'SET_LOGIN_STATE'
 export const USER_LOGOUT = 'USER_LOGOUT'
 
@@ -118,7 +118,7 @@ export const loadSurveys = (env, token) => ({
         },
         body: JSON.stringify({
           query:
-            'query { surveysByUser { title id createdAt description minimumPriorities privacyPolicy { title  text } termsConditions{ title text }  surveyConfig { isDemo documentType {text value otherOption} requiredFields{primaryParticipant, familyMember} gender { text value otherOption } surveyLocation { country latitude longitude}}  surveyEconomicQuestions { questionText codeName answerType topic required forFamilyMember options {text value otherOption conditions{codeName, type, values, operator, valueType, showIfNoData}}, conditions{codeName, type, value, operator}, conditionGroups{groupOperator, joinNextGroup, conditions{codeName, type, value, operator}} } surveyStoplightQuestions { questionText codeName definition dimension id stoplightColors { url value description } required } } }'
+            'query { surveysByUser { title id createdAt description minimumPriorities privacyPolicy { title  text } termsConditions{ title text }  surveyConfig { stoplightOptional signSupport pictureSupport isDemo documentType {text value otherOption} requiredFields{primaryParticipant, familyMember} gender { text value otherOption } surveyLocation { country latitude longitude}}  surveyEconomicQuestions { questionText codeName answerType topic required forFamilyMember options {text value otherOption conditions{codeName, type, values, operator, valueType, showIfNoData}}, conditions{codeName, type, value, operator}, conditionGroups{groupOperator, joinNextGroup, conditions{codeName, type, value, operator}} } surveyStoplightQuestions { questionText codeName definition dimension id stoplightColors { url value description } required } } }'
         })
       },
       commit: { type: LOAD_SURVEYS_COMMIT },
@@ -148,7 +148,7 @@ export const loadFamilies = (env, token) => ({
         },
         body: JSON.stringify({
           query:
-            'query { familiesNewStructure {familyId name code snapshotList { surveyId createdAt familyData { familyMembersList { birthCountry birthDate documentNumber documentType email familyId firstName firstParticipant gender id lastName memberIdentifier phoneCode phoneNumber socioEconomicAnswers { key value}  }  countFamilyMembers latitude longitude country accuracy } economicSurveyDataList { key value multipleValue } indicatorSurveyDataList { key value } achievements { action indicator roadmap } priorities { action estimatedDate indicator reason } } } }'
+            'query { familiesNewStructure {familyId name code snapshotList { surveyId stoplightSkipped createdAt familyData { familyMembersList { birthCountry birthDate documentNumber documentType email familyId firstName firstParticipant gender id lastName memberIdentifier phoneCode phoneNumber socioEconomicAnswers { key value}  }  countFamilyMembers latitude longitude country accuracy } economicSurveyDataList { key value multipleValue } indicatorSurveyDataList { key value } achievements { action indicator roadmap } priorities { action estimatedDate indicator reason } } } }'
         })
       },
       commit: { type: LOAD_FAMILIES_COMMIT },
@@ -191,8 +191,8 @@ export const addSurveyData = (id, category, payload) => ({
 })
 
 const formatPhone = (code, phone) => {
-  const phoneUtil = PhoneNumberUtil.getInstance()
-  if (phone && phone.length > 0) {
+  if (code && phone && phone.length > 0) {
+    const phoneUtil = PhoneNumberUtil.getInstance()
     const international = '+' + code + ' ' + phone
     let phoneNumber = phoneUtil.parse(international, code)
     phone = phoneNumber.getNationalNumber()
@@ -202,6 +202,7 @@ const formatPhone = (code, phone) => {
 
 export const submitDraft = (env, token, id, payload) => {
   const sanitizedSnapshot = { ...payload }
+
   let { economicSurveyDataList } = payload
 
   const validEconomicIndicator = ec =>
@@ -217,6 +218,7 @@ export const submitDraft = (env, token, id, payload) => {
     // eslint-disable-next-line no-param-reassign
     member.socioEconomicAnswers = socioEconomicAnswers
   })
+
   return {
     type: SUBMIT_DRAFT,
     env,

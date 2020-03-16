@@ -9,6 +9,9 @@ export const generateRandomDraftData = (
     status: 'Draft',
     sendEmail: false,
     surveyId,
+
+    sign: '',
+    pictures: [],
     created: Date.now(),
     draftId,
     familyData: {
@@ -31,11 +34,7 @@ export const generateRandomDraftData = (
           firstName: `${getRandomName()}`,
           gender: 'F'
         }
-      ],
-      country: 'PY',
-      longitude: -70.6692655,
-      latitude: -33.44888970000001,
-      accuracy: 0
+      ]
     },
     economicSurveyDataList: [],
     priorities: [],

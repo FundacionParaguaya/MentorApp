@@ -1,15 +1,16 @@
-import React, { Component } from 'react'
-import { StyleSheet, Text, View } from 'react-native'
-
-import Decoration from '../../components/decoration/Decoration'
 import PropTypes from 'prop-types'
+import React, { Component } from 'react'
+import { withNamespaces } from 'react-i18next'
+import { StyleSheet, Text, View } from 'react-native'
+import { connect } from 'react-redux'
+
+import Button from '../../components/Button'
+import Decoration from '../../components/decoration/Decoration'
 import RoundImage from '../../components/RoundImage'
 import StickyFooter from '../../components/StickyFooter'
-import { connect } from 'react-redux'
-import { getTotalEconomicScreens } from './helpers'
 import globalStyles from '../../globalStyles'
 import { updateDraft } from '../../redux/actions'
-import { withNamespaces } from 'react-i18next'
+import { getTotalEconomicScreens } from './helpers'
 
 export class BeginLifemap extends Component {
   survey = this.props.navigation.getParam('survey')
@@ -26,7 +27,7 @@ export class BeginLifemap extends Component {
         ? 'SocioEconomicQuestion'
         : 'Location'
 
-    this.props.navigation.navigate(previousPage, {
+    this.props.navigation.replace(previousPage, {
       fromBeginLifemap: true,
       survey: this.survey,
       draftId: this.draftId
@@ -34,11 +35,47 @@ export class BeginLifemap extends Component {
   }
 
   onContinue = () => {
+    this.props.updateDraft({
+      ...this.draft,
+      stoplightSkipped: false
+    })
+    this.draft.stoplightSkipped = false
     this.props.navigation.navigate('Question', {
       step: 0,
       survey: this.survey,
       draftId: this.draftId
     })
+  }
+
+  onSaveSnapshot = () => {
+    console.log('Skipped Stoplight Section')
+    console.log('Draft')
+    console.log(this.draft)
+    this.props.updateDraft({
+      ...this.draft,
+      stoplightSkipped: true
+    })
+    this.draft.stoplightSkipped = true
+
+    if (this.survey.surveyConfig.pictureSupport) {
+      this.props.navigation.replace('Picture', {
+        survey: this.survey,
+        draftId: this.draftId
+      })
+    } else if (this.survey.surveyConfig.signSupport) {
+      this.props.navigation.replace('Signin', {
+        step: 0,
+        survey: this.survey,
+        draftId: this.draftId
+      })
+    } else {
+      this.props.navigation.navigate('Final', {
+        fromBeginLifemap: true,
+        survey: this.survey,
+        draftId: this.draftId,
+        draft: this.draft
+      })
+    }
   }
 
   componentDidMount() {
@@ -59,10 +96,15 @@ export class BeginLifemap extends Component {
 
   render() {
     const { t } = this.props
+
     return (
       <StickyFooter
         onContinue={this.onContinue}
-        continueLabel={t('general.continue')}
+        continueLabel={
+          this.survey.surveyConfig.stoplightOptional
+            ? t('general.completeStoplight')
+            : t('general.continue')
+        }
         progress={
           ((this.draft.familyData.countFamilyMembers > 1 ? 4 : 3) +
             getTotalEconomicScreens(this.survey)) /
@@ -71,8 +113,9 @@ export class BeginLifemap extends Component {
       >
         <View
           style={{
-            ...globalStyles.container,
-            padding: 0
+            ...globalStyles.containerNoPadding,
+            padding: 0,
+            paddingTop: 0
           }}
         >
           <Text id="label" style={{ ...globalStyles.h3, ...styles.text }}>
@@ -81,16 +124,34 @@ export class BeginLifemap extends Component {
               this.survey.surveyStoplightQuestions.length
             )}
           </Text>
+
           <Decoration variation="terms">
             <RoundImage source="stoplight" />
           </Decoration>
         </View>
         <View style={{ height: 50 }} />
+        {this.survey.surveyConfig.stoplightOptional && (
+          <Button
+            id="skipStoplight"
+            style={{ ...styles.button, ...styles.skipButton }}
+            handleClick={this.onSaveSnapshot}
+            outlined
+            text={t('general.closeAndSign')}
+          />
+        )}
       </StickyFooter>
     )
   }
 }
 const styles = StyleSheet.create({
+  button: { width: '70%', alignSelf: 'center', marginTop: 20 },
+  skipButton: {
+    marginTop: 7,
+    paddingBottom: 10,
+    marginLeft: 'auto',
+    marginRight: 'auto',
+    alignSelf: 'center'
+  },
   text: {
     textAlign: 'center',
     paddingLeft: 50,

@@ -176,7 +176,7 @@ export class FamilyParticipant extends Component {
   }
 
   updateParticipant = (value, field) => {
-    if (this.readOnly) {
+    if (this.readOnly || (!value && field == 'phoneCode')) {
       return
     }
 
@@ -222,6 +222,9 @@ export class FamilyParticipant extends Component {
 
     const regularDraft = {
       draftId,
+      stoplightSkipped: false,
+      sign: '',
+      pictures: [],
       sendEmail: false,
       created: Date.now(),
       status: 'Draft',
@@ -285,6 +288,7 @@ export class FamilyParticipant extends Component {
     const { showErrors } = this.state
     const draft = !this.readOnly ? this.getDraft() : this.readOnlyDraft
     let participant = draft ? draft.familyData.familyMembersList[0] : {}
+
     return draft ? (
       <StickyFooter
         onContinue={this.validateForm}
@@ -311,7 +315,7 @@ export class FamilyParticipant extends Component {
           placeholder={t('views.family.firstName')}
           initialValue={participant.firstName || ''}
           required={setValidationSchema(this.requiredFields, 'firstName', true)}
-          validation="string"
+          //validation="string"
           readOnly={!!this.readOnly}
           onChangeText={this.updateParticipant}
           showErrors={showErrors}
@@ -324,7 +328,7 @@ export class FamilyParticipant extends Component {
           placeholder={t('views.family.lastName')}
           initialValue={participant.lastName || ''}
           required={setValidationSchema(this.requiredFields, 'lastName', true)}
-          validation="string"
+          //validation="string"
           readOnly={!!this.readOnly}
           onChangeText={this.updateParticipant}
           showErrors={showErrors}

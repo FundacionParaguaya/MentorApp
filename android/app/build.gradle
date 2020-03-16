@@ -100,8 +100,8 @@ android {
         applicationId "com.povertystoplightapp"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
-        versionCode 114
-        versionName "1.12.2"
+        versionCode 118
+        versionName "1.13.2"
         multiDexEnabled true
         testBuildType System.getProperty('testBuildType', 'debug')  // This will later be used to control the test apk build type
         testInstrumentationRunner 'androidx.test.runner.AndroidJUnitRunner'
@@ -151,6 +151,10 @@ android {
 }
 
 dependencies {
+    implementation project(':react-native-image-picker')
+    implementation project(':react-native-signature-capture')
+    implementation project(':react-native-screens')
+    implementation project(':react-native-reanimated')
     implementation project(':@react-native-community_async-storage')
     implementation project(':react-native-localize')
     implementation project(':bugsnag-react-native')

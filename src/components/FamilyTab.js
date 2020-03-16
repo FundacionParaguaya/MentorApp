@@ -10,6 +10,7 @@ class FamilyTab extends Component {
       <TouchableHighlight
         style={{
           ...styles.tab,
+          width: this.props.full ? '100%' : '50%',
           ...(this.props.active ? styles.activeTab : {})
         }}
         onPress={this.props.onPress}
@@ -24,14 +25,15 @@ class FamilyTab extends Component {
 FamilyTab.propTypes = {
   title: PropTypes.string.isRequired,
   onPress: PropTypes.func.isRequired,
-  active: PropTypes.bool
+  active: PropTypes.bool,
+  full: PropTypes.bool
 }
 
 export default FamilyTab
 
 const styles = StyleSheet.create({
   tab: {
-    width: '50%',
+    //width: '100%',
     height: '100%',
     alignItems: 'center',
     justifyContent: 'center'

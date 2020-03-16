@@ -93,28 +93,28 @@ export class Families extends Component {
             {filteredFamilies.length} {t('views.families').toLowerCase()}
           </Text>
         </View>
-        <View>
-          <FlatList
-            refreshing={
-              !!this.props.offline.online &&
-              !!this.props.offline.outbox.find(
-                item => item.type === 'LOAD_FAMILIES'
-              )
-            }
-            onRefresh={this.fetchFamilies}
-            data={this.sortByName(filteredFamilies)}
-            keyExtractor={(item, index) => index.toString()}
-            renderItem={({ item }) => (
-              <FamiliesListItem
-                error={t('views.family.error')}
-                lng={this.props.lng}
-                handleClick={() => this.handleClickOnFamily(item)}
-                family={item}
-              />
-            )}
-            initialNumToRender={7}
-          />
-        </View>
+
+        <FlatList
+          style={{ flex: 1 }}
+          refreshing={
+            !!this.props.offline.online &&
+            !!this.props.offline.outbox.find(
+              item => item.type === 'LOAD_FAMILIES'
+            )
+          }
+          onRefresh={this.fetchFamilies}
+          data={this.sortByName(filteredFamilies)}
+          keyExtractor={(item, index) => index.toString()}
+          renderItem={({ item }) => (
+            <FamiliesListItem
+              error={t('views.family.error')}
+              lng={this.props.lng}
+              handleClick={() => this.handleClickOnFamily(item)}
+              family={item}
+            />
+          )}
+          initialNumToRender={7}
+        />
       </View>
     )
   }
