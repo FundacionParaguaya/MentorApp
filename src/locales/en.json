@@ -77,7 +77,8 @@
     "sign": {
       "signHere": "Signature",
       "erase": "Erase",
-      "continue": "Continue"
+      "continue": "Continue",
+      "emptyError":"*Please add a signature before you continue."
     },
     "dashboard": "Stoplight Mobile",
     "home": "Home",
