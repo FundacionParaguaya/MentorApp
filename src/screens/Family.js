@@ -371,13 +371,13 @@ export class Family extends Component {
               </View>
             </View>
             {this.props.user.role === 'ROLE_SURVEY_USER' ||
-              (this.props.user.role === 'ROLE_SURVEY_USER_ADMIN' && (
-                <Button
-                  style={styles.buttonSmall}
-                  text={t('views.retakeSurvey')}
-                  handleClick={() => {}}
-                />
-              ))}
+            this.props.user.role === 'ROLE_SURVEY_USER_ADMIN' ? (
+              <Button
+                style={styles.buttonSmall}
+                text={t('views.retakeSurvey')}
+                handleClick={() => {}}
+              />
+            ) : null}
           </ScrollView>
         ) : null}
 
