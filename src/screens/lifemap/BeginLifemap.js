@@ -119,10 +119,15 @@ export class BeginLifemap extends Component {
           }}
         >
           <Text id="label" style={{ ...globalStyles.h3, ...styles.text }}>
-            {t('views.lifemap.thisLifeMapHas').replace(
-              '%n',
-              this.survey.surveyStoplightQuestions.length
-            )}
+            {!this.survey.surveyConfig.stoplightOptional
+              ? t('views.lifemap.thisLifeMapHas').replace(
+                  '%n',
+                  this.survey.surveyStoplightQuestions.length
+                )
+              : t('views.lifemap.thisLifeMapHasNoStoplight').replace(
+                  '%n',
+                  this.survey.surveyStoplightQuestions.length
+                )}
           </Text>
 
           <Decoration variation="terms">
@@ -154,9 +159,9 @@ const styles = StyleSheet.create({
   },
   text: {
     textAlign: 'center',
-    paddingLeft: 50,
-    paddingRight: 50,
-    paddingTop: 80,
+    paddingLeft: 30,
+    paddingRight: 30,
+    paddingTop: 35,
     paddingBottom: 30
   }
 })
