@@ -423,15 +423,17 @@ export class Family extends Component {
                       >
                         {t('views.family.lifeMapAfterSync')}
                       </Text>
-                      {this.state.isOnline && (
-                        <Button
-                          id="retry"
-                          style={styles.button}
-                          loading={this.state.loading}
-                          text={t('views.synced')}
-                          handleClick={this.retrySync}
-                        />
-                      )}
+                      {this.state.isOnline &&
+                        navigation.getParam('familyLifemap').status !==
+                          'Pending sync' && (
+                          <Button
+                            id="retry"
+                            style={styles.button}
+                            loading={this.state.loading}
+                            text={t('views.synced')}
+                            handleClick={this.retrySync}
+                          />
+                        )}
                     </View>
                   )}
                 </View>

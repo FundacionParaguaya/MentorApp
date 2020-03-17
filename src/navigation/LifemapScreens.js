@@ -99,10 +99,7 @@ export default {
       ...generateNavStyles({ navigation, shadowHeader: false }),
       ...addCloseIcon(navigation),
       headerTitle: (
-        <Title
-          title="views.yourLifeMap"
-          style={{ marginLeft: 'auto', marginRight: 'auto' }}
-        />
+        <CustomHeaderSurvey navigation={navigation} separatorScreen={true} />
       )
     })
   },
