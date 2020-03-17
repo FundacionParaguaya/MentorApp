@@ -77,7 +77,8 @@
     "sign": {
       "signHere": "Firma",
       "erase": "Limpiar",
-      "continue": "Continuar"
+      "continue": "Continuar",
+      "emptyError": "*Favor agrega una firma para continuar."
     },
     "families": "Familias",
     "dashboard": "Stoplight Mobile",
