@@ -200,6 +200,46 @@ const formatPhone = (code, phone) => {
   return phone
 }
 
+//IMAGES
+export const LOAD_IMAGES = 'LOAD_IMAGES'
+export const LOAD_IMAGES_COMMIT = 'LOAD_IMAGES_COMMIT'
+export const LOAD_IMAGES_ROLLBACK = 'LOAD_IMAGES_ROLLBACK'
+
+export const saveImages = (sanitizedSnapshot, env, token) => {
+  const formData = createFormData(sanitizedSnapshot)
+  console.log('formdata', formData)
+
+  return {
+    type: LOAD_IMAGES,
+    env,
+    token,
+    meta: {
+      offline: {
+        effect: {
+          url: `${env}/api/v1/snapshots/files/pictures/upload`,
+          method: 'POST',
+          headers: {
+            Authorization: `Bearer ${token}`,
+            'content-type': 'multipart/form-data'
+          },
+          body: formData
+        },
+        commit: { type: LOAD_IMAGES_COMMIT },
+        rollback: { type: LOAD_IMAGES_ROLLBACK }
+      }
+    }
+  }
+}
+
+const createFormData = sanitizedSnapshot => {
+  const data = new FormData()
+  Object.keys(sanitizedSnapshot.pictures).forEach(key => {
+    data.append('pictures', picture.content[key])
+  })
+
+  return data
+}
+
 export const submitDraft = (env, token, id, payload) => {
   const sanitizedSnapshot = { ...payload }
 
