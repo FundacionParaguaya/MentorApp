@@ -19,7 +19,11 @@ import LifemapVisual from '../../components/LifemapVisual'
 import RoundImage from '../../components/RoundImage'
 import { url } from '../../config'
 import globalStyles from '../../globalStyles'
-import { submitDraft, updateDraft, submitDraftWithImages } from '../../redux/actions'
+import {
+  submitDraft,
+  updateDraft,
+  submitDraftWithImages
+} from '../../redux/actions'
 import EmailSentModal from '../modals/EmailSentModal'
 import WhatsappSentModal from '../modals/WhatsappSentModal'
 import { prepareDraftForSubmit, convertImages } from '../utils/helpers'
@@ -92,8 +96,8 @@ export class Final extends Component {
   prepareDraftForSubmit() {
     if (this.state.loading) {
       const draft = prepareDraftForSubmit(this.draft, this.survey)
-      
-      if(draft.pictures.length > 0){
+
+      if (draft.pictures.length > 0) {
         this.props.submitDraftWithImages(
           url[this.props.env],
           this.props.user.token,
@@ -103,7 +107,7 @@ export class Final extends Component {
             sendEmail: this.state.sendEmailFlag
           }
         )
-      }else{
+      } else {
         this.props.submitDraft(
           url[this.props.env],
           this.props.user.token,

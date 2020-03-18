@@ -205,7 +205,12 @@ export const LOAD_IMAGES = 'LOAD_IMAGES'
 export const LOAD_IMAGES_COMMIT = 'LOAD_IMAGES_COMMIT'
 export const LOAD_IMAGES_ROLLBACK = 'LOAD_IMAGES_ROLLBACK'
 
-export const submitDraftWithImages = (env, token,draftId, sanitizedSnapshot ) => {
+export const submitDraftWithImages = (
+  env,
+  token,
+  draftId,
+  sanitizedSnapshot
+) => {
   console.log('Calling submitDraftWithImages')
   console.log(sanitizedSnapshot)
   let formData = createFormData(sanitizedSnapshot)
@@ -239,7 +244,7 @@ const createFormData = sanitizedSnapshot => {
   console.log(sanitizedSnapshot.pictures)
   sanitizedSnapshot.pictures.forEach(picture => {
     console.log(picture.content)
-    data.append('pictures', picture.content)
+    data.append('pictures', 'da')
   })
 
   return data
