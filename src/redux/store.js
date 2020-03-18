@@ -7,6 +7,7 @@ import { rootReducer } from './reducer'
 import { setHydrated } from './actions'
 import { setLanguage } from '../i18n'
 import thunk from 'redux-thunk'
+import {submitDraftWithImages} from './middleware'
 
 let rehydrated = false
 
@@ -29,7 +30,7 @@ const store = createStore(
       },
       retry: () => 300000 // retry  every 5 minutes
     }),
-    applyMiddleware(thunk)
+    applyMiddleware(thunk,submitDraftWithImages)
   )
 )
 
