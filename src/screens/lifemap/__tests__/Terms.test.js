@@ -1,7 +1,8 @@
-import Button from '../../../components/Button'
-import React from 'react'
-import { Terms } from '../Terms'
 import { shallow } from 'enzyme'
+import React from 'react'
+
+import Button from '../../../components/Button'
+import { Terms } from '../Terms'
 
 const survey = {
   id: 1,
@@ -52,6 +53,7 @@ describe('Terms/Privacy view', () => {
     expect(props.navigation.navigate).toHaveBeenCalledWith(
       'FamilyParticipant',
       {
+        draftId: 'privacy',
         page: null,
         survey: props.navigation.getParam('survey')
       }

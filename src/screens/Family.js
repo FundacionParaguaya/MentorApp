@@ -16,6 +16,7 @@ import {
 } from 'react-native'
 import Icon from 'react-native-vector-icons/MaterialIcons'
 import { connect } from 'react-redux'
+import uuid from 'uuid/v1'
 
 import mapPlaceholderLarge from '../../assets/images/map_placeholder_1000.png'
 import marker from '../../assets/images/marker.png'
@@ -25,7 +26,8 @@ import FamilyTab from '../components/FamilyTab'
 import RoundImage from '../components/RoundImage'
 import { url } from '../config'
 import globalStyles from '../globalStyles'
-import { submitDraft } from '../redux/actions'
+import { createDraft, submitDraft } from '../redux/actions'
+import { getTotalScreens } from '../screens/lifemap/helpers'
 import colors from '../theme.json'
 import OverviewComponent from './lifemap/Overview'
 import { convertImages, prepareDraftForSubmit } from './utils/helpers'
@@ -141,7 +143,43 @@ export class Family extends Component {
   componentWillUnmount() {
     this.unsubscribeNetChange()
   }
+  retakeSurvey() {
+    const draftId = uuid()
 
+    const regularDraft = {
+      draftId,
+      stoplightSkipped: false,
+      sign: '',
+      pictures: [],
+      sendEmail: false,
+      created: Date.now(),
+      status: 'Draft',
+      surveyId: this.survey.id,
+      surveyVersionId: this.survey.surveyVersionId,
+      economicSurveyDataList: [],
+      indicatorSurveyDataList: [],
+      priorities: [],
+      achievements: [],
+      progress: {
+        screen: 'Terms',
+        total: getTotalScreens(this.survey)
+      },
+      familyData: {
+        countFamilyMembers: this.familyLifemap.familyData.familyMembersList
+          .length,
+        familyMembersList: this.familyLifemap.familyData.familyMembersList
+      }
+    }
+
+    // create the new draft in redux
+    this.props.createDraft(regularDraft)
+
+    this.props.navigation.navigate('Terms', {
+      page: 'terms',
+      survey: this.survey,
+      draftId
+    })
+  }
   render() {
     const { activeTab } = this.state
     const { t, navigation } = this.props
@@ -375,7 +413,7 @@ export class Family extends Component {
               <Button
                 style={styles.buttonSmall}
                 text={t('views.retakeSurvey')}
-                handleClick={() => {}}
+                handleClick={() => this.retakeSurvey()}
               />
             ) : null}
           </ScrollView>
@@ -465,6 +503,7 @@ Family.propTypes = {
   t: PropTypes.func,
   submitDraft: PropTypes.func.isRequired,
   env: PropTypes.string.isRequired,
+  createDraft: PropTypes.func.isRequired,
   user: PropTypes.object.isRequired
 }
 
@@ -580,7 +619,8 @@ const styles = StyleSheet.create({
   imagePlaceholder: { width: '100%', height: 139 }
 })
 const mapDispatchToProps = {
-  submitDraft
+  submitDraft,
+  createDraft
 }
 const mapStateToProps = ({ surveys, env, user, drafts }) => ({
   surveys,
