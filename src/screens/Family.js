@@ -370,6 +370,14 @@ export class Family extends Component {
                   : null}
               </View>
             </View>
+            {this.props.user.role === 'ROLE_SURVEY_USER' ||
+            this.props.user.role === 'ROLE_SURVEY_USER_ADMIN' ? (
+              <Button
+                style={styles.buttonSmall}
+                text={t('views.retakeSurvey')}
+                handleClick={() => {}}
+              />
+            ) : null}
           </ScrollView>
         ) : null}
 
@@ -471,11 +479,20 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center'
   },
+  buttonSmall: {
+    alignSelf: 'center',
+    marginVertical: 20,
+    maxWidth: 400,
+    backgroundColor: '#50AA47',
+    paddingLeft: 20,
+    paddingRight: 20
+  },
   button: {
     alignSelf: 'center',
     marginVertical: 20,
     width: '100%',
     maxWidth: 400,
+
     backgroundColor: colors.palered
   },
   familiesIconIcon: {
