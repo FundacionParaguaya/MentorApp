@@ -52,7 +52,7 @@ export class Family extends Component {
   }
   familyLifemap = this.props.navigation.getParam('familyLifemap')
   isDraft = this.props.navigation.getParam('isDraft')
-
+  familyId = this.props.navigation.getParam('familyId')
   // extract socio economic categories from snapshot
   socioEconomicCategories = [
     ...new Set(
@@ -165,6 +165,7 @@ export class Family extends Component {
         total: getTotalScreens(this.survey)
       },
       familyData: {
+        familyId: this.familyId,
         countFamilyMembers: this.familyLifemap.familyData.familyMembersList
           .length,
         familyMembersList: this.familyLifemap.familyData.familyMembersList
@@ -408,8 +409,10 @@ export class Family extends Component {
                   : null}
               </View>
             </View>
-            {this.props.user.role === 'ROLE_SURVEY_USER' ||
-            this.props.user.role === 'ROLE_SURVEY_USER_ADMIN' ? (
+
+            {!!this.familyId &&
+            (this.props.user.role === 'ROLE_SURVEY_USER' ||
+              this.props.user.role === 'ROLE_SURVEY_USER_ADMIN') ? (
               <Button
                 style={styles.buttonSmall}
                 text={t('views.retakeSurvey')}
