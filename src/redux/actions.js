@@ -212,9 +212,7 @@ export const submitDraftWithImages = (
   sanitizedSnapshot
 ) => {
   console.log('Calling submitDraftWithImages')
-  console.log(sanitizedSnapshot)
   let formData = createFormData(sanitizedSnapshot)
-  console.log('formdata', formData)
 
   return {
     type: LOAD_IMAGES,
@@ -231,7 +229,13 @@ export const submitDraftWithImages = (
           },
           body: formData
         },
-        commit: { type: LOAD_IMAGES_COMMIT },
+        commit: {
+          type: LOAD_IMAGES_COMMIT,
+          draft: sanitizedSnapshot,
+          env: env,
+          token: token,
+          id: draftId
+        },
         rollback: { type: LOAD_IMAGES_ROLLBACK }
       }
     }
@@ -240,7 +244,6 @@ export const submitDraftWithImages = (
 
 const createFormData = sanitizedSnapshot => {
   let data = new FormData()
-  console.log('creating form data from pictures....')
   sanitizedSnapshot.pictures.forEach(picture => {
     data.append('pictures', {
       uri: picture.content,
@@ -252,6 +255,7 @@ const createFormData = sanitizedSnapshot => {
 }
 
 export const submitDraft = (env, token, id, payload) => {
+  console.log('----Calling Submit Draft----')
   const sanitizedSnapshot = { ...payload }
 
   let { economicSurveyDataList } = payload
@@ -276,7 +280,6 @@ export const submitDraft = (env, token, id, payload) => {
     token,
     id,
     payload,
-
     meta: {
       offline: {
         effect: {
