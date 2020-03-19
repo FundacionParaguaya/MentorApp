@@ -107,6 +107,7 @@ export class Final extends Component {
             sendEmail: this.state.sendEmailFlag
           }
         )
+        
       } else {
         this.props.submitDraft(
           url[this.props.env],

@@ -240,13 +240,10 @@ export const submitDraftWithImages = (
 
 const createFormData = sanitizedSnapshot => {
   let data = new FormData()
-  console.log('creating form data')
-  console.log(sanitizedSnapshot.pictures)
+  console.log('creating form data from pictures....')
   sanitizedSnapshot.pictures.forEach(picture => {
-    console.log(picture.content)
-    data.append('pictures', 'da')
+    data.append('pictures', {uri: picture.content, name: picture.name, type: picture.type})
   })
-
   return data
 }
 
