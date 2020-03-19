@@ -28,7 +28,9 @@ import {
   SWITCH_LANGUAGE,
   TOGGLE_API_VERSION_MODAL,
   UPDATE_DRAFT,
-  USER_LOGOUT
+  USER_LOGOUT,
+  LOAD_IMAGES_ROLLBACK,
+  LOAD_IMAGES_COMMIT
 } from './actions'
 
 const defaultLanguage = getDeviceLanguage()
@@ -224,6 +226,16 @@ export const drafts = (state = [], action) => {
           : draft
       )
 
+    case LOAD_IMAGES_COMMIT:
+      return state.map(draft =>
+        draft.draftId === action.id
+          ? {
+              ...draft,
+              status: 'Pending sync'
+            }
+          : draft
+      )
+
     case SUBMIT_DRAFT_COMMIT:
       return state.map(draft =>
         draft.draftId === action.meta.id
@@ -241,6 +253,16 @@ export const drafts = (state = [], action) => {
               ...draft,
               status: 'Sync error',
               errors: action.payload.response.errors
+            }
+          : draft
+      )
+    }
+    case LOAD_IMAGES_ROLLBACK: {
+      return state.map(draft =>
+        draft.draftId === action.id
+          ? {
+              ...draft,
+              status: 'Pending sync'
             }
           : draft
       )
