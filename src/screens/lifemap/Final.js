@@ -26,7 +26,7 @@ import {
 } from '../../redux/actions'
 import EmailSentModal from '../modals/EmailSentModal'
 import WhatsappSentModal from '../modals/WhatsappSentModal'
-import { prepareDraftForSubmit, convertImages } from '../utils/helpers'
+import { prepareDraftForSubmit } from '../utils/helpers'
 
 import {
   buildPDFOptions,
@@ -107,7 +107,6 @@ export class Final extends Component {
             sendEmail: this.state.sendEmailFlag
           }
         )
-        
       } else {
         this.props.submitDraft(
           url[this.props.env],

@@ -242,7 +242,11 @@ const createFormData = sanitizedSnapshot => {
   let data = new FormData()
   console.log('creating form data from pictures....')
   sanitizedSnapshot.pictures.forEach(picture => {
-    data.append('pictures', {uri: picture.content, name: picture.name, type: picture.type})
+    data.append('pictures', {
+      uri: picture.content,
+      name: picture.name,
+      type: picture.type
+    })
   })
   return data
 }
