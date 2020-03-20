@@ -68,7 +68,10 @@ export class DateInputComponent extends React.Component {
 
     if (this.props.initialValue) {
       this.setState({
-        date: moment.unix(this.props.initialValue).format('D MMMM YYYY')
+        date: moment
+          .unix(this.props.initialValue)
+          .utc()
+          .format('D MMMM YYYY')
       })
     }
   }
