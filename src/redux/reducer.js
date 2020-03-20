@@ -250,9 +250,7 @@ export const drafts = (state = [], action) => {
     }
     case LOAD_IMAGES: {
       console.log('LOAD_IMAGES set to Pending sync')
-      console.log(state)
-      console.log('action')
-      console.log(action)
+      
       return state.map(draft =>
         draft.draftId === action.id
           ? {

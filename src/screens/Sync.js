@@ -59,7 +59,6 @@ export class Sync extends Component {
       )
 
       if (draft.pictures && draft.pictures.length > 0) {
-        console.log(sanitazedDraft)
         this.props.submitDraftWithImages(
           url[this.props.env],
           this.props.user.token,
