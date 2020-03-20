@@ -205,12 +205,7 @@ export const LOAD_IMAGES = 'LOAD_IMAGES'
 export const LOAD_IMAGES_COMMIT = 'LOAD_IMAGES_COMMIT'
 export const LOAD_IMAGES_ROLLBACK = 'LOAD_IMAGES_ROLLBACK'
 
-export const submitDraftWithImages = (
-  env,
-  token,
-  draftId,
-  sanitizedSnapshot
-) => {
+export const submitDraftWithImages = (env, token, id, sanitizedSnapshot) => {
   console.log('Calling submitDraftWithImages')
   let formData = createFormData(sanitizedSnapshot)
 
@@ -218,6 +213,7 @@ export const submitDraftWithImages = (
     type: LOAD_IMAGES,
     env,
     token,
+    id,
     meta: {
       offline: {
         effect: {
@@ -234,9 +230,15 @@ export const submitDraftWithImages = (
           draft: sanitizedSnapshot,
           env: env,
           token: token,
-          id: draftId
+          id: id
         },
-        rollback: { type: LOAD_IMAGES_ROLLBACK }
+        rollback: {
+          type: LOAD_IMAGES_ROLLBACK,
+          draft: sanitizedSnapshot,
+          env: env,
+          token: token,
+          id: id
+        }
       }
     }
   }
@@ -244,13 +246,18 @@ export const submitDraftWithImages = (
 
 const createFormData = sanitizedSnapshot => {
   let data = new FormData()
-  sanitizedSnapshot.pictures.forEach(picture => {
-    data.append('pictures', {
-      uri: picture.content,
-      name: picture.name,
-      type: picture.type
+  console.log('sanitizedSnapshot')
+  console.log(sanitizedSnapshot)
+
+  if (sanitizedSnapshot.pictures) {
+    sanitizedSnapshot.pictures.forEach(picture => {
+      data.append('pictures', {
+        uri: picture.content,
+        name: picture.name,
+        type: picture.type
+      })
     })
-  })
+  }
   return data
 }
 

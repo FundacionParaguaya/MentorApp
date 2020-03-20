@@ -29,6 +29,7 @@ import {
   TOGGLE_API_VERSION_MODAL,
   UPDATE_DRAFT,
   USER_LOGOUT,
+  LOAD_IMAGES,
   LOAD_IMAGES_ROLLBACK,
   LOAD_IMAGES_COMMIT
 } from './actions'
@@ -226,16 +227,6 @@ export const drafts = (state = [], action) => {
           : draft
       )
 
-    case LOAD_IMAGES_COMMIT:
-      return state.map(draft =>
-        draft.draftId === action.id
-          ? {
-              ...draft,
-              status: 'Pending sync'
-            }
-          : draft
-      )
-
     case SUBMIT_DRAFT_COMMIT:
       return state.map(draft =>
         draft.draftId === action.meta.id
@@ -257,7 +248,11 @@ export const drafts = (state = [], action) => {
           : draft
       )
     }
-    case LOAD_IMAGES_ROLLBACK: {
+    case LOAD_IMAGES: {
+      console.log('LOAD_IMAGES set to Pending sync')
+      console.log(state)
+      console.log('action')
+      console.log(action)
       return state.map(draft =>
         draft.draftId === action.id
           ? {
@@ -267,6 +262,31 @@ export const drafts = (state = [], action) => {
           : draft
       )
     }
+
+    case LOAD_IMAGES_COMMIT: {
+      console.log('--LOAD_IMAGES_COMMIT set to Pending sync')
+      return state.map(draft =>
+        draft.draftId === action.id
+          ? {
+              ...draft,
+              status: 'Pending sync'
+            }
+          : draft
+      )
+    }
+    case LOAD_IMAGES_ROLLBACK: {
+      console.log('--LOAD_IMAGES_ROLLBACK set to Pending sync')
+
+      return state.map(draft =>
+        draft.draftId === action.id
+          ? {
+              ...draft,
+              status: 'Sync error'
+            }
+          : draft
+      )
+    }
+
     case DELETE_DRAFT:
       return state.filter(draft => draft.draftId !== action.id)
     default:
