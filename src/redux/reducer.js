@@ -281,7 +281,7 @@ export const drafts = (state = [], action) => {
         draft.draftId === action.id
           ? {
               ...draft,
-              status: 'Sync error'
+              status: 'Pending sync'
             }
           : draft
       )
