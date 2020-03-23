@@ -72,7 +72,9 @@
       "takeAPicture": "Tomar una foto",
       "orUploadFromGalery": "O subir de la galería",
       "uploadingImage": "Subiendo imagen...",
-      "uploadedPicture": "Imagen cargada"
+      "uploadedPicture": "Imagen cargada",
+      "limit": "*¡Alcanzaste el límite de 10MB! Elimina una imagen para poder continuar."
+
     },
     "sign": {
       "signHere": "Firma",
