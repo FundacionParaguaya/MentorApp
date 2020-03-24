@@ -44,12 +44,13 @@ export const prepareDraftForSubmit = (draft, survey) => {
   // check for frequent sync errors
 
   // set country to survey country if not set
-  if (!result.familyData.country) {
+  if (result.familyData && !result.familyData.country) {
     result.familyData.country =
       survey.surveyConfig.surveyLocation &&
       survey.surveyConfig.surveyLocation.country
   }
-
+  //console.log('draft after sanitized');
+  //console.log(result);
   return result
 }
 export const convertImages = sanitizedSnapshot => {

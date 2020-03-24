@@ -200,7 +200,69 @@ const formatPhone = (code, phone) => {
   return phone
 }
 
+//IMAGES
+export const LOAD_IMAGES = 'LOAD_IMAGES'
+export const LOAD_IMAGES_COMMIT = 'LOAD_IMAGES_COMMIT'
+export const LOAD_IMAGES_ROLLBACK = 'LOAD_IMAGES_ROLLBACK'
+
+export const submitDraftWithImages = (env, token, id, sanitizedSnapshot) => {
+  console.log('Calling submitDraftWithImages')
+  let formData = createFormData(sanitizedSnapshot)
+
+  return {
+    type: LOAD_IMAGES,
+    env,
+    token,
+    id,
+    meta: {
+      offline: {
+        effect: {
+          url: `${env}/api/v1/snapshots/files/pictures/upload`,
+          method: 'POST',
+          headers: {
+            Authorization: `Bearer ${token}`,
+            'content-type': 'multipart/form-data'
+          },
+          body: formData
+        },
+        commit: {
+          type: LOAD_IMAGES_COMMIT,
+          draft: sanitizedSnapshot,
+          env: env,
+          token: token,
+          id: id
+        },
+        rollback: {
+          type: LOAD_IMAGES_ROLLBACK,
+          draft: sanitizedSnapshot,
+          env: env,
+          token: token,
+          id: id
+        }
+      }
+    }
+  }
+}
+
+const createFormData = sanitizedSnapshot => {
+  let data = new FormData()
+  console.log('sanitizedSnapshot')
+  console.log(sanitizedSnapshot)
+
+  if (sanitizedSnapshot.pictures) {
+    sanitizedSnapshot.pictures.forEach(picture => {
+      data.append('pictures', {
+        uri: picture.content,
+        name: picture.name,
+        type: picture.type
+      })
+    })
+  }
+  return data
+}
+
 export const submitDraft = (env, token, id, payload) => {
+  console.log('----Calling Submit Draft----')
   const sanitizedSnapshot = { ...payload }
 
   let { economicSurveyDataList } = payload
@@ -225,7 +287,6 @@ export const submitDraft = (env, token, id, payload) => {
     token,
     id,
     payload,
-
     meta: {
       offline: {
         effect: {

@@ -118,17 +118,28 @@ export class Family extends Component {
     if (this.state.loading) {
       const draft = prepareDraftForSubmit(this.familyLifemap, this.survey)
 
-      convertImages(draft).then(imagesArray => {
+      if (draft.pictures && draft.pictures.length > 0) {
+        this.props.submitDraftWithImages(
+          url[this.props.env],
+          this.props.user.token,
+          draft.draftId,
+          {
+            ...draft
+            //sendEmail: this.state.sendEmailFlag
+          }
+        )
+      } else {
         this.props.submitDraft(
           url[this.props.env],
           this.props.user.token,
           draft.draftId,
           {
             ...draft,
-            pictures: imagesArray
+            pictures: []
           }
         )
-      })
+      }
+      
       setTimeout(() => {
         this.props.navigation.popToTop()
         this.props.navigation.navigate('Dashboard')

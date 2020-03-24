@@ -19,10 +19,14 @@ import LifemapVisual from '../../components/LifemapVisual'
 import RoundImage from '../../components/RoundImage'
 import { url } from '../../config'
 import globalStyles from '../../globalStyles'
-import { submitDraft, updateDraft } from '../../redux/actions'
+import {
+  submitDraft,
+  updateDraft,
+  submitDraftWithImages
+} from '../../redux/actions'
 import EmailSentModal from '../modals/EmailSentModal'
 import WhatsappSentModal from '../modals/WhatsappSentModal'
-import { prepareDraftForSubmit, convertImages } from '../utils/helpers'
+import { prepareDraftForSubmit } from '../utils/helpers'
 
 import {
   buildPDFOptions,
@@ -92,8 +96,18 @@ export class Final extends Component {
   prepareDraftForSubmit() {
     if (this.state.loading) {
       const draft = prepareDraftForSubmit(this.draft, this.survey)
-      convertImages(draft).then(imagesArray => {
-        console.log('end converting images')
+
+      if (draft.pictures.length > 0) {
+        this.props.submitDraftWithImages(
+          url[this.props.env],
+          this.props.user.token,
+          draft.draftId,
+          {
+            ...draft,
+            sendEmail: this.state.sendEmailFlag
+          }
+        )
+      } else {
         this.props.submitDraft(
           url[this.props.env],
           this.props.user.token,
@@ -101,10 +115,10 @@ export class Final extends Component {
           {
             ...draft,
             sendEmail: this.state.sendEmailFlag,
-            pictures: imagesArray
+            pictures: []
           }
         )
-      })
+      }
 
       setTimeout(() => {
         this.props.navigation.popToTop()
@@ -381,6 +395,7 @@ Final.propTypes = {
   navigation: PropTypes.object.isRequired,
   updateDraft: PropTypes.func.isRequired,
   submitDraft: PropTypes.func.isRequired,
+  submitDraftWithImages: PropTypes.func.isRequired,
   env: PropTypes.string.isRequired,
   user: PropTypes.object.isRequired,
   lng: PropTypes.string.isRequired
@@ -392,7 +407,8 @@ const mapStateToProps = ({ env, user }) => ({
 })
 const mapDispatchToProps = {
   submitDraft,
-  updateDraft
+  updateDraft,
+  submitDraftWithImages
 }
 
 export default withNamespaces()(
