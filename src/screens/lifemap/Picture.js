@@ -107,11 +107,13 @@ export class Picture extends Component {
     let marker = 1024 // Change to 1000 if required
     let maxSize = 10 * marker * marker // 10MB limit
     pictures.forEach(element => {
-      console.log('picture', element)
-      let pictureSize = element.size
-      size = size + pictureSize
+      //console.log('picture', element)
+      let pictureSize = element.size ? element.size : 0
 
-      console.log('Files size is', size)
+      if (pictureSize === 0) {
+        console.log('Files size is cero', element)
+      }
+      size = size + pictureSize
     })
 
     console.log('total images size is: ', size)
@@ -119,18 +121,26 @@ export class Picture extends Component {
     if (size > maxSize) {
       return false
     }
-
     return true
   }
+
   removePicture = function(elem) {
     //remove picture from state
 
     let newState = this.state.pictures.filter(e => e.name != elem.name)
 
     let updatedDraft = this.draft
+    console.log('Draft beforee checking: ', this.draft)
     updatedDraft.pictures = newState
+
     this.props.updateDraft(updatedDraft)
     this.setState({ pictures: newState })
+
+    console.log('checking file after removing: ', newState)
+    if (this.checkMaxLimit(newState)) {
+      this.setState({ displayError: false })
+      console.log('show error')
+    }
   }
 
   onContinue = function() {
