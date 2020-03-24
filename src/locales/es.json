@@ -119,8 +119,8 @@
       "calcilatingTotalImages": "Calculando imágenes a sincronizar"
     },
     "family": {
-      "membersDontMatch": "The amount of members does not match, please edit the members to match the amount chosen",
-      "deleteMembers": "Delete the member who no longer belongs in the household",
+      "membersDontMatch": "La cantidad de miembros no coincide. Favor edita los miembros para que la cantidad sea la correcta.",
+      "deleteMembers": "Elimina el miembro que ya no pertenece al hogar.",
       "primaryParticipantHeading": "¡Cuéntanos sobre tí!",
       "familyMembersHeading": "Ahora, ¡cuéntanos sobre las personas con las que vives!",
       "firstName": "Nombre",
