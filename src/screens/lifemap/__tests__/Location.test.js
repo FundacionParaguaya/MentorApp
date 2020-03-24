@@ -1,23 +1,23 @@
+import MapboxGL from '@react-native-mapbox-gl/maps'
+import { shallow } from 'enzyme'
+import React from 'react'
 import {
   ActivityIndicator,
   AppState,
   Text,
   TouchableHighlight
 } from 'react-native'
-
-import Geolocation from '../../../__mocks__/@react-native-community/geolocation.js'
 /* eslint-disable import/named */
 import { GooglePlacesAutocomplete } from 'react-native-google-places-autocomplete'
+
+import Geolocation from '../../../__mocks__/@react-native-community/geolocation.js'
+import NetInfo from '../../../__mocks__/@react-native-community/netinfo.js'
+import MockedMapboxGL from '../../../__mocks__/@react-native-mapbox-gl/maps.js'
+import Select from '../../../components/form/Select'
+import TextInput from '../../../components/form/TextInput'
+import StickyFooter from '../../../components/StickyFooter'
 /* eslint-enable import/named */
 import { Location } from '../Location'
-import MapboxGL from '@react-native-mapbox-gl/maps'
-import MockedMapboxGL from '../../../__mocks__/@react-native-mapbox-gl/maps.js'
-import NetInfo from '../../../__mocks__/@react-native-community/netinfo.js'
-import React from 'react'
-import Select from '../../../components/form/Select'
-import StickyFooter from '../../../components/StickyFooter'
-import TextInput from '../../../components/form/TextInput'
-import { shallow } from 'enzyme'
 
 const survey = {
   surveyEconomicQuestions: [],
@@ -132,7 +132,7 @@ it('navigates back to family members screen if multiple family members in draft'
   })
   wrapper = shallow(<Location {...props} />)
   wrapper.instance().onPressBack()
-  expect(props.navigation.navigate).toHaveBeenCalledWith('FamilyMembersNames', {
+  expect(props.navigation.replace).toHaveBeenCalledWith('FamilyMembersNames', {
     survey,
     draftId
   })

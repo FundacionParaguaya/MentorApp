@@ -79,7 +79,7 @@
       "signHere": "Signature",
       "erase": "Erase",
       "continue": "Continue",
-      "emptyError":"*Please add a signature before you continue."
+      "emptyError": "*Please add a signature before you continue."
     },
     "dashboard": "Stoplight Mobile",
     "home": "Home",
@@ -119,6 +119,8 @@
       "calcilatingTotalImages": "Calculating total images to cache.."
     },
     "family": {
+      "membersDontMatch": "The amount of members does not match, please edit the members to match the amount chosen",
+      "deleteMembers": "Delete the member who no longer belongs in the household",
       "primaryParticipantHeading": "Tell us about yourself!",
       "familyMembersHeading": "Now, tell us about all the people you live with!",
       "firstName": "First name",
@@ -184,7 +186,7 @@
       "continueWithSurvey": "Continue where you left off!",
       "congratulations": "Congratulations!",
       "thisLifeMapHas": "This Life Map has %n questions.",
-      "thisLifeMapHasNoStoplight":"Thank you! This Stoplight section has %n indicators. Choose if you wish to save your survey now or finish your Stoplight.",
+      "thisLifeMapHasNoStoplight": "Thank you! This Stoplight section has %n indicators. Choose if you wish to save your survey now or finish your Stoplight.",
       "responseRequired": "*Response required",
       "skipThisQuestion": "Skip this question",
       "youSkipped": "You skipped these indicators",

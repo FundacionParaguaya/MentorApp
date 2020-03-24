@@ -86,11 +86,11 @@ export class FamilyParticipant extends Component {
     const survey = this.survey
 
     const { draftId } = draft
-    const { countFamilyMembers } = draft.familyData
+    const { familyMembersList } = draft.familyData
 
-    if (countFamilyMembers && countFamilyMembers > 1) {
+    if (familyMembersList.length > 1) {
       // if multiple family members navigate to members screens
-      this.props.navigation.navigate('FamilyMembersNames', {
+      this.props.navigation.replace('FamilyMembersNames', {
         draftId,
         survey
       })
@@ -104,38 +104,63 @@ export class FamilyParticipant extends Component {
     if (this.readOnly) {
       return
     }
-
     const draft = this.getDraft()
     const { countFamilyMembers } = draft.familyData
     const PREFER_NOT_TO_SAY = -1
-
     let familyMembersList = draft.familyData.familyMembersList
-
     const numberOfMembers =
       countFamilyMembers === PREFER_NOT_TO_SAY ? 1 : countFamilyMembers
     const valueIsNumber = typeof value === 'number'
-
     if (
       valueIsNumber &&
       value !== PREFER_NOT_TO_SAY &&
       numberOfMembers > value
     ) {
-      familyMembersList.splice(value, familyMembersList.length - 1)
+      var itemsICanRemove = 0
+      for (var index in familyMembersList) {
+        var currMember = familyMembersList[index]
+        if (
+          !currMember.birthDate &&
+          !currMember.gender &&
+          !currMember.firstName
+        ) {
+          itemsICanRemove += 1
+        }
+      }
+      var finalRemove = 0
+      if (itemsICanRemove > familyMembersList.length - value) {
+        finalRemove = value
+      } else {
+        finalRemove = itemsICanRemove
+      }
+
+      if (finalRemove != 0) {
+        var itemsRemoved = 0
+        let i = familyMembersList.length
+        while (i--) {
+          if (
+            !currMember.birthDate &&
+            !currMember.gender &&
+            !currMember.firstName &&
+            itemsRemoved != finalRemove
+          ) {
+            familyMembersList.splice(i, 1)
+            itemsRemoved += 1
+          }
+        }
+      }
     } else if (
       valueIsNumber &&
       value !== PREFER_NOT_TO_SAY &&
       (numberOfMembers < value || !numberOfMembers)
     ) {
-      for (var i = 0; i < value - (numberOfMembers || 1); i++) {
-        familyMembersList.push({ firstParticipant: false })
+      var newMembersToAdd = value - familyMembersList.length
+      if (newMembersToAdd > 0) {
+        for (let a = 0; a < newMembersToAdd; a++) {
+          familyMembersList.push({ firstParticipant: false })
+        }
       }
-    } else if (
-      (valueIsNumber && value === PREFER_NOT_TO_SAY) ||
-      !valueIsNumber
-    ) {
-      familyMembersList.splice(1, familyMembersList.length - 1)
     }
-
     this.props.updateDraft({
       ...draft,
       familyData: {
@@ -179,7 +204,6 @@ export class FamilyParticipant extends Component {
     if (this.readOnly || (!value && field == 'phoneCode')) {
       return
     }
-
     const draft = this.getDraft()
 
     this.props.updateDraft({

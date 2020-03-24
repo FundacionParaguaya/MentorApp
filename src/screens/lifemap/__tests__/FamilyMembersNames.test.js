@@ -60,6 +60,7 @@ const draft = {
 const navigation = {
   isFocused: jest.fn(() => true),
   navigate: jest.fn(),
+  replace: jest.fn(),
   push: jest.fn(),
   setParams: jest.fn(),
   getParam: jest.fn(param => {
@@ -108,7 +109,7 @@ it('renders all inputs for each family member', () => {
 
 it('navigates to location on continue ', () => {
   wrapper.instance().onContinue()
-  expect(props.navigation.navigate).toHaveBeenCalledWith('Location', {
+  expect(props.navigation.replace).toHaveBeenCalledWith('Location', {
     survey,
     draftId
   })
@@ -116,14 +117,6 @@ it('navigates to location on continue ', () => {
 
 it('updates only when focused', () => {
   expect(wrapper.instance().shouldComponentUpdate()).toEqual(true)
-})
-
-it('navigates back to proper screen', () => {
-  wrapper.instance().onPressBack()
-  expect(props.navigation.navigate).toHaveBeenCalledWith('FamilyParticipant', {
-    survey,
-    draftId
-  })
 })
 
 it('sets draft navigation when navigation from a different page', () => {
@@ -134,11 +127,6 @@ it('sets draft navigation when navigation from a different page', () => {
       screen: 'FamilyMembersNames'
     }
   })
-})
-
-it('sets autoFocus to first textInput', () => {
-  expect(wrapper.find(TextInput).first()).toHaveProp({ autoFocus: true })
-  expect(wrapper.find(TextInput).last()).toHaveProp({ autoFocus: false })
 })
 
 it('does not update draft on wrong field format', () => {
@@ -178,7 +166,7 @@ describe('from resumed draft', () => {
       ...draft.familyData,
       familyMembersList: [
         draft.familyData.familyMembersList[0],
-        { firstParticipant: false, firstName: 'Ana' },
+        { firstParticipant: false, firstName: 'Ana', gender: 'F' },
         { firstParticipant: false, firstName: 'Pesho', gender: 'M' }
       ]
     }
@@ -199,33 +187,12 @@ describe('from resumed draft', () => {
     expect(wrapper.find(Select).last()).toHaveProp({ initialValue: 'M' })
   })
 
-  it('updates the draft with correct data', () => {
-    wrapper.instance().updateMember('F', '1.gender')
-    expect(props.updateDraft).toHaveBeenCalledWith({
-      ...resumeDraft,
-      familyData: {
-        ...resumeDraft.familyData,
-        familyMembersList: Object.assign(
-          [],
-          resumeDraft.familyData.familyMembersList,
-          {
-            [1]: {
-              ...resumeDraft.familyData.familyMembersList[1],
-              firstParticipant: false,
-              gender: 'F'
-            }
-          }
-        )
-      }
-    })
-  })
-
   it('updates the draft on each field change ', () => {
     wrapper
       .find(TextInput)
       .first()
       .props()
-      .onChangeText('Test', '1.firstName')
+      .onChangeText('Test', 'Ana')
 
     wrapper
       .find(Select)
@@ -250,7 +217,7 @@ describe('from resumed draft', () => {
       .props()
       .setError(true)
 
-    expect(spy).toHaveBeenCalledWith(true, '1.firstName')
+    expect(spy).toHaveBeenCalledWith(true, 'Ana')
 
     wrapper
       .find(Select)
@@ -258,25 +225,7 @@ describe('from resumed draft', () => {
       .props()
       .setError(true)
 
-    expect(wrapper).toHaveState({ errors: ['1.firstName', '1.gender'] })
-
-    wrapper
-      .find(Select)
-      .first()
-      .props()
-      .setError(false)
-
-    expect(wrapper).toHaveState({ errors: ['1.firstName'] })
-
-    wrapper
-      .find(DateInput)
-      .first()
-      .props()
-      .setError(true)
-
-    wrapper.instance().setError(false, 'field', 1)
-
-    expect(wrapper).toHaveState({ errors: ['1.firstName', '1.birthDate'] })
+    expect(wrapper).toHaveState({ errors: ['Ana', 'F'] })
   })
 
   it('validates form on pressing continue', () => {
