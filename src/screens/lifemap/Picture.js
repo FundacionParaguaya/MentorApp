@@ -105,7 +105,7 @@ export class Picture extends Component {
   checkMaxLimit = function(pictures) {
     let size = 0
     let marker = 1024 // Change to 1000 if required
-    let maxSize = 3 * marker * marker // 10MB limit
+    let maxSize = 10 * marker * marker // 10MB limit
     pictures.forEach(element => {
       //console.log('picture', element)
       let pictureSize = element.size ? element.size : 0
