@@ -81,7 +81,7 @@ export class Picture extends Component {
               name: response.fileName,
               type: response.type,
               content: response.uri,
-              size: response.fileSizes
+              size: response.fileSize
             }
           ]
         })
@@ -105,17 +105,17 @@ export class Picture extends Component {
   checkMaxLimit = function(pictures) {
     let size = 0
     let marker = 1024 // Change to 1000 if required
-    let maxSize = 10 * marker * marker // 10MB limit
+    let maxSize = 3 * marker * marker // 10MB limit
     pictures.forEach(element => {
       //console.log('picture', element)
       let pictureSize = element.size ? element.size : 0
 
       if (pictureSize === 0) {
-        console.log('Files size is cero', element)
+        console.log('---------Files size is cero----', element)
       }
       size = size + pictureSize
     })
-
+    console.log('Images checking limit are: ', pictures)
     console.log('total images size is: ', size)
     console.log('max size is: ', maxSize)
     if (size > maxSize) {
@@ -130,14 +130,14 @@ export class Picture extends Component {
     let newState = this.state.pictures.filter(e => e.name != elem.name)
 
     let updatedDraft = this.draft
+    updatedDraft.pictures = newState ? newState : []
     console.log('Draft beforee checking: ', this.draft)
-    updatedDraft.pictures = newState
 
     this.props.updateDraft(updatedDraft)
     this.setState({ pictures: newState })
 
     console.log('checking file after removing: ', newState)
-    if (this.checkMaxLimit(newState)) {
+    if (this.checkMaxLimit([...newState])) {
       this.setState({ displayError: false })
       console.log('show error')
     }
@@ -146,7 +146,7 @@ export class Picture extends Component {
   onContinue = function() {
     let survey = this.props.navigation.getParam('survey')
     console.log(this.draft)
-    if (!this.checkMaxLimit(this.draft.pictures)) {
+    if (!this.checkMaxLimit([...this.state.pictures])) {
       this.setState({ displayError: true })
       console.log('show error')
     } else if (survey.surveyConfig.signSupport) {
