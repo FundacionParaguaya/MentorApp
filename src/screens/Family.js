@@ -26,11 +26,11 @@ import FamilyTab from '../components/FamilyTab'
 import RoundImage from '../components/RoundImage'
 import { url } from '../config'
 import globalStyles from '../globalStyles'
-import { createDraft, submitDraft } from '../redux/actions'
+import { createDraft, submitDraft, submitDraftWithImages } from '../redux/actions'
 import { getTotalScreens } from '../screens/lifemap/helpers'
 import colors from '../theme.json'
 import OverviewComponent from './lifemap/Overview'
-import { convertImages, prepareDraftForSubmit } from './utils/helpers'
+import {prepareDraftForSubmit } from './utils/helpers'
 
 export class Family extends Component {
   // set the title of the screen to the family name
@@ -421,15 +421,15 @@ export class Family extends Component {
               </View>
             </View>
 
-            {!!this.familyId &&
+            {/*{!!this.familyId &&
             (this.props.user.role === 'ROLE_SURVEY_USER' ||
               this.props.user.role === 'ROLE_SURVEY_USER_ADMIN') ? (
-              <Button
+               <Button
                 style={styles.buttonSmall}
                 text={t('views.retakeSurvey')}
                 handleClick={() => this.retakeSurvey()}
-              />
-            ) : null}
+              /> 
+            ) : null} */}
           </ScrollView>
         ) : null}
 
@@ -516,6 +516,7 @@ Family.propTypes = {
   navigation: PropTypes.object.isRequired,
   t: PropTypes.func,
   submitDraft: PropTypes.func.isRequired,
+  submitDraftWithImages: PropTypes.func.isRequired,
   env: PropTypes.string.isRequired,
   createDraft: PropTypes.func.isRequired,
   user: PropTypes.object.isRequired
@@ -634,6 +635,7 @@ const styles = StyleSheet.create({
 })
 const mapDispatchToProps = {
   submitDraft,
+  submitDraftWithImages,
   createDraft
 }
 const mapStateToProps = ({ surveys, env, user, drafts }) => ({
