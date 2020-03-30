@@ -129,6 +129,23 @@ export const families = (state = [], action) => {
   }
 }
 
+//Queue invocations
+export const syncStatus  = (state = [], action) => {
+  switch (action.type) {
+    case SUBMIT_DRAFT: {
+      console.log('Adding id to sync: ', action.id)
+      return [...state,action.id ]
+    }
+    case SUBMIT_DRAFT_COMMIT:{
+      console.log('Removing id to synced: ', action.meta.id)
+      return state.filter(draftId => draftId !== action.meta.id);
+    }
+    default:
+      return state
+  }
+}
+ 
+
 //Drafts
 export const drafts = (state = [], action) => {
   switch (action.type) {
@@ -414,6 +431,7 @@ const appReducer = combineReducers({
   maps,
   surveys,
   families,
+  syncStatus,
   drafts,
   language,
   hydration,
