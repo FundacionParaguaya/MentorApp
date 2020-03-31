@@ -132,9 +132,17 @@ export const families = (state = [], action) => {
 //Queue invocations
 export const syncStatus = (state = [], action) => {
   switch (action.type) {
-    case SUBMIT_DRAFT: {
+    case LOAD_IMAGES: {
       console.log('Adding id to sync: ', action.id)
       return [...state, action.id]
+    }
+    case SUBMIT_DRAFT: {
+      if(state.indexOf(action.id) === -1){
+      console.log('Adding id to sync: ', action.id)
+      return [...state, action.id]
+      }else{
+        return [... state]
+      }
     }
     case SUBMIT_DRAFT_COMMIT: {
       console.log('Removing id to synced: ', action.meta.id)

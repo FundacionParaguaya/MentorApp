@@ -67,7 +67,8 @@ export class Family extends Component {
     super(props)
     this.state = {
       loading: false,
-      activeTab: this.props.navigation.getParam('activeTab') || 'Details'
+      activeTab: this.props.navigation.getParam('activeTab') || 'Details',
+      showSyncButton: false
     }
   }
   componentDidMount() {
