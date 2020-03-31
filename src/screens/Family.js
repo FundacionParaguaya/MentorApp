@@ -26,11 +26,15 @@ import FamilyTab from '../components/FamilyTab'
 import RoundImage from '../components/RoundImage'
 import { url } from '../config'
 import globalStyles from '../globalStyles'
-import { createDraft, submitDraft, submitDraftWithImages } from '../redux/actions'
+import {
+  createDraft,
+  submitDraft,
+  submitDraftWithImages
+} from '../redux/actions'
 import { getTotalScreens } from '../screens/lifemap/helpers'
 import colors from '../theme.json'
 import OverviewComponent from './lifemap/Overview'
-import {prepareDraftForSubmit } from './utils/helpers'
+import { prepareDraftForSubmit } from './utils/helpers'
 
 export class Family extends Component {
   // set the title of the screen to the family name
@@ -139,7 +143,7 @@ export class Family extends Component {
           }
         )
       }
-      
+
       setTimeout(() => {
         this.props.navigation.popToTop()
         this.props.navigation.navigate('Dashboard')
@@ -421,15 +425,15 @@ export class Family extends Component {
               </View>
             </View>
 
-            {/*{!!this.familyId &&
+            {!!this.familyId &&
             (this.props.user.role === 'ROLE_SURVEY_USER' ||
               this.props.user.role === 'ROLE_SURVEY_USER_ADMIN') ? (
-               <Button
+              <Button
                 style={styles.buttonSmall}
                 text={t('views.retakeSurvey')}
                 handleClick={() => this.retakeSurvey()}
-              /> 
-            ) : null} */}
+              />
+            ) : null}
           </ScrollView>
         ) : null}
 

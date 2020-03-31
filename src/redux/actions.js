@@ -275,12 +275,16 @@ export const submitDraft = (env, token, id, payload) => {
   sanitizedSnapshot.economicSurveyDataList = economicSurveyDataList
   sanitizedSnapshot.familyData.familyMembersList.forEach(member => {
     let { socioEconomicAnswers = [] } = member
+    delete member.memberIdentifier
+    delete member.id
+    delete member.familyId
+
     member.phoneNumber = formatPhone(member.phoneCode, member.phoneNumber)
     socioEconomicAnswers = socioEconomicAnswers.filter(validEconomicIndicator)
     // eslint-disable-next-line no-param-reassign
     member.socioEconomicAnswers = socioEconomicAnswers
   })
-
+  console.log(sanitizedSnapshot)
   return {
     type: SUBMIT_DRAFT,
     env,
