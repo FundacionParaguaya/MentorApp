@@ -137,11 +137,11 @@ export const syncStatus = (state = [], action) => {
       return [...state, action.id]
     }
     case SUBMIT_DRAFT: {
-      if(state.indexOf(action.id) === -1){
-      console.log('Adding id to sync: ', action.id)
-      return [...state, action.id]
-      }else{
-        return [... state]
+      if (state.indexOf(action.id) === -1) {
+        console.log('Adding id to sync: ', action.id)
+        return [...state, action.id]
+      } else {
+        return [...state]
       }
     }
     case SUBMIT_DRAFT_COMMIT: {
