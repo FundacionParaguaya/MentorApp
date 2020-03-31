@@ -130,21 +130,20 @@ export const families = (state = [], action) => {
 }
 
 //Queue invocations
-export const syncStatus  = (state = [], action) => {
+export const syncStatus = (state = [], action) => {
   switch (action.type) {
     case SUBMIT_DRAFT: {
       console.log('Adding id to sync: ', action.id)
-      return [...state,action.id ]
+      return [...state, action.id]
     }
-    case SUBMIT_DRAFT_COMMIT:{
+    case SUBMIT_DRAFT_COMMIT: {
       console.log('Removing id to synced: ', action.meta.id)
-      return state.filter(draftId => draftId !== action.meta.id);
+      return state.filter(draftId => draftId !== action.meta.id)
     }
     default:
       return state
   }
 }
- 
 
 //Drafts
 export const drafts = (state = [], action) => {
@@ -267,7 +266,7 @@ export const drafts = (state = [], action) => {
     }
     case LOAD_IMAGES: {
       console.log('LOAD_IMAGES set to Pending sync')
-      
+
       return state.map(draft =>
         draft.draftId === action.id
           ? {

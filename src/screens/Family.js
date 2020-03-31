@@ -50,7 +50,7 @@ export class Family extends Component {
     }
   }
   unsubscribeNetChange
-  
+
   familyLifemap = this.props.navigation.getParam('familyLifemap')
   isDraft = this.props.navigation.getParam('isDraft')
   familyId = this.props.navigation.getParam('familyId')
@@ -63,11 +63,11 @@ export class Family extends Component {
     )
   ]
 
-  constructor(props){
-    super(props);
+  constructor(props) {
+    super(props)
     this.state = {
       loading: false,
-      activeTab: this.props.navigation.getParam('activeTab') || 'Details',
+      activeTab: this.props.navigation.getParam('activeTab') || 'Details'
     }
   }
   componentDidMount() {
@@ -75,8 +75,7 @@ export class Family extends Component {
     this.unsubscribeNetChange = NetInfo.addEventListener(isOnline => {
       this.setState({ isOnline })
       //Allow to show or hide retrySyn button
-      this.setState({showSyncButton : this.availableForSync(isOnline) })
-
+      this.setState({ showSyncButton: this.availableForSync(isOnline) })
     })
 
     // check if online first
@@ -118,38 +117,37 @@ export class Family extends Component {
   )
 
   retrySync = () => {
-    const id = this.familyLifemap.draftId;
-    
+    const id = this.familyLifemap.draftId
+
     if (this.state.loading) {
       return
     }
 
     if (this.props.syncStatus.indexOf(id) === -1) {
-      console.log('starting manual sync ', id);
+      console.log('starting manual sync ', id)
       this.setState({ loading: true })
       this.prepareDraftForSubmit()
-    }else{
-      console.log('Not available to sync, already enqueue');
+    } else {
+      console.log('Not available to sync, already enqueue')
     }
-
-    
   }
 
-  availableForSync = (isOnline) =>{
-    const id = this.familyLifemap.draftId;
-    console.log('draft id ', id);
-    console.log('list submitted: ', this.props.syncStatus);
-    console.log('Status : ', this.familyLifemap.status);
+  availableForSync = isOnline => {
+    const id = this.familyLifemap.draftId
+    console.log('draft id ', id)
+    console.log('list submitted: ', this.props.syncStatus)
+    console.log('Status : ', this.familyLifemap.status)
 
-    if (this.props.syncStatus.indexOf(id) === -1
-      && isOnline &&
-      this.props.navigation.getParam('familyLifemap').status ===
-        'Pending sync') {
-      console.log('Available for manual sync');
-      return true;
-    }else{
-      console.log('Not available to sync, already enqueue');
-      return false;
+    if (
+      this.props.syncStatus.indexOf(id) === -1 &&
+      isOnline &&
+      this.props.navigation.getParam('familyLifemap').status === 'Pending sync'
+    ) {
+      console.log('Available for manual sync')
+      return true
+    } else {
+      console.log('Not available to sync, already enqueue')
+      return false
     }
   }
 
@@ -256,7 +254,6 @@ export class Family extends Component {
       familyData.familyMembersList[0].phoneNumber.length
         ? familyData.familyMembersList[0].phoneNumber
         : false
-
 
     return (
       <ScrollView
@@ -516,14 +513,14 @@ export class Family extends Component {
                         {t('views.family.lifeMapAfterSync')}
                       </Text>
                       {this.state.showSyncButton && (
-                          <Button
-                            id="retry"
-                            style={styles.button}
-                            loading={this.state.loading}
-                            text={t('views.synced')}
-                            handleClick={this.retrySync}
-                          />
-                        )}
+                        <Button
+                          id="retry"
+                          style={styles.button}
+                          loading={this.state.loading}
+                          text={t('views.synced')}
+                          handleClick={this.retrySync}
+                        />
+                      )}
                     </View>
                   )}
                 </View>
@@ -558,7 +555,7 @@ Family.propTypes = {
   env: PropTypes.string.isRequired,
   createDraft: PropTypes.func.isRequired,
   user: PropTypes.object.isRequired,
-  syncStatus: PropTypes.array,
+  syncStatus: PropTypes.array
 }
 
 const styles = StyleSheet.create({
@@ -677,7 +674,7 @@ const mapDispatchToProps = {
   submitDraftWithImages,
   createDraft
 }
-const mapStateToProps = ({ surveys, env, user, drafts,syncStatus }) => ({
+const mapStateToProps = ({ surveys, env, user, drafts, syncStatus }) => ({
   surveys,
   env,
   user,

@@ -17,7 +17,7 @@ export const submitDraftWithImages = store => next => action => {
     //Submit draft without pictures anyway
     console.log('LOAD IMAGES ROLLBACK')
     console.log('Sending draf without images')
-   /* let reduce = submitDraft(action.env, action.token, action.id, {
+    /* let reduce = submitDraft(action.env, action.token, action.id, {
       ...action.draft,
       pictures: []
     })
