@@ -13,16 +13,17 @@ export const submitDraftWithImages = store => next => action => {
     store.dispatch(reduce)
   }
 
-  /*if (action.type === 'LOAD_IMAGES_ROLLBACK') {
+  if (action.type === 'LOAD_IMAGES_ROLLBACK') {
     //Submit draft without pictures anyway
     console.log('LOAD IMAGES ROLLBACK')
-    let reduce = submitDraft(action.env, action.token, action.id, {
+    console.log('Sending draf without images')
+    /* let reduce = submitDraft(action.env, action.token, action.id, {
       ...action.draft,
       pictures: []
     })
     
-    store.dispatch(reduce)
-  }*/
+    store.dispatch(reduce)*/
+  }
 
   let result = next(action)
   return result

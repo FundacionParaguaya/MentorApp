@@ -129,6 +129,30 @@ export const families = (state = [], action) => {
   }
 }
 
+//Queue invocations
+export const syncStatus = (state = [], action) => {
+  switch (action.type) {
+    case LOAD_IMAGES: {
+      console.log('Adding id to sync: ', action.id)
+      return [...state, action.id]
+    }
+    case SUBMIT_DRAFT: {
+      if (state.indexOf(action.id) === -1) {
+        console.log('Adding id to sync: ', action.id)
+        return [...state, action.id]
+      } else {
+        return [...state]
+      }
+    }
+    case SUBMIT_DRAFT_COMMIT: {
+      console.log('Removing id to synced: ', action.meta.id)
+      return state.filter(draftId => draftId !== action.meta.id)
+    }
+    default:
+      return state
+  }
+}
+
 //Drafts
 export const drafts = (state = [], action) => {
   switch (action.type) {
@@ -250,7 +274,7 @@ export const drafts = (state = [], action) => {
     }
     case LOAD_IMAGES: {
       console.log('LOAD_IMAGES set to Pending sync')
-      
+
       return state.map(draft =>
         draft.draftId === action.id
           ? {
@@ -414,6 +438,7 @@ const appReducer = combineReducers({
   maps,
   surveys,
   families,
+  syncStatus,
   drafts,
   language,
   hydration,
