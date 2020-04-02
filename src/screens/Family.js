@@ -570,14 +570,14 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center'
   },
-  buttonSmall: {
-    alignSelf: 'center',
-    marginVertical: 20,
-    maxWidth: 400,
-    backgroundColor: '#50AA47',
-    paddingLeft: 20,
-    paddingRight: 20
-  },
+  // buttonSmall: {
+  //   alignSelf: 'center',
+  //   marginVertical: 20,
+  //   maxWidth: 400,
+  //   backgroundColor: '#50AA47',
+  //   paddingLeft: 20,
+  //   paddingRight: 20
+  // },
   button: {
     alignSelf: 'center',
     marginVertical: 20,
