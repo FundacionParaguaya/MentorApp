@@ -75,7 +75,6 @@
       "uploadingImage": "Subiendo imagen...",
       "uploadedPicture": "Imagen cargada",
       "limit": "*¡Alcanzaste el límite de 10MB! Elimina una imagen para poder continuar."
-
     },
     "sign": {
       "signHere": "Firma",
@@ -172,7 +171,7 @@
       "describeLocation": "¿Podría describir su ubicación de la forma más precisa posible a continuación?",
       "error": "No se puede visualizar el perfil de familia",
       "details": "Perfil",
-      "lifemap": "Mapa de vida",
+      "lifemap": "Semáforo",
       "lifeMapCreatedOn": "Borrador del Mapa de Vida creado",
       "created": "Creado",
       "weFoundYou": "¡Te encontramos!",

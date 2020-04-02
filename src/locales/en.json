@@ -80,7 +80,7 @@
       "signHere": "Signature",
       "erase": "Erase",
       "continue": "Continue",
-      "emptyError":"*Please add a signature before you continue."
+      "emptyError": "*Please add a signature before you continue."
     },
     "dashboard": "Stoplight Mobile",
     "home": "Home",
@@ -169,7 +169,7 @@
       "describeLocation": "Could you describe your location as accurate as possible below?",
       "error": "Cannot display family profile",
       "details": "Profile",
-      "lifemap": "Life Map",
+      "lifemap": "Stoplights",
       "lifeMapCreatedOn": "Life Map draft created on",
       "lifeMapAfterSync": "Life Map available after family syncs",
       "created": "Created on",
@@ -185,7 +185,7 @@
       "continueWithSurvey": "Continue where you left off!",
       "congratulations": "Congratulations!",
       "thisLifeMapHas": "This Life Map has %n questions.",
-      "thisLifeMapHasNoStoplight":"Thank you! This Stoplight section has %n indicators. Choose if you wish to save your survey now or finish your Stoplight.",
+      "thisLifeMapHasNoStoplight": "Thank you! This Stoplight section has %n indicators. Choose if you wish to save your survey now or finish your Stoplight.",
       "responseRequired": "*Response required",
       "skipThisQuestion": "Skip this question",
       "youSkipped": "You skipped these indicators",
