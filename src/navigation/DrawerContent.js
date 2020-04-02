@@ -151,7 +151,7 @@ export class DrawerContent extends Component {
             <IconButton
               id="pt"
               onPress={() => this.changeLanguage('pt')}
-              text="PT"
+              text="PRT"
               textStyle={[
                 globalStyles.h3,
                 lng === 'pt' ? styles.whiteText : styles.greyText
