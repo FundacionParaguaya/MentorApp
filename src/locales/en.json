@@ -67,17 +67,20 @@
     "DashYellow": "Yellow",
     "DashRed": "Red",
     "synced": "Sync",
+    "retakeSurvey": "Take a Follow-up survey",
     "pictures": {
       "uploadPictures": "Upload pictures",
       "takeAPicture": "Take a picture",
       "orUploadFromGalery": "Or upload from gallery",
       "uploadingImage": "Uploading image...",
-      "uploadedPicture": "Uploaded picture"
+      "uploadedPicture": "Uploaded picture",
+      "limit": "*You reached the 10MB limit! Please delete a picture to continue."
     },
     "sign": {
       "signHere": "Signature",
       "erase": "Erase",
-      "continue": "Continue"
+      "continue": "Continue",
+      "emptyError": "*Please add a signature before you continue."
     },
     "dashboard": "Stoplight Mobile",
     "home": "Home",
@@ -90,6 +93,7 @@
     "location": "Location",
     "socioEconomic": "Socio Economic",
     "yourLifeMap": "Your Life Map",
+    "completeStoplight": "Your Stoplight",
     "primaryParticipant": "Primary participant",
     "familyMembers": "Family members",
     "gendersBirthDates": "Genders & Birth dates",
@@ -165,7 +169,7 @@
       "describeLocation": "Could you describe your location as accurate as possible below?",
       "error": "Cannot display family profile",
       "details": "Profile",
-      "lifemap": "Life Map",
+      "lifemap": "Stoplights",
       "lifeMapCreatedOn": "Life Map draft created on",
       "lifeMapAfterSync": "Life Map available after family syncs",
       "created": "Created on",
@@ -181,6 +185,7 @@
       "continueWithSurvey": "Continue where you left off!",
       "congratulations": "Congratulations!",
       "thisLifeMapHas": "This Life Map has %n questions.",
+      "thisLifeMapHasNoStoplight": "Thank you! This Stoplight section has %n indicators. Choose if you wish to save your survey now or finish your Stoplight.",
       "responseRequired": "*Response required",
       "skipThisQuestion": "Skip this question",
       "youSkipped": "You skipped these indicators",

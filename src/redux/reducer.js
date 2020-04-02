@@ -28,7 +28,10 @@ import {
   SWITCH_LANGUAGE,
   TOGGLE_API_VERSION_MODAL,
   UPDATE_DRAFT,
-  USER_LOGOUT
+  USER_LOGOUT,
+  LOAD_IMAGES,
+  LOAD_IMAGES_ROLLBACK,
+  LOAD_IMAGES_COMMIT
 } from './actions'
 
 const defaultLanguage = getDeviceLanguage()
@@ -121,6 +124,37 @@ export const families = (state = [], action) => {
   switch (action.type) {
     case LOAD_FAMILIES_COMMIT:
       return action.payload.data.familiesNewStructure
+    default:
+      return state
+  }
+}
+
+//Queue invocations
+export const syncStatus = (state = [], action) => {
+  switch (action.type) {
+    case LOAD_IMAGES: {
+      console.log('Adding id to sync: ', action.id)
+      return [...state, action.id]
+    }
+    case SUBMIT_DRAFT: {
+      if (state.indexOf(action.id) === -1) {
+        console.log('Adding id to sync: ', action.id)
+        return [...state, action.id]
+      } else {
+        return [...state]
+      }
+    }
+    case SUBMIT_DRAFT_COMMIT: {
+      console.log(
+        'SUBMIT_DRAFT_COMMIT -- Removing id to synced: ',
+        action.meta.id
+      )
+      return state.filter(draftId => draftId !== action.meta.id)
+    }
+    case LOAD_IMAGES_ROLLBACK: {
+      console.log('LOAD_IMAGES_ROLLBACK -- Removing id to synced: ', action.id)
+      return state.filter(draftId => draftId !== action.id)
+    }
     default:
       return state
   }
@@ -245,6 +279,43 @@ export const drafts = (state = [], action) => {
           : draft
       )
     }
+    case LOAD_IMAGES: {
+      console.log('LOAD_IMAGES set to Pending sync')
+
+      return state.map(draft =>
+        draft.draftId === action.id
+          ? {
+              ...draft,
+              status: 'Pending sync'
+            }
+          : draft
+      )
+    }
+
+    case LOAD_IMAGES_COMMIT: {
+      console.log('--LOAD_IMAGES_COMMIT set to Pending sync')
+      return state.map(draft =>
+        draft.draftId === action.id
+          ? {
+              ...draft,
+              status: 'Pending sync'
+            }
+          : draft
+      )
+    }
+    case LOAD_IMAGES_ROLLBACK: {
+      console.log('--LOAD_IMAGES_ROLLBACK set to Pending sync')
+
+      return state.map(draft =>
+        draft.draftId === action.id
+          ? {
+              ...draft,
+              status: 'Sync error'
+            }
+          : draft
+      )
+    }
+
     case DELETE_DRAFT:
       return state.filter(draft => draft.draftId !== action.id)
     default:
@@ -374,6 +445,7 @@ const appReducer = combineReducers({
   maps,
   surveys,
   families,
+  syncStatus,
   drafts,
   language,
   hydration,

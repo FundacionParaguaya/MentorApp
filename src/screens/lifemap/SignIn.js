@@ -1,7 +1,7 @@
 import PropTypes from 'prop-types'
 import React, { Component } from 'react'
 import { withNamespaces } from 'react-i18next'
-import { Image, StyleSheet, View } from 'react-native'
+import { Image, StyleSheet, Text, View } from 'react-native'
 import SignatureCapture from 'react-native-signature-capture'
 import { connect } from 'react-redux'
 
@@ -9,6 +9,7 @@ import Button from '../../components/Button'
 import ProgressBar from '../../components/ProgressBar'
 import { updateDraft } from '../../redux/actions'
 import { getTotalEconomicScreens } from './helpers'
+import colors from '../../theme.json'
 
 export class SigIn extends Component {
   survey = this.props.navigation.getParam('survey')
@@ -22,12 +23,18 @@ export class SigIn extends Component {
 
   displaySign = false
 
+  displayError = false
+
   setEmpty = isEmpty => {
     this.isEmpty = isEmpty
   }
 
   setDisplay = displaySign => {
     this.displaySign = displaySign
+  }
+
+  setDisplayErr = displayError => {
+    this.displayError = displayError
   }
 
   onPressBack = () => {
@@ -72,6 +79,9 @@ export class SigIn extends Component {
         draftId: this.draftId,
         survey: this.survey
       })
+    } else {
+      this.setDisplayErr(true)
+      this.onClear()
     }
   }
 
@@ -79,6 +89,7 @@ export class SigIn extends Component {
     let updatedDraft = this.draft
     updatedDraft.sign = 'data:image/png;base64,' + result.encoded
     this.updateDraft(updatedDraft)
+    this.setDisplayErr(false)
   }
 
   _onDragEvent() {
@@ -88,6 +99,7 @@ export class SigIn extends Component {
   onClear = () => {
     this.setEmpty(true)
     this.setDisplay(false)
+    this.setDisplayErr(true)
     this.sign && this.sign.resetImage()
     let updatedDraft = this.draft
     updatedDraft.sign = ''
@@ -138,9 +150,15 @@ export class SigIn extends Component {
               updateDraft={this.props.updateDraft}
               setEmpty={this.setEmpty}
               setDisplay={this.setDisplay}
+              setDisplayErr={this.setDisplayErr}
             />
           </View>
         )}
+        {this.displayError ? (
+          <Text style={{ marginLeft: 30, color: colors.red }}>
+            {t('views.sign.emptyError')}
+          </Text>
+        ) : null}
         <View style={styles.buttonsBar}>
           <Button
             id="erase"
@@ -185,7 +203,7 @@ const styles = StyleSheet.create({
   },
   buttonsBar: {
     height: 50,
-    marginTop: 50,
+    marginTop: 40,
     marginBottom: -2,
     flexDirection: 'row'
   },

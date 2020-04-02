@@ -1,12 +1,13 @@
-import React, { Component } from 'react'
-import { ScrollView, View, Text, StyleSheet } from 'react-native'
 import PropTypes from 'prop-types'
+import React, { Component } from 'react'
 import { withNamespaces } from 'react-i18next'
-import globalStyles from '../../globalStyles'
-import colors from '../../theme.json'
-import RoundImage from '../../components/RoundImage'
+import { ScrollView, StyleSheet, Text, View } from 'react-native'
+
 import Button from '../../components/Button'
 import Decoration from '../../components/decoration/Decoration'
+import RoundImage from '../../components/RoundImage'
+import globalStyles from '../../globalStyles'
+import colors from '../../theme.json'
 
 // this describes which screen comes after which
 const navigationRules = {
@@ -22,7 +23,7 @@ const navigationRules = {
 export class Terms extends Component {
   survey = this.props.navigation.getParam('survey')
   page = this.props.navigation.getParam('page')
-
+  draftId = this.props.navigation.getParam('draftId')
   onClickDisagree = () => {
     this.props.navigation.navigate('ExitDraftModal')
   }
@@ -32,7 +33,8 @@ export class Terms extends Component {
 
     navigation.navigate(navigationRules[this.page].nextPage, {
       page: navigationRules[this.page].param || null,
-      survey: this.survey
+      survey: this.survey,
+      draftId: this.draftId
     })
   }
 

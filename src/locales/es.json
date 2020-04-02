@@ -67,17 +67,20 @@
     "DashYellow": "Amarillo",
     "DashRed": "Rojo",
     "synced": "Sincronización",
+    "retakeSurvey": "Encuesta de seguimiento",
     "pictures": {
       "uploadPictures": "Subir imágenes",
       "takeAPicture": "Tomar una foto",
       "orUploadFromGalery": "O subir de la galería",
       "uploadingImage": "Subiendo imagen...",
-      "uploadedPicture": "Imagen cargada"
+      "uploadedPicture": "Imagen cargada",
+      "limit": "*¡Alcanzaste el límite de 10MB! Elimina una imagen para poder continuar."
     },
     "sign": {
       "signHere": "Firma",
       "erase": "Limpiar",
-      "continue": "Continuar"
+      "continue": "Continuar",
+      "emptyError": "*Favor agrega una firma para continuar."
     },
     "families": "Familias",
     "dashboard": "Stoplight Mobile",
@@ -90,6 +93,7 @@
     "location": "Ubicación",
     "socioEconomic": "Socioeconómica",
     "yourLifeMap": "Tu Mapa de Vida",
+    "completeStoplight": "Tu Semáforo",
     "primaryParticipant": "Miembro principal",
     "familyMembers": "Miembros de la familia",
     "gendersBirthDates": "Géneros & fechas de nacimiento",
@@ -167,7 +171,7 @@
       "describeLocation": "¿Podría describir su ubicación de la forma más precisa posible a continuación?",
       "error": "No se puede visualizar el perfil de familia",
       "details": "Perfil",
-      "lifemap": "Mapa de vida",
+      "lifemap": "Semáforo",
       "lifeMapCreatedOn": "Borrador del Mapa de Vida creado",
       "created": "Creado",
       "weFoundYou": "¡Te encontramos!",
@@ -182,6 +186,7 @@
       "continueWithSurvey": "¡Continúa donde te habías quedado!",
       "congratulations": "¡Felicidades!",
       "thisLifeMapHas": "Este Mapa de Vida tiene %n preguntas.",
+      "thisLifeMapHasNoStoplight": "¡Listo! Esta sección del Semáforo contiene %n indicadores. Elige si deseas guardar tu encuesta o completar tu Semáforo.",
       "responseRequired": "*Respuesta requerida",
       "skipThisQuestion": "Omitir esta pregunta",
       "youSkipped": "Has omitido estos indicadores",
