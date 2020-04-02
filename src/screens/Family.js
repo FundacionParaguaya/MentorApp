@@ -26,11 +26,15 @@ import FamilyTab from '../components/FamilyTab'
 import RoundImage from '../components/RoundImage'
 import { url } from '../config'
 import globalStyles from '../globalStyles'
-import { createDraft, submitDraft } from '../redux/actions'
+import {
+  createDraft,
+  submitDraft,
+  submitDraftWithImages
+} from '../redux/actions'
 import { getTotalScreens } from '../screens/lifemap/helpers'
 import colors from '../theme.json'
 import OverviewComponent from './lifemap/Overview'
-import { convertImages, prepareDraftForSubmit } from './utils/helpers'
+import { prepareDraftForSubmit } from './utils/helpers'
 
 export class Family extends Component {
   // set the title of the screen to the family name
@@ -46,10 +50,7 @@ export class Family extends Component {
     }
   }
   unsubscribeNetChange
-  state = {
-    loading: false,
-    activeTab: this.props.navigation.getParam('activeTab') || 'Details'
-  }
+
   familyLifemap = this.props.navigation.getParam('familyLifemap')
   isDraft = this.props.navigation.getParam('isDraft')
   familyId = this.props.navigation.getParam('familyId')
@@ -61,10 +62,21 @@ export class Family extends Component {
         .surveyEconomicQuestions.map(question => question.topic)
     )
   ]
+
+  constructor(props) {
+    super(props)
+    this.state = {
+      loading: false,
+      activeTab: this.props.navigation.getParam('activeTab') || 'Details',
+      showSyncButton: false
+    }
+  }
   componentDidMount() {
     // // monitor for connection changes
     this.unsubscribeNetChange = NetInfo.addEventListener(isOnline => {
       this.setState({ isOnline })
+      //Allow to show or hide retrySyn button
+      this.setState({ showSyncButton: this.availableForSync(isOnline) })
     })
 
     // check if online first
@@ -106,29 +118,66 @@ export class Family extends Component {
   )
 
   retrySync = () => {
+    const id = this.familyLifemap.draftId
+
     if (this.state.loading) {
       return
     }
-    this.setState({ loading: true })
 
-    this.prepareDraftForSubmit()
+    if (this.props.syncStatus.indexOf(id) === -1) {
+      console.log('starting manual sync ', id)
+      this.setState({ loading: true })
+      this.prepareDraftForSubmit()
+    } else {
+      console.log('Not available to sync, already enqueue')
+    }
+  }
+
+  availableForSync = isOnline => {
+    const id = this.familyLifemap.draftId
+    console.log('draft id ', id)
+    console.log('list submitted: ', this.props.syncStatus)
+    console.log('Status : ', this.familyLifemap.status)
+
+    if (
+      this.props.syncStatus.indexOf(id) === -1 &&
+      isOnline &&
+      this.props.navigation.getParam('familyLifemap').status === 'Pending sync'
+    ) {
+      console.log('Available for manual sync')
+      return true
+    } else {
+      console.log('Not available to sync, already enqueue')
+      return false
+    }
   }
 
   prepareDraftForSubmit() {
     if (this.state.loading) {
       const draft = prepareDraftForSubmit(this.familyLifemap, this.survey)
 
-      convertImages(draft).then(imagesArray => {
+      if (draft.pictures && draft.pictures.length > 0) {
+        this.props.submitDraftWithImages(
+          url[this.props.env],
+          this.props.user.token,
+          draft.draftId,
+          {
+            ...draft
+            //sendEmail: this.state.sendEmailFlag
+          }
+        )
+      } else {
         this.props.submitDraft(
           url[this.props.env],
           this.props.user.token,
           draft.draftId,
           {
             ...draft,
-            pictures: imagesArray
+            pictures: []
           }
         )
-      })
+      }
+
       setTimeout(() => {
         this.props.navigation.popToTop()
         this.props.navigation.navigate('Dashboard')
@@ -410,15 +459,15 @@ export class Family extends Component {
               </View>
             </View>
 
-            {!!this.familyId &&
+            {/*{!!this.familyId &&
             (this.props.user.role === 'ROLE_SURVEY_USER' ||
               this.props.user.role === 'ROLE_SURVEY_USER_ADMIN') ? (
-              <Button
+               <Button
                 style={styles.buttonSmall}
                 text={t('views.retakeSurvey')}
                 handleClick={() => this.retakeSurvey()}
-              />
-            ) : null}
+              /> 
+            ) : null} */}
           </ScrollView>
         ) : null}
 
@@ -464,17 +513,15 @@ export class Family extends Component {
                       >
                         {t('views.family.lifeMapAfterSync')}
                       </Text>
-                      {this.state.isOnline &&
-                        navigation.getParam('familyLifemap').status !==
-                          'Pending sync' && (
-                          <Button
-                            id="retry"
-                            style={styles.button}
-                            loading={this.state.loading}
-                            text={t('views.synced')}
-                            handleClick={this.retrySync}
-                          />
-                        )}
+                      {this.state.showSyncButton && (
+                        <Button
+                          id="retry"
+                          style={styles.button}
+                          loading={this.state.loading}
+                          text={t('views.synced')}
+                          handleClick={this.retrySync}
+                        />
+                      )}
                     </View>
                   )}
                 </View>
@@ -505,9 +552,11 @@ Family.propTypes = {
   navigation: PropTypes.object.isRequired,
   t: PropTypes.func,
   submitDraft: PropTypes.func.isRequired,
+  submitDraftWithImages: PropTypes.func.isRequired,
   env: PropTypes.string.isRequired,
   createDraft: PropTypes.func.isRequired,
-  user: PropTypes.object.isRequired
+  user: PropTypes.object.isRequired,
+  syncStatus: PropTypes.array
 }
 
 const styles = StyleSheet.create({
@@ -521,14 +570,14 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center'
   },
-  buttonSmall: {
-    alignSelf: 'center',
-    marginVertical: 20,
-    maxWidth: 400,
-    backgroundColor: '#50AA47',
-    paddingLeft: 20,
-    paddingRight: 20
-  },
+  // buttonSmall: {
+  //   alignSelf: 'center',
+  //   marginVertical: 20,
+  //   maxWidth: 400,
+  //   backgroundColor: '#50AA47',
+  //   paddingLeft: 20,
+  //   paddingRight: 20
+  // },
   button: {
     alignSelf: 'center',
     marginVertical: 20,
@@ -623,13 +672,15 @@ const styles = StyleSheet.create({
 })
 const mapDispatchToProps = {
   submitDraft,
+  submitDraftWithImages,
   createDraft
 }
-const mapStateToProps = ({ surveys, env, user, drafts }) => ({
+const mapStateToProps = ({ surveys, env, user, drafts, syncStatus }) => ({
   surveys,
   env,
   user,
-  drafts
+  drafts,
+  syncStatus
 })
 
 export default withNamespaces()(

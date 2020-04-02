@@ -29,7 +29,8 @@ let options = {
 export class Picture extends Component {
   state = {
     pictures: [],
-    showCamera: false
+    showCamera: false,
+    displayError: false
   }
 
   survey = this.props.navigation.getParam('survey')
@@ -79,7 +80,8 @@ export class Picture extends Component {
               // content: 'data:image/jpeg;base64,' + response.data,
               name: response.fileName,
               type: response.type,
-              content: response.uri
+              content: response.uri,
+              size: response.fileSize
             }
           ]
         })
@@ -91,28 +93,63 @@ export class Picture extends Component {
           // content: 'data:image/jpeg;base64,' + response.data,
           content: response.uri,
           name: response.fileName,
-          type: response.type
+          type: response.type,
+          size: response.fileSize
         })
         updatedDraft.pictures = newArr
         this.props.updateDraft(updatedDraft)
       }
     })
   }
+
+  checkMaxLimit = function(pictures) {
+    let size = 0
+    let marker = 1024 // Change to 1000 if required
+    let maxSize = 10 * marker * marker // 10MB limit
+    pictures.forEach(element => {
+      //console.log('picture', element)
+      let pictureSize = element.size ? element.size : 0
+
+      if (pictureSize === 0) {
+        console.log('---------Files size is cero----', element)
+      }
+      size = size + pictureSize
+    })
+    console.log('Images checking limit are: ', pictures)
+    console.log('total images size is: ', size)
+    console.log('max size is: ', maxSize)
+    if (size > maxSize) {
+      return false
+    }
+    return true
+  }
+
   removePicture = function(elem) {
     //remove picture from state
 
     let newState = this.state.pictures.filter(e => e.name != elem.name)
 
     let updatedDraft = this.draft
-    updatedDraft.pictures = newState
+    updatedDraft.pictures = newState ? newState : []
+    console.log('Draft beforee checking: ', this.draft)
+
     this.props.updateDraft(updatedDraft)
     this.setState({ pictures: newState })
+
+    console.log('checking file after removing: ', newState)
+    if (this.checkMaxLimit([...newState])) {
+      this.setState({ displayError: false })
+      console.log('show error')
+    }
   }
 
   onContinue = function() {
     let survey = this.props.navigation.getParam('survey')
     console.log(this.draft)
-    if (survey.surveyConfig.signSupport) {
+    if (!this.checkMaxLimit([...this.state.pictures])) {
+      this.setState({ displayError: true })
+      console.log('show error')
+    } else if (survey.surveyConfig.signSupport) {
       this.props.navigation.replace('Signin', {
         step: 0,
         survey: survey,
@@ -149,7 +186,8 @@ export class Picture extends Component {
                   // content: 'data:image/jpeg;base64,' + response.data,
                   name: response.fileName,
                   type: response.type,
-                  content: response.uri
+                  content: response.uri,
+                  size: response.fileSize
                 }
               ]
             })
@@ -161,7 +199,8 @@ export class Picture extends Component {
               // content: 'data:image/jpeg;base64,' + response.data,
               content: response.uri,
               name: response.fileName,
-              type: response.type
+              type: response.type,
+              size: response.fileSize
             })
             updatedDraft.pictures = newArr
             this.props.updateDraft(updatedDraft)
@@ -251,17 +290,22 @@ export class Picture extends Component {
                   underlayColor={'transparent'}
                   onPress={() => this.openGallery()}
                 >
-                  {/* "pictures": {
-      "uploadPictures": "Subir imágenes",
-      "takeAPicture": "Tomar una foto",
-      "orUploadFromGalery": "O subir de la galería",
-      "uploadingImage": "Subiendo imagen..."
-    }, */}
-
                   <Text style={styles.locationLink}>
                     {t('views.pictures.orUploadFromGalery')}
                   </Text>
                 </TouchableHighlight>
+                {this.state.displayError && (
+                  <Text
+                    style={{
+                      paddingTop: 10,
+                      paddingLeft: 30,
+                      paddingRight: 30,
+                      color: colors.red
+                    }}
+                  >
+                    {t('views.pictures.limit')}
+                  </Text>
+                )}
               </View>
             </ScrollView>
           </View>

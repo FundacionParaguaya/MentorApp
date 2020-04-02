@@ -18,9 +18,9 @@ import SyncRetry from '../components/sync/SyncRetry'
 import SyncUpToDate from '../components/sync/SyncUpToDate'
 import { url } from '../config'
 import globalStyles from '../globalStyles'
-import { submitDraft } from '../redux/actions'
+import { submitDraft, submitDraftWithImages } from '../redux/actions'
 import { screenSyncScreenContent } from '../screens/utils/accessibilityHelpers'
-import { prepareDraftForSubmit, convertImages } from './utils/helpers'
+import { prepareDraftForSubmit } from './utils/helpers'
 
 export class Sync extends Component {
   acessibleComponent = React.createRef()
@@ -54,22 +54,33 @@ export class Sync extends Component {
     draftsWithError.forEach(draft => {
       console.log('sanitazedDraft in SYNC')
       const sanitazedDraft = prepareDraftForSubmit(
-        this.draft,
+        draft,
         this.props.surveys.find(survey => survey.id === draft.surveyId)
       )
-      convertImages(sanitazedDraft).then(imagesArray => {
-        console.log('submited Draft with image: ', imagesArray)
+
+      if (draft.pictures && draft.pictures.length > 0) {
+        this.props.submitDraftWithImages(
+          url[this.props.env],
+          this.props.user.token,
+          sanitazedDraft.draftId,
+          {
+            ...sanitazedDraft
+            //sendEmail: this.state.sendEmailFlag
+          }
+        )
+      } else {
         this.props.submitDraft(
           url[this.props.env],
           this.props.user.token,
           sanitazedDraft.draftId,
           {
             ...sanitazedDraft,
-            sendEmail: this.state.sendEmailFlag,
-            pictures: imagesArray
+            //sendEmail: this.state.sendEmailFlag,
+            pictures: []
           }
         )
-      })
+      }
+
       setTimeout(() => {
         this.props.navigation.popToTop()
         this.props.navigation.navigate('Dashboard')
@@ -166,7 +177,8 @@ Sync.propTypes = {
   env: PropTypes.oneOf(['production', 'demo', 'testing', 'development']),
   user: PropTypes.object.isRequired,
   surveys: PropTypes.array,
-  submitDraft: PropTypes.func.isRequired
+  submitDraft: PropTypes.func.isRequired,
+  submitDraftWithImages: PropTypes.func.isRequired
 }
 
 const styles = StyleSheet.create({
@@ -185,7 +197,8 @@ const mapStateToProps = ({ drafts, offline, env, user, surveys }) => ({
 })
 
 const mapDispatchToProps = {
-  submitDraft
+  submitDraft,
+  submitDraftWithImages
 }
 
 export default withNamespaces()(
