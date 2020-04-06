@@ -42,7 +42,6 @@ export class FamilyMembersNames extends Component {
 
   setError = (error, field, memberIndex) => {
     const { errors } = this.state
-
     const fieldName = memberIndex ? `${field}-${memberIndex}` : field
 
     if (error && !errors.includes(fieldName)) {

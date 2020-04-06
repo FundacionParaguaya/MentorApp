@@ -278,6 +278,7 @@ export const submitDraft = (env, token, id, payload) => {
     delete member.memberIdentifier
     delete member.id
     delete member.familyId
+    delete member.uuid
 
     member.phoneNumber = formatPhone(member.phoneCode, member.phoneNumber)
     socioEconomicAnswers = socioEconomicAnswers.filter(validEconomicIndicator)
