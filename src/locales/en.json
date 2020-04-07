@@ -120,6 +120,8 @@
       "calcilatingTotalImages": "Calculating total images to cache.."
     },
     "family": {
+      "membersDontMatch": "The amount of members does not match, please edit the members to match the amount chosen",
+      "deleteMembers": "Remove the member who no longer belongs in the household.",
       "primaryParticipantHeading": "Tell us about yourself!",
       "familyMembersHeading": "Now, tell us about all the people you live with!",
       "firstName": "First name",

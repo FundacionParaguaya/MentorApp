@@ -107,6 +107,7 @@ const resumedDraft = {
 
 const navigation = {
   navigate: jest.fn(),
+  replace: jest.fn(),
   getParam: jest.fn(param => {
     if (param === 'family') {
       return null
@@ -561,40 +562,6 @@ describe('resuming a draft', () => {
     expect(props.updateDraft).toHaveBeenCalledTimes(1)
   })
 
-  it('continues to location screen if only 1 family member', () => {
-    props = createTestProps({
-      drafts: [
-        {
-          ...resumedDraft,
-          familyData: { countFamilyMembers: 1, ...resumedDraft.familyData }
-        }
-      ],
-      navigation: {
-        ...navigation,
-        getParam: jest.fn(param => {
-          if (param === 'family') {
-            return null
-          } else if (param === 'survey') {
-            return survey
-          } else if (param === 'draftId') {
-            return 1
-          } else if (param === 'readOnly') {
-            return false
-          } else {
-            return 1
-          }
-        })
-      }
-    })
-
-    wrapper = shallow(<FamilyParticipant {...props} />)
-    wrapper.instance().onContinue()
-
-    expect(props.navigation.navigate).toHaveBeenCalledWith('Location', {
-      draftId: 1,
-      survey
-    })
-  })
   it('continues to member details screen if only multiple family members', () => {
     props = createTestProps({
       drafts: [
@@ -624,7 +591,7 @@ describe('resuming a draft', () => {
     wrapper = shallow(<FamilyParticipant {...props} />)
     wrapper.instance().onContinue()
 
-    expect(props.navigation.navigate).toHaveBeenCalledWith(
+    expect(props.navigation.replace).toHaveBeenCalledWith(
       'FamilyMembersNames',
       {
         draftId: 1,

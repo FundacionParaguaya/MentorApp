@@ -402,7 +402,7 @@ export class Location extends Component {
       const survey = this.survey
 
       if (draft.familyData.countFamilyMembers > 1) {
-        this.props.navigation.navigate('FamilyMembersNames', {
+        this.props.navigation.replace('FamilyMembersNames', {
           draftId: this.draftId,
           survey
         })
