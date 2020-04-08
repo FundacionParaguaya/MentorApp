@@ -40,20 +40,18 @@ export class FamilyMembersNames extends Component {
   getDraft = () =>
     this.props.drafts.find(draft => draft.draftId === this.draftId)
 
-  setError = (error, field, memberIndex) => {
+  setError = (error, field, memberId) => {
     const { errors } = this.state
-    const fieldName = memberIndex ? `${field}-${memberIndex}` : field
-
-    if (error && !errors.includes(fieldName)) {
+    if (error && !errors.includes(field)) {
       this.setState(previousState => {
         return {
           ...previousState,
-          errors: [...previousState.errors, fieldName]
+          errors: [...previousState.errors, { field, memberId }]
         }
       })
     } else if (!error) {
       this.setState({
-        errors: errors.filter(item => item !== fieldName)
+        errors: errors.filter(item => item.memberId !== memberId)
       })
     }
   }
@@ -345,7 +343,7 @@ export class FamilyMembersNames extends Component {
                   readOnly={!!this.readOnly}
                   showErrors={showErrors}
                   setError={isError =>
-                    this.setError(isError, `${item.firstName}`)
+                    this.setError(isError, 'firstName', item.uuid)
                   }
                 />
                 <Select
@@ -364,7 +362,9 @@ export class FamilyMembersNames extends Component {
                   initialOtherValue={item.customGender || ''}
                   readOnly={!!this.readOnly}
                   showErrors={showErrors}
-                  setError={isError => this.setError(isError, `${item.gender}`)}
+                  setError={isError =>
+                    this.setError(isError, 'gender', item.uuid)
+                  }
                 />
 
                 <DateInput
@@ -382,7 +382,7 @@ export class FamilyMembersNames extends Component {
                   readOnly={!!this.readOnly}
                   showErrors={showErrors}
                   setError={isError =>
-                    this.setError(isError, `${item.birthDate}`)
+                    this.setError(isError, 'birthDate', item.uuid)
                   }
                 />
               </View>

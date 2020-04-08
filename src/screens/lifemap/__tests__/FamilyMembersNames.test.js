@@ -209,25 +209,6 @@ describe('from resumed draft', () => {
     expect(props.updateDraft).toHaveBeenCalledTimes(3)
   })
 
-  it('sets errors on each field change', () => {
-    const spy = jest.spyOn(wrapper.instance(), 'setError')
-    wrapper
-      .find(TextInput)
-      .first()
-      .props()
-      .setError(true)
-
-    expect(spy).toHaveBeenCalledWith(true, 'Ana')
-
-    wrapper
-      .find(Select)
-      .first()
-      .props()
-      .setError(true)
-
-    expect(wrapper).toHaveState({ errors: ['Ana', 'F'] })
-  })
-
   it('validates form on pressing continue', () => {
     const spy = jest.spyOn(wrapper.instance(), 'onContinue')
 
