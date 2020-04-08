@@ -22,6 +22,7 @@ export class Families extends Component {
 
   handleClickOnFamily = family => {
     this.props.navigation.navigate('Family', {
+      allowRetake: family.allowRetake,
       familyId: family.familyId,
       familyName: family.name,
       familyLifemap: family.snapshotList
