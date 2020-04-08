@@ -42,26 +42,35 @@ export class FamilyMembersNames extends Component {
 
   setError = (error, field, memberId) => {
     const { errors } = this.state
-    if (error && !errors.includes(field)) {
+    let errorExists = false
+    for (let errorIndex in errors) {
+      if (errors[errorIndex].memberId == memberId) {
+        errorExists = true
+        break
+      }
+    }
+    if (!error) {
+      this.setState({
+        errors: errors.filter(item => item.memberId !== memberId)
+      })
+    } else if (error && !errorExists) {
       this.setState(previousState => {
         return {
           ...previousState,
           errors: [...previousState.errors, { field, memberId }]
         }
       })
-    } else if (!error) {
-      this.setState({
-        errors: errors.filter(item => item.memberId !== memberId)
-      })
     }
   }
 
   validateForm = () => {
+    console.log(this.state.errors)
     if (this.state.errors.length) {
       this.setState({
         showErrors: true
       })
     } else {
+      console.log('contineu')
       this.onContinue()
     }
   }
@@ -362,9 +371,6 @@ export class FamilyMembersNames extends Component {
                   initialOtherValue={item.customGender || ''}
                   readOnly={!!this.readOnly}
                   showErrors={showErrors}
-                  setError={isError =>
-                    this.setError(isError, 'gender', item.uuid)
-                  }
                 />
 
                 <DateInput
@@ -381,9 +387,6 @@ export class FamilyMembersNames extends Component {
                   )}
                   readOnly={!!this.readOnly}
                   showErrors={showErrors}
-                  setError={isError =>
-                    this.setError(isError, 'birthDate', item.uuid)
-                  }
                 />
               </View>
             )
