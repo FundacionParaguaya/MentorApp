@@ -36,7 +36,7 @@ class TextInput extends Component {
       : ''
 
     // this is the only place we change the actual redux state
-    this.props.onChangeText(this.state.text.trim(), this.props.id)
+    // this.props.onChangeText(this.state.text.trim(), this.props.id)
   }
 
   defineTextColor = status => {
@@ -75,6 +75,7 @@ class TextInput extends Component {
         this.setState({ hasError: false })
       }
     }
+    this.props.onChangeText(text.trim(), this.props.id)
   }
   setErr(text) {
     this.setState({

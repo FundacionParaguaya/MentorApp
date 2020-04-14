@@ -40,30 +40,37 @@ export class FamilyMembersNames extends Component {
   getDraft = () =>
     this.props.drafts.find(draft => draft.draftId === this.draftId)
 
-  setError = (error, field, memberIndex) => {
+  setError = (error, field, memberId) => {
     const { errors } = this.state
-    const fieldName = memberIndex ? `${field}-${memberIndex}` : field
-
-    if (error && !errors.includes(fieldName)) {
+    let errorExists = false
+    for (let errorIndex in errors) {
+      if (errors[errorIndex].memberId == memberId) {
+        errorExists = true
+        break
+      }
+    }
+    if (!error) {
+      this.setState({
+        errors: errors.filter(item => item.memberId !== memberId)
+      })
+    } else if (error && !errorExists) {
       this.setState(previousState => {
         return {
           ...previousState,
-          errors: [...previousState.errors, fieldName]
+          errors: [...previousState.errors, { field, memberId }]
         }
-      })
-    } else if (!error) {
-      this.setState({
-        errors: errors.filter(item => item !== fieldName)
       })
     }
   }
 
   validateForm = () => {
+    console.log(this.state.errors)
     if (this.state.errors.length) {
       this.setState({
         showErrors: true
       })
     } else {
+      console.log('contineu')
       this.onContinue()
     }
   }
@@ -345,7 +352,7 @@ export class FamilyMembersNames extends Component {
                   readOnly={!!this.readOnly}
                   showErrors={showErrors}
                   setError={isError =>
-                    this.setError(isError, `${item.firstName}`)
+                    this.setError(isError, 'firstName', item.uuid)
                   }
                 />
                 <Select
@@ -364,7 +371,6 @@ export class FamilyMembersNames extends Component {
                   initialOtherValue={item.customGender || ''}
                   readOnly={!!this.readOnly}
                   showErrors={showErrors}
-                  setError={isError => this.setError(isError, `${item.gender}`)}
                 />
 
                 <DateInput
@@ -381,9 +387,6 @@ export class FamilyMembersNames extends Component {
                   )}
                   readOnly={!!this.readOnly}
                   showErrors={showErrors}
-                  setError={isError =>
-                    this.setError(isError, `${item.birthDate}`)
-                  }
                 />
               </View>
             )
