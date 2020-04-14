@@ -50,7 +50,7 @@ export class Family extends Component {
     }
   }
   unsubscribeNetChange
-
+  allowRetake = this.props.navigation.getParam('allowRetake')
   familyLifemap = this.props.navigation.getParam('familyLifemap')
   isDraft = this.props.navigation.getParam('isDraft')
   familyId = this.props.navigation.getParam('familyId')
@@ -459,15 +459,13 @@ export class Family extends Component {
               </View>
             </View>
 
-            {/*{!!this.familyId &&
-            (this.props.user.role === 'ROLE_SURVEY_USER' ||
-              this.props.user.role === 'ROLE_SURVEY_USER_ADMIN') ? (
-               <Button
+            {!!this.allowRetake && (
+              <Button
                 style={styles.buttonSmall}
                 text={t('views.retakeSurvey')}
                 handleClick={() => this.retakeSurvey()}
-              /> 
-            ) : null} */}
+              />
+            )}
           </ScrollView>
         ) : null}
 
@@ -570,14 +568,14 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center'
   },
-  // buttonSmall: {
-  //   alignSelf: 'center',
-  //   marginVertical: 20,
-  //   maxWidth: 400,
-  //   backgroundColor: '#50AA47',
-  //   paddingLeft: 20,
-  //   paddingRight: 20
-  // },
+  buttonSmall: {
+    alignSelf: 'center',
+    marginVertical: 20,
+    maxWidth: 400,
+    backgroundColor: '#50AA47',
+    paddingLeft: 20,
+    paddingRight: 20
+  },
   button: {
     alignSelf: 'center',
     marginVertical: 20,
