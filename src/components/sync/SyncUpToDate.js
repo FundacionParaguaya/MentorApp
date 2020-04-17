@@ -5,7 +5,7 @@ import PropTypes from 'prop-types'
 import Icon from 'react-native-vector-icons/MaterialIcons'
 import moment from 'moment'
 import 'moment/locale/es'
-
+import 'moment/locale/pt'
 moment.locale('en')
 
 import colors from '../../theme.json'

@@ -1,4 +1,5 @@
 import 'moment/locale/es'
+import 'moment/locale/pt'
 
 import moment from 'moment'
 import PropTypes from 'prop-types'
