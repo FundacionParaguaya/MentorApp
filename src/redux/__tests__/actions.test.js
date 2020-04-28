@@ -107,7 +107,7 @@ describe('families actions', () => {
           rollback: { type: 'LOAD_FAMILIES_ROLLBACK' },
           effect: {
             body:
-              '{"query":"query { familiesNewStructure {familyId name code snapshotList { surveyId stoplightSkipped createdAt familyData { familyMembersList { birthCountry birthDate documentNumber documentType email familyId firstName firstParticipant gender id lastName memberIdentifier phoneCode phoneNumber socioEconomicAnswers { key value}  }  countFamilyMembers latitude longitude country accuracy } economicSurveyDataList { key value multipleValue } indicatorSurveyDataList { key value } achievements { action indicator roadmap } priorities { action estimatedDate indicator reason } } } }"}',
+              '{"query":"query { familiesNewStructure {familyId name allowRetake code snapshotList  { surveyId stoplightSkipped createdAt familyData { familyMembersList { birthCountry birthDate documentNumber documentType email familyId firstName firstParticipant gender id lastName memberIdentifier phoneCode phoneNumber socioEconomicAnswers { key value}  }  countFamilyMembers latitude longitude country accuracy } economicSurveyDataList { key value multipleValue } indicatorSurveyDataList { key value } achievements { action indicator roadmap } priorities { action estimatedDate indicator reason } } } }"}',
             headers: {
               Authorization: 'Bearer token',
               'content-type': 'application/json;charset=utf8'

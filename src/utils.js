@@ -26,7 +26,7 @@ export const replaceSpecialChars = text => {
 }
 
 export const getDeviceLanguage = () => {
-  const APP_LANGUAGES = ['en', 'es']
+  const APP_LANGUAGES = ['en', 'es', 'pt']
   const deviceLanguages = RNLocalize.getLocales()
   const { languageCode } = deviceLanguages[0]
 

@@ -35,6 +35,12 @@ jest.mock('react-native-localize', () => ({
       languageTag: 'fr-FR',
       languageCode: 'fr',
       isRTL: false
+    },
+    {
+      countryCode: 'BR',
+      languageTag: 'pt-PT',
+      languageCode: 'pt',
+      isRTL: false
     }
   ],
 

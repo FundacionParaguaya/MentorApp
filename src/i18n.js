@@ -3,6 +3,7 @@ import { reactI18nextModule } from 'react-i18next'
 
 import en from './locales/en.json'
 import es from './locales/es.json'
+import pt from './locales/pt.json'
 import store from './redux/store'
 import { getDeviceLanguage } from './utils'
 
@@ -12,6 +13,9 @@ const resources = {
   },
   es: {
     translation: es
+  },
+  pt: {
+    translation: pt
   }
 }
 

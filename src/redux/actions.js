@@ -148,7 +148,7 @@ export const loadFamilies = (env, token) => ({
         },
         body: JSON.stringify({
           query:
-            'query { familiesNewStructure {familyId name code snapshotList { surveyId stoplightSkipped createdAt familyData { familyMembersList { birthCountry birthDate documentNumber documentType email familyId firstName firstParticipant gender id lastName memberIdentifier phoneCode phoneNumber socioEconomicAnswers { key value}  }  countFamilyMembers latitude longitude country accuracy } economicSurveyDataList { key value multipleValue } indicatorSurveyDataList { key value } achievements { action indicator roadmap } priorities { action estimatedDate indicator reason } } } }'
+            'query { familiesNewStructure {familyId name allowRetake code snapshotList  { surveyId stoplightSkipped createdAt familyData { familyMembersList { birthCountry birthDate documentNumber documentType email familyId firstName firstParticipant gender id lastName memberIdentifier phoneCode phoneNumber socioEconomicAnswers { key value}  }  countFamilyMembers latitude longitude country accuracy } economicSurveyDataList { key value multipleValue } indicatorSurveyDataList { key value } achievements { action indicator roadmap } priorities { action estimatedDate indicator reason } } } }'
         })
       },
       commit: { type: LOAD_FAMILIES_COMMIT },
@@ -275,12 +275,17 @@ export const submitDraft = (env, token, id, payload) => {
   sanitizedSnapshot.economicSurveyDataList = economicSurveyDataList
   sanitizedSnapshot.familyData.familyMembersList.forEach(member => {
     let { socioEconomicAnswers = [] } = member
+    delete member.memberIdentifier
+    delete member.id
+    delete member.familyId
+    delete member.uuid
+
     member.phoneNumber = formatPhone(member.phoneCode, member.phoneNumber)
     socioEconomicAnswers = socioEconomicAnswers.filter(validEconomicIndicator)
     // eslint-disable-next-line no-param-reassign
     member.socioEconomicAnswers = socioEconomicAnswers
   })
-
+  console.log(sanitizedSnapshot)
   return {
     type: SUBMIT_DRAFT,
     env,
