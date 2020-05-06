@@ -263,7 +263,7 @@
       "emailError": "Error al enviar tu Mapa de Vida vía email",
       "offlineText": "Por favor, activa tu conexión a Internet para recibir tu Mapa de Vida vía email",
       "yourLifeMaWillBeSentWithSurveySync": "Tu Mapa de Vida será enviado a tu correo cuando tu encuesta esté sincronizada. ¡Selecciona 'Cerrar' para terminar la encuesta!",
-      "yourLifeMaWillBeSentWithWhatSurveySync": "Para recibir tu Mapa de Vida al whatsapp, envía \"Hola\" al número: +5521933007184 después de sincronizar la encuesta."
+      "yourLifeMaWillBeSentWithWhatSurveySync": "Te llegará un mensaje al Whatsapp cuando su encuesta esté sincronizada. Si quieres recibir tu Mapa de Vida, responde al mensaje con \"Si\"."
     }
   },
   "filterLabels": {
