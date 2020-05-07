@@ -262,7 +262,7 @@
       "emailError": "Error while trying to send your Life Map via email",
       "offlineText": "Please enable your internet connection to receive your Life Map via email.",
       "yourLifeMaWillBeSentWithSurveySync": "Your Life Map will be sent to your email as soon as the survey is synced. Click 'Close' to finish the survey!",
-      "yourLifeMaWillBeSentWithWhatSurveySync": "To receive your Life Map to whatsapp, send \"Hello\" to this number: +5521933007184 after the survey has been synced."
+      "yourLifeMaWillBeSentWithWhatSurveySync": "You will get a message in your Whatsapp as soon as the survey is synced. If you want to receive your Life Map, please answer back with \"Yes\"."
     }
   },
   "filterLabels": {
