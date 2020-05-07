@@ -45,7 +45,7 @@ WhatsappSentModal.propTypes = {
 const styles = StyleSheet.create({
   paragraph: {
     textAlign: 'center',
-    fontSize: 18,
+    fontSize: 16,
     lineHeight: 22,
     color: `${colors.grey}`,
     marginBottom: 40,
