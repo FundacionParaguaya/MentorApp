@@ -1,0 +1,22 @@
+{
+  "green": "#50AA47",
+  "palegreen": "#309E43",
+  "red": "#E1504D",
+  "palered": "#E26664",
+  "gold": "#F0CB17",
+  "palegold": "#F4D76B",
+  "blue": "#77ABE9",
+  "primary": "#F3F4F6",
+  "dark": "#2F261C",
+  "lightdark": "#7A756F",
+  "grey": "#6A6A6A",
+  "palegrey": "#909090",
+  "lightgrey": "#E6E4E2",
+  "white": "#FFFFFF",
+  "error": "#E0504C",
+  "errorLight": "#FDB1B0",
+  "progressBarBg": "#D8D8D8",
+  "headerBorder": "rgba(0,0,0,.18)",
+  "black": "#000000",
+  "darkgrey": "#4A4A4A"
+}
