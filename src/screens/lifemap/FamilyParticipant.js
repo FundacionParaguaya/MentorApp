@@ -1,142 +1,142 @@
-import { PhoneNumberUtil } from 'google-libphonenumber'
-import PropTypes from 'prop-types'
-import React, { Component } from 'react'
-import { withNamespaces } from 'react-i18next'
-import { StyleSheet, Text } from 'react-native'
-import Icon from 'react-native-vector-icons/MaterialIcons'
-import { connect } from 'react-redux'
-import uuid from 'uuid/v1'
+import {PhoneNumberUtil} from 'google-libphonenumber';
+import PropTypes from 'prop-types';
+import React, {Component} from 'react';
+import {withNamespaces} from 'react-i18next';
+import {StyleSheet, Text} from 'react-native';
+import Icon from 'react-native-vector-icons/MaterialIcons';
+import {connect} from 'react-redux';
+import {v1 as uuid} from 'uuid';
 
-import Decoration from '../../components/decoration/Decoration'
-import DateInput from '../../components/form/DateInput'
-import Select from '../../components/form/Select'
-import TextInput from '../../components/form/TextInput'
-import StickyFooter from '../../components/StickyFooter'
-import globalStyles from '../../globalStyles'
-import { createDraft, updateDraft } from '../../redux/actions'
-import colors from '../../theme.json'
-import { generateNewDemoDraft } from '../utils/helpers'
-import CallingCodes from './CallingCodes'
-import { getTotalScreens, setValidationSchema } from './helpers'
+import Decoration from '../../components/decoration/Decoration';
+import DateInput from '../../components/form/DateInput';
+import Select from '../../components/form/Select';
+import TextInput from '../../components/form/TextInput';
+import StickyFooter from '../../components/StickyFooter';
+import globalStyles from '../../globalStyles';
+import {createDraft, updateDraft} from '../../redux/actions';
+import colors from '../../theme.json';
+import {generateNewDemoDraft} from '../utils/helpers';
+import CallingCodes from './CallingCodes';
+import {getTotalScreens, setValidationSchema} from './helpers';
 
 export class FamilyParticipant extends Component {
-  survey = this.props.navigation.getParam('survey')
-  draftId = this.props.navigation.getParam('draftId')
-  readOnly = this.props.navigation.getParam('readOnly')
+  survey = this.props.navigation.getParam('survey');
+  draftId = this.props.navigation.getParam('draftId');
+  readOnly = this.props.navigation.getParam('readOnly');
   phoneCodes = CallingCodes.map(element => ({
     ...element,
-    text: `${element.country} - (+${element.value})`
-  }))
+    text: `${element.country} - (+${element.value})`,
+  }));
 
   initialPhoneCode = this.phoneCodes.find(
-    e => e.code == this.survey.surveyConfig.surveyLocation.country
-  ).value
+    e => e.code == this.survey.surveyConfig.surveyLocation.country,
+  ).value;
 
   requiredFields =
     (this.survey.surveyConfig &&
       this.survey.surveyConfig.requiredFields &&
       this.survey.surveyConfig.requiredFields.primaryParticipant) ||
-    null
-  familyMembersArray = [] // the options array for members count dropdown
-  readOnlyDraft = this.props.navigation.getParam('family') || []
+    null;
+  familyMembersArray = []; // the options array for members count dropdown
+  readOnlyDraft = this.props.navigation.getParam('family') || [];
 
   state = {
     errors: [],
-    showErrors: false
-  }
+    showErrors: false,
+  };
 
   getDraft = () =>
-    this.props.drafts.find(draft => draft.draftId === this.draftId)
+    this.props.drafts.find(draft => draft.draftId === this.draftId);
 
   setError = (error, field) => {
-    const { errors } = this.state
+    const {errors} = this.state;
 
     if (error && !errors.includes(field)) {
       this.setState(previousState => {
         return {
           ...previousState,
-          errors: [...previousState.errors, field]
-        }
-      })
+          errors: [...previousState.errors, field],
+        };
+      });
     } else if (!error) {
       this.setState({
-        errors: errors.filter(item => item !== field)
-      })
+        errors: errors.filter(item => item !== field),
+      });
     }
 
-    this.onErrorStateChange(error || this.state.errors.length)
-  }
+    this.onErrorStateChange(error || this.state.errors.length);
+  };
 
   validateForm = () => {
     if (this.state.errors.length) {
       this.setState({
-        showErrors: true
-      })
+        showErrors: true,
+      });
     } else {
-      this.onContinue()
+      this.onContinue();
     }
-  }
+  };
 
   onContinue = () => {
     if (this.readOnly) {
-      return
+      return;
     }
 
-    const draft = this.getDraft()
-    const survey = this.survey
+    const draft = this.getDraft();
+    const survey = this.survey;
 
-    const { draftId } = draft
-    const { familyMembersList } = draft.familyData
+    const {draftId} = draft;
+    const {familyMembersList} = draft.familyData;
 
     if (familyMembersList.length > 1) {
       // if multiple family members navigate to members screens
       this.props.navigation.replace('FamilyMembersNames', {
         draftId,
-        survey
-      })
+        survey,
+      });
     } else {
       // if only one family member, navigate directly to location
-      this.props.navigation.navigate('Location', { draftId, survey })
+      this.props.navigation.navigate('Location', {draftId, survey});
     }
-  }
+  };
 
   addFamilyCount = value => {
     if (this.readOnly) {
-      return
+      return;
     }
-    const draft = this.getDraft()
-    const { countFamilyMembers } = draft.familyData
-    const PREFER_NOT_TO_SAY = -1
-    let familyMembersList = draft.familyData.familyMembersList
+    const draft = this.getDraft();
+    const {countFamilyMembers} = draft.familyData;
+    const PREFER_NOT_TO_SAY = -1;
+    let familyMembersList = draft.familyData.familyMembersList;
     const numberOfMembers =
-      countFamilyMembers === PREFER_NOT_TO_SAY ? 1 : countFamilyMembers
-    const valueIsNumber = typeof value === 'number'
+      countFamilyMembers === PREFER_NOT_TO_SAY ? 1 : countFamilyMembers;
+    const valueIsNumber = typeof value === 'number';
     if (
       valueIsNumber &&
       value !== PREFER_NOT_TO_SAY &&
       numberOfMembers > value
     ) {
-      var itemsICanRemove = 0
+      var itemsICanRemove = 0;
       for (var index in familyMembersList) {
-        var currMember = familyMembersList[index]
+        var currMember = familyMembersList[index];
         if (
           !currMember.birthDate &&
           !currMember.gender &&
           !currMember.firstName
         ) {
-          itemsICanRemove += 1
+          itemsICanRemove += 1;
         }
       }
-      var finalRemove = 0
+      var finalRemove = 0;
       if (itemsICanRemove > familyMembersList.length - value) {
-        finalRemove = value
+        finalRemove = value;
       } else {
-        finalRemove = itemsICanRemove
+        finalRemove = itemsICanRemove;
       }
 
       if (finalRemove != 0) {
-        var itemsRemoved = 0
-        let i = familyMembersList.length
+        var itemsRemoved = 0;
+        let i = familyMembersList.length;
         while (i--) {
           if (
             !currMember.birthDate &&
@@ -144,8 +144,8 @@ export class FamilyParticipant extends Component {
             !currMember.firstName &&
             itemsRemoved != finalRemove
           ) {
-            familyMembersList.splice(i, 1)
-            itemsRemoved += 1
+            familyMembersList.splice(i, 1);
+            itemsRemoved += 1;
           }
         }
       }
@@ -154,10 +154,10 @@ export class FamilyParticipant extends Component {
       value !== PREFER_NOT_TO_SAY &&
       (numberOfMembers < value || !numberOfMembers)
     ) {
-      var newMembersToAdd = value - familyMembersList.length
+      var newMembersToAdd = value - familyMembersList.length;
       if (newMembersToAdd > 0) {
         for (let a = 0; a < newMembersToAdd; a++) {
-          familyMembersList.push({ firstParticipant: false })
+          familyMembersList.push({firstParticipant: false});
         }
       }
     }
@@ -166,45 +166,45 @@ export class FamilyParticipant extends Component {
       familyData: {
         ...draft.familyData,
         countFamilyMembers: valueIsNumber ? value : undefined,
-        familyMembersList
-      }
-    })
-  }
+        familyMembersList,
+      },
+    });
+  };
 
   getFamilyMembersCountArray = () => [
-    { text: this.props.t('views.family.onlyPerson'), value: 1 },
+    {text: this.props.t('views.family.onlyPerson'), value: 1},
     ...Array.from(new Array(24), (val, index) => ({
       value: index + 2,
-      text: `${index + 2}`
+      text: `${index + 2}`,
     })),
     {
       text: this.props.t('views.family.preferNotToSay'),
-      value: -1
-    }
-  ]
+      value: -1,
+    },
+  ];
 
   phoneValidation = value => {
-    const phoneUtil = PhoneNumberUtil.getInstance()
+    const phoneUtil = PhoneNumberUtil.getInstance();
     try {
-      const draft = !this.readOnly ? this.getDraft() : this.readOnlyDraft
+      const draft = !this.readOnly ? this.getDraft() : this.readOnlyDraft;
       const phoneCode = draft.familyData.familyMembersList[0].phoneCode
         ? draft.familyData.familyMembersList[0].phoneCode
-        : this.initialPhoneCode
-      const contryCode = this.phoneCodes.find(x => x.value === phoneCode).code
-      const international = '+' + phoneCode + ' ' + value
-      const phone = phoneUtil.parse(international, contryCode)
-      let validation = phoneUtil.isValidNumber(phone)
-      return validation
+        : this.initialPhoneCode;
+      const contryCode = this.phoneCodes.find(x => x.value === phoneCode).code;
+      const international = '+' + phoneCode + ' ' + value;
+      const phone = phoneUtil.parse(international, contryCode);
+      let validation = phoneUtil.isValidNumber(phone);
+      return validation;
     } catch (e) {
-      return false
+      return false;
     }
-  }
+  };
 
   updateParticipant = (value, field) => {
     if (this.readOnly || (!value && field == 'phoneCode')) {
-      return
+      return;
     }
-    const draft = this.getDraft()
+    const draft = this.getDraft();
 
     this.props.updateDraft({
       ...draft,
@@ -216,33 +216,33 @@ export class FamilyParticipant extends Component {
           {
             [0]: {
               ...draft.familyData.familyMembersList[0],
-              [field]: value
-            }
-          }
-        )
-      }
-    })
-  }
+              [field]: value,
+            },
+          },
+        ),
+      },
+    });
+  };
 
   onErrorStateChange = hasErrors => {
-    const { navigation } = this.props
+    const {navigation} = this.props;
 
     // for this particular screen we need to detect if form is valid
     // in order to delete the draft on exiting
     navigation.setParams({
-      deleteDraftOnExit: hasErrors
-    })
-  }
+      deleteDraftOnExit: hasErrors,
+    });
+  };
 
   createNewDraft() {
     // check if current survey is demo
-    const isDemo = this.survey.surveyConfig && this.survey.surveyConfig.isDemo
+    const isDemo = this.survey.surveyConfig && this.survey.surveyConfig.isDemo;
     // generate a new draft id
-    const draftId = uuid()
+    const draftId = uuid();
 
     // and update the component and navigation with it
-    this.draftId = draftId
-    this.props.navigation.setParams({ draftId })
+    this.draftId = draftId;
+    this.props.navigation.setParams({draftId});
 
     const regularDraft = {
       draftId,
@@ -260,7 +260,7 @@ export class FamilyParticipant extends Component {
       achievements: [],
       progress: {
         screen: 'FamilyParticipant',
-        total: getTotalScreens(this.survey)
+        total: getTotalScreens(this.survey),
       },
       familyData: {
         familyMembersList: [
@@ -268,27 +268,27 @@ export class FamilyParticipant extends Component {
             firstParticipant: true,
             socioEconomicAnswers: [],
             birthCountry: this.survey.surveyConfig.surveyLocation.country,
-            phoneCode: this.initialPhoneCode
-          }
-        ]
-      }
-    }
+            phoneCode: this.initialPhoneCode,
+          },
+        ],
+      },
+    };
 
     // create the new draft in redux
     this.props.createDraft(
-      isDemo ? generateNewDemoDraft(this.survey, draftId) : regularDraft
-    )
+      isDemo ? generateNewDemoDraft(this.survey, draftId) : regularDraft,
+    );
   }
 
   componentDidMount() {
-    const draft = !this.readOnly ? this.getDraft() : this.readOnlyDraft
+    const draft = !this.readOnly ? this.getDraft() : this.readOnlyDraft;
 
-    this.familyMembersArray = this.getFamilyMembersCountArray()
+    this.familyMembersArray = this.getFamilyMembersCountArray();
     // generate a new draft if not resuming or reviewing an old one,
     // else just set the draft progress
 
     if (!this.draftId && !this.readOnly) {
-      this.createNewDraft()
+      this.createNewDraft();
     } else if (
       !this.readOnly &&
       draft.progress.screen !== 'FamilyParticipant'
@@ -297,36 +297,34 @@ export class FamilyParticipant extends Component {
         ...draft,
         progress: {
           ...draft.progress,
-          screen: 'FamilyParticipant'
-        }
-      })
+          screen: 'FamilyParticipant',
+        },
+      });
     }
   }
 
   shouldComponentUpdate() {
-    return this.props.navigation.isFocused()
+    return this.props.navigation.isFocused();
   }
 
   render() {
-    const { t } = this.props
-    const { showErrors } = this.state
-    const draft = !this.readOnly ? this.getDraft() : this.readOnlyDraft
-    let participant = draft ? draft.familyData.familyMembersList[0] : {}
+    const {t} = this.props;
+    const {showErrors} = this.state;
+    const draft = !this.readOnly ? this.getDraft() : this.readOnlyDraft;
+    let participant = draft ? draft.familyData.familyMembersList[0] : {};
 
     return draft ? (
       <StickyFooter
         onContinue={this.validateForm}
         continueLabel={t('general.continue')}
         readOnly={!!this.readOnly}
-        progress={!this.readOnly && draft ? 1 / draft.progress.total : 0}
-      >
+        progress={!this.readOnly && draft ? 1 / draft.progress.total : 0}>
         <Decoration variation="primaryParticipant">
           <Icon name="face" color={colors.grey} size={61} style={styles.icon} />
           {!this.readOnly ? (
             <Text
               readOnly={this.readOnly}
-              style={[globalStyles.h2Bold, styles.heading]}
-            >
+              style={[globalStyles.h2Bold, styles.heading]}>
               {t('views.family.primaryParticipantHeading')}
             </Text>
           ) : null}
@@ -395,7 +393,7 @@ export class FamilyParticipant extends Component {
           required={setValidationSchema(
             this.requiredFields,
             'documentType',
-            true
+            true,
           )}
           otherPlaceholder={t('views.family.customDocumentType')}
           otherField="customDocumentType"
@@ -413,7 +411,7 @@ export class FamilyParticipant extends Component {
           required={setValidationSchema(
             this.requiredFields,
             'documentNumber',
-            true
+            true,
           )}
           readOnly={!!this.readOnly}
           onChangeText={this.updateParticipant}
@@ -430,7 +428,7 @@ export class FamilyParticipant extends Component {
           required={setValidationSchema(
             this.requiredFields,
             'birthCountry',
-            true
+            true,
           )}
           defaultCountry={this.survey.surveyConfig.surveyLocation.country}
           countriesOnTop={this.survey.surveyConfig.countryOfBirth}
@@ -483,7 +481,7 @@ export class FamilyParticipant extends Component {
           required={setValidationSchema(
             this.requiredFields,
             'countFamilyMembers',
-            true
+            true,
           )}
           options={this.familyMembersArray}
           readOnly={!!this.readOnly}
@@ -492,12 +490,12 @@ export class FamilyParticipant extends Component {
           setError={isError => this.setError(isError, 'countFamilyMembers')}
         />
       </StickyFooter>
-    ) : null
+    ) : null;
   }
 }
 const styles = StyleSheet.create({
   icon: {
-    alignSelf: 'center'
+    alignSelf: 'center',
   },
   heading: {
     alignSelf: 'center',
@@ -505,28 +503,28 @@ const styles = StyleSheet.create({
     paddingBottom: 20,
     paddingTop: 8,
     paddingHorizontal: 20,
-    color: colors.grey
-  }
-})
+    color: colors.grey,
+  },
+});
 
 FamilyParticipant.propTypes = {
   drafts: PropTypes.array.isRequired,
   t: PropTypes.func.isRequired,
   navigation: PropTypes.object.isRequired,
   createDraft: PropTypes.func.isRequired,
-  updateDraft: PropTypes.func.isRequired
-}
+  updateDraft: PropTypes.func.isRequired,
+};
 
 const mapDispatchToProps = {
   createDraft,
-  updateDraft
-}
+  updateDraft,
+};
 
-const mapStateToProps = ({ drafts }) => ({ drafts })
+const mapStateToProps = ({drafts}) => ({drafts});
 
 export default withNamespaces()(
   connect(
     mapStateToProps,
-    mapDispatchToProps
-  )(FamilyParticipant)
-)
+    mapDispatchToProps,
+  )(FamilyParticipant),
+);

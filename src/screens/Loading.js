@@ -1,21 +1,21 @@
-import NetInfo from '@react-native-community/netinfo'
-import MapboxGL from '@react-native-mapbox-gl/maps'
-import PropTypes from 'prop-types'
-import React, { Component } from 'react'
-import { withNamespaces } from 'react-i18next'
-import { ActivityIndicator, StyleSheet, Text, View } from 'react-native'
-import DeviceInfo from 'react-native-device-info'
-import CommunityIcon from 'react-native-vector-icons/MaterialCommunityIcons'
-import Icon from 'react-native-vector-icons/MaterialIcons'
-import { AndroidBackHandler } from 'react-navigation-backhandler'
-import { connect } from 'react-redux'
+import NetInfo from '@react-native-community/netinfo';
+import MapboxGL from '@react-native-mapbox-gl/maps';
+import PropTypes from 'prop-types';
+import React, {Component} from 'react';
+import {withNamespaces} from 'react-i18next';
+import {ActivityIndicator, StyleSheet, Text, View} from 'react-native';
+import DeviceInfo from 'react-native-device-info';
+import CommunityIcon from 'react-native-vector-icons/MaterialCommunityIcons';
+import Icon from 'react-native-vector-icons/MaterialIcons';
+import {AndroidBackHandler} from 'react-navigation-backhandler';
+import {connect} from 'react-redux';
 
-import { initImageCaching } from '../cache'
-import Button from '../components/Button'
-import Decoration from '../components/decoration/Decoration'
-import ProgressBar from '../components/ProgressBar'
-import { url } from '../config'
-import globalStyles from '../globalStyles'
+import {initImageCaching} from '../cache';
+import Button from '../components/Button';
+import Decoration from '../components/decoration/Decoration';
+import ProgressBar from '../components/ProgressBar';
+import {url} from '../config';
+import globalStyles from '../globalStyles';
 import {
   loadFamilies,
   loadMaps,
@@ -23,10 +23,10 @@ import {
   logout,
   resetSyncState,
   setAppVersion,
-  setSyncedState
-} from '../redux/actions'
-import { bugsnag } from '../screens/utils/bugsnag'
-import colors from '../theme.json'
+  setSyncedState,
+} from '../redux/actions';
+
+import colors from '../theme.json';
 
 export class Loading extends Component {
   state = {
@@ -37,36 +37,36 @@ export class Loading extends Component {
     currentMapName: '',
     mapPercent: 0,
     maps: [],
-    error: null
-  }
+    error: null,
+  };
 
   // STEP 1 - cache the surveys
   syncSurveys = resync => {
     // mark that loading has stated to show the progress
     this.setState({
-      syncingServerData: true
-    })
+      syncingServerData: true,
+    });
 
     // if surveys are synced skip to syncing families
     if (!resync && this.props.sync.surveys) {
-      this.syncFamilies()
+      this.syncFamilies();
     } else {
-      this.props.loadSurveys(url[this.props.env], this.props.user.token)
+      this.props.loadSurveys(url[this.props.env], this.props.user.token);
     }
-  }
+  };
 
   // STEP 2 - cache the families
   syncFamilies = () => {
     // if families are synced skip to caching images
     if (this.props.sync.families) {
-      this.checkOfflineMaps()
+      this.checkOfflineMaps();
     } else {
-      this.props.loadFamilies(url[this.props.env], this.props.user.token)
+      this.props.loadFamilies(url[this.props.env], this.props.user.token);
     }
-  }
+  };
 
   isSurveyInSynced = title =>
-    this.props.surveys.some(survey => survey.title && survey.title === title)
+    this.props.surveys.some(survey => survey.title && survey.title === title);
 
   downloadOfflineMapPack = map => {
     MapboxGL.offlineManager.getPack(map.name).then(pack => {
@@ -77,52 +77,52 @@ export class Loading extends Component {
             {
               name: map.name,
               styleURL: MapboxGL.StyleURL.Street,
-              ...map.options
+              ...map.options,
             },
             this.onMapDownloadProgress,
-            this.onMapDownloadError
-          )
-        })
+            this.onMapDownloadError,
+          );
+        });
       } else {
         MapboxGL.offlineManager.createPack(
           {
             name: map.name,
             styleURL: MapboxGL.StyleURL.Street,
-            ...map.options
+            ...map.options,
           },
           this.onMapDownloadProgress,
-          this.onMapDownloadError
-        )
+          this.onMapDownloadError,
+        );
       }
-    })
-  }
+    });
+  };
 
   // STEP 3 - check and cache the offline maps
   checkOfflineMaps = async () => {
-    MapboxGL.offlineManager.setTileCountLimit(200000)
+    MapboxGL.offlineManager.setTileCountLimit(200000);
     if (
       !this.props.downloadMapsAndImages.downloadMaps ||
       this.props.maps.length
     ) {
       //when we decide to skip the maps form the dev options , we simply pretend that they are already downloaded
       this.setState({
-        mapsDownloaded: true
-      })
-      return this.handleImageCaching()
+        mapsDownloaded: true,
+      });
+      return this.handleImageCaching();
     } else {
-      this.props.loadMaps(url[this.props.env], this.props.user.token)
+      this.props.loadMaps(url[this.props.env], this.props.user.token);
       this.setState({
-        downloadingMap: true
-      })
+        downloadingMap: true,
+      });
     }
-  }
+  };
 
   // update map download progress
   onMapDownloadProgress = async (offlineRegion, offlineRegionStatus) => {
     if (offlineRegionStatus.name !== this.state.currentMapName) {
       this.setState({
-        currentMapName: offlineRegionStatus.name
-      })
+        currentMapName: offlineRegionStatus.name,
+      });
     }
 
     if (offlineRegionStatus.percentage === 100) {
@@ -131,42 +131,28 @@ export class Loading extends Component {
           if (map.name === offlineRegionStatus.name) {
             return {
               ...map,
-              status: 100
-            }
+              status: 100,
+            };
           } else {
-            return map
+            return map;
           }
         }),
-        mapPercent: 100
-      })
+        mapPercent: 100,
+      });
 
-      this.initMapDownload()
+      this.initMapDownload();
     } else {
       this.setState({
-        mapPercent: Math.trunc(offlineRegionStatus.percentage)
-      })
+        mapPercent: Math.trunc(offlineRegionStatus.percentage),
+      });
     }
-  }
+  };
 
   onMapDownloadError = (offlineRegion, mapDownloadError) => {
     if (mapDownloadError.message !== 'No Internet connection available.') {
-      NetInfo.fetch().then(state => {
-        bugsnag.clearUser()
-        bugsnag.setUser(this.props.user.username, this.props.user.username)
-        bugsnag.notify(new Error('Map download error'), report => {
-          report.metadata = {
-            ...(report.metaData || {}),
-            username: this.props.user.username,
-            error: mapDownloadError,
-            errorMessage: mapDownloadError.message,
-            isOnline: state.isConnected,
-            sync: this.props.sync,
-            env: this.props.env
-          }
-        })
-      })
+      NetInfo.fetch().then(state => {});
     }
-  }
+  };
 
   // STEP 4 - cache the survey indicator images
   handleImageCaching = () => {
@@ -175,14 +161,14 @@ export class Loading extends Component {
       (!!this.props.sync.images.total &&
         this.props.sync.images.total === this.props.sync.images.synced)
     ) {
-      this.props.navigation.navigate('DrawerStack')
+      this.props.navigation.navigate('DrawerStack');
     } else if (!this.state.cachingImages) {
       this.setState({
-        cachingImages: true
-      })
-      initImageCaching()
+        cachingImages: true,
+      });
+      initImageCaching();
     }
-  }
+  };
 
   reload = () => {
     this.setState({
@@ -190,63 +176,63 @@ export class Loading extends Component {
       cachingImages: false,
       downloadingMap: false,
       maps: [],
-      error: null
-    })
-    this.props.resetSyncState()
+      error: null,
+    });
+    this.props.resetSyncState();
     setTimeout(() => {
-      this.checkState()
-    }, 500)
-  }
+      this.checkState();
+    }, 500);
+  };
 
   showError(msg) {
     this.setState({
-      error: msg
-    })
+      error: msg,
+    });
   }
   getDataPercentages = () => {
-    let mapAllPercentage = 0
-    let mapAllNames = []
-    let mapAllNumber = 0
+    let mapAllPercentage = 0;
+    let mapAllNames = [];
+    let mapAllNumber = 0;
     this.state.maps.map(map => {
-      let mapPercentageForNow = map.status || 0
+      let mapPercentageForNow = map.status || 0;
       if (mapAllNames.length === this.state.maps.length - 1) {
-        mapAllNumber = mapAllNumber + mapPercentageForNow
-        mapAllPercentage = mapAllNumber / this.state.maps.length
+        mapAllNumber = mapAllNumber + mapPercentageForNow;
+        mapAllPercentage = mapAllNumber / this.state.maps.length;
       } else {
-        mapAllNames.push(map.name)
-        mapAllNumber = mapAllNumber + mapPercentageForNow
+        mapAllNames.push(map.name);
+        mapAllNumber = mapAllNumber + mapPercentageForNow;
       }
-    })
+    });
     if (isNaN(mapAllPercentage) && mapAllPercentage !== 100) {
-      return 0
+      return 0;
     } else {
-      return mapAllPercentage
+      return mapAllPercentage;
     }
-  }
+  };
   initMapDownload() {
-    const { maps } = this.state
+    const {maps} = this.state;
     if (maps.length && maps.some(map => map.status !== 100)) {
-      this.downloadOfflineMapPack(maps.find(map => map.status !== 100))
+      this.downloadOfflineMapPack(maps.find(map => map.status !== 100));
     } else {
       this.setState({
         downloadingMap: false,
-        mapsDownloaded: true
-      })
-      this.handleImageCaching()
+        mapsDownloaded: true,
+      });
+      this.handleImageCaching();
     }
   }
 
   checkState() {
-    const { families, surveys, images, appVersion } = this.props.sync
+    const {families, surveys, images, appVersion} = this.props.sync;
     if (!this.props.user.token) {
       // if user hasn't logged in, navigate to login
-      this.props.navigation.navigate('Login')
+      this.props.navigation.navigate('Login');
     } else if (!appVersion || appVersion !== DeviceInfo.getVersion()) {
       // if there is no app version in store or version has changed
       // clear sync state and sync again
-      this.props.resetSyncState()
-      this.props.setAppVersion(DeviceInfo.getVersion())
-      this.syncSurveys('re-sync')
+      this.props.resetSyncState();
+      this.props.setAppVersion(DeviceInfo.getVersion());
+      this.syncSurveys('re-sync');
     } else if (
       families &&
       surveys &&
@@ -254,52 +240,52 @@ export class Loading extends Component {
       images.total === images.synced
     ) {
       // if everything is synced navigate to Dashboard
-      this.props.navigation.navigate('DrawerStack')
+      this.props.navigation.navigate('DrawerStack');
     } else {
       // check connection state
       NetInfo.fetch().then(state => {
         if (!state.isConnected) {
-          this.showError('There seems to be a problem with your connetion.')
+          this.showError('There seems to be a problem with your connetion.');
         } else {
-          this.syncSurveys()
+          this.syncSurveys();
         }
-      })
+      });
     }
   }
 
   componentDidMount() {
-    this.checkState()
+    this.checkState();
   }
   downloadMaps = async () => {
-    let mapsArray = []
+    let mapsArray = [];
     this.props.maps.forEach(map => {
       if (map.name && !mapsArray.some(item => item.name === map.name)) {
         const options = {
           minZoom: 10,
           maxZoom: 13,
-          bounds: [map.from, map.to]
-        }
-        mapsArray.push({ name: map.name, status: 0, options })
+          bounds: [map.from, map.to],
+        };
+        mapsArray.push({name: map.name, status: 0, options});
       }
-    })
-    await this.setState({ maps: mapsArray })
-    this.initMapDownload()
-  }
+    });
+    await this.setState({maps: mapsArray});
+    this.initMapDownload();
+  };
   componentDidUpdate(prevProps) {
     // if user logs in
     if (!prevProps.user.token && this.props.user.token) {
-      this.syncSurveys()
+      this.syncSurveys();
     }
     // start syncing families once surveys are synced
     if (!prevProps.sync.surveys && this.props.sync.surveys) {
-      this.syncFamilies()
+      this.syncFamilies();
     }
     if (!prevProps.maps.length && this.props.maps.length) {
-      this.downloadMaps()
+      this.downloadMaps();
     }
     // if families are synced check for map data
     if (!prevProps.sync.families && this.props.sync.families) {
-      this.checkOfflineMaps()
+      this.checkOfflineMaps();
     }
 
     if (
@@ -309,9 +295,9 @@ export class Loading extends Component {
       this.state.maps.every(map => map.status === 100) &&
       !this.state.cachingImages
     ) {
-      this.setState({ cachingImages: true })
-      this.props.setSyncedState('maps', true)
-      this.handleImageCaching()
+      this.setState({cachingImages: true});
+      this.props.setSyncedState('maps', true);
+      this.handleImageCaching();
     }
 
     // if everything is synced navigate to home
@@ -321,28 +307,28 @@ export class Loading extends Component {
       this.props.sync.images.total === this.props.sync.images.synced &&
       this.state.maps.every(map => map.status === 100)
     ) {
-      this.props.navigation.navigate('DrawerStack')
+      this.props.navigation.navigate('DrawerStack');
     }
     // if there is a map download error
     if (!prevProps.sync.mapsError && this.props.sync.mapsError) {
       //in case of error we dont show the error... we just skip the maps.
       this.setState({
         mapsDownloaded: true,
-        downloadingMap: false
-      })
+        downloadingMap: false,
+      });
     }
     // if there is a download error
     if (!prevProps.sync.familiesError && this.props.sync.familiesError) {
-      this.showError('We seem to have a problem downloading your families.')
+      this.showError('We seem to have a problem downloading your families.');
     }
 
     if (!prevProps.sync.surveysError && this.props.sync.surveysError) {
-      this.showError('We seem to have a problem downloading your surveys.')
+      this.showError('We seem to have a problem downloading your surveys.');
     }
   }
 
   render() {
-    const { sync, families, surveys, t } = this.props
+    const {sync, families, surveys, t} = this.props;
 
     const {
       syncingServerData,
@@ -352,8 +338,8 @@ export class Loading extends Component {
       error,
       maps,
       currentMapName,
-      mapPercent
-    } = this.state
+      mapPercent,
+    } = this.state;
     return (
       <AndroidBackHandler onBackPress={() => true}>
         {!error ? (
@@ -366,10 +352,9 @@ export class Loading extends Component {
                   {
                     marginBottom: 34,
                     color: colors.dark,
-                    fontSize: 17
-                  }
-                ]}
-              >
+                    fontSize: 17,
+                  },
+                ]}>
                 {t('views.loading.weArePreparingTheApp')}
               </Text>
 
@@ -379,11 +364,10 @@ export class Loading extends Component {
                     <Text
                       style={
                         sync.surveys ? styles.colorGreen : styles.colorDark
-                      }
-                    >
+                      }>
                       {sync.surveys
                         ? `${surveys.length} ${t(
-                            'views.loading.surveysCached'
+                            'views.loading.surveysCached',
                           )}`
                         : t('views.loading.downloadingSurveys')}
                     </Text>
@@ -401,11 +385,10 @@ export class Loading extends Component {
                       <Text
                         style={
                           sync.families ? styles.colorGreen : styles.colorDark
-                        }
-                      >
+                        }>
                         {sync.families
                           ? `${families.length} ${t(
-                              'views.loading.familiesCached'
+                              'views.loading.familiesCached',
                             )}`
                           : t('views.loading.downloadingFamilies')}
                       </Text>
@@ -425,8 +408,7 @@ export class Loading extends Component {
                             !downloadingMap
                               ? styles.colorGreen
                               : styles.colorDark
-                          }
-                        >
+                          }>
                           {!downloadingMap
                             ? t('views.loading.mapsCached')
                             : t('views.loading.mapsDownloading')}
@@ -437,8 +419,7 @@ export class Loading extends Component {
                               !downloadingMap
                                 ? styles.colorGreen
                                 : styles.colorDark
-                            }
-                          >{`${
+                            }>{`${
                             maps.filter(item => item.status === 100).length
                           }/${maps.length}`}</Text>
                         ) : (
@@ -455,7 +436,7 @@ export class Loading extends Component {
                           <Text>{`${Math.floor(mapPercent)}%`}</Text>
                         </View>
                       )}
-                      <View style={!downloadingMap ? { display: 'none' } : {}}>
+                      <View style={!downloadingMap ? {display: 'none'} : {}}>
                         <ProgressBar
                           removePadding
                           hideBorder
@@ -484,8 +465,7 @@ export class Loading extends Component {
                                 sync.images.synced / sync.images.total === 1
                                   ? styles.colorGreen
                                   : styles.colorDark
-                              }
-                            >
+                              }>
                               {t('views.loading.images')}
                             </Text>
                             <Text
@@ -493,20 +473,18 @@ export class Loading extends Component {
                                 sync.images.synced / sync.images.total === 1
                                   ? styles.colorGreen
                                   : styles.colorDark
-                              }
-                            >
+                              }>
                               {`${Math.floor(
-                                (sync.images.synced / sync.images.total) * 100
+                                (sync.images.synced / sync.images.total) * 100,
                               )}%`}
                             </Text>
                           </View>
                           <View
                             style={
                               sync.images.synced / sync.images.total === 1
-                                ? { display: 'none' }
+                                ? {display: 'none'}
                                 : {}
-                            }
-                          >
+                            }>
                             <ProgressBar
                               removePadding
                               hideBorder
@@ -519,9 +497,8 @@ export class Loading extends Component {
                           style={{
                             color: colors.dark,
                             fontSize: 14,
-                            marginBottom: 5
-                          }}
-                        >
+                            marginBottom: 5,
+                          }}>
                           {t('views.loading.calcilatingTotalImages')}.
                         </Text>
                       )}
@@ -539,16 +516,16 @@ export class Loading extends Component {
                 color={colors.palered}
                 size={60}
               />
-              <Text style={[globalStyles.h1, { color: colors.palered }]}>
+              <Text style={[globalStyles.h1, {color: colors.palered}]}>
                 Hmm…
               </Text>
-              <Text style={[globalStyles.h2, { textAlign: 'center' }]}>
+              <Text style={[globalStyles.h2, {textAlign: 'center'}]}>
                 {error}
               </Text>
               <Button
                 outlined
                 text="Retry"
-                style={{ paddingHorizontal: 30, marginTop: 30 }}
+                style={{paddingHorizontal: 30, marginTop: 30}}
                 borderColor={colors.palered}
                 handleClick={this.reload}
               />
@@ -556,7 +533,7 @@ export class Loading extends Component {
           </View>
         )}
       </AndroidBackHandler>
-    )
+    );
   }
 }
 
@@ -578,40 +555,40 @@ Loading.propTypes = {
   offline: PropTypes.object.isRequired,
   downloadMapsAndImages: PropTypes.object,
   hydration: PropTypes.bool.isRequired,
-  t: PropTypes.func
-}
+  t: PropTypes.func,
+};
 
 const styles = StyleSheet.create({
   syncingItem: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    width: 220
+    width: 220,
   },
   loadingContainer: {
     marginTop: 100,
     alignItems: 'center',
-    justifyContent: 'center'
+    justifyContent: 'center',
   },
   colorDark: {
     color: colors.dark,
     fontSize: 17,
-    marginBottom: 5
+    marginBottom: 5,
   },
   colorGreen: {
     color: colors.palegreen,
     fontSize: 17,
-    marginBottom: 5
+    marginBottom: 5,
   },
   sync: {
     alignItems: 'flex-start',
-    marginTop: 10
+    marginTop: 10,
   },
   view: {
     alignItems: 'center',
     flex: 1,
-    justifyContent: 'flex-start'
-  }
-})
+    justifyContent: 'flex-start',
+  },
+});
 
 export const mapStateToProps = ({
   sync,
@@ -622,7 +599,7 @@ export const mapStateToProps = ({
   families,
   maps,
   hydration,
-  downloadMapsAndImages
+  downloadMapsAndImages,
 }) => ({
   sync,
   surveys,
@@ -632,8 +609,8 @@ export const mapStateToProps = ({
   families,
   maps,
   hydration,
-  downloadMapsAndImages
-})
+  downloadMapsAndImages,
+});
 
 const mapDispatchToProps = {
   loadFamilies,
@@ -642,12 +619,12 @@ const mapDispatchToProps = {
   logout,
   setAppVersion,
   resetSyncState,
-  setSyncedState
-}
+  setSyncedState,
+};
 
 export default withNamespaces()(
   connect(
     mapStateToProps,
-    mapDispatchToProps
-  )(Loading)
-)
+    mapDispatchToProps,
+  )(Loading),
+);

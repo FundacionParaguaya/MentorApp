@@ -1,8 +1,8 @@
-import NetInfo from '@react-native-community/netinfo'
-import i18n from 'i18next'
-import PropTypes from 'prop-types'
-import React, { Component } from 'react'
-import { withNamespaces } from 'react-i18next'
+import NetInfo from '@react-native-community/netinfo';
+import i18n from 'i18next';
+import PropTypes from 'prop-types';
+import React, {Component} from 'react';
+import {withNamespaces} from 'react-i18next';
 import {
   AppState,
   Dimensions,
@@ -11,33 +11,33 @@ import {
   StyleSheet,
   Text,
   TextInput,
-  View
-} from 'react-native'
-import { CheckBox } from 'react-native-elements'
-import { connect } from 'react-redux'
-import RNFetchBlob from 'rn-fetch-blob'
+  View,
+} from 'react-native';
+import {CheckBox} from 'react-native-elements';
+import {connect} from 'react-redux';
+import RNFetchBlob from 'rn-fetch-blob';
 
-import logo from '../../assets/images/logo.png'
-import Button from '../components/Button'
-import { url } from '../config'
-import globalStyles from '../globalStyles'
+import logo from '../../assets/images/logo.png';
+import Button from '../components/Button';
+import {url} from '../config';
+import globalStyles from '../globalStyles';
 import {
   login,
   setDimensions,
   setDownloadMapsAndImages,
-  setEnv
-} from '../redux/actions'
-import colors from '../theme.json'
-import { getDeviceLanguage } from '../utils'
+  setEnv,
+} from '../redux/actions';
+import colors from '../theme.json';
+import {getDeviceLanguage} from '../utils';
 import InternalStorageFullModal, {
-  MINIMUM_REQUIRED_STORAGE_SPACE_500_MB
-} from './modals/InternalStorageFullModal'
+  MINIMUM_REQUIRED_STORAGE_SPACE_500_MB,
+} from './modals/InternalStorageFullModal';
 
 // get env
-const nodeEnv = process.env
+const nodeEnv = process.env;
 
 export class Login extends Component {
-  unsubscribeNetChange
+  // unsubscribeNetChange;
   state = {
     username: '',
     password: '',
@@ -48,40 +48,40 @@ export class Login extends Component {
     syncMaps: true,
     syncImages: true,
     appState: AppState.currentState,
-    notEnoughStorageSpace: false
-  }
+    notEnoughStorageSpace: false,
+  };
   componentDidMount() {
     this.props.navigation.addListener('didFocus', () => {
-      const lng = getDeviceLanguage()
-      i18n.changeLanguage(lng)
-    })
+      const lng = getDeviceLanguage();
+      i18n.changeLanguage(lng);
+    });
 
     // if use has logged in navigate to Loading
     if (this.props.user.token) {
-      this.props.navigation.navigate('Loading')
+      this.props.navigation.navigate('Loading');
     } else {
-      AppState.addEventListener('change', this.handleAppStateChange)
-      this.setDimensions()
+      AppState.addEventListener('change', this.handleAppStateChange);
+      this.setDimensions();
 
       // check connection
       NetInfo.fetch().then(state =>
-        this.setConnectivityState(state.isConnected)
-      )
+        this.setConnectivityState(state.isConnected),
+      );
       this.unsubscribeNetChange = NetInfo.addEventListener(state => {
-        this.setConnectivityState(state.isConnected)
-      })
+        this.setConnectivityState(state.isConnected);
+      });
     }
   }
 
   setConnectivityState = isConnected => {
     isConnected
-      ? this.setState({ connection: true, error: '' })
-      : this.setState({ connection: false, error: 'No connection' })
-  }
+      ? this.setState({connection: true, error: ''})
+      : this.setState({connection: false, error: 'No connection'});
+  };
 
   setDimensions = () => {
-    const { width, height, scale } = this.props.dimensions
-    const screenDimensions = Dimensions.get('window')
+    const {width, height, scale} = this.props.dimensions;
+    const screenDimensions = Dimensions.get('window');
 
     if (
       width !== screenDimensions.width ||
@@ -91,97 +91,97 @@ export class Login extends Component {
       this.props.setDimensions({
         height: screenDimensions.height,
         width: screenDimensions.width,
-        scale: screenDimensions.scale
-      })
+        scale: screenDimensions.scale,
+      });
     }
-  }
+  };
 
   checkDevOption = devProp => {
     this.setState({
-      [devProp]: !this.state[devProp]
-    })
-  }
+      [devProp]: !this.state[devProp],
+    });
+  };
 
   onLogin = async () => {
     if (!(await this.isStorageSpaceEnough())) {
-      this.setState({ notEnoughStorageSpace: true })
-      return
+      this.setState({notEnoughStorageSpace: true});
+      return;
     }
 
     this.setState({
       loading: true,
       error: false,
-      error2: false
-    })
+      error2: false,
+    });
     this.props.setDownloadMapsAndImages({
       downloadMaps: this.state.syncMaps,
-      downloadImages: this.state.syncImages
-    })
-    let env = this.state.username.trim() === 'demo' ? 'demo' : 'production'
-    let username = this.state.username.trim()
-    let envCheck = this.state.username.trim().substring(0, 2)
+      downloadImages: this.state.syncImages,
+    });
+    let env = this.state.username.trim() === 'demo' ? 'demo' : 'production';
+    let username = this.state.username.trim();
+    let envCheck = this.state.username.trim().substring(0, 2);
 
     if (envCheck === 't/' || envCheck === 'd/' || envCheck === 'p/') {
       if (envCheck === 't/') {
-        env = 'testing'
+        env = 'testing';
       } else if (envCheck === 'd/') {
-        env = 'demo'
+        env = 'demo';
       } else if (envCheck === 'p/') {
-        env = 'production'
+        env = 'production';
       }
 
       username = this.state.username
         .trim()
-        .substring(2, this.state.username.trim().length)
+        .substring(2, this.state.username.trim().length);
     }
 
-    this.props.setEnv(env)
+    this.props.setEnv(env);
     this.props.login(username, this.state.password, url[env]).then(() => {
       if (this.props.user.status === 401) {
         this.setState({
-          loading: false
-        })
-        this.setState({ error: 'Wrong username or password' })
+          loading: false,
+        });
+        this.setState({error: 'Wrong username or password'});
       } else if (
         this.props.user.role !== 'ROLE_SURVEY_USER' &&
         this.props.user.role !== 'ROLE_SURVEY_TAKER' &&
         this.props.user.role !== 'ROLE_SURVEY_USER_ADMIN'
       ) {
         this.setState({
-          loading: false
-        })
-        this.setState({ error: 'Wrong username or password' })
+          loading: false,
+        });
+        this.setState({error: 'Wrong username or password'});
       } else {
         this.setState({
-          loading: false
-        })
-        this.props.navigation.navigate('Loading')
+          loading: false,
+        });
+        this.props.navigation.navigate('Loading');
       }
-    })
-  }
+    });
+  };
 
   handleAppStateChange = nextAppState =>
-    this.setState({ appState: nextAppState })
+    this.setState({appState: nextAppState});
 
   isStorageSpaceEnough = async () => {
-    const freeSpace = await RNFetchBlob.fs.df()
+    const freeSpace = await RNFetchBlob.fs.df();
 
     return (
       Number(freeSpace.internal_free) > MINIMUM_REQUIRED_STORAGE_SPACE_500_MB
-    )
-  }
+    );
+  };
 
-  retryLogIn = () => this.setState({ notEnoughStorageSpace: false })
+  retryLogIn = () => this.setState({notEnoughStorageSpace: false});
 
   componentWillUnmount() {
     if (this.unsubscribeNetChange) {
-      this.unsubscribeNetChange()
+      this.unsubscribeNetChange();
     }
-    AppState.removeEventListener('change', this.handleAppStateChange)
+    AppState.removeEventListener('change', this.handleAppStateChange);
   }
 
   render() {
-    const { t } = this.props
+    const {t} = this.props;
 
     return (
       <View key={this.state.appState} style={globalStyles.container}>
@@ -199,9 +199,8 @@ export class Login extends Component {
                 style={{
                   ...globalStyles.h4,
                   marginBottom: 64,
-                  color: colors.lightdark
-                }}
-              >
+                  color: colors.lightdark,
+                }}>
                 {t('views.login.letsGetStarted')}
               </Text>
               <View
@@ -209,9 +208,8 @@ export class Login extends Component {
                   width: '100%',
                   maxWidth: 400,
                   marginLeft: 'auto',
-                  marginRight: 'auto'
-                }}
-              >
+                  marginRight: 'auto',
+                }}>
                 <Text style={globalStyles.h5}>{t('views.login.username')}</Text>
               </View>
               <TextInput
@@ -220,18 +218,17 @@ export class Login extends Component {
                 autoCapitalize="none"
                 style={{
                   ...styles.input,
-                  borderColor: this.state.error ? colors.red : colors.palegreen
+                  borderColor: this.state.error ? colors.red : colors.palegreen,
                 }}
-                onChangeText={username => this.setState({ username })}
+                onChangeText={username => this.setState({username})}
               />
               <View
                 style={{
                   width: '100%',
                   maxWidth: 400,
                   marginLeft: 'auto',
-                  marginRight: 'auto'
-                }}
-              >
+                  marginRight: 'auto',
+                }}>
                 <Text style={globalStyles.h5}>{t('views.login.password')}</Text>
               </View>
 
@@ -243,15 +240,14 @@ export class Login extends Component {
                 style={{
                   ...styles.input,
                   borderColor: this.state.error ? colors.red : colors.palegreen,
-                  marginBottom: this.state.error ? 0 : 25
+                  marginBottom: this.state.error ? 0 : 25,
                 }}
-                onChangeText={password => this.setState({ password })}
+                onChangeText={password => this.setState({password})}
               />
               {this.state.error ? (
                 <Text
                   id="error-message"
-                  style={{ ...globalStyles.tag, ...styles.error }}
-                >
+                  style={{...globalStyles.tag, ...styles.error}}>
                   {this.state.error}
                 </Text>
               ) : (
@@ -263,9 +259,8 @@ export class Login extends Component {
                   style={{
                     ...globalStyles.tag,
                     ...styles.error,
-                    marginTop: -6
-                  }}
-                >
+                    marginTop: -6,
+                  }}>
                   {this.state.error2}
                 </Text>
               ) : (
@@ -277,7 +272,7 @@ export class Login extends Component {
                     maxWidth: 400,
                     width: '100%',
                     marginLeft: 'auto',
-                    marginRight: 'auto'
+                    marginRight: 'auto',
                   }}
                   id="login-button"
                   handleClick={() => this.onLogin()}
@@ -291,7 +286,7 @@ export class Login extends Component {
                     maxWidth: 400,
                     width: '100%',
                     marginLeft: 'auto',
-                    marginRight: 'auto'
+                    marginRight: 'auto',
                   }}
                   id="login-button"
                   testID="login-button"
@@ -302,21 +297,21 @@ export class Login extends Component {
                 />
               )}
               {nodeEnv.NODE_ENV === 'development' && (
-                <View style={{ marginTop: 20 }}>
+                <View style={{marginTop: 20}}>
                   <Text>Dev options</Text>
                   <CheckBox
                     containerStyle={styles.checkbox}
                     onPress={() => this.checkDevOption('syncMaps')}
                     title="Sync maps?"
                     checked={this.state.syncMaps}
-                    textStyle={{ fontWeight: 'normal' }}
+                    textStyle={{fontWeight: 'normal'}}
                   />
                   <CheckBox
                     containerStyle={styles.checkbox}
                     onPress={() => this.checkDevOption('syncImages')}
                     title="Sync images?"
                     checked={this.state.syncImages}
-                    textStyle={{ fontWeight: 'normal' }}
+                    textStyle={{fontWeight: 'normal'}}
                   />
                 </View>
               )}
@@ -324,7 +319,7 @@ export class Login extends Component {
           )}
         </ScrollView>
       </View>
-    )
+    );
   }
 }
 
@@ -337,8 +332,8 @@ Login.propTypes = {
   setDownloadMapsAndImages: PropTypes.func.isRequired,
   dimensions: PropTypes.object,
   user: PropTypes.object.isRequired,
-  t: PropTypes.func
-}
+  t: PropTypes.func,
+};
 
 const styles = StyleSheet.create({
   input: {
@@ -355,15 +350,15 @@ const styles = StyleSheet.create({
     padding: 15,
     paddingBottom: 12,
     color: colors.lightdark,
-    backgroundColor: colors.white
+    backgroundColor: colors.white,
   },
   checkbox: {
     marginLeft: 0,
     padding: 0,
     borderWidth: 0,
-    backgroundColor: 'transparent'
+    backgroundColor: 'transparent',
   },
-  logo: { width: 42, height: 42, marginBottom: 8 },
+  logo: {width: 42, height: 42, marginBottom: 8},
   error: {
     color: colors.red,
     lineHeight: 15,
@@ -371,26 +366,26 @@ const styles = StyleSheet.create({
     marginLeft: 'auto',
     width: 400,
     marginTop: 10,
-    marginRight: 'auto'
-  }
-})
+    marginRight: 'auto',
+  },
+});
 
-const mapStateToProps = ({ env, user, dimensions }) => ({
+const mapStateToProps = ({env, user, dimensions}) => ({
   env,
   user,
-  dimensions
-})
+  dimensions,
+});
 
 const mapDispatchToProps = {
   setEnv,
   login,
   setDimensions,
-  setDownloadMapsAndImages
-}
+  setDownloadMapsAndImages,
+};
 
 export default withNamespaces()(
   connect(
     mapStateToProps,
-    mapDispatchToProps
-  )(Login)
-)
+    mapDispatchToProps,
+  )(Login),
+);

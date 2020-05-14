@@ -1,122 +1,122 @@
-import PropTypes from 'prop-types'
-import React, { Component } from 'react'
-import { withNamespaces } from 'react-i18next'
-import { StyleSheet, Text, TouchableHighlight, View } from 'react-native'
-import Icon from 'react-native-vector-icons/MaterialIcons'
-import { connect } from 'react-redux'
-import uuid from 'uuid/v1'
+import PropTypes from 'prop-types';
+import React, {Component} from 'react';
+import {withNamespaces} from 'react-i18next';
+import {StyleSheet, Text, TouchableHighlight, View} from 'react-native';
+import Icon from 'react-native-vector-icons/MaterialIcons';
+import {connect} from 'react-redux';
+import {v1 as uuid} from 'uuid';
 
-import Button from '../../components/Button'
-import Decoration from '../../components/decoration/Decoration'
-import DateInput from '../../components/form/DateInput'
-import Select from '../../components/form/Select'
-import TextInput from '../../components/form/TextInput'
-import Popup from '../../components/Popup'
-import StickyFooter from '../../components/StickyFooter'
-import globalStyles from '../../globalStyles'
-import { updateDraft } from '../../redux/actions'
-import colors from '../../theme.json'
-import { getTotalScreens, setValidationSchema } from './helpers'
+import Button from '../../components/Button';
+import Decoration from '../../components/decoration/Decoration';
+import DateInput from '../../components/form/DateInput';
+import Select from '../../components/form/Select';
+import TextInput from '../../components/form/TextInput';
+import Popup from '../../components/Popup';
+import StickyFooter from '../../components/StickyFooter';
+import globalStyles from '../../globalStyles';
+import {updateDraft} from '../../redux/actions';
+import colors from '../../theme.json';
+import {getTotalScreens, setValidationSchema} from './helpers';
 
 export class FamilyMembersNames extends Component {
-  survey = this.props.navigation.getParam('survey')
-  readOnly = this.props.navigation.getParam('readOnly')
-  draftId = this.props.navigation.getParam('draftId')
+  survey = this.props.navigation.getParam('survey');
+  readOnly = this.props.navigation.getParam('readOnly');
+  draftId = this.props.navigation.getParam('draftId');
 
   requiredFields =
     (this.survey.surveyConfig &&
       this.survey.surveyConfig.requiredFields &&
       this.survey.surveyConfig.requiredFields.primaryParticipant) ||
-    null
+    null;
 
   state = {
     errors: [],
     showErrors: false,
     familyMembers: [],
     isOpen: false,
-    deleteMembersContinue: false
-  }
+    deleteMembersContinue: false,
+  };
 
   getDraft = () =>
-    this.props.drafts.find(draft => draft.draftId === this.draftId)
+    this.props.drafts.find(draft => draft.draftId === this.draftId);
 
   setError = (error, field, memberId) => {
-    const { errors } = this.state
-    let errorExists = false
+    const {errors} = this.state;
+    let errorExists = false;
     for (let errorIndex in errors) {
       if (errors[errorIndex].memberId == memberId) {
-        errorExists = true
-        break
+        errorExists = true;
+        break;
       }
     }
     if (!error) {
       this.setState({
-        errors: errors.filter(item => item.memberId !== memberId)
-      })
+        errors: errors.filter(item => item.memberId !== memberId),
+      });
     } else if (error && !errorExists) {
       this.setState(previousState => {
         return {
           ...previousState,
-          errors: [...previousState.errors, { field, memberId }]
-        }
-      })
+          errors: [...previousState.errors, {field, memberId}],
+        };
+      });
     }
-  }
+  };
 
   validateForm = () => {
-    console.log(this.state.errors)
+    console.log(this.state.errors);
     if (this.state.errors.length) {
       this.setState({
-        showErrors: true
-      })
+        showErrors: true,
+      });
     } else {
-      console.log('contineu')
-      this.onContinue()
+      console.log('contineu');
+      this.onContinue();
     }
-  }
+  };
 
   onPressBack = () => {
     this.props.navigation.navigate('FamilyParticipant', {
       draftId: this.draftId,
-      survey: this.survey
-    })
-  }
+      survey: this.survey,
+    });
+  };
 
   shouldComponentUpdate() {
-    return this.props.navigation.isFocused()
+    return this.props.navigation.isFocused();
   }
   deleteMember = function(index) {
-    const draft = this.getDraft()
+    const draft = this.getDraft();
 
-    let newArr = [...this.state.familyMembers]
-    newArr.splice(index, 1)
+    let newArr = [...this.state.familyMembers];
+    newArr.splice(index, 1);
     this.setState({
-      familyMembers: newArr
-    })
+      familyMembers: newArr,
+    });
 
-    let familyMembersList = draft.familyData.familyMembersList
-    var newCount = draft.familyData.countFamilyMembers
+    let familyMembersList = draft.familyData.familyMembersList;
+    var newCount = draft.familyData.countFamilyMembers;
 
     if (
       familyMembersList.length < draft.familyData.countFamilyMembers ||
       familyMembersList.length == draft.familyData.countFamilyMembers
     ) {
-      newCount -= 1
+      newCount -= 1;
     }
-    familyMembersList.splice(index, 1)
+    familyMembersList.splice(index, 1);
 
     this.props.updateDraft({
       ...draft,
       familyData: {
         ...draft.familyData,
         countFamilyMembers: newCount,
-        familyMembersList
-      }
-    })
-  }
+        familyMembersList,
+      },
+    });
+  };
 
   onContinue = () => {
-    const draft = this.getDraft()
+    const draft = this.getDraft();
 
     if (
       draft.familyData.familyMembersList.length >
@@ -124,60 +124,60 @@ export class FamilyMembersNames extends Component {
     ) {
       this.setState({
         isOpen: true,
-        deleteMembersContinue: true
-      })
+        deleteMembersContinue: true,
+      });
     } else {
       this.props.navigation.replace('Location', {
         draftId: this.draftId,
-        survey: this.survey
-      })
+        survey: this.survey,
+      });
     }
-  }
+  };
   addMember = () => {
-    const draft = this.getDraft()
+    const draft = this.getDraft();
 
-    let newArr = [...this.state.familyMembers]
-    let newUUid = uuid()
-    newArr.push({ firstParticipant: false, uuid: newUUid })
+    let newArr = [...this.state.familyMembers];
+    let newUUid = uuid();
+    newArr.push({firstParticipant: false, uuid: newUUid});
     this.setState({
-      familyMembers: newArr
-    })
+      familyMembers: newArr,
+    });
 
-    let familyMembersList = draft.familyData.familyMembersList
+    let familyMembersList = draft.familyData.familyMembersList;
 
-    familyMembersList.push({ firstParticipant: false, uuid: newUUid })
-    var familyMemberCount = draft.familyData.countFamilyMembers
+    familyMembersList.push({firstParticipant: false, uuid: newUUid});
+    var familyMemberCount = draft.familyData.countFamilyMembers;
 
     if (
       draft.familyData.familyMembersList.length >
       draft.familyData.countFamilyMembers
     ) {
-      familyMemberCount += 1
+      familyMemberCount += 1;
     }
     this.props.updateDraft({
       ...draft,
       familyData: {
         ...draft.familyData,
         countFamilyMembers: familyMemberCount,
-        familyMembersList
-      }
-    })
-  }
+        familyMembersList,
+      },
+    });
+  };
   updateMember = (value, memberField, memberIndex) => {
     if (!memberField) {
-      return
+      return;
     }
 
-    const draft = this.getDraft()
+    const draft = this.getDraft();
     this.setState({
       familyMembers: Object.assign([], this.state.familyMembers, {
         [memberIndex]: {
           ...this.state.familyMembers[memberIndex],
           firstParticipant: false,
-          [memberField]: value
-        }
-      })
-    })
+          [memberField]: value,
+        },
+      }),
+    });
 
     this.props.updateDraft({
       ...draft,
@@ -190,35 +190,35 @@ export class FamilyMembersNames extends Component {
             [memberIndex]: {
               ...draft.familyData.familyMembersList[memberIndex],
               firstParticipant: false,
-              [memberField]: value
-            }
-          }
-        )
-      }
-    })
-  }
+              [memberField]: value,
+            },
+          },
+        ),
+      },
+    });
+  };
 
   componentDidMount() {
-    const draft = this.getDraft()
-    var familyMembers = []
+    const draft = this.getDraft();
+    var familyMembers = [];
 
     for (var member in draft.familyData.familyMembersList) {
-      draft.familyData.familyMembersList[member].uuid = uuid()
+      draft.familyData.familyMembersList[member].uuid = uuid();
 
-      familyMembers.push(draft.familyData.familyMembersList[member])
+      familyMembers.push(draft.familyData.familyMembersList[member]);
     }
 
     for (var memberIndex in familyMembers) {
-      familyMembers[memberIndex].uuid = uuid()
+      familyMembers[memberIndex].uuid = uuid();
     }
     var haveMoreMembers =
       draft.familyData.familyMembersList.length >
-      draft.familyData.countFamilyMembers
+      draft.familyData.countFamilyMembers;
 
     this.setState({
       familyMembers,
-      isOpen: haveMoreMembers
-    })
+      isOpen: haveMoreMembers,
+    });
 
     if (!this.readOnly && draft.progress.screen !== 'FamilyMembersNames') {
       this.props.updateDraft({
@@ -226,34 +226,32 @@ export class FamilyMembersNames extends Component {
         progress: {
           ...draft.progress,
           screen: 'FamilyMembersNames',
-          total: getTotalScreens(this.survey)
-        }
-      })
+          total: getTotalScreens(this.survey),
+        },
+      });
     }
 
     this.props.navigation.setParams({
-      onPressBack: this.onPressBack
-    })
+      onPressBack: this.onPressBack,
+    });
   }
 
   render() {
-    const { t } = this.props
-    const { showErrors } = this.state
-    const draft = this.getDraft()
-    const { familyMembersList } = draft.familyData
+    const {t} = this.props;
+    const {showErrors} = this.state;
+    const draft = this.getDraft();
+    const {familyMembersList} = draft.familyData;
 
     return (
       <StickyFooter
         onContinue={this.validateForm}
         continueLabel={t('general.continue')}
         readOnly={!!this.readOnly}
-        progress={2 / draft.progress.total}
-      >
+        progress={2 / draft.progress.total}>
         <Popup
           isOpen={this.state.isOpen}
-          onClose={() => this.setState({ isOpen: false })}
-        >
-          <View style={{ paddingVertical: 60 }}>
+          onClose={() => this.setState({isOpen: false})}>
+          <View style={{paddingVertical: 60}}>
             <View>
               <View>
                 <Text style={styles.paragraph}>
@@ -268,7 +266,7 @@ export class FamilyMembersNames extends Component {
                 borderColor={colors.palegreen}
                 text={t('general.gotIt')}
                 style={styles.closeButton}
-                handleClick={() => this.setState({ isOpen: false })}
+                handleClick={() => this.setState({isOpen: false})}
               />
             </View>
           </View>
@@ -292,7 +290,7 @@ export class FamilyMembersNames extends Component {
         {this.state.familyMembers.map((item, i) => {
           if (!item.firstParticipant) {
             return (
-              <View style={{ marginBottom: 20 }} key={`${item.uuid}`}>
+              <View style={{marginBottom: 20}} key={`${item.uuid}`}>
                 {i % 2 ? (
                   <Decoration variation="familyMemberNamesBody" />
                 ) : null}
@@ -301,18 +299,16 @@ export class FamilyMembersNames extends Component {
                     display: 'flex',
                     flexDirection: 'row',
                     paddingHorizontal: 20,
-                    marginBottom: 15
-                  }}
-                >
+                    marginBottom: 15,
+                  }}>
                   <Icon name="face" color={colors.grey} size={22} />
                   <Text
                     style={{
                       ...globalStyles.h2Bold,
                       fontSize: 16,
                       color: colors.grey,
-                      marginLeft: 5
-                    }}
-                  >
+                      marginLeft: 5,
+                    }}>
                     {`${t('views.family.familyMember')}`}
                   </Text>
 
@@ -321,15 +317,13 @@ export class FamilyMembersNames extends Component {
                     activeOpacity={1}
                     onPress={() => this.deleteMember(i)}
                     accessible={true}
-                    style={{ marginLeft: 'auto' }}
-                  >
+                    style={{marginLeft: 'auto'}}>
                     <View
                       style={{
                         borderColor: colors.palered,
                         borderRadius: 100,
-                        borderWidth: 1.5
-                      }}
-                    >
+                        borderWidth: 1.5,
+                      }}>
                       <Icon name="remove" color={colors.palered} size={26} />
                     </View>
                   </TouchableHighlight>
@@ -347,7 +341,7 @@ export class FamilyMembersNames extends Component {
                   required={setValidationSchema(
                     this.requiredFields,
                     'firstName',
-                    true
+                    true,
                   )}
                   readOnly={!!this.readOnly}
                   showErrors={showErrors}
@@ -364,7 +358,7 @@ export class FamilyMembersNames extends Component {
                   required={setValidationSchema(
                     this.requiredFields,
                     'gender',
-                    false
+                    false,
                   )}
                   otherField={`${item.customGender}`}
                   otherPlaceholder={t('views.family.specifyGender')}
@@ -383,13 +377,13 @@ export class FamilyMembersNames extends Component {
                   required={setValidationSchema(
                     this.requiredFields,
                     'birthDate',
-                    false
+                    false,
                   )}
                   readOnly={!!this.readOnly}
                   showErrors={showErrors}
                 />
               </View>
-            )
+            );
           }
         })}
 
@@ -399,17 +393,15 @@ export class FamilyMembersNames extends Component {
             flexDirection: 'row',
             justifyContent: 'center',
             alignItems: 'center',
-            marginBottom: 25
-          }}
-        >
+            marginBottom: 25,
+          }}>
           <View
             style={{
               borderColor: colors.green,
               borderRadius: 120,
               borderWidth: 2,
-              marginBottom: 5
-            }}
-          >
+              marginBottom: 5,
+            }}>
             <Icon
               onPress={() => this.addMember()}
               name="add"
@@ -423,14 +415,13 @@ export class FamilyMembersNames extends Component {
               ...globalStyles.h2Bold,
               fontSize: 16,
               color: colors.green,
-              marginLeft: 5
-            }}
-          >
+              marginLeft: 5,
+            }}>
             Add new member
           </Text>
         </View>
       </StickyFooter>
-    )
+    );
   }
 }
 
@@ -441,19 +432,19 @@ const styles = StyleSheet.create({
     lineHeight: 22,
     color: `${colors.grey}`,
     marginBottom: 40,
-    fontFamily: 'Poppins Medium'
+    fontFamily: 'Poppins Medium',
   },
   icon: {
-    alignSelf: 'center'
+    alignSelf: 'center',
   },
   closeButton: {
     width: 120,
-    alignSelf: 'center'
+    alignSelf: 'center',
   },
   circleContainer: {
     // marginBottom: 10,
     marginTop: 20,
-    position: 'relative'
+    position: 'relative',
   },
   circle: {
     position: 'absolute',
@@ -463,36 +454,36 @@ const styles = StyleSheet.create({
     left: '50%',
     textAlign: 'center',
     fontSize: 10,
-    transform: [{ translateX: 3 }, { translateY: -3 }],
+    transform: [{translateX: 3}, {translateY: -3}],
     borderRadius: 50,
     backgroundColor: colors.lightgrey,
-    zIndex: 1
+    zIndex: 1,
   },
   heading: {
     alignSelf: 'center',
     textAlign: 'center',
     paddingBottom: 25,
     paddingHorizontal: 20,
-    color: colors.grey
-  }
-})
+    color: colors.grey,
+  },
+});
 
 FamilyMembersNames.propTypes = {
   drafts: PropTypes.array.isRequired,
   t: PropTypes.func.isRequired,
   navigation: PropTypes.object.isRequired,
-  updateDraft: PropTypes.func.isRequired
-}
+  updateDraft: PropTypes.func.isRequired,
+};
 
 const mapDispatchToProps = {
-  updateDraft
-}
+  updateDraft,
+};
 
-const mapStateToProps = ({ drafts }) => ({ drafts })
+const mapStateToProps = ({drafts}) => ({drafts});
 
 export default withNamespaces()(
   connect(
     mapStateToProps,
-    mapDispatchToProps
-  )(FamilyMembersNames)
-)
+    mapDispatchToProps,
+  )(FamilyMembersNames),
+);

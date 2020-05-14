@@ -1,7 +1,6 @@
-import { combineReducers } from 'redux'
+import {combineReducers} from 'redux';
 
-import { bugsnag } from '../screens/utils/bugsnag'
-import { getDeviceLanguage } from '../utils'
+import {getDeviceLanguage} from '../utils';
 import {
   ADD_SURVEY_DATA,
   CREATE_DRAFT,
@@ -31,15 +30,15 @@ import {
   USER_LOGOUT,
   LOAD_IMAGES,
   LOAD_IMAGES_ROLLBACK,
-  LOAD_IMAGES_COMMIT
-} from './actions'
+  LOAD_IMAGES_COMMIT,
+} from './actions';
 
-const defaultLanguage = getDeviceLanguage()
+const defaultLanguage = getDeviceLanguage();
 //Login
 
 export const user = (
-  state = { token: null, status: null, username: null, role: null },
-  action
+  state = {token: null, status: null, username: null, role: null},
+  action,
 ) => {
   switch (action.type) {
     case SET_LOGIN_STATE:
@@ -47,56 +46,56 @@ export const user = (
         status: action.status,
         token: action.token,
         username: action.username,
-        role: action.role
-      }
+        role: action.role,
+      };
     case USER_LOGOUT:
       return {
         status: null,
         token: null,
         username: null,
-        role: null
-      }
+        role: null,
+      };
     default:
-      return state
+      return state;
   }
-}
+};
 
 //Environment
 
 export const env = (state = 'production', action) => {
   switch (action.type) {
     case SET_ENV:
-      return action.env
+      return action.env;
     default:
-      return state
+      return state;
   }
-}
+};
 
 //Download Maps or images
 export const downloadMapsAndImages = (
-  state = { downloadMaps: true, downloadImages: true },
-  action
+  state = {downloadMaps: true, downloadImages: true},
+  action,
 ) => {
   switch (action.type) {
     case SET_DOWNLOADMAPSIMAGES:
-      return action.downloadMapsAndImages
+      return action.downloadMapsAndImages;
     default:
-      return state
+      return state;
   }
-}
+};
 
 //Dimensions
 export const dimensions = (
-  state = { width: null, height: null, scale: null },
-  action
+  state = {width: null, height: null, scale: null},
+  action,
 ) => {
   switch (action.type) {
     case SET_DIMENSIONS:
-      return action.dimensions
+      return action.dimensions;
     default:
-      return state
+      return state;
   }
-}
+};
 //Maps
 export const maps = (state = [], action) => {
   switch (action.type) {
@@ -104,91 +103,91 @@ export const maps = (state = [], action) => {
       //if there are no maps simply return an array with emty object,because of the componentdidUpdate listener on the Loading.js we are looking for a change in props.maps length.
       return action.payload.data.offlineMaps.length
         ? action.payload.data.offlineMaps
-        : [{}]
+        : [{}];
     default:
-      return state
+      return state;
   }
-}
+};
 //Surveys
 export const surveys = (state = [], action) => {
   switch (action.type) {
     case LOAD_SURVEYS_COMMIT:
-      return action.payload.data.surveysByUser
+      return action.payload.data.surveysByUser;
     default:
-      return state
+      return state;
   }
-}
+};
 
 //Families
 export const families = (state = [], action) => {
   switch (action.type) {
     case LOAD_FAMILIES_COMMIT:
-      return action.payload.data.familiesNewStructure
+      return action.payload.data.familiesNewStructure;
     default:
-      return state
+      return state;
   }
-}
+};
 
 //Queue invocations
 export const syncStatus = (state = [], action) => {
   switch (action.type) {
     case LOAD_IMAGES: {
-      console.log('Adding id to sync: ', action.id)
-      return [...state, action.id]
+      console.log('Adding id to sync: ', action.id);
+      return [...state, action.id];
     }
     case SUBMIT_DRAFT: {
       if (state.indexOf(action.id) === -1) {
-        console.log('Adding id to sync: ', action.id)
-        return [...state, action.id]
+        console.log('Adding id to sync: ', action.id);
+        return [...state, action.id];
       } else {
-        return [...state]
+        return [...state];
       }
     }
     case SUBMIT_DRAFT_COMMIT: {
       console.log(
         'SUBMIT_DRAFT_COMMIT -- Removing id to synced: ',
-        action.meta.id
-      )
-      return state.filter(draftId => draftId !== action.meta.id)
+        action.meta.id,
+      );
+      return state.filter(draftId => draftId !== action.meta.id);
     }
     case LOAD_IMAGES_ROLLBACK: {
-      console.log('LOAD_IMAGES_ROLLBACK -- Removing id to synced: ', action.id)
-      return state.filter(draftId => draftId !== action.id)
+      console.log('LOAD_IMAGES_ROLLBACK -- Removing id to synced: ', action.id);
+      return state.filter(draftId => draftId !== action.id);
     }
     default:
-      return state
+      return state;
   }
-}
+};
 
 //Drafts
 export const drafts = (state = [], action) => {
   switch (action.type) {
     case CREATE_DRAFT:
-      return [...state, action.payload]
+      return [...state, action.payload];
 
     case UPDATE_DRAFT:
       return state.map(draft => {
         // if this is the draft we are editing
         if (draft.draftId === action.payload.draftId) {
-          return action.payload
+          return action.payload;
         } else {
-          return draft
+          return draft;
         }
-      })
+      });
 
     case ADD_SURVEY_DATA:
       return state.map(draft => {
         // if this is the draft we are editing
         if (draft.draftId === action.id) {
-          const draftCategory = draft[action.category]
+          const draftCategory = draft[action.category];
           if (Array.isArray(draftCategory)) {
             // if category is an Array
             const item = draftCategory.filter(
-              item => item.key === Object.keys(action.payload)[0]
-            )[0]
+              item => item.key === Object.keys(action.payload)[0],
+            )[0];
             if (Object.keys(action.payload).length === 2) {
               if (item) {
-                const index = draftCategory.indexOf(item)
+                const index = draftCategory.indexOf(item);
                 return {
                   ...draft,
                   [action.category]: [
@@ -197,16 +196,16 @@ export const drafts = (state = [], action) => {
                       key: Object.keys(action.payload)[0],
                       value: Object.values(action.payload)[0],
                       other: Object.values(action.payload)[1],
-                      multipleValue: []
+                      multipleValue: [],
                     },
-                    ...draftCategory.slice(index + 1)
-                  ]
-                }
+                    ...draftCategory.slice(index + 1),
+                  ],
+                };
               }
             } else {
               if (item) {
                 // if item exists in array update it
-                const index = draftCategory.indexOf(item)
+                const index = draftCategory.indexOf(item);
                 return {
                   ...draft,
                   [action.category]: [
@@ -214,11 +213,11 @@ export const drafts = (state = [], action) => {
                     {
                       key: Object.keys(action.payload)[0],
                       value: Object.values(action.payload)[0],
-                      multipleValue: []
+                      multipleValue: [],
                     },
-                    ...draftCategory.slice(index + 1)
-                  ]
-                }
+                    ...draftCategory.slice(index + 1),
+                  ],
+                };
               } else {
                 // if item is not in array push it
                 return {
@@ -228,35 +227,35 @@ export const drafts = (state = [], action) => {
                     {
                       key: Object.keys(action.payload)[0],
                       value: Object.values(action.payload)[0],
-                      multipleValue: []
-                    }
-                  ]
-                }
+                      multipleValue: [],
+                    },
+                  ],
+                };
               }
             }
           } else {
             // if category is an Object
-            const payload = action.payload
+            const payload = action.payload;
             return {
               ...draft,
               [action.category]: {
                 ...draftCategory,
-                ...payload
-              }
-            }
+                ...payload,
+              },
+            };
           }
-        } else return draft
-      })
+        } else return draft;
+      });
 
     case SUBMIT_DRAFT:
       return state.map(draft =>
         draft.draftId === action.id
           ? {
               ...draft,
-              status: 'Pending sync'
+              status: 'Pending sync',
             }
-          : draft
-      )
+          : draft,
+      );
 
     case SUBMIT_DRAFT_COMMIT:
       return state.map(draft =>
@@ -264,84 +263,84 @@ export const drafts = (state = [], action) => {
           ? {
               ...draft,
               status: 'Synced',
-              syncedAt: Date.now()
+              syncedAt: Date.now(),
             }
-          : draft
-      )
+          : draft,
+      );
     case SUBMIT_DRAFT_ROLLBACK: {
       return state.map(draft =>
         draft.draftId === action.meta.id
           ? {
               ...draft,
               status: 'Sync error',
-              errors: action.payload.response.errors
+              errors: action.payload.response.errors,
             }
-          : draft
-      )
+          : draft,
+      );
     }
     case LOAD_IMAGES: {
-      console.log('LOAD_IMAGES set to Pending sync')
+      console.log('LOAD_IMAGES set to Pending sync');
 
       return state.map(draft =>
         draft.draftId === action.id
           ? {
               ...draft,
-              status: 'Pending sync'
+              status: 'Pending sync',
             }
-          : draft
-      )
+          : draft,
+      );
     }
 
     case LOAD_IMAGES_COMMIT: {
-      console.log('--LOAD_IMAGES_COMMIT set to Pending sync')
+      console.log('--LOAD_IMAGES_COMMIT set to Pending sync');
       return state.map(draft =>
         draft.draftId === action.id
           ? {
               ...draft,
-              status: 'Pending sync'
+              status: 'Pending sync',
             }
-          : draft
-      )
+          : draft,
+      );
     }
     case LOAD_IMAGES_ROLLBACK: {
-      console.log('--LOAD_IMAGES_ROLLBACK set to Pending sync')
+      console.log('--LOAD_IMAGES_ROLLBACK set to Pending sync');
 
       return state.map(draft =>
         draft.draftId === action.id
           ? {
               ...draft,
-              status: 'Sync error'
+              status: 'Sync error',
             }
-          : draft
-      )
+          : draft,
+      );
     }
 
     case DELETE_DRAFT:
-      return state.filter(draft => draft.draftId !== action.id)
+      return state.filter(draft => draft.draftId !== action.id);
     default:
-      return state
+      return state;
   }
-}
+};
 
 // Language
 export const language = (state = defaultLanguage, action) => {
   switch (action.type) {
     case SWITCH_LANGUAGE:
-      return action.language
+      return action.language;
     default:
-      return state
+      return state;
   }
-}
+};
 
 // Store Hydration, false by default, not persistent, marks when store is ready
 export const hydration = (state = false, action) => {
   switch (action.type) {
     case SET_HYDRATED:
-      return true
+      return true;
     default:
-      return state
+      return state;
   }
-}
+};
 
 // Sync
 export const sync = (
@@ -354,48 +353,48 @@ export const sync = (
     familiesError: false,
     images: {
       total: 0,
-      synced: 0
-    }
+      synced: 0,
+    },
   },
-  action
+  action,
 ) => {
   switch (action.type) {
     case SET_SYNCED_STATE:
       return {
         ...state,
-        [action.item]: action.value
-      }
+        [action.item]: action.value,
+      };
     case SET_SYNCED_ITEM_TOTAL:
       return {
         ...state,
         [action.item]: {
           total: action.amount,
-          synced: state[action.item].synced
-        }
-      }
+          synced: state[action.item].synced,
+        },
+      };
     case SET_SYNCED_ITEM_AMOUNT:
       return {
         ...state,
         [action.item]: {
           synced: action.amount,
-          total: state[action.item].total
-        }
-      }
+          total: state[action.item].total,
+        },
+      };
     case LOAD_SURVEYS_ROLLBACK:
       return {
         ...state,
-        surveysError: true
-      }
+        surveysError: true,
+      };
     case LOAD_FAMILIES_ROLLBACK:
       return {
         ...state,
-        familiesError: true
-      }
+        familiesError: true,
+      };
     case LOAD_MAPS_ROLLBACK:
       return {
         ...state,
-        mapsError: true
-      }
+        mapsError: true,
+      };
     case RESET_SYNCED_STATE:
       return {
         ...state,
@@ -406,38 +405,38 @@ export const sync = (
         familiesError: false,
         images: {
           total: 0,
-          synced: 0
-        }
-      }
+          synced: 0,
+        },
+      };
     default:
-      return state
+      return state;
   }
-}
+};
 
 // API Versioning
 export const apiVersion = (
   state = {
     showModal: false,
-    timestamp: null
+    timestamp: null,
   },
-  action
+  action,
 ) => {
   switch (action.type) {
     case TOGGLE_API_VERSION_MODAL:
       return {
         ...state,
-        showModal: action.isOpen
-      }
+        showModal: action.isOpen,
+      };
     case MARK_VERSION_CHECKED:
       return {
         ...state,
-        timestamp: action.timestamp
-      }
+        timestamp: action.timestamp,
+      };
 
     default:
-      return state
+      return state;
   }
-}
+};
 
 const appReducer = combineReducers({
   env,
@@ -452,8 +451,8 @@ const appReducer = combineReducers({
   sync,
   dimensions,
   downloadMapsAndImages,
-  apiVersion
-})
+  apiVersion,
+});
 
 export const rootReducer = (state, action) => {
   // note that surveys are synced in the store
@@ -462,9 +461,9 @@ export const rootReducer = (state, action) => {
       ...state,
       sync: {
         ...state.sync,
-        surveys: true
-      }
-    }
+        surveys: true,
+      },
+    };
   }
 
   // note that families are synced in the store
@@ -473,9 +472,9 @@ export const rootReducer = (state, action) => {
       ...state,
       sync: {
         ...state.sync,
-        families: true
-      }
-    }
+        families: true,
+      },
+    };
   }
 
   // if there are no images to cache, make it so the loading screen can continue
@@ -486,48 +485,23 @@ export const rootReducer = (state, action) => {
         ...state.sync,
         images: {
           total: 1,
-          synced: 1
-        }
-      }
-    }
+          synced: 1,
+        },
+      },
+    };
   }
 
   // create detailed Bugsnag report on sync error
   if (action.type === SUBMIT_DRAFT_ROLLBACK) {
-    const { families, surveys, ...currentState } = state
-    families
-    surveys
+    const {families, surveys, ...currentState} = state;
+    families;
+    surveys;
 
     const draftSurvey =
       state.surveys &&
       action.meta.sanitizedSnapshot &&
       action.meta.sanitizedSnapshot.surveyId &&
-      state.surveys.find(s => s.id === action.meta.sanitizedSnapshot.surveyId)
-
-    bugsnag.clearUser ? bugsnag.clearUser() : null
-    bugsnag.setUser
-      ? bugsnag.setUser(state.user.token, state.user.username)
-      : null
-    bugsnag.notify
-      ? bugsnag.notify(new Error('Sync Error'), report => {
-          report.metadata = {
-            ...(report.metaData || {}),
-            userDraft:
-              (action.meta.sanitizedSnapshot &&
-                action.meta.sanitizedSnapshot) ||
-              {},
-            serverError:
-              (action.payload.response && action.payload.response) || {},
-            reduxStore: currentState || {},
-            currentSurvey: draftSurvey || {},
-            draftjson: {
-              data: JSON.stringify(action.meta.sanitizedSnapshot || {})
-            },
-            environment: { environment: state.env }
-          }
-        })
-      : null
+      state.surveys.find(s => s.id === action.meta.sanitizedSnapshot.surveyId);
   }
-
-  return appReducer(state, action)
-}
+  return appReducer(state, action);
+};

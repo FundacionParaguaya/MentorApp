@@ -1,9 +1,9 @@
-import NetInfo from '@react-native-community/netinfo'
-import MapboxGL from '@react-native-mapbox-gl/maps'
-import moment from 'moment'
-import PropTypes from 'prop-types'
-import React, { Component } from 'react'
-import { withNamespaces } from 'react-i18next'
+import NetInfo from '@react-native-community/netinfo';
+import MapboxGL from '@react-native-mapbox-gl/maps';
+import moment from 'moment';
+import PropTypes from 'prop-types';
+import React, {Component} from 'react';
+import {withNamespaces} from 'react-i18next';
 import {
   FlatList,
   Image,
@@ -12,33 +12,33 @@ import {
   StyleSheet,
   Text,
   TouchableHighlight,
-  View
-} from 'react-native'
-import Icon from 'react-native-vector-icons/MaterialIcons'
-import { connect } from 'react-redux'
-import uuid from 'uuid/v1'
+  View,
+} from 'react-native';
+import Icon from 'react-native-vector-icons/MaterialIcons';
+import {connect} from 'react-redux';
+import {v1 as uuid} from 'uuid';
 
-import mapPlaceholderLarge from '../../assets/images/map_placeholder_1000.png'
-import marker from '../../assets/images/marker.png'
-import Button from '../components/Button'
-import FamilyListItem from '../components/FamilyListItem'
-import FamilyTab from '../components/FamilyTab'
-import RoundImage from '../components/RoundImage'
-import { url } from '../config'
-import globalStyles from '../globalStyles'
+import mapPlaceholderLarge from '../../assets/images/map_placeholder_1000.png';
+import marker from '../../assets/images/marker.png';
+import Button from '../components/Button';
+import FamilyListItem from '../components/FamilyListItem';
+import FamilyTab from '../components/FamilyTab';
+import RoundImage from '../components/RoundImage';
+import {url} from '../config';
+import globalStyles from '../globalStyles';
 import {
   createDraft,
   submitDraft,
-  submitDraftWithImages
-} from '../redux/actions'
-import { getTotalScreens } from '../screens/lifemap/helpers'
-import colors from '../theme.json'
-import OverviewComponent from './lifemap/Overview'
-import { prepareDraftForSubmit } from './utils/helpers'
+  submitDraftWithImages,
+} from '../redux/actions';
+import {getTotalScreens} from '../screens/lifemap/helpers';
+import colors from '../theme.json';
+import OverviewComponent from './lifemap/Overview';
+import {prepareDraftForSubmit} from './utils/helpers';
 
 export class Family extends Component {
   // set the title of the screen to the family name
-  static navigationOptions = ({ navigation }) => {
+  static navigationOptions = ({navigation}) => {
     return {
       title: `${navigation.getParam('familyName', 'Families')}  ${
         navigation.getParam('familyLifemap', 'Families').familyData
@@ -46,115 +46,115 @@ export class Family extends Component {
           ? `+ ${navigation.getParam('familyLifemap', 'Families').familyData
               .countFamilyMembers - 1}`
           : ''
-      }`
-    }
-  }
-  unsubscribeNetChange
-  allowRetake = this.props.navigation.getParam('allowRetake')
-  familyLifemap = this.props.navigation.getParam('familyLifemap')
-  isDraft = this.props.navigation.getParam('isDraft')
-  familyId = this.props.navigation.getParam('familyId')
+      }`,
+    };
+  };
+  unsubscribeNetChange;
+  allowRetake = this.props.navigation.getParam('allowRetake');
+  familyLifemap = this.props.navigation.getParam('familyLifemap');
+  isDraft = this.props.navigation.getParam('isDraft');
+  familyId = this.props.navigation.getParam('familyId');
   // extract socio economic categories from snapshot
   socioEconomicCategories = [
     ...new Set(
       this.props.navigation
         .getParam('survey')
-        .surveyEconomicQuestions.map(question => question.topic)
-    )
-  ]
+        .surveyEconomicQuestions.map(question => question.topic),
+    ),
+  ];
 
   constructor(props) {
-    super(props)
+    super(props);
     this.state = {
       loading: false,
       activeTab: this.props.navigation.getParam('activeTab') || 'Details',
-      showSyncButton: false
-    }
+      showSyncButton: false,
+    };
   }
   componentDidMount() {
     // // monitor for connection changes
     this.unsubscribeNetChange = NetInfo.addEventListener(isOnline => {
-      this.setState({ isOnline })
+      this.setState({isOnline});
       //Allow to show or hide retrySyn button
-      this.setState({ showSyncButton: this.availableForSync(isOnline) })
-    })
+      this.setState({showSyncButton: this.availableForSync(isOnline)});
+    });
 
     // check if online first
     NetInfo.fetch().then(state => {
-      this.setState({ isOnline: state.isConnected })
-    })
+      this.setState({isOnline: state.isConnected});
+    });
 
     this.props.navigation.setParams({
-      withoutCloseButton: true
-    })
+      withoutCloseButton: true,
+    });
   }
   sendEmail = async email => {
-    let url = `mailto:${email}`
-    const canOpen = await Linking.canOpenURL(url)
+    let url = `mailto:${email}`;
+    const canOpen = await Linking.canOpenURL(url);
     if (canOpen) {
-      Linking.openURL(url)
+      Linking.openURL(url);
     }
-  }
+  };
   callPhone = async phone => {
-    let url = `tel:${phone}`
-    const canOpen = await Linking.canOpenURL(url)
+    let url = `tel:${phone}`;
+    const canOpen = await Linking.canOpenURL(url);
     if (canOpen) {
-      Linking.openURL(url)
+      Linking.openURL(url);
     }
-  }
+  };
   handleResumeClick = () => {
-    const { navigation } = this.props
+    const {navigation} = this.props;
 
     navigation.replace(this.familyLifemap.progress.screen, {
       draftId: this.familyLifemap.draftId,
       survey: this.survey,
       step: this.familyLifemap.progress.step,
-      socioEconomics: this.familyLifemap.progress.socioEconomics
-    })
-  }
+      socioEconomics: this.familyLifemap.progress.socioEconomics,
+    });
+  };
 
   survey = this.props.surveys.find(
-    item => item.id === this.familyLifemap.surveyId
-  )
+    item => item.id === this.familyLifemap.surveyId,
+  );
 
   retrySync = () => {
-    const id = this.familyLifemap.draftId
+    const id = this.familyLifemap.draftId;
 
     if (this.state.loading) {
-      return
+      return;
     }
 
     if (this.props.syncStatus.indexOf(id) === -1) {
-      console.log('starting manual sync ', id)
-      this.setState({ loading: true })
-      this.prepareDraftForSubmit()
+      console.log('starting manual sync ', id);
+      this.setState({loading: true});
+      this.prepareDraftForSubmit();
     } else {
-      console.log('Not available to sync, already enqueue')
+      console.log('Not available to sync, already enqueue');
     }
-  }
+  };
 
   availableForSync = isOnline => {
-    const id = this.familyLifemap.draftId
-    console.log('draft id ', id)
-    console.log('list submitted: ', this.props.syncStatus)
-    console.log('Status : ', this.familyLifemap.status)
+    const id = this.familyLifemap.draftId;
+    console.log('draft id ', id);
+    console.log('list submitted: ', this.props.syncStatus);
+    console.log('Status : ', this.familyLifemap.status);
 
     if (
       this.props.syncStatus.indexOf(id) === -1 &&
       isOnline &&
       this.props.navigation.getParam('familyLifemap').status === 'Pending sync'
     ) {
-      console.log('Available for manual sync')
-      return true
+      console.log('Available for manual sync');
+      return true;
     } else {
-      console.log('Not available to sync, already enqueue')
-      return false
+      console.log('Not available to sync, already enqueue');
+      return false;
     }
-  }
+  };
 
   prepareDraftForSubmit() {
     if (this.state.loading) {
-      const draft = prepareDraftForSubmit(this.familyLifemap, this.survey)
+      const draft = prepareDraftForSubmit(this.familyLifemap, this.survey);
 
       if (draft.pictures && draft.pictures.length > 0) {
         this.props.submitDraftWithImages(
@@ -162,10 +162,10 @@ export class Family extends Component {
           this.props.user.token,
           draft.draftId,
           {
-            ...draft
+            ...draft,
             //sendEmail: this.state.sendEmailFlag
-          }
-        )
+          },
+        );
       } else {
         this.props.submitDraft(
           url[this.props.env],
@@ -173,27 +173,27 @@ export class Family extends Component {
           draft.draftId,
           {
             ...draft,
-            pictures: []
-          }
-        )
+            pictures: [],
+          },
+        );
       }
 
       setTimeout(() => {
-        this.props.navigation.popToTop()
-        this.props.navigation.navigate('Dashboard')
-      }, 500)
+        this.props.navigation.popToTop();
+        this.props.navigation.navigate('Dashboard');
+      }, 500);
     } else {
       setTimeout(() => {
-        this.prepareDraftForSubmit()
-      }, 200)
+        this.prepareDraftForSubmit();
+      }, 200);
     }
   }
 
   componentWillUnmount() {
-    this.unsubscribeNetChange()
+    this.unsubscribeNetChange();
   }
   retakeSurvey() {
-    const draftId = uuid()
+    const draftId = uuid();
 
     const regularDraft = {
       draftId,
@@ -211,30 +211,30 @@ export class Family extends Component {
       achievements: [],
       progress: {
         screen: 'Terms',
-        total: getTotalScreens(this.survey)
+        total: getTotalScreens(this.survey),
       },
       familyData: {
         familyId: this.familyId,
         countFamilyMembers: this.familyLifemap.familyData.familyMembersList
           .length,
-        familyMembersList: this.familyLifemap.familyData.familyMembersList
-      }
-    }
+        familyMembersList: this.familyLifemap.familyData.familyMembersList,
+      },
+    };
 
     // create the new draft in redux
-    this.props.createDraft(regularDraft)
+    this.props.createDraft(regularDraft);
 
     this.props.navigation.navigate('Terms', {
       page: 'terms',
       survey: this.survey,
-      draftId
-    })
+      draftId,
+    });
   }
   render() {
-    const { activeTab } = this.state
-    const { t, navigation } = this.props
-    const { familyData } = this.familyLifemap
-    const stoplightSkipped = this.familyLifemap.stoplightSkipped
+    const {activeTab} = this.state;
+    const {t, navigation} = this.props;
+    const {familyData} = this.familyLifemap;
+    const stoplightSkipped = this.familyLifemap.stoplightSkipped;
 
     const email =
       familyData &&
@@ -244,7 +244,7 @@ export class Family extends Component {
       familyData.familyMembersList[0].email !== null &&
       familyData.familyMembersList[0].email.length
         ? familyData.familyMembersList[0].email
-        : false
+        : false;
 
     const phone =
       familyData &&
@@ -254,24 +254,23 @@ export class Family extends Component {
       familyData.familyMembersList[0].phoneNumber !== null &&
       familyData.familyMembersList[0].phoneNumber.length
         ? familyData.familyMembersList[0].phoneNumber
-        : false
+        : false;
 
     return (
       <ScrollView
         style={globalStyles.background}
-        contentContainerStyle={styles.container}
-      >
+        contentContainerStyle={styles.container}>
         <View style={styles.tabs}>
           <FamilyTab
             title={t('views.family.details')}
-            onPress={() => this.setState({ activeTab: 'Details' })}
+            onPress={() => this.setState({activeTab: 'Details'})}
             active={activeTab === 'Details'}
             full={stoplightSkipped ? true : false}
           />
           {!stoplightSkipped && (
             <FamilyTab
               title={t('views.family.lifemap')}
-              onPress={() => this.setState({ activeTab: 'LifeMap' })}
+              onPress={() => this.setState({activeTab: 'LifeMap'})}
               active={activeTab === 'LifeMap'}
             />
           )}
@@ -285,12 +284,12 @@ export class Family extends Component {
               !!familyData.longitude &&
               !!this.state.isOnline ? (
                 // Load Map
-                <View style={{ marginTop: -50 }}>
+                <View style={{marginTop: -50}}>
                   <View pointerEvents="none" style={styles.fakeMarker}>
                     <Image source={marker} />
                   </View>
                   <MapboxGL.MapView
-                    style={{ width: '100%', height: 189 }}
+                    style={{width: '100%', height: 189}}
                     logoEnabled={false}
                     zoomEnabled={false}
                     rotateEnabled={false}
@@ -300,21 +299,20 @@ export class Family extends Component {
                       navigation.navigate('Location', {
                         readOnly: true,
                         survey: this.survey,
-                        family: this.familyLifemap
-                      })
-                    }}
-                  >
+                        family: this.familyLifemap,
+                      });
+                    }}>
                     <MapboxGL.Camera
                       defaultSettings={{
                         centerCoordinate: [
                           +familyData.longitude || 0,
-                          +familyData.latitude || 0
+                          +familyData.latitude || 0,
                         ],
-                        zoomLevel: 15
+                        zoomLevel: 15,
                       }}
                       centerCoordinate={[
                         +familyData.longitude || 0,
-                        +familyData.latitude || 0
+                        +familyData.latitude || 0,
                       ]}
                       minZoomLevel={10}
                       maxZoomLevel={15}
@@ -328,10 +326,9 @@ export class Family extends Component {
                     navigation.navigate('Location', {
                       readOnly: true,
                       survey: this.survey,
-                      family: this.familyLifemap
-                    })
-                  }}
-                >
+                      family: this.familyLifemap,
+                    });
+                  }}>
                   <Image
                     style={styles.imagePlaceholder}
                     source={mapPlaceholderLarge}
@@ -339,13 +336,12 @@ export class Family extends Component {
                 </TouchableHighlight>
               )}
               <View style={styles.faceIconWrapper}>
-                <View style={[styles.icon, { marginTop: -16 }]}>
+                <View style={[styles.icon, {marginTop: -16}]}>
                   {familyData.countFamilyMembers > 1 && (
                     <View style={styles.countCircleWrapper}>
                       <View style={styles.countCircle}>
                         <Text
-                          style={[globalStyles.h4, { color: colors.lightdark }]}
-                        >
+                          style={[globalStyles.h4, {color: colors.lightdark}]}>
                           + {familyData.countFamilyMembers - 1}
                         </Text>
                       </View>
@@ -394,13 +390,13 @@ export class Family extends Component {
 
             <View style={styles.section}>
               <View style={styles.content}>
-                <Text style={[globalStyles.h4, { color: colors.lightdark }]}>
+                <Text style={[globalStyles.h4, {color: colors.lightdark}]}>
                   {t('views.familyMembers').toUpperCase()}
                 </Text>
                 <FlatList
                   data={familyData.familyMembersList}
                   keyExtractor={(item, index) => index.toString()}
-                  renderItem={({ item, index }) => (
+                  renderItem={({item, index}) => (
                     <FamilyListItem
                       icon
                       text={`${item.firstName} ${!index ? item.lastName : ''}`}
@@ -409,14 +405,14 @@ export class Family extends Component {
                           navigation.navigate('FamilyParticipant', {
                             survey: this.survey,
                             family: this.familyLifemap,
-                            readOnly: true
-                          })
+                            readOnly: true,
+                          });
                         } else {
                           navigation.navigate('FamilyMember', {
                             survey: this.survey,
                             readOnly: true,
-                            member: item
-                          })
+                            member: item,
+                          });
                         }
                       }}
                     />
@@ -426,7 +422,7 @@ export class Family extends Component {
             </View>
             <View style={styles.section}>
               <View style={styles.content}>
-                <Text style={[globalStyles.h4, { color: colors.lightdark }]}>
+                <Text style={[globalStyles.h4, {color: colors.lightdark}]}>
                   {t('views.family.household').toUpperCase()}
                 </Text>
                 <FamilyListItem
@@ -435,8 +431,8 @@ export class Family extends Component {
                     navigation.navigate('Location', {
                       survey: this.survey,
                       readOnly: true,
-                      family: this.familyLifemap
-                    })
+                      family: this.familyLifemap,
+                    });
                   }}
                 />
                 {!this.isDraft
@@ -450,8 +446,8 @@ export class Family extends Component {
                             page: index,
                             readOnly: true,
                             survey: this.survey,
-                            title: item
-                          })
+                            title: item,
+                          });
                         }}
                       />
                     ))
@@ -482,10 +478,9 @@ export class Family extends Component {
                       fontSize: 16,
                       marginBottom: 10,
                       textAlign: 'center',
-                      color: '#000000'
-                    }}
-                  >{`${t('views.family.lifeMapCreatedOn')}: \n${moment(
-                    this.familyLifemap.created
+                      color: '#000000',
+                    }}>{`${t('views.family.lifeMapCreatedOn')}: \n${moment(
+                    this.familyLifemap.created,
                   ).format('MMM DD, YYYY')}`}</Text>
                   <RoundImage source="lifemap" />
 
@@ -493,7 +488,7 @@ export class Family extends Component {
                     <Button
                       id="resume-draft"
                       style={{
-                        marginTop: 20
+                        marginTop: 20,
                       }}
                       colored
                       text={t('general.resumeDraft')}
@@ -505,10 +500,9 @@ export class Family extends Component {
                         style={{
                           ...globalStyles.h2Bold,
                           ...{
-                            textAlign: 'center'
-                          }
-                        }}
-                      >
+                            textAlign: 'center',
+                          },
+                        }}>
                         {t('views.family.lifeMapAfterSync')}
                       </Text>
                       {this.state.showSyncButton && (
@@ -527,10 +521,11 @@ export class Family extends Component {
             ) : (
               <ScrollView>
                 <Text
-                  style={{ ...styles.lifemapCreated, ...globalStyles.h3 }}
-                >{`${t('views.family.created')}:  ${moment(
-                  this.familyLifemap.created
-                ).format('MMM DD, YYYY')}`}</Text>
+                  style={{...styles.lifemapCreated, ...globalStyles.h3}}>{`${t(
+                  'views.family.created',
+                )}:  ${moment(this.familyLifemap.created).format(
+                  'MMM DD, YYYY',
+                )}`}</Text>
                 <OverviewComponent
                   readOnly
                   navigation={navigation}
@@ -541,7 +536,7 @@ export class Family extends Component {
           </ScrollView>
         ) : null}
       </ScrollView>
-    )
+    );
   }
 }
 
@@ -554,8 +549,8 @@ Family.propTypes = {
   env: PropTypes.string.isRequired,
   createDraft: PropTypes.func.isRequired,
   user: PropTypes.object.isRequired,
-  syncStatus: PropTypes.array
-}
+  syncStatus: PropTypes.array,
+};
 
 const styles = StyleSheet.create({
   familiesIconContainer: {
@@ -566,7 +561,7 @@ const styles = StyleSheet.create({
     marginRight: 10,
     marginLeft: 10,
     justifyContent: 'center',
-    alignItems: 'center'
+    alignItems: 'center',
   },
   buttonSmall: {
     alignSelf: 'center',
@@ -574,7 +569,7 @@ const styles = StyleSheet.create({
     maxWidth: 400,
     backgroundColor: '#50AA47',
     paddingLeft: 20,
-    paddingRight: 20
+    paddingRight: 20,
   },
   button: {
     alignSelf: 'center',
@@ -582,36 +577,36 @@ const styles = StyleSheet.create({
     width: '100%',
     maxWidth: 400,
 
-    backgroundColor: colors.palered
+    backgroundColor: colors.palered,
   },
   familiesIconIcon: {
     margin: 'auto',
-    color: 'white'
+    color: 'white',
   },
   familiesIcon: {
     flex: 1,
     flexDirection: 'row',
     justifyContent: 'center',
-    alignItems: 'center'
+    alignItems: 'center',
   },
   container: {
-    flex: 1
+    flex: 1,
   },
   tabs: {
     display: 'flex',
     flexDirection: 'row',
     height: 55,
     borderBottomColor: colors.lightgrey,
-    borderBottomWidth: 1
+    borderBottomWidth: 1,
   },
   faceIcon: {
     textAlign: 'center',
     paddingTop: 30,
-    paddingBottom: 15
+    paddingBottom: 15,
   },
   section: {
     flexDirection: 'row',
-    justifyContent: 'center'
+    justifyContent: 'center',
   },
   countCircleWrapper: {
     zIndex: 2,
@@ -621,7 +616,7 @@ const styles = StyleSheet.create({
     top: 0,
     left: 0,
     right: 0,
-    bottom: 0
+    bottom: 0,
   },
   countCircle: {
     width: 22,
@@ -630,22 +625,22 @@ const styles = StyleSheet.create({
     backgroundColor: colors.white,
     justifyContent: 'center',
     alignItems: 'center',
-    transform: [{ translateX: 13 }, { translateY: -13 }]
+    transform: [{translateX: 13}, {translateY: -13}],
   },
   content: {
     width: '100%',
     paddingHorizontal: 25,
-    marginTop: 30
+    marginTop: 30,
   },
   draftContainer: {
     paddingHorizontal: 25,
-    marginTop: 70
+    marginTop: 70,
   },
   lifemapCreated: {
     marginHorizontal: 25,
     marginTop: 15,
     marginBottom: -10,
-    zIndex: 10
+    zIndex: 10,
   },
   fakeMarker: {
     zIndex: 2,
@@ -655,7 +650,7 @@ const styles = StyleSheet.create({
     right: 0,
     bottom: 10, //raise the marker so it's point, not center, marks the location
     justifyContent: 'center',
-    alignItems: 'center'
+    alignItems: 'center',
   },
   faceIconWrapper: {
     width: 92,
@@ -664,26 +659,26 @@ const styles = StyleSheet.create({
     marginBottom: 10,
     marginTop: -65,
     alignSelf: 'center',
-    backgroundColor: 'white'
+    backgroundColor: 'white',
   },
-  imagePlaceholder: { width: '100%', height: 139 }
-})
+  imagePlaceholder: {width: '100%', height: 139},
+});
 const mapDispatchToProps = {
   submitDraft,
   submitDraftWithImages,
-  createDraft
-}
-const mapStateToProps = ({ surveys, env, user, drafts, syncStatus }) => ({
+  createDraft,
+};
+const mapStateToProps = ({surveys, env, user, drafts, syncStatus}) => ({
   surveys,
   env,
   user,
   drafts,
-  syncStatus
-})
+  syncStatus,
+});
 
 export default withNamespaces()(
   connect(
     mapStateToProps,
-    mapDispatchToProps
-  )(Family)
-)
+    mapDispatchToProps,
+  )(Family),
+);
