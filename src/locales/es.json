@@ -187,7 +187,7 @@
       "youCreatedALifeMap": "Has creado un Mapa de Vida.",
       "continueWithSurvey": "¡Continúa donde te habías quedado!",
       "congratulations": "¡Felicidades!",
-      "thisLifeMapHas": "Este Mapa de Vida tiene %n preguntas.",
+      "thisLifeMapHas": "¡Listo! Esta sección del Semáforo contiene %n indicadores. Gira tu dispositivo de manera horizontal.",
       "thisLifeMapHasNoStoplight": "¡Listo! Esta sección del Semáforo contiene %n indicadores. Elige si deseas guardar tu encuesta o completar tu Semáforo.",
       "responseRequired": "*Respuesta requerida",
       "skipThisQuestion": "Omitir esta pregunta",
@@ -263,7 +263,7 @@
       "emailError": "Error al enviar tu Mapa de Vida vía email",
       "offlineText": "Por favor, activa tu conexión a Internet para recibir tu Mapa de Vida vía email",
       "yourLifeMaWillBeSentWithSurveySync": "Tu Mapa de Vida será enviado a tu correo cuando tu encuesta esté sincronizada. ¡Selecciona 'Cerrar' para terminar la encuesta!",
-      "yourLifeMaWillBeSentWithWhatSurveySync": "Para recibir tu Mapa de Vida al whatsapp, envía \"Hola\" al número: +5521933007184 después de sincronizar la encuesta."
+      "yourLifeMaWillBeSentWithWhatSurveySync": "Te llegará un mensaje al Whatsapp cuando su encuesta esté sincronizada. Si quieres recibir tu Mapa de Vida, responde al mensaje con \"Si\"."
     }
   },
   "filterLabels": {

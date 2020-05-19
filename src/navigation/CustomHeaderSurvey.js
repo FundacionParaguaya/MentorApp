@@ -48,7 +48,7 @@ export class CustomHeaderSurveyComponent extends Component {
         {separatorScreen && (
           <Text style={styles.headerTitleStyle}>
             {!stoplightOptional
-              ? this.props.t('views.yourLifeMap')
+              ? this.props.t('views.completeStoplight')
               : this.props.t('views.completeStoplight')}
           </Text>
         )}

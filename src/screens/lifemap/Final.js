@@ -50,7 +50,8 @@ export class Final extends Component {
     whatsappSentError: false,
     connection: false,
     disabled: false,
-    sendEmailFlag: false
+    sendEmailFlag: false,
+    whatsappNotification: false
   }
 
   onPressBack = () => {
@@ -104,7 +105,8 @@ export class Final extends Component {
           draft.draftId,
           {
             ...draft,
-            sendEmail: this.state.sendEmailFlag
+            sendEmail: this.state.sendEmailFlag,
+            whatsappNotification: this.state.whatsappNotification
           }
         )
       } else {
@@ -115,6 +117,7 @@ export class Final extends Component {
           {
             ...draft,
             sendEmail: this.state.sendEmailFlag,
+            whatsappNotification: this.state.whatsappNotification,
             pictures: []
           }
         )
@@ -204,7 +207,7 @@ export class Final extends Component {
   }
 
   sendWhatsappToUser() {
-    this.setState({ sendingWhatsapp: true })
+    this.setState({ sendingWhatsapp: true, whatsappNotification: true })
 
     setTimeout(() => {
       this.setState({ sendingWhatsapp: false, whatsappModalOpen: true })
