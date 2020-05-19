@@ -4,7 +4,7 @@ import {withNamespaces} from 'react-i18next';
 import {StyleSheet, Text, TouchableHighlight, View} from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import {connect} from 'react-redux';
-import {v1 as uuid} from 'uuid';
+import uuid from 'uuid/v1';
 
 import Button from '../../components/Button';
 import Decoration from '../../components/decoration/Decoration';
