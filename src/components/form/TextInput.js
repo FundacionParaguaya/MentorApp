@@ -205,8 +205,7 @@ class TextInput extends Component {
           ) : (
             <View />
           )}
-          {/* <FormInput
-          
+          <FormInput
             autoFocus={autoFocus}
             keyboardType={showPlaceholder && this.props.keyboardType}
             autoCapitalize={upperCase ? 'sentences' : 'none'}
@@ -220,9 +219,7 @@ class TextInput extends Component {
             ]}
             editable={!readOnly}
             multiline={multiline}
-            importantForAccessibility="no-hide-descendants"
-            
-            >
+            importantForAccessibility="no-hide-descendants">
             {showPlaceholder ? (
               <Text style={styles.inputText}>
                 {placeholder} {required && !label ? '*' : ''}
@@ -230,7 +227,7 @@ class TextInput extends Component {
             ) : (
               <Text style={{color: this.defineTextColor(status)}}>{text}</Text>
             )}
-          </FormInput> */}
+          </FormInput>
         </View>
         {status === 'error' && errorMsg && (
           <View id="errorWrapper" style={{marginLeft: 30}}>
