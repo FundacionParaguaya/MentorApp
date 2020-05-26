@@ -13,9 +13,9 @@ import com.facebook.react.ReactInstanceManager;
 import com.facebook.react.ReactNativeHost;
 import com.facebook.react.ReactPackage;
 import com.facebook.soloader.SoLoader;
-import com.mapbox.rctmgl.RCTMGLPackage;
 import java.lang.reflect.InvocationTargetException;
 import java.util.List;
+import com.mapbox.rctmgl.RCTMGLPackage;
 
 public class MainApplication extends MultiDexApplication implements ReactApplication {
 

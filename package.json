@@ -14,7 +14,7 @@
     "@react-native-community/async-storage": "^1.10.0",
     "@react-native-community/geolocation": "^2.0.2",
     "@react-native-community/netinfo": "^5.8.1",
-    "@react-native-mapbox-gl/maps": "^8.0.0",
+    "@react-native-mapbox-gl/maps": "^7.0.1",
     "@redux-offline/redux-offline": "^2.5.2-native.3",
     "google-libphonenumber": "^3.2.9",
     "i18next": "^19.4.4",

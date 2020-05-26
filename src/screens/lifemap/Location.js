@@ -1,9 +1,9 @@
-import Geolocation from '@react-native-community/geolocation'
-import NetInfo from '@react-native-community/netinfo'
-import MapboxGL from '@react-native-mapbox-gl/maps'
-import PropTypes from 'prop-types'
-import React, { Component } from 'react'
-import { withNamespaces } from 'react-i18next'
+import Geolocation from '@react-native-community/geolocation';
+import NetInfo from '@react-native-community/netinfo';
+import MapboxGL from '@react-native-mapbox-gl/maps';
+import PropTypes from 'prop-types';
+import React, {Component} from 'react';
+import {withNamespaces} from 'react-i18next';
 import {
   ActivityIndicator,
   AppState,
@@ -12,38 +12,38 @@ import {
   StyleSheet,
   Text,
   TouchableHighlight,
-  View
-} from 'react-native'
-import Geocoder from 'react-native-geocoding'
+  View,
+} from 'react-native';
+import Geocoder from 'react-native-geocoding';
 /* eslint-disable import/named */
-import { GooglePlacesAutocomplete } from 'react-native-google-places-autocomplete'
-import CommunityIcon from 'react-native-vector-icons/MaterialCommunityIcons'
+import {GooglePlacesAutocomplete} from 'react-native-google-places-autocomplete';
+import CommunityIcon from 'react-native-vector-icons/MaterialCommunityIcons';
 /* eslint-enable import/named */
-import Icon from 'react-native-vector-icons/MaterialIcons'
-import { connect } from 'react-redux'
+import Icon from 'react-native-vector-icons/MaterialIcons';
+import {connect} from 'react-redux';
 
-import center from '../../../assets/images/centerMap.png'
-import happy from '../../../assets/images/happy.png'
-import marker from '../../../assets/images/marker.png'
-import sad from '../../../assets/images/sad.png'
-import Select from '../../components/form/Select'
-import TextInput from '../../components/form/TextInput'
-import StickyFooter from '../../components/StickyFooter'
-import globalStyles from '../../globalStyles'
-import { updateDraft } from '../../redux/actions'
-import colors from '../../theme.json'
-import { getTotalScreens } from './helpers'
+import center from '../../../assets/images/centerMap.png';
+import happy from '../../../assets/images/happy.png';
+import marker from '../../../assets/images/marker.png';
+import sad from '../../../assets/images/sad.png';
+import Select from '../../components/form/Select';
+import TextInput from '../../components/form/TextInput';
+import StickyFooter from '../../components/StickyFooter';
+import globalStyles from '../../globalStyles';
+import {updateDraft} from '../../redux/actions';
+import colors from '../../theme.json';
+import {getTotalScreens} from './helpers';
 
-const GOOGLE_GEO_API_KEY = 'AIzaSyBLGYYy86_7QPT-dKgUnFMIJyhUE6AGVwM'
-Geocoder.init(GOOGLE_GEO_API_KEY)
+const GOOGLE_GEO_API_KEY = 'AIzaSyBLGYYy86_7QPT-dKgUnFMIJyhUE6AGVwM';
+Geocoder.init(GOOGLE_GEO_API_KEY);
 
 export class Location extends Component {
-  survey = this.props.navigation.getParam('survey')
-  readOnly = this.props.navigation.getParam('readOnly')
-  draftId = this.props.navigation.getParam('draftId')
-  readOnlyDraft = this.props.navigation.getParam('family') || []
+  survey = this.props.navigation.getParam('survey');
+  readOnly = this.props.navigation.getParam('readOnly');
+  draftId = this.props.navigation.getParam('draftId');
+  readOnlyDraft = this.props.navigation.getParam('family') || [];
 
-  unsubscribeNetChange
+  unsubscribeNetChange;
   state = {
     showList: false,
     searchAddress: '',
@@ -59,56 +59,56 @@ export class Location extends Component {
     appState: AppState.currentState,
     errors: [],
     showErrors: false,
-    currentAddress: ''
-  }
+    currentAddress: '',
+  };
 
   getDraft = () =>
-    this.props.drafts.find(draft => draft.draftId === this.draftId)
+    this.props.drafts.find(draft => draft.draftId === this.draftId);
 
   setError = (error, field) => {
-    const { errors } = this.state
+    const {errors} = this.state;
 
     if (error && !errors.includes(field)) {
       this.setState(previousState => {
         return {
           ...previousState,
-          errors: [...previousState.errors, field]
-        }
-      })
+          errors: [...previousState.errors, field],
+        };
+      });
     } else if (!error) {
       this.setState({
-        errors: errors.filter(item => item !== field)
-      })
+        errors: errors.filter(item => item !== field),
+      });
     }
-  }
+  };
 
   validateForm = () => {
     if (this.state.errors.length) {
       this.setState({
-        showErrors: true
-      })
+        showErrors: true,
+      });
     } else {
-      this.onContinue()
+      this.onContinue();
     }
-  }
+  };
 
   getCurrentAddress = (latitude, longitude) => {
     Geocoder.from(latitude, longitude)
       .then(json => {
-        this.setState({ currentAddress: json.results[0].formatted_address })
+        this.setState({currentAddress: json.results[0].formatted_address});
       })
-      .catch(() => ({}))
-  }
+      .catch(() => ({}));
+  };
 
   onDragMap = region => {
-    const draft = !this.readOnly ? this.getDraft() : this.readOnlyDraft
-    const { zoom } = this.state
-    const { familyData } = draft
-    const { coordinates } = region.geometry
-    const longitude = coordinates[0]
-    const latitude = coordinates[1]
+    const draft = !this.readOnly ? this.getDraft() : this.readOnlyDraft;
+    const {zoom} = this.state;
+    const {familyData} = draft;
+    const {coordinates} = region.geometry;
+    const longitude = coordinates[0];
+    const latitude = coordinates[1];
 
-    this.getCurrentAddress(latitude, longitude)
+    this.getCurrentAddress(latitude, longitude);
 
     // prevent jumping of the marker by updating only when the region changes
     if (
@@ -122,52 +122,52 @@ export class Location extends Component {
           ...familyData,
           latitude,
           longitude,
-          accuracy: 0
-        }
-      })
+          accuracy: 0,
+        },
+      });
 
       this.setState({
-        zoom: region.properties.zoomLevel || 15
-      })
+        zoom: region.properties.zoomLevel || 15,
+      });
     }
-  }
+  };
 
   // if the user has draged the map and the draft has stored some coordinates
   setCoordinatesFromDraft = isOnline => {
-    const draft = !this.readOnly ? this.getDraft() : this.readOnlyDraft
+    const draft = !this.readOnly ? this.getDraft() : this.readOnlyDraft;
 
-    const { familyData } = draft
+    const {familyData} = draft;
 
     this.setState({
       loading: false,
-      centeringMap: false
-    })
+      centeringMap: false,
+    });
 
     if (!isOnline) {
       const isLocationInBoundaries = this.state.cachedMapPacks.length
         ? this.isUserLocationWithinMapPackBounds(
             parseFloat(familyData.longitude),
             parseFloat(familyData.latitude),
-            this.state.cachedMapPacks.map(pack => pack.bounds)
+            this.state.cachedMapPacks.map(pack => pack.bounds),
           )
-        : false
+        : false;
 
       this.setState({
         showForm: isLocationInBoundaries ? false : true, // false shows map
-        showSearch: false
-      })
+        showSearch: false,
+      });
     }
-  }
+  };
 
   getCoordinatesOnline() {
-    const draft = !this.readOnly ? this.getDraft() : this.readOnlyDraft
-    const { familyData } = draft
-    this.setState({ askingForPermission: true })
+    const draft = !this.readOnly ? this.getDraft() : this.readOnlyDraft;
+    const {familyData} = draft;
+    this.setState({askingForPermission: true});
 
     Geolocation.getCurrentPosition(
       // if location is available and we are online center on it
       position => {
-        const { longitude, latitude, accuracy } = position.coords
+        const {longitude, latitude, accuracy} = position.coords;
 
         this.props.updateDraft({
           ...draft,
@@ -175,21 +175,21 @@ export class Location extends Component {
             ...familyData,
             latitude,
             longitude,
-            accuracy
-          }
-        })
+            accuracy,
+          },
+        });
 
         this.setState({
           loading: false,
           centeringMap: false,
-          askingForPermission: false
-        })
+          askingForPermission: false,
+        });
       },
       () => {
         // if no location available reset to survey location only when
         // no location comes from the draft
         if (!familyData.latitude) {
-          const position = this.survey.surveyConfig.surveyLocation
+          const position = this.survey.surveyConfig.surveyLocation;
 
           this.props.updateDraft({
             ...draft,
@@ -197,33 +197,33 @@ export class Location extends Component {
               ...familyData,
               latitude: position.latitude,
               longitude: position.longitude,
-              accuracy: 0
-            }
-          })
+              accuracy: 0,
+            },
+          });
 
           this.setState({
             loading: false,
             centeringMap: false,
-            askingForPermission: false
-          })
+            askingForPermission: false,
+          });
         } else {
           this.setState({
-            centeringMap: false
-          })
+            centeringMap: false,
+          });
         }
       },
       {
         enableHighAccuracy: true,
         timeout: 25000,
-        maximumAge: 0
-      }
-    )
+        maximumAge: 0,
+      },
+    );
   }
 
   getCoordinatesOffline() {
-    const draft = !this.readOnly ? this.getDraft() : this.readOnlyDraft
-    const { familyData } = draft
-    this.setState({ askingForPermission: true })
+    const draft = !this.readOnly ? this.getDraft() : this.readOnlyDraft;
+    const {familyData} = draft;
+    this.setState({askingForPermission: true});
     // if we have an emty array [] or an array with an empty object [{}] then dont show the offline maps because we dont have any.
     if (
       this.props.maps.length &&
@@ -232,24 +232,24 @@ export class Location extends Component {
     ) {
       this.setState({
         loading: false,
-        showOfflineMapsList: true
-      })
+        showOfflineMapsList: true,
+      });
     } else {
       this.setState({
-        showOfflineMapsList: false
-      })
+        showOfflineMapsList: false,
+      });
       Geolocation.getCurrentPosition(
         // if no offline map is available, but there is location save it
         position => {
-          const { longitude, latitude, accuracy } = position.coords
+          const {longitude, latitude, accuracy} = position.coords;
 
           const isLocationInBoundaries = this.state.cachedMapPacks.length
             ? this.isUserLocationWithinMapPackBounds(
                 longitude,
                 latitude,
-                this.state.cachedMapPacks.map(pack => pack.bounds)
+                this.state.cachedMapPacks.map(pack => pack.bounds),
               )
-            : false
+            : false;
 
           this.props.updateDraft({
             ...draft,
@@ -257,42 +257,42 @@ export class Location extends Component {
               ...familyData,
               latitude,
               longitude,
-              accuracy
-            }
-          })
+              accuracy,
+            },
+          });
 
           this.setState({
             loading: false,
             askingForPermission: false,
             centeringMap: false,
-            showForm: isLocationInBoundaries ? false : true
-          })
+            showForm: isLocationInBoundaries ? false : true,
+          });
         },
         // otherwise ask for more details
         () => {
           this.setState({
             loading: false,
             centeringMap: false,
-            showForm: true
-          })
+            showForm: true,
+          });
         },
         {
           enableHighAccuracy: true,
           timeout: 25000,
-          maximumAge: 0
-        }
-      )
+          maximumAge: 0,
+        },
+      );
     }
   }
 
   // try getting device location and set map state according to online state
   getDeviceCoordinates = isOnline => {
     this.setState({
-      centeringMap: true
-    })
+      centeringMap: true,
+    });
 
-    isOnline ? this.getCoordinatesOnline() : this.getCoordinatesOffline()
-  }
+    isOnline ? this.getCoordinatesOnline() : this.getCoordinatesOffline();
+  };
 
   _handleAppStateChange = nextAppState => {
     if (
@@ -303,73 +303,73 @@ export class Location extends Component {
       this.props.navigation.replace('Location', {
         draft: this.state.draft,
         survey: this.survey,
-        draftId: this.draftId
-      })
+        draftId: this.draftId,
+      });
     }
-    this.setState({ appState: nextAppState })
-  }
+    this.setState({appState: nextAppState});
+  };
 
   onContinue = () => {
     const nextPage =
       this.survey.surveyEconomicQuestions &&
       this.survey.surveyEconomicQuestions.length
         ? 'SocioEconomicQuestion'
-        : 'BeginLifemap'
+        : 'BeginLifemap';
 
     this.props.navigation.navigate(nextPage, {
       draftId: this.draftId,
-      survey: this.survey
-    })
-  }
+      survey: this.survey,
+    });
+  };
 
   updateFamilyData = (value, field) => {
-    const draft = !this.readOnly ? this.getDraft() : this.readOnlyDraft
+    const draft = !this.readOnly ? this.getDraft() : this.readOnlyDraft;
     this.props.updateDraft({
       ...draft,
       familyData: {
         ...draft.familyData,
-        [field]: value
-      }
-    })
-  }
+        [field]: value,
+      },
+    });
+  };
 
   goToSearch = (data, details = null) => {
-    const draft = !this.readOnly ? this.getDraft() : this.readOnlyDraft
+    const draft = !this.readOnly ? this.getDraft() : this.readOnlyDraft;
 
     this.props.updateDraft({
       ...draft,
       familyData: {
         ...draft.familyData,
         latitude: details.geometry.location.lat,
-        longitude: details.geometry.location.lng
-      }
-    })
+        longitude: details.geometry.location.lng,
+      },
+    });
 
     this.setState({
-      showList: false
-    })
-  }
+      showList: false,
+    });
+  };
 
   goToOfflineLocation = () => {
     this.setState({
       hasShownList: true,
       loading: true,
-      showSearch: false
-    })
-    this.getCoordinatesOffline()
-  }
+      showSearch: false,
+    });
+    this.getCoordinatesOffline();
+  };
 
   centerOnOfflineMap = map => {
-    const draft = !this.readOnly ? this.getDraft() : this.readOnlyDraft
+    const draft = !this.readOnly ? this.getDraft() : this.readOnlyDraft;
 
     this.props.updateDraft({
       ...draft,
       familyData: {
         ...draft.familyData,
         latitude: map.center[0],
-        longitude: map.center[1]
-      }
-    })
+        longitude: map.center[1],
+      },
+    });
 
     this.setState({
       hasShownList: true,
@@ -377,83 +377,83 @@ export class Location extends Component {
       centeringMap: false,
       showForm: false,
       showSearch: false,
-      showOfflineMapsList: false
-    })
-  }
+      showOfflineMapsList: false,
+    });
+  };
 
   _keyboardDidHide = () => {
-    this.setState({ showList: false })
-  }
+    this.setState({showList: false});
+  };
   _keyboardDidShow = () => {
-    this.setState({ showList: true })
-  }
+    this.setState({showList: true});
+  };
 
   onPressBack = () => {
-    const { hasShownList } = this.state
+    const {hasShownList} = this.state;
 
-    const draft = !this.readOnly ? this.getDraft() : this.readOnlyDraft
+    const draft = !this.readOnly ? this.getDraft() : this.readOnlyDraft;
 
     if (hasShownList) {
       this.setState({
         showOfflineMapsList: true,
-        hasShownList: false
-      })
+        hasShownList: false,
+      });
     } else {
-      const survey = this.survey
+      const survey = this.survey;
 
       if (draft.familyData.countFamilyMembers > 1) {
         this.props.navigation.replace('FamilyMembersNames', {
           draftId: this.draftId,
-          survey
-        })
+          survey,
+        });
       } else {
         this.props.navigation.navigate('FamilyParticipant', {
           draftId: this.draftId,
-          survey
-        })
+          survey,
+        });
       }
     }
-  }
+  };
 
   async requestLocationPermission() {
     this.setState({
-      askingForPermission: true
-    })
+      askingForPermission: true,
+    });
 
-    let isGranted = await MapboxGL.requestAndroidLocationPermissions()
-
+    let isGranted = await MapboxGL.requestAndroidLocationPermissions();
+    console.log(isGranted);
     if (isGranted) {
       this.setState({
-        askingForPermission: false
-      })
+        askingForPermission: false,
+      });
     } else {
       this.setState({
         showForm: true,
-        loading: false
-      })
+        loading: false,
+      });
     }
   }
 
   isUserLocationWithinMapPackBounds(longitude, latitude, packs) {
     return packs.some(packBoundaries => {
-      const neLng = packBoundaries[0][0]
-      const neLat = packBoundaries[0][1]
-      const swLng = packBoundaries[1][0]
-      const swLat = packBoundaries[1][1]
+      const neLng = packBoundaries[0][0];
+      const neLat = packBoundaries[0][1];
+      const swLng = packBoundaries[1][0];
+      const swLat = packBoundaries[1][1];
 
-      const eastBound = longitude <= neLng
-      const westBound = longitude >= swLng
+      const eastBound = longitude <= neLng;
+      const westBound = longitude >= swLng;
 
-      let inLong
+      let inLong;
       if (neLng <= swLng) {
-        inLong = eastBound || westBound
+        inLong = eastBound || westBound;
       } else {
-        inLong = eastBound && westBound
+        inLong = eastBound && westBound;
       }
 
-      const inLat = latitude <= swLat && latitude >= neLat
-      return inLat && inLong
-    })
+      const inLat = latitude <= swLat && latitude >= neLat;
+      return inLat && inLong;
+    });
   }
 
   getMapOfflinePacks() {
@@ -463,37 +463,37 @@ export class Location extends Component {
         if (packs.length) {
           packs.map(offlinePack => {
             this.setState({
-              cachedMapPacks: [...this.state.cachedMapPacks, offlinePack]
-            })
-          })
+              cachedMapPacks: [...this.state.cachedMapPacks, offlinePack],
+            });
+          });
         }
       })
-      .catch(() => {})
+      .catch(() => {});
   }
 
   determineScreenState(isOnline) {
-    const draft = !this.readOnly ? this.getDraft() : this.readOnlyDraft
-    const { familyData } = draft
+    const draft = !this.readOnly ? this.getDraft() : this.readOnlyDraft;
+    const {familyData} = draft;
 
     if (!this.readOnly) {
       this.props.navigation.setParams({
-        onPressBack: this.onPressBack
-      })
+        onPressBack: this.onPressBack,
+      });
     }
 
     if (!familyData.latitude) {
-      this.getDeviceCoordinates(isOnline)
+      this.getDeviceCoordinates(isOnline);
     } else {
-      this.setCoordinatesFromDraft(isOnline)
+      this.setCoordinatesFromDraft(isOnline);
     }
   }
 
   componentDidMount = async () => {
     this.setState({
-      loading: true
-    })
+      loading: true,
+    });
 
-    const draft = !this.readOnly ? this.getDraft() : this.readOnlyDraft
+    const draft = !this.readOnly ? this.getDraft() : this.readOnlyDraft;
 
     if (!this.readOnly) {
       this.props.updateDraft({
@@ -501,77 +501,77 @@ export class Location extends Component {
         progress: {
           ...draft.progress,
           screen: 'Location',
-          total: getTotalScreens(this.survey)
+          total: getTotalScreens(this.survey),
         },
         familyData: {
           ...draft.familyData,
           country:
             draft.familyData.country ||
-            this.survey.surveyConfig.surveyLocation.country
-        }
-      })
+            this.survey.surveyConfig.surveyLocation.country,
+        },
+      });
     }
-    AppState.addEventListener('change', this._handleAppStateChange)
-    this.getMapOfflinePacks()
+    AppState.addEventListener('change', this._handleAppStateChange);
+    this.getMapOfflinePacks();
 
     // set search location keyboard events
     this.keyboardDidShowListener = Keyboard.addListener(
       'keyboardDidShow',
-      this._keyboardDidShow
-    )
+      this._keyboardDidShow,
+    );
     this.keyboardDidHideListener = Keyboard.addListener(
       'keyboardDidHide',
-      this._keyboardDidHide
-    )
+      this._keyboardDidHide,
+    );
     //before getting the coordinates with Geolocation.getCurrentPosition,
     //we first need to wait for user permission.Otherwise the app will crash if offline.
     if (!this.readOnly) {
-      await this.requestLocationPermission()
+      await this.requestLocationPermission();
     }
 
     // check if online first
     NetInfo.fetch().then(state => {
-      this.determineScreenState(state.isConnected)
-      this.setState({ status: state.isConnected })
-    })
+      this.determineScreenState(state.isConnected);
+      this.setState({status: state.isConnected});
+    });
 
     // monitor for connection changes
     this.unsubscribeNetChange = NetInfo.addEventListener(state => {
-      const { status } = this.state
+      const {status} = this.state;
 
       if (status !== undefined && status !== state.isConnected) {
-        this.setState({ status: state.isConnected })
-        this.determineScreenState(state.isConnected)
+        this.setState({status: state.isConnected});
+        this.determineScreenState(state.isConnected);
       }
-    })
-  }
+    });
+  };
 
   shouldComponentUpdate() {
-    return this.props.navigation.isFocused()
+    return this.props.navigation.isFocused();
   }
 
   componentWillUnmount() {
     if (this.unsubscribeNetChange) {
-      this.unsubscribeNetChange()
+      this.unsubscribeNetChange();
     }
-    AppState.removeEventListener('change', this._handleAppStateChange)
-    this.keyboardDidShowListener.remove()
-    this.keyboardDidHideListener.remove()
+    AppState.removeEventListener('change', this._handleAppStateChange);
+    this.keyboardDidShowListener.remove();
+    this.keyboardDidHideListener.remove();
   }
 
   render() {
-    const { t } = this.props
+    const {t} = this.props;
     const {
       centeringMap,
       loading,
       showSearch,
       showForm,
       showOfflineMapsList,
-      showErrors
-    } = this.state
+      showErrors,
+    } = this.state;
 
-    const draft = !this.readOnly ? this.getDraft() : this.readOnlyDraft
-    const familyData = draft.familyData
+    const draft = !this.readOnly ? this.getDraft() : this.readOnlyDraft;
+    const familyData = draft.familyData;
 
     if (loading) {
       return (
@@ -587,7 +587,7 @@ export class Location extends Component {
             </Text>
           )}
         </View>
-      )
+      );
     } else if (showOfflineMapsList) {
       return (
         <StickyFooter
@@ -598,10 +598,9 @@ export class Location extends Component {
               ? (draft.familyData.countFamilyMembers > 1 ? 3 : 2) /
                 draft.progress.total
               : 0
-          }
-        >
-          <View style={[styles.placeholder, { height: '100%' }]}>
-            <Text style={[globalStyles.h2, { marginBottom: 30 }]}>
+          }>
+          <View style={[styles.placeholder, {height: '100%'}]}>
+            <Text style={[globalStyles.h2, {marginBottom: 30}]}>
               {t('views.sync.offline')}
             </Text>
             <CommunityIcon
@@ -610,7 +609,7 @@ export class Location extends Component {
               size={60}
               color={colors.palegrey}
             />
-            <Text style={[globalStyles.h3, { marginTop: 10 }]}>
+            <Text style={[globalStyles.h3, {marginTop: 10}]}>
               {t('views.family.mapsEnabled')}
             </Text>
             <View
@@ -618,15 +617,13 @@ export class Location extends Component {
                 width: '100%',
                 maxWidth: 400,
                 paddingHorizontal: 30,
-                marginVertical: 30
-              }}
-            >
+                marginVertical: 30,
+              }}>
               <View
                 style={{
                   borderTopWidth: 1,
-                  borderTopColor: colors.palegrey
-                }}
-              >
+                  borderTopColor: colors.palegrey,
+                }}>
                 {this.props.maps.map(map => (
                   <TouchableHighlight
                     underlayColor={colors.primary}
@@ -634,24 +631,22 @@ export class Location extends Component {
                     style={{
                       borderBottomWidth: 1,
                       borderBottomColor: colors.palegrey,
-                      paddingVertical: 15
+                      paddingVertical: 15,
                     }}
-                    key={map.name}
-                  >
+                    key={map.name}>
                     <View
                       style={{
                         flexDirection: 'row',
-                        justifyContent: 'space-between'
-                      }}
-                    >
-                      <View style={{ flexDirection: 'row' }}>
+                        justifyContent: 'space-between',
+                      }}>
+                      <View style={{flexDirection: 'row'}}>
                         <Icon
-                          style={[styles.icon, { marginRight: 10 }]}
+                          style={[styles.icon, {marginRight: 10}]}
                           name="location-on"
                           size={20}
                           color={colors.palegrey}
                         />
-                        <Text style={{ fontSize: 15 }}>{map.name}</Text>
+                        <Text style={{fontSize: 15}}>{map.name}</Text>
                       </View>
                       <Icon
                         style={styles.icon}
@@ -668,15 +663,14 @@ export class Location extends Component {
             <TouchableHighlight
               id="location-not-listed-above"
               underlayColor={'transparent'}
-              onPress={this.goToOfflineLocation}
-            >
+              onPress={this.goToOfflineLocation}>
               <Text style={[globalStyles.h3, styles.locationLink]}>
                 {t('views.family.mapNotListedAbove')}
               </Text>
             </TouchableHighlight>
           </View>
         </StickyFooter>
-      )
+      );
     } else if (!showForm) {
       return (
         <StickyFooter
@@ -689,8 +683,7 @@ export class Location extends Component {
                 draft.progress.total
               : 0
           }
-          fullHeight
-        >
+          fullHeight>
           <View pointerEvents="none" style={styles.fakeMarker}>
             <Image source={marker} />
           </View>
@@ -705,51 +698,54 @@ export class Location extends Component {
               query={{
                 key: GOOGLE_GEO_API_KEY,
                 language: 'en', // language of the results
-                types: '(cities)' // default: 'geocode'
+                types: '(cities)', // default: 'geocode'
               }}
               styles={{
                 container: styles.search,
                 listView: {
                   display: this.state.showList ? 'flex' : 'none',
-                  ...styles.autoCompleteListView
+                  ...styles.autoCompleteListView,
                 },
                 textInputContainer: styles.autoCompleteTextInputContainer,
                 description: styles.autoCompleteDescription,
                 predefinedPlacesDescription: styles.predefinedPlacesDescription,
-                textInput: styles.autoCompleteTextInput
+                textInput: styles.autoCompleteTextInput,
               }}
               placeholderTextColor={colors.grey}
               currentLocation={false}
             />
           )}
+          {/*
           <MapboxGL.MapView
             accessible={true}
-            accessibilityLabel={`Your current locations is ${this.state.currentAddress}`}
-            style={{ width: '100%', flexGrow: 2 }}
+            accessibilityLabel={`Your current locations is ${
+              this.state.currentAddress
+            }`}
+            style={{width: '100%', flexGrow: 2}}
             logoEnabled={false}
             zoomEnabled={!this.readOnly}
             rotateEnabled={false}
             scrollEnabled={!this.readOnly}
             pitchEnabled={false}
-            onRegionDidChange={this.onDragMap}
-          >
+            onRegionDidChange={this.onDragMap}>
             {!this.readOnly && <MapboxGL.UserLocation visible={false} />}
             <MapboxGL.Camera
               defaultSettings={{
                 centerCoordinate: [
                   +familyData.longitude || 0,
-                  +familyData.latitude || 0
+                  +familyData.latitude || 0,
                 ],
-                zoomLevel: this.state.zoom
+                zoomLevel: this.state.zoom,
               }}
               centerCoordinate={[
                 +familyData.longitude || 0,
-                +familyData.latitude || 0
+                +familyData.latitude || 0,
               ]}
               minZoomLevel={10}
               maxZoomLevel={16}
             />
           </MapboxGL.MapView>
+           */}
           {!this.readOnly && (
             <View>
               {centeringMap ? (
@@ -764,15 +760,14 @@ export class Location extends Component {
                   underlayColor={'transparent'}
                   activeOpacity={1}
                   style={styles.center}
-                  onPress={this.getDeviceCoordinates}
-                >
-                  <Image source={center} style={{ width: 21, height: 21 }} />
+                  onPress={this.getDeviceCoordinates}>
+                  <Image source={center} style={{width: 21, height: 21}} />
                 </TouchableHighlight>
               )}
             </View>
           )}
         </StickyFooter>
-      )
+      );
     } else {
       return (
         <StickyFooter
@@ -783,32 +778,30 @@ export class Location extends Component {
             !this.readOnly && draft
               ? draft.progress.current / draft.progress.total
               : 0
-          }
-        >
+          }>
           {!this.readOnly && (
             <View>
               {familyData.latitude ? (
                 <View style={[styles.placeholder, styles.map]}>
                   <Image
                     source={happy}
-                    style={{ width: 50, height: 50, marginBottom: 20 }}
+                    style={{width: 50, height: 50, marginBottom: 20}}
                   />
                   <Text
                     id="weFoundYou"
-                    style={[globalStyles.h2, { marginBottom: 20 }]}
-                  >
+                    style={[globalStyles.h2, {marginBottom: 20}]}>
                     {t('views.family.weFoundYou')}
                   </Text>
-                  <Text style={[globalStyles.h3, { textAlign: 'center' }]}>
+                  <Text style={[globalStyles.h3, {textAlign: 'center'}]}>
                     lat: {familyData.latitude}, long: {familyData.longitude}
                   </Text>
-                  <Text style={[globalStyles.h4, { marginBottom: 20 }]}>
+                  <Text style={[globalStyles.h4, {marginBottom: 20}]}>
                     {`${t('views.family.gpsAccurate').replace(
                       '%n',
-                      Math.round(familyData.accuracy)
+                      Math.round(familyData.accuracy),
                     )}`}
                   </Text>
-                  <Text style={[globalStyles.h3, { textAlign: 'center' }]}>
+                  <Text style={[globalStyles.h3, {textAlign: 'center'}]}>
                     {t('views.family.tellUsMore')}
                   </Text>
                 </View>
@@ -816,15 +809,14 @@ export class Location extends Component {
                 <View style={[styles.placeholder, styles.map]}>
                   <Image
                     source={sad}
-                    style={{ width: 50, height: 50, marginBottom: 20 }}
+                    style={{width: 50, height: 50, marginBottom: 20}}
                   />
                   <Text
                     id="weCannotLocate"
-                    style={[globalStyles.h2, { marginBottom: 20 }]}
-                  >
+                    style={[globalStyles.h2, {marginBottom: 20}]}>
                     {t('views.family.weCannotLocate')}
                   </Text>
-                  <Text style={[globalStyles.h3, { textAlign: 'center' }]}>
+                  <Text style={[globalStyles.h3, {textAlign: 'center'}]}>
                     {t('views.family.tellUsMore')}
                   </Text>
                 </View>
@@ -873,7 +865,7 @@ export class Location extends Component {
             setError={isError => this.setError(isError, 'address')}
           />
         </StickyFooter>
-      )
+      );
     }
   }
 }
@@ -881,11 +873,11 @@ export class Location extends Component {
 const styles = StyleSheet.create({
   map: {
     height: 300,
-    width: '100%'
+    width: '100%',
   },
   placeholder: {
     alignItems: 'center',
-    justifyContent: 'center'
+    justifyContent: 'center',
   },
   fakeMarker: {
     zIndex: 2,
@@ -895,14 +887,14 @@ const styles = StyleSheet.create({
     right: 0,
     bottom: 10, //raise the marker so it's point, not center, marks the location
     justifyContent: 'center',
-    alignItems: 'center'
+    alignItems: 'center',
   },
   search: {
     zIndex: 3,
     position: 'absolute',
     top: 7.5,
     right: 7.5,
-    left: 7.5
+    left: 7.5,
   },
   center: {
     zIndex: 2,
@@ -916,23 +908,23 @@ const styles = StyleSheet.create({
     backgroundColor: colors.white,
     borderRadius: 54,
     borderWidth: 1,
-    borderColor: colors.palegreen
+    borderColor: colors.palegreen,
   },
   spinner: {
-    marginBottom: 15
+    marginBottom: 15,
   },
   autoCompleteTextInputContainer: {
     backgroundColor: 'transparent',
     borderBottomWidth: 0,
     borderTopWidth: 0,
     alignItems: 'center',
-    flexDirection: 'row'
+    flexDirection: 'row',
   },
   autoCompleteDescription: {
-    fontWeight: 'bold'
+    fontWeight: 'bold',
   },
   predefinedPlacesDescription: {
-    color: '#1faadb'
+    color: '#1faadb',
   },
   autoCompleteTextInput: {
     height: 52,
@@ -943,37 +935,37 @@ const styles = StyleSheet.create({
     fontFamily: 'Roboto',
     fontSize: 16,
     lineHeight: 21,
-    color: colors.grey
+    color: colors.grey,
   },
   autoCompleteListView: {
     backgroundColor: colors.white,
     marginHorizontal: 9,
-    marginTop: 8
+    marginTop: 8,
   },
   locationLink: {
     color: colors.green,
     textDecorationLine: 'underline',
-    backgroundColor: 'transparent'
-  }
-})
+    backgroundColor: 'transparent',
+  },
+});
 
 Location.propTypes = {
   t: PropTypes.func.isRequired,
   updateDraft: PropTypes.func.isRequired,
   navigation: PropTypes.object.isRequired,
   drafts: PropTypes.array.isRequired,
-  maps: PropTypes.array
-}
+  maps: PropTypes.array,
+};
 
 const mapDispatchToProps = {
-  updateDraft
-}
+  updateDraft,
+};
 
-const mapStateToProps = ({ drafts, maps }) => ({ drafts, maps })
+const mapStateToProps = ({drafts, maps}) => ({drafts, maps});
 
 export default withNamespaces()(
   connect(
     mapStateToProps,
-    mapDispatchToProps
-  )(Location)
-)
+    mapDispatchToProps,
+  )(Location),
+);
