@@ -715,7 +715,7 @@ export class Location extends Component {
               currentLocation={false}
             />
           )}
-          {/*
+
           <MapboxGL.MapView
             accessible={true}
             accessibilityLabel={`Your current locations is ${
@@ -745,7 +745,7 @@ export class Location extends Component {
               maxZoomLevel={16}
             />
           </MapboxGL.MapView>
-           */}
+
           {!this.readOnly && (
             <View>
               {centeringMap ? (
