@@ -207,7 +207,7 @@ class TextInput extends Component {
           )}
           <FormInput
             autoFocus={autoFocus}
-            // keyboardType={showPlaceholder && this.props.keyboardType}
+            keyboardType={showPlaceholder ? null : this.props.keyboardType}
             autoCapitalize={upperCase ? 'sentences' : 'none'}
             blurOnSubmit
             onBlur={this.onEndEditing}
