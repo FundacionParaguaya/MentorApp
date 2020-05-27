@@ -1,5 +1,6 @@
 package com.povertystoplightapp;
 
+import com.povertystoplightapp.CustomDeletePackage;
 import androidx.multidex.MultiDexApplication;
 import android.app.Application;
 import android.content.Context;
@@ -31,6 +32,7 @@ public class MainApplication extends MultiDexApplication implements ReactApplica
           List<ReactPackage> packages = new PackageList(this).getPackages();
           // Packages that cannot be autolinked yet can be added manually here, for example:
           // packages.add(new MyReactNativePackage());
+          packages.add(new CustomDeletePackage());
           return packages;
         }
 
