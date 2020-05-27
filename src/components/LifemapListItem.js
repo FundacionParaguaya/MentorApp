@@ -1,28 +1,28 @@
-import React, { Component } from 'react'
-import PropTypes from 'prop-types'
-import { Text, StyleSheet, View } from 'react-native'
-import ListItem from './ListItem'
+import React, {Component} from 'react';
+import PropTypes from 'prop-types';
+import {Text, StyleSheet, View} from 'react-native';
+import ListItem from './ListItem';
 
-import colors from '../theme.json'
-import globalStyles from '../globalStyles'
+import colors from '../theme.json';
+import globalStyles from '../globalStyles';
 class LifemapListItem extends Component {
   render() {
     return (
-      <ListItem style={{ ...styles.listItem }} onPress={this.props.handleClick}>
+      <ListItem style={{...styles.listItem}} onPress={this.props.handleClick}>
         <View style={styles.listItemContainer}>
-          <Text style={{ ...globalStyles.p, ...styles.p }}>
+          <Text style={{...globalStyles.p, ...styles.p}}>
             {this.props.name}
           </Text>
         </View>
       </ListItem>
-    )
+    );
   }
 }
 
 LifemapListItem.propTypes = {
   name: PropTypes.string.isRequired,
-  handleClick: PropTypes.func.isRequired
-}
+  handleClick: PropTypes.func.isRequired,
+};
 
 const styles = StyleSheet.create({
   listItem: {
@@ -30,7 +30,7 @@ const styles = StyleSheet.create({
     paddingLeft: 25,
     flexDirection: 'row',
     alignItems: 'center',
-    flex: 1
+    flex: 1,
   },
   listItemContainer: {
     height: 95,
@@ -39,12 +39,13 @@ const styles = StyleSheet.create({
     marginLeft: 25,
     flexDirection: 'row',
     flexWrap: 'wrap',
-    flex: 1
+    flex: 1,
   },
   p: {
     paddingRight: 20,
-    alignSelf: 'center'
-  }
-})
+    paddingTop: 36,
+    alignSelf: 'center',
+  },
+});
 
-export default LifemapListItem
+export default LifemapListItem;
