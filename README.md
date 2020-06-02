@@ -18,7 +18,8 @@ This is the source repository for the Poverty Stoplight native mobile app. If yo
 
 ## To run
 
-- if you are using mac, run `chmod 755 android/gradlew` in order to avoid a nasty error.
+- make sure to set up your `ANDROID_SDK` variable https://stackoverflow.com/questions/38835931/react-native-adb-reverse-enoent .
+- if you are using mac, run `chmod 755 android/gradlew` .
 - `npm run ios` for IOS dev mode
 - `npm run android` for Android dev mode
 

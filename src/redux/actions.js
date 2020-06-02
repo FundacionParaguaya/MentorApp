@@ -228,7 +228,6 @@ export const submitDraftWithImages = (env, token, id, sanitizedSnapshot) => {
           headers: {
             Authorization: `Bearer ${token}`,
             'content-type': 'multipart/form-data',
-            Accept: 'application/json',
           },
           body: formData,
         },
