@@ -1,43 +1,43 @@
-import NetInfo from '@react-native-community/netinfo'
-import PropTypes from 'prop-types'
-import React, { Component } from 'react'
-import { withNamespaces } from 'react-i18next'
+import NetInfo from '@react-native-community/netinfo';
+import PropTypes from 'prop-types';
+import React, {Component} from 'react';
+import {withNamespaces} from 'react-i18next';
 import {
   PermissionsAndroid,
   ScrollView,
   StyleSheet,
   Text,
-  View
-} from 'react-native'
-import RNHTMLtoPDF from 'react-native-html-to-pdf'
-import RNPrint from 'react-native-print'
-import { connect } from 'react-redux'
-import RNFetchBlob from 'rn-fetch-blob'
+  View,
+} from 'react-native';
+import RNHTMLtoPDF from 'react-native-html-to-pdf';
+import RNPrint from 'react-native-print';
+import {connect} from 'react-redux';
+import RNFetchBlob from 'rn-fetch-blob';
 
-import Button from '../../components/Button'
-import LifemapVisual from '../../components/LifemapVisual'
-import RoundImage from '../../components/RoundImage'
-import { url } from '../../config'
-import globalStyles from '../../globalStyles'
+import Button from '../../components/Button';
+import LifemapVisual from '../../components/LifemapVisual';
+import RoundImage from '../../components/RoundImage';
+import {url} from '../../config';
+import globalStyles from '../../globalStyles';
 import {
   submitDraft,
   updateDraft,
-  submitDraftWithImages
-} from '../../redux/actions'
-import EmailSentModal from '../modals/EmailSentModal'
-import WhatsappSentModal from '../modals/WhatsappSentModal'
-import { prepareDraftForSubmit } from '../utils/helpers'
+  submitDraftWithImages,
+} from '../../redux/actions';
+import EmailSentModal from '../modals/EmailSentModal';
+import WhatsappSentModal from '../modals/WhatsappSentModal';
+import {prepareDraftForSubmit} from '../utils/helpers';
 
 import {
   buildPDFOptions,
   buildPrintOptions,
-  getReportTitle
-} from '../utils/pdfs'
+  getReportTitle,
+} from '../utils/pdfs';
 
 export class Final extends Component {
-  unsubscribeNetChange
-  survey = this.props.navigation.getParam('survey')
-  draft = this.props.navigation.getParam('draft')
+  unsubscribeNetChange;
+  survey = this.props.navigation.getParam('survey');
+  draft = this.props.navigation.getParam('draft');
   state = {
     loading: false,
     downloading: false,
@@ -51,52 +51,52 @@ export class Final extends Component {
     connection: false,
     disabled: false,
     sendEmailFlag: false,
-    whatsappNotification: false
-  }
+    whatsappNotification: false,
+  };
 
   onPressBack = () => {
-    console.log('Press back')
-    console.log(this.draft.stoplightSkipped)
+    console.log('Press back');
+
     //If sign support, the go to sign view
     if (this.survey.surveyConfig.signSupport) {
       this.props.navigation.navigate('Signin', {
         step: 0,
         survey: this.survey,
-        draftId: this.draftId
-      })
+        draftId: this.draft.draftId,
+      });
     } else if (this.survey.surveyConfig.pictureSupport) {
       this.props.navigation.navigate('Picture', {
         survey: this.survey,
-        draftId: this.draftId
-      })
+        draftId: this.draft.draftId,
+      });
     } else {
       //TODO check picture upload config
       if (this.draft.stoplightSkipped) {
         this.props.navigation.navigate('BeginLifemap', {
           survey: this.survey,
-          draftId: this.draftId
-        })
+          draftId: this.draftId,
+        });
       } else {
         this.props.navigation.replace('Priorities', {
           resumeDraft: false,
           draftId: this.draft.draftId,
-          survey: this.survey
-        })
+          survey: this.survey,
+        });
       }
     }
-  }
+  };
 
   saveDraft = () => {
     this.setState({
-      loading: true
-    })
+      loading: true,
+    });
 
-    this.prepareDraftForSubmit()
-  }
+    this.prepareDraftForSubmit();
+  };
 
   prepareDraftForSubmit() {
     if (this.state.loading) {
-      const draft = prepareDraftForSubmit(this.draft, this.survey)
+      const draft = prepareDraftForSubmit(this.draft, this.survey);
 
       if (draft.pictures.length > 0) {
         this.props.submitDraftWithImages(
@@ -106,9 +106,9 @@ export class Final extends Component {
           {
             ...draft,
             sendEmail: this.state.sendEmailFlag,
-            whatsappNotification: this.state.whatsappNotification
-          }
-        )
+            whatsappNotification: this.state.whatsappNotification,
+          },
+        );
       } else {
         this.props.submitDraft(
           url[this.props.env],
@@ -118,24 +118,24 @@ export class Final extends Component {
             ...draft,
             sendEmail: this.state.sendEmailFlag,
             whatsappNotification: this.state.whatsappNotification,
-            pictures: []
-          }
-        )
+            pictures: [],
+          },
+        );
       }
 
       setTimeout(() => {
-        this.props.navigation.popToTop()
-        this.props.navigation.navigate('Dashboard')
-      }, 500)
+        this.props.navigation.popToTop();
+        this.props.navigation.navigate('Dashboard');
+      }, 500);
     } else {
       setTimeout(() => {
-        this.prepareDraftForSubmit()
-      }, 200)
+        this.prepareDraftForSubmit();
+      }, 200);
     }
   }
 
   async exportPDF() {
-    this.setState({ downloading: true })
+    this.setState({downloading: true});
     const permissionsGranted = await PermissionsAndroid.request(
       PermissionsAndroid.PERMISSIONS.WRITE_EXTERNAL_STORAGE,
       {
@@ -144,23 +144,23 @@ export class Final extends Component {
           'The app needs access to your file storage so you can download the file',
         buttonNeutral: 'Ask Me Later',
         buttonNegative: 'Cancel',
-        buttonPositive: 'OK'
-      }
-    )
+        buttonPositive: 'OK',
+      },
+    );
 
     if (permissionsGranted !== PermissionsAndroid.RESULTS.GRANTED) {
-      throw new Error()
+      throw new Error();
     }
 
     try {
-      const fileName = getReportTitle(this.draft)
-      const filePath = `${RNFetchBlob.fs.dirs.DownloadDir}/${fileName}.pdf`
+      const fileName = getReportTitle(this.draft);
+      const filePath = `${RNFetchBlob.fs.dirs.DownloadDir}/${fileName}.pdf`;
       const pdfOptions = buildPDFOptions(
         this.draft,
         this.survey,
-        this.props.lng || 'en'
-      )
-      const pdf = await RNHTMLtoPDF.convert(pdfOptions)
+        this.props.lng || 'en',
+      );
+      const pdf = await RNHTMLtoPDF.convert(pdfOptions);
 
       RNFetchBlob.fs
         .cp(pdf.filePath, filePath)
@@ -170,118 +170,115 @@ export class Final extends Component {
             description: 'Download complete',
             mime: 'application/pdf',
             path: filePath,
-            showNotification: true
-          })
+            showNotification: true,
+          }),
         )
         .then(() =>
-          RNFetchBlob.fs.scanFile([{ path: filePath, mime: 'application/pdf' }])
-        )
+          RNFetchBlob.fs.scanFile([{path: filePath, mime: 'application/pdf'}]),
+        );
 
-      this.setState({ downloading: false, filePath: pdf.filePath })
+      this.setState({downloading: false, filePath: pdf.filePath});
     } catch (error) {
-      alert(error)
+      alert(error);
     }
   }
 
   async print() {
-    this.setState({ printing: true })
+    this.setState({printing: true});
     const options = buildPrintOptions(
       this.draft,
       this.survey,
-      this.props.lng || 'en'
-    )
+      this.props.lng || 'en',
+    );
     try {
-      await RNPrint.print(options)
-      this.setState({ printing: false })
+      await RNPrint.print(options);
+      this.setState({printing: false});
     } catch (error) {
-      alert(error)
+      alert(error);
     }
   }
 
   sendMailToUser() {
-    this.setState({ sendingEmail: true, sendEmailFlag: true })
+    this.setState({sendingEmail: true, sendEmailFlag: true});
 
     setTimeout(() => {
-      this.setState({ sendingEmail: false, modalOpen: true })
-    }, 300)
+      this.setState({sendingEmail: false, modalOpen: true});
+    }, 300);
   }
 
   sendWhatsappToUser() {
-    this.setState({ sendingWhatsapp: true, whatsappNotification: true })
+    this.setState({sendingWhatsapp: true, whatsappNotification: true});
 
     setTimeout(() => {
-      this.setState({ sendingWhatsapp: false, whatsappModalOpen: true })
-    }, 300)
+      this.setState({sendingWhatsapp: false, whatsappModalOpen: true});
+    }, 300);
   }
 
   handleCloseModal = () =>
-    this.setState({ modalOpen: false, whatsappModalOpen: false })
+    this.setState({modalOpen: false, whatsappModalOpen: false});
 
   setConnectivityState = isConnected => {
     isConnected
-      ? this.setState({ connection: true, error: '' })
-      : this.setState({ connection: false, error: 'No connection' })
-  }
+      ? this.setState({connection: true, error: ''})
+      : this.setState({connection: false, error: 'No connection'});
+  };
 
   shouldComponentUpdate() {
-    return this.props.navigation.isFocused()
+    return this.props.navigation.isFocused();
   }
 
   componentDidMount() {
-    this.props.updateDraft(this.draft)
+    this.props.updateDraft(this.draft);
     this.props.navigation.setParams({
-      onPressBack: this.onPressBack
-    })
-    NetInfo.fetch().then(state => this.setConnectivityState(state.isConnected))
+      onPressBack: this.onPressBack,
+    });
+    NetInfo.fetch().then(state => this.setConnectivityState(state.isConnected));
     this.unsubscribeNetChange = NetInfo.addEventListener(state => {
-      this.setConnectivityState(state.isConnected)
-    })
+      this.setConnectivityState(state.isConnected);
+    });
   }
 
   componentWillUnmount() {
     if (this.unsubscribeNetChange) {
-      this.unsubscribeNetChange()
+      this.unsubscribeNetChange();
     }
   }
 
   render() {
-    const { t } = this.props
+    const {t} = this.props;
     const {
-      familyData: { familyMembersList }
-    } = this.draft
+      familyData: {familyMembersList},
+    } = this.draft;
 
     const userEmail =
       !!familyMembersList &&
       familyMembersList.length &&
-      familyMembersList.find(user => user.email)
+      familyMembersList.find(user => user.email);
 
     const userTelephone =
       !!familyMembersList &&
       familyMembersList.length &&
-      familyMembersList.find(user => user.phoneNumber)
+      familyMembersList.find(user => user.phoneNumber);
 
-    const stoplightSkipped = this.draft.stoplightSkipped
-    console.log('stoplightSkipped', stoplightSkipped)
+    const stoplightSkipped = this.draft.stoplightSkipped;
+    console.log('stoplightSkipped', stoplightSkipped);
     return (
       <ScrollView
         style={globalStyles.background}
-        contentContainerStyle={styles.contentContainer}
-      >
+        contentContainerStyle={styles.contentContainer}>
         <View
           style={{
-            ...globalStyles.container
-          }}
-        >
-          <Text style={{ ...globalStyles.h1, ...styles.text }}>
+            ...globalStyles.container,
+          }}>
+          <Text style={{...globalStyles.h1, ...styles.text}}>
             {t('views.lifemap.great')}
           </Text>
           <Text
             style={{
               ...globalStyles.h3,
               ...styles.text,
-              paddingBottom: 30
-            }}
-          >
+              paddingBottom: 30,
+            }}>
             {t('views.lifemap.youHaveCompletedTheLifemap')}
           </Text>
           <RoundImage source="partner" />
@@ -318,7 +315,7 @@ export class Final extends Component {
               {userEmail && (
                 <Button
                   id="email"
-                  style={{ ...styles.button, ...styles.emailButton }}
+                  style={{...styles.button, ...styles.emailButton}}
                   handleClick={this.sendMailToUser.bind(this)}
                   icon="email"
                   outlined
@@ -330,7 +327,7 @@ export class Final extends Component {
               {userTelephone && (
                 <Button
                   id="whatsapp"
-                  style={{ ...styles.button, ...styles.emailButton }}
+                  style={{...styles.button, ...styles.emailButton}}
                   handleClick={this.sendWhatsappToUser.bind(this)}
                   outlined
                   communityIcon="whatsapp"
@@ -354,7 +351,7 @@ export class Final extends Component {
             userIsOnline={this.state.connection}
           />
         </View>
-        <View style={{ height: 50 }}>
+        <View style={{height: 50}}>
           <Button
             id="save-draft"
             colored
@@ -364,34 +361,34 @@ export class Final extends Component {
           />
         </View>
       </ScrollView>
-    )
+    );
   }
 }
 const styles = StyleSheet.create({
   contentContainer: {
     flexGrow: 1,
     flexDirection: 'column',
-    justifyContent: 'space-between'
+    justifyContent: 'space-between',
   },
   text: {
-    textAlign: 'center'
+    textAlign: 'center',
   },
   buttonBar: {
     marginBottom: 30,
     flexDirection: 'row',
     justifyContent: 'space-between',
     flexWrap: 'wrap',
-    alignItems: 'center'
+    alignItems: 'center',
   },
-  button: { width: '49%', alignSelf: 'center', marginTop: 20 },
+  button: {width: '49%', alignSelf: 'center', marginTop: 20},
 
   emailButton: {
     marginTop: 7,
     marginLeft: 'auto',
     marginRight: 'auto',
-    alignSelf: 'center'
-  }
-})
+    alignSelf: 'center',
+  },
+});
 
 Final.propTypes = {
   t: PropTypes.func.isRequired,
@@ -401,22 +398,22 @@ Final.propTypes = {
   submitDraftWithImages: PropTypes.func.isRequired,
   env: PropTypes.string.isRequired,
   user: PropTypes.object.isRequired,
-  lng: PropTypes.string.isRequired
-}
+  lng: PropTypes.string.isRequired,
+};
 
-const mapStateToProps = ({ env, user }) => ({
+const mapStateToProps = ({env, user}) => ({
   env,
-  user
-})
+  user,
+});
 const mapDispatchToProps = {
   submitDraft,
   updateDraft,
-  submitDraftWithImages
-}
+  submitDraftWithImages,
+};
 
 export default withNamespaces()(
   connect(
     mapStateToProps,
-    mapDispatchToProps
-  )(Final)
-)
+    mapDispatchToProps,
+  )(Final),
+);
