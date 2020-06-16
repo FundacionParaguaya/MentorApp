@@ -4,7 +4,7 @@ import {PhoneNumberUtil} from 'google-libphonenumber';
 export const SET_LOGIN_STATE = 'SET_LOGIN_STATE';
 export const USER_LOGOUT = 'USER_LOGOUT';
 
-export const login = (username, password, env) => dispatch =>
+export const login = (username, password, env) => (dispatch) =>
   fetch(
     `${env}/oauth/token?username=${username}&password=${password}&grant_type=password`,
     {
@@ -14,7 +14,7 @@ export const login = (username, password, env) => dispatch =>
       },
     },
   )
-    .then(data => {
+    .then((data) => {
       if (data.status !== 200) {
         dispatch({
           role: null,
@@ -26,7 +26,7 @@ export const login = (username, password, env) => dispatch =>
         throw new Error();
       } else return data.json();
     })
-    .then(data =>
+    .then((data) =>
       dispatch({
         role: data.user.authorities ? data.user.authorities[0].authority : null,
         type: SET_LOGIN_STATE,
@@ -35,7 +35,7 @@ export const login = (username, password, env) => dispatch =>
         username: data.user.username,
       }),
     )
-    .catch(e => e);
+    .catch((e) => e);
 
 export const logout = () => ({
   type: USER_LOGOUT,
@@ -45,7 +45,7 @@ export const logout = () => ({
 
 export const SET_DOWNLOADMAPSIMAGES = 'SET_DOWNLOADMAPSIMAGES';
 
-export const setDownloadMapsAndImages = downloadMapsAndImages => ({
+export const setDownloadMapsAndImages = (downloadMapsAndImages) => ({
   type: SET_DOWNLOADMAPSIMAGES,
   downloadMapsAndImages,
 });
@@ -54,7 +54,7 @@ export const setDownloadMapsAndImages = downloadMapsAndImages => ({
 
 export const SET_DIMENSIONS = 'SET_DIMENSIONS';
 
-export const setDimensions = dimensions => ({
+export const setDimensions = (dimensions) => ({
   type: SET_DIMENSIONS,
   dimensions,
 });
@@ -63,7 +63,7 @@ export const setDimensions = dimensions => ({
 
 export const SET_ENV = 'SET_ENV';
 
-export const setEnv = env => ({
+export const setEnv = (env) => ({
   type: SET_ENV,
   env,
 });
@@ -168,17 +168,17 @@ export const SUBMIT_DRAFT = 'SUBMIT_DRAFT';
 export const SUBMIT_DRAFT_COMMIT = 'SUBMIT_DRAFT_COMMIT';
 export const SUBMIT_DRAFT_ROLLBACK = 'SUBMIT_DRAFT_ROLLBACK';
 
-export const createDraft = payload => ({
+export const createDraft = (payload) => ({
   type: CREATE_DRAFT,
   payload,
 });
 
-export const updateDraft = payload => ({
+export const updateDraft = (payload) => ({
   type: UPDATE_DRAFT,
   payload,
 });
 
-export const deleteDraft = id => ({
+export const deleteDraft = (id) => ({
   type: DELETE_DRAFT,
   id,
 });
@@ -208,12 +208,6 @@ export const LOAD_IMAGES_ROLLBACK = 'LOAD_IMAGES_ROLLBACK';
 export const submitDraftWithImages = (env, token, id, sanitizedSnapshot) => {
   console.log('Calling submitDraftWithImages');
   let formData = createFormData(sanitizedSnapshot);
-  console.log(formData);
-  console.log('///COMPARE');
-  console.log(env);
-  console.log(token);
-  console.log(id);
-  console.log(sanitizedSnapshot);
 
   return {
     type: LOAD_IMAGES,
@@ -250,13 +244,13 @@ export const submitDraftWithImages = (env, token, id, sanitizedSnapshot) => {
   };
 };
 
-const createFormData = sanitizedSnapshot => {
+const createFormData = (sanitizedSnapshot) => {
   let data = new FormData();
   console.log('sanitizedSnapshot');
   console.log(sanitizedSnapshot);
 
   if (sanitizedSnapshot.pictures) {
-    sanitizedSnapshot.pictures.forEach(picture => {
+    sanitizedSnapshot.pictures.forEach((picture) => {
       data.append('pictures', {
         uri: picture.content,
         name: picture.name,
@@ -273,7 +267,7 @@ export const submitDraft = (env, token, id, payload) => {
 
   let {economicSurveyDataList} = payload;
 
-  const validEconomicIndicator = ec =>
+  const validEconomicIndicator = (ec) =>
     (ec.value !== null && ec.value !== undefined && ec.value !== '') ||
     (!!ec.multipleValue && ec.multipleValue.length > 0);
 
@@ -281,7 +275,7 @@ export const submitDraft = (env, token, id, payload) => {
     validEconomicIndicator,
   );
   sanitizedSnapshot.economicSurveyDataList = economicSurveyDataList;
-  sanitizedSnapshot.familyData.familyMembersList.forEach(member => {
+  sanitizedSnapshot.familyData.familyMembersList.forEach((member) => {
     let {socioEconomicAnswers = []} = member;
     delete member.memberIdentifier;
     delete member.id;
@@ -338,7 +332,7 @@ export const submitDraft = (env, token, id, payload) => {
 
 export const SWITCH_LANGUAGE = 'SWITCH_LANGUAGE';
 
-export const switchLanguage = language => ({
+export const switchLanguage = (language) => ({
   type: SWITCH_LANGUAGE,
   language,
 });
@@ -376,7 +370,7 @@ export const setSyncedState = (item, value) => ({
   value,
 });
 
-export const setAppVersion = value => ({
+export const setAppVersion = (value) => ({
   type: SET_SYNCED_STATE,
   item: 'appVersion',
   value,
@@ -391,12 +385,12 @@ export const resetSyncState = () => ({
 export const TOGGLE_API_VERSION_MODAL = 'TOGGLE_API_VERSION_MODAL';
 export const MARK_VERSION_CHECKED = 'MARK_VERSION_CHECKED';
 
-export const markVersionCheked = timestamp => ({
+export const markVersionCheked = (timestamp) => ({
   type: MARK_VERSION_CHECKED,
   timestamp,
 });
 
-export const toggleAPIVersionModal = isOpen => ({
+export const toggleAPIVersionModal = (isOpen) => ({
   type: TOGGLE_API_VERSION_MODAL,
   isOpen,
 });
