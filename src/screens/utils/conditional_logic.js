@@ -350,6 +350,7 @@ export const shouldCleanUp = (
   }
   if (
     !cleanUp &&
+    currentAnswer.value &&
     conditionalQuestion.options &&
     conditionalQuestion.options.length > 0
   ) {
@@ -363,6 +364,7 @@ export const shouldCleanUp = (
       currentDraft,
       memberIndex
     )
+
     cleanUp = !availableOptions.find(
       option => option.value === currentAnswer.value
     )
