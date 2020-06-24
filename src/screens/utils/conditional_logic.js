@@ -1,4 +1,4 @@
-import moment from 'moment'
+import moment from 'moment';
 
 // Alternative to get() in lodash
 const get = (obj, path, defaultValue = null) =>
@@ -7,94 +7,94 @@ const get = (obj, path, defaultValue = null) =>
     .filter(Boolean)
     .reduce(
       (a, c) => (Object.hasOwnProperty.call(a, c) ? a[c] : defaultValue),
-      obj
-    )
+      obj,
+    );
 
 export const CONDITION_TYPES = {
   SOCIOECONOMIC: 'socioEconomic',
   FAMILY: 'family',
-  MEMBER_SOCIOEONOMIC: 'memberSocioEconomic'
-}
+  MEMBER_SOCIOEONOMIC: 'memberSocioEconomic',
+};
 
 export const JOIN_OPERATIONS = {
   AND: 'AND',
-  OR: 'OR'
-}
+  OR: 'OR',
+};
 
 /**
  *  Returns an array with all of the conditional questions
  * @param {*} survey the current survey
  */
-export const getConditionalQuestions = survey => {
-  const surveyEconomicQuestions = survey.surveyEconomicQuestions || []
-  const conditionalQuestions = []
-  surveyEconomicQuestions.forEach(eq => {
+export const getConditionalQuestions = (survey) => {
+  const surveyEconomicQuestions = survey.surveyEconomicQuestions || [];
+  const conditionalQuestions = [];
+  surveyEconomicQuestions.forEach((eq) => {
     if (
       (eq.conditions && eq.conditions.length > 0) ||
       (eq.conditionGroups && eq.conditionGroups.length > 0)
     ) {
-      conditionalQuestions.push(eq)
+      conditionalQuestions.push(eq);
     } else {
       // Checking conditional options only if needed
-      const options = eq.options || []
+      const options = eq.options || [];
       for (const option of options) {
         if (option.conditions && option.conditions.length > 0) {
-          conditionalQuestions.push(eq)
-          return
+          conditionalQuestions.push(eq);
+          return;
         }
       }
     }
-  })
-  return conditionalQuestions
-}
+  });
+  return conditionalQuestions;
+};
 
 /**
  *  Returns an object with conditional questions keys
  * @param {*} conditionalQuestions an array with all of the conditional questions
  */
-export const getElementsWithConditionsOnThem = conditionalQuestions => {
-  const questionsWithConditionsOnThem = []
-  const memberKeysWithConditionsOnThem = []
+export const getElementsWithConditionsOnThem = (conditionalQuestions) => {
+  const questionsWithConditionsOnThem = [];
+  const memberKeysWithConditionsOnThem = [];
 
-  const addTargetIfApplies = condition => {
+  const addTargetIfApplies = (condition) => {
     // Addind this so it works after changing the key to scope
-    const scope = condition.scope || condition.type
+    const scope = condition.scope || condition.type;
     if (
       scope !== CONDITION_TYPES.FAMILY &&
       !questionsWithConditionsOnThem.includes(condition.codeName)
     ) {
-      questionsWithConditionsOnThem.push(condition.codeName)
+      questionsWithConditionsOnThem.push(condition.codeName);
     }
     if (
       scope === CONDITION_TYPES.FAMILY &&
       !memberKeysWithConditionsOnThem.includes(condition.codeName)
     ) {
-      memberKeysWithConditionsOnThem.push(condition.codeName)
+      memberKeysWithConditionsOnThem.push(condition.codeName);
     }
-  }
+  };
 
-  conditionalQuestions.forEach(conditionalQuestion => {
-    let conditions = []
-    const { conditionGroups } = conditionalQuestion
+  conditionalQuestions.forEach((conditionalQuestion) => {
+    let conditions = [];
+    const {conditionGroups} = conditionalQuestion;
     if (conditionGroups && conditionGroups.length > 0) {
-      conditionGroups.forEach(conditionGroup => {
-        conditions = [...conditions, ...conditionGroup.conditions]
-      })
+      conditionGroups.forEach((conditionGroup) => {
+        conditions = [...conditions, ...conditionGroup.conditions];
+      });
     } else {
-      ({ conditions = [] } = conditionalQuestion)
+      ({conditions = []} = conditionalQuestion);
     }
 
-    conditions.forEach(addTargetIfApplies)
+    conditions.forEach(addTargetIfApplies);
 
     // Checking conditional options only if needed
-    const options = conditionalQuestion.options || []
-    options.forEach(option => {
-      const { conditions: optionConditions = [] } = option
-      optionConditions.forEach(addTargetIfApplies)
-    })
-  })
-  return { questionsWithConditionsOnThem, memberKeysWithConditionsOnThem }
-}
+    const options = conditionalQuestion.options || [];
+    options.forEach((option) => {
+      const {conditions: optionConditions = []} = option;
+      optionConditions.forEach(addTargetIfApplies);
+    });
+  });
+  return {questionsWithConditionsOnThem, memberKeysWithConditionsOnThem};
+};
 
 /**
  *  Returns a boolean that is the result of evaluation the condition against the question
@@ -109,54 +109,54 @@ export const evaluateCondition = (condition, targetQuestion) => {
     GREATER_THAN: 'greater_than',
     LESS_THAN_EQ: 'less_than_eq',
     GREATER_THAN_EQ: 'greater_than_eq',
-    BETWEEN: 'between'
-  }
+    BETWEEN: 'between',
+  };
   if (!targetQuestion) {
-    return false
+    return false;
   }
 
   if (condition.operator === OPERATORS.EQUALS) {
     if (moment.isMoment(targetQuestion.value)) {
       return (
         moment().diff(targetQuestion.value, 'years') === Number(condition.value)
-      )
+      );
     }
-    return targetQuestion.value === condition.value
+    return targetQuestion.value === condition.value;
   }
   if (condition.operator === OPERATORS.NOT_EQUALS) {
     if (moment.isMoment(targetQuestion.value)) {
       return (
         moment().diff(targetQuestion.value, 'years') !== Number(condition.value)
-      )
+      );
     }
-    return targetQuestion.value !== condition.value
+    return targetQuestion.value !== condition.value;
   }
   if (condition.operator === OPERATORS.LESS_THAN) {
     if (moment.isMoment(targetQuestion.value)) {
-      return moment().diff(targetQuestion.value, 'years') < condition.value
+      return moment().diff(targetQuestion.value, 'years') < condition.value;
     }
-    return targetQuestion.value < condition.value
+    return targetQuestion.value < condition.value;
   }
   if (condition.operator === OPERATORS.GREATER_THAN) {
     if (moment.isMoment(targetQuestion.value)) {
-      return moment().diff(targetQuestion.value, 'years') > condition.value
+      return moment().diff(targetQuestion.value, 'years') > condition.value;
     }
-    return targetQuestion.value > condition.value
+    return targetQuestion.value > condition.value;
   }
   if (condition.operator === OPERATORS.LESS_THAN_EQ) {
     if (moment.isMoment(targetQuestion.value)) {
-      return moment().diff(targetQuestion.value, 'years') <= condition.value
+      return moment().diff(targetQuestion.value, 'years') <= condition.value;
     }
-    return targetQuestion.value <= condition.value
+    return targetQuestion.value <= condition.value;
   }
   if (condition.operator === OPERATORS.GREATER_THAN_EQ) {
     if (moment.isMoment(targetQuestion.value)) {
-      return moment().diff(targetQuestion.value, 'years') >= condition.value
+      return moment().diff(targetQuestion.value, 'years') >= condition.value;
     }
-    return targetQuestion.value >= condition.value
+    return targetQuestion.value >= condition.value;
   }
-  return false
-}
+  return false;
+};
 
 /**
  * Checks if the condition is met given the condition and the current state of
@@ -166,18 +166,18 @@ export const evaluateCondition = (condition, targetQuestion) => {
  * @param {*} memberIndex the index of the member inside the family data
  */
 export const conditionMet = (condition, currentDraft, memberIndex) => {
-  const socioEconomicAnswers = currentDraft.economicSurveyDataList || []
-  const { familyMembersList } = currentDraft.familyData
-  let targetQuestion = null
+  const socioEconomicAnswers = currentDraft.economicSurveyDataList || [];
+  const {familyMembersList} = currentDraft.familyData;
+  let targetQuestion = null;
   // Adding this to support backwards compatibility
-  const scope = condition.scope || condition.type
+  const scope = condition.scope || condition.type;
   if (scope === CONDITION_TYPES.SOCIOECONOMIC) {
     // In this case target should be located in the socioeconomic answers
     targetQuestion = socioEconomicAnswers.find(
-      element => element.key === condition.codeName
-    )
+      (element) => element.key === condition.codeName,
+    );
   } else if (scope === CONDITION_TYPES.FAMILY) {
-    const familyMember = familyMembersList[memberIndex]
+    const familyMember = familyMembersList[memberIndex];
     // TODO HARDCODED FOR IRRADIA. WE NEED A BETTER WAY TO SPECIFY THAT THE CONDITION
     // HAS BEEN MADE ON A DATE
     // const value = familyMember[condition.codeName]
@@ -185,11 +185,11 @@ export const conditionMet = (condition, currentDraft, memberIndex) => {
     //   : null;
     // TODO hardcoded for Irradia, the survey has an error with the field.
     // The lines above should be used once data is fixed for that survey
-    let value
+    let value;
     if (condition.codeName.toLowerCase() === 'birthdate') {
       value = familyMember['birthDate']
         ? moment.unix(familyMember['birthDate'])
-        : null
+        : null;
       // TODO DELETE THIS after reviewing the conditional logic
       // In case the target question is null, we should return true.
       // Eventually, the conditional object should include information about that
@@ -197,18 +197,18 @@ export const conditionMet = (condition, currentDraft, memberIndex) => {
       if (!value) {
         // Now we have a proper feature of showIfNoData. Keeping this
         // hardcode just for backwards compatibility for IRRADIA.
-        return true
+        return true;
       }
     } else {
-      return null
+      return null;
     }
-    targetQuestion = { value }
+    targetQuestion = {value};
   } else if (scope === CONDITION_TYPES.MEMBER_SOCIOEONOMIC) {
-    const { socioEconomicAnswers: memberSocioEconomicAnswers = [] } =
-      familyMembersList[memberIndex] || []
+    const {socioEconomicAnswers: memberSocioEconomicAnswers = []} =
+      familyMembersList[memberIndex] || [];
     targetQuestion = memberSocioEconomicAnswers.find(
-      element => element.key === condition.codeName
-    )
+      (element) => element.key === condition.codeName,
+    );
   }
 
   // Added support for showIfNoData. In the case this field is set to true in the
@@ -218,7 +218,7 @@ export const conditionMet = (condition, currentDraft, memberIndex) => {
     condition.showIfNoData &&
     (!targetQuestion || (!targetQuestion.value && targetQuestion.value !== 0))
   ) {
-    return true
+    return true;
   }
   // Adding support for several values spec. In case we find more than one value,
   // the condition is considered to be met if the evaluation returns true for at least one
@@ -226,16 +226,15 @@ export const conditionMet = (condition, currentDraft, memberIndex) => {
   if (Array.isArray(condition.values) && condition.values.length > 0) {
     return condition.values.reduce((acc, current) => {
       return (
-        acc ||
-        evaluateCondition({ ...condition, value: current }, targetQuestion)
-      )
-    }, false)
+        acc || evaluateCondition({...condition, value: current}, targetQuestion)
+      );
+    }, false);
   }
-  return evaluateCondition(condition, targetQuestion)
-}
+  return evaluateCondition(condition, targetQuestion);
+};
 
 const applyBooleanOperations = (op1, op2, operator) =>
-  operator === JOIN_OPERATIONS.AND ? op1 && op2 : op1 || op2
+  operator === JOIN_OPERATIONS.AND ? op1 && op2 : op1 || op2;
 
 /**
  * Decides whether a question should be shown to the user or not
@@ -243,35 +242,35 @@ const applyBooleanOperations = (op1, op2, operator) =>
  * @param {*} currentDraft the draft from redux state
  */
 export const shouldShowQuestion = (question, currentDraft, memberIndex) => {
-  let shouldShow = true
+  let shouldShow = true;
   if (question.conditionGroups && question.conditionGroups.length > 0) {
-    ({ result: shouldShow } = question.conditionGroups.reduce(
+    ({result: shouldShow} = question.conditionGroups.reduce(
       (acc, current) => {
-        const { conditions, groupOperator, joinNextGroup } = current
+        const {conditions, groupOperator, joinNextGroup} = current;
         const groupResult = conditions.reduce(
           (accGroup, currentFromGroup) =>
             applyBooleanOperations(
               accGroup,
               conditionMet(currentFromGroup, currentDraft, memberIndex),
-              groupOperator
+              groupOperator,
             ),
-          groupOperator === JOIN_OPERATIONS.AND
-        )
+          groupOperator === JOIN_OPERATIONS.AND,
+        );
         return {
           result: applyBooleanOperations(acc.result, groupResult, acc.joinPrev),
-          joinPrev: joinNextGroup
-        }
+          joinPrev: joinNextGroup,
+        };
       },
-      { result: true, joinPrev: JOIN_OPERATIONS.AND }
-    ))
+      {result: true, joinPrev: JOIN_OPERATIONS.AND},
+    ));
   } else if (question.conditions && question.conditions.length > 0) {
     shouldShow = question.conditions.reduce(
       (acc, current) => acc && conditionMet(current, currentDraft, memberIndex),
-      true
-    )
+      true,
+    );
   }
-  return shouldShow
-}
+  return shouldShow;
+};
 
 /**
  * This function is used so we can know beforehand if the family member
@@ -283,14 +282,14 @@ export const shouldShowQuestion = (question, currentDraft, memberIndex) => {
 export const familyMemberWillHaveQuestions = (
   questions,
   currentDraft,
-  memberIndex
+  memberIndex,
 ) => {
   return questions.forFamilyMember.reduce(
     (acc, current) =>
       acc || shouldShowQuestion(current, currentDraft, memberIndex),
-    false
-  )
-}
+    false,
+  );
+};
 
 /**
  * Filters the options that are going to be displayed for a question
@@ -300,9 +299,9 @@ export const familyMemberWillHaveQuestions = (
  * @param {*} index the index of the family member
  */
 export const getConditionalOptions = (question, currentDraft, index) =>
-  question.options.filter(option =>
-    shouldShowQuestion(option, currentDraft, index)
-  )
+  question.options.filter((option) =>
+    shouldShowQuestion(option, currentDraft, index),
+  );
 
 /**
  * Returns a boolean indicating if the value of the conditionalQuestion should be cleaned up.
@@ -315,29 +314,29 @@ export const shouldCleanUp = (
   conditionalQuestion,
   currentDraft,
   member,
-  memberIndex
+  memberIndex,
 ) => {
-  let currentAnswer
+  let currentAnswer;
   if (conditionalQuestion.forFamilyMember) {
     currentAnswer = get(member, 'socioEconomicAnswers', []).find(
-      ea => ea.key === conditionalQuestion.codeName
-    )
+      (ea) => ea.key === conditionalQuestion.codeName,
+    );
   } else {
     currentAnswer = get(currentDraft, 'economicSurveyDataList', []).find(
-      ea => ea.key === conditionalQuestion.codeName
-    )
+      (ea) => ea.key === conditionalQuestion.codeName,
+    );
   }
 
   const answerWithEmptyValue = currentAnswer
     ? currentAnswer.multipleValue
       ? !currentAnswer.multipleValue.length
       : !currentAnswer.value
-    : null
+    : null;
 
   if (!currentAnswer || answerWithEmptyValue) {
-    return false
+    return false;
   }
-  let cleanUp = false
+  let cleanUp = false;
   if (
     conditionalQuestion.conditions &&
     conditionalQuestion.conditions.length > 0
@@ -345,11 +344,12 @@ export const shouldCleanUp = (
     cleanUp = !shouldShowQuestion(
       conditionalQuestion,
       currentDraft,
-      memberIndex
-    )
+      memberIndex,
+    );
   }
   if (
     !cleanUp &&
+    currentAnswer.value &&
     conditionalQuestion.options &&
     conditionalQuestion.options.length > 0
   ) {
@@ -361,15 +361,16 @@ export const shouldCleanUp = (
     const availableOptions = getConditionalOptions(
       conditionalQuestion,
       currentDraft,
-      memberIndex
-    )
+      memberIndex,
+    );
+
     cleanUp = !availableOptions.find(
-      option => option.value === currentAnswer.value
-    )
+      (option) => option.value === currentAnswer.value,
+    );
   }
 
-  return cleanUp
-}
+  return cleanUp;
+};
 
 /**
  * Returns a new draft that contains an new/updated economic answer
@@ -377,18 +378,21 @@ export const shouldCleanUp = (
  * @param {*} economicAnswer the new answer for some economic question
  */
 export const getDraftWithUpdatedEconomic = (currentDraft, economicAnswer) => {
-  const { economicSurveyDataList = [] } = currentDraft
-  const updatedEconomics = [...economicSurveyDataList]
+  const {economicSurveyDataList = []} = currentDraft;
+  const updatedEconomics = [...economicSurveyDataList];
+
   const answerToUpdateIndex = updatedEconomics.findIndex(
-    a => a.key === economicAnswer.key
-  )
+    (a) => a.key === economicAnswer.key,
+  );
+
   if (answerToUpdateIndex !== -1) {
-    updatedEconomics[answerToUpdateIndex] = economicAnswer
+    updatedEconomics[answerToUpdateIndex] = economicAnswer;
   } else {
-    updatedEconomics.push(economicAnswer)
+    updatedEconomics.push(economicAnswer);
   }
-  return { ...currentDraft, economicSurveyDataList: updatedEconomics }
-}
+
+  return {...currentDraft, economicSurveyDataList: updatedEconomics};
+};
 
 /**
  * Returns a new draft that contains an new/updated economic answer for a family member
@@ -399,33 +403,33 @@ export const getDraftWithUpdatedEconomic = (currentDraft, economicAnswer) => {
 export const getDraftWithUpdatedFamilyEconomics = (
   currentDraft,
   economicAnswer,
-  index
+  index,
 ) => {
-  const { familyMembersList } = currentDraft.familyData
-  const updatedFamilyMembersList = [...familyMembersList]
-  const { socioEconomicAnswers = [] } = updatedFamilyMembersList[index]
-  const updatedEconomics = [...socioEconomicAnswers]
+  const {familyMembersList} = currentDraft.familyData;
+  const updatedFamilyMembersList = [...familyMembersList];
+  const {socioEconomicAnswers = []} = updatedFamilyMembersList[index];
+  const updatedEconomics = [...socioEconomicAnswers];
   updatedFamilyMembersList[index] = {
     ...updatedFamilyMembersList[index],
-    socioEconomicAnswers: updatedEconomics
-  }
+    socioEconomicAnswers: updatedEconomics,
+  };
   const answerToUpdateIndex = updatedEconomics.findIndex(
-    a => a.key === economicAnswer.key
-  )
+    (a) => a.key === economicAnswer.key,
+  );
 
   if (answerToUpdateIndex !== -1) {
-    updatedEconomics[answerToUpdateIndex] = economicAnswer
+    updatedEconomics[answerToUpdateIndex] = economicAnswer;
   } else {
-    updatedEconomics.push(economicAnswer)
+    updatedEconomics.push(economicAnswer);
   }
   return {
     ...currentDraft,
     familyData: {
       ...currentDraft.familyData,
-      familyMembersList: updatedFamilyMembersList
-    }
-  }
-}
+      familyMembersList: updatedFamilyMembersList,
+    },
+  };
+};
 
 /**
  * Returns a new draft that contains updated member data
@@ -438,21 +442,21 @@ export const getDraftWithUpdatedMember = (
   currentDraft,
   field,
   value,
-  index
+  index,
 ) => {
-  const { familyMembersList } = currentDraft.familyData
-  const updatedFamilyMembersList = [...familyMembersList]
-  const updatedFamilyMember = { ...familyMembersList[index] }
-  updatedFamilyMember[field] = value
-  updatedFamilyMembersList[index] = updatedFamilyMember
+  const {familyMembersList} = currentDraft.familyData;
+  const updatedFamilyMembersList = [...familyMembersList];
+  const updatedFamilyMember = {...familyMembersList[index]};
+  updatedFamilyMember[field] = value;
+  updatedFamilyMembersList[index] = updatedFamilyMember;
   return {
     ...currentDraft,
     familyData: {
       ...currentDraft.familyData,
-      familyMembersList: updatedFamilyMembersList
-    }
-  }
-}
+      familyMembersList: updatedFamilyMembersList,
+    },
+  };
+};
 
 /**
  * Returns a new draft that has applied conditional logic cascaded to all
@@ -464,14 +468,15 @@ export const getDraftWithUpdatedMember = (
 export const getDraftWithUpdatedQuestionsCascading = (
   draft,
   conditionalQuestions,
-  cleanupHook
+  cleanupHook,
 ) => {
-  let currentDraft = { ...draft }
-  conditionalQuestions.forEach(conditionalQuestion => {
+  let currentDraft = {...draft};
+
+  conditionalQuestions.forEach((conditionalQuestion) => {
     const cleanedAnswer = {
       key: conditionalQuestion.codeName,
-      value: ''
-    }
+      value: '',
+    };
     if (conditionalQuestion.forFamilyMember) {
       // Checking if we have to cleanup familyMembers socioeconomic answers
       currentDraft.familyData.familyMembersList.forEach((member, index) => {
@@ -480,23 +485,25 @@ export const getDraftWithUpdatedQuestionsCascading = (
           currentDraft = getDraftWithUpdatedFamilyEconomics(
             currentDraft,
             cleanedAnswer,
-            index
-          )
+            index,
+          );
           // If provided, calls the cleanupHook for the question that has been cleaned up
           if (cleanupHook) {
-            cleanupHook(conditionalQuestion, index)
+            cleanupHook(conditionalQuestion, index);
           }
         }
-      })
+      });
     } else if (shouldCleanUp(conditionalQuestion, currentDraft)) {
       // Cleaning up socioeconomic answer
-      currentDraft = getDraftWithUpdatedEconomic(currentDraft, cleanedAnswer)
+
+      currentDraft = getDraftWithUpdatedEconomic(currentDraft, cleanedAnswer);
+
       // If provided, calls the cleanupHook for the question that has been cleaned up
       if (cleanupHook) {
-        cleanupHook(conditionalQuestion)
+        cleanupHook(conditionalQuestion);
       }
     }
-  })
+  });
 
-  return currentDraft
-}
+  return currentDraft;
+};
