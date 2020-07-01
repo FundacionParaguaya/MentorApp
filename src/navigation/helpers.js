@@ -1,8 +1,8 @@
 import React from 'react';
-import {StyleSheet, View, Platform} from 'react-native';
+import {StyleSheet, Platform} from 'react-native';
 import colors from '../theme.json';
 import IconButton from '../components/IconButton';
-import CloseButton from './CloseButton';
+
 import BackButton from './BackButton';
 import i18n from '../i18n';
 
@@ -29,11 +29,13 @@ export const generateNavStyles = ({
     marginLeft: shadowHeader ? 20 : 'auto',
     marginRight: shadowHeader ? 0 : 'auto',
   },
+  cardStyle: false,
   animationEnabled: false,
   headerStyle: {
     height: headerHeight,
     backgroundColor: colors.white,
-    ...(shadowHeader && {elevation: 1}),
+    elevation: shadowHeader ? 1 : 0,
+    shadowOpacity: shadowHeader ? 1 : 0,
   },
   headerLeftContainerStyle: {
     marginLeft: 19,

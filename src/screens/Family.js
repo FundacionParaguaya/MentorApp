@@ -167,7 +167,6 @@ export class Family extends Component {
       }
 
       setTimeout(() => {
-        this.props.navigation.popToTop();
         this.props.navigation.navigate('Dashboard');
       }, 500);
     } else {

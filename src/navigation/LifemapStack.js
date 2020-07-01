@@ -1,7 +1,7 @@
 import React from 'react';
 import {StyleSheet, View, Text} from 'react-native';
 import {createStackNavigator} from '@react-navigation/stack';
-
+import colors from '../theme.json';
 import FamilyView from '../screens/Family';
 import FamiliesView from '../screens/Families';
 import FamilyParticipantView from '../screens/lifemap/FamilyParticipant';
@@ -185,7 +185,7 @@ export default LifemapStack = ({navigation}) => (
           return (
             <Text
               accessibilityLiveRegion="assertive"
-              style={styles.headerTitleStyle}>
+              style={[styles.headerTitleStyle]}>
               {route.params.title}
             </Text>
           );
@@ -446,9 +446,11 @@ export const FamiliesStack = (propz) => (
           return (
             <Title
               title={
-                propz.route.state.routes[1].params &&
-                propz.route.state.routes[1].params.familyName &&
-                propz.route.state.routes[1].params.familyName
+                route && route.params && route.params.familyName
+                  ? route.params.familyName
+                  : propz.route.state.routes[1].params &&
+                    propz.route.state.routes[1].params.familyName &&
+                    propz.route.state.routes[1].params.familyName
               }
               accessibilityAssertiveType="none"
             />
@@ -606,7 +608,7 @@ export const FamiliesStack = (propz) => (
           return (
             <Text
               accessibilityLiveRegion="assertive"
-              style={styles.headerTitleStyle}>
+              style={[styles.headerTitleStyle]}>
               {route.params.title}
             </Text>
           );
@@ -845,28 +847,20 @@ const styles = StyleSheet.create({
     width: 60,
     height: 60,
   },
+  headerTitleStyle: {
+    ...Platform.select({
+      ios: {
+        fontFamily: 'Poppins',
+      },
+      android: {
+        fontFamily: 'Poppins SemiBold',
+      },
+    }),
+    fontSize: 18,
+    fontWeight: '200',
+    lineHeight: 26,
+    marginLeft: 'auto',
+    marginRight: 'auto',
+    color: colors.black,
+  },
 });
-// export default createStackNavigator(
-//   {
-//     Surveys: {
-//       screen: SurveysView,
-//       navigationOptions: ({ navigation }) => ({
-//         ...addMenuIcon(navigation),
-//         headerTitle: <Title title="views.createLifemap" />
-//       })
-//     },
-//     ...LifemapScreens
-//   },
-//   {
-//     initialRouteName: 'Surveys',
-//     defaultNavigationOptions: ({ navigation }) => ({
-//       ...generateNavStyles({ navigation })
-//     }),
-//     transitionConfig: () => ({
-//       screenInterpolator: () => null,
-//       transitionSpec: {
-//         duration: 0
-//       }
-//     })
-//   }
-// )

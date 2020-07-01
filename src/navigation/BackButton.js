@@ -2,13 +2,18 @@ import React, {Component} from 'react';
 
 import {AndroidBackHandler} from 'react-navigation-backhandler';
 import IconButton from '../components/IconButton';
+import ExitDraftModal from '../screens/modals/ExitDraftModal';
+
 import PropTypes from 'prop-types';
 import i18n from '../i18n';
 import {View} from 'react-native';
 
 class BackButton extends Component {
+  state = {
+    open: false,
+  };
+
   handlePress = () => {
-    console.log('backhgh here');
     const {params} = this.props.route;
     const {navigation} = this.props;
     if (!params) {
@@ -27,11 +32,8 @@ class BackButton extends Component {
     if (readOnly) {
       params.onPressBack ? params.onPressBack() : navigation.goBack();
     } else if (deleteDraftOnExit || firstLifeMapScreen) {
-      this.props.navigation.navigate('ExitDraftModal', {
-        draftId,
-        deleteDraftOnExit,
-        survey,
-      });
+      // open exit draft modal
+      this.setState({open: true});
     } else {
       params.onPressBack ? params.onPressBack() : navigation.goBack();
     }
@@ -51,6 +53,14 @@ class BackButton extends Component {
             size={25}
             accessible={true}
             accessibilityLabel={i18n.t('general.goback')}
+          />
+          <ExitDraftModal
+            isOpen={this.state.open}
+            navigation={this.props.navigation}
+            route={this.props.route}
+            close={() => {
+              this.setState({open: false});
+            }}
           />
         </View>
       </AndroidBackHandler>

@@ -55,8 +55,6 @@ export class Final extends Component {
   };
 
   onPressBack = () => {
-    console.log('Press back');
-
     //If sign support, the go to sign view
     if (this.survey.surveyConfig.signSupport) {
       this.props.navigation.navigate('Signin', {
@@ -96,11 +94,8 @@ export class Final extends Component {
 
   prepareDraftForSubmit() {
     if (this.state.loading) {
-      console.log('before prepare');
-      console.log(this.draft);
-
       const draft = prepareDraftForSubmit(this.draft, this.survey);
-      console.log(draft);
+
       if (draft.pictures.length > 0) {
         this.props.submitDraftWithImages(
           url[this.props.env],
@@ -127,7 +122,6 @@ export class Final extends Component {
       }
 
       setTimeout(() => {
-        this.props.navigation.popToTop();
         this.props.navigation.navigate('Dashboard');
       }, 500);
     } else {
@@ -231,12 +225,6 @@ export class Final extends Component {
   }
 
   componentDidMount() {
-    if (this.draft.progress.screen !== 'Final') {
-      let updatedDraft = this.draft;
-      updatedDraft.progress.screen = 'Final';
-      this.props.updateDraft(updatedDraft);
-    }
-
     this.props.navigation.setParams({
       onPressBack: this.onPressBack,
     });

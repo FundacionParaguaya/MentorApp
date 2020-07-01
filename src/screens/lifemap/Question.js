@@ -287,7 +287,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     paddingTop: 20,
     paddingBottom: 30,
-    marginBottom: 30,
+    marginBottom: 120,
   },
   link: {
     color: colors.palegreen,

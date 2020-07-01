@@ -64,7 +64,7 @@ CustomHeaderSurveyComponent.propTypes = {
 
 const styles = StyleSheet.create({
   headerQuestions: {
-    paddingTop: 10,
+    paddingTop: 20,
     paddingBottom: 20,
     marginRight: 'auto',
     marginLeft: 'auto',
@@ -92,7 +92,7 @@ const styles = StyleSheet.create({
     fontSize: 18,
     fontWeight: '200',
     lineHeight: 26,
-    marginLeft: 20,
+
     color: colors.black,
   },
 });

@@ -70,7 +70,11 @@ export default function MyDrawer({navigation, route}) {
         <DrawerContentComponent {...props} route={route} />
       )}>
       <Drawer.Screen name="Dashboard" component={HomeStackScreen} />
-      <Drawer.Screen name="Surveys" component={LifemapStack} />
+      <Drawer.Screen
+        name="Surveys"
+        component={LifemapStack}
+        options={{swipeEnabled: false}}
+      />
       <Drawer.Screen name="Sync" component={SyncStack} />
       <Drawer.Screen name="Families" component={FamiliesStack} />
     </Drawer.Navigator>

@@ -300,11 +300,15 @@ export class Location extends Component {
       nextAppState === 'active' &&
       !this.state.askingForPermission
     ) {
-      this.props.navigation.replace('Location', {
-        draft: this.state.draft,
-        survey: this.survey,
-        draftId: this.draftId,
-      });
+      const draft = !this.readOnly ? this.getDraft() : this.readOnlyDraft;
+
+      if (draft.progress.screen === 'Location') {
+        this.props.navigation.replace('Location', {
+          draft: this.state.draft,
+          survey: this.survey,
+          draftId: this.draftId,
+        });
+      }
     }
     this.setState({appState: nextAppState});
   };

@@ -10,18 +10,6 @@ import globalStyles from '../../globalStyles';
 import colors from '../../theme.json';
 
 export class FamilyMember extends Component {
-  static navigationOptions = ({navigation}) => {
-    return {
-      headerTitle: (
-        <Text
-          accessibilityLiveRegion="assertive"
-          style={styles.headerTitleStyle}>
-          {navigation.getParam('member').firstName}
-          {/* {navigation.getParam('title', 'Family Member')} */}
-        </Text>
-      ),
-    };
-  };
   setTitle() {
     this.props.navigation.setParams({
       title: this.props.route.params.member.firstName,

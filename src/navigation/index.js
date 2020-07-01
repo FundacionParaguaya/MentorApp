@@ -55,17 +55,17 @@ export class NavWrapper extends Component {
         <NavigationContainer>
           <Stack.Navigator>
             <Stack.Screen
-              options={{headerShown: false}}
+              options={{headerShown: false, animationEnabled: false}}
               name="Login"
               component={LoginScreen}
             />
             <Stack.Screen
-              options={{headerShown: false}}
+              options={{headerShown: false, animationEnabled: false}}
               name="Loading"
               component={LoadingScreen}
             />
             <Stack.Screen
-              options={{headerShown: false}}
+              options={{headerShown: false, animationEnabled: false}}
               name="DrawerStack"
               component={DrawerNavigator}
             />

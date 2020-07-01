@@ -49,7 +49,7 @@ export class Dashboard extends Component {
   navigateToPendingSync = (draft) => {
     const {firstName, lastName} = draft.familyData.familyMembersList[0];
 
-    this.props.navigation.navigate('Surveys', {
+    this.props.navigation.navigate('Families', {
       screen: 'Family',
       params: {
         familyName: `${firstName} ${lastName}`,
@@ -74,7 +74,6 @@ export class Dashboard extends Component {
       draft.progress.screen === 'Signin' ||
       draft.progress.screen === 'Overview'
     ) {
-      console.log(survey);
       this.props.navigation.navigate('Surveys', {
         screen: 'Overview',
         params: {
@@ -97,7 +96,7 @@ export class Dashboard extends Component {
     }
   };
   navigateToSynced = (item) => {
-    this.props.navigation.navigate('Surveys', {
+    this.props.navigation.navigate('Families', {
       screen: 'Family',
       params: {
         familyName: item.familyData.familyMembersList[0].firstName,

@@ -65,13 +65,14 @@ export class Overview extends Component {
       });
   };
 
-  navigateToScreen = (screen, indicator, indicatorText) =>
+  navigateToScreen = (screen, indicator, indicatorText) => {
     this.props.navigation.navigate(screen, {
       survey: this.survey,
       indicator,
       indicatorText,
       draftId: this.draftId,
     });
+  };
 
   toggleFilterModal = () => {
     this.setState({
@@ -95,8 +96,10 @@ export class Overview extends Component {
     const draft = !this.props.readOnly
       ? this.getDraft()
       : this.props.familyLifemap;
-
+    console.log('resuming stuff here');
+    console.log(draft.progress.screen);
     this.props.navigation.replace(draft.progress.screen, {
+      resumeDraft: false,
       draftId: this.draftId,
       survey: this.survey,
       step: draft.progress.step,
