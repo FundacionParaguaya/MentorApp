@@ -37,29 +37,17 @@ import OverviewComponent from './lifemap/Overview';
 import {prepareDraftForSubmit} from './utils/helpers';
 
 export class Family extends Component {
-  // set the title of the screen to the family name
-  static navigationOptions = ({navigation}) => {
-    return {
-      title: `${navigation.getParam('familyName', 'Families')}  ${
-        navigation.getParam('familyLifemap', 'Families').familyData
-          .countFamilyMembers > 1
-          ? `+ ${navigation.getParam('familyLifemap', 'Families').familyData
-              .countFamilyMembers - 1}`
-          : ''
-      }`,
-    };
-  };
   unsubscribeNetChange;
-  allowRetake = this.props.navigation.getParam('allowRetake');
-  familyLifemap = this.props.navigation.getParam('familyLifemap');
-  isDraft = this.props.navigation.getParam('isDraft');
-  familyId = this.props.navigation.getParam('familyId');
+  allowRetake = this.props.route.params.allowRetake;
+  familyLifemap = this.props.route.params.familyLifemap;
+  isDraft = this.props.route.params.isDraft;
+  familyId = this.props.route.params.familyId;
   // extract socio economic categories from snapshot
   socioEconomicCategories = [
     ...new Set(
-      this.props.navigation
-        .getParam('survey')
-        .surveyEconomicQuestions.map(question => question.topic),
+      this.props.route.params.survey.surveyEconomicQuestions.map(
+        (question) => question.topic,
+      ),
     ),
   ];
 
@@ -67,20 +55,20 @@ export class Family extends Component {
     super(props);
     this.state = {
       loading: false,
-      activeTab: this.props.navigation.getParam('activeTab') || 'Details',
+      activeTab: this.props.route.params.activeTab || 'Details',
       showSyncButton: false,
     };
   }
   componentDidMount() {
     // // monitor for connection changes
-    this.unsubscribeNetChange = NetInfo.addEventListener(isOnline => {
+    this.unsubscribeNetChange = NetInfo.addEventListener((isOnline) => {
       this.setState({isOnline});
       //Allow to show or hide retrySyn button
       this.setState({showSyncButton: this.availableForSync(isOnline)});
     });
 
     // check if online first
-    NetInfo.fetch().then(state => {
+    NetInfo.fetch().then((state) => {
       this.setState({isOnline: state.isConnected});
     });
 
@@ -88,14 +76,14 @@ export class Family extends Component {
       withoutCloseButton: true,
     });
   }
-  sendEmail = async email => {
+  sendEmail = async (email) => {
     let url = `mailto:${email}`;
     const canOpen = await Linking.canOpenURL(url);
     if (canOpen) {
       Linking.openURL(url);
     }
   };
-  callPhone = async phone => {
+  callPhone = async (phone) => {
     let url = `tel:${phone}`;
     const canOpen = await Linking.canOpenURL(url);
     if (canOpen) {
@@ -114,7 +102,7 @@ export class Family extends Component {
   };
 
   survey = this.props.surveys.find(
-    item => item.id === this.familyLifemap.surveyId,
+    (item) => item.id === this.familyLifemap.surveyId,
   );
 
   retrySync = () => {
@@ -133,7 +121,7 @@ export class Family extends Component {
     }
   };
 
-  availableForSync = isOnline => {
+  availableForSync = (isOnline) => {
     const id = this.familyLifemap.draftId;
     console.log('draft id ', id);
     console.log('list submitted: ', this.props.syncStatus);
@@ -142,7 +130,7 @@ export class Family extends Component {
     if (
       this.props.syncStatus.indexOf(id) === -1 &&
       isOnline &&
-      this.props.navigation.getParam('familyLifemap').status === 'Pending sync'
+      this.props.route.params.familyLifemap.status === 'Pending sync'
     ) {
       console.log('Available for manual sync');
       return true;
@@ -179,7 +167,6 @@ export class Family extends Component {
       }
 
       setTimeout(() => {
-        this.props.navigation.popToTop();
         this.props.navigation.navigate('Dashboard');
       }, 500);
     } else {
@@ -359,7 +346,7 @@ export class Family extends Component {
 
               <View style={styles.section}>
                 <Text style={globalStyles.h2}>
-                  {navigation.getParam('familyName')}
+                  {this.props.route.params.familyName}
                 </Text>
               </View>
             </View>
@@ -408,6 +395,7 @@ export class Family extends Component {
                             readOnly: true,
                           });
                         } else {
+                          console.log(item);
                           navigation.navigate('FamilyMember', {
                             survey: this.survey,
                             readOnly: true,
@@ -466,6 +454,7 @@ export class Family extends Component {
         ) : null}
 
         {/* Lifemap tab */}
+
         {activeTab === 'LifeMap' ? (
           <ScrollView id="lifemap">
             {this.isDraft ? (
@@ -484,7 +473,8 @@ export class Family extends Component {
                   ).format('MMM DD, YYYY')}`}</Text>
                   <RoundImage source="lifemap" />
 
-                  {navigation.getParam('familyLifemap').status === 'Draft' ? (
+                  {this.props.route.params.familyLifemap.status &&
+                  this.props.route.params.familyLifemap.status === 'Draft' ? (
                     <Button
                       id="resume-draft"
                       style={{
@@ -527,6 +517,7 @@ export class Family extends Component {
                   'MMM DD, YYYY',
                 )}`}</Text>
                 <OverviewComponent
+                  route={this.props.route}
                   readOnly
                   navigation={navigation}
                   familyLifemap={this.familyLifemap}
@@ -677,8 +668,5 @@ const mapStateToProps = ({surveys, env, user, drafts, syncStatus}) => ({
 });
 
 export default withNamespaces()(
-  connect(
-    mapStateToProps,
-    mapDispatchToProps,
-  )(Family),
+  connect(mapStateToProps, mapDispatchToProps)(Family),
 );

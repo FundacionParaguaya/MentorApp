@@ -23,23 +23,10 @@ import {
 import {getTotalScreens, setScreen} from './helpers';
 
 export class SocioEconomicQuestion extends Component {
-  readOnlyDraft = this.props.navigation.getParam('family') || [];
-  readOnly = this.props.navigation.getParam('readOnly') || false;
-  static navigationOptions = ({navigation}) => {
-    return {
-      headerTitle: (
-        <Text
-          accessibilityLiveRegion="assertive"
-          style={styles.headerTitleStyle}>
-          {navigation.getParam('title')}
-        </Text>
-      ),
-    };
-  };
-
-  survey = this.props.navigation.getParam('survey');
-  readOnly = this.props.navigation.getParam('readOnly');
-  draftId = this.props.navigation.getParam('draftId');
+  readOnlyDraft = this.props.route.params.family || [];
+  readOnly = this.props.route.params.readOnly || false;
+  survey = this.props.route.params.survey;
+  draftId = this.props.route.params.draftId;
   state = {
     errors: [],
     showErrors: false,
@@ -78,7 +65,7 @@ export class SocioEconomicQuestion extends Component {
   };
 
   onPressBack = () => {
-    const socioEconomics = this.props.navigation.getParam('socioEconomics');
+    const socioEconomics = this.props.route.params.socioEconomics;
 
     const STEP_BACK = -1;
 
@@ -136,7 +123,7 @@ export class SocioEconomicQuestion extends Component {
   };
 
   onContinue = () => {
-    const socioEconomics = this.props.navigation.getParam('socioEconomics');
+    const socioEconomics = this.props.route.params.socioEconomics;
     const STEP_FORWARD = 1;
     const NEXT_SCREEN_NUMBER = setScreen(
       socioEconomics,
@@ -220,17 +207,17 @@ export class SocioEconomicQuestion extends Component {
         false,
       );
     }
-    console.log(currentDraft);
+
     this.props.updateDraft(currentDraft);
   };
 
   setSocioEconomicsParam() {
     const {navigation} = this.props;
-
+    const {params} = this.props.route;
     // If this is the first socio economics screen set the whole process
     // in the navigation. On every next screen it will know which questions
     // to ask and if it is done.
-    if (!navigation.getParam('socioEconomics')) {
+    if (!params.socioEconomics) {
       let currentDimension = '';
       let questionsPerScreen = [];
       let totalScreens = 0;
@@ -259,7 +246,7 @@ export class SocioEconomicQuestion extends Component {
         }
       });
 
-      if (navigation.getParam('fromBeginLifemap')) {
+      if (params.fromBeginLifemap) {
         navigation.setParams({
           socioEconomics: {
             currentScreen: totalScreens,
@@ -271,7 +258,7 @@ export class SocioEconomicQuestion extends Component {
             : questionsPerScreen[totalScreens - 1].forFamilyMember[0].topic,
         });
       } else {
-        const page = navigation.getParam('page') || 0;
+        const page = params.page || 0;
         navigation.setParams({
           socioEconomics: {
             currentScreen: page ? page + 1 : 1,
@@ -284,7 +271,7 @@ export class SocioEconomicQuestion extends Component {
         });
       }
     } else {
-      const socioEconomics = navigation.getParam('socioEconomics');
+      const socioEconomics = params.socioEconomics;
       const questionsForThisScreen = socioEconomics
         ? socioEconomics.questionsPerScreen[socioEconomics.currentScreen - 1]
         : [];
@@ -345,7 +332,7 @@ export class SocioEconomicQuestion extends Component {
   render() {
     const {t} = this.props;
     const {showErrors} = this.state;
-    const socioEconomics = this.props.navigation.getParam('socioEconomics');
+    const socioEconomics = this.props.route.params.socioEconomics;
 
     const questionsForThisScreen = socioEconomics
       ? socioEconomics.questionsPerScreen[socioEconomics.currentScreen - 1]

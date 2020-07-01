@@ -2,6 +2,7 @@ import NetInfo from '@react-native-community/netinfo';
 import PropTypes from 'prop-types';
 import React, {Component} from 'react';
 import {withNamespaces} from 'react-i18next';
+import {StackActions} from '@react-navigation/native';
 import {
   PermissionsAndroid,
   ScrollView,
@@ -36,8 +37,8 @@ import {
 
 export class Final extends Component {
   unsubscribeNetChange;
-  survey = this.props.navigation.getParam('survey');
-  draft = this.props.navigation.getParam('draft');
+  survey = this.props.route.params.survey;
+  draft = this.props.route.params.draft;
   state = {
     loading: false,
     downloading: false,
@@ -55,8 +56,6 @@ export class Final extends Component {
   };
 
   onPressBack = () => {
-    console.log('Press back');
-
     //If sign support, the go to sign view
     if (this.survey.surveyConfig.signSupport) {
       this.props.navigation.navigate('Signin', {
@@ -124,8 +123,7 @@ export class Final extends Component {
       }
 
       setTimeout(() => {
-        this.props.navigation.popToTop();
-        this.props.navigation.navigate('Dashboard');
+        this.props.navigation.dispatch(StackActions.replace('DrawerStack'));
       }, 500);
     } else {
       setTimeout(() => {
@@ -217,7 +215,7 @@ export class Final extends Component {
   handleCloseModal = () =>
     this.setState({modalOpen: false, whatsappModalOpen: false});
 
-  setConnectivityState = isConnected => {
+  setConnectivityState = (isConnected) => {
     isConnected
       ? this.setState({connection: true, error: ''})
       : this.setState({connection: false, error: 'No connection'});
@@ -228,12 +226,13 @@ export class Final extends Component {
   }
 
   componentDidMount() {
-    this.props.updateDraft(this.draft);
     this.props.navigation.setParams({
       onPressBack: this.onPressBack,
     });
-    NetInfo.fetch().then(state => this.setConnectivityState(state.isConnected));
-    this.unsubscribeNetChange = NetInfo.addEventListener(state => {
+    NetInfo.fetch().then((state) =>
+      this.setConnectivityState(state.isConnected),
+    );
+    this.unsubscribeNetChange = NetInfo.addEventListener((state) => {
       this.setConnectivityState(state.isConnected);
     });
   }
@@ -253,12 +252,12 @@ export class Final extends Component {
     const userEmail =
       !!familyMembersList &&
       familyMembersList.length &&
-      familyMembersList.find(user => user.email);
+      familyMembersList.find((user) => user.email);
 
     const userTelephone =
       !!familyMembersList &&
       familyMembersList.length &&
-      familyMembersList.find(user => user.phoneNumber);
+      familyMembersList.find((user) => user.phoneNumber);
 
     const stoplightSkipped = this.draft.stoplightSkipped;
     console.log('stoplightSkipped', stoplightSkipped);
@@ -412,8 +411,5 @@ const mapDispatchToProps = {
 };
 
 export default withNamespaces()(
-  connect(
-    mapStateToProps,
-    mapDispatchToProps,
-  )(Final),
+  connect(mapStateToProps, mapDispatchToProps)(Final),
 );

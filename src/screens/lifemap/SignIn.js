@@ -1,52 +1,52 @@
-import PropTypes from 'prop-types'
-import React, { Component } from 'react'
-import { withNamespaces } from 'react-i18next'
-import { Image, StyleSheet, Text, View } from 'react-native'
-import SignatureCapture from 'react-native-signature-capture'
-import { connect } from 'react-redux'
+import PropTypes from 'prop-types';
+import React, {Component} from 'react';
+import {withNamespaces} from 'react-i18next';
+import {Image, StyleSheet, Text, View} from 'react-native';
+import SignatureCapture from 'react-native-signature-capture';
+import {connect} from 'react-redux';
 
-import Button from '../../components/Button'
-import ProgressBar from '../../components/ProgressBar'
-import { updateDraft } from '../../redux/actions'
-import { getTotalEconomicScreens } from './helpers'
-import colors from '../../theme.json'
+import Button from '../../components/Button';
+import ProgressBar from '../../components/ProgressBar';
+import {updateDraft} from '../../redux/actions';
+import {getTotalEconomicScreens} from './helpers';
+import colors from '../../theme.json';
 
 export class SigIn extends Component {
-  survey = this.props.navigation.getParam('survey')
-  draftId = this.props.navigation.getParam('draftId')
+  survey = this.props.route.params.survey;
+  draftId = this.props.route.params.draftId;
 
   // the draft is not mutated in this screen (only its progress),
   // we need it for progress bar
-  draft = this.props.drafts.find(draft => draft.draftId === this.draftId)
+  draft = this.props.drafts.find((draft) => draft.draftId === this.draftId);
 
-  isEmpty = true
+  isEmpty = true;
 
-  displaySign = false
+  displaySign = false;
 
-  displayError = false
+  displayError = false;
 
-  setEmpty = isEmpty => {
-    this.isEmpty = isEmpty
-  }
+  setEmpty = (isEmpty) => {
+    this.isEmpty = isEmpty;
+  };
 
-  setDisplay = displaySign => {
-    this.displaySign = displaySign
-  }
+  setDisplay = (displaySign) => {
+    this.displaySign = displaySign;
+  };
 
-  setDisplayErr = displayError => {
-    this.displayError = displayError
-  }
+  setDisplayErr = (displayError) => {
+    this.displayError = displayError;
+  };
 
   onPressBack = () => {
     if (this.survey.surveyConfig.pictureSupport) {
       this.props.navigation.replace('Picture', {
         survey: this.survey,
-        draftId: this.draftId
-      })
+        draftId: this.draftId,
+      });
     } else {
-      this.props.navigation.goBack()
+      this.props.navigation.goBack();
     }
-  }
+  };
 
   componentDidMount() {
     if (this.draft.progress.screen !== 'Signin') {
@@ -54,63 +54,63 @@ export class SigIn extends Component {
         ...this.draft,
         progress: {
           ...this.draft.progress,
-          screen: 'Signin'
-        }
-      })
+          screen: 'Signin',
+        },
+      });
     }
     if (this.draft.sign) {
-      this.setEmpty(false)
-      this.setDisplay(true)
+      this.setEmpty(false);
+      this.setDisplay(true);
     }
 
     this.props.navigation.setParams({
-      onPressBack: this.onPressBack
-    })
+      onPressBack: this.onPressBack,
+    });
   }
 
   handleContinue = () => {
     if (this.sign && !this.isEmpty) {
-      this.sign.saveImage()
+      this.sign.saveImage();
     }
     if (!this.isEmpty) {
       this.props.navigation.push('Final', {
         familyLifemap: this.draft,
         draft: this.draft,
         draftId: this.draftId,
-        survey: this.survey
-      })
+        survey: this.survey,
+      });
     } else {
-      this.setDisplayErr(true)
-      this.onClear()
+      this.setDisplayErr(true);
+      this.onClear();
     }
-  }
+  };
 
   _onSaveEvent(result) {
-    let updatedDraft = this.draft
-    updatedDraft.sign = 'data:image/png;base64,' + result.encoded
-    this.updateDraft(updatedDraft)
-    this.setDisplayErr(false)
+    let updatedDraft = this.draft;
+    updatedDraft.sign = 'data:image/png;base64,' + result.encoded;
+    this.updateDraft(updatedDraft);
+    this.setDisplayErr(false);
   }
 
   _onDragEvent() {
-    this.setEmpty(false)
+    this.setEmpty(false);
   }
 
   onClear = () => {
-    this.setEmpty(true)
-    this.setDisplay(false)
-    this.setDisplayErr(true)
-    this.sign && this.sign.resetImage()
-    let updatedDraft = this.draft
-    updatedDraft.sign = ''
-    this.props.updateDraft(updatedDraft)
-  }
+    this.setEmpty(true);
+    this.setDisplay(false);
+    this.setDisplayErr(true);
+    this.sign && this.sign.resetImage();
+    let updatedDraft = this.draft;
+    updatedDraft.sign = '';
+    this.props.updateDraft(updatedDraft);
+  };
 
   render() {
-    const { t } = this.props
+    const {t} = this.props;
     if (this.draft.sign) {
-      this.setEmpty(false)
-      this.setDisplay(true)
+      this.setEmpty(false);
+      this.setDisplay(true);
     }
     return (
       <View style={styles.contentContainer}>
@@ -122,24 +122,24 @@ export class SigIn extends Component {
           }
           currentScreen={'Signin'}
         />
-        <View style={{ ...styles.iconPriorityBorder }} variant="stretch">
+        <View style={{...styles.iconPriorityBorder}} variant="stretch">
           <Image
-            style={{ ...styles.iconPriority }}
+            style={{...styles.iconPriority}}
             source={require('../../../assets/images/pen_icon.png')}
           />
         </View>
         {this.displaySign ? (
           <Image
-            style={[{ margin: 10 }, styles.container]}
-            source={{ uri: this.draft.sign }}
+            style={[{margin: 10}, styles.container]}
+            source={{uri: this.draft.sign}}
           />
         ) : (
-          <View style={[{ flex: 2, margin: 10 }, styles.container]}>
+          <View style={[{flex: 2, margin: 10}, styles.container]}>
             <SignatureCapture
               style={[styles.container]}
               key={'sign'}
-              ref={r => {
-                this.sign = r
+              ref={(r) => {
+                this.sign = r;
               }}
               onSaveEvent={this._onSaveEvent}
               onDragEvent={this._onDragEvent}
@@ -155,7 +155,7 @@ export class SigIn extends Component {
           </View>
         )}
         {this.displayError ? (
-          <Text style={{ marginLeft: 30, color: colors.red }}>
+          <Text style={{marginLeft: 30, color: colors.red}}>
             {t('views.sign.emptyError')}
           </Text>
         ) : null}
@@ -174,7 +174,7 @@ export class SigIn extends Component {
           />
         </View>
       </View>
-    )
+    );
   }
 }
 const styles = StyleSheet.create({
@@ -186,50 +186,47 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     marginTop: '-2%',
-    position: 'relative'
+    position: 'relative',
   },
   container: {
     flex: 1,
     height: 900,
     borderColor: '#309E43',
     borderWidth: 1,
-    borderRadius: 1
+    borderRadius: 1,
   },
   iconPriority: {
     height: 40,
     width: 40,
     backgroundColor: '#FFFFFF',
-    justifyContent: 'center'
+    justifyContent: 'center',
   },
   buttonsBar: {
     height: 50,
     marginTop: 40,
     marginBottom: -2,
-    flexDirection: 'row'
+    flexDirection: 'row',
   },
   contentContainer: {
     flexGrow: 1,
     flexDirection: 'column',
-    justifyContent: 'space-between'
-  }
-})
+    justifyContent: 'space-between',
+  },
+});
 
 SigIn.propTypes = {
   t: PropTypes.func.isRequired,
   updateDraft: PropTypes.func.isRequired,
   navigation: PropTypes.object.isRequired,
-  drafts: PropTypes.array.isRequired
-}
+  drafts: PropTypes.array.isRequired,
+};
 
 const mapDispatchToProps = {
-  updateDraft
-}
+  updateDraft,
+};
 
-const mapStateToProps = ({ drafts }) => ({ drafts })
+const mapStateToProps = ({drafts}) => ({drafts});
 
 export default withNamespaces()(
-  connect(
-    mapStateToProps,
-    mapDispatchToProps
-  )(SigIn)
-)
+  connect(mapStateToProps, mapDispatchToProps)(SigIn),
+);

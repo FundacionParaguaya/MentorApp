@@ -19,9 +19,9 @@ import colors from '../../theme.json';
 import {getTotalScreens, setValidationSchema} from './helpers';
 
 export class FamilyMembersNames extends Component {
-  survey = this.props.navigation.getParam('survey');
-  readOnly = this.props.navigation.getParam('readOnly');
-  draftId = this.props.navigation.getParam('draftId');
+  survey = this.props.route.params.survey;
+  readOnly = this.props.route.params.readOnly;
+  draftId = this.props.route.params.draftId;
 
   requiredFields =
     (this.survey.surveyConfig &&
@@ -38,7 +38,7 @@ export class FamilyMembersNames extends Component {
   };
 
   getDraft = () =>
-    this.props.drafts.find(draft => draft.draftId === this.draftId);
+    this.props.drafts.find((draft) => draft.draftId === this.draftId);
 
   setError = (error, field, memberId) => {
     const {errors} = this.state;
@@ -51,10 +51,10 @@ export class FamilyMembersNames extends Component {
     }
     if (!error) {
       this.setState({
-        errors: errors.filter(item => item.memberId !== memberId),
+        errors: errors.filter((item) => item.memberId !== memberId),
       });
     } else if (error && !errorExists) {
-      this.setState(previousState => {
+      this.setState((previousState) => {
         return {
           ...previousState,
           errors: [...previousState.errors, {field, memberId}],
@@ -85,7 +85,7 @@ export class FamilyMembersNames extends Component {
   shouldComponentUpdate() {
     return this.props.navigation.isFocused();
   }
-  deleteMember = function(index) {
+  deleteMember = function (index) {
     const draft = this.getDraft();
 
     let newArr = [...this.state.familyMembers];
@@ -333,7 +333,7 @@ export class FamilyMembersNames extends Component {
                   autoFocus={i === 0 && !item.firstName}
                   upperCase
                   //validation="string"
-                  onChangeText={value =>
+                  onChangeText={(value) =>
                     this.updateMember(value, 'firstName', i)
                   }
                   placeholder={`${t('views.family.firstName')}`}
@@ -345,12 +345,12 @@ export class FamilyMembersNames extends Component {
                   )}
                   readOnly={!!this.readOnly}
                   showErrors={showErrors}
-                  setError={isError =>
+                  setError={(isError) =>
                     this.setError(isError, 'firstName', item.uuid)
                   }
                 />
                 <Select
-                  onChange={value => this.updateMember(value, 'gender', i)}
+                  onChange={(value) => this.updateMember(value, 'gender', i)}
                   label={t('views.family.gender')}
                   placeholder={t('views.family.selectGender')}
                   initialValue={item.gender || ''}
@@ -370,7 +370,7 @@ export class FamilyMembersNames extends Component {
                 <DateInput
                   id={item.uuid}
                   label={t('views.family.dateOfBirth')}
-                  onValidDate={value =>
+                  onValidDate={(value) =>
                     this.updateMember(value, 'birthDate', i)
                   }
                   initialValue={item.birthDate}
@@ -482,8 +482,5 @@ const mapDispatchToProps = {
 const mapStateToProps = ({drafts}) => ({drafts});
 
 export default withNamespaces()(
-  connect(
-    mapStateToProps,
-    mapDispatchToProps,
-  )(FamilyMembersNames),
+  connect(mapStateToProps, mapDispatchToProps)(FamilyMembersNames),
 );

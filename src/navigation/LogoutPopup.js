@@ -1,66 +1,66 @@
-import PropTypes from 'prop-types'
-import React, { Component } from 'react'
+import PropTypes from 'prop-types';
+import React, {Component} from 'react';
 import {
   ActivityIndicator,
   Platform,
   StyleSheet,
   Text,
-  View
-} from 'react-native'
-import { CheckBox } from 'react-native-elements'
-import CommunityIcon from 'react-native-vector-icons/MaterialCommunityIcons'
-import Icon from 'react-native-vector-icons/MaterialIcons'
+  View,
+} from 'react-native';
+import {CheckBox} from 'react-native-elements';
+import CommunityIcon from 'react-native-vector-icons/MaterialCommunityIcons';
+import Icon from 'react-native-vector-icons/MaterialIcons';
 
-import Button from '../components/Button'
-import Popup from '../components/Popup'
-import globalStyles from '../globalStyles'
-import i18n from '../i18n'
-import { logoutModalAccessibleText } from '../screens/utils/accessibilityHelpers'
-import colors from '../theme.json'
+import Button from '../components/Button';
+import Popup from '../components/Popup';
+import globalStyles from '../globalStyles';
+import i18n from '../i18n';
+import {logoutModalAccessibleText} from '../screens/utils/accessibilityHelpers';
+import colors from '../theme.json';
 
 const initialState = {
   checkboxDrafts: false,
   checkboxLifeMaps: false,
   checkboxFamilyInfo: false,
-  checkboxCachedData: false
-}
+  checkboxCachedData: false,
+};
 export default class LogoutPopup extends Component {
-  state = initialState
+  state = initialState;
 
   checkboxChange(checkbox) {
-    this.props.onPressCheckbox(!this.state[checkbox])
-    this.setState({ [checkbox]: !this.state[checkbox] })
+    this.props.onPressCheckbox(!this.state[checkbox]);
+    this.setState({[checkbox]: !this.state[checkbox]});
   }
   onModalCloseFunc() {
     //resetting the state and closing the modal
-    this.setState(initialState)
-    this.props.onModalClose()
+    this.setState(initialState);
+    this.props.onModalClose();
   }
   render() {
     const {
-      navigation,
+      isOpen,
       checkboxesVisible,
       showErrors,
       unsyncedDrafts,
       logUserOut,
       showCheckboxes,
       onModalClose,
-      logingOut
-    } = this.props
+      logingOut,
+      route,
+    } = this.props;
 
     const accessiblePopUpText = logoutModalAccessibleText(
       unsyncedDrafts,
-      checkboxesVisible
-    )
+      checkboxesVisible,
+    );
 
     return logingOut ? (
       <Popup
         LogoutPopup
         modifiedPopUp
-        isOpen={navigation.getParam('logoutModalOpen')}
+        isOpen={isOpen}
         onClose={onModalClose}
-        style={{ paddingVertical: 100 }}
-      >
+        style={{paddingVertical: 100}}>
         <ActivityIndicator
           size="large"
           color={colors.palered}
@@ -68,32 +68,25 @@ export default class LogoutPopup extends Component {
         />
       </Popup>
     ) : (
-      <Popup
-        LogoutPopup
-        modifiedPopUp
-        isOpen={navigation.getParam('logoutModalOpen')}
-        onClose={onModalClose}
-      >
+      <Popup LogoutPopup modifiedPopUp isOpen={isOpen} onClose={onModalClose}>
         <View
           accessible={true}
           accessibilityLabel={`${accessiblePopUpText}`}
-          accessibilityLiveRegion="assertive"
-        >
+          accessibilityLiveRegion="assertive">
           <View
             style={{
               alignItems: 'center',
               paddingVertical: 15,
               width: 60,
-              marginLeft: 'auto'
+              marginLeft: 'auto',
             }}
             accessible={true}
             accessibilityLabel={i18n.t('general.close')}
-            accessibilityRole={'button'}
-          >
+            accessibilityRole={'button'}>
             <Icon onPress={onModalClose} name="close" size={30} />
           </View>
           <View style={styles.modalContainer}>
-            <View style={{ alignItems: 'center' }}>
+            <View style={{alignItems: 'center'}}>
               {!checkboxesVisible ? (
                 <Icon
                   name="sentiment-dissatisfied"
@@ -110,9 +103,8 @@ export default class LogoutPopup extends Component {
               <Text
                 style={[
                   styles.title,
-                  checkboxesVisible ? { color: colors.palered } : {}
-                ]}
-              >
+                  checkboxesVisible ? {color: colors.palered} : {},
+                ]}>
                 {!checkboxesVisible
                   ? i18n.t('views.logout.logout')
                   : `${i18n.t('general.warning')}!`}
@@ -123,22 +115,20 @@ export default class LogoutPopup extends Component {
             {!checkboxesVisible ? (
               <View>
                 {unsyncedDrafts ? (
-                  <View style={{ alignItems: 'center' }}>
+                  <View style={{alignItems: 'center'}}>
                     <Text style={globalStyles.h3}>
                       {i18n.t('views.logout.youHaveUnsynchedData')}
                     </Text>
-                    <Text style={[globalStyles.h3, { color: colors.palered }]}>
+                    <Text style={[globalStyles.h3, {color: colors.palered}]}>
                       {i18n.t('views.logout.thisDataWillBeLost')}
                     </Text>
                   </View>
                 ) : (
-                  <View style={{ alignItems: 'center' }}>
+                  <View style={{alignItems: 'center'}}>
                     <Text style={globalStyles.h3}>
                       {i18n.t('views.logout.weWillMissYou')}
                     </Text>
-                    <Text
-                      style={[globalStyles.h3, { color: colors.palegreen }]}
-                    >
+                    <Text style={[globalStyles.h3, {color: colors.palegreen}]}>
                       {i18n.t('views.logout.comeBackSoon')}
                     </Text>
                   </View>
@@ -149,16 +139,16 @@ export default class LogoutPopup extends Component {
               </View>
             ) : (
               // Checkboxes section
-              <View style={{ alignItems: 'center' }}>
-                <View style={{ marginBottom: 25, alignItems: 'center' }}>
-                  <Text style={[globalStyles.h3, { textAlign: 'center' }]}>
+              <View style={{alignItems: 'center'}}>
+                <View style={{marginBottom: 25, alignItems: 'center'}}>
+                  <Text style={[globalStyles.h3, {textAlign: 'center'}]}>
                     {i18n.t('views.logout.looseYourData')}
                   </Text>
-                  <Text style={[globalStyles.h3, { color: colors.palered }]}>
+                  <Text style={[globalStyles.h3, {color: colors.palered}]}>
                     {i18n.t('views.logout.cannotUndo')}
                   </Text>
                 </View>
-                <View style={{ marginBottom: 15 }}>
+                <View style={{marginBottom: 15}}>
                   {/* just like in the LogIn.js,here it is more easy to simply use the Checkbox from react-native-elements rather than modifying the Checboxes.js */}
                   <CheckBox
                     iconType="material"
@@ -174,7 +164,7 @@ export default class LogoutPopup extends Component {
                     }
                     onPress={() => this.checkboxChange('checkboxDrafts')}
                     title={`${i18n.t('general.delete')} ${i18n.t(
-                      'general.drafts'
+                      'general.drafts',
                     )}`}
                   />
                   <CheckBox
@@ -191,7 +181,7 @@ export default class LogoutPopup extends Component {
                     }
                     onPress={() => this.checkboxChange('checkboxLifeMaps')}
                     title={`${i18n.t('general.delete')} ${i18n.t(
-                      'filterLabels.lifeMaps'
+                      'filterLabels.lifeMaps',
                     )}`}
                   />
                   <CheckBox
@@ -208,7 +198,7 @@ export default class LogoutPopup extends Component {
                     }
                     onPress={() => this.checkboxChange('checkboxFamilyInfo')}
                     title={`${i18n.t('general.delete')} ${i18n.t(
-                      'general.familyInfo'
+                      'general.familyInfo',
                     )}`}
                   />
                   <CheckBox
@@ -225,7 +215,7 @@ export default class LogoutPopup extends Component {
                     }
                     onPress={() => this.checkboxChange('checkboxCachedData')}
                     title={`${i18n.t('general.delete')} ${i18n.t(
-                      'general.cachedData'
+                      'general.cachedData',
                     )}`}
                   />
                 </View>
@@ -243,7 +233,7 @@ export default class LogoutPopup extends Component {
                     : i18n.t('general.yes')
                 }
                 borderColor={unsyncedDrafts ? colors.palered : colors.palegreen}
-                style={{ minWidth: 107, marginRight: 20 }}
+                style={{minWidth: 107, marginRight: 20}}
                 handleClick={
                   unsyncedDrafts && !checkboxesVisible
                     ? showCheckboxes
@@ -259,14 +249,14 @@ export default class LogoutPopup extends Component {
                     ? i18n.t('general.no')
                     : i18n.t('general.cancel')
                 }
-                style={{ minWidth: 107, marginLeft: 20 }}
+                style={{minWidth: 107, marginLeft: 20}}
                 handleClick={() => this.onModalCloseFunc()}
               />
             </View>
           </View>
         </View>
       </Popup>
-    )
+    );
   }
 }
 
@@ -279,57 +269,57 @@ LogoutPopup.propTypes = {
   logUserOut: PropTypes.func.isRequired,
   showCheckboxes: PropTypes.func.isRequired,
   onModalClose: PropTypes.func,
-  onPressCheckbox: PropTypes.func.isRequired
-}
+  onPressCheckbox: PropTypes.func.isRequired,
+};
 
 const styles = StyleSheet.create({
   modalContainer: {
-    marginTop: 60
+    marginTop: 60,
   },
   title: {
     ...Platform.select({
       ios: {
         fontFamily: 'Poppins',
-        fontWeight: '600'
+        fontWeight: '600',
       },
       android: {
-        fontFamily: 'Poppins SemiBold'
-      }
+        fontFamily: 'Poppins SemiBold',
+      },
     }),
     fontWeight: 'normal',
     color: colors.lightdark,
     fontSize: 24,
-    marginBottom: 25
+    marginBottom: 25,
   },
   confirm: {
     color: colors.lightdark,
     marginTop: 25,
     marginBottom: 16,
-    textAlign: 'center'
+    textAlign: 'center',
   },
   buttonBar: {
     marginBottom: 80,
     flexDirection: 'row',
-    justifyContent: 'center'
+    justifyContent: 'center',
   },
   checkbox: {
     marginTop: 0,
     marginBottom: 18,
     paddingVertical: 0,
     backgroundColor: 'transparent',
-    borderWidth: 0
+    borderWidth: 0,
   },
   error: {
     fontWeight: 'normal',
     fontSize: 16,
     fontFamily: 'Roboto',
     color: colors.palered,
-    textDecorationLine: 'underline'
+    textDecorationLine: 'underline',
   },
   checkboxText: {
     fontWeight: 'normal',
     fontSize: 16,
     fontFamily: 'Roboto',
-    color: colors.lightdark
-  }
-})
+    color: colors.lightdark,
+  },
+});

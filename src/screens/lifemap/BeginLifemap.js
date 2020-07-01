@@ -13,12 +13,12 @@ import {updateDraft} from '../../redux/actions';
 import {getTotalEconomicScreens} from './helpers';
 
 export class BeginLifemap extends Component {
-  survey = this.props.navigation.getParam('survey');
-  draftId = this.props.navigation.getParam('draftId');
+  survey = this.props.route.params.survey;
+  draftId = this.props.route.params.draftId;
 
   // the draft is not mutated in this screen (only its progress),
   // we need it for progress bar
-  draft = this.props.drafts.find(draft => draft.draftId === this.draftId);
+  draft = this.props.drafts.find((draft) => draft.draftId === this.draftId);
 
   onPressBack = () => {
     const previousPage =
@@ -176,8 +176,5 @@ const mapDispatchToProps = {
 const mapStateToProps = ({drafts}) => ({drafts});
 
 export default withNamespaces()(
-  connect(
-    mapStateToProps,
-    mapDispatchToProps,
-  )(BeginLifemap),
+  connect(mapStateToProps, mapDispatchToProps)(BeginLifemap),
 );

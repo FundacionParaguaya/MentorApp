@@ -1,6 +1,8 @@
 import React, {Component} from 'react';
 import {Provider} from 'react-redux';
 import MapboxGL from '@react-native-mapbox-gl/maps';
+import 'react-native-gesture-handler';
+
 import Navigation from './src/navigation';
 import store from './src/redux/store';
 const TestFairy = require('react-native-testfairy');

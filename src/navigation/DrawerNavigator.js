@@ -1,55 +1,82 @@
-import { createDrawerNavigator } from 'react-navigation'
-import { Platform } from 'react-native'
-import DrawerContentComponent from './DrawerContent'
-import SyncStack from './SyncStack'
-import FamiliesStack from './FamiliesStack'
-import LifemapStack from './LifemapStack'
-import DashboardStack from './DashboardStack'
+import React from 'react';
+import {createDrawerNavigator} from '@react-navigation/drawer';
+import {createStackNavigator} from '@react-navigation/stack';
 
-// the drawer navigation menu
-export default createDrawerNavigator(
-  {
-    Dashboard: {
-      screen: DashboardStack
-    },
-    Surveys: {
-      screen: LifemapStack,
-      // Enable drawer when choosing a survey and disable it after that,
-      // when creating a Life Map
-      navigationOptions: ({ navigation }) => ({
-        drawerLockMode:
-          navigation.state.index === 0 ? 'unlocked' : 'locked-closed'
-      })
-    },
-    Families: {
-      screen: FamiliesStack
-    },
-    Sync: {
-      screen: SyncStack
-    }
-  },
-  {
-    contentComponent: DrawerContentComponent,
-    drawerWidth: 304,
-    contentOptions: {
-      labelStyle: {
-        ...Platform.select({
-          ios: {
-            fontFamily: 'Poppins',
-            fontWeight: '600'
-          },
-          android: {
-            fontFamily: 'Poppins SemiBold'
-          }
-        })
+import {generateNavStyles, addMenuIcon} from './helpers';
+
+import DrawerContentComponent from './DrawerContent';
+import DashboardView from '../screens/Dashboard';
+
+import SyncView from '../screens/Sync';
+
+import LifemapStack, {FamiliesStack} from './LifemapStack';
+import Title from './Title';
+
+const Stack = createStackNavigator();
+const Drawer = createDrawerNavigator();
+
+const HomeStackScreen = ({navigation, route}) => (
+  <Stack.Navigator
+    screenOptions={{
+      headerStyle: {
+        backgroundColor: '#009387',
       },
-      initialRouteName: 'Dashboard'
-    },
-    transitionConfig: () => ({
-      screenInterpolator: () => null,
-      transitionSpec: {
-        duration: 0
-      }
-    })
-  }
-)
+      headerTintColor: '#fff',
+      headerTitleStyle: {
+        fontWeight: 'bold',
+      },
+    }}>
+    <Stack.Screen
+      name="Dashboard"
+      component={DashboardView}
+      options={{
+        headerShown: true,
+        headerTitle: (props) => <Title title="views.dashboard" />,
+        ...generateNavStyles({navigation, route}),
+        headerLeft: () => addMenuIcon(navigation),
+      }}
+    />
+  </Stack.Navigator>
+);
+
+const SyncStack = ({navigation, route}) => (
+  <Stack.Navigator
+    screenOptions={{
+      headerStyle: {
+        backgroundColor: '#009387',
+      },
+      headerTintColor: '#fff',
+      headerTitleStyle: {
+        fontWeight: 'bold',
+      },
+    }}>
+    <Stack.Screen
+      name="Sync"
+      component={SyncView}
+      options={{
+        headerShown: true,
+        headerTitle: (props) => <Title title="views.synced" />,
+        ...generateNavStyles({navigation, route}),
+        headerLeft: () => addMenuIcon(navigation),
+      }}
+    />
+  </Stack.Navigator>
+);
+
+export default function MyDrawer({navigation, route}) {
+  return (
+    <Drawer.Navigator
+      drawerContent={(props) => (
+        <DrawerContentComponent {...props} route={route} />
+      )}>
+      <Drawer.Screen name="Dashboard" component={HomeStackScreen} />
+      <Drawer.Screen
+        name="Surveys"
+        component={LifemapStack}
+        options={{swipeEnabled: false}}
+      />
+      <Drawer.Screen name="Sync" component={SyncStack} />
+      <Drawer.Screen name="Families" component={FamiliesStack} />
+    </Drawer.Navigator>
+  );
+}

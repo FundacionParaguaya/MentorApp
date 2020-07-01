@@ -1,26 +1,27 @@
-import PropTypes from 'prop-types'
-import React, { Component } from 'react'
-import { withNamespaces } from 'react-i18next'
-import { FlatList, Image, StyleSheet, Text, View } from 'react-native'
-import { connect } from 'react-redux'
+import PropTypes from 'prop-types';
+import React, {Component} from 'react';
+import {withNamespaces} from 'react-i18next';
+import {FlatList, Image, StyleSheet, Text, View} from 'react-native';
+import {connect} from 'react-redux';
 
-import mapPlaceholderLarge from '../../assets/images/map_placeholder_1000.png'
-import FamiliesListItem from '../components/FamiliesListItem'
-import SearchBar from '../components/SearchBar'
-import { url } from '../config'
-import globalStyles from '../globalStyles'
-import { loadFamilies } from '../redux/actions'
-import { setAccessibilityTextForFamilies } from '../screens/utils/accessibilityHelpers'
-import colors from '../theme.json'
-import { replaceSpecialChars as sanitize } from '../utils'
+import mapPlaceholderLarge from '../../assets/images/map_placeholder_1000.png';
+import FamiliesListItem from '../components/FamiliesListItem';
+import SearchBar from '../components/SearchBar';
+import {url} from '../config';
+import globalStyles from '../globalStyles';
+import {loadFamilies} from '../redux/actions';
+import {setAccessibilityTextForFamilies} from '../screens/utils/accessibilityHelpers';
+import colors from '../theme.json';
+import {replaceSpecialChars as sanitize} from '../utils';
 
 export class Families extends Component {
-  state = { search: '' }
-  acessibleComponent = React.createRef()
+  state = {search: ''};
+  acessibleComponent = React.createRef();
 
-  sortByName = families => families.sort((a, b) => a.name.localeCompare(b.name))
+  sortByName = (families) =>
+    families.sort((a, b) => a.name.localeCompare(b.name));
 
-  handleClickOnFamily = family => {
+  handleClickOnFamily = (family) => {
     this.props.navigation.navigate('Family', {
       allowRetake: family.allowRetake,
       familyId: family.familyId,
@@ -29,58 +30,57 @@ export class Families extends Component {
         ? family.snapshotList[0]
         : family.draft,
       isDraft: !family.snapshotList,
-      survey: this.props.surveys.find(survey =>
+      survey: this.props.surveys.find((survey) =>
         family.snapshotList
           ? survey.id === family.snapshotList[0].surveyId
-          : survey.id === family.draft.surveyId
-      )
-    })
-  }
+          : survey.id === family.draft.surveyId,
+      ),
+    });
+  };
 
   fetchFamilies = () => {
-    this.props.loadFamilies(url[this.props.env], this.props.user.token)
-  }
+    this.props.loadFamilies(url[this.props.env], this.props.user.token);
+  };
 
   render() {
-    const { t } = this.props
+    const {t} = this.props;
     // show not synced families from drafts
     const draftFamilies = this.props.drafts
       .filter(
-        draft => draft.status === 'Draft' || draft.status === 'Pending sync'
+        (draft) => draft.status === 'Draft' || draft.status === 'Pending sync',
       )
-      .map(draft => {
-        const primaryParticipant = draft.familyData.familyMembersList[0]
+      .map((draft) => {
+        const primaryParticipant = draft.familyData.familyMembersList[0];
         return {
           name: `${primaryParticipant.firstName} ${primaryParticipant.lastName}`,
           birthDate: primaryParticipant.birthDate,
-          draft
-        }
-      })
+          draft,
+        };
+      });
 
-    const allFamilies = [...draftFamilies, ...sanitize(this.props.families)]
+    const allFamilies = [...draftFamilies, ...sanitize(this.props.families)];
 
     const filteredFamilies = allFamilies.filter(
-      family =>
+      (family) =>
         family.name.toLowerCase().includes(this.state.search.toLowerCase()) ||
-        (family.code && family.code.includes(this.state.search))
-    )
+        (family.code && family.code.includes(this.state.search)),
+    );
 
-    const screenAccessibilityContent = setAccessibilityTextForFamilies()
+    const screenAccessibilityContent = setAccessibilityTextForFamilies();
 
     return (
       <View
         style={[globalStyles.background, styles.container]}
         accessible={true}
         accessibilityLabel={screenAccessibilityContent}
-        accessibilityLiveRegion="assertive"
-      >
+        accessibilityLiveRegion="assertive">
         <View style={styles.imagePlaceholderContainer}>
           <View style={styles.searchContainer}>
             <SearchBar
               id="searchAddress"
               style={styles.search}
               placeholder={t('views.family.searchByName')}
-              onChangeText={search => this.setState({ search })}
+              onChangeText={(search) => this.setState({search})}
               value={this.state.search}
             />
           </View>
@@ -91,23 +91,23 @@ export class Families extends Component {
         </View>
 
         <View style={styles.bar}>
-          <Text style={{ ...globalStyles.subline, ...styles.familiesCount }}>
+          <Text style={{...globalStyles.subline, ...styles.familiesCount}}>
             {filteredFamilies.length} {t('views.families').toLowerCase()}
           </Text>
         </View>
 
         <FlatList
-          style={{ flex: 1 }}
+          style={{flex: 1}}
           refreshing={
             !!this.props.offline.online &&
             !!this.props.offline.outbox.find(
-              item => item.type === 'LOAD_FAMILIES'
+              (item) => item.type === 'LOAD_FAMILIES',
             )
           }
           onRefresh={this.fetchFamilies}
           data={this.sortByName(filteredFamilies)}
           keyExtractor={(item, index) => index.toString()}
-          renderItem={({ item }) => (
+          renderItem={({item}) => (
             <FamiliesListItem
               error={t('views.family.error')}
               lng={this.props.lng}
@@ -118,7 +118,7 @@ export class Families extends Component {
           initialNumToRender={7}
         />
       </View>
-    )
+    );
   }
 }
 
@@ -132,22 +132,22 @@ Families.propTypes = {
   user: PropTypes.object.isRequired,
   offline: PropTypes.object,
   t: PropTypes.func,
-  lng: PropTypes.string
-}
+  lng: PropTypes.string,
+};
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1
+    flex: 1,
   },
 
   search: {
-    width: '100%'
+    width: '100%',
   },
   bar: {
     paddingLeft: 30,
     justifyContent: 'center',
     height: 48,
-    backgroundColor: colors.primary
+    backgroundColor: colors.primary,
   },
   searchContainer: {
     padding: 10,
@@ -156,22 +156,22 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     top: '46%',
     position: 'absolute',
-    zIndex: 10
+    zIndex: 10,
   },
   imagePlaceholderContainer: {
     position: 'relative',
     width: '100%',
-    height: 139
+    height: 139,
   },
 
   imagePlaceholderTop: {
     width: '100%',
-    height: 139
+    height: 139,
   },
   familiesCount: {
-    fontWeight: '600'
-  }
-})
+    fontWeight: '600',
+  },
+});
 
 export const mapStateToProps = ({
   families,
@@ -179,23 +179,20 @@ export const mapStateToProps = ({
   offline,
   env,
   surveys,
-  drafts
+  drafts,
 }) => ({
   families,
   user,
   offline,
   env,
   surveys,
-  drafts
-})
+  drafts,
+});
 
 const mapDispatchToProps = {
-  loadFamilies
-}
+  loadFamilies,
+};
 
 export default withNamespaces()(
-  connect(
-    mapStateToProps,
-    mapDispatchToProps
-  )(Families)
-)
+  connect(mapStateToProps, mapDispatchToProps)(Families),
+);

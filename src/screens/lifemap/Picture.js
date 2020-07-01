@@ -33,12 +33,12 @@ export class Picture extends Component {
     displayError: false,
   };
 
-  survey = this.props.navigation.getParam('survey');
-  draftId = this.props.navigation.getParam('draftId');
+  survey = this.props.route.params.survey;
+  draftId = this.props.route.params.draftId;
 
   // the draft is not mutated in this screen (only its progress),
   // we need it for progress bar
-  draft = this.props.drafts.find(draft => draft.draftId === this.draftId);
+  draft = this.props.drafts.find((draft) => draft.draftId === this.draftId);
 
   onPressBack = () => {
     const previousPage = this.draft.stoplightSkipped
@@ -46,7 +46,7 @@ export class Picture extends Component {
       : 'Priorities';
 
     this.props.navigation.replace(previousPage, {
-      survey: this.props.navigation.getParam('survey'),
+      survey: this.props.route.params.survey,
       draftId: this.draftId,
     });
   };
@@ -64,8 +64,8 @@ export class Picture extends Component {
     });
   }
 
-  openGallery = async function() {
-    ImagePicker.launchImageLibrary(options, response => {
+  openGallery = async function () {
+    ImagePicker.launchImageLibrary(options, (response) => {
       if (response.didCancel) {
         console.log('User cancelled photo picker');
       } else if (response.error) {
@@ -102,11 +102,11 @@ export class Picture extends Component {
     });
   };
 
-  checkMaxLimit = function(pictures) {
+  checkMaxLimit = function (pictures) {
     let size = 0;
     let marker = 1024; // Change to 1000 if required
     let maxSize = 10 * marker * marker; // 10MB limit
-    pictures.forEach(element => {
+    pictures.forEach((element) => {
       //console.log('picture', element)
       let pictureSize = element.size ? element.size : 0;
 
@@ -124,10 +124,10 @@ export class Picture extends Component {
     return true;
   };
 
-  removePicture = function(elem) {
+  removePicture = function (elem) {
     //remove picture from state
 
-    let newState = this.state.pictures.filter(e => e.name != elem.name);
+    let newState = this.state.pictures.filter((e) => e.name != elem.name);
 
     let updatedDraft = this.draft;
     updatedDraft.pictures = newState ? newState : [];
@@ -143,8 +143,8 @@ export class Picture extends Component {
     }
   };
 
-  onContinue = function() {
-    let survey = this.props.navigation.getParam('survey');
+  onContinue = function () {
+    let survey = this.props.route.params.survey;
     console.log(this.draft);
     if (!this.checkMaxLimit([...this.state.pictures])) {
       this.setState({displayError: true});
@@ -165,13 +165,13 @@ export class Picture extends Component {
     }
   };
 
-  takePicture = async function() {
+  takePicture = async function () {
     try {
       const granted = await PermissionsAndroid.request(
         PermissionsAndroid.PERMISSIONS.WRITE_EXTERNAL_STORAGE,
       );
       if (granted === PermissionsAndroid.RESULTS.GRANTED) {
-        ImagePicker.launchCamera(options, response => {
+        ImagePicker.launchCamera(options, (response) => {
           if (response.didCancel) {
             console.log('User cancelled photo picker');
           } else if (response.error) {
@@ -237,7 +237,7 @@ export class Picture extends Component {
               contentContainerStyle={styles.contentContainer}>
               {this.state.pictures.length ? (
                 <View style={styles.mainImageContent}>
-                  {this.state.pictures.map(e => (
+                  {this.state.pictures.map((e) => (
                     <View
                       key={e.name}
                       style={styles.imageContainer}
@@ -385,8 +385,5 @@ const mapDispatchToProps = {
 const mapStateToProps = ({drafts}) => ({drafts});
 
 export default withNamespaces()(
-  connect(
-    mapStateToProps,
-    mapDispatchToProps,
-  )(Picture),
+  connect(mapStateToProps, mapDispatchToProps)(Picture),
 );

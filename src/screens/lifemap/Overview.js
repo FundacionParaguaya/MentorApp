@@ -1,140 +1,142 @@
-import PropTypes from 'prop-types'
-import React, { Component } from 'react'
-import { withNamespaces } from 'react-i18next'
-import { Image, StyleSheet, Text, TouchableHighlight, View } from 'react-native'
-import { connect } from 'react-redux'
+import PropTypes from 'prop-types';
+import React, {Component} from 'react';
+import {withNamespaces} from 'react-i18next';
+import {Image, StyleSheet, Text, TouchableHighlight, View} from 'react-native';
+import {connect} from 'react-redux';
 
-import arrow from '../../../assets/images/selectArrow.png'
-import BottomModal from '../../components/BottomModal'
-import Button from '../../components/Button'
-import FilterListItem from '../../components/FilterListItem'
-import LifemapOverview from '../../components/LifemapOverview'
-import LifemapVisual from '../../components/LifemapVisual'
-import StickyFooter from '../../components/StickyFooter'
-import globalStyles from '../../globalStyles'
-import { updateDraft } from '../../redux/actions'
-import colors from '../../theme.json'
+import arrow from '../../../assets/images/selectArrow.png';
+import BottomModal from '../../components/BottomModal';
+import Button from '../../components/Button';
+import FilterListItem from '../../components/FilterListItem';
+import LifemapOverview from '../../components/LifemapOverview';
+import LifemapVisual from '../../components/LifemapVisual';
+import StickyFooter from '../../components/StickyFooter';
+import globalStyles from '../../globalStyles';
+import {updateDraft} from '../../redux/actions';
+import colors from '../../theme.json';
 
 export class Overview extends Component {
-  step = this.props.navigation.getParam('step')
-  survey = this.props.navigation.getParam('survey')
-  draftId = this.props.navigation.getParam('draftId')
-  familyLifemap = this.props.navigation.getParam('familyLifemap')
-  isResumingDraft = this.props.navigation.getParam('resumeDraft')
-  readOnly = this.props.navigation.getParam('readOnly') || false
+  survey = this.props.route.params.survey;
+  draftId = this.props.route.params.draftId;
+  familyLifemap = this.props.route.params.familyLifemap;
+  isResumingDraft = this.props.route.params.resumeDraft;
+  readOnly = this.props.route.params.readOnly || false;
   state = {
     filterModalIsOpen: false,
     selectedFilter: false,
     filterLabel: false,
-    tipIsVisible: false
-  }
+    tipIsVisible: false,
+  };
 
   getDraft = () =>
-    this.props.drafts.find(draft => draft.draftId === this.draftId)
+    this.props.drafts.find((draft) => draft.draftId === this.draftId);
 
   onPressBack = () => {
     const draft = !this.props.readOnly
       ? this.getDraft()
-      : this.props.familyLifemap
-    const survey = this.survey
+      : this.props.familyLifemap;
+    const survey = this.survey;
 
     //If we do not arrive to this screen from the families screen
     if (!this.familyLifemap) {
       const skippedQuestions = draft.indicatorSurveyDataList.filter(
-        question => question.value === 0
-      )
+        (question) => question.value === 0,
+      );
 
       if (this.isResumingDraft) {
-        this.props.navigation.navigate('Dashboard')
+        this.props.navigation.navigate('Dashboard');
       } else if (skippedQuestions.length > 0) {
         this.props.navigation.navigate('Skipped', {
           draftId: draft.draftId,
-          survey
-        })
+          survey,
+        });
       } else
         this.props.navigation.navigate('Question', {
           step: this.survey.surveyStoplightQuestions.length - 1,
           draftId: this.draftId,
-          survey
-        })
+          survey,
+        });
     }
     // If we arrive to this screen from the families screen
     else
       this.props.navigation.navigate('Families', {
         draftId: this.draftId,
-        survey
-      })
-  }
+        survey,
+      });
+  };
 
-  navigateToScreen = (screen, indicator, indicatorText) =>
+  navigateToScreen = (screen, indicator, indicatorText) => {
     this.props.navigation.navigate(screen, {
       survey: this.survey,
       indicator,
       indicatorText,
-      draftId: this.draftId
-    })
+      draftId: this.draftId,
+    });
+  };
 
   toggleFilterModal = () => {
     this.setState({
-      filterModalIsOpen: !this.state.filterModalIsOpen
-    })
-  }
+      filterModalIsOpen: !this.state.filterModalIsOpen,
+    });
+  };
 
   selectFilter = (filter, filterLabel = false) => {
     this.setState({
       selectedFilter: filter,
       filterModalIsOpen: false,
-      filterLabel: filterLabel
-    })
-  }
+      filterLabel: filterLabel,
+    });
+  };
 
   onContinue = () => {
-    this.navigateToScreen('Priorities')
-  }
+    this.navigateToScreen('Priorities');
+  };
 
   resumeDraft = () => {
     const draft = !this.props.readOnly
       ? this.getDraft()
-      : this.props.familyLifemap
-
+      : this.props.familyLifemap;
+    console.log('resuming stuff here');
+    console.log(draft.progress.screen);
     this.props.navigation.replace(draft.progress.screen, {
+      resumeDraft: false,
       draftId: this.draftId,
       survey: this.survey,
-      step: draft.progress.step
-    })
-  }
+      step: draft.progress.step,
+    });
+  };
 
   componentDidMount() {
     const draft = !this.props.readOnly
       ? this.getDraft()
-      : this.props.familyLifemap
+      : this.props.familyLifemap;
 
     this.props.navigation.setParams({
       onPressBack: this.onPressBack,
-      withoutCloseButton: draft.draftId ? false : true
-    })
+      withoutCloseButton: draft.draftId ? false : true,
+    });
 
     if (!this.isResumingDraft && !this.familyLifemap) {
       this.props.updateDraft({
         ...draft,
         progress: {
           ...draft.progress,
-          screen: 'Overview'
-        }
-      })
+          screen: 'Overview',
+        },
+      });
     }
   }
 
   shouldComponentUpdate() {
-    return this.props.navigation.isFocused()
+    return this.props.navigation.isFocused();
   }
 
   render() {
-    const { t } = this.props
-    const { filterModalIsOpen, selectedFilter, filterLabel } = this.state
+    const {t} = this.props;
+    const {filterModalIsOpen, selectedFilter, filterLabel} = this.state;
     const draft = !this.props.readOnly
       ? this.getDraft()
-      : this.props.familyLifemap
+      : this.props.familyLifemap;
     return this.props.readOnly ? (
       <View style={[globalStyles.background, styles.contentContainer]}>
         <View style={styles.indicatorsContainer}>
@@ -155,15 +157,13 @@ export class Overview extends Component {
               underlayColor={'transparent'}
               activeOpacity={1}
               onPress={this.toggleFilterModal}
-              accessible={true}
-            >
+              accessible={true}>
               <View
                 style={styles.listTitle}
                 accessibilityLabel={
                   filterLabel || t('views.lifemap.allIndicators')
                 }
-                accessibilityHint="Double tap to open dropdown"
-              >
+                accessibilityHint="Double tap to open dropdown">
                 <Text style={globalStyles.subline}>
                   {filterLabel || t('views.lifemap.allIndicators')}
                 </Text>
@@ -184,13 +184,11 @@ export class Overview extends Component {
           <BottomModal
             isOpen={filterModalIsOpen}
             onRequestClose={this.toggleFilterModal}
-            onEmptyClose={() => this.selectFilter(false)}
-          >
+            onEmptyClose={() => this.selectFilter(false)}>
             <View
               style={styles.dropdown}
               accessible={true}
-              accessibilityLiveRegion="assertive"
-            >
+              accessibilityLiveRegion="assertive">
               <Text style={[globalStyles.p, styles.modalTitle]}>
                 {t('general.chooseView')}
               </Text>
@@ -215,7 +213,7 @@ export class Overview extends Component {
                   text={t('views.lifemap.green')}
                   amount={
                     draft.indicatorSurveyDataList.filter(
-                      item => item.value === 3
+                      (item) => item.value === 3,
                     ).length
                   }
                 />
@@ -232,7 +230,7 @@ export class Overview extends Component {
                   text={t('views.lifemap.yellow')}
                   amount={
                     draft.indicatorSurveyDataList.filter(
-                      item => item.value === 2
+                      (item) => item.value === 2,
                     ).length
                   }
                 />
@@ -247,7 +245,7 @@ export class Overview extends Component {
                   text={t('views.lifemap.red')}
                   amount={
                     draft.indicatorSurveyDataList.filter(
-                      item => item.value === 1
+                      (item) => item.value === 1,
                     ).length
                   }
                 />
@@ -261,13 +259,13 @@ export class Overview extends Component {
                     this.selectFilter(
                       'priorities',
                       `${t('views.lifemap.priorities')} & ${t(
-                        'views.lifemap.achievements'
-                      )}`
+                        'views.lifemap.achievements',
+                      )}`,
                     )
                   }
                   color={colors.blue}
                   text={`${t('views.lifemap.priorities')} & ${t(
-                    'views.lifemap.achievements'
+                    'views.lifemap.achievements',
                   )}`}
                   amount={draft.priorities.length + draft.achievements.length}
                 />
@@ -284,7 +282,7 @@ export class Overview extends Component {
                   text={t('views.skippedIndicators')}
                   amount={
                     draft.indicatorSurveyDataList.filter(
-                      item => item.value === 0
+                      (item) => item.value === 0,
                     ).length
                   }
                 />
@@ -302,11 +300,10 @@ export class Overview extends Component {
           !this.isResumingDraft && !this.familyLifemap
             ? (draft.progress.total - 1) / draft.progress.total
             : 0
-        }
-      >
+        }>
         {!this.props.readOnly ? (
-          <View style={{ alignItems: 'center' }}>
-            {draft.stoplightSkipped && <View style={{ paddingTop: 50 }} />}
+          <View style={{alignItems: 'center'}}>
+            {draft.stoplightSkipped && <View style={{paddingTop: 50}} />}
             {!draft.stoplightSkipped && (
               <Text style={[globalStyles.h2Bold, styles.heading]}>
                 {t('views.lifemap.congratulations')}
@@ -335,7 +332,7 @@ export class Overview extends Component {
               <Button
                 id="resume-draft"
                 style={{
-                  marginTop: 20
+                  marginTop: 20,
                 }}
                 colored
                 text={t('general.resumeDraft')}
@@ -346,7 +343,7 @@ export class Overview extends Component {
           {/*If we are in family/draft then show the questions.Else dont show them . This is requered for the families tab*/}
         </View>
       </StickyFooter>
-    )
+    );
   }
 }
 const styles = StyleSheet.create({
@@ -355,24 +352,24 @@ const styles = StyleSheet.create({
     flex: 1,
     flexDirection: 'column',
     justifyContent: 'center',
-    alignItems: 'stretch'
+    alignItems: 'stretch',
   },
   listTitle: {
     backgroundColor: colors.primary,
     height: 47,
     alignItems: 'center',
     justifyContent: 'center',
-    flexDirection: 'row'
+    flexDirection: 'row',
   },
   indicatorsContainer: {
     paddingHorizontal: 20,
-    paddingBottom: 25
+    paddingBottom: 25,
   },
   arrow: {
     marginLeft: 7,
     marginTop: 3,
     width: 10,
-    height: 5
+    height: 5,
   },
   dropdown: {
     paddingVertical: 16,
@@ -380,15 +377,15 @@ const styles = StyleSheet.create({
     bottom: 0,
     left: 0,
     right: 0,
-    backgroundColor: colors.white
+    backgroundColor: colors.white,
   },
   modalTitle: {
     color: colors.grey,
     fontWeight: '300',
     marginBottom: 15,
-    marginLeft: 16
-  }
-})
+    marginLeft: 16,
+  },
+});
 
 Overview.propTypes = {
   drafts: PropTypes.array.isRequired,
@@ -396,18 +393,15 @@ Overview.propTypes = {
   t: PropTypes.func.isRequired,
   navigation: PropTypes.object.isRequired,
   readOnly: PropTypes.bool,
-  familyLifemap: PropTypes.object
-}
+  familyLifemap: PropTypes.object,
+};
 
 const mapDispatchToProps = {
-  updateDraft
-}
+  updateDraft,
+};
 
-const mapStateToProps = ({ drafts }) => ({ drafts })
+const mapStateToProps = ({drafts}) => ({drafts});
 
 export default withNamespaces()(
-  connect(
-    mapStateToProps,
-    mapDispatchToProps
-  )(Overview)
-)
+  connect(mapStateToProps, mapDispatchToProps)(Overview),
+);
