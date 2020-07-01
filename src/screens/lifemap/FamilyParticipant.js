@@ -20,16 +20,16 @@ import CallingCodes from './CallingCodes';
 import {getTotalScreens, setValidationSchema} from './helpers';
 
 export class FamilyParticipant extends Component {
-  survey = this.props.navigation.getParam('survey');
-  draftId = this.props.navigation.getParam('draftId');
-  readOnly = this.props.navigation.getParam('readOnly');
-  phoneCodes = CallingCodes.map(element => ({
+  survey = this.props.route.params.survey;
+  draftId = this.props.route.params.draftId;
+  readOnly = this.props.route.params.readOnly;
+  phoneCodes = CallingCodes.map((element) => ({
     ...element,
     text: `${element.country} - (+${element.value})`,
   }));
 
   initialPhoneCode = this.phoneCodes.find(
-    e => e.code == this.survey.surveyConfig.surveyLocation.country,
+    (e) => e.code == this.survey.surveyConfig.surveyLocation.country,
   ).value;
 
   requiredFields =
@@ -38,7 +38,7 @@ export class FamilyParticipant extends Component {
       this.survey.surveyConfig.requiredFields.primaryParticipant) ||
     null;
   familyMembersArray = []; // the options array for members count dropdown
-  readOnlyDraft = this.props.navigation.getParam('family') || [];
+  readOnlyDraft = this.props.route.params.family || [];
 
   state = {
     errors: [],
@@ -46,13 +46,13 @@ export class FamilyParticipant extends Component {
   };
 
   getDraft = () =>
-    this.props.drafts.find(draft => draft.draftId === this.draftId);
+    this.props.drafts.find((draft) => draft.draftId === this.draftId);
 
   setError = (error, field) => {
     const {errors} = this.state;
 
     if (error && !errors.includes(field)) {
-      this.setState(previousState => {
+      this.setState((previousState) => {
         return {
           ...previousState,
           errors: [...previousState.errors, field],
@@ -60,7 +60,7 @@ export class FamilyParticipant extends Component {
       });
     } else if (!error) {
       this.setState({
-        errors: errors.filter(item => item !== field),
+        errors: errors.filter((item) => item !== field),
       });
     }
 
@@ -100,7 +100,7 @@ export class FamilyParticipant extends Component {
     }
   };
 
-  addFamilyCount = value => {
+  addFamilyCount = (value) => {
     if (this.readOnly) {
       return;
     }
@@ -183,14 +183,15 @@ export class FamilyParticipant extends Component {
     },
   ];
 
-  phoneValidation = value => {
+  phoneValidation = (value) => {
     const phoneUtil = PhoneNumberUtil.getInstance();
     try {
       const draft = !this.readOnly ? this.getDraft() : this.readOnlyDraft;
       const phoneCode = draft.familyData.familyMembersList[0].phoneCode
         ? draft.familyData.familyMembersList[0].phoneCode
         : this.initialPhoneCode;
-      const contryCode = this.phoneCodes.find(x => x.value === phoneCode).code;
+      const contryCode = this.phoneCodes.find((x) => x.value === phoneCode)
+        .code;
       const international = '+' + phoneCode + ' ' + value;
       const phone = phoneUtil.parse(international, contryCode);
       let validation = phoneUtil.isValidNumber(phone);
@@ -224,7 +225,7 @@ export class FamilyParticipant extends Component {
     });
   };
 
-  onErrorStateChange = hasErrors => {
+  onErrorStateChange = (hasErrors) => {
     const {navigation} = this.props;
 
     // for this particular screen we need to detect if form is valid
@@ -341,7 +342,7 @@ export class FamilyParticipant extends Component {
           readOnly={!!this.readOnly}
           onChangeText={this.updateParticipant}
           showErrors={showErrors}
-          setError={isError => this.setError(isError, 'firstName')}
+          setError={(isError) => this.setError(isError, 'firstName')}
         />
 
         <TextInput
@@ -354,7 +355,7 @@ export class FamilyParticipant extends Component {
           readOnly={!!this.readOnly}
           onChangeText={this.updateParticipant}
           showErrors={showErrors}
-          setError={isError => this.setError(isError, 'lastName')}
+          setError={(isError) => this.setError(isError, 'lastName')}
         />
 
         <Select
@@ -366,7 +367,7 @@ export class FamilyParticipant extends Component {
           options={this.survey.surveyConfig.gender}
           onChange={this.updateParticipant}
           showErrors={showErrors}
-          setError={isError => this.setError(isError, 'gender')}
+          setError={(isError) => this.setError(isError, 'gender')}
           otherField="customGender"
           otherPlaceholder={t('views.family.specifyGender')}
           readOnly={!!this.readOnly}
@@ -381,7 +382,7 @@ export class FamilyParticipant extends Component {
           readOnly={!!this.readOnly}
           onValidDate={this.updateParticipant}
           showErrors={showErrors}
-          setError={isError => this.setError(isError, 'birthDate')}
+          setError={(isError) => this.setError(isError, 'birthDate')}
         />
 
         <Select
@@ -401,7 +402,7 @@ export class FamilyParticipant extends Component {
           readOnly={!!this.readOnly}
           onChange={this.updateParticipant}
           showErrors={showErrors}
-          setError={isError => this.setError(isError, 'documentType')}
+          setError={(isError) => this.setError(isError, 'documentType')}
         />
 
         <TextInput
@@ -416,7 +417,7 @@ export class FamilyParticipant extends Component {
           readOnly={!!this.readOnly}
           onChangeText={this.updateParticipant}
           showErrors={showErrors}
-          setError={isError => this.setError(isError, 'documentNumber')}
+          setError={(isError) => this.setError(isError, 'documentNumber')}
         />
 
         <Select
@@ -435,7 +436,7 @@ export class FamilyParticipant extends Component {
           readOnly={!!this.readOnly}
           onChange={this.updateParticipant}
           showErrors={showErrors}
-          setError={isError => this.setError(isError, 'birthCountry')}
+          setError={(isError) => this.setError(isError, 'birthCountry')}
         />
 
         <TextInput
@@ -446,7 +447,7 @@ export class FamilyParticipant extends Component {
           readOnly={!!this.readOnly}
           onChangeText={this.updateParticipant}
           showErrors={showErrors}
-          setError={isError => this.setError(isError, 'email')}
+          setError={(isError) => this.setError(isError, 'email')}
         />
 
         <Select
@@ -458,7 +459,7 @@ export class FamilyParticipant extends Component {
           onChange={this.updateParticipant}
           readOnly={!!this.readOnly}
           showErrors={showErrors}
-          setError={isError => this.setError(isError, 'phoneCode')}
+          setError={(isError) => this.setError(isError, 'phoneCode')}
         />
 
         <TextInput
@@ -470,7 +471,7 @@ export class FamilyParticipant extends Component {
           readOnly={!!this.readOnly}
           onChangeText={this.updateParticipant}
           showErrors={showErrors}
-          setError={isError => this.setError(isError, 'phoneNumber')}
+          setError={(isError) => this.setError(isError, 'phoneNumber')}
         />
 
         <Select
@@ -487,7 +488,7 @@ export class FamilyParticipant extends Component {
           readOnly={!!this.readOnly}
           onChange={this.addFamilyCount}
           showErrors={showErrors}
-          setError={isError => this.setError(isError, 'countFamilyMembers')}
+          setError={(isError) => this.setError(isError, 'countFamilyMembers')}
         />
       </StickyFooter>
     ) : null;
@@ -523,8 +524,5 @@ const mapDispatchToProps = {
 const mapStateToProps = ({drafts}) => ({drafts});
 
 export default withNamespaces()(
-  connect(
-    mapStateToProps,
-    mapDispatchToProps,
-  )(FamilyParticipant),
+  connect(mapStateToProps, mapDispatchToProps)(FamilyParticipant),
 );

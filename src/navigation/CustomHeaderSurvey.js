@@ -1,41 +1,38 @@
-import React, { Component } from 'react'
-import { Text, View, StyleSheet, Platform } from 'react-native'
-import globalStyles from '../globalStyles'
-import { withNamespaces } from 'react-i18next'
-import { connect } from 'react-redux'
-import PropTypes from 'prop-types'
-import colors from '../theme.json'
+import React, {Component} from 'react';
+import {Text, View, StyleSheet, Platform} from 'react-native';
+import globalStyles from '../globalStyles';
+import {withNamespaces} from 'react-i18next';
+import {connect} from 'react-redux';
+import PropTypes from 'prop-types';
+import colors from '../theme.json';
 
 export class CustomHeaderSurveyComponent extends Component {
   render() {
-    const { overview, separatorScreen, navigation } = this.props
-    const survey = navigation.getParam('survey')
-    const stoplightOptional = survey.surveyConfig.stoplightOptional
-    const stoplightSkipped = this.props.navigation.getParam('stoplightSkipped')
+    const {overview, separatorScreen, navigation, route} = this.props;
+    console.log(route);
+    const survey = route.params.survey;
+    const stoplightOptional = survey.surveyConfig.stoplightOptional;
+    const stoplightSkipped = route.params.stoplightSkipped;
     return (
       <View
         style={styles.headerQuestions}
-        onLayout={event => {
-          const { height } = event.nativeEvent.layout
+        onLayout={(event) => {
+          const {height} = event.nativeEvent.layout;
           height > 115
-            ? navigation.setParams({ navigationHeight: height })
-            : false
+            ? navigation.setParams({navigationHeight: height})
+            : false;
         }}
-        accessibilityLiveRegion="assertive"
-      >
+        accessibilityLiveRegion="assertive">
         {!overview && !separatorScreen && (
           <Text style={styles.dimension}>
             {survey.surveyStoplightQuestions[
-              navigation.state.params.step
+              route.params.step
             ].dimension.toUpperCase()}
           </Text>
         )}
         {!overview && !separatorScreen && (
           <Text style={styles.title}>
-            {
-              survey.surveyStoplightQuestions[navigation.state.params.step]
-                .questionText
-            }
+            {survey.surveyStoplightQuestions[route.params.step].questionText}
           </Text>
         )}
         {overview && (
@@ -53,7 +50,7 @@ export class CustomHeaderSurveyComponent extends Component {
           </Text>
         )}
       </View>
-    )
+    );
   }
 }
 
@@ -62,48 +59,48 @@ CustomHeaderSurveyComponent.propTypes = {
   t: PropTypes.func,
   lng: PropTypes.string,
   overview: PropTypes.bool,
-  separatorScreen: PropTypes.bool
-}
+  separatorScreen: PropTypes.bool,
+};
 
 const styles = StyleSheet.create({
   headerQuestions: {
     paddingTop: 10,
     paddingBottom: 20,
     marginRight: 'auto',
-    marginLeft: 'auto'
+    marginLeft: 'auto',
   },
   dimension: {
     ...globalStyles.h5,
     ...globalStyles.centerText,
     marginTop: 15,
-    paddingTop: 10
+    paddingTop: 10,
   },
   title: {
     ...globalStyles.h3,
     ...globalStyles.centerText,
-    color: colors.dark
+    color: colors.dark,
   },
   headerTitleStyle: {
     ...Platform.select({
       ios: {
-        fontFamily: 'Poppins'
+        fontFamily: 'Poppins',
       },
       android: {
-        fontFamily: 'Poppins SemiBold'
-      }
+        fontFamily: 'Poppins SemiBold',
+      },
     }),
     fontSize: 18,
     fontWeight: '200',
     lineHeight: 26,
     marginLeft: 20,
-    color: colors.black
-  }
-})
+    color: colors.black,
+  },
+});
 
-const mapStateToProps = ({ lng }) => ({
-  lng
-})
+const mapStateToProps = ({lng}) => ({
+  lng,
+});
 
 export default withNamespaces()(
-  connect(mapStateToProps)(CustomHeaderSurveyComponent)
-)
+  connect(mapStateToProps)(CustomHeaderSurveyComponent),
+);

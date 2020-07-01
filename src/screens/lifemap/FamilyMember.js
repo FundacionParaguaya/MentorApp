@@ -1,42 +1,41 @@
-import PropTypes from 'prop-types'
-import React, { Component } from 'react'
-import { withNamespaces } from 'react-i18next'
-import { Platform, StyleSheet, Text, View } from 'react-native'
+import PropTypes from 'prop-types';
+import React, {Component} from 'react';
+import {withNamespaces} from 'react-i18next';
+import {Platform, StyleSheet, Text, View} from 'react-native';
 
-import DateInput from '../../components/form/DateInput'
-import Select from '../../components/form/Select'
-import TextInput from '../../components/form/TextInput'
-import globalStyles from '../../globalStyles'
-import colors from '../../theme.json'
+import DateInput from '../../components/form/DateInput';
+import Select from '../../components/form/Select';
+import TextInput from '../../components/form/TextInput';
+import globalStyles from '../../globalStyles';
+import colors from '../../theme.json';
 
 export class FamilyMember extends Component {
-  static navigationOptions = ({ navigation }) => {
+  static navigationOptions = ({navigation}) => {
     return {
       headerTitle: (
         <Text
           accessibilityLiveRegion="assertive"
-          style={styles.headerTitleStyle}
-        >
+          style={styles.headerTitleStyle}>
           {navigation.getParam('member').firstName}
           {/* {navigation.getParam('title', 'Family Member')} */}
         </Text>
-      )
-    }
-  }
+      ),
+    };
+  };
   setTitle() {
     this.props.navigation.setParams({
-      title: this.props.navigation.getParam('member').firstName
-    })
+      title: this.props.route.params.member.firstName,
+    });
   }
 
   componentDidMount() {
-    if (this.props.navigation.getParam('member')) {
-      this.setTitle()
+    if (this.props.route.params.member) {
+      this.setTitle();
     }
   }
   render() {
-    const { t } = this.props
-    const member = this.props.navigation.getParam('member')
+    const {t} = this.props;
+    const member = this.props.route.params.member;
     return (
       <View style={[globalStyles.background, styles.contentContainer]}>
         <TextInput
@@ -54,10 +53,10 @@ export class FamilyMember extends Component {
           placeholder={t('views.family.gender')}
           initialValue={member.gender}
           options={[
-            { text: 'Male', value: 'M' },
-            { text: 'Female', value: 'F' },
-            { text: 'Other', value: 'O' },
-            { text: 'I prefer not to answer', value: 'N' }
+            {text: 'Male', value: 'M'},
+            {text: 'Female', value: 'F'},
+            {text: 'Other', value: 'O'},
+            {text: 'I prefer not to answer', value: 'N'},
           ]}
           setError={() => {}}
         />
@@ -70,37 +69,37 @@ export class FamilyMember extends Component {
           setError={() => {}}
         />
       </View>
-    )
+    );
   }
 }
 
 FamilyMember.propTypes = {
   t: PropTypes.func.isRequired,
-  navigation: PropTypes.object.isRequired
-}
+  navigation: PropTypes.object.isRequired,
+};
 
 const styles = StyleSheet.create({
   contentContainer: {
     paddingTop: 20,
     flex: 1,
-    flexDirection: 'column'
+    flexDirection: 'column',
   },
   headerTitleStyle: {
     ...Platform.select({
       ios: {
-        fontFamily: 'Poppins'
+        fontFamily: 'Poppins',
       },
       android: {
-        fontFamily: 'Poppins SemiBold'
-      }
+        fontFamily: 'Poppins SemiBold',
+      },
     }),
     fontSize: 18,
     fontWeight: '200',
     lineHeight: 26,
     color: colors.black,
     marginLeft: 'auto',
-    marginRight: 'auto'
-  }
-})
+    marginRight: 'auto',
+  },
+});
 
-export default withNamespaces()(FamilyMember)
+export default withNamespaces()(FamilyMember);

@@ -36,8 +36,8 @@ import {
 
 export class Final extends Component {
   unsubscribeNetChange;
-  survey = this.props.navigation.getParam('survey');
-  draft = this.props.navigation.getParam('draft');
+  survey = this.props.route.params.survey;
+  draft = this.props.route.params.draft;
   state = {
     loading: false,
     downloading: false,
@@ -96,8 +96,11 @@ export class Final extends Component {
 
   prepareDraftForSubmit() {
     if (this.state.loading) {
-      const draft = prepareDraftForSubmit(this.draft, this.survey);
+      console.log('before prepare');
+      console.log(this.draft);
 
+      const draft = prepareDraftForSubmit(this.draft, this.survey);
+      console.log(draft);
       if (draft.pictures.length > 0) {
         this.props.submitDraftWithImages(
           url[this.props.env],
@@ -217,7 +220,7 @@ export class Final extends Component {
   handleCloseModal = () =>
     this.setState({modalOpen: false, whatsappModalOpen: false});
 
-  setConnectivityState = isConnected => {
+  setConnectivityState = (isConnected) => {
     isConnected
       ? this.setState({connection: true, error: ''})
       : this.setState({connection: false, error: 'No connection'});
@@ -228,12 +231,19 @@ export class Final extends Component {
   }
 
   componentDidMount() {
-    this.props.updateDraft(this.draft);
+    if (this.draft.progress.screen !== 'Final') {
+      let updatedDraft = this.draft;
+      updatedDraft.progress.screen = 'Final';
+      this.props.updateDraft(updatedDraft);
+    }
+
     this.props.navigation.setParams({
       onPressBack: this.onPressBack,
     });
-    NetInfo.fetch().then(state => this.setConnectivityState(state.isConnected));
-    this.unsubscribeNetChange = NetInfo.addEventListener(state => {
+    NetInfo.fetch().then((state) =>
+      this.setConnectivityState(state.isConnected),
+    );
+    this.unsubscribeNetChange = NetInfo.addEventListener((state) => {
       this.setConnectivityState(state.isConnected);
     });
   }
@@ -253,12 +263,12 @@ export class Final extends Component {
     const userEmail =
       !!familyMembersList &&
       familyMembersList.length &&
-      familyMembersList.find(user => user.email);
+      familyMembersList.find((user) => user.email);
 
     const userTelephone =
       !!familyMembersList &&
       familyMembersList.length &&
-      familyMembersList.find(user => user.phoneNumber);
+      familyMembersList.find((user) => user.phoneNumber);
 
     const stoplightSkipped = this.draft.stoplightSkipped;
     console.log('stoplightSkipped', stoplightSkipped);
@@ -412,8 +422,5 @@ const mapDispatchToProps = {
 };
 
 export default withNamespaces()(
-  connect(
-    mapStateToProps,
-    mapDispatchToProps,
-  )(Final),
+  connect(mapStateToProps, mapDispatchToProps)(Final),
 );

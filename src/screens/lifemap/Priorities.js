@@ -1,43 +1,43 @@
-import React, { Component } from 'react'
-import { StyleSheet, View, Text, Image, TouchableHighlight } from 'react-native'
-import PropTypes from 'prop-types'
-import { connect } from 'react-redux'
-import { updateDraft } from '../../redux/actions'
-import { withNamespaces } from 'react-i18next'
-import StickyFooter from '../../components/StickyFooter'
-import Icon2 from 'react-native-vector-icons/MaterialCommunityIcons'
-import Decoration from '../../components/decoration/Decoration'
-import FilterListItem from '../../components/FilterListItem'
-import LifemapOverview from '../../components/LifemapOverview'
-import BottomModal from '../../components/BottomModal'
-import arrow from '../../../assets/images/selectArrow.png'
-import globalStyles from '../../globalStyles'
-import colors from '../../theme.json'
-import { prioritiesScreen } from '../../screens/utils/accessibilityHelpers'
+import React, {Component} from 'react';
+import {StyleSheet, View, Text, Image, TouchableHighlight} from 'react-native';
+import PropTypes from 'prop-types';
+import {connect} from 'react-redux';
+import {updateDraft} from '../../redux/actions';
+import {withNamespaces} from 'react-i18next';
+import StickyFooter from '../../components/StickyFooter';
+import Icon2 from 'react-native-vector-icons/MaterialCommunityIcons';
+import Decoration from '../../components/decoration/Decoration';
+import FilterListItem from '../../components/FilterListItem';
+import LifemapOverview from '../../components/LifemapOverview';
+import BottomModal from '../../components/BottomModal';
+import arrow from '../../../assets/images/selectArrow.png';
+import globalStyles from '../../globalStyles';
+import colors from '../../theme.json';
+import {prioritiesScreen} from '../../screens/utils/accessibilityHelpers';
 
 export class Priorities extends Component {
-  draftId = this.props.navigation.getParam('draftId')
-  survey = this.props.navigation.getParam('survey')
-  familyLifemap = this.props.navigation.getParam('familyLifemap')
-  isResumingDraft = this.props.navigation.getParam('resumeDraft')
+  draftId = this.props.route.params.draftId;
+  survey = this.props.route.params.survey;
+  familyLifemap = this.props.route.params.familyLifemap;
+  isResumingDraft = this.props.route.params.resumeDraft;
 
   state = {
     filterModalIsOpen: false,
     selectedFilter: false,
     filterLabel: false,
-    tipIsVisible: false
-  }
+    tipIsVisible: false,
+  };
 
   getDraft = () =>
-    this.props.drafts.find(draft => draft.draftId === this.draftId)
+    this.props.drafts.find((draft) => draft.draftId === this.draftId);
 
   onPressBack = () => {
     this.props.navigation.push('Overview', {
       resumeDraft: false,
       draftId: this.draftId,
-      survey: this.survey
-    })
-  }
+      survey: this.survey,
+    });
+  };
 
   navigateToScreen = (screen, indicator, indicatorText) =>
     this.props.navigation.push(screen, {
@@ -45,105 +45,104 @@ export class Priorities extends Component {
       survey: this.survey,
       indicator,
       indicatorText,
-      draft: this.getDraft()
-    })
+      draft: this.getDraft(),
+    });
 
   toggleFilterModal = () => {
     this.setState({
-      filterModalIsOpen: !this.state.filterModalIsOpen
-    })
-  }
+      filterModalIsOpen: !this.state.filterModalIsOpen,
+    });
+  };
 
   selectFilter = (filter, filterLabel = false) => {
     this.setState({
       selectedFilter: filter,
       filterModalIsOpen: false,
-      filterLabel: filterLabel
-    })
-  }
+      filterLabel: filterLabel,
+    });
+  };
 
   getPotentialPrioritiesCount() {
-    const draft = this.getDraft()
+    const draft = this.getDraft();
     return (
       draft &&
       draft.indicatorSurveyDataList &&
       draft.indicatorSurveyDataList.filter(
-        question => question.value === 1 || question.value === 2
+        (question) => question.value === 1 || question.value === 2,
       ).length
-    )
+    );
   }
 
   getMandatoryPrioritiesCount() {
-    const potentialPrioritiesCount = this.getPotentialPrioritiesCount() || 0
+    const potentialPrioritiesCount = this.getPotentialPrioritiesCount() || 0;
     const mimimumPriorities =
-      (this.survey && this.survey.minimumPriorities) || 0
+      (this.survey && this.survey.minimumPriorities) || 0;
 
     return potentialPrioritiesCount > mimimumPriorities
       ? mimimumPriorities
-      : potentialPrioritiesCount
+      : potentialPrioritiesCount;
   }
 
   onTipClose = () => {
     this.setState({
-      tipIsVisible: false
-    })
-  }
+      tipIsVisible: false,
+    });
+  };
 
   onContinue = (mandatoryPrioritiesCount, draft) => {
     if (mandatoryPrioritiesCount > draft.priorities.length) {
       this.setState({
-        tipIsVisible: true
-      })
+        tipIsVisible: true,
+      });
     } else {
       //If sign support, the go to sign view
       if (this.survey.surveyConfig.pictureSupport) {
         this.props.navigation.navigate('Picture', {
           survey: this.survey,
-          draftId: this.draftId
-        })
+          draftId: this.draftId,
+        });
       } else if (this.survey.surveyConfig.signSupport) {
         this.props.navigation.navigate('Signin', {
           step: 0,
           survey: this.survey,
-          draftId: this.draftId
-        })
+          draftId: this.draftId,
+        });
       } else {
         //TODO update according to suvey config
-        this.navigateToScreen('Final')
+        this.navigateToScreen('Final');
       }
     }
-  }
+  };
 
   getTipDescription = (mandatoryPrioritiesCount, tipValue) => {
-    const { t } = this.props
-    const draft = this.getDraft()
+    const {t} = this.props;
+    const draft = this.getDraft();
     //no mandatory priotities
     if (tipValue) {
-      return `${t('general.create')} ${mandatoryPrioritiesCount -
-        draft.priorities.length} ${t(
-        'views.lifemap.priorities'
-      ).toLowerCase()}!`
+      return `${t('general.create')} ${
+        mandatoryPrioritiesCount - draft.priorities.length
+      } ${t('views.lifemap.priorities').toLowerCase()}!`;
     }
     if (
       !mandatoryPrioritiesCount ||
       mandatoryPrioritiesCount - draft.priorities.length <= 0
     ) {
-      return t('views.lifemap.noPriorities')
+      return t('views.lifemap.noPriorities');
       //only one mandatory priority
     } else if (mandatoryPrioritiesCount - draft.priorities.length === 1) {
-      return t('views.lifemap.youNeedToAddPriotity')
+      return t('views.lifemap.youNeedToAddPriotity');
     }
     //more than one mandatory priority
     else {
       return `${t('views.lifemap.youNeedToAddPriorities').replace(
         '%n',
-        mandatoryPrioritiesCount - draft.priorities.length
-      )}!`
+        mandatoryPrioritiesCount - draft.priorities.length,
+      )}!`;
     }
-  }
+  };
 
   componentDidMount() {
-    const draft = this.getDraft()
+    const draft = this.getDraft();
     // show priorities message if no priorities are made or they are not enough
     if (
       !draft.priorities.length ||
@@ -151,8 +150,8 @@ export class Priorities extends Component {
     ) {
       if (this.getMandatoryPrioritiesCount(draft) != 0) {
         this.setState({
-          tipIsVisible: true
-        })
+          tipIsVisible: true,
+        });
       }
     }
 
@@ -162,48 +161,46 @@ export class Priorities extends Component {
           ...draft,
           progress: {
             ...draft.progress,
-            screen: 'Overview'
-          }
-        }
-      })
+            screen: 'Overview',
+          },
+        },
+      });
 
       this.props.navigation.setParams({
         onPressBack: this.onPressBack,
-        withoutCloseButton: draft.draftId ? false : true
-      })
+        withoutCloseButton: draft.draftId ? false : true,
+      });
     }
   }
 
   shouldComponentUpdate() {
-    return this.props.navigation.isFocused()
+    return this.props.navigation.isFocused();
   }
 
   render() {
-    const { t } = this.props
-    const { filterModalIsOpen, selectedFilter, filterLabel } = this.state
-    const draft = this.getDraft()
-    const mandatoryPrioritiesCount = this.getMandatoryPrioritiesCount(draft)
+    const {t} = this.props;
+    const {filterModalIsOpen, selectedFilter, filterLabel} = this.state;
+    const draft = this.getDraft();
+    const mandatoryPrioritiesCount = this.getMandatoryPrioritiesCount(draft);
     const screenAccessibilityContent =
       prioritiesScreen(
         this.state.tipIsVisible,
-        this.getTipDescription(mandatoryPrioritiesCount, true)
-      ) || ''
+        this.getTipDescription(mandatoryPrioritiesCount, true),
+      ) || '';
 
     return (
       <StickyFooter
         continueLabel={t('general.continue')}
         onContinue={() => this.onContinue(mandatoryPrioritiesCount, draft)}
-        style={{ marginBottom: -20 }}
+        style={{marginBottom: -20}}
         type={this.state.tipIsVisible ? 'tip' : 'button'}
         tipTitle={t('views.lifemap.toComplete')}
         onTipClose={this.onTipClose}
-        tipDescription={this.getTipDescription(mandatoryPrioritiesCount, true)}
-      >
+        tipDescription={this.getTipDescription(mandatoryPrioritiesCount, true)}>
         <View
           accessible={true}
           accessibilityLabel={`${screenAccessibilityContent}`}
-          accessibilityLiveRegion="assertive"
-        >
+          accessibilityLiveRegion="assertive">
           <View style={[globalStyles.background, styles.contentContainer]}>
             <Text style={[globalStyles.h2Bold, styles.heading]}>
               {t('views.lifemap.nowLetsMakeSomePriorities')}
@@ -229,8 +226,7 @@ export class Priorities extends Component {
                 id="filters"
                 underlayColor={'transparent'}
                 activeOpacity={1}
-                onPress={this.toggleFilterModal}
-              >
+                onPress={this.toggleFilterModal}>
                 <View style={styles.listTitle}>
                   <Text style={globalStyles.subline}>
                     {filterLabel || t('views.lifemap.allIndicators')}
@@ -253,8 +249,7 @@ export class Priorities extends Component {
             <BottomModal
               isOpen={filterModalIsOpen}
               onRequestClose={this.toggleFilterModal}
-              onEmptyClose={() => this.selectFilter(false)}
-            >
+              onEmptyClose={() => this.selectFilter(false)}>
               <View style={styles.dropdown}>
                 <Text style={[globalStyles.p, styles.modalTitle]}>
                   {t('general.chooseView')}
@@ -277,7 +272,7 @@ export class Priorities extends Component {
                   text={t('views.lifemap.green')}
                   amount={
                     draft.indicatorSurveyDataList.filter(
-                      item => item.value === 3
+                      (item) => item.value === 3,
                     ).length
                   }
                 />
@@ -292,7 +287,7 @@ export class Priorities extends Component {
                   text={t('views.lifemap.yellow')}
                   amount={
                     draft.indicatorSurveyDataList.filter(
-                      item => item.value === 2
+                      (item) => item.value === 2,
                     ).length
                   }
                 />
@@ -305,7 +300,7 @@ export class Priorities extends Component {
                   text={t('views.lifemap.red')}
                   amount={
                     draft.indicatorSurveyDataList.filter(
-                      item => item.value === 1
+                      (item) => item.value === 1,
                     ).length
                   }
                 />
@@ -317,13 +312,13 @@ export class Priorities extends Component {
                     this.selectFilter(
                       'priorities',
                       `${t('views.lifemap.priorities')} & ${t(
-                        'views.lifemap.achievements'
-                      )}`
+                        'views.lifemap.achievements',
+                      )}`,
                     )
                   }
                   color={colors.blue}
                   text={`${t('views.lifemap.priorities')} & ${t(
-                    'views.lifemap.achievements'
+                    'views.lifemap.achievements',
                   )}`}
                   amount={draft.priorities.length + draft.achievements.length}
                 />
@@ -338,7 +333,7 @@ export class Priorities extends Component {
                   text={t('views.skippedIndicators')}
                   amount={
                     draft.indicatorSurveyDataList.filter(
-                      item => item.value === 0
+                      (item) => item.value === 0,
                     ).length
                   }
                 />
@@ -347,7 +342,7 @@ export class Priorities extends Component {
           </View>
         </View>
       </StickyFooter>
-    )
+    );
   }
 }
 const styles = StyleSheet.create({
@@ -356,23 +351,23 @@ const styles = StyleSheet.create({
     flex: 1,
     flexDirection: 'column',
     justifyContent: 'center',
-    alignItems: 'stretch'
+    alignItems: 'stretch',
   },
   listTitle: {
     backgroundColor: colors.primary,
     height: 47,
     alignItems: 'center',
     justifyContent: 'center',
-    flexDirection: 'row'
+    flexDirection: 'row',
   },
   infoPriorities: {
-    fontSize: 19
+    fontSize: 19,
   },
   arrow: {
     marginLeft: 7,
     marginTop: 3,
     width: 10,
-    height: 5
+    height: 5,
   },
   blueIcon: {
     borderRadius: 100,
@@ -384,7 +379,7 @@ const styles = StyleSheet.create({
     height: 180,
     justifyContent: 'center',
     alignItems: 'center',
-    transform: [{ rotate: '25deg' }]
+    transform: [{rotate: '25deg'}],
   },
   dropdown: {
     paddingVertical: 16,
@@ -392,54 +387,51 @@ const styles = StyleSheet.create({
     bottom: 0,
     left: 0,
     right: 0,
-    backgroundColor: colors.white
+    backgroundColor: colors.white,
   },
   iconContainer: {
     alignItems: 'center',
-    justifyContent: 'center'
+    justifyContent: 'center',
   },
   heading2: {
     color: colors.dark,
     textAlign: 'center',
     marginBottom: 20,
-    marginTop: 20
+    marginTop: 20,
   },
   heading: {
     color: colors.dark,
     textAlign: 'center',
     marginBottom: 20,
-    marginTop: -10
+    marginTop: -10,
   },
   subheading: {
     justifyContent: 'center',
     alignItems: 'center',
     paddingLeft: 38,
-    paddingRight: 38
+    paddingRight: 38,
   },
   modalTitle: {
     color: colors.grey,
     fontWeight: '300',
     marginBottom: 15,
-    marginLeft: 16
-  }
-})
+    marginLeft: 16,
+  },
+});
 
 Priorities.propTypes = {
   t: PropTypes.func.isRequired,
   navigation: PropTypes.object.isRequired,
   drafts: PropTypes.array.isRequired,
-  updateDraft: PropTypes.func.isRequired
-}
+  updateDraft: PropTypes.func.isRequired,
+};
 
 const mapDispatchToProps = {
-  updateDraft
-}
+  updateDraft,
+};
 
-const mapStateToProps = ({ drafts }) => ({ drafts })
+const mapStateToProps = ({drafts}) => ({drafts});
 
 export default withNamespaces()(
-  connect(
-    mapStateToProps,
-    mapDispatchToProps
-  )(Priorities)
-)
+  connect(mapStateToProps, mapDispatchToProps)(Priorities),
+);

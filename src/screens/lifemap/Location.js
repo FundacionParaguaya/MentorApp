@@ -38,10 +38,10 @@ const GOOGLE_GEO_API_KEY = 'AIzaSyBLGYYy86_7QPT-dKgUnFMIJyhUE6AGVwM';
 Geocoder.init(GOOGLE_GEO_API_KEY);
 
 export class Location extends Component {
-  survey = this.props.navigation.getParam('survey');
-  readOnly = this.props.navigation.getParam('readOnly');
-  draftId = this.props.navigation.getParam('draftId');
-  readOnlyDraft = this.props.navigation.getParam('family') || [];
+  survey = this.props.route.params.survey;
+  readOnly = this.props.route.params.readOnly;
+  draftId = this.props.route.params.draftId;
+  readOnlyDraft = this.props.route.params.family || [];
 
   unsubscribeNetChange;
   state = {
@@ -63,13 +63,13 @@ export class Location extends Component {
   };
 
   getDraft = () =>
-    this.props.drafts.find(draft => draft.draftId === this.draftId);
+    this.props.drafts.find((draft) => draft.draftId === this.draftId);
 
   setError = (error, field) => {
     const {errors} = this.state;
 
     if (error && !errors.includes(field)) {
-      this.setState(previousState => {
+      this.setState((previousState) => {
         return {
           ...previousState,
           errors: [...previousState.errors, field],
@@ -77,7 +77,7 @@ export class Location extends Component {
       });
     } else if (!error) {
       this.setState({
-        errors: errors.filter(item => item !== field),
+        errors: errors.filter((item) => item !== field),
       });
     }
   };
@@ -94,13 +94,13 @@ export class Location extends Component {
 
   getCurrentAddress = (latitude, longitude) => {
     Geocoder.from(latitude, longitude)
-      .then(json => {
+      .then((json) => {
         this.setState({currentAddress: json.results[0].formatted_address});
       })
       .catch(() => ({}));
   };
 
-  onDragMap = region => {
+  onDragMap = (region) => {
     const draft = !this.readOnly ? this.getDraft() : this.readOnlyDraft;
     const {zoom} = this.state;
     const {familyData} = draft;
@@ -133,7 +133,7 @@ export class Location extends Component {
   };
 
   // if the user has draged the map and the draft has stored some coordinates
-  setCoordinatesFromDraft = isOnline => {
+  setCoordinatesFromDraft = (isOnline) => {
     const draft = !this.readOnly ? this.getDraft() : this.readOnlyDraft;
 
     const {familyData} = draft;
@@ -148,7 +148,7 @@ export class Location extends Component {
         ? this.isUserLocationWithinMapPackBounds(
             parseFloat(familyData.longitude),
             parseFloat(familyData.latitude),
-            this.state.cachedMapPacks.map(pack => pack.bounds),
+            this.state.cachedMapPacks.map((pack) => pack.bounds),
           )
         : false;
 
@@ -166,7 +166,7 @@ export class Location extends Component {
 
     Geolocation.getCurrentPosition(
       // if location is available and we are online center on it
-      position => {
+      (position) => {
         const {longitude, latitude, accuracy} = position.coords;
 
         this.props.updateDraft({
@@ -240,14 +240,14 @@ export class Location extends Component {
       });
       Geolocation.getCurrentPosition(
         // if no offline map is available, but there is location save it
-        position => {
+        (position) => {
           const {longitude, latitude, accuracy} = position.coords;
 
           const isLocationInBoundaries = this.state.cachedMapPacks.length
             ? this.isUserLocationWithinMapPackBounds(
                 longitude,
                 latitude,
-                this.state.cachedMapPacks.map(pack => pack.bounds),
+                this.state.cachedMapPacks.map((pack) => pack.bounds),
               )
             : false;
 
@@ -286,7 +286,7 @@ export class Location extends Component {
   }
 
   // try getting device location and set map state according to online state
-  getDeviceCoordinates = isOnline => {
+  getDeviceCoordinates = (isOnline) => {
     this.setState({
       centeringMap: true,
     });
@@ -294,7 +294,7 @@ export class Location extends Component {
     isOnline ? this.getCoordinatesOnline() : this.getCoordinatesOffline();
   };
 
-  _handleAppStateChange = nextAppState => {
+  _handleAppStateChange = (nextAppState) => {
     if (
       this.state.appState.match(/inactive|background/) &&
       nextAppState === 'active' &&
@@ -359,7 +359,7 @@ export class Location extends Component {
     this.getCoordinatesOffline();
   };
 
-  centerOnOfflineMap = map => {
+  centerOnOfflineMap = (map) => {
     const draft = !this.readOnly ? this.getDraft() : this.readOnlyDraft;
 
     this.props.updateDraft({
@@ -435,7 +435,7 @@ export class Location extends Component {
   }
 
   isUserLocationWithinMapPackBounds(longitude, latitude, packs) {
-    return packs.some(packBoundaries => {
+    return packs.some((packBoundaries) => {
       const neLng = packBoundaries[0][0];
       const neLat = packBoundaries[0][1];
       const swLng = packBoundaries[1][0];
@@ -459,9 +459,9 @@ export class Location extends Component {
   getMapOfflinePacks() {
     MapboxGL.offlineManager
       .getPacks()
-      .then(packs => {
+      .then((packs) => {
         if (packs.length) {
-          packs.map(offlinePack => {
+          packs.map((offlinePack) => {
             this.setState({
               cachedMapPacks: [...this.state.cachedMapPacks, offlinePack],
             });
@@ -530,13 +530,13 @@ export class Location extends Component {
     }
 
     // check if online first
-    NetInfo.fetch().then(state => {
+    NetInfo.fetch().then((state) => {
       this.determineScreenState(state.isConnected);
       this.setState({status: state.isConnected});
     });
 
     // monitor for connection changes
-    this.unsubscribeNetChange = NetInfo.addEventListener(state => {
+    this.unsubscribeNetChange = NetInfo.addEventListener((state) => {
       const {status} = this.state;
 
       if (status !== undefined && status !== state.isConnected) {
@@ -624,7 +624,7 @@ export class Location extends Component {
                   borderTopWidth: 1,
                   borderTopColor: colors.palegrey,
                 }}>
-                {this.props.maps.map(map => (
+                {this.props.maps.map((map) => (
                   <TouchableHighlight
                     underlayColor={colors.primary}
                     onPress={() => this.centerOnOfflineMap(map)}
@@ -718,9 +718,7 @@ export class Location extends Component {
 
           <MapboxGL.MapView
             accessible={true}
-            accessibilityLabel={`Your current locations is ${
-              this.state.currentAddress
-            }`}
+            accessibilityLabel={`Your current locations is ${this.state.currentAddress}`}
             style={{width: '100%', flexGrow: 2}}
             logoEnabled={false}
             zoomEnabled={!this.readOnly}
@@ -842,7 +840,7 @@ export class Location extends Component {
             onChange={this.updateFamilyData}
             readOnly={!!this.readOnly}
             showErrors={showErrors}
-            setError={isError => this.setError(isError, 'country')}
+            setError={(isError) => this.setError(isError, 'country')}
           />
           <TextInput
             id="postCode"
@@ -851,7 +849,7 @@ export class Location extends Component {
             placeholder={t('views.family.postcode')}
             readOnly={!!this.readOnly}
             showErrors={showErrors}
-            setError={isError => this.setError(isError, 'postCode')}
+            setError={(isError) => this.setError(isError, 'postCode')}
           />
           <TextInput
             id="address"
@@ -862,7 +860,7 @@ export class Location extends Component {
             multiline
             readOnly={!!this.readOnly}
             showErrors={showErrors}
-            setError={isError => this.setError(isError, 'address')}
+            setError={(isError) => this.setError(isError, 'address')}
           />
         </StickyFooter>
       );
@@ -964,8 +962,5 @@ const mapDispatchToProps = {
 const mapStateToProps = ({drafts, maps}) => ({drafts, maps});
 
 export default withNamespaces()(
-  connect(
-    mapStateToProps,
-    mapDispatchToProps,
-  )(Location),
+  connect(mapStateToProps, mapDispatchToProps)(Location),
 );
