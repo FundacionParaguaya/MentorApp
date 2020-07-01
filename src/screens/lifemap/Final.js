@@ -2,6 +2,7 @@ import NetInfo from '@react-native-community/netinfo';
 import PropTypes from 'prop-types';
 import React, {Component} from 'react';
 import {withNamespaces} from 'react-i18next';
+import {StackActions} from '@react-navigation/native';
 import {
   PermissionsAndroid,
   ScrollView,
@@ -122,7 +123,7 @@ export class Final extends Component {
       }
 
       setTimeout(() => {
-        this.props.navigation.navigate('Dashboard');
+        this.props.navigation.dispatch(StackActions.replace('DrawerStack'));
       }, 500);
     } else {
       setTimeout(() => {
