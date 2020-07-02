@@ -78,6 +78,22 @@ export class SocioEconomicQuestion extends Component {
         draftId: this.draftId,
       });
     } else {
+      const draft = !this.readOnly ? this.getDraft() : this.readOnlyDraft;
+      this.props.updateDraft({
+        ...draft,
+        progress: {
+          ...draft.progress,
+          socioEconomics: {
+            currentScreen: setScreen(
+              socioEconomics,
+              this.getDraft(),
+              STEP_BACK,
+            ),
+            questionsPerScreen: socioEconomics.questionsPerScreen,
+            totalScreens: socioEconomics.totalScreens,
+          },
+        },
+      });
       this.props.navigation.replace('SocioEconomicQuestion', {
         socioEconomics: {
           currentScreen: setScreen(socioEconomics, this.getDraft(), STEP_BACK),
@@ -131,23 +147,39 @@ export class SocioEconomicQuestion extends Component {
       STEP_FORWARD,
     );
 
-    !socioEconomics ||
-    (socioEconomics &&
-      socioEconomics.currentScreen === socioEconomics.totalScreens) ||
-    (socioEconomics && NEXT_SCREEN_NUMBER > socioEconomics.totalScreens)
-      ? this.props.navigation.navigate('BeginLifemap', {
-          survey: this.survey,
-          draftId: this.draftId,
-        })
-      : this.props.navigation.replace('SocioEconomicQuestion', {
-          survey: this.survey,
-          draftId: this.draftId,
+    if (
+      !socioEconomics ||
+      (socioEconomics &&
+        socioEconomics.currentScreen === socioEconomics.totalScreens) ||
+      (socioEconomics && NEXT_SCREEN_NUMBER > socioEconomics.totalScreens)
+    ) {
+      this.props.navigation.navigate('BeginLifemap', {
+        survey: this.survey,
+        draftId: this.draftId,
+      });
+    } else {
+      const draft = !this.readOnly ? this.getDraft() : this.readOnlyDraft;
+      this.props.updateDraft({
+        ...draft,
+        progress: {
+          ...draft.progress,
           socioEconomics: {
             currentScreen: NEXT_SCREEN_NUMBER,
             questionsPerScreen: socioEconomics.questionsPerScreen,
             totalScreens: socioEconomics.totalScreens,
           },
-        });
+        },
+      });
+      this.props.navigation.replace('SocioEconomicQuestion', {
+        survey: this.survey,
+        draftId: this.draftId,
+        socioEconomics: {
+          currentScreen: NEXT_SCREEN_NUMBER,
+          questionsPerScreen: socioEconomics.questionsPerScreen,
+          totalScreens: socioEconomics.totalScreens,
+        },
+      });
+    }
   };
   addDots = (value) => {
     return value
@@ -270,6 +302,18 @@ export class SocioEconomicQuestion extends Component {
             : questionsPerScreen[page].forFamilyMember[0].topic,
         });
       }
+      const draft = !this.readOnly ? this.getDraft() : this.readOnlyDraft;
+      this.props.updateDraft({
+        ...draft,
+        progress: {
+          ...draft.progress,
+          socioEconomics: {
+            currentScreen: totalScreens,
+            questionsPerScreen,
+            totalScreens,
+          },
+        },
+      });
     } else {
       const socioEconomics = params.socioEconomics;
       const questionsForThisScreen = socioEconomics

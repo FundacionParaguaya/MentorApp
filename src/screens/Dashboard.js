@@ -84,6 +84,7 @@ export class Dashboard extends Component {
         },
       });
     } else {
+      console.log(draft);
       this.props.navigation.navigate('Surveys', {
         screen: draft.progress.screen,
         params: {
