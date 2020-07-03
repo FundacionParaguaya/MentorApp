@@ -133,8 +133,8 @@ android {
         applicationId "com.povertystoplightapp"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
-        versionCode 126
-        versionName "1.14.0"
+        versionCode 127
+        versionName "1.15.0"
         multiDexEnabled true
     }
     splits {
