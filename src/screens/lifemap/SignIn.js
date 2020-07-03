@@ -50,13 +50,9 @@ export class SigIn extends Component {
 
   componentDidMount() {
     if (this.draft.progress.screen !== 'Signin') {
-      this.props.updateDraft({
-        ...this.draft,
-        progress: {
-          ...this.draft.progress,
-          screen: 'Signin',
-        },
-      });
+      let updatedDraft = this.draft;
+      updatedDraft.progress.screen = 'Signin';
+      this.props.updateDraft(updatedDraft);
     }
     if (this.draft.sign) {
       this.setEmpty(false);
@@ -112,6 +108,8 @@ export class SigIn extends Component {
       this.setEmpty(false);
       this.setDisplay(true);
     }
+    console.log('signin');
+    console.log(this.draft);
     return (
       <View style={styles.contentContainer}>
         <ProgressBar
