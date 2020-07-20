@@ -1,7 +1,8 @@
 import PropTypes from 'prop-types';
 import React, {Component} from 'react';
 import {StyleSheet, Text, View} from 'react-native';
-import {FormInput} from 'react-native-elements';
+import {Input} from 'react-native-elements';
+
 import validator from 'validator';
 
 import globalStyles from '../../globalStyles';
@@ -19,6 +20,7 @@ class TextInput extends Component {
   };
 
   onFocus = () => {
+    console.log('here1');
     this.setState({
       status: 'active',
     });
@@ -39,7 +41,7 @@ class TextInput extends Component {
     // this.props.onChangeText(this.state.text.trim(), this.props.id)
   };
 
-  defineTextColor = status => {
+  defineTextColor = (status) => {
     switch (status) {
       case 'active':
         return colors.palegreen;
@@ -52,7 +54,8 @@ class TextInput extends Component {
     }
   };
 
-  onChangeText = text => {
+  onChangeText = (text) => {
+    console.log('here2');
     if (this.props.keyboardType === 'numeric' && text) {
       //i have to remove the comas before adding the commas with Intl.NumberFormat. eg  if i add a number to a number with commas (102,313,212) then it will result to NaN so i have to remove  the commas first (102313212) and then use Intl.NumberFormat
       this.setState({
@@ -78,6 +81,7 @@ class TextInput extends Component {
     this.props.onChangeText(text.trim(), this.props.id);
   };
   setErr(text) {
+    console.log('here3');
     this.setState({
       text: text.trim(),
       status: text ? 'filled' : 'blur',
@@ -166,11 +170,12 @@ class TextInput extends Component {
     const status = this.props.status || this.state.status;
 
     let showPlaceholder = status === 'blur' && !text;
-    return readOnly && !text ? (
-      <View />
-    ) : (
-      <View style={{marginBottom: 15}}>
-        {label && (
+    if (readOnly && !text) {
+      return <View />;
+    }
+    return (
+      <View>
+        {/* {label && (
           <Text
             style={styles.label}
             accessibilityLabel={`${label} ${
@@ -178,16 +183,20 @@ class TextInput extends Component {
                 ? i18n.t('validation.fieldIsRequiredAccessibilityLabel')
                 : ''
             }`}>{`${label}${required && !readOnly ? ' *' : ''}`}</Text>
-        )}
+        )} */}
         <View
-          style={[styles.container, styles[status]]}
+          style={{
+            marginHorizontal: 5,
+            marginBottom: -8,
+            marginTop: status == 'blur' ? -22 : 0,
+          }}
           accessible={true}
           accessibilityLabel={`${placeholder} ${
             required && !label && !readOnly
               ? i18n.t('validation.fieldIsRequiredAccessibilityLabel')
               : ''
           }`}>
-          {!showPlaceholder && !label ? (
+          {/* {!showPlaceholder && !label ? (
             <Text
               id="topLabel"
               style={{
@@ -204,8 +213,16 @@ class TextInput extends Component {
             </Text>
           ) : (
             <View />
-          )}
-          <FormInput
+          )} */}
+          <Input
+            labelStyle={{
+              color: this.defineTextColor(status),
+              fontSize: 14,
+              fontWeight: 'normal',
+              marginLeft: 15,
+
+              borderBottomColor: colors.black,
+            }}
             autoFocus={autoFocus}
             keyboardType={showPlaceholder ? null : this.props.keyboardType}
             autoCapitalize={upperCase ? 'sentences' : 'none'}
@@ -213,6 +230,25 @@ class TextInput extends Component {
             onBlur={this.onEndEditing}
             onFocus={this.onFocus}
             onChangeText={this.onChangeText}
+            label={
+              !showPlaceholder && !label
+                ? `${placeholder} ${required && !label && !readOnly ? '*' : ''}`
+                : ''
+            }
+            placeholder={
+              showPlaceholder
+                ? `${placeholder} ${required && !label ? '*' : ''}`
+                : ''
+            }
+            inputContainerStyle={{
+              borderTopLeftRadius: 8,
+              borderTopRightRadius: 8,
+              backgroundColor: styles[status].backgroundColor,
+              borderBottomColor: styles[status].borderBottomColor,
+              paddingLeft: 11,
+              paddingTop: status == 'blur' ? 6 : 0,
+              paddingBottom: 6,
+            }}
             inputStyle={[
               styles.inputStyle,
               !showPlaceholder ? styles.activeInput : {},
@@ -220,17 +256,13 @@ class TextInput extends Component {
             editable={!readOnly}
             multiline={multiline}
             importantForAccessibility="no-hide-descendants">
-            {showPlaceholder ? (
-              <Text style={styles.inputText}>
-                {placeholder} {required && !label ? '*' : ''}
-              </Text>
-            ) : (
-              <Text style={{color: this.defineTextColor(status)}}>{text}</Text>
-            )}
-          </FormInput>
+            <Text style={{color: this.defineTextColor(status)}}>{text}</Text>
+          </Input>
         </View>
         {status === 'error' && errorMsg && (
-          <View id="errorWrapper" style={{marginLeft: 30}}>
+          <View
+            id="errorWrapper"
+            style={{marginLeft: 30, marginBottom: 12, marginTop: -12}}>
             <Text style={{color: colors.red}}>{errorMsg}</Text>
           </View>
         )}
@@ -242,8 +274,8 @@ class TextInput extends Component {
 const styles = StyleSheet.create({
   container: {
     color: colors.grey,
-    borderBottomWidth: 1,
-    marginHorizontal: 15,
+    marginHorizontal: 5,
+
     justifyContent: 'center',
     minHeight: 65,
     borderTopLeftRadius: 8,
@@ -268,9 +300,7 @@ const styles = StyleSheet.create({
     fontSize: 14,
   },
   activeInput: {
-    marginTop: -10,
     height: 50,
-    paddingBottom: 15,
   },
   blur: {
     backgroundColor: colors.primary,
