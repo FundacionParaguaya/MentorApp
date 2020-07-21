@@ -1,14 +1,5 @@
 import moment from 'moment';
-
-// Alternative to get() in lodash
-const get = (obj, path, defaultValue = null) =>
-  String.prototype.split
-    .call(path, /[,[\].]+?/)
-    .filter(Boolean)
-    .reduce(
-      (a, c) => (Object.hasOwnProperty.call(a, c) ? a[c] : defaultValue),
-      obj,
-    );
+import * as _ from 'lodash';
 
 export const CONDITION_TYPES = {
   SOCIOECONOMIC: 'socioEconomic',
@@ -187,8 +178,8 @@ export const conditionMet = (condition, currentDraft, memberIndex) => {
     // The lines above should be used once data is fixed for that survey
     let value;
     if (condition.codeName.toLowerCase() === 'birthdate') {
-      value = familyMember['birthDate']
-        ? moment.unix(familyMember['birthDate'])
+      value = familyMember.birthDate
+        ? moment.unix(familyMember.birthDate)
         : null;
       // TODO DELETE THIS after reviewing the conditional logic
       // In case the target question is null, we should return true.
@@ -200,12 +191,13 @@ export const conditionMet = (condition, currentDraft, memberIndex) => {
         return true;
       }
     } else {
-      return null;
+      value = familyMember[condition.codeName];
     }
     targetQuestion = {value};
   } else if (scope === CONDITION_TYPES.MEMBER_SOCIOEONOMIC) {
-    const {socioEconomicAnswers: memberSocioEconomicAnswers = []} =
-      familyMembersList[memberIndex] || [];
+    const {
+      socioEconomicAnswers: memberSocioEconomicAnswers = [],
+    } = familyMembersList[memberIndex];
     targetQuestion = memberSocioEconomicAnswers.find(
       (element) => element.key === condition.codeName,
     );
@@ -223,7 +215,7 @@ export const conditionMet = (condition, currentDraft, memberIndex) => {
   // Adding support for several values spec. In case we find more than one value,
   // the condition is considered to be met if the evaluation returns true for at least one
   // of the values received in the array
-  if (Array.isArray(condition.values) && condition.values.length > 0) {
+  if (_.isArray(condition.values) && condition.values.length > 0) {
     return condition.values.reduce((acc, current) => {
       return (
         acc || evaluateCondition({...condition, value: current}, targetQuestion)
@@ -318,22 +310,24 @@ export const shouldCleanUp = (
 ) => {
   let currentAnswer;
   if (conditionalQuestion.forFamilyMember) {
-    currentAnswer = get(member, 'socioEconomicAnswers', []).find(
+    currentAnswer = _.get(member, 'socioEconomicAnswers', []).find(
       (ea) => ea.key === conditionalQuestion.codeName,
     );
   } else {
-    currentAnswer = get(currentDraft, 'economicSurveyDataList', []).find(
+    currentAnswer = _.get(currentDraft, 'economicSurveyDataList', []).find(
       (ea) => ea.key === conditionalQuestion.codeName,
     );
   }
-
-  const answerWithEmptyValue = currentAnswer
-    ? currentAnswer.multipleValue
-      ? !currentAnswer.multipleValue.length
-      : !currentAnswer.value
-    : null;
-
-  if (!currentAnswer || answerWithEmptyValue) {
+  if (
+    !currentAnswer ||
+    (!currentAnswer.value && !currentAnswer.multipleValue)
+  ) {
+    // There's nothing to cleanUp, user has not answered the question yet
+    // console.log(
+    //   `Nothing to cleanUp for conditionalQuestion ${
+    //     conditionalQuestion.codeName
+    //   }`
+    // );
     return false;
   }
   let cleanUp = false;
@@ -349,7 +343,6 @@ export const shouldCleanUp = (
   }
   if (
     !cleanUp &&
-    currentAnswer.value &&
     conditionalQuestion.options &&
     conditionalQuestion.options.length > 0
   ) {
@@ -363,9 +356,13 @@ export const shouldCleanUp = (
       currentDraft,
       memberIndex,
     );
-
     cleanUp = !availableOptions.find(
       (option) => option.value === currentAnswer.value,
+    );
+  }
+  if (cleanUp) {
+    console.log(
+      `CleanUp needed for conditionalQuestion ${conditionalQuestion.codeName} member ${memberIndex}`,
     );
   }
 
@@ -471,11 +468,13 @@ export const getDraftWithUpdatedQuestionsCascading = (
   cleanupHook,
 ) => {
   let currentDraft = {...draft};
-
   conditionalQuestions.forEach((conditionalQuestion) => {
+    const keyName =
+      conditionalQuestion.answerType === 'checkbox' ? 'multipleValue' : 'value';
+    const keyValue = conditionalQuestion.answerType === 'checkbox' ? [] : '';
     const cleanedAnswer = {
       key: conditionalQuestion.codeName,
-      value: '',
+      [keyName]: keyValue,
     };
     if (conditionalQuestion.forFamilyMember) {
       // Checking if we have to cleanup familyMembers socioeconomic answers
@@ -495,9 +494,7 @@ export const getDraftWithUpdatedQuestionsCascading = (
       });
     } else if (shouldCleanUp(conditionalQuestion, currentDraft)) {
       // Cleaning up socioeconomic answer
-
       currentDraft = getDraftWithUpdatedEconomic(currentDraft, cleanedAnswer);
-
       // If provided, calls the cleanupHook for the question that has been cleaned up
       if (cleanupHook) {
         cleanupHook(conditionalQuestion);

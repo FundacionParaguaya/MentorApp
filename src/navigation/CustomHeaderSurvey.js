@@ -9,7 +9,7 @@ import colors from '../theme.json';
 export class CustomHeaderSurveyComponent extends Component {
   render() {
     const {overview, separatorScreen, navigation, route} = this.props;
-    console.log(route);
+
     const survey = route.params.survey;
     const stoplightOptional = survey.surveyConfig.stoplightOptional;
     const stoplightSkipped = route.params.stoplightSkipped;

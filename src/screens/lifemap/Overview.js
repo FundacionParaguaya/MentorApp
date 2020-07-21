@@ -96,8 +96,7 @@ export class Overview extends Component {
     const draft = !this.props.readOnly
       ? this.getDraft()
       : this.props.familyLifemap;
-    console.log('resuming stuff here');
-    console.log(draft.progress.screen);
+
     this.props.navigation.replace(draft.progress.screen, {
       resumeDraft: false,
       draftId: this.draftId,
