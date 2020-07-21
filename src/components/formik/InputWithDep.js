@@ -37,7 +37,7 @@ const InputWithDep = ({
         readOnly={readOnly}
         question={question}
         name={name}
-        onChange={onChange}
+        onChange={(e) => onChange(e)}
       />
     );
   }

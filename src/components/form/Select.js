@@ -194,8 +194,7 @@ class Select extends Component {
     ) {
       text = options.find((item) => item.value === initialValue).text;
     }
-    console.log('OPTIONS');
-    console.log(options);
+
     return readOnly && !this.props.initialValue ? null : (
       <View>
         <TouchableHighlight
@@ -394,7 +393,6 @@ class Select extends Component {
                               activeOpacity={1}
                               key={item.value}
                               onPress={() => {
-                                console.log('call 6');
                                 this.validateInput(
                                   item.value,
                                   item.otherOption,

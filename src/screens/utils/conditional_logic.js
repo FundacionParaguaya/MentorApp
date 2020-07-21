@@ -488,7 +488,6 @@ export const getDraftWithUpdatedQuestionsCascading = (
           );
           // If provided, calls the cleanupHook for the question that has been cleaned up
           if (cleanupHook) {
-            console.log('hook1');
             cleanupHook(conditionalQuestion, index);
           }
         }
@@ -498,7 +497,6 @@ export const getDraftWithUpdatedQuestionsCascading = (
       currentDraft = getDraftWithUpdatedEconomic(currentDraft, cleanedAnswer);
       // If provided, calls the cleanupHook for the question that has been cleaned up
       if (cleanupHook) {
-        console.log('hook2');
         cleanupHook(conditionalQuestion);
       }
     }

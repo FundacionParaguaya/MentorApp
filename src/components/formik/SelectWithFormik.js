@@ -30,12 +30,12 @@ const SelectWithFormik = ({
   question,
   onChange,
   t,
-  focus,
+  rawOptions,
 }) => {
   let error = pathHasError(name, formik.touched, formik.errors);
   let helperText = getErrorLabelForPath(name, formik.touched, formik.errors, t);
 
-  const {options, required, questionText} = question;
+  const {required, questionText} = question;
   const [isOpen, setIsOpen] = useState(false);
   const toggleDropdown = () => {
     if (!readOnly) {
@@ -43,7 +43,7 @@ const SelectWithFormik = ({
     }
   };
 
-  const text = value ? question.options.find((e) => e.value == value).text : '';
+  const text = value ? rawOptions.find((e) => e.value == value).text : '';
 
   return (
     <TouchableHighlight
@@ -84,11 +84,11 @@ const SelectWithFormik = ({
             <View
               style={styles.dropdown}
               accessible={true}
-              accessibilityLabel={setListOfLabeles(options)}>
+              accessibilityLabel={setListOfLabeles(rawOptions)}>
               <ScrollView>
                 <FlatList
                   style={styles.list}
-                  data={options}
+                  data={rawOptions}
                   keyExtractor={(item, index) => index.toString()}
                   renderItem={({item}) => (
                     <ListItem

@@ -1,45 +1,42 @@
-import { getTotalScreens } from '../lifemap/helpers'
+import {getTotalScreens} from '../lifemap/helpers';
 import {
   getConditionalQuestions,
-  getDraftWithUpdatedQuestionsCascading
-} from '../utils/conditional_logic'
-import { generateRandomDraftData } from './demo_draft_generator'
-import { ImageStore } from 'react-native'
+  getDraftWithUpdatedQuestionsCascading,
+} from '../utils/conditional_logic';
+import {generateRandomDraftData} from './demo_draft_generator';
+import {ImageStore} from 'react-native';
 
-const LATIN_CHARS = /^[A-Za-z0-9]*$/
+const LATIN_CHARS = /^[A-Za-z0-9]*$/;
 
-export const checkAndReplaceSpecialChars = question => {
+export const checkAndReplaceSpecialChars = (question) => {
   return {
     ...question,
-    options: question.options.map(option => {
+    options: question.options.map((option) => {
       return {
         ...option,
         text: LATIN_CHARS.test(option.text.replace(/\s/g, '')) // check for strange chars and if found decode
           ? option.text
-          : decodeURIComponent(option.text)
-      }
-    })
-  }
-}
+          : decodeURIComponent(option.text),
+      };
+    }),
+  };
+};
 
 export const prepareDraftForSubmit = (draft, survey) => {
-  const conditionalQuestions = getConditionalQuestions(survey)
+  const conditionalQuestions = getConditionalQuestions(survey);
   const currentDraft = getDraftWithUpdatedQuestionsCascading(
     draft,
     conditionalQuestions,
-    false
-  )
+    false,
+  );
 
   // remove unnecessary for sync properties from saved draft
-  const { progress, errors, status, ...result } = Object.assign(
-    {},
-    currentDraft
-  )
+  const {progress, errors, status, ...result} = Object.assign({}, currentDraft);
 
   // we remove
-  progress
-  errors
-  status
+  progress;
+  errors;
+  status;
 
   // check for frequent sync errors
 
@@ -47,41 +44,40 @@ export const prepareDraftForSubmit = (draft, survey) => {
   if (result.familyData && !result.familyData.country) {
     result.familyData.country =
       survey.surveyConfig.surveyLocation &&
-      survey.surveyConfig.surveyLocation.country
+      survey.surveyConfig.surveyLocation.country;
   }
-  //console.log('draft after sanitized');
-  //console.log(result);
-  return result
-}
-export const convertImages = sanitizedSnapshot => {
+
+  return result;
+};
+export const convertImages = (sanitizedSnapshot) => {
   // var base64Pictures = []
-  const promises = []
+  const promises = [];
   for (var index in sanitizedSnapshot.pictures) {
-    var picture = sanitizedSnapshot.pictures[index]
+    var picture = sanitizedSnapshot.pictures[index];
     const imagePromise = new Promise((resolve, reject) => {
       ImageStore.getBase64ForTag(
         picture.content,
-        success => {
+        (success) => {
           resolve({
             name: picture.name,
             content: 'data:' + picture.type + ';base64,' + success,
-            type: picture.type
-          })
+            type: picture.type,
+          });
         },
-        () => reject('conversion to base64 failed')
-      )
-    })
-    promises.push(imagePromise)
+        () => reject('conversion to base64 failed'),
+      );
+    });
+    promises.push(imagePromise);
   }
-  return Promise.all(promises)
-}
+  return Promise.all(promises);
+};
 
 export const generateNewDemoDraft = (survey, draftId) => {
-  const toalScreens = getTotalScreens(survey)
+  const toalScreens = getTotalScreens(survey);
   const random = Math.floor(
-    Math.random() & survey.surveyConfig.documentType.length
-  )
-  const documentType = survey.surveyConfig.documentType[random]
-  const surveyId = survey.id
-  return generateRandomDraftData(draftId, surveyId, toalScreens, documentType)
-}
+    Math.random() & survey.surveyConfig.documentType.length,
+  );
+  const documentType = survey.surveyConfig.documentType[random];
+  const surveyId = survey.id;
+  return generateRandomDraftData(draftId, surveyId, toalScreens, documentType);
+};

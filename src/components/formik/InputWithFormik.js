@@ -87,6 +87,7 @@ const InputWithFormik = ({
         id={name}
         keyboardType={question.answerType == 'number' ? 'numeric' : null}
         blurOnSubmit
+        disabled={readOnly}
         value={value}
         onChangeText={(value) => {
           let finalValue;

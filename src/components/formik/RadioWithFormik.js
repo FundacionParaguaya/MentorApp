@@ -21,7 +21,7 @@ const RadioWithFormik = ({
   t,
 }) => {
   const value = _.get(formik.values, name) || '';
-  console.log(formik.values);
+
   const error = pathHasError(name, formik.touched, formik.errors);
   const helperText = getErrorLabelForPath(
     name,
@@ -31,6 +31,9 @@ const RadioWithFormik = ({
   );
 
   const {required, questionText} = question;
+  if (readOnly && !value) {
+    return <View />;
+  }
   return (
     <View>
       <Text
@@ -39,69 +42,76 @@ const RadioWithFormik = ({
           error ? {color: colors.red} : {},
         ]}>{`${questionText}${required && !readOnly ? ' *' : ''}`}</Text>
 
-      <RadioForm
-        formHorizontal={true}
-        animation={false}
-        onPress={(value) => {
-          formik.setFieldValue(name, value);
-          onChange(value);
-        }}>
+      <RadioForm formHorizontal={true} animation={false}>
         <View
           style={{
             width: '100%',
             paddingHorizontal: 10,
             flexDirection: 'row',
-            justifyContent: 'space-around',
+            justifyContent: readOnly ? 'flex-start' : 'space-around',
             flexWrap: 'wrap',
           }}>
-          {rawOptions.map((option, i) => (
-            <View style={styles.radioButtonContainer}>
-              <RadioButton labelHorizontal={true} key={i}>
-                <RadioButtonInput
-                  obj={{label: option.text, value: option.value}}
-                  index={i}
-                  isSelected={value === option.value}
-                  onPress={
-                    !readOnly && option.value != value
-                      ? () => {
-                          formik.setFieldValue(name, option.value);
-                          onChange(option.value);
-                        }
-                      : () => {}
-                  }
-                  borderWidth={2}
-                  buttonInnerColor={colors.palegreen}
-                  buttonOuterColor={
-                    value === option.value ? colors.palegreen : colors.palegrey
-                  }
-                  buttonSize={12}
-                  buttonOuterSize={20}
-                />
-                <RadioButtonLabel
-                  obj={{label: option.text, value: option.value}}
-                  index={i}
-                  labelHorizontal={true}
-                  onPress={
-                    !readOnly && option.value != value
-                      ? () => {
-                          formik.setFieldValue(name, option.value);
-                          onChange(option.value);
-                        }
-                      : () => {}
-                  }
-                  labelStyle={{
-                    fontSize: 17,
-                    color: '#4a4a4a',
-                  }}
-                  labelWrapStyle={{
-                    marginLeft: -4,
-                  }}
-                />
-              </RadioButton>
-            </View>
-          ))}
+          {rawOptions.map((option, i) => {
+            if (readOnly && option.value != value) {
+              return;
+            }
+
+            return (
+              <View style={styles.radioButtonContainer}>
+                <RadioButton labelHorizontal={true} key={i}>
+                  <RadioButtonInput
+                    obj={{label: option.text, value: option.value}}
+                    index={i}
+                    isSelected={value === option.value}
+                    onPress={
+                      option.value != value
+                        ? () => {
+                            formik.setFieldValue(name, option.value);
+                            onChange(option.value);
+                          }
+                        : () => {}
+                    }
+                    borderWidth={2}
+                    buttonInnerColor={colors.palegreen}
+                    buttonOuterColor={
+                      value === option.value
+                        ? colors.palegreen
+                        : colors.palegrey
+                    }
+                    buttonSize={12}
+                    buttonOuterSize={20}
+                  />
+                  <RadioButtonLabel
+                    obj={{label: option.text, value: option.value}}
+                    index={i}
+                    labelHorizontal={true}
+                    onPress={
+                      option.value != value
+                        ? () => {
+                            formik.setFieldValue(name, option.value);
+                            onChange(option.value);
+                          }
+                        : () => {}
+                    }
+                    labelStyle={{
+                      fontSize: 17,
+                      color: '#4a4a4a',
+                    }}
+                    labelWrapStyle={{
+                      marginLeft: -4,
+                    }}
+                  />
+                </RadioButton>
+              </View>
+            );
+          })}
         </View>
       </RadioForm>
+      {error && !!helperText ? (
+        <View style={{marginLeft: 30}}>
+          <Text style={{color: colors.red}}>{helperText}</Text>
+        </View>
+      ) : null}
     </View>
   );
 };

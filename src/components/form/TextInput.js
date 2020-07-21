@@ -20,7 +20,6 @@ class TextInput extends Component {
   };
 
   onFocus = () => {
-    console.log('here1');
     this.setState({
       status: 'active',
     });
@@ -55,7 +54,6 @@ class TextInput extends Component {
   };
 
   onChangeText = (text) => {
-    console.log('here2');
     if (this.props.keyboardType === 'numeric' && text) {
       //i have to remove the comas before adding the commas with Intl.NumberFormat. eg  if i add a number to a number with commas (102,313,212) then it will result to NaN so i have to remove  the commas first (102313212) and then use Intl.NumberFormat
       this.setState({
@@ -81,7 +79,6 @@ class TextInput extends Component {
     this.props.onChangeText(text.trim(), this.props.id);
   };
   setErr(text) {
-    console.log('here3');
     this.setState({
       text: text.trim(),
       status: text ? 'filled' : 'blur',
