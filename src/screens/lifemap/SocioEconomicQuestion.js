@@ -295,7 +295,7 @@ export class SocioEconomicQuestion extends Component {
             : questionsPerScreen[page].forFamilyMember[0].topic,
         });
       }
-      console.log('OH NO');
+
       let screen = 1;
       if (this.readOnly) {
         screen = totalScreens;
@@ -307,7 +307,7 @@ export class SocioEconomicQuestion extends Component {
         questionsPerScreen,
         totalScreens,
       };
-      console.log(socioEconomics);
+
       const questionsForThisScreen = socioEconomics
         ? socioEconomics.questionsPerScreen[socioEconomics.currentScreen - 1]
         : [];
