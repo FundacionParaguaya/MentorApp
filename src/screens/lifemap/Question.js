@@ -198,79 +198,81 @@ export class Question extends Component {
     const {t} = this.props;
 
     return (
-      <StickyFooter
-        visible={false}
-        readOnly
-        progress={
-          ((draft.familyData.countFamilyMembers > 1 ? 5 : 4) + this.step) /
-            draft.progress.total || getTotalEconomicScreens(this.survey)
-        }
-        currentScreen="Question">
-        {this.state.showDefinition ? (
-          <Popup
-            modifiedPopUp
-            definition
-            isOpen={this.state.showDefinition}
-            onClose={() => this.toggleDefinitionWindow(false)}>
-            <Icon
-              style={styles.closeIconStyle}
-              onPress={() => this.toggleDefinitionWindow(false)}
-              name="close"
-              size={20}
-            />
-            <Text
-              style={{
-                textAlign: 'center',
-                marginBottom: 20,
-                fontWeight: 'bold',
-                fontSize: 15,
-              }}>
-              {t('views.lifemap.indicatorDefinition')}
-            </Text>
-            <Text
-              id="definition"
-              style={{
-                fontSize: 15,
-              }}>
-              {this.indicator.definition || null}
-            </Text>
-          </Popup>
-        ) : null}
-
-        <SliderComponent
-          slides={this.slides}
-          value={this.getFieldValue(this.indicator.codeName)}
-          selectAnswer={this.selectAnswer}
-        />
-
-        <View style={styles.skip}>
-          {this.indicator.definition ? (
-            <Icon
-              id="show-definition"
-              onPress={() => this.toggleDefinitionWindow(true)}
-              name="info"
-              color={colors.palegrey}
-              size={40}
-              style={{
-                color: colors.palegreen,
-                position: 'absolute',
-                top: '55%',
-                left: '10%',
-              }}
-            />
+      <View style={{flex: 1}}>
+        <StickyFooter
+          visible={false}
+          readOnly
+          progress={
+            ((draft.familyData.countFamilyMembers > 1 ? 5 : 4) + this.step) /
+              draft.progress.total || getTotalEconomicScreens(this.survey)
+          }
+          currentScreen="Question">
+          {this.state.showDefinition ? (
+            <Popup
+              modifiedPopUp
+              definition
+              isOpen={this.state.showDefinition}
+              onClose={() => this.toggleDefinitionWindow(false)}>
+              <Icon
+                style={styles.closeIconStyle}
+                onPress={() => this.toggleDefinitionWindow(false)}
+                name="close"
+                size={20}
+              />
+              <Text
+                style={{
+                  textAlign: 'center',
+                  marginBottom: 20,
+                  fontWeight: 'bold',
+                  fontSize: 15,
+                }}>
+                {t('views.lifemap.indicatorDefinition')}
+              </Text>
+              <Text
+                id="definition"
+                style={{
+                  fontSize: 15,
+                }}>
+                {this.indicator.definition || null}
+              </Text>
+            </Popup>
           ) : null}
 
-          {this.indicator.required ? (
-            <Text>{t('views.lifemap.responseRequired')}</Text>
-          ) : (
-            <IconButton
-              text={t('views.lifemap.skipThisQuestion')}
-              textStyle={styles.link}
-              onPress={() => this.selectAnswer(0)}
-            />
-          )}
-        </View>
-      </StickyFooter>
+          <SliderComponent
+            slides={this.slides}
+            value={this.getFieldValue(this.indicator.codeName)}
+            selectAnswer={this.selectAnswer}
+          />
+
+          <View style={styles.skip}>
+            {this.indicator.definition ? (
+              <Icon
+                id="show-definition"
+                onPress={() => this.toggleDefinitionWindow(true)}
+                name="info"
+                color={colors.palegrey}
+                size={40}
+                style={{
+                  color: colors.palegreen,
+                  position: 'absolute',
+                  top: '55%',
+                  left: '10%',
+                }}
+              />
+            ) : null}
+
+            {this.indicator.required ? (
+              <Text>{t('views.lifemap.responseRequired')}</Text>
+            ) : (
+              <IconButton
+                text={t('views.lifemap.skipThisQuestion')}
+                textStyle={styles.link}
+                onPress={() => this.selectAnswer(0)}
+              />
+            )}
+          </View>
+        </StickyFooter>
+      </View>
     );
   }
 }

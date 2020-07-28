@@ -45,6 +45,7 @@ const InputWithFormik = ({
         return colors.palegrey;
     }
   };
+
   if (readOnly && !value) {
     return <View />;
   }

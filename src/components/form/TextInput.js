@@ -45,11 +45,11 @@ class TextInput extends Component {
       case 'active':
         return colors.palegreen;
       case 'blur':
-        return colors.palegrey;
+        return colors.grey;
       case 'error':
         return colors.red;
       default:
-        return colors.palegrey;
+        return colors.grey;
     }
   };
 
@@ -217,7 +217,6 @@ class TextInput extends Component {
               fontSize: 14,
               fontWeight: 'normal',
               marginLeft: 15,
-
               borderBottomColor: colors.black,
             }}
             autoFocus={autoFocus}
@@ -232,6 +231,7 @@ class TextInput extends Component {
                 ? `${placeholder} ${required && !label && !readOnly ? '*' : ''}`
                 : ''
             }
+            placeholderTextColor={colors.grey}
             placeholder={
               showPlaceholder
                 ? `${placeholder} ${required && !label ? '*' : ''}`

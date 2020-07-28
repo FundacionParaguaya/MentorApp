@@ -36,6 +36,11 @@ const CheckboxWithFormik = ({
     if (index === -1) return onChange([...values, e]);
     return onChange(removeByIndex(values, index));
   };
+
+  if (readOnly && !values.length) {
+    return <View />;
+  }
+
   return (
     <View>
       <Text

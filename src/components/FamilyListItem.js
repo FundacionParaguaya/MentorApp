@@ -1,15 +1,15 @@
-import React, { Component } from 'react'
-import PropTypes from 'prop-types'
-import { Text, StyleSheet, View } from 'react-native'
-import ListItem from './ListItem'
-import Icon from 'react-native-vector-icons/MaterialIcons'
-import colors from '../theme.json'
-import globalStyles from '../globalStyles'
+import React, {Component} from 'react';
+import PropTypes from 'prop-types';
+import {Text, StyleSheet, View} from 'react-native';
+import ListItem from './ListItem';
+import Icon from 'react-native-vector-icons/MaterialIcons';
+import colors from '../theme.json';
+import globalStyles from '../globalStyles';
 
 class FamilyListItem extends Component {
   render() {
     return (
-      <ListItem style={{ ...styles.listItem }} onPress={this.props.handleClick}>
+      <ListItem style={{...styles.listItem}} onPress={this.props.handleClick}>
         {this.props.icon ? (
           <Icon
             name="face"
@@ -19,21 +19,21 @@ class FamilyListItem extends Component {
           />
         ) : null}
         <View style={styles.listItemContainer}>
-          <Text style={{ ...globalStyles.p, ...styles.p }}>
+          <Text style={{...globalStyles.p, ...styles.p}}>
             {this.props.text}
           </Text>
         </View>
         <Icon name="navigate-next" size={23} color={colors.grey} />
       </ListItem>
-    )
+    );
   }
 }
 
 FamilyListItem.propTypes = {
   icon: PropTypes.bool,
   text: PropTypes.string.isRequired,
-  handleClick: PropTypes.func.isRequired
-}
+  handleClick: PropTypes.func.isRequired,
+};
 
 const styles = StyleSheet.create({
   listItem: {
@@ -41,21 +41,21 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     borderBottomColor: colors.palegrey,
-    borderBottomWidth: 1
+    borderBottomWidth: 1,
   },
   faceIcon: {
-    marginRight: 10
+    marginRight: 10,
   },
   listItemContainer: {
     flexDirection: 'row',
     flexWrap: 'wrap',
-    flex: 1
+    flex: 1,
   },
 
   p: {
     paddingRight: 20,
-    alignSelf: 'center'
-  }
-})
+    alignSelf: 'center',
+  },
+});
 
-export default FamilyListItem
+export default FamilyListItem;

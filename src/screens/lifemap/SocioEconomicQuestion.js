@@ -235,13 +235,12 @@ export class SocioEconomicQuestion extends Component {
   setSocioEconomicsParam() {
     const {navigation} = this.props;
     const {params} = this.props.route;
-    console.log('START');
-    console.log(this.props);
+
     // If this is the first socio economics screen set the whole process
     // in the navigation. On every next screen it will know which questions
     // to ask and if it is done.
     const draft = !this.readOnly ? this.getDraft() : this.readOnlyDraft;
-    console.log(draft);
+
     if (!params.socioEconomics) {
       let currentDimension = '';
       let questionsPerScreen = [];
@@ -298,7 +297,7 @@ export class SocioEconomicQuestion extends Component {
 
       let screen = 1;
       if (this.readOnly) {
-        screen = totalScreens;
+        screen = params.page ? params.page + 1 : totalScreens;
       } else if (draft.progress.socioEconomics) {
         screen = draft.progress.socioEconomics.currentScreen;
       }
@@ -448,11 +447,9 @@ export class SocioEconomicQuestion extends Component {
           ? draftQuestion.other
           : '';
       }
-
-      forFamilyInitial[question.codeName] =
-        (Object.prototype.hasOwnProperty.call(draftQuestion, 'value')
-          ? draftQuestion.value
-          : draftQuestion.multipleValue) || '';
+      forFamilyInitial[question.codeName] = draftQuestion.value
+        ? draftQuestion.value
+        : draftQuestion.multipleValue || '';
     });
 
     const forFamilyMemberInitial = {};
@@ -477,6 +474,7 @@ export class SocioEconomicQuestion extends Component {
       });
       forFamilyMemberInitial[index] = memberInitial;
     });
+
     return {
       forFamily: forFamilyInitial,
       forFamilyMember: forFamilyMemberInitial,

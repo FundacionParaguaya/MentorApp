@@ -44,7 +44,7 @@ export class Terms extends Component {
     const page = this.page;
 
     return (
-      <View>
+      <View style={{flex: 1}}>
         <ExitDraftModal
           isOpen={this.state.open}
           navigation={this.props.navigation}
@@ -53,6 +53,7 @@ export class Terms extends Component {
             this.setState({open: false});
           }}
         />
+
         <ScrollView
           style={globalStyles.background}
           contentContainerStyle={styles.contentContainer}>
@@ -60,6 +61,7 @@ export class Terms extends Component {
             <Decoration variation="terms">
               <RoundImage source="check" />
             </Decoration>
+
             <Text id="title" style={[globalStyles.h2Bold, styles.heading]}>
               {page === 'terms'
                 ? this.survey.termsConditions.title
