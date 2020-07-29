@@ -1,44 +1,44 @@
-import { Keyboard, ScrollView, StyleSheet, View } from 'react-native'
-import React, { Component } from 'react'
+import {Keyboard, ScrollView, StyleSheet, View} from 'react-native';
+import React, {Component} from 'react';
 
-import Button from './Button'
-import ProgressBar from './ProgressBar'
-import PropTypes from 'prop-types'
-import Tip from './Tip'
-import globalStyles from '../globalStyles'
+import Button from './Button';
+import ProgressBar from './ProgressBar';
+import PropTypes from 'prop-types';
+import Tip from './Tip';
+import globalStyles from '../globalStyles';
 
 export default class StickyFooter extends Component {
   state = {
-    continueVisible: true
-  }
-  toggleContinue = continueVisible => {
+    continueVisible: true,
+  };
+  toggleContinue = (continueVisible) => {
     this.setState({
-      continueVisible
-    })
-  }
+      continueVisible,
+    });
+  };
   componentDidMount() {
     this.keyboardDidShowListener = Keyboard.addListener('keyboardDidShow', () =>
-      this.toggleContinue(false)
-    )
+      this.toggleContinue(false),
+    );
     this.keyboardDidHideListener = Keyboard.addListener('keyboardDidHide', () =>
-      this.toggleContinue(true)
-    )
+      this.toggleContinue(true),
+    );
   }
 
   componentWillUnmount() {
-    this.keyboardDidShowListener.remove()
-    this.keyboardDidHideListener.remove()
+    this.keyboardDidShowListener.remove();
+    this.keyboardDidHideListener.remove();
   }
 
   setMarginTop = () => {
-    let marginTop
+    let marginTop;
     if (!!this.props.progress && this.props.currentScreen !== 'Question') {
-      marginTop = -20
+      marginTop = -20;
     } else {
-      marginTop = 0
+      marginTop = 0;
     }
-    return marginTop
-  }
+    return marginTop;
+  };
 
   render() {
     return (
@@ -46,11 +46,11 @@ export default class StickyFooter extends Component {
         style={[
           globalStyles.background,
           !!this.props.currentScreen && this.props.currentScreen === 'Question'
-            ? { paddingTop: 15 }
-            : { ...styles.contentContainer },
-          { marginTop: this.setMarginTop() }
-        ]}
-      >
+            ? {paddingTop: 15}
+            : {...styles.contentContainer},
+          {marginTop: this.setMarginTop()},
+          {flex: 1},
+        ]}>
         {!!this.props.progress && (
           <ProgressBar
             progress={this.props.progress}
@@ -59,9 +59,8 @@ export default class StickyFooter extends Component {
         )}
         {this.props.fullHeight ? (
           <View
-            style={{ width: '100%', flexGrow: 2, marginTop: -15 }}
-            keyboardShouldPersistTaps={'handled'}
-          >
+            style={{width: '100%', flexGrow: 2, marginTop: -15}}
+            keyboardShouldPersistTaps={'handled'}>
             {this.props.children}
           </View>
         ) : (
@@ -76,7 +75,7 @@ export default class StickyFooter extends Component {
           <View>
             {/* i have changed the height to 61 because there was a weird whitespace if we dont have the progress bar */}
             {this.props.type === 'button' ? (
-              <View style={{ height: 61 }}>
+              <View style={{height: 61}}>
                 <Button
                   id="continue"
                   colored
@@ -95,7 +94,7 @@ export default class StickyFooter extends Component {
           </View>
         ) : null}
       </View>
-    )
+    );
   }
 }
 
@@ -112,13 +111,13 @@ StickyFooter.propTypes = {
   tipDescription: PropTypes.string,
   onTipClose: PropTypes.func,
   progress: PropTypes.number,
-  currentScreen: PropTypes.string
-}
+  currentScreen: PropTypes.string,
+};
 
 StickyFooter.defaultProps = {
   type: 'button',
-  visible: true
-}
+  visible: true,
+};
 
 const styles = StyleSheet.create({
   contentContainer: {
@@ -126,6 +125,6 @@ const styles = StyleSheet.create({
     flex: 1,
     flexDirection: 'column',
     justifyContent: 'center',
-    alignItems: 'stretch'
-  }
-})
+    alignItems: 'stretch',
+  },
+});

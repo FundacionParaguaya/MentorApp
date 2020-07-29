@@ -44,7 +44,9 @@ const SelectWithFormik = ({
   };
 
   const text = value ? rawOptions.find((e) => e.value == value).text : '';
-
+  if (readOnly && !value) {
+    return <View />;
+  }
   return (
     <TouchableHighlight
       underlayColor={'transparent'}

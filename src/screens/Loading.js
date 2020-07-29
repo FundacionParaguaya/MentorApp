@@ -41,7 +41,7 @@ export class Loading extends Component {
   };
 
   // STEP 1 - cache the surveys
-  syncSurveys = resync => {
+  syncSurveys = (resync) => {
     // mark that loading has stated to show the progress
     this.setState({
       syncingServerData: true,
@@ -65,11 +65,11 @@ export class Loading extends Component {
     }
   };
 
-  isSurveyInSynced = title =>
-    this.props.surveys.some(survey => survey.title && survey.title === title);
+  isSurveyInSynced = (title) =>
+    this.props.surveys.some((survey) => survey.title && survey.title === title);
 
-  downloadOfflineMapPack = map => {
-    MapboxGL.offlineManager.getPack(map.name).then(pack => {
+  downloadOfflineMapPack = (map) => {
+    MapboxGL.offlineManager.getPack(map.name).then((pack) => {
       // if pack exists delete it and re-download it
       if (pack) {
         MapboxGL.offlineManager.deletePack(map.name).then(() => {
@@ -127,7 +127,7 @@ export class Loading extends Component {
 
     if (offlineRegionStatus.percentage === 100) {
       await this.setState({
-        maps: this.state.maps.map(map => {
+        maps: this.state.maps.map((map) => {
           if (map.name === offlineRegionStatus.name) {
             return {
               ...map,
@@ -150,7 +150,7 @@ export class Loading extends Component {
 
   onMapDownloadError = (offlineRegion, mapDownloadError) => {
     if (mapDownloadError.message !== 'No Internet connection available.') {
-      NetInfo.fetch().then(state => {});
+      NetInfo.fetch().then((state) => {});
     }
   };
 
@@ -193,7 +193,7 @@ export class Loading extends Component {
     let mapAllPercentage = 0;
     let mapAllNames = [];
     let mapAllNumber = 0;
-    this.state.maps.map(map => {
+    this.state.maps.map((map) => {
       let mapPercentageForNow = map.status || 0;
       if (mapAllNames.length === this.state.maps.length - 1) {
         mapAllNumber = mapAllNumber + mapPercentageForNow;
@@ -211,8 +211,8 @@ export class Loading extends Component {
   };
   initMapDownload() {
     const {maps} = this.state;
-    if (maps.length && maps.some(map => map.status !== 100)) {
-      this.downloadOfflineMapPack(maps.find(map => map.status !== 100));
+    if (maps.length && maps.some((map) => map.status !== 100)) {
+      this.downloadOfflineMapPack(maps.find((map) => map.status !== 100));
     } else {
       this.setState({
         downloadingMap: false,
@@ -243,7 +243,7 @@ export class Loading extends Component {
       this.props.navigation.navigate('DrawerStack');
     } else {
       // check connection state
-      NetInfo.fetch().then(state => {
+      NetInfo.fetch().then((state) => {
         if (!state.isConnected) {
           this.showError('There seems to be a problem with your connetion.');
         } else {
@@ -258,8 +258,8 @@ export class Loading extends Component {
   }
   downloadMaps = async () => {
     let mapsArray = [];
-    this.props.maps.forEach(map => {
-      if (map.name && !mapsArray.some(item => item.name === map.name)) {
+    this.props.maps.forEach((map) => {
+      if (map.name && !mapsArray.some((item) => item.name === map.name)) {
         const options = {
           minZoom: 10,
           maxZoom: 13,
@@ -292,7 +292,7 @@ export class Loading extends Component {
       this.props.surveys.length &&
       !this.props.offline.outbox.lenght &&
       this.state.mapsDownloaded &&
-      this.state.maps.every(map => map.status === 100) &&
+      this.state.maps.every((map) => map.status === 100) &&
       !this.state.cachingImages
     ) {
       this.setState({cachingImages: true});
@@ -305,7 +305,7 @@ export class Loading extends Component {
       !!this.props.sync.images.total &&
       prevProps.sync.images.total !== prevProps.sync.images.synced &&
       this.props.sync.images.total === this.props.sync.images.synced &&
-      this.state.maps.every(map => map.status === 100)
+      this.state.maps.every((map) => map.status === 100)
     ) {
       this.props.navigation.navigate('DrawerStack');
     }
@@ -374,7 +374,10 @@ export class Loading extends Component {
                     {sync.surveys ? (
                       <Icon name="check" color={colors.palegreen} size={23} />
                     ) : (
-                      <ActivityIndicator size="small" />
+                      <ActivityIndicator
+                        size="small"
+                        color={colors.palegreen}
+                      />
                     )}
                   </View>
                   {!sync.surveys ? (
@@ -395,7 +398,10 @@ export class Loading extends Component {
                       {sync.families ? (
                         <Icon name="check" color={colors.palegreen} size={23} />
                       ) : (
-                        <ActivityIndicator size="small" />
+                        <ActivityIndicator
+                          size="small"
+                          color={colors.palegreen}
+                        />
                       )}
                     </View>
                   )}
@@ -420,7 +426,7 @@ export class Loading extends Component {
                                 ? styles.colorGreen
                                 : styles.colorDark
                             }>{`${
-                            maps.filter(item => item.status === 100).length
+                            maps.filter((item) => item.status === 100).length
                           }/${maps.length}`}</Text>
                         ) : (
                           <Icon
@@ -623,8 +629,5 @@ const mapDispatchToProps = {
 };
 
 export default withNamespaces()(
-  connect(
-    mapStateToProps,
-    mapDispatchToProps,
-  )(Loading),
+  connect(mapStateToProps, mapDispatchToProps)(Loading),
 );
