@@ -51,6 +51,10 @@ export class Family extends Component {
     ),
   ];
 
+  onPressBack = () => {
+    this.props.navigation.replace('Families');
+  };
+
   constructor(props) {
     super(props);
     this.state = {
@@ -73,6 +77,7 @@ export class Family extends Component {
     });
 
     this.props.navigation.setParams({
+      onPressBack: this.onPressBack,
       withoutCloseButton: true,
     });
   }
