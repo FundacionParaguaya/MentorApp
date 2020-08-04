@@ -22,7 +22,7 @@ export class Families extends Component {
     families.sort((a, b) => a.name.localeCompare(b.name));
 
   handleClickOnFamily = (family) => {
-    this.props.navigation.navigate('Family', {
+    this.props.navigation.replace('Family', {
       allowRetake: family.allowRetake,
       familyId: family.familyId,
       familyName: family.name,
