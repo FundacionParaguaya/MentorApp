@@ -297,7 +297,7 @@ export class SocioEconomicQuestion extends Component {
 
       let screen = 1;
       if (this.readOnly) {
-        screen = params.page ? params.page + 1 : totalScreens;
+        screen = params.page + 1;
       } else if (draft.progress.socioEconomics) {
         screen = draft.progress.socioEconomics.currentScreen;
       }
