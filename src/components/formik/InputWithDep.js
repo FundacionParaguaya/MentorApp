@@ -16,6 +16,7 @@ const InputWithDep = ({
   isEconomic,
   onChange,
   question,
+  label,
 }) => {
   const otherOption = getOtherOption(fieldOptions);
   const value = getFieldValue(from, dep, index, isEconomic);
@@ -31,6 +32,7 @@ const InputWithDep = ({
   if (otherOption && value && otherOption === value) {
     return (
       <InputWithFormik
+        label={label}
         lng={lng}
         t={t}
         formik={formik}
