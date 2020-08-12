@@ -3,7 +3,6 @@ import React, {Component} from 'react';
 import {withNamespaces} from 'react-i18next';
 import {Image, StyleSheet, Text, TouchableHighlight, View} from 'react-native';
 import {connect} from 'react-redux';
-
 import arrow from '../../../assets/images/selectArrow.png';
 import BottomModal from '../../components/BottomModal';
 import Button from '../../components/Button';
@@ -44,7 +43,7 @@ export class Overview extends Component {
       );
 
       if (this.isResumingDraft) {
-        this.props.navigation.navigate('Dashboard');
+        this.props.navigation.replace('DrawerStack');
       } else if (skippedQuestions.length > 0) {
         this.props.navigation.navigate('Skipped', {
           draftId: draft.draftId,

@@ -297,7 +297,7 @@ export class SocioEconomicQuestion extends Component {
 
       let screen = 1;
       if (this.readOnly) {
-        screen = params.page ? params.page + 1 : totalScreens;
+        screen = params.page + 1;
       } else if (draft.progress.socioEconomics) {
         screen = draft.progress.socioEconomics.currentScreen;
       }
@@ -597,6 +597,31 @@ export class SocioEconomicQuestion extends Component {
                           );
                         }}
                       />
+                      <InputWithDep
+                        label="Specify Other"
+                        formik={formik}
+                        key={`custom${capitalize(question.codeName)}`}
+                        dep={question.codeName}
+                        from={draft}
+                        fieldOptions={question.options}
+                        target={`custom${capitalize(question.codeName)}`}
+                        isEconomic
+                        t={t}
+                        readOnly={!!this.readOnly}
+                        lng={this.props.language || 'en'}
+                        question={question}
+                        name={`forFamily.custom${capitalize(
+                          question.codeName,
+                        )}`}
+                        onChange={(e) => {
+                          this.updateEconomicAnswerCascading(
+                            modifiedQuestion,
+                            e,
+                            formik.setFieldValue,
+                          );
+                        }}
+                        cleanUp={cleanUp}
+                      />
                     </React.Fragment>
                   );
                 }
@@ -768,6 +793,34 @@ export class SocioEconomicQuestion extends Component {
                                     index,
                                   );
                                 }}
+                              />
+                              <InputWithDep
+                                label="Specify Other"
+                                index={index || 0}
+                                formik={formik}
+                                key={`custom${capitalize(question.codeName)}`}
+                                dep={question.codeName}
+                                from={draft}
+                                fieldOptions={question.options}
+                                target={`forFamilyMember.[${index}].[custom${capitalize(
+                                  question.codeName,
+                                )}]`}
+                                t={t}
+                                readOnly={!!this.readOnly}
+                                lng={this.props.language || 'en'}
+                                question={question}
+                                name={`forFamilyMember.[${index}].[custom${capitalize(
+                                  question.codeName,
+                                )}]`}
+                                onChange={(e) => {
+                                  this.updateEconomicAnswerCascading(
+                                    modifiedQuestion,
+                                    e,
+                                    formik.setFieldValue,
+                                    index,
+                                  );
+                                }}
+                                cleanUp={cleanUp}
                               />
                             </React.Fragment>
                           );
