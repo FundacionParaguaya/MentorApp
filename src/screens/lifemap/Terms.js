@@ -62,7 +62,7 @@ export class Terms extends Component {
               <RoundImage source="check" />
             </Decoration>
 
-            <Text id="title" style={[globalStyles.h2Bold, styles.heading]}>
+            <Text id="title" style={[globalStyles.h3Bold, styles.heading]}>
               {page === 'terms'
                 ? this.survey.termsConditions.title
                 : this.survey.privacyPolicy.title}

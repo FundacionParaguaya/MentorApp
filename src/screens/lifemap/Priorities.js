@@ -228,7 +228,7 @@ export class Priorities extends Component {
                 activeOpacity={1}
                 onPress={this.toggleFilterModal}>
                 <View style={styles.listTitle}>
-                  <Text style={globalStyles.subline}>
+                  <Text style={globalStyles.subline2}>
                     {filterLabel || t('views.lifemap.allIndicators')}
                   </Text>
                   <Image source={arrow} style={styles.arrow} />

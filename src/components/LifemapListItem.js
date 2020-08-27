@@ -10,7 +10,7 @@ class LifemapListItem extends Component {
     return (
       <ListItem style={{...styles.listItem}} onPress={this.props.handleClick}>
         <View style={styles.listItemContainer}>
-          <Text style={{...globalStyles.p, ...styles.p}}>
+          <Text style={{...globalStyles.h3Bold, ...styles.h3Bold}}>
             {this.props.name}
           </Text>
         </View>
@@ -41,7 +41,7 @@ const styles = StyleSheet.create({
     flexWrap: 'wrap',
     flex: 1,
   },
-  p: {
+  h3Bold: {
     paddingRight: 20,
     paddingTop: 36,
     alignSelf: 'center',

@@ -33,7 +33,9 @@ const CheckboxWithFormik = ({
   const {required, questionText} = question;
   const handleChange = (e) => {
     const index = values.indexOf(e);
-    if (index === -1) return onChange([...values, e]);
+    if (index === -1) {
+      return onChange([...values, e]);
+    }
     return onChange(removeByIndex(values, index));
   };
 
@@ -81,7 +83,7 @@ const styles = StyleSheet.create({
   placeholder: {
     paddingLeft: 15,
     paddingRight: 25,
-    ...globalStyles.subline,
+    ...globalStyles.subline2,
     // lineHeight: 50,
     marginBottom: -9,
     paddingTop: 20,

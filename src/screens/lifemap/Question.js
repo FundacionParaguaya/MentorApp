@@ -12,6 +12,7 @@ import StickyFooter from '../../components/StickyFooter';
 import {updateDraft} from '../../redux/actions';
 import colors from '../../theme.json';
 import {getTotalEconomicScreens} from './helpers';
+import globalStyles from '../../globalStyles';
 
 export class Question extends Component {
   step = this.props.route.params.step;
@@ -156,11 +157,12 @@ export class Question extends Component {
         draftId: this.draftId,
         survey: this.survey,
       });
-    } else
+    } else {
       this.props.navigation.navigate('BeginLifemap', {
         draftId: this.draftId,
         survey: this.survey,
       });
+    }
   };
 
   toggleDefinitionWindow = (stateWindow) => {
@@ -221,17 +223,16 @@ export class Question extends Component {
               />
               <Text
                 style={{
+                  ...globalStyles.h3Bold,
                   textAlign: 'center',
                   marginBottom: 20,
-                  fontWeight: 'bold',
-                  fontSize: 15,
                 }}>
                 {t('views.lifemap.indicatorDefinition')}
               </Text>
               <Text
                 id="definition"
                 style={{
-                  fontSize: 15,
+                  fontSize: 16,
                 }}>
                 {this.indicator.definition || null}
               </Text>

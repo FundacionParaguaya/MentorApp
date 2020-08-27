@@ -539,7 +539,7 @@ export class SocioEconomicQuestion extends Component {
                   draft.progress.total
                 : 0
             }>
-            <Decoration variation="socioEconomicQuestion" />
+            {/* <Decoration variation="socioEconomicQuestion" /> */}
 
             {/* questions for entire family */}
             {questions &&
@@ -583,7 +583,7 @@ export class SocioEconomicQuestion extends Component {
                         formik={formik}
                         readOnly={!!this.readOnly}
                         value={
-                          !!formik.values.forFamily
+                          formik.values.forFamily
                             ? formik.values.forFamily[question.codeName]
                             : ''
                         }
@@ -778,7 +778,7 @@ export class SocioEconomicQuestion extends Component {
                                 formik={formik}
                                 readOnly={!!this.readOnly}
                                 value={
-                                  !!formik.values.forFamilyMember
+                                  formik.values.forFamilyMember
                                     ? formik.values.forFamilyMember[index][
                                         question.codeName
                                       ]
@@ -947,6 +947,14 @@ const styles = StyleSheet.create({
     marginBottom: 10,
     fontSize: 16,
     lineHeight: 20,
+    ...Platform.select({
+      ios: {
+        fontFamily: 'Poppins',
+      },
+      android: {
+        fontFamily: 'Poppins SemiBold',
+      },
+    }),
   },
   headerTitleStyle: {
     ...Platform.select({

@@ -94,7 +94,7 @@ const RadioWithFormik = ({
                         : () => {}
                     }
                     labelStyle={{
-                      fontSize: 17,
+                      fontSize: 14,
                       color: '#4a4a4a',
                     }}
                     labelWrapStyle={{
@@ -146,11 +146,12 @@ const styles = StyleSheet.create({
   placeholder: {
     paddingLeft: 15,
     paddingRight: 25,
-    ...globalStyles.subline,
+    ...globalStyles.subline2,
     // lineHeight: 50,
     marginBottom: 3,
     paddingTop: 20,
     minHeight: 50,
+    fontSize: 16,
   },
   withoutValue: {
     backgroundColor: colors.primary,

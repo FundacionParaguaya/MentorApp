@@ -116,7 +116,7 @@ export class BeginLifemap extends Component {
             padding: 0,
             paddingTop: 0,
           }}>
-          <Text id="label" style={{...globalStyles.h3, ...styles.text}}>
+          <Text id="label" style={{...globalStyles.h2Bold, ...styles.text}}>
             {!this.survey.surveyConfig.stoplightOptional
               ? t('views.lifemap.thisLifeMapHas').replace(
                   '%n',
