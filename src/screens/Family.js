@@ -333,7 +333,7 @@ export class Family extends Component {
                     <View style={styles.countCircleWrapper}>
                       <View style={styles.countCircle}>
                         <Text
-                          style={[globalStyles.h4, {color: colors.lightdark}]}>
+                          style={[globalStyles.h3, {color: colors.lightdark}]}>
                           + {familyData.countFamilyMembers - 1}
                         </Text>
                       </View>
@@ -382,7 +382,7 @@ export class Family extends Component {
 
             <View style={styles.section}>
               <View style={styles.content}>
-                <Text style={[globalStyles.h4, {color: colors.lightdark}]}>
+                <Text style={[globalStyles.h3, {color: colors.lightdark}]}>
                   {t('views.familyMembers').toUpperCase()}
                 </Text>
                 <FlatList
@@ -415,7 +415,7 @@ export class Family extends Component {
             </View>
             <View style={styles.section}>
               <View style={styles.content}>
-                <Text style={[globalStyles.h4, {color: colors.lightdark}]}>
+                <Text style={[globalStyles.h3, {color: colors.lightdark}]}>
                   {t('views.family.household').toUpperCase()}
                 </Text>
                 <FamilyListItem

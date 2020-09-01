@@ -49,19 +49,21 @@ export class Overview extends Component {
           draftId: draft.draftId,
           survey,
         });
-      } else
+      } else {
         this.props.navigation.navigate('Question', {
           step: this.survey.surveyStoplightQuestions.length - 1,
           draftId: this.draftId,
           survey,
         });
+      }
     }
     // If we arrive to this screen from the families screen
-    else
+    else {
       this.props.navigation.navigate('Families', {
         draftId: this.draftId,
         survey,
       });
+    }
   };
 
   navigateToScreen = (screen, indicator, indicatorText) => {

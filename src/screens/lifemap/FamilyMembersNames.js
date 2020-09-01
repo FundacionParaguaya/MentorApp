@@ -291,9 +291,9 @@ export class FamilyMembersNames extends Component {
           if (!item.firstParticipant) {
             return (
               <View style={{marginBottom: 20}} key={`${item.uuid}`}>
-                {i % 2 ? (
+                {/*  {i % 2 ? (
                   <Decoration variation="familyMemberNamesBody" />
-                ) : null}
+                ) : null} */}
                 <View
                   style={{
                     display: 'flex',

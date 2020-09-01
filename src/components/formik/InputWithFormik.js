@@ -133,11 +133,10 @@ const InputWithFormik = ({
           paddingTop: 2,
         }}
         inputStyle={{
-          ...globalStyles.subline,
+          ...globalStyles.subline2,
           fontFamily: 'Roboto',
           paddingRight: 30,
           minHeight: 58,
-          fontSize: 14,
         }}
         editable={!readOnly}
         multiline={true}

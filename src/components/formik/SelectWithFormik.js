@@ -158,8 +158,7 @@ const styles = StyleSheet.create({
   placeholder: {
     paddingLeft: 15,
     paddingRight: 25,
-    ...globalStyles.subline,
-    // lineHeight: 50,
+    ...globalStyles.subline2,
     paddingTop: 20,
     minHeight: 50,
   },
