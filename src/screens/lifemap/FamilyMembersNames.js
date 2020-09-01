@@ -309,7 +309,7 @@ export class FamilyMembersNames extends Component {
                       color: colors.grey,
                       marginLeft: 5,
                     }}>
-                    {`${t('views.family.familyMember')}`}
+                    {`${t('views.family.familyMember')} ${i + 1}`}
                   </Text>
 
                   <TouchableHighlight
