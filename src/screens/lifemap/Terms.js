@@ -109,6 +109,7 @@ const styles = StyleSheet.create({
   },
   content: {
     marginTop: 25,
+    textAlign: 'justify',
   },
   buttonsBar: {
     height: 50,
