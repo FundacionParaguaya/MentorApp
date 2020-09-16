@@ -47,6 +47,7 @@
     "react-native-simple-radio-button": "^2.7.4",
     "react-native-splash-screen": "^3.2.0",
     "react-native-testfairy": "^2.29.0",
+    "react-native-track-player": "^1.2.3",
     "react-native-vector-icons": "^7.0.0",
     "react-navigation-backhandler": "^2.0.0",
     "react-redux": "^7.2.0",

@@ -1,18 +1,23 @@
 import PropTypes from 'prop-types';
-import React, {Component} from 'react';
-import {withNamespaces} from 'react-i18next';
-import {StyleSheet, Text, View} from 'react-native';
+import React, { Component } from 'react';
+import { withNamespaces } from 'react-i18next';
+import { StyleSheet, Text, View } from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialIcons';
-import {connect} from 'react-redux';
+import { connect } from 'react-redux';
 
 import IconButton from '../../components/IconButton';
 import Popup from '../../components/Popup';
 import SliderComponent from '../../components/Slider';
 import StickyFooter from '../../components/StickyFooter';
-import {updateDraft} from '../../redux/actions';
+import { updateDraft } from '../../redux/actions';
 import colors from '../../theme.json';
-import {getTotalEconomicScreens} from './helpers';
+import { getTotalEconomicScreens } from './helpers';
 import globalStyles from '../../globalStyles';
+
+import TrackPlayer from 'react-native-track-player';
+import RNFetchBlob from 'rn-fetch-blob'
+
+let dirs = RNFetchBlob.fs.dirs
 
 export class Question extends Component {
   step = this.props.route.params.step;
@@ -28,7 +33,20 @@ export class Question extends Component {
 
   state = {
     showDefinition: false,
+    isPlaying: false,
+    currentTrackId: null,
+    donePlaying: false
   };
+
+  onQueueEnd = null;
+  track = {};
+
+ 
+
+  getProperSourceForOS(source) {
+    return Platform.OS === 'android' ? 'file://' + source : '' + source
+  }
+
 
   getDraft = () =>
     this.props.drafts.find((draft) => draft.draftId === this.draftId);
@@ -62,7 +80,7 @@ export class Question extends Component {
     ) {
       updatedIndicators = draft.indicatorSurveyDataList.map((item) => {
         if (item.key === this.indicator.codeName) {
-          return {...item, value: answer};
+          return { ...item, value: answer };
         } else {
           return item;
         }
@@ -70,7 +88,7 @@ export class Question extends Component {
     } else {
       updatedIndicators = [
         ...draft.indicatorSurveyDataList,
-        {key: this.indicator.codeName, value: answer},
+        { key: this.indicator.codeName, value: answer },
       ];
     }
 
@@ -171,8 +189,47 @@ export class Question extends Component {
     });
   };
 
-  componentDidMount() {
+  async componentDidMount() {
     const draft = this.getDraft();
+    console.log('ComponentDidMount Question')
+    console.log(this.indicator)
+    this.track = {
+      url: this.getProperSourceForOS(
+        `${dirs.DocumentDir}/${this.indicator.questionAudio.replace(/https?:\/\//, '')}`
+      ) ,
+      id: this.indicator.id
+    };
+    TrackPlayer.destroy();
+    TrackPlayer.setupPlayer();
+    const trackPlayerCapabilities = [
+      TrackPlayer.CAPABILITY_PLAY,
+      TrackPlayer.CAPABILITY_PAUSE,
+      TrackPlayer.CAPABILITY_SEEK_TO,
+      TrackPlayer.CAPABILITY_JUMP_BACKWARD,
+      TrackPlayer.CAPABILITY_JUMP_FORWARD,
+    ];
+    TrackPlayer.updateOptions({
+      stopWithApp: true,
+      capabilities: trackPlayerCapabilities,
+      notificationCapabilities: [...trackPlayerCapabilities, TrackPlayer.CAPABILITY_SEEK_TO],
+      jumpInterval: 10
+    });
+    // TrackPlayer.registerPlaybackService(() => require('./service.js'));
+    await TrackPlayer.add(this.track);
+    const current = await TrackPlayer.getCurrentTrack();
+    console.log('current', current)
+
+    this.setState({ isPlaying: false, currentTrackId: current });
+
+    this.onQueueEnd = TrackPlayer.addEventListener('playback-queue-ended', async (data) => {
+      console.log('Queue ended');
+      this.setState({ isPlaying: false, isPlaying: false, donePlaying: true });
+      await TrackPlayer.stop();
+
+    })
+
+
+
 
     this.props.updateDraft({
       ...draft,
@@ -188,8 +245,30 @@ export class Question extends Component {
     });
   }
 
+  async togglePlayPause() {
+    if (this.state.isPlaying) {
+      await TrackPlayer.pause();
+      this.setState({ isPlaying: false });
+
+    } else {
+      if (this.state.donePlaying) {
+        await TrackPlayer.skip(this.state.currentTrackId);
+        this.setState({ isPlaying: false, donePlaying: false });
+      }
+      await TrackPlayer.play();
+      this.setState({ isPlaying: true });
+      this.setState({ donePlaying: false });
+    }
+  }
+
   shouldComponentUpdate() {
     return this.props.navigation.isFocused();
+  }
+
+  componentWillUnmount() {
+    TrackPlayer.stop();
+    TrackPlayer.reset();
+    TrackPlayer.destroy();
   }
 
   render() {
@@ -197,16 +276,16 @@ export class Question extends Component {
     // added a popup component to the Question.js instead of adding it to the
     // modals folder because it is really smol and does not do much
 
-    const {t} = this.props;
+    const { t } = this.props;
 
     return (
-      <View style={{flex: 1}}>
+      <View style={{ flex: 1 }}>
         <StickyFooter
           visible={false}
           readOnly
           progress={
             ((draft.familyData.countFamilyMembers > 1 ? 5 : 4) + this.step) /
-              draft.progress.total || getTotalEconomicScreens(this.survey)
+            draft.progress.total || getTotalEconomicScreens(this.survey)
           }
           currentScreen="Question">
           {this.state.showDefinition ? (
@@ -262,15 +341,38 @@ export class Question extends Component {
               />
             ) : null}
 
+            {this.state.isPlaying ?
+              <Icon id="player" name="pause-circle-filled" onPress={() => { 
+                console.log('stop')
+                this.togglePlayPause();
+              }} style={{
+                color: colors.palegreen,
+                position: 'absolute',
+                top: '55%',
+                left: '20%',
+              }} size={40} />
+              :
+              <Icon id="player" name="play-circle-filled" onPress={() => {
+                console.log('play')
+                this.togglePlayPause();
+              }} style={{
+                color: colors.palegreen,
+                position: 'absolute',
+                top: '55%',
+                left: '20%',
+              }} size={40} />
+            }
+
+
             {this.indicator.required ? (
               <Text>{t('views.lifemap.responseRequired')}</Text>
             ) : (
-              <IconButton
-                text={t('views.lifemap.skipThisQuestion')}
-                textStyle={styles.link}
-                onPress={() => this.selectAnswer(0)}
-              />
-            )}
+                <IconButton
+                  text={t('views.lifemap.skipThisQuestion')}
+                  textStyle={styles.link}
+                  onPress={() => this.selectAnswer(0)}
+                />
+              )}
           </View>
         </StickyFooter>
       </View>
@@ -305,12 +407,12 @@ Question.propTypes = {
   updateDraft: PropTypes.func.isRequired,
 };
 
-const mapStateToProps = ({dimensions, drafts}) => ({
+const mapStateToProps = ({ dimensions, drafts }) => ({
   dimensions,
   drafts,
 });
 
-const mapDispatchToProps = {updateDraft};
+const mapDispatchToProps = { updateDraft };
 
 export default withNamespaces()(
   connect(mapStateToProps, mapDispatchToProps)(Question),

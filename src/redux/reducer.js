@@ -73,7 +73,7 @@ export const env = (state = 'production', action) => {
 
 //Download Maps or images
 export const downloadMapsAndImages = (
-  state = {downloadMaps: true, downloadImages: true},
+  state = {downloadMaps: true, downloadImages: true, downLoadAudios:true},
   action,
 ) => {
   switch (action.type) {
@@ -355,6 +355,10 @@ export const sync = (
       total: 0,
       synced: 0,
     },
+    audios:{
+      total: 0,
+      synced: 0,
+    }
   },
   action,
 ) => {
@@ -407,6 +411,10 @@ export const sync = (
           total: 0,
           synced: 0,
         },
+        audios: {
+          total:0,
+          synced:0,
+        }
       };
     default:
       return state;

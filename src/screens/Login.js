@@ -47,6 +47,7 @@ export class Login extends Component {
     loading: false,
     syncMaps: true,
     syncImages: true,
+    syncAudios: true,
     appState: AppState.currentState,
     notEnoughStorageSpace: false,
   };
@@ -116,6 +117,7 @@ export class Login extends Component {
     this.props.setDownloadMapsAndImages({
       downloadMaps: this.state.syncMaps,
       downloadImages: this.state.syncImages,
+      downloadAudios: this.state.syncAudios
     });
     let env = this.state.username.trim() === 'demo' ? 'demo' : 'production';
     let username = this.state.username.trim();
@@ -304,15 +306,22 @@ export class Login extends Component {
                     onPress={() => this.checkDevOption('syncMaps')}
                     title="Sync maps?"
                     checked={this.state.syncMaps}
-                    textStyle={{fontWeight: 'normal'}}
+                    textStyle={styles.checkboxText}
                   />
                   <CheckBox
                     containerStyle={styles.checkbox}
                     onPress={() => this.checkDevOption('syncImages')}
                     title="Sync images?"
                     checked={this.state.syncImages}
-                    textStyle={{fontWeight: 'normal'}}
+                    textStyle={styles.checkboxText}
                   />
+                  <CheckBox
+                    containerStyle={styles.checkbox}
+                    onPress={() => this.checkDevOption('syncAudios')}
+                    title="Sync Audios?"
+                    checked={this.state.syncAudios}
+                    textStyle={styles.checkboxText}
+                  />  
                 </View>
               )}
             </View>
@@ -357,6 +366,9 @@ const styles = StyleSheet.create({
     padding: 0,
     borderWidth: 0,
     backgroundColor: 'transparent',
+  },
+  checkboxText:{
+    fontWeight: 'normal'
   },
   logo: {width: 42, height: 42, marginBottom: 8},
   error: {
