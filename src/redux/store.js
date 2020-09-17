@@ -6,6 +6,7 @@ import {setHydrated} from './actions';
 import {setLanguage} from '../i18n';
 import thunk from 'redux-thunk';
 import {submitDraftWithImages} from './middleware';
+import { composeWithDevTools } from 'redux-devtools-extension';
 
 let rehydrated = false;
 
@@ -15,7 +16,7 @@ const setHydratedState = () => store.dispatch(setHydrated());
 
 const store = createStore(
   rootReducer,
-  compose(
+  composeWithDevTools(
     offline({
       ...offlineConfig,
       persistOptions: {

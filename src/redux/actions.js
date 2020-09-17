@@ -3,6 +3,7 @@ import {PhoneNumberUtil} from 'google-libphonenumber';
 // import { ImageStore } from 'react-native'
 export const SET_LOGIN_STATE = 'SET_LOGIN_STATE';
 export const USER_LOGOUT = 'USER_LOGOUT';
+export const SET_VALIDATE = 'SET_VALIDATE';
 
 export const login = (username, password, env) => (dispatch) =>
   fetch(
@@ -36,6 +37,29 @@ export const login = (username, password, env) => (dispatch) =>
       }),
     )
     .catch((e) => e);
+
+export const validate = (env,token) =>(dispatch) => {
+    fetch(`${env}/api/v1/users/validate`,{
+      method: 'GET',
+      headers: {
+        Authorization: `Bearer ${token}`,
+        'content-type': 'application/json;charset=utf8',
+      },
+    })
+    .then((data) => {
+      if (data.status !== 200) {
+        throw new Error();
+      } else return data.json();
+    }).
+    then((data) => {
+      console.log('data',data)
+      dispatch({
+        type: SET_VALIDATE,
+        interactive_help:!!data.application &&
+        !!data.application.interactiveHelp
+      })
+    })
+  }
 
 export const logout = () => ({
   type: USER_LOGOUT,

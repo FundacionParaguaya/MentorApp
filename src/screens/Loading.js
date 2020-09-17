@@ -24,6 +24,7 @@ import {
   resetSyncState,
   setAppVersion,
   setSyncedState,
+  validate
 } from '../redux/actions';
 
 import colors from '../theme.json';
@@ -283,6 +284,8 @@ export class Loading extends Component {
   }
 
   componentDidMount() {
+    console.log('componentDidMount: Loading');
+    this.props.validate(url[this.props.env], this.props.user.token);
     this.checkState();
   }
   downloadMaps = async () => {
@@ -754,6 +757,7 @@ const mapDispatchToProps = {
   setAppVersion,
   resetSyncState,
   setSyncedState,
+  validate,
 };
 
 export default withNamespaces()(
