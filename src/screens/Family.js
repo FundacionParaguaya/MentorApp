@@ -2,7 +2,7 @@ import NetInfo from '@react-native-community/netinfo';
 import MapboxGL from '@react-native-mapbox-gl/maps';
 import moment from 'moment';
 import PropTypes from 'prop-types';
-import React, {Component} from 'react';
+import React, {useEffect, useState} from 'react';
 import {withNamespaces} from 'react-i18next';
 import {
   FlatList,
@@ -36,106 +36,99 @@ import colors from '../theme.json';
 import OverviewComponent from './lifemap/Overview';
 import {prepareDraftForSubmit} from './utils/helpers';
 
-export class Family extends Component {
-  unsubscribeNetChange;
-  allowRetake = this.props.route.params.allowRetake;
-  familyLifemap = this.props.route.params.familyLifemap;
-  isDraft = this.props.route.params.isDraft;
-  familyId = this.props.route.params.familyId;
+function Family(props) {
+  const [loading, setLoading] = useState(false);
+  const [activeTab, setActivetab] = useState(
+    props.route.params.activeTab || 'Details',
+  );
+  const [showSyncButton, setShowSyncButton] = useState(false);
+  const [isOnline, setIsOnline] = useState(true);
+
+  let unsubscribeNetChange;
+  let allowRetake = props.route.params.allowRetake;
+  let familyLifemap = props.route.params.familyLifemap;
+  let isDraft = props.route.params.isDraft;
+  let familyId = props.route.params.familyId;
   // extract socio economic categories from snapshot
-  socioEconomicCategories = [
+  let socioEconomicCategories = [
     ...new Set(
-      this.props.route.params.survey.surveyEconomicQuestions.map(
+      props.route.params.survey.surveyEconomicQuestions.map(
         (question) => question.topic,
       ),
     ),
   ];
-
-  onPressBack = () => {
-    this.props.navigation.replace('Families');
+  const onPressBack = () => {
+    props.navigation.replace('Families');
   };
-
-  constructor(props) {
-    super(props);
-    this.state = {
-      loading: false,
-      activeTab: this.props.route.params.activeTab || 'Details',
-      showSyncButton: false,
-    };
-  }
-  componentDidMount() {
-    // // monitor for connection changes
-    this.unsubscribeNetChange = NetInfo.addEventListener((isOnline) => {
-      this.setState({isOnline});
+  useEffect(() => {
+    unsubscribeNetChange = NetInfo.addEventListener((isOnline) => {
+      setIsOnline(isOnline);
       //Allow to show or hide retrySyn button
-      this.setState({showSyncButton: this.availableForSync(isOnline)});
+      setShowSyncButton(availableForSync(isOnline));
     });
 
     // check if online first
     NetInfo.fetch().then((state) => {
-      this.setState({isOnline: state.isConnected});
+      setIsOnline(isConnected);
     });
 
-    this.props.navigation.setParams({
-      onPressBack: this.onPressBack,
+    props.navigation.setParams({
+      onPressBack: onPressBack,
       withoutCloseButton: true,
     });
-  }
-  sendEmail = async (email) => {
+    return () => {
+      unsubscribeNetChange();
+    };
+  }, []);
+  const sendEmail = async (email) => {
     let url = `mailto:${email}`;
     const canOpen = await Linking.canOpenURL(url);
     if (canOpen) {
       Linking.openURL(url);
     }
   };
-  callPhone = async (phone) => {
+  const callPhone = async (phone) => {
     let url = `tel:${phone}`;
     const canOpen = await Linking.canOpenURL(url);
     if (canOpen) {
       Linking.openURL(url);
     }
   };
-  handleResumeClick = () => {
-    const {navigation} = this.props;
+  const handleResumeClick = () => {
+    const {navigation} = props;
 
-    navigation.replace(this.familyLifemap.progress.screen, {
-      draftId: this.familyLifemap.draftId,
-      survey: this.survey,
-      step: this.familyLifemap.progress.step,
-      socioEconomics: this.familyLifemap.progress.socioEconomics,
+    navigation.replace(familyLifemap.progress.screen, {
+      draftId: familyLifemap.draftId,
+      survey: survey,
+      step: familyLifemap.progress.step,
+      socioEconomics: familyLifemap.progress.socioEconomics,
     });
   };
+  const retrySync = () => {
+    const id = familyLifemap.draftId;
 
-  survey = this.props.surveys.find(
-    (item) => item.id === this.familyLifemap.surveyId,
-  );
-
-  retrySync = () => {
-    const id = this.familyLifemap.draftId;
-
-    if (this.state.loading) {
+    if (loading) {
       return;
     }
 
-    if (this.props.syncStatus.indexOf(id) === -1) {
+    if (props.syncStatus.indexOf(id) === -1) {
       console.log('starting manual sync ', id);
-      this.setState({loading: true});
-      this.prepareDraftForSubmit();
+      setLoading(true);
+      prepareDraftForSubmit();
     } else {
       console.log('Not available to sync, already enqueue');
     }
   };
-
-  availableForSync = (isOnline) => {
-    const id = this.familyLifemap.draftId;
+  const availableForSync = (isOnline) => {
+    const id = familyLifemap.draftId;
     console.log('draft id ', id);
-    console.log('list submitted: ', this.props.syncStatus);
-    console.log('Status : ', this.familyLifemap.status);
+    console.log('list submitted: ', props.syncStatus);
+    console.log('Status : ', familyLifemap.status);
 
     if (
-      this.props.syncStatus.indexOf(id) === -1 &&
+      props.syncStatus.indexOf(id) === -1 &&
       isOnline &&
-      this.props.route.params.familyLifemap.status === 'Pending sync'
+      props.route.params.familyLifemap.status === 'Pending sync'
     ) {
       console.log('Available for manual sync');
       return true;
@@ -144,47 +137,37 @@ export class Family extends Component {
       return false;
     }
   };
-
-  prepareDraftForSubmit() {
-    if (this.state.loading) {
-      const draft = prepareDraftForSubmit(this.familyLifemap, this.survey);
+  const prepareDraftForSubmit = () => {
+    if (loading) {
+      const draft = prepareDraftForSubmit(familyLifemap, survey);
 
       if (draft.pictures && draft.pictures.length > 0) {
-        this.props.submitDraftWithImages(
-          url[this.props.env],
-          this.props.user.token,
+        props.submitDraftWithImages(
+          url[props.env],
+          props.user.token,
           draft.draftId,
           {
             ...draft,
-            //sendEmail: this.state.sendEmailFlag
+            //sendEmail: sendEmailFlag
           },
         );
       } else {
-        this.props.submitDraft(
-          url[this.props.env],
-          this.props.user.token,
-          draft.draftId,
-          {
-            ...draft,
-            pictures: [],
-          },
-        );
+        props.submitDraft(url[props.env], props.user.token, draft.draftId, {
+          ...draft,
+          pictures: [],
+        });
       }
 
       setTimeout(() => {
-        this.props.navigation.navigate('Dashboard');
+        props.navigation.navigate('Dashboard');
       }, 500);
     } else {
       setTimeout(() => {
-        this.prepareDraftForSubmit();
+        prepareDraftForSubmit();
       }, 200);
     }
-  }
-
-  componentWillUnmount() {
-    this.unsubscribeNetChange();
-  }
-  retakeSurvey() {
+  };
+  const retakeSurvey = () => {
     const draftId = uuid();
 
     const regularDraft = {
@@ -195,345 +178,342 @@ export class Family extends Component {
       sendEmail: false,
       created: Date.now(),
       status: 'Draft',
-      surveyId: this.survey.id,
-      surveyVersionId: this.survey.surveyVersionId,
+      surveyId: survey.id,
+      surveyVersionId: survey.surveyVersionId,
       economicSurveyDataList: [],
       indicatorSurveyDataList: [],
       priorities: [],
       achievements: [],
       progress: {
         screen: 'Terms',
-        total: getTotalScreens(this.survey),
+        total: getTotalScreens(survey),
       },
       familyData: {
-        familyId: this.familyId,
-        countFamilyMembers: this.familyLifemap.familyData.familyMembersList
-          .length,
-        familyMembersList: this.familyLifemap.familyData.familyMembersList,
+        familyId: familyId,
+        countFamilyMembers: familyLifemap.familyData.familyMembersList.length,
+        familyMembersList: familyLifemap.familyData.familyMembersList,
       },
     };
 
     // create the new draft in redux
-    this.props.createDraft(regularDraft);
+    props.createDraft(regularDraft);
 
-    this.props.navigation.navigate('Terms', {
+    props.navigation.navigate('Terms', {
       page: 'terms',
-      survey: this.survey,
+      survey: survey,
       draftId,
     });
-  }
-  render() {
-    const {activeTab} = this.state;
-    const {t, navigation} = this.props;
-    const {familyData} = this.familyLifemap;
-    const stoplightSkipped = this.familyLifemap.stoplightSkipped;
+  };
 
-    const email =
-      familyData &&
-      familyData.familyMembersList &&
-      familyData.familyMembersList.length &&
-      !!familyData.familyMembersList[0].email &&
-      familyData.familyMembersList[0].email !== null &&
-      familyData.familyMembersList[0].email.length
-        ? familyData.familyMembersList[0].email
-        : false;
+  let survey = props.surveys.find((item) => item.id === familyLifemap.surveyId);
 
-    const phone =
-      familyData &&
-      familyData.familyMembersList &&
-      familyData.familyMembersList.length &&
-      !!familyData.familyMembersList[0].phoneNumber &&
-      familyData.familyMembersList[0].phoneNumber !== null &&
-      familyData.familyMembersList[0].phoneNumber.length
-        ? familyData.familyMembersList[0].phoneNumber
-        : false;
+  const {t, navigation} = props;
+  const {familyData} = familyLifemap;
+  const stoplightSkipped = familyLifemap.stoplightSkipped;
 
-    return (
-      <ScrollView
-        style={globalStyles.background}
-        contentContainerStyle={styles.container}>
-        <View style={styles.tabs}>
+  const email =
+    familyData &&
+    familyData.familyMembersList &&
+    familyData.familyMembersList.length &&
+    !!familyData.familyMembersList[0].email &&
+    familyData.familyMembersList[0].email !== null &&
+    familyData.familyMembersList[0].email.length
+      ? familyData.familyMembersList[0].email
+      : false;
+
+  const phone =
+    familyData &&
+    familyData.familyMembersList &&
+    familyData.familyMembersList.length &&
+    !!familyData.familyMembersList[0].phoneNumber &&
+    familyData.familyMembersList[0].phoneNumber !== null &&
+    familyData.familyMembersList[0].phoneNumber.length
+      ? familyData.familyMembersList[0].phoneNumber
+      : false;
+
+  return (
+    <ScrollView
+      style={globalStyles.background}
+      contentContainerStyle={styles.container}>
+      <View style={styles.tabs}>
+        <FamilyTab
+          title={t('views.family.details')}
+          onPress={() => setActivetab('Details')}
+          active={activeTab === 'Details'}
+          full={stoplightSkipped ? true : false}
+        />
+        {!stoplightSkipped && (
           <FamilyTab
-            title={t('views.family.details')}
-            onPress={() => this.setState({activeTab: 'Details'})}
-            active={activeTab === 'Details'}
-            full={stoplightSkipped ? true : false}
+            title={t('views.family.lifemap')}
+            onPress={() => setActivetab('LifeMap')}
+            active={activeTab === 'LifeMap'}
           />
-          {!stoplightSkipped && (
-            <FamilyTab
-              title={t('views.family.lifemap')}
-              onPress={() => this.setState({activeTab: 'LifeMap'})}
-              active={activeTab === 'LifeMap'}
-            />
-          )}
-        </View>
+        )}
+      </View>
 
-        {/* Details tab */}
-        {activeTab === 'Details' ? (
-          <ScrollView>
-            <View>
-              {!!familyData.latitude &&
-              !!familyData.longitude &&
-              !!this.state.isOnline ? (
-                // Load Map
-                <View style={{marginTop: -50}}>
-                  <View pointerEvents="none" style={styles.fakeMarker}>
-                    <Image source={marker} />
-                  </View>
-                  <MapboxGL.MapView
-                    style={{width: '100%', height: 189}}
-                    logoEnabled={false}
-                    zoomEnabled={false}
-                    rotateEnabled={false}
-                    scrollEnabled={false}
-                    pitchEnabled={false}
-                    onPress={() => {
-                      navigation.navigate('Location', {
-                        readOnly: true,
-                        survey: this.survey,
-                        family: this.familyLifemap,
-                      });
-                    }}>
-                    <MapboxGL.Camera
-                      defaultSettings={{
-                        centerCoordinate: [
-                          +familyData.longitude || 0,
-                          +familyData.latitude || 0,
-                        ],
-                        zoomLevel: 15,
-                      }}
-                      centerCoordinate={[
-                        +familyData.longitude || 0,
-                        +familyData.latitude || 0,
-                      ]}
-                      minZoomLevel={10}
-                      maxZoomLevel={15}
-                    />
-                  </MapboxGL.MapView>
+      {/* Details tab */}
+      {activeTab === 'Details' ? (
+        <ScrollView>
+          <View>
+            {!!familyData.latitude && !!familyData.longitude && !!isOnline ? (
+              // Load Map
+              <View style={{marginTop: -50}}>
+                <View pointerEvents="none" style={styles.fakeMarker}>
+                  <Image source={marker} />
                 </View>
-              ) : (
-                // Load Map Image
-                <TouchableHighlight
+                <MapboxGL.MapView
+                  style={{width: '100%', height: 189}}
+                  logoEnabled={false}
+                  zoomEnabled={false}
+                  rotateEnabled={false}
+                  scrollEnabled={false}
+                  pitchEnabled={false}
                   onPress={() => {
                     navigation.navigate('Location', {
                       readOnly: true,
-                      survey: this.survey,
-                      family: this.familyLifemap,
+                      survey: survey,
+                      family: familyLifemap,
                     });
                   }}>
-                  <Image
-                    style={styles.imagePlaceholder}
-                    source={mapPlaceholderLarge}
+                  <MapboxGL.Camera
+                    defaultSettings={{
+                      centerCoordinate: [
+                        +familyData.longitude || 0,
+                        +familyData.latitude || 0,
+                      ],
+                      zoomLevel: 15,
+                    }}
+                    centerCoordinate={[
+                      +familyData.longitude || 0,
+                      +familyData.latitude || 0,
+                    ]}
+                    minZoomLevel={10}
+                    maxZoomLevel={15}
                   />
-                </TouchableHighlight>
-              )}
-              <View style={styles.faceIconWrapper}>
-                <View style={[styles.icon, {marginTop: -16}]}>
-                  {familyData.countFamilyMembers > 1 && (
-                    <View style={styles.countCircleWrapper}>
-                      <View style={styles.countCircle}>
-                        <Text
-                          style={[globalStyles.h3, {color: colors.lightdark}]}>
-                          + {familyData.countFamilyMembers - 1}
-                        </Text>
-                      </View>
-                    </View>
-                  )}
-
-                  <Icon
-                    name="face"
-                    style={styles.faceIcon}
-                    color={colors.grey}
-                    size={60}
-                  />
-                </View>
-              </View>
-
-              <View style={styles.section}>
-                <Text style={globalStyles.h2}>
-                  {this.props.route.params.familyName}
-                </Text>
-              </View>
-            </View>
-            {phone || email ? (
-              <View style={styles.familiesIcon}>
-                {email ? (
-                  <View style={styles.familiesIconContainer}>
-                    <Icon
-                      onPress={() => this.sendEmail(email)}
-                      name="email"
-                      style={styles.familiesIconIcon}
-                      size={35}
-                    />
-                  </View>
-                ) : null}
-                {phone ? (
-                  <View style={styles.familiesIconContainer}>
-                    <Icon
-                      onPress={() => this.callPhone(phone)}
-                      name="phone"
-                      style={styles.familiesIconIcon}
-                      size={35}
-                    />
-                  </View>
-                ) : null}
-              </View>
-            ) : null}
-
-            <View style={styles.section}>
-              <View style={styles.content}>
-                <Text style={[globalStyles.h3, {color: colors.lightdark}]}>
-                  {t('views.familyMembers').toUpperCase()}
-                </Text>
-                <FlatList
-                  data={familyData.familyMembersList}
-                  keyExtractor={(item, index) => index.toString()}
-                  renderItem={({item, index}) => (
-                    <FamilyListItem
-                      icon
-                      text={`${item.firstName} ${!index ? item.lastName : ''}`}
-                      handleClick={() => {
-                        if (!index) {
-                          navigation.navigate('FamilyParticipant', {
-                            survey: this.survey,
-                            family: this.familyLifemap,
-                            readOnly: true,
-                          });
-                        } else {
-                          console.log(item);
-                          navigation.navigate('FamilyMember', {
-                            survey: this.survey,
-                            readOnly: true,
-                            member: item,
-                          });
-                        }
-                      }}
-                    />
-                  )}
-                />
-              </View>
-            </View>
-            <View style={styles.section}>
-              <View style={styles.content}>
-                <Text style={[globalStyles.h3, {color: colors.lightdark}]}>
-                  {t('views.family.household').toUpperCase()}
-                </Text>
-                <FamilyListItem
-                  text={t('views.location')}
-                  handleClick={() => {
-                    navigation.navigate('Location', {
-                      survey: this.survey,
-                      readOnly: true,
-                      family: this.familyLifemap,
-                    });
-                  }}
-                />
-                {!this.isDraft
-                  ? this.socioEconomicCategories.map((item, index) => (
-                      <FamilyListItem
-                        key={item}
-                        text={item}
-                        handleClick={() => {
-                          navigation.navigate('SocioEconomicQuestion', {
-                            family: this.familyLifemap,
-                            page: index,
-                            readOnly: true,
-                            survey: this.survey,
-                            title: item,
-                          });
-                        }}
-                      />
-                    ))
-                  : null}
-              </View>
-            </View>
-
-            {!!this.allowRetake && (
-              <Button
-                style={styles.buttonSmall}
-                text={t('views.retakeSurvey')}
-                handleClick={() => this.retakeSurvey()}
-              />
-            )}
-          </ScrollView>
-        ) : null}
-
-        {/* Lifemap tab */}
-
-        {activeTab === 'LifeMap' ? (
-          <ScrollView id="lifemap">
-            {this.isDraft ? (
-              <View>
-                <View style={styles.draftContainer}>
-                  <Text
-                    style={{
-                      ...styles.lifemapCreated,
-                      ...globalStyles.h2Bold,
-                      fontSize: 16,
-                      marginBottom: 10,
-                      textAlign: 'center',
-                      color: '#000000',
-                    }}>{`${t('views.family.lifeMapCreatedOn')}: \n${moment(
-                    this.familyLifemap.created,
-                  ).format('MMM DD, YYYY')}`}</Text>
-                  <RoundImage source="lifemap" />
-
-                  {this.props.route.params.familyLifemap.status &&
-                  this.props.route.params.familyLifemap.status === 'Draft' ? (
-                    <Button
-                      id="resume-draft"
-                      style={{
-                        marginTop: 20,
-                      }}
-                      colored
-                      text={t('general.resumeDraft')}
-                      handleClick={() => this.handleResumeClick()}
-                    />
-                  ) : (
-                    <View>
-                      <Text
-                        style={{
-                          ...globalStyles.h2Bold,
-                          ...{
-                            textAlign: 'center',
-                          },
-                        }}>
-                        {t('views.family.lifeMapAfterSync')}
-                      </Text>
-                      {this.state.showSyncButton && (
-                        <Button
-                          id="retry"
-                          style={styles.button}
-                          loading={this.state.loading}
-                          text={t('views.synced')}
-                          handleClick={this.retrySync}
-                        />
-                      )}
-                    </View>
-                  )}
-                </View>
+                </MapboxGL.MapView>
               </View>
             ) : (
-              <ScrollView>
-                <Text
-                  style={{...styles.lifemapCreated, ...globalStyles.h3}}>{`${t(
-                  'views.family.created',
-                )}:  ${moment(this.familyLifemap.created).format(
-                  'MMM DD, YYYY',
-                )}`}</Text>
-                <OverviewComponent
-                  route={this.props.route}
-                  readOnly
-                  navigation={navigation}
-                  familyLifemap={this.familyLifemap}
+              // Load Map Image
+              <TouchableHighlight
+                onPress={() => {
+                  navigation.navigate('Location', {
+                    readOnly: true,
+                    survey: survey,
+                    family: familyLifemap,
+                  });
+                }}>
+                <Image
+                  style={styles.imagePlaceholder}
+                  source={mapPlaceholderLarge}
                 />
-              </ScrollView>
+              </TouchableHighlight>
             )}
-          </ScrollView>
-        ) : null}
-      </ScrollView>
-    );
-  }
+            <View style={styles.faceIconWrapper}>
+              <View style={[styles.icon, {marginTop: -16}]}>
+                {familyData.countFamilyMembers > 1 && (
+                  <View style={styles.countCircleWrapper}>
+                    <View style={styles.countCircle}>
+                      <Text
+                        style={[globalStyles.h3, {color: colors.lightdark}]}>
+                        + {familyData.countFamilyMembers - 1}
+                      </Text>
+                    </View>
+                  </View>
+                )}
+
+                <Icon
+                  name="face"
+                  style={styles.faceIcon}
+                  color={colors.grey}
+                  size={60}
+                />
+              </View>
+            </View>
+
+            <View style={styles.section}>
+              <Text style={globalStyles.h2}>
+                {props.route.params.familyName}
+              </Text>
+            </View>
+          </View>
+          {phone || email ? (
+            <View style={styles.familiesIcon}>
+              {email ? (
+                <View style={styles.familiesIconContainer}>
+                  <Icon
+                    onPress={() => sendEmail(email)}
+                    name="email"
+                    style={styles.familiesIconIcon}
+                    size={35}
+                  />
+                </View>
+              ) : null}
+              {phone ? (
+                <View style={styles.familiesIconContainer}>
+                  <Icon
+                    onPress={() => callPhone(phone)}
+                    name="phone"
+                    style={styles.familiesIconIcon}
+                    size={35}
+                  />
+                </View>
+              ) : null}
+            </View>
+          ) : null}
+
+          <View style={styles.section}>
+            <View style={styles.content}>
+              <Text style={[globalStyles.h3, {color: colors.lightdark}]}>
+                {t('views.familyMembers').toUpperCase()}
+              </Text>
+              <FlatList
+                data={familyData.familyMembersList}
+                keyExtractor={(item, index) => index.toString()}
+                renderItem={({item, index}) => (
+                  <FamilyListItem
+                    icon
+                    text={`${item.firstName} ${!index ? item.lastName : ''}`}
+                    handleClick={() => {
+                      if (!index) {
+                        navigation.navigate('FamilyParticipant', {
+                          survey: survey,
+                          family: familyLifemap,
+                          readOnly: true,
+                        });
+                      } else {
+                        console.log(item);
+                        navigation.navigate('FamilyMember', {
+                          survey: survey,
+                          readOnly: true,
+                          member: item,
+                        });
+                      }
+                    }}
+                  />
+                )}
+              />
+            </View>
+          </View>
+          <View style={styles.section}>
+            <View style={styles.content}>
+              <Text style={[globalStyles.h3, {color: colors.lightdark}]}>
+                {t('views.family.household').toUpperCase()}
+              </Text>
+              <FamilyListItem
+                text={t('views.location')}
+                handleClick={() => {
+                  navigation.navigate('Location', {
+                    survey: survey,
+                    readOnly: true,
+                    family: familyLifemap,
+                  });
+                }}
+              />
+              {!isDraft
+                ? socioEconomicCategories.map((item, index) => (
+                    <FamilyListItem
+                      key={item}
+                      text={item}
+                      handleClick={() => {
+                        navigation.navigate('SocioEconomicQuestion', {
+                          family: familyLifemap,
+                          page: index,
+                          readOnly: true,
+                          survey: survey,
+                          title: item,
+                        });
+                      }}
+                    />
+                  ))
+                : null}
+            </View>
+          </View>
+
+          {!!allowRetake && (
+            <Button
+              style={styles.buttonSmall}
+              text={t('views.retakeSurvey')}
+              handleClick={() => retakeSurvey()}
+            />
+          )}
+        </ScrollView>
+      ) : null}
+
+      {/* Lifemap tab */}
+
+      {activeTab === 'LifeMap' ? (
+        <ScrollView id="lifemap">
+          {isDraft ? (
+            <View>
+              <View style={styles.draftContainer}>
+                <Text
+                  style={{
+                    ...styles.lifemapCreated,
+                    ...globalStyles.h2Bold,
+                    fontSize: 16,
+                    marginBottom: 10,
+                    textAlign: 'center',
+                    color: '#000000',
+                  }}>{`${t('views.family.lifeMapCreatedOn')}: \n${moment(
+                  familyLifemap.created,
+                ).format('MMM DD, YYYY')}`}</Text>
+                <RoundImage source="lifemap" />
+
+                {props.route.params.familyLifemap.status &&
+                props.route.params.familyLifemap.status === 'Draft' ? (
+                  <Button
+                    id="resume-draft"
+                    style={{
+                      marginTop: 20,
+                    }}
+                    colored
+                    text={t('general.resumeDraft')}
+                    handleClick={() => handleResumeClick()}
+                  />
+                ) : (
+                  <View>
+                    <Text
+                      style={{
+                        ...globalStyles.h2Bold,
+                        ...{
+                          textAlign: 'center',
+                        },
+                      }}>
+                      {t('views.family.lifeMapAfterSync')}
+                    </Text>
+                    {showSyncButton && (
+                      <Button
+                        id="retry"
+                        style={styles.button}
+                        loading={loading}
+                        text={t('views.synced')}
+                        handleClick={retrySync}
+                      />
+                    )}
+                  </View>
+                )}
+              </View>
+            </View>
+          ) : (
+            <ScrollView>
+              <Text
+                style={{...styles.lifemapCreated, ...globalStyles.h3}}>{`${t(
+                'views.family.created',
+              )}:  ${moment(familyLifemap.created).format(
+                'MMM DD, YYYY',
+              )}`}</Text>
+              <OverviewComponent
+                route={props.route}
+                readOnly
+                navigation={navigation}
+                familyLifemap={familyLifemap}
+              />
+            </ScrollView>
+          )}
+        </ScrollView>
+      ) : null}
+    </ScrollView>
+  );
 }
 
 Family.propTypes = {

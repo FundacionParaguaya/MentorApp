@@ -1,28 +1,26 @@
-import React, { Component } from 'react'
-import PropTypes from 'prop-types'
-import Icon from 'react-native-vector-icons/MaterialIcons'
-import { TextInput, StyleSheet, View } from 'react-native'
+import React, {Component} from 'react';
+import PropTypes from 'prop-types';
+import Icon from 'react-native-vector-icons/MaterialIcons';
+import {TextInput, StyleSheet, View} from 'react-native';
 
-import colors from '../theme.json'
+import colors from '../theme.json';
 
-class SearchBar extends Component {
-  render() {
-    const { style, onChangeText, onSubmit, value } = this.props
-    return (
-      <View style={[style, styles.search]}>
-        <Icon name="search" size={24} />
-        <TextInput
-          id="search-bar"
-          style={styles.input}
-          placeholder={this.props.placeholder}
-          onChangeText={text => onChangeText(text)}
-          onEndEditing={onSubmit}
-          value={value}
-          autoCapitalize="none"
-        />
-      </View>
-    )
-  }
+function SearchBar(props) {
+  const {style, onChangeText, onSubmit, value} = props;
+  return (
+    <View style={[style, styles.search]}>
+      <Icon name="search" size={24} />
+      <TextInput
+        id="search-bar"
+        style={styles.input}
+        placeholder={props.placeholder}
+        onChangeText={(text) => onChangeText(text)}
+        onEndEditing={onSubmit}
+        value={value}
+        autoCapitalize="none"
+      />
+    </View>
+  );
 }
 
 SearchBar.propTypes = {
@@ -30,10 +28,10 @@ SearchBar.propTypes = {
   onChangeText: PropTypes.func,
   onSubmit: PropTypes.func,
   value: PropTypes.string,
-  placeholder: PropTypes.string
-}
+  placeholder: PropTypes.string,
+};
 
-export default SearchBar
+export default SearchBar;
 
 const styles = StyleSheet.create({
   search: {
@@ -44,13 +42,13 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff',
     borderRadius: 2,
     borderWidth: 1,
-    borderColor: colors.lightgrey
+    borderColor: colors.lightgrey,
   },
   input: {
     marginLeft: 18,
     fontFamily: 'Roboto',
     fontSize: 16,
     lineHeight: 21,
-    color: colors.lightdark
-  }
-})
+    color: colors.lightdark,
+  },
+});

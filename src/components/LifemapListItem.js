@@ -1,22 +1,21 @@
-import React, {Component} from 'react';
+import React from 'react';
 import PropTypes from 'prop-types';
 import {Text, StyleSheet, View} from 'react-native';
 import ListItem from './ListItem';
 
 import colors from '../theme.json';
 import globalStyles from '../globalStyles';
-class LifemapListItem extends Component {
-  render() {
-    return (
-      <ListItem style={{...styles.listItem}} onPress={this.props.handleClick}>
-        <View style={styles.listItemContainer}>
-          <Text style={{...globalStyles.h3Bold, ...styles.h3Bold}}>
-            {this.props.name}
-          </Text>
-        </View>
-      </ListItem>
-    );
-  }
+
+function LifemapListItem(props) {
+  return (
+    <ListItem style={{...styles.listItem}} onPress={props.handleClick}>
+      <View style={styles.listItemContainer}>
+        <Text style={{...globalStyles.h3Bold, ...styles.h3Bold}}>
+          {props.name}
+        </Text>
+      </View>
+    </ListItem>
+  );
 }
 
 LifemapListItem.propTypes = {

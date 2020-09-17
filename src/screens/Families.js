@@ -1,5 +1,5 @@
 import PropTypes from 'prop-types';
-import React, {Component} from 'react';
+import React, {useState, useRef} from 'react';
 import {withNamespaces} from 'react-i18next';
 import {FlatList, Image, StyleSheet, Text, View} from 'react-native';
 import {connect} from 'react-redux';
@@ -14,15 +14,13 @@ import {setAccessibilityTextForFamilies} from '../screens/utils/accessibilityHel
 import colors from '../theme.json';
 import {replaceSpecialChars as sanitize} from '../utils';
 
-export class Families extends Component {
-  state = {search: ''};
-  acessibleComponent = React.createRef();
+function Families(props) {
+  const [search, setSearch] = useState('');
 
-  sortByName = (families) =>
+  const sortByName = (families) =>
     families.sort((a, b) => a.name.localeCompare(b.name));
-
-  handleClickOnFamily = (family) => {
-    this.props.navigation.replace('Family', {
+  const handleClickOnFamily = (family) => {
+    props.navigation.replace('Family', {
       allowRetake: family.allowRetake,
       familyId: family.familyId,
       familyName: family.name,
@@ -30,96 +28,90 @@ export class Families extends Component {
         ? family.snapshotList[0]
         : family.draft,
       isDraft: !family.snapshotList,
-      survey: this.props.surveys.find((survey) =>
+      survey: props.surveys.find((survey) =>
         family.snapshotList
           ? survey.id === family.snapshotList[0].surveyId
           : survey.id === family.draft.surveyId,
       ),
     });
   };
-
-  fetchFamilies = () => {
-    this.props.loadFamilies(url[this.props.env], this.props.user.token);
+  const fetchFamilies = () => {
+    props.loadFamilies(url[props.env], props.user.token);
   };
 
-  render() {
-    const {t} = this.props;
-    // show not synced families from drafts
-    const draftFamilies = this.props.drafts
-      .filter(
-        (draft) => draft.status === 'Draft' || draft.status === 'Pending sync',
-      )
-      .map((draft) => {
-        const primaryParticipant = draft.familyData.familyMembersList[0];
-        return {
-          name: `${primaryParticipant.firstName} ${primaryParticipant.lastName}`,
-          birthDate: primaryParticipant.birthDate,
-          draft,
-        };
-      });
+  const {t} = props;
+  // show not synced families from drafts
+  const draftFamilies = props.drafts
+    .filter(
+      (draft) => draft.status === 'Draft' || draft.status === 'Pending sync',
+    )
+    .map((draft) => {
+      const primaryParticipant = draft.familyData.familyMembersList[0];
+      return {
+        name: `${primaryParticipant.firstName} ${primaryParticipant.lastName}`,
+        birthDate: primaryParticipant.birthDate,
+        draft,
+      };
+    });
 
-    const allFamilies = [...draftFamilies, ...sanitize(this.props.families)];
+  const allFamilies = [...draftFamilies, ...sanitize(props.families)];
 
-    const filteredFamilies = allFamilies.filter(
-      (family) =>
-        family.name.toLowerCase().includes(this.state.search.toLowerCase()) ||
-        (family.code && family.code.includes(this.state.search)),
-    );
+  const filteredFamilies = allFamilies.filter(
+    (family) =>
+      family.name.toLowerCase().includes(search.toLowerCase()) ||
+      (family.code && family.code.includes(search)),
+  );
 
-    const screenAccessibilityContent = setAccessibilityTextForFamilies();
-
-    return (
-      <View
-        style={[globalStyles.background, styles.container]}
-        accessible={true}
-        accessibilityLabel={screenAccessibilityContent}
-        accessibilityLiveRegion="assertive">
-        <View style={styles.imagePlaceholderContainer}>
-          <View style={styles.searchContainer}>
-            <SearchBar
-              id="searchAddress"
-              style={styles.search}
-              placeholder={t('views.family.searchByName')}
-              onChangeText={(search) => this.setState({search})}
-              value={this.state.search}
-            />
-          </View>
-          <Image
-            style={styles.imagePlaceholderTop}
-            source={mapPlaceholderLarge}
+  const screenAccessibilityContent = setAccessibilityTextForFamilies();
+  return (
+    <View
+      style={[globalStyles.background, styles.container]}
+      accessible={true}
+      accessibilityLabel={screenAccessibilityContent}
+      accessibilityLiveRegion="assertive">
+      <View style={styles.imagePlaceholderContainer}>
+        <View style={styles.searchContainer}>
+          <SearchBar
+            id="searchAddress"
+            style={styles.search}
+            placeholder={t('views.family.searchByName')}
+            onChangeText={(search) => setSearch(search)}
+            value={search}
           />
         </View>
-
-        <View style={styles.bar}>
-          <Text style={{...globalStyles.subline, ...styles.familiesCount}}>
-            {filteredFamilies.length} {t('views.families').toLowerCase()}
-          </Text>
-        </View>
-
-        <FlatList
-          style={{flex: 1}}
-          refreshing={
-            !!this.props.offline.online &&
-            !!this.props.offline.outbox.find(
-              (item) => item.type === 'LOAD_FAMILIES',
-            )
-          }
-          onRefresh={this.fetchFamilies}
-          data={this.sortByName(filteredFamilies)}
-          keyExtractor={(item, index) => index.toString()}
-          renderItem={({item}) => (
-            <FamiliesListItem
-              error={t('views.family.error')}
-              lng={this.props.lng}
-              handleClick={() => this.handleClickOnFamily(item)}
-              family={item}
-            />
-          )}
-          initialNumToRender={7}
+        <Image
+          style={styles.imagePlaceholderTop}
+          source={mapPlaceholderLarge}
         />
       </View>
-    );
-  }
+
+      <View style={styles.bar}>
+        <Text style={{...globalStyles.subline, ...styles.familiesCount}}>
+          {filteredFamilies.length} {t('views.families').toLowerCase()}
+        </Text>
+      </View>
+
+      <FlatList
+        style={{flex: 1}}
+        refreshing={
+          !!props.offline.online &&
+          !!props.offline.outbox.find((item) => item.type === 'LOAD_FAMILIES')
+        }
+        onRefresh={fetchFamilies}
+        data={sortByName(filteredFamilies)}
+        keyExtractor={(item, index) => index.toString()}
+        renderItem={({item}) => (
+          <FamiliesListItem
+            error={t('views.family.error')}
+            lng={props.lng}
+            handleClick={() => handleClickOnFamily(item)}
+            family={item}
+          />
+        )}
+        initialNumToRender={7}
+      />
+    </View>
+  );
 }
 
 Families.propTypes = {
