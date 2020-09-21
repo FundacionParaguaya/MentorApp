@@ -131,6 +131,24 @@ function Overview(props) {
       {/*If we are in family/draft then show the questions.Else dont show them . This is requered for the families tab*/}
       <View>
         <View>
+          <TouchableHighlight
+            id="filters"
+            underlayColor={'transparent'}
+            activeOpacity={1}
+            onPress={toggleFilterModal}
+            accessible={true}>
+            <View
+              style={styles.listTitle}
+              accessibilityLabel={
+                filterLabel || t('views.lifemap.allIndicators')
+              }
+              accessibilityHint="Double tap to open dropdown">
+              <Text style={globalStyles.subline}>
+                {filterLabel || t('views.lifemap.allIndicators')}
+              </Text>
+              <Image source={arrow} style={styles.arrow} />
+            </View>
+          </TouchableHighlight>
           <LifemapOverview
             id="lifeMapOverview"
             surveyData={survey.surveyStoplightQuestions}
