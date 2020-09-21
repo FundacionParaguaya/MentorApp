@@ -276,8 +276,8 @@ export class Question extends Component {
                 }}
               />
             ) : null}
-
-            {user.interative_help &&  this.indicator && this.indicator.questionAudio &&
+            
+            {user.interactive_help &&  this.indicator && this.indicator.questionAudio &&
               <Audio audioId ={this.indicator.id} url={this.indicator.questionAudio}  />
             }
             
