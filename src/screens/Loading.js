@@ -158,20 +158,17 @@ export class Loading extends Component {
 
   // STEP 4 - cache the survey indicator images
   handleImageCaching = () => {
-    console.log('handleImageCaching')
     if (
       !this.props.downloadMapsAndImages.downloadImages ||
       (!!this.props.sync.images.total &&
         this.props.sync.images.total === this.props.sync.images.synced)
     ) {
-      console.log('handleImageCaching: handleAudioCaching ')
       this.handleAudioCaching();
       //this.props.navigation.navigate('DrawerStack');
     } else if (!this.state.cachingImages) {
       this.setState({
         cachingImages: true,
       });
-      console.log('handleImageCaching:  initImageCaching()')
       initImageCaching();
     }
   };
@@ -179,18 +176,15 @@ export class Loading extends Component {
   // STEP 5 - cache the survey indicator audios
 
   handleAudioCaching = () => {
-    console.log('handleAudioCaching')
     if(!this.props.downloadMapsAndImages.downloadAudios ||
       (!!this.props.sync.audios.total && 
         this.props.sync.audios.total === this.props.sync.audios.synced)
       ){
-        console.log('handleAudioCaching: DrawerStack')
         this.props.navigation.navigate('DrawerStack')
       }else if(!this.state.cachingAudios){
         this.setState({
           cachingAudios:true,
         });
-        console.log('handleAudioCaching: initAudioCaching')
         initAudioCaching();
       }
   }
@@ -249,7 +243,6 @@ export class Loading extends Component {
   }
 
   checkState() {
-    console.log('checkState');
     const {families, surveys, images, appVersion, audios} = this.props.sync;
     if (!this.props.user.token) {
       // if user hasn't logged in, navigate to login
@@ -284,7 +277,6 @@ export class Loading extends Component {
   }
 
   componentDidMount() {
-    console.log('componentDidMount: Loading');
     this.props.validate(url[this.props.env], this.props.user.token);
     this.checkState();
   }
@@ -304,7 +296,6 @@ export class Loading extends Component {
     this.initMapDownload();
   };
   componentDidUpdate(prevProps) {
-    console.log('componentDidUpdate')
     // if user logs in
     if (!prevProps.user.token && this.props.user.token) {
       this.syncSurveys();
@@ -328,7 +319,6 @@ export class Loading extends Component {
       this.state.maps.every((map) => map.status === 100) &&
       !this.state.cachingImages 
     ) {
-      console.log('componentDidUpdate handleImageCaching()')
       this.setState({cachingImages: true});
       this.props.setSyncedState('maps', true);
       this.handleImageCaching();
@@ -344,7 +334,6 @@ export class Loading extends Component {
         this.props.sync.images.total === this.props.sync.images.synced) &&
       !this.state.cachingAudios
     ) {
-      console.log('componentDidUpdate  this.handleAudioCaching()')
       this.setState({cachingAudios: true});
      // this.props.setSyncedState('images', true);
       this.handleAudioCaching();
@@ -358,7 +347,6 @@ export class Loading extends Component {
       this.state.maps.every((map) => map.status === 100) &&
       this.props.downloadMapsAndImages.downloadAudios == false
     ) {
-      console.log('componentDidUpdate  from images')
       this.props.navigation.navigate('DrawerStack');
     }
 
@@ -366,7 +354,6 @@ export class Loading extends Component {
     !!this.props.sync.audios.total &&
     prevProps.sync.audios.total !== prevProps.sync.audios.synced &&
     this.props.sync.audios.total === this.props.sync.audios.synced && this.props.downloadMapsAndImages.downloadImages == false) {
-      console.log('componentDidUpdate  from audios')
       this.props.navigation.navigate('DrawerStack');
     }
 
@@ -377,7 +364,6 @@ export class Loading extends Component {
     ((prevProps.sync.images.total !== prevProps.sync.images.synced) || (prevProps.sync.audios.total !== prevProps.sync.audios.synced)  ) &&
     this.props.sync.images.total === this.props.sync.images.synced &&  this.props.downloadMapsAndImages.downloadImages && this.props.downloadMapsAndImages.downloadAudios
     ) {
-      console.log('componentDidUpdate  ambos')
       this.props.navigation.navigate('DrawerStack');
     }
 

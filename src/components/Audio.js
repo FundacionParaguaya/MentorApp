@@ -109,7 +109,7 @@ class Audio extends Component {
 }
 
 Audio.propTypes = {
-    id: PropTypes.number.isRequired,
+    audioId: PropTypes.number.isRequired,
     url: PropTypes.string.isRequired,
 }
 
