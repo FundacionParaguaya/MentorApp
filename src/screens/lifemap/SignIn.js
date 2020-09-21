@@ -69,6 +69,7 @@ export class SigIn extends Component {
       this.sign.saveImage();
     }
     if (!this.isEmpty) {
+      console.log('nabigaate');
       this.props.navigation.push('Final', {
         familyLifemap: this.draft,
         draft: this.draft,

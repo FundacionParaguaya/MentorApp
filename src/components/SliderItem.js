@@ -12,7 +12,7 @@ const slideColors = {
   3: 'palegreen',
 };
 
-export default function SliderItem() {
+export default function SliderItem(props) {
   const [pressed, setPressed] = useState(false);
   const togglePressedState = (pressed) => {
     setPressed(pressed);

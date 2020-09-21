@@ -1,5 +1,5 @@
 import PropTypes from 'prop-types';
-import React, {Component} from 'react';
+import React, {useState, useEffect} from 'react';
 import {withNamespaces} from 'react-i18next';
 import {StyleSheet, Text, View} from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialIcons';
@@ -14,27 +14,23 @@ import colors from '../../theme.json';
 import {getTotalEconomicScreens} from './helpers';
 import globalStyles from '../../globalStyles';
 
-export class Question extends Component {
-  step = this.props.route.params.step;
-  survey = this.props.route.params.survey;
-  draftId = this.props.route.params.draftId;
-  answeringSkipped = this.props.route.params.answeringSkipped;
+function Question(props) {
+  let step = props.route.params.step;
+  let survey = props.route.params.survey;
+  let draftId = props.route.params.draftId;
+  let answeringSkipped = props.route.params.answeringSkipped;
 
-  indicators = this.props.route.params.survey.surveyStoplightQuestions;
-  indicator = this.indicators[this.step];
+  let indicators = props.route.params.survey.surveyStoplightQuestions;
+  let indicator = indicators[step];
 
-  slides = this.indicator.stoplightColors;
-  readOnly = this.props.route.params.readOnly;
+  let slides = indicator.stoplightColors;
+  let readOnly = props.route.params.readOnly;
+  const [showDefinition, setShowDefinition] = useState(false);
 
-  state = {
-    showDefinition: false,
-  };
-
-  getDraft = () =>
-    this.props.drafts.find((draft) => draft.draftId === this.draftId);
-
-  getFieldValue = (field) => {
-    const draft = this.getDraft();
+  const getDraft = () =>
+    props.drafts.find((draft) => draft.draftId === draftId);
+  const getFieldValue = (field) => {
+    const draft = getDraft();
 
     const indicatorObject =
       draft && draft.indicatorSurveyDataList
@@ -44,24 +40,23 @@ export class Question extends Component {
       return indicatorObject.value;
     }
   };
-
-  selectAnswer = (answer = 0) => {
-    const draft = this.getDraft();
+  const selectAnswer = (answer = 0) => {
+    const draft = getDraft();
 
     const skippedQuestions = draft.indicatorSurveyDataList.filter(
       (question) => question.value === 0,
     );
-    const fieldValue = this.getFieldValue(this.indicator.codeName);
+    const fieldValue = getFieldValue(indicator.codeName);
 
     let updatedIndicators;
 
     if (
       draft.indicatorSurveyDataList.find(
-        (item) => item.key === this.indicator.codeName,
+        (item) => item.key === indicator.codeName,
       )
     ) {
       updatedIndicators = draft.indicatorSurveyDataList.map((item) => {
-        if (item.key === this.indicator.codeName) {
+        if (item.key === indicator.codeName) {
           return {...item, value: answer};
         } else {
           return item;
@@ -70,7 +65,7 @@ export class Question extends Component {
     } else {
       updatedIndicators = [
         ...draft.indicatorSurveyDataList,
-        {key: this.indicator.codeName, value: answer},
+        {key: indicator.codeName, value: answer},
       ];
     }
 
@@ -90,7 +85,7 @@ export class Question extends Component {
           indicatorSurveyDataList: updatedIndicators,
           priorities: [
             ...draft.priorities.filter(
-              (item) => item.indicator !== this.indicator.codeName,
+              (item) => item.indicator !== indicator.codeName,
             ),
           ],
         };
@@ -103,179 +98,169 @@ export class Question extends Component {
           indicatorSurveyDataList: updatedIndicators,
           achievements: [
             ...draft.achievements.filter(
-              (item) => item.indicator !== this.indicator.codeName,
+              (item) => item.indicator !== indicator.codeName,
             ),
           ],
         };
       }
     }
 
-    this.props.updateDraft(updatedDraft);
+    props.updateDraft(updatedDraft);
 
     // after updating the draft, navigate based on navigation state
-    if (this.step + 1 < this.indicators.length && !this.answeringSkipped) {
-      return this.props.navigation.replace('Question', {
-        step: this.step + 1,
-        draftId: this.draftId,
-        survey: this.survey,
+    if (step + 1 < indicators.length && !answeringSkipped) {
+      return props.navigation.replace('Question', {
+        step: step + 1,
+        draftId: draftId,
+        survey: survey,
       });
-    } else if (this.step + 1 >= this.indicators.length && answer === 0) {
-      return this.props.navigation.navigate('Skipped', {
-        draftId: this.draftId,
-        survey: this.survey,
+    } else if (step + 1 >= indicators.length && answer === 0) {
+      return props.navigation.navigate('Skipped', {
+        draftId: draftId,
+        survey: survey,
       });
     } else if (
-      (this.answeringSkipped &&
-        skippedQuestions.length === 1 &&
-        answer !== 0) ||
+      (answeringSkipped && skippedQuestions.length === 1 && answer !== 0) ||
       skippedQuestions.length === 0
     ) {
-      return this.props.navigation.navigate('Overview', {
+      return props.navigation.navigate('Overview', {
         resumeDraft: false,
-        draftId: this.draftId,
-        survey: this.survey,
+        draftId: draftId,
+        survey: survey,
       });
     } else {
-      return this.props.navigation.navigate('Skipped', {
-        draftId: this.draftId,
-        survey: this.survey,
+      return props.navigation.navigate('Skipped', {
+        draftId: draftId,
+        survey: survey,
       });
     }
   };
-
-  onPressBack = () => {
+  const onPressBack = () => {
     // navigate back to skipped questions if answering one,
     // otherwise to the expected screen in the lifemap flow
-    if (this.answeringSkipped) {
-      this.props.navigation.navigate('Skipped', {
-        draftId: this.draftId,
-        survey: this.survey,
+    if (answeringSkipped) {
+      props.navigation.navigate('Skipped', {
+        draftId: draftId,
+        survey: survey,
       });
-    } else if (this.step > 0) {
-      this.props.navigation.replace('Question', {
-        step: this.step - 1,
-        draftId: this.draftId,
-        survey: this.survey,
+    } else if (step > 0) {
+      props.navigation.replace('Question', {
+        step: step - 1,
+        draftId: draftId,
+        survey: survey,
       });
     } else {
-      this.props.navigation.navigate('BeginLifemap', {
-        draftId: this.draftId,
-        survey: this.survey,
+      props.navigation.navigate('BeginLifemap', {
+        draftId: draftId,
+        survey: survey,
       });
     }
   };
-
-  toggleDefinitionWindow = (stateWindow) => {
-    this.setState({
-      showDefinition: stateWindow,
-    });
+  const toggleDefinitionWindow = (stateWindow) => {
+    setShowDefinition(stateWindow);
   };
+  useEffect(() => {
+    const draft = getDraft();
 
-  componentDidMount() {
-    const draft = this.getDraft();
-
-    this.props.updateDraft({
+    props.updateDraft({
       ...draft,
       progress: {
         ...draft.progress,
         screen: 'Question',
-        step: this.step,
+        step: step,
       },
     });
 
-    this.props.navigation.setParams({
-      onPressBack: this.onPressBack,
+    props.navigation.setParams({
+      onPressBack: onPressBack,
     });
-  }
+  }, []);
+  //REFACTORNOTE
+  // shouldComponentUpdate() {
+  //   return props.navigation.isFocused();
+  // }
 
-  shouldComponentUpdate() {
-    return this.props.navigation.isFocused();
-  }
+  const draft = getDraft();
+  // added a popup component to the Question.js instead of adding it to the
+  // modals folder because it is really smol and does not do much
 
-  render() {
-    const draft = this.getDraft();
-    // added a popup component to the Question.js instead of adding it to the
-    // modals folder because it is really smol and does not do much
+  const {t} = props;
+  return (
+    <View style={{flex: 1}}>
+      <StickyFooter
+        visible={false}
+        readOnly
+        progress={
+          ((draft.familyData.countFamilyMembers > 1 ? 5 : 4) + step) /
+            draft.progress.total || getTotalEconomicScreens(survey)
+        }
+        currentScreen="Question">
+        {showDefinition ? (
+          <Popup
+            modifiedPopUp
+            definition
+            isOpen={showDefinition}
+            onClose={() => toggleDefinitionWindow(false)}>
+            <Icon
+              style={styles.closeIconStyle}
+              onPress={() => toggleDefinitionWindow(false)}
+              name="close"
+              size={20}
+            />
+            <Text
+              style={{
+                ...globalStyles.h3Bold,
+                textAlign: 'center',
+                marginBottom: 20,
+              }}>
+              {t('views.lifemap.indicatorDefinition')}
+            </Text>
+            <Text
+              id="definition"
+              style={{
+                fontSize: 16,
+              }}>
+              {indicator.definition || null}
+            </Text>
+          </Popup>
+        ) : null}
 
-    const {t} = this.props;
+        <SliderComponent
+          slides={slides}
+          value={getFieldValue(indicator.codeName)}
+          selectAnswer={selectAnswer}
+        />
 
-    return (
-      <View style={{flex: 1}}>
-        <StickyFooter
-          visible={false}
-          readOnly
-          progress={
-            ((draft.familyData.countFamilyMembers > 1 ? 5 : 4) + this.step) /
-              draft.progress.total || getTotalEconomicScreens(this.survey)
-          }
-          currentScreen="Question">
-          {this.state.showDefinition ? (
-            <Popup
-              modifiedPopUp
-              definition
-              isOpen={this.state.showDefinition}
-              onClose={() => this.toggleDefinitionWindow(false)}>
-              <Icon
-                style={styles.closeIconStyle}
-                onPress={() => this.toggleDefinitionWindow(false)}
-                name="close"
-                size={20}
-              />
-              <Text
-                style={{
-                  ...globalStyles.h3Bold,
-                  textAlign: 'center',
-                  marginBottom: 20,
-                }}>
-                {t('views.lifemap.indicatorDefinition')}
-              </Text>
-              <Text
-                id="definition"
-                style={{
-                  fontSize: 16,
-                }}>
-                {this.indicator.definition || null}
-              </Text>
-            </Popup>
+        <View style={styles.skip}>
+          {indicator.definition ? (
+            <Icon
+              id="show-definition"
+              onPress={() => toggleDefinitionWindow(true)}
+              name="info"
+              color={colors.palegrey}
+              size={40}
+              style={{
+                color: colors.palegreen,
+                position: 'absolute',
+                top: '55%',
+                left: '10%',
+              }}
+            />
           ) : null}
 
-          <SliderComponent
-            slides={this.slides}
-            value={this.getFieldValue(this.indicator.codeName)}
-            selectAnswer={this.selectAnswer}
-          />
-
-          <View style={styles.skip}>
-            {this.indicator.definition ? (
-              <Icon
-                id="show-definition"
-                onPress={() => this.toggleDefinitionWindow(true)}
-                name="info"
-                color={colors.palegrey}
-                size={40}
-                style={{
-                  color: colors.palegreen,
-                  position: 'absolute',
-                  top: '55%',
-                  left: '10%',
-                }}
-              />
-            ) : null}
-
-            {this.indicator.required ? (
-              <Text>{t('views.lifemap.responseRequired')}</Text>
-            ) : (
-              <IconButton
-                text={t('views.lifemap.skipThisQuestion')}
-                textStyle={styles.link}
-                onPress={() => this.selectAnswer(0)}
-              />
-            )}
-          </View>
-        </StickyFooter>
-      </View>
-    );
-  }
+          {indicator.required ? (
+            <Text>{t('views.lifemap.responseRequired')}</Text>
+          ) : (
+            <IconButton
+              text={t('views.lifemap.skipThisQuestion')}
+              textStyle={styles.link}
+              onPress={() => selectAnswer(0)}
+            />
+          )}
+        </View>
+      </StickyFooter>
+    </View>
+  );
 }
 
 const styles = StyleSheet.create({

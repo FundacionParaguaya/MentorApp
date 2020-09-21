@@ -168,7 +168,7 @@ function Family(props) {
     }
   };
   const retakeSurvey = () => {
-    const draftId = uuid();
+    let draftId = uuid();
 
     const regularDraft = {
       draftId,

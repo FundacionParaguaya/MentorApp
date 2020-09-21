@@ -1,4 +1,4 @@
-import React, {Component} from 'react';
+import React, {useEffect} from 'react';
 import {Provider} from 'react-redux';
 import MapboxGL from '@react-native-mapbox-gl/maps';
 import 'react-native-gesture-handler';
@@ -12,17 +12,15 @@ MapboxGL.setAccessToken(
   'pk.eyJ1IjoiZGFubWFuNyIsImEiOiJjanQ4bTU0cjIwMmdkNDRtbnppdWoyNm81In0.SO7wd6FjGH2qtwXp7MGNRg',
 );
 
-class App extends Component {
-  componentDidMount() {
+function App() {
+  useEffect(() => {
     nodeEnv.NODE_ENV === 'production' ? TestFairy.begin('SDK-diRMlrTh') : null;
-  }
-  render() {
-    return (
-      <Provider store={store}>
-        <Navigation />
-      </Provider>
-    );
-  }
-}
+  }, []);
 
+  return (
+    <Provider store={store}>
+      <Navigation />
+    </Provider>
+  );
+}
 export default App;

@@ -1,4 +1,4 @@
-import React, {Component} from 'react';
+import React from 'react';
 import PropTypes from 'prop-types';
 import {TouchableHighlight, StyleSheet, Text} from 'react-native';
 import colors from '../theme.json';

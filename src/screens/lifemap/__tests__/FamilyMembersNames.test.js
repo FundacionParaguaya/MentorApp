@@ -1,11 +1,11 @@
-import { shallow } from 'enzyme'
-import React from 'react'
+import {shallow} from 'enzyme';
+import React from 'react';
 
-import DateInput from '../../../components/form/DateInput'
-import Select from '../../../components/form/Select'
-import TextInput from '../../../components/form/TextInput'
-import StickyFooter from '../../../components/StickyFooter'
-import { FamilyMembersNames } from '../FamilyMembersNames'
+import DateInput from '../../../components/form/DateInput';
+import Select from '../../../components/form/Select';
+import TextInput from '../../../components/form/TextInput';
+import StickyFooter from '../../../components/StickyFooter';
+import {FamilyMembersNames} from '../FamilyMembersNames';
 
 const survey = {
   surveyStoplightQuestions: [],
@@ -14,25 +14,25 @@ const survey = {
     gender: [
       {
         text: 'Female',
-        value: 'F'
+        value: 'F',
       },
       {
         text: 'Male',
-        value: 'M'
+        value: 'M',
       },
       {
         text: 'Prefer not to disclose',
-        value: 'O'
-      }
-    ]
-  }
-}
+        value: 'O',
+      },
+    ],
+  },
+};
 
-const draftId = 1
+let draftId = 1;
 
 const draft = {
   draftId,
-  progress: { screen: 'FamilyParticipant', total: 5 },
+  progress: {screen: 'FamilyParticipant', total: 5},
   familyData: {
     countFamilyMembers: 3,
     familyMembersList: [
@@ -47,15 +47,15 @@ const draft = {
         birthDate: 12345,
         firstParticipant: true,
         socioEconomicAnswers: [
-          { key: 'educationPersonMostStudied', value: 'SCHOOL-COMPLETE' },
-          { key: 'receiveStateIncome', value: 'NO' }
-        ]
+          {key: 'educationPersonMostStudied', value: 'SCHOOL-COMPLETE'},
+          {key: 'receiveStateIncome', value: 'NO'},
+        ],
       },
-      { firstParticipant: false },
-      { firstParticipant: false }
-    ]
-  }
-}
+      {firstParticipant: false},
+      {firstParticipant: false},
+    ],
+  },
+};
 
 const navigation = {
   isFocused: jest.fn(() => true),
@@ -63,173 +63,155 @@ const navigation = {
   replace: jest.fn(),
   push: jest.fn(),
   setParams: jest.fn(),
-  getParam: jest.fn(param => {
+  getParam: jest.fn((param) => {
     if (param === 'family') {
-      return null
+      return null;
     } else if (param === 'survey') {
-      return survey
+      return survey;
     } else if (param === 'draftId') {
-      return draftId
+      return draftId;
     }
-  })
-}
+  }),
+};
 
-const createTestProps = props => ({
-  t: value => value,
+const createTestProps = (props) => ({
+  t: (value) => value,
   navigation,
-  drafts: [draft, { draftId: 2 }],
+  drafts: [draft, {draftId: 2}],
   updateDraft: jest.fn(),
-  ...props
-})
+  ...props,
+});
 
-let wrapper
-let props
+let wrapper;
+let props;
 beforeEach(() => {
-  props = createTestProps()
-  wrapper = shallow(<FamilyMembersNames {...props} />)
-})
+  props = createTestProps();
+  wrapper = shallow(<FamilyMembersNames {...props} />);
+});
 
 it('receives proper survey from navigation', () => {
-  expect(wrapper.instance().survey).toBe(survey)
-})
+  expect(wrapper.instance().survey).toBe(survey);
+});
 
 it('receives proper draftId from navigation', () => {
-  expect(wrapper.instance().draftId).toBe(draftId)
-})
+  expect(wrapper.instance().draftId).toBe(draftId);
+});
 
 it('gets proper draft from draftId', () => {
-  expect(wrapper.instance().getDraft()).toBe(draft)
-})
+  expect(wrapper.instance().getDraft()).toBe(draft);
+});
 
 it('renders all inputs for each family member', () => {
-  expect(wrapper.find(TextInput)).toHaveLength(2)
-  expect(wrapper.find(Select)).toHaveLength(2)
-  expect(wrapper.find(DateInput)).toHaveLength(2)
-})
+  expect(wrapper.find(TextInput)).toHaveLength(2);
+  expect(wrapper.find(Select)).toHaveLength(2);
+  expect(wrapper.find(DateInput)).toHaveLength(2);
+});
 
 it('navigates to location on continue ', () => {
-  wrapper.instance().onContinue()
+  wrapper.instance().onContinue();
   expect(props.navigation.replace).toHaveBeenCalledWith('Location', {
     survey,
-    draftId
-  })
-})
+    draftId,
+  });
+});
 
 it('updates only when focused', () => {
-  expect(wrapper.instance().shouldComponentUpdate()).toEqual(true)
-})
+  expect(wrapper.instance().shouldComponentUpdate()).toEqual(true);
+});
 
 it('sets draft navigation when navigation from a different page', () => {
   expect(props.updateDraft).toHaveBeenCalledWith({
     ...draft,
     progress: {
       ...draft.progress,
-      screen: 'FamilyMembersNames'
-    }
-  })
-})
+      screen: 'FamilyMembersNames',
+    },
+  });
+});
 
 it('does not update draft on wrong field format', () => {
-  wrapper.instance().updateMember('m')
-  expect(props.updateDraft).toHaveBeenCalledTimes(1)
-})
+  wrapper.instance().updateMember('m');
+  expect(props.updateDraft).toHaveBeenCalledTimes(1);
+});
 
 it('sets up custom required fields', () => {
   props = createTestProps({
     navigation: {
       ...navigation,
-      getParam: jest.fn(param => {
+      getParam: jest.fn((param) => {
         if (param === 'family') {
-          return null
+          return null;
         } else if (param === 'survey') {
           return {
             ...survey,
-            surveyConfig: { requiredFields: { primaryParticipant: [] } }
-          }
+            surveyConfig: {requiredFields: {primaryParticipant: []}},
+          };
         } else if (param === 'draftId') {
-          return draftId
+          return draftId;
         }
-      })
-    }
-  })
-  wrapper = shallow(<FamilyMembersNames {...props} />)
-})
+      }),
+    },
+  });
+  wrapper = shallow(<FamilyMembersNames {...props} />);
+});
 
 describe('from resumed draft', () => {
   const resumeDraft = {
     ...draft,
     progress: {
       ...draft.progress,
-      screen: 'FamilyMembersNames'
+      screen: 'FamilyMembersNames',
     },
     familyData: {
       ...draft.familyData,
       familyMembersList: [
         draft.familyData.familyMembersList[0],
-        { firstParticipant: false, firstName: 'Ana', gender: 'F' },
-        { firstParticipant: false, firstName: 'Pesho', gender: 'M' }
-      ]
-    }
-  }
+        {firstParticipant: false, firstName: 'Ana', gender: 'F'},
+        {firstParticipant: false, firstName: 'Pesho', gender: 'M'},
+      ],
+    },
+  };
   beforeEach(() => {
     props = createTestProps({
-      drafts: [resumeDraft]
-    })
-    wrapper = shallow(<FamilyMembersNames {...props} />)
-  })
+      drafts: [resumeDraft],
+    });
+    wrapper = shallow(<FamilyMembersNames {...props} />);
+  });
   it('sets correct value from draft to each field', () => {
     expect(wrapper.find(TextInput).first()).toHaveProp({
-      initialValue: 'Ana'
-    })
+      initialValue: 'Ana',
+    });
     expect(wrapper.find(TextInput).last()).toHaveProp({
-      initialValue: 'Pesho'
-    })
-    expect(wrapper.find(Select).last()).toHaveProp({ initialValue: 'M' })
-  })
+      initialValue: 'Pesho',
+    });
+    expect(wrapper.find(Select).last()).toHaveProp({initialValue: 'M'});
+  });
 
   it('updates the draft on each field change ', () => {
-    wrapper
-      .find(TextInput)
-      .first()
-      .props()
-      .onChangeText('Test', 'Ana')
+    wrapper.find(TextInput).first().props().onChangeText('Test', 'Ana');
 
-    wrapper
-      .find(Select)
-      .first()
-      .props()
-      .onChange('Test', '1.gender')
+    wrapper.find(Select).first().props().onChange('Test', '1.gender');
 
-    wrapper
-      .find(DateInput)
-      .first()
-      .props()
-      .onValidDate('Test', '1.date')
+    wrapper.find(DateInput).first().props().onValidDate('Test', '1.date');
 
-    expect(props.updateDraft).toHaveBeenCalledTimes(3)
-  })
+    expect(props.updateDraft).toHaveBeenCalledTimes(3);
+  });
 
   it('validates form on pressing continue', () => {
-    const spy = jest.spyOn(wrapper.instance(), 'onContinue')
+    const spy = jest.spyOn(wrapper.instance(), 'onContinue');
 
-    wrapper
-      .find(StickyFooter)
-      .props()
-      .onContinue()
+    wrapper.find(StickyFooter).props().onContinue();
 
-    expect(spy).toHaveBeenCalledTimes(1)
-  })
+    expect(spy).toHaveBeenCalledTimes(1);
+  });
 
   it('prevents continue on form errors', () => {
-    wrapper.setState({ errors: ['field'] })
-    wrapper
-      .find(StickyFooter)
-      .props()
-      .onContinue()
+    wrapper.setState({errors: ['field']});
+    wrapper.find(StickyFooter).props().onContinue();
 
-    expect(wrapper).toHaveState({ showErrors: true })
-  })
-})
+    expect(wrapper).toHaveState({showErrors: true});
+  });
+});
 
 describe('readOnly mode', () => {
   beforeEach(() => {
@@ -237,26 +219,26 @@ describe('readOnly mode', () => {
       drafts: [
         {
           ...draft,
-          familyData: { ...draft.familyData, countFamilyMembers: null }
-        }
+          familyData: {...draft.familyData, countFamilyMembers: null},
+        },
       ],
       navigation: {
         ...navigation,
-        getParam: jest.fn(param => {
+        getParam: jest.fn((param) => {
           if (param === 'family') {
-            return null
+            return null;
           } else if (param === 'survey') {
-            return survey
+            return survey;
           } else if (param === 'draftId') {
-            return 1
+            return 1;
           } else if (param === 'readOnly') {
-            return true
+            return true;
           } else {
-            return 1
+            return 1;
           }
-        })
-      }
-    })
-    wrapper = shallow(<FamilyMembersNames {...props} />)
-  })
-})
+        }),
+      },
+    });
+    wrapper = shallow(<FamilyMembersNames {...props} />);
+  });
+});

@@ -1,5 +1,5 @@
 import PropTypes from 'prop-types';
-import React, {Component} from 'react';
+import React, {useEffect} from 'react';
 import {withNamespaces} from 'react-i18next';
 import {Platform, StyleSheet, Text, View} from 'react-native';
 
@@ -9,56 +9,53 @@ import TextInput from '../../components/form/TextInput';
 import globalStyles from '../../globalStyles';
 import colors from '../../theme.json';
 
-export class FamilyMember extends Component {
-  setTitle() {
-    this.props.navigation.setParams({
-      title: this.props.route.params.member.firstName,
+function FamilyMember(props) {
+  const setTitle = () => {
+    props.navigation.setParams({
+      title: props.route.params.member.firstName,
     });
-  }
-
-  componentDidMount() {
-    if (this.props.route.params.member) {
-      this.setTitle();
+  };
+  useEffect(() => {
+    if (props.route.params.member) {
+      setTitle();
     }
-  }
-  render() {
-    const {t} = this.props;
-    const member = this.props.route.params.member;
-    return (
-      <View style={[globalStyles.background, styles.contentContainer]}>
-        <TextInput
-          id="readOnlyTextInput"
-          placeholder={t('views.family.firstName')}
-          initialValue={member.firstName}
-          readOnly
-          onChangeText={() => {}}
-          setError={() => {}}
-        />
+  }, []);
+  const {t} = props;
+  const member = props.route.params.member;
+  return (
+    <View style={[globalStyles.background, styles.contentContainer]}>
+      <TextInput
+        id="readOnlyTextInput"
+        placeholder={t('views.family.firstName')}
+        initialValue={member.firstName}
+        readOnly
+        onChangeText={() => {}}
+        setError={() => {}}
+      />
 
-        <Select
-          onChange={() => {}}
-          readOnly
-          placeholder={t('views.family.gender')}
-          initialValue={member.gender}
-          options={[
-            {text: 'Male', value: 'M'},
-            {text: 'Female', value: 'F'},
-            {text: 'Other', value: 'O'},
-            {text: 'I prefer not to answer', value: 'N'},
-          ]}
-          setError={() => {}}
-        />
-        <DateInput
-          label={t('views.family.dateOfBirth')}
-          initialValue={member.birthDate}
-          readOnly
-          detectError={() => {}}
-          onValidDate={() => {}}
-          setError={() => {}}
-        />
-      </View>
-    );
-  }
+      <Select
+        onChange={() => {}}
+        readOnly
+        placeholder={t('views.family.gender')}
+        initialValue={member.gender}
+        options={[
+          {text: 'Male', value: 'M'},
+          {text: 'Female', value: 'F'},
+          {text: 'Other', value: 'O'},
+          {text: 'I prefer not to answer', value: 'N'},
+        ]}
+        setError={() => {}}
+      />
+      <DateInput
+        label={t('views.family.dateOfBirth')}
+        initialValue={member.birthDate}
+        readOnly
+        detectError={() => {}}
+        onValidDate={() => {}}
+        setError={() => {}}
+      />
+    </View>
+  );
 }
 
 FamilyMember.propTypes = {

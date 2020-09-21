@@ -5,16 +5,14 @@ import {withNamespaces} from 'react-i18next';
 import {connect} from 'react-redux';
 import colors from '../theme.json';
 
-export class DynamicTitle extends React.Component {
-  render() {
-    return (
-      <Text
-        accessibilityLiveRegion={this.props.accessibilityAssertiveType}
-        style={[styles.headerTitleStyle, this.props.style]}>
-        {this.props.t(this.props.title)}
-      </Text>
-    );
-  }
+function DynamicTitle(props) {
+  return (
+    <Text
+      accessibilityLiveRegion={props.accessibilityAssertiveType}
+      style={[styles.headerTitleStyle, props.style]}>
+      {props.t(props.title)}
+    </Text>
+  );
 }
 
 DynamicTitle.propTypes = {

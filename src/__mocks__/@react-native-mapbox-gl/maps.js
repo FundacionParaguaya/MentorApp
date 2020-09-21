@@ -1,10 +1,10 @@
-const React = require('React')
-const NativeModules = require('react-native')
+const React = require('React');
+const NativeModules = require('react-native');
 
 function keyMirror(keys) {
-  const obj = {}
-  keys.forEach(key => (obj[key] = key))
-  return obj
+  const obj = {};
+  keys.forEach((key) => (obj[key] = key));
+  return obj;
 }
 
 // Mock of what the native code puts on the JS object
@@ -14,7 +14,7 @@ NativeModules.MGLModule = {
     None: 0,
     Follow: 1,
     FollowWithCourse: 2,
-    FollowWithHeading: 3
+    FollowWithHeading: 3,
   },
   StyleURL: keyMirror([
     'Street',
@@ -24,7 +24,7 @@ NativeModules.MGLModule = {
     'Satellite',
     'SatelliteStreet',
     'TrafficDay',
-    'TrafficNight'
+    'TrafficNight',
   ]),
   EventTypes: keyMirror([
     'MapClick',
@@ -39,7 +39,7 @@ NativeModules.MGLModule = {
     'DidFinishRenderingFrame',
     'DidFinishRenderingFrameFully',
     'DidFinishLoadingStyle',
-    'SetCameraComplete'
+    'SetCameraComplete',
   ]),
   CameraModes: keyMirror(['Flight', 'Ease', 'None']),
   StyleSource: keyMirror(['DefaultSourceID']),
@@ -47,7 +47,7 @@ NativeModules.MGLModule = {
     'Exponential',
     'Categorical',
     'Interval',
-    'Identity'
+    'Identity',
   ]),
   LineJoin: keyMirror(['Bevel', 'Round', 'Miter']),
   LineCap: keyMirror(['Butt', 'Round', 'Square']),
@@ -69,7 +69,7 @@ NativeModules.MGLModule = {
     'TopLeft',
     'TopRight',
     'BottomLeft',
-    'BottomRight'
+    'BottomRight',
   ]),
   TextJustify: keyMirror(['Center', 'Left', 'Right']),
   TextPitchAlignment: keyMirror(['Auto', 'Map', 'Viewport']),
@@ -84,19 +84,19 @@ NativeModules.MGLModule = {
   setAccessToken: jest.fn(),
   getAccessToken: () => Promise.resolve('test-token'),
   setTelemetryEnabled: jest.fn(),
-  isTelemetryEnabled: () => Promise.resolve(true)
-}
+  isTelemetryEnabled: () => Promise.resolve(true),
+};
 
 NativeModules.MGLOfflineModule = {
-  createPack: packOptions => {
+  createPack: (packOptions) => {
     return Promise.resolve({
       bounds: packOptions.bounds,
-      metadata: JSON.stringify({ name: packOptions.name })
-    })
+      metadata: JSON.stringify({name: packOptions.name}),
+    });
   },
   offlineManager: {
     deletePack: jest.fn(),
-    offlineManager: jest.fn()
+    offlineManager: jest.fn(),
   },
   getPacks: () => Promise.resolve([]),
   deletePack: () => Promise.resolve(),
@@ -105,38 +105,42 @@ NativeModules.MGLOfflineModule = {
   resumePackDownload: () => Promise.resolve(),
   setPackObserver: () => Promise.resolve(),
   setTileCountLimit: jest.fn(),
-  setProgressEventThrottle: jest.fn()
-}
+  setProgressEventThrottle: jest.fn(),
+};
 
 NativeModules.MGLSnapshotModule = {
   takeSnap: () => {
-    return Promise.resolve('file://test.png')
-  }
+    return Promise.resolve('file://test.png');
+  },
+};
+
+export default function Mapbox() {
+  return <></>;
 }
 
-export default class Mapbox extends React.Component {
-  static MapView = props =>
-    React.createElement('MapView', props, props.children)
-  static UserLocation = props =>
-    React.createElement('UserLocation', props, props.children)
-  static Camera = props => React.createElement('Camera', props, props.children)
+// export default class Mapbox extends React.Component {
+//   static MapView = props =>
+//     React.createElement('MapView', props, props.children)
+//   static UserLocation = props =>
+//     React.createElement('UserLocation', props, props.children)
+//   static Camera = props => React.createElement('Camera', props, props.children)
 
-  static PointAnnotation = props =>
-    React.createElement('PointAnnotation', props, props.children)
-  /* eslint-disable react/prop-types */
+//   static PointAnnotation = props =>
+//     React.createElement('PointAnnotation', props, props.children)
+//   /* eslint-disable react/prop-types */
 
-  render() {
-    return React.createElement('MapView', this.props, this.props.children)
-  }
+//   render() {
+//     return React.createElement('MapView', this.props, this.props.children)
+//   }
 
-  static requestAndroidLocationPermissions = () => jest.fn()
+//   static requestAndroidLocationPermissions = () => jest.fn()
 
-  static setAccessToken = () => jest.fn()
+//   static setAccessToken = () => jest.fn()
 
-  static offlineManager = {
-    deletePack: jest.fn(),
-    getPack: jest.fn().mockImplementation(() => Promise.resolve(true)),
-    getPacks: jest.fn().mockImplementation(() => Promise.resolve(true)),
-    offlineManager: jest.fn()
-  }
-}
+//   static offlineManager = {
+//     deletePack: jest.fn(),
+//     getPack: jest.fn().mockImplementation(() => Promise.resolve(true)),
+//     getPacks: jest.fn().mockImplementation(() => Promise.resolve(true)),
+//     offlineManager: jest.fn()
+//   }
+// }

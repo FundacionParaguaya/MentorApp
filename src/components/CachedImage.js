@@ -1,4 +1,4 @@
-import React, {Component} from 'react';
+import React from 'react';
 import {Platform} from 'react-native';
 import FullWidthImage from 'react-native-fullwidth-image';
 import PropTypes from 'prop-types';

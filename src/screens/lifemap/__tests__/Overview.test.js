@@ -1,7 +1,7 @@
-import { shallow } from 'enzyme'
-import React from 'react'
+import {shallow} from 'enzyme';
+import React from 'react';
 
-import { Overview } from '../Overview'
+import {Overview} from '../Overview';
 
 const survey = {
   id: 1,
@@ -18,20 +18,20 @@ const survey = {
         {
           url: 'some.png',
           value: 3,
-          description: 'My household’s yearly income is above $41,000.'
+          description: 'My household’s yearly income is above $41,000.',
         },
         {
           url: 'some.png',
           value: 2,
           description:
-            'My household’s yearly income is below $41,000 but over $21,000.'
+            'My household’s yearly income is below $41,000 but over $21,000.',
         },
         {
           url: 'some.png',
           value: 1,
-          description: 'My household’s yearly income is below $21,000.'
-        }
-      ]
+          description: 'My household’s yearly income is below $21,000.',
+        },
+      ],
     },
     {
       questionText: 'Access to education',
@@ -43,31 +43,31 @@ const survey = {
         {
           url: 'some.png',
           value: 3,
-          description: 'This is the green one.'
+          description: 'This is the green one.',
         },
         {
           url: 'some.png',
           value: 2,
-          description: 'This is the yellow one.'
+          description: 'This is the yellow one.',
         },
         {
           url: 'some.png',
           value: 1,
-          description: 'This is the red one.'
-        }
-      ]
-    }
+          description: 'This is the red one.',
+        },
+      ],
+    },
   ],
 
   surveyEconomicQuestions: [],
-  surveyConfig: {}
-}
+  surveyConfig: {},
+};
 
-const draftId = 1
+let draftId = 1;
 
 const draft = {
   draftId,
-  progress: { screen: 'Question', step: 2, total: 5 },
+  progress: {screen: 'Question', step: 2, total: 5},
   indicatorSurveyDataList: [],
   achievements: [],
   priorities: [],
@@ -85,47 +85,47 @@ const draft = {
         birthDate: 12345,
         firstParticipant: true,
         socioEconomicAnswers: [
-          { key: 'educationPersonMostStudied', value: 'SCHOOL-COMPLETE' },
-          { key: 'receiveStateIncome', value: 'NO' }
-        ]
-      }
-    ]
-  }
-}
+          {key: 'educationPersonMostStudied', value: 'SCHOOL-COMPLETE'},
+          {key: 'receiveStateIncome', value: 'NO'},
+        ],
+      },
+    ],
+  },
+};
 
 const navigation = {
   isFocused: jest.fn(() => true),
   navigate: jest.fn(),
   replace: jest.fn(),
   setParams: jest.fn(),
-  getParam: jest.fn(param => {
+  getParam: jest.fn((param) => {
     if (param === 'survey') {
-      return survey
+      return survey;
     } else if (param === 'draftId') {
-      return draftId
+      return draftId;
     }
-  })
-}
+  }),
+};
 
-const createTestProps = props => ({
-  drafts: [draft, { draftId: 2 }],
-  t: value => value,
+const createTestProps = (props) => ({
+  drafts: [draft, {draftId: 2}],
+  t: (value) => value,
   dimensions: {
     height: 740,
     scale: 2,
-    width: 360
+    width: 360,
   },
   updateDraft: jest.fn(),
   navigation,
-  ...props
-})
+  ...props,
+});
 
-let wrapper
-let props
+let wrapper;
+let props;
 
 const resumedDraft = {
   draftId: 1,
-  progress: { screen: 'Question', step: 2, total: 5 },
+  progress: {screen: 'Question', step: 2, total: 5},
   indicatorSurveyDataList: [],
   survey: survey,
   achievements: [],
@@ -144,34 +144,34 @@ const resumedDraft = {
         birthDate: 12345,
         firstParticipant: true,
         socioEconomicAnswers: [
-          { key: 'educationPersonMostStudied', value: 'SCHOOL-COMPLETE' },
-          { key: 'receiveStateIncome', value: 'NO' }
-        ]
-      }
-    ]
-  }
-}
+          {key: 'educationPersonMostStudied', value: 'SCHOOL-COMPLETE'},
+          {key: 'receiveStateIncome', value: 'NO'},
+        ],
+      },
+    ],
+  },
+};
 
 beforeEach(() => {
-  props = createTestProps()
-  wrapper = shallow(<Overview {...props} />)
-})
+  props = createTestProps();
+  wrapper = shallow(<Overview {...props} />);
+});
 
 it('receives proper survey from navigation', () => {
-  expect(wrapper.instance().survey).toBe(survey)
-})
+  expect(wrapper.instance().survey).toBe(survey);
+});
 
 it('receives proper draftId from navigation', () => {
-  expect(wrapper.instance().draftId).toBe(draftId)
-})
+  expect(wrapper.instance().draftId).toBe(draftId);
+});
 
 it('gets proper draft from draftId', () => {
-  expect(wrapper.instance().getDraft()).toBe(draft)
-})
+  expect(wrapper.instance().getDraft()).toBe(draft);
+});
 
 it('updates only when focused', () => {
-  expect(wrapper.instance().shouldComponentUpdate()).toEqual(true)
-})
+  expect(wrapper.instance().shouldComponentUpdate()).toEqual(true);
+});
 
 describe('resuming a draft', () => {
   beforeEach(() => {
@@ -182,47 +182,47 @@ describe('resuming a draft', () => {
         replace: jest.fn(),
         navigate: jest.fn(),
         setParams: jest.fn(),
-        getParam: jest.fn(param => {
+        getParam: jest.fn((param) => {
           if (param === 'family') {
-            return null
+            return null;
           } else if (param === 'survey') {
-            return survey
+            return survey;
           } else if (param === 'draftId') {
-            return 1
+            return 1;
           } else if (param === 'readOnly') {
-            return false
+            return false;
           } else if (param === 'resumeDraft') {
-            return true
+            return true;
           } else {
-            return 1
+            return 1;
           }
-        })
-      }
-    })
-    wrapper = shallow(<Overview {...props} />)
-  })
+        }),
+      },
+    });
+    wrapper = shallow(<Overview {...props} />);
+  });
 
   it('get correct draft from redux after resuming', () => {
-    expect(wrapper.instance().getDraft()).toBe(resumedDraft)
-  })
+    expect(wrapper.instance().getDraft()).toBe(resumedDraft);
+  });
 
   it('get the resume button if we resume the draft', () => {
-    expect(wrapper.find('#resume-draft')).toHaveLength(1)
-  })
+    expect(wrapper.find('#resume-draft')).toHaveLength(1);
+  });
 
   it('clicking on the button continues the draft', () => {
-    wrapper.instance().resumeDraft()
+    wrapper.instance().resumeDraft();
 
     expect(props.navigation.replace).toHaveBeenCalledWith(
       resumedDraft.progress.screen,
       {
         draftId: resumedDraft.draftId,
         survey: resumedDraft.survey,
-        step: resumedDraft.progress.step
-      }
-    )
-  })
-})
+        step: resumedDraft.progress.step,
+      },
+    );
+  });
+});
 
 describe('readOnly mode', () => {
   beforeEach(() => {
@@ -235,44 +235,46 @@ describe('readOnly mode', () => {
         replace: jest.fn(),
         navigate: jest.fn(),
         setParams: jest.fn(),
-        getParam: jest.fn(param => {
+        getParam: jest.fn((param) => {
           if (param === 'family') {
-            return null
+            return null;
           } else if (param === 'survey') {
-            return survey
+            return survey;
           } else if (param === 'draftId') {
-            return 1
+            return 1;
           } else if (param === 'readOnly') {
-            return true
+            return true;
           } else if (param === 'resumeDraft') {
-            return true
+            return true;
           } else if (param === 'familyLifemap') {
-            return resumedDraft
+            return resumedDraft;
           } else {
-            return 1
+            return 1;
           }
-        })
-      }
-    })
-    wrapper = shallow(<Overview {...props} />)
-  })
+        }),
+      },
+    });
+    wrapper = shallow(<Overview {...props} />);
+  });
   it('expect the filer to be visible', () => {
-    expect(wrapper.find('#filters')).toHaveLength(1)
-  })
+    expect(wrapper.find('#filters')).toHaveLength(1);
+  });
   it('expect to pass data to lifemapOverview', () => {
     expect(wrapper.find('#lifeMapOverview')).toHaveProp({
-      draftData: resumedDraft
-    })
-  })
+      draftData: resumedDraft,
+    });
+  });
 
   it('expect select correct filter', () => {
-    wrapper.instance().selectFilter(false, 'RED')
-    expect(wrapper.state().selectedFilter).toBe(false)
-    expect(wrapper.state().filterLabel).toBe('RED')
-  })
+    wrapper.instance().selectFilter(false, 'RED');
+    expect(wrapper.state().selectedFilter).toBe(false);
+    expect(wrapper.state().filterLabel).toBe('RED');
+  });
 
   it('expect to navigate to the corrrect question', () => {
-    wrapper.instance().navigateToScreen(resumedDraft.progress.screen, 1, 'Text')
+    wrapper
+      .instance()
+      .navigateToScreen(resumedDraft.progress.screen, 1, 'Text');
 
     expect(props.navigation.navigate).toHaveBeenCalledWith(
       resumedDraft.progress.screen,
@@ -280,8 +282,8 @@ describe('readOnly mode', () => {
         draftId: resumedDraft.draftId,
         indicatorText: 'Text',
         indicator: 1,
-        survey: resumedDraft.survey
-      }
-    )
-  })
-})
+        survey: resumedDraft.survey,
+      },
+    );
+  });
+});

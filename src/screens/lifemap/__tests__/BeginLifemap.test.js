@@ -1,7 +1,7 @@
-import { shallow } from 'enzyme'
-import React from 'react'
+import {shallow} from 'enzyme';
+import React from 'react';
 
-import { BeginLifemap } from '../BeginLifemap'
+import {BeginLifemap} from '../BeginLifemap';
 
 const survey = {
   id: 1,
@@ -9,30 +9,30 @@ const survey = {
   surveyStoplightQuestions: [
     {
       questionText: 'Question 1',
-      codeName: 'income1'
+      codeName: 'income1',
     },
     {
       questionText: 'Question 2',
-      codeName: 'income2'
+      codeName: 'income2',
     },
     {
       questionText: 'Question 3',
-      codeName: 'income3'
+      codeName: 'income3',
     },
     {
       questionText: 'Question 4',
-      codeName: 'income4'
-    }
+      codeName: 'income4',
+    },
   ],
   surveyEconomicQuestions: [],
-  surveyConfig: {}
-}
+  surveyConfig: {},
+};
 
-const draftId = 1
+let draftId = 1;
 
 const draft = {
   draftId,
-  progress: { screen: 'FamilyParticipant', total: 5 },
+  progress: {screen: 'FamilyParticipant', total: 5},
   familyData: {
     countFamilyMembers: 1,
     familyMembersList: [
@@ -47,109 +47,109 @@ const draft = {
         birthDate: 12345,
         firstParticipant: true,
         socioEconomicAnswers: [
-          { key: 'educationPersonMostStudied', value: 'SCHOOL-COMPLETE' },
-          { key: 'receiveStateIncome', value: 'NO' }
-        ]
-      }
-    ]
-  }
-}
+          {key: 'educationPersonMostStudied', value: 'SCHOOL-COMPLETE'},
+          {key: 'receiveStateIncome', value: 'NO'},
+        ],
+      },
+    ],
+  },
+};
 
-const createTestProps = props => ({
-  drafts: [draft, { draftId: 2 }],
-  t: value => value,
+const createTestProps = (props) => ({
+  drafts: [draft, {draftId: 2}],
+  t: (value) => value,
   updateDraft: jest.fn(),
   navigation: {
     replace: jest.fn(),
     navigate: jest.fn(),
     setParams: jest.fn(),
-    getParam: jest.fn(param => {
+    getParam: jest.fn((param) => {
       if (param === 'survey') {
-        return survey
+        return survey;
       } else if (param === 'draftId') {
-        return draftId
+        return draftId;
       }
-    })
+    }),
   },
-  ...props
-})
+  ...props,
+});
 
-let wrapper
-let props
+let wrapper;
+let props;
 
 beforeEach(() => {
-  props = createTestProps()
-  wrapper = shallow(<BeginLifemap {...props} />)
-})
+  props = createTestProps();
+  wrapper = shallow(<BeginLifemap {...props} />);
+});
 
 it('receives proper survey from navigation', () => {
-  expect(wrapper.instance().survey).toBe(survey)
-})
+  expect(wrapper.instance().survey).toBe(survey);
+});
 
 it('receives proper draftId from navigation', () => {
-  expect(wrapper.instance().draftId).toBe(draftId)
-})
+  expect(wrapper.instance().draftId).toBe(draftId);
+});
 
 it('gets proper draft from draftId', () => {
-  expect(wrapper.instance().draft).toBe(draft)
-})
+  expect(wrapper.instance().draft).toBe(draft);
+});
 
 it('navigates to first Question on continue ', () => {
-  wrapper.instance().onContinue()
+  wrapper.instance().onContinue();
   expect(props.navigation.navigate).toHaveBeenCalledWith('Question', {
     step: 0,
     survey,
-    draftId
-  })
-})
+    draftId,
+  });
+});
 
 it('navigates back to proper Location when no socio economic questions in survey', () => {
-  wrapper.instance().onPressBack()
+  wrapper.instance().onPressBack();
 
   expect(props.navigation.replace).toHaveBeenCalledWith('Location', {
     fromBeginLifemap: true,
     survey,
-    draftId
-  })
-})
+    draftId,
+  });
+});
 
 it('navigates back to last socio economic screen when it exists in survey', () => {
   const surveyWithEconomics = {
     ...survey,
-    surveyEconomicQuestions: [{ codeName: 'income' }]
-  }
+    surveyEconomicQuestions: [{codeName: 'income'}],
+  };
 
   props = createTestProps({
     drafts: [
       {
         ...draft,
-        progress: { ...draft.progress, screen: 'BeginLifemap' },
-        familyData: { ...draft.familyData, countFamilyMembers: 2 }
-      }
+        progress: {...draft.progress, screen: 'BeginLifemap'},
+        familyData: {...draft.familyData, countFamilyMembers: 2},
+      },
     ],
     navigation: {
       replace: jest.fn(),
       setParams: jest.fn(),
-      getParam: jest.fn(param => {
+      getParam: jest.fn((param) => {
         if (param === 'survey') {
-          return surveyWithEconomics
+          return surveyWithEconomics;
         } else if (param === 'draftId') {
-          return draftId
+          return draftId;
         }
-      })
-    }
-  })
+      }),
+    },
+  });
 
-  wrapper = shallow(<BeginLifemap {...props} />)
+  wrapper = shallow(<BeginLifemap {...props} />);
 
-  wrapper.instance().onPressBack()
+  wrapper.instance().onPressBack();
 
   expect(props.navigation.replace).toHaveBeenCalledWith(
     'SocioEconomicQuestion',
     {
       fromBeginLifemap: true,
       survey: surveyWithEconomics,
-      draftId
-    }
-  )
-})
+      draftId,
+    },
+  );
+});

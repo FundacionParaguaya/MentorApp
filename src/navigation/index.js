@@ -5,21 +5,14 @@ import SplashScreen from 'react-native-splash-screen';
 import {connect} from 'react-redux';
 import {NavigationContainer} from '@react-navigation/native';
 import {createStackNavigator} from '@react-navigation/stack';
-import {createDrawerNavigator} from '@react-navigation/drawer';
+
 import DrawerNavigator from './DrawerNavigator';
 import LoginScreen from '../screens/Login';
 import LoadingScreen from '../screens/Loading';
 import {setDimensions} from '../redux/actions';
-const Drawer = createDrawerNavigator();
+
 // import RootStack from './stacks'
 const Stack = createStackNavigator();
-function HomeScreen() {
-  return (
-    <View style={{flex: 1, alignItems: 'center', justifyContent: 'center'}}>
-      <Text>Home Screen</Text>
-    </View>
-  );
-}
 
 export class NavWrapper extends Component {
   state = {

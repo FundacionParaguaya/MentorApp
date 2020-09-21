@@ -4,7 +4,7 @@ import {createStackNavigator} from '@react-navigation/stack';
 
 import {generateNavStyles, addMenuIcon} from './helpers';
 
-import DrawerContentComponent from './DrawerContent';
+import DrawerContent from './DrawerContent';
 import DashboardView from '../screens/Dashboard';
 
 import SyncView from '../screens/Sync';
@@ -66,9 +66,7 @@ const SyncStack = ({navigation, route}) => (
 export default function MyDrawer({navigation, route}) {
   return (
     <Drawer.Navigator
-      drawerContent={(props) => (
-        <DrawerContentComponent {...props} route={route} />
-      )}>
+      drawerContent={(props) => <DrawerContent {...props} route={route} />}>
       <Drawer.Screen name="Dashboard" component={HomeStackScreen} />
       <Drawer.Screen
         name="Surveys"

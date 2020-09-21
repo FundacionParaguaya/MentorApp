@@ -1,23 +1,24 @@
 import PropTypes from 'prop-types';
-import React, {Component} from 'react';
+import React, {useState} from 'react';
 import {StyleSheet, Text, View} from 'react-native';
 
 import globalStyles from '../globalStyles';
 import AddPriorityAndAchievementModal from '../screens/modals/AddPriorityAndAchievementModal';
 import LifemapOverviewListItem from './LifemapOverviewListItem';
 
-class LifemapOverview extends Component {
-  dimensions = this.props.surveyData.map((item) => item.dimension);
-  state = {
-    AddAchievementOrPriority: false,
-    indicator: '',
-    color: 0,
-    indicatorText: '',
-  };
-  getColor = (codeName) => {
+function LifemapOverview(props) {
+  const dimensions = props.surveyData.map((item) => item.dimension);
+  const [addAchievementOrPriority, setAddAchievementOrPriority] = useState(
+    false,
+  );
+  const [indicator, setIndicator] = useState('');
+  const [color, setColor] = useState(0);
+  const [indicatorText, setIndicatorText] = useState('');
+
+  const getColor = (codeName) => {
     const indicator =
-      this.props.draftData && this.props.draftData.indicatorSurveyDataList
-        ? this.props.draftData.indicatorSurveyDataList.find(
+      props.draftData && props.draftData.indicatorSurveyDataList
+        ? props.draftData.indicatorSurveyDataList.find(
             (item) => item.key === codeName,
           )
         : null;
@@ -28,28 +29,26 @@ class LifemapOverview extends Component {
     }
   };
 
-  handleClick(color, indicator, indicatorText) {
-    this.setState({
-      AddAchievementOrPriority: true,
-      indicator: indicator,
-      color: color,
-      indicatorText: indicatorText,
-    });
-  }
+  const handleClick = (color, indicator, indicatorText) => {
+    setAddAchievementOrPriority(true);
+    setIndicator(indicator);
+    setColor(color);
+    setIndicatorText(indicatorText);
+  };
   onClose = () => {
-    this.setState({AddAchievementOrPriority: false});
+    setAddAchievementOrPriority(false);
   };
 
-  filterByDimension = (item) =>
-    this.props.surveyData.filter((indicator) => {
-      const colorCode = this.getColor(indicator.codeName);
-      if (this.props.selectedFilter === false) {
+  const filterByDimension = (item) =>
+    props.surveyData.filter((indicator) => {
+      const colorCode = getColor(indicator.codeName);
+      if (props.selectedFilter === false) {
         return indicator.dimension === item && typeof colorCode === 'number';
-      } else if (this.props.selectedFilter === 'priorities') {
-        const priorities = this.props.draftData.priorities.map(
+      } else if (props.selectedFilter === 'priorities') {
+        const priorities = props.draftData.priorities.map(
           (priority) => priority.indicator,
         );
-        const achievements = this.props.draftData.achievements.map(
+        const achievements = props.draftData.achievements.map(
           (priority) => priority.indicator,
         );
 
@@ -62,57 +61,56 @@ class LifemapOverview extends Component {
         return (
           indicator.dimension === item &&
           typeof colorCode === 'number' &&
-          colorCode === this.props.selectedFilter
+          colorCode === props.selectedFilter
         );
       }
     });
 
-  render() {
-    const priorities = this.props.draftData.priorities.map(
-      (priority) => priority.indicator,
-    );
-    const achievements = this.props.draftData.achievements.map(
-      (priority) => priority.indicator,
-    );
-    return (
-      <View style={styles.container}>
-        {/* I am also passing the color because i have to visually display the circle color */}
-        {this.state.AddAchievementOrPriority ? (
-          <AddPriorityAndAchievementModal
-            onClose={this.onClose}
-            color={this.state.color}
-            draft={this.props.draftData}
-            indicator={this.state.indicator}
-            indicatorText={this.state.indicatorText}
-          />
-        ) : null}
-        {[...new Set(this.dimensions)].map((item) => (
-          <View key={item}>
-            {this.filterByDimension(item).length ? (
-              <Text style={styles.dimension}>{item.toUpperCase()}</Text>
-            ) : null}
-            {this.filterByDimension(item).map((indicator) => (
-              <LifemapOverviewListItem
-                key={indicator.questionText}
-                name={indicator.questionText}
-                color={this.getColor(indicator.codeName)}
-                draftOverview={this.props.draftOverview}
-                priority={priorities.includes(indicator.codeName)}
-                achievement={achievements.includes(indicator.codeName)}
-                handleClick={() =>
-                  this.handleClick(
-                    this.getColor(indicator.codeName),
-                    indicator.codeName,
-                    indicator.questionText,
-                  )
-                }
-              />
-            ))}
-          </View>
-        ))}
-      </View>
-    );
-  }
+  const priorities = props.draftData.priorities.map(
+    (priority) => priority.indicator,
+  );
+  const achievements = props.draftData.achievements.map(
+    (priority) => priority.indicator,
+  );
+
+  return (
+    <View style={styles.container}>
+      {/* I am also passing the color because i have to visually display the circle color */}
+      {addAchievementOrPriority ? (
+        <AddPriorityAndAchievementModal
+          onClose={onClose}
+          color={color}
+          draft={props.draftData}
+          indicator={indicator}
+          indicatorText={indicatorText}
+        />
+      ) : null}
+      {[...new Set(dimensions)].map((item) => (
+        <View key={item}>
+          {filterByDimension(item).length ? (
+            <Text style={styles.dimension}>{item.toUpperCase()}</Text>
+          ) : null}
+          {filterByDimension(item).map((indicator) => (
+            <LifemapOverviewListItem
+              key={indicator.questionText}
+              name={indicator.questionText}
+              color={getColor(indicator.codeName)}
+              draftOverview={props.draftOverview}
+              priority={priorities.includes(indicator.codeName)}
+              achievement={achievements.includes(indicator.codeName)}
+              handleClick={() =>
+                handleClick(
+                  getColor(indicator.codeName),
+                  indicator.codeName,
+                  indicator.questionText,
+                )
+              }
+            />
+          ))}
+        </View>
+      ))}
+    </View>
+  );
 }
 
 LifemapOverview.propTypes = {

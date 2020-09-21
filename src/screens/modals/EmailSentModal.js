@@ -1,46 +1,44 @@
-import PropTypes from 'prop-types'
-import React, { Component } from 'react'
-import { withNamespaces } from 'react-i18next'
-import { StyleSheet, Text, View } from 'react-native'
+import PropTypes from 'prop-types';
+import React from 'react';
+import {withNamespaces} from 'react-i18next';
+import {StyleSheet, Text, View} from 'react-native';
 
-import Button from '../../components/Button'
-import Popup from '../../components/Popup'
-import i18n from '../../i18n'
-import colors from '../../theme.json'
+import Button from '../../components/Button';
+import Popup from '../../components/Popup';
+import i18n from '../../i18n';
+import colors from '../../theme.json';
 
-class EmailSentModal extends Component {
-  render() {
-    const { close, isOpen } = this.props
-    return (
-      <Popup isOpen={isOpen} onClose={close}>
-        <View style={{ paddingVertical: 60 }}>
+function EmailSentModal(props) {
+  const {close, isOpen} = props;
+  return (
+    <Popup isOpen={isOpen} onClose={close}>
+      <View style={{paddingVertical: 60}}>
+        <View>
           <View>
-            <View>
-              <Text style={styles.paragraph}>
-                {i18n.t('views.final.yourLifeMaWillBeSentWithSurveySync')}
-              </Text>
-            </View>
-
-            <Button
-              outlined
-              borderColor={colors.palegreen}
-              text={i18n.t('general.gotIt')}
-              style={styles.closeButton}
-              handleClick={close}
-            />
+            <Text style={styles.paragraph}>
+              {i18n.t('views.final.yourLifeMaWillBeSentWithSurveySync')}
+            </Text>
           </View>
+
+          <Button
+            outlined
+            borderColor={colors.palegreen}
+            text={i18n.t('general.gotIt')}
+            style={styles.closeButton}
+            handleClick={close}
+          />
         </View>
-      </Popup>
-    )
-  }
+      </View>
+    </Popup>
+  );
 }
 
 EmailSentModal.propTypes = {
   close: PropTypes.func.isRequired,
   isOpen: PropTypes.bool.isRequired,
   error: PropTypes.bool.isRequired,
-  userIsOnline: PropTypes.bool.isRequired
-}
+  userIsOnline: PropTypes.bool.isRequired,
+};
 
 const styles = StyleSheet.create({
   paragraph: {
@@ -49,12 +47,12 @@ const styles = StyleSheet.create({
     lineHeight: 22,
     color: `${colors.grey}`,
     marginBottom: 40,
-    fontFamily: 'Poppins Medium'
+    fontFamily: 'Poppins Medium',
   },
   closeButton: {
     width: 120,
-    alignSelf: 'center'
-  }
-})
+    alignSelf: 'center',
+  },
+});
 
-export default withNamespaces()(EmailSentModal)
+export default withNamespaces()(EmailSentModal);

@@ -1,4 +1,4 @@
-import React, {Component} from 'react';
+import React from 'react';
 import {Text, View, StyleSheet, Platform} from 'react-native';
 import globalStyles from '../globalStyles';
 import {withNamespaces} from 'react-i18next';
@@ -6,52 +6,48 @@ import {connect} from 'react-redux';
 import PropTypes from 'prop-types';
 import colors from '../theme.json';
 
-export class CustomHeaderSurveyComponent extends Component {
-  render() {
-    const {overview, separatorScreen, navigation, route} = this.props;
+function CustomHeaderSurveyComponent(props) {
+  const {overview, separatorScreen, navigation, route} = props;
 
-    const survey = route.params.survey;
-    const stoplightOptional = survey.surveyConfig.stoplightOptional;
-    const stoplightSkipped = route.params.stoplightSkipped;
-    return (
-      <View
-        style={styles.headerQuestions}
-        onLayout={(event) => {
-          const {height} = event.nativeEvent.layout;
-          height > 115
-            ? navigation.setParams({navigationHeight: height})
-            : false;
-        }}
-        accessibilityLiveRegion="assertive">
-        {!overview && !separatorScreen && (
-          <Text style={styles.dimension}>
-            {survey.surveyStoplightQuestions[
-              route.params.step
-            ].dimension.toUpperCase()}
-          </Text>
-        )}
-        {!overview && !separatorScreen && (
-          <Text style={styles.title}>
-            {survey.surveyStoplightQuestions[route.params.step].questionText}
-          </Text>
-        )}
-        {overview && (
-          <Text style={styles.headerTitleStyle}>
-            {!stoplightSkipped
-              ? this.props.t('views.yourLifeMap')
-              : this.props.t('draftStatus.draft')}
-          </Text>
-        )}
-        {separatorScreen && (
-          <Text style={styles.headerTitleStyle}>
-            {!stoplightOptional
-              ? this.props.t('views.completeStoplight')
-              : this.props.t('views.completeStoplight')}
-          </Text>
-        )}
-      </View>
-    );
-  }
+  const survey = route.params.survey;
+  const stoplightOptional = survey.surveyConfig.stoplightOptional;
+  const stoplightSkipped = route.params.stoplightSkipped;
+  return (
+    <View
+      style={styles.headerQuestions}
+      onLayout={(event) => {
+        const {height} = event.nativeEvent.layout;
+        height > 115 ? navigation.setParams({navigationHeight: height}) : false;
+      }}
+      accessibilityLiveRegion="assertive">
+      {!overview && !separatorScreen && (
+        <Text style={styles.dimension}>
+          {survey.surveyStoplightQuestions[
+            route.params.step
+          ].dimension.toUpperCase()}
+        </Text>
+      )}
+      {!overview && !separatorScreen && (
+        <Text style={styles.title}>
+          {survey.surveyStoplightQuestions[route.params.step].questionText}
+        </Text>
+      )}
+      {overview && (
+        <Text style={styles.headerTitleStyle}>
+          {!stoplightSkipped
+            ? props.t('views.yourLifeMap')
+            : props.t('draftStatus.draft')}
+        </Text>
+      )}
+      {separatorScreen && (
+        <Text style={styles.headerTitleStyle}>
+          {!stoplightOptional
+            ? props.t('views.completeStoplight')
+            : props.t('views.completeStoplight')}
+        </Text>
+      )}
+    </View>
+  );
 }
 
 CustomHeaderSurveyComponent.propTypes = {

@@ -2,199 +2,169 @@
 // component after building in Android studio. Probably related to
 // React.cloneChild. We are for now forced to use in screen view validation.
 
-import PropTypes from 'prop-types'
-import React, { Component } from 'react'
-import { Keyboard, ScrollView, StyleSheet, View } from 'react-native'
+import PropTypes from 'prop-types';
+import React, {useState, useEffect} from 'react';
+import {Keyboard, ScrollView, StyleSheet, View} from 'react-native';
 
-import globalStyles from '../../globalStyles'
-import Button from '../Button'
-import ProgressBar from '../ProgressBar'
-import Tip from '../Tip'
+import globalStyles from '../../globalStyles';
+import Button from '../Button';
+import ProgressBar from '../ProgressBar';
+import Tip from '../Tip';
 
-const formTypes = ['TextInput', 'Select', 'LoadNamespace(DateInputComponent)']
+const formTypes = ['TextInput', 'Select', 'LoadNamespace(DateInputComponent)'];
 
-export default class Form extends Component {
-  state = {
-    continueVisible: true,
-    errors: [],
-    showErrors: false
-  }
+export default function Form(props) {
+  const [continueVisible, setContinueVisible] = useState(true);
+  const [errors, setErrors] = useState([]);
+  const [showErrors, setShowErrors] = useState(false);
 
-  setMarginTop = () => {
-    let marginTop
-    if (!!this.props.progress && this.props.currentScreen !== 'Question') {
-      marginTop = -20
+  const setMarginTop = () => {
+    let marginTop;
+    if (!!props.progress && props.currentScreen !== 'Question') {
+      marginTop = -20;
     } else {
-      marginTop = 0
+      marginTop = 0;
     }
-    return marginTop
-  }
+    return marginTop;
+  };
+  const toggleContinue = (continueVisible) => {
+    setContinueVisible(continueVisible);
+  };
+  const setError = (error, field, memberIndex) => {
+    const {onErrorStateChange} = props;
 
-  toggleContinue = continueVisible => {
-    this.setState({
-      continueVisible
-    })
-  }
-
-  setError = (error, field, memberIndex) => {
-    const { onErrorStateChange } = this.props
-    const { errors } = this.state
-
-    const fieldName = memberIndex ? `${field}-${memberIndex}` : field
+    const fieldName = memberIndex ? `${field}-${memberIndex}` : field;
 
     if (error && !errors.includes(fieldName)) {
-      this.setState(previousState => {
-        return {
-          ...previousState,
-          errors: [...previousState.errors, fieldName]
-        }
-      })
+      setErrors([...errors, fieldName]);
     } else if (!error) {
-      this.setState({
-        errors: errors.filter(item => item !== fieldName)
-      })
+      setErrors(errors.filter((item) => item !== fieldName));
     }
 
     if (onErrorStateChange) {
-      onErrorStateChange(error || this.state.errors.length)
+      onErrorStateChange(error || errors.length);
     }
-  }
+  };
 
-  cleanErrorsCodenamesOnUnmount = (field, memberIndex) => {
-    const { errors } = this.state
-    const fieldName = memberIndex ? `${field}-${memberIndex}` : field
-    let errorsDetected = []
+  const cleanErrorsCodenamesOnUnmount = (field, memberIndex) => {
+    const fieldName = memberIndex ? `${field}-${memberIndex}` : field;
+    let errorsDetected = [];
     if (fieldName) {
-      errorsDetected = errors.filter(item => item !== fieldName)
+      errorsDetected = errors.filter((item) => item !== fieldName);
     }
+    setErrors(errorsDetected);
+  };
 
-    this.setState({
-      errors: errorsDetected
-    })
-  }
-
-  validateForm = () => {
-    if (this.state.errors.length) {
-      this.setState({
-        showErrors: true
-      })
+  const validateForm = () => {
+    if (errors.length) {
+      setShowErrors(true);
     } else {
-      this.props.onContinue()
+      props.onContinue();
     }
-  }
-
-  generateClonedChild = child =>
+  };
+  const generateClonedChild = (child) =>
     React.cloneElement(child, {
-      readOnly: this.props.readOnly,
-      setError: isError =>
-        this.setError(isError, child.props.id, child.props.memberIndex || null),
+      readOnly: props.readOnly,
+      setError: (isError) =>
+        setError(isError, child.props.id, child.props.memberIndex || null),
       cleanErrorsOnUnmount:
         child.type &&
         child.type.displayName &&
         child.type.displayName === 'Select'
           ? () =>
-              this.cleanErrorsCodenamesOnUnmount(
+              cleanErrorsCodenamesOnUnmount(
                 child.props.id,
-                child.props.memberIndex || false
+                child.props.memberIndex || false,
               )
           : false,
-      showErrors: this.state.showErrors
-    })
+      showErrors: showErrors,
+    });
+  const renderChildrenRecursively = (children) => {
+    let that = this;
 
-  renderChildrenRecursively = children => {
-    let that = this
-
-    return React.Children.map(children, child => {
+    return React.Children.map(children, (child) => {
       if (
         child &&
         child.type &&
-        formTypes.some(item => item === child.type.displayName)
+        formTypes.some((item) => item === child.type.displayName)
       ) {
-        return this.generateClonedChild(child)
+        return generateClonedChild(child);
       } else if (child && child.props && child.props.children) {
         return React.cloneElement(child, {
           children: that.renderChildrenRecursively(
             Array.isArray(child.props.children)
               ? child.props.children
-              : [child.props.children]
-          )
-        })
+              : [child.props.children],
+          ),
+        });
       } else {
-        return child
+        return child;
       }
-    })
-  }
+    });
+  };
 
-  componentDidMount() {
-    this.keyboardDidShowListener = Keyboard.addListener('keyboardDidShow', () =>
-      this.toggleContinue(false)
-    )
-    this.keyboardDidHideListener = Keyboard.addListener('keyboardDidHide', () =>
-      this.toggleContinue(true)
-    )
-  }
+  useEffect(() => {
+    keyboardDidShowListener = Keyboard.addListener('keyboardDidShow', () =>
+      toggleContinue(false),
+    );
+    keyboardDidHideListener = Keyboard.addListener('keyboardDidHide', () =>
+      toggleContinue(true),
+    );
+    return () => {
+      keyboardDidShowListener.remove();
+      keyboardDidHideListener.remove();
+    };
+  }, []);
+  const children = renderChildrenRecursively(props.children);
+  return (
+    <View
+      style={[
+        globalStyles.background,
+        !!props.currentScreen && props.currentScreen === 'Question'
+          ? {paddingTop: 15}
+          : {...styles.contentContainer},
+        {marginTop: setMarginTop()},
+      ]}>
+      {!!props.progress && (
+        <ProgressBar
+          progress={props.progress}
+          currentScreen={props.currentScreen || ''}
+        />
+      )}
+      {props.fullHeight ? (
+        <View
+          style={{width: '100%', flexGrow: 2, marginTop: -15}}
+          keyboardShouldPersistTaps={'handled'}>
+          {children}
+        </View>
+      ) : (
+        <ScrollView>{children}</ScrollView>
+      )}
 
-  componentWillUnmount() {
-    this.keyboardDidShowListener.remove()
-    this.keyboardDidHideListener.remove()
-  }
-
-  render() {
-    // map children and add validation props to input related ones
-    const children = this.renderChildrenRecursively(this.props.children)
-    return (
-      <View
-        style={[
-          globalStyles.background,
-          !!this.props.currentScreen && this.props.currentScreen === 'Question'
-            ? { paddingTop: 15 }
-            : { ...styles.contentContainer },
-          { marginTop: this.setMarginTop() }
-        ]}
-      >
-        {!!this.props.progress && (
-          <ProgressBar
-            progress={this.props.progress}
-            currentScreen={this.props.currentScreen || ''}
-          />
-        )}
-        {this.props.fullHeight ? (
-          <View
-            style={{ width: '100%', flexGrow: 2, marginTop: -15 }}
-            keyboardShouldPersistTaps={'handled'}
-          >
-            {children}
-          </View>
-        ) : (
-          <ScrollView>{children}</ScrollView>
-        )}
-
-        {!this.props.readOnly &&
-        (this.props.visible && this.state.continueVisible) ? (
-          <View>
-            {/* i have changed the height to 61 because there was a weird whitespace if we dont have the progress bar */}
-            {this.props.type === 'button' ? (
-              <View style={{ height: 61 }}>
-                <Button
-                  id="continue"
-                  colored
-                  text={this.props.continueLabel}
-                  handleClick={this.validateForm}
-                />
-              </View>
-            ) : (
-              <Tip
-                visible={this.props.tipIsVisible}
-                title={this.props.tipTitle}
-                onTipClose={this.props.onTipClose}
-                description={this.props.tipDescription}
+      {!props.readOnly && props.visible && continueVisible ? (
+        <View>
+          {/* i have changed the height to 61 because there was a weird whitespace if we dont have the progress bar */}
+          {props.type === 'button' ? (
+            <View style={{height: 61}}>
+              <Button
+                id="continue"
+                colored
+                text={props.continueLabel}
+                handleClick={validateForm}
               />
-            )}
-          </View>
-        ) : null}
-      </View>
-    )
-  }
+            </View>
+          ) : (
+            <Tip
+              visible={props.tipIsVisible}
+              title={props.tipTitle}
+              onTipClose={props.onTipClose}
+              description={props.tipDescription}
+            />
+          )}
+        </View>
+      ) : null}
+    </View>
+  );
 }
 
 Form.propTypes = {
@@ -211,13 +181,13 @@ Form.propTypes = {
   onTipClose: PropTypes.func,
   readOnly: PropTypes.bool,
   progress: PropTypes.number,
-  currentScreen: PropTypes.string
-}
+  currentScreen: PropTypes.string,
+};
 
 Form.defaultProps = {
   type: 'button',
-  visible: true
-}
+  visible: true,
+};
 
 const styles = StyleSheet.create({
   contentContainer: {
@@ -225,6 +195,6 @@ const styles = StyleSheet.create({
     flex: 1,
     flexDirection: 'column',
     justifyContent: 'center',
-    alignItems: 'stretch'
-  }
-})
+    alignItems: 'stretch',
+  },
+});
