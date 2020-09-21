@@ -59,10 +59,8 @@ class Audio extends Component {
             TrackPlayer.CAPABILITY_JUMP_FORWARD,
         ];
         TrackPlayer.updateOptions({
-            stopWithApp: true,
-            capabilities: trackPlayerCapabilities,
-            notificationCapabilities: [...trackPlayerCapabilities, TrackPlayer.CAPABILITY_SEEK_TO],
-            jumpInterval: 10
+            stopWithApp: false,
+           
         });
         await TrackPlayer.add(this.track);
         const current = await TrackPlayer.getCurrentTrack();
