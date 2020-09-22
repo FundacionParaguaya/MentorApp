@@ -28,6 +28,7 @@ import {
 } from '../utils/conditional_logic';
 import {getTotalScreens, setScreen} from './helpers';
 import i18n from '../../i18n';
+import Audio from '../../components/Audio';
 const capitalize = (string) => _.startCase(string).replace(/ /g, '');
 export class SocioEconomicQuestion extends Component {
   readOnlyDraft = this.props.route.params.family || [];
@@ -500,6 +501,18 @@ export class SocioEconomicQuestion extends Component {
       return null;
     }
 
+    let topicAudio = null;
+    if (questions && questions.forFamily.length > 0) {
+      topicAudio = questions.forFamily[0]
+        ? questions.forFamily[0].topicAudio
+        : null;
+    }
+    if (questions && questions.forFamilyMember.length > 0) {
+      topicAudio = questions.forFamilyMember[0]
+        ? questions.forFamilyMember[0].topicAudio
+        : null;
+    }
+
     return (
       <Formik
         enableReinitialize
@@ -540,7 +553,7 @@ export class SocioEconomicQuestion extends Component {
                 : 0
             }>
             {/* <Decoration variation="socioEconomicQuestion" /> */}
-
+            <Audio audioId ={topicAudio} url={topicAudio} containerStyles={{alignItems: 'center', width:'100%', paddingBottom:10}} styles={{ color: colors.palegreen }} />
             {/* questions for entire family */}
             {questions &&
               questions.forFamily &&

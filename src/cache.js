@@ -69,6 +69,10 @@ export const filterAudioURLsFromSurveys = surveys => {
       survey.surveyStoplightQuestions.forEach(question => question.questionAudio && audioURLS.push(question.questionAudio))
     )
 
+    surveys.forEach(survey => {
+      survey.surveyEconomicQuestions.forEach(question =>  question.topicAudio && audioURLS.push(question.topicAudio))
+    })
+
     // set total amount of audio to be cached
     store.dispatch(setSyncedItemTotal('audios', audioURLS.length));
     return audioURLS
