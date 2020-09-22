@@ -117,7 +117,9 @@
       "mapsDownloading": "Downloading Maps...",
       "offlineMaps": "Offline Maps",
       "images": "Images",
-      "calcilatingTotalImages": "Calculating total images to cache.."
+      "audios" : "Audios",
+      "calcilatingTotalImages": "Calculating total images to cache..",
+      "calculatingTotalAudios": "Calculating total audios to cache.."
     },
     "family": {
       "membersDontMatch": "The amount of members does not match, please edit the members to match the amount chosen",

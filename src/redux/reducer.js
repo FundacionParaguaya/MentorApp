@@ -31,13 +31,14 @@ import {
   LOAD_IMAGES,
   LOAD_IMAGES_ROLLBACK,
   LOAD_IMAGES_COMMIT,
+  SET_VALIDATE,
 } from './actions';
 
 const defaultLanguage = getDeviceLanguage();
 //Login
 
 export const user = (
-  state = {token: null, status: null, username: null, role: null},
+  state = {token: null, status: null, username: null, role: null, interactive_help:null},
   action,
 ) => {
   switch (action.type) {
@@ -54,7 +55,13 @@ export const user = (
         token: null,
         username: null,
         role: null,
+        interactive_help: null
       };
+    case SET_VALIDATE:
+      return {
+          ...state,
+          interactive_help:action.interactive_help
+        };
     default:
       return state;
   }
@@ -73,7 +80,7 @@ export const env = (state = 'production', action) => {
 
 //Download Maps or images
 export const downloadMapsAndImages = (
-  state = {downloadMaps: true, downloadImages: true},
+  state = {downloadMaps: true, downloadImages: true, downLoadAudios:true},
   action,
 ) => {
   switch (action.type) {
@@ -355,6 +362,10 @@ export const sync = (
       total: 0,
       synced: 0,
     },
+    audios:{
+      total: 0,
+      synced: 0,
+    }
   },
   action,
 ) => {
@@ -407,6 +418,10 @@ export const sync = (
           total: 0,
           synced: 0,
         },
+        audios: {
+          total:0,
+          synced:0,
+        }
       };
     default:
       return state;

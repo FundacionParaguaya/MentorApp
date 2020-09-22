@@ -1,18 +1,24 @@
 import PropTypes from 'prop-types';
-import React, {Component} from 'react';
-import {withNamespaces} from 'react-i18next';
-import {StyleSheet, Text, View} from 'react-native';
+import React, { Component } from 'react';
+import { withNamespaces } from 'react-i18next';
+import { StyleSheet, Text, View } from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialIcons';
-import {connect} from 'react-redux';
+import { connect } from 'react-redux';
 
 import IconButton from '../../components/IconButton';
 import Popup from '../../components/Popup';
 import SliderComponent from '../../components/Slider';
 import StickyFooter from '../../components/StickyFooter';
-import {updateDraft} from '../../redux/actions';
+import { updateDraft } from '../../redux/actions';
 import colors from '../../theme.json';
-import {getTotalEconomicScreens} from './helpers';
+import { getTotalEconomicScreens } from './helpers';
 import globalStyles from '../../globalStyles';
+
+import TrackPlayer from 'react-native-track-player';
+import RNFetchBlob from 'rn-fetch-blob'
+import Audio from '../../components/Audio';
+
+let dirs = RNFetchBlob.fs.dirs
 
 export class Question extends Component {
   step = this.props.route.params.step;
@@ -29,6 +35,11 @@ export class Question extends Component {
   state = {
     showDefinition: false,
   };
+
+
+ 
+
+
 
   getDraft = () =>
     this.props.drafts.find((draft) => draft.draftId === this.draftId);
@@ -62,7 +73,7 @@ export class Question extends Component {
     ) {
       updatedIndicators = draft.indicatorSurveyDataList.map((item) => {
         if (item.key === this.indicator.codeName) {
-          return {...item, value: answer};
+          return { ...item, value: answer };
         } else {
           return item;
         }
@@ -70,7 +81,7 @@ export class Question extends Component {
     } else {
       updatedIndicators = [
         ...draft.indicatorSurveyDataList,
-        {key: this.indicator.codeName, value: answer},
+        { key: this.indicator.codeName, value: answer },
       ];
     }
 
@@ -171,7 +182,7 @@ export class Question extends Component {
     });
   };
 
-  componentDidMount() {
+  async componentDidMount() {
     const draft = this.getDraft();
 
     this.props.updateDraft({
@@ -188,25 +199,29 @@ export class Question extends Component {
     });
   }
 
+
+
   shouldComponentUpdate() {
     return this.props.navigation.isFocused();
   }
+
+  
 
   render() {
     const draft = this.getDraft();
     // added a popup component to the Question.js instead of adding it to the
     // modals folder because it is really smol and does not do much
 
-    const {t} = this.props;
+    const { t, user } = this.props;
 
     return (
-      <View style={{flex: 1}}>
+      <View style={{ flex: 1 }}>
         <StickyFooter
           visible={false}
           readOnly
           progress={
             ((draft.familyData.countFamilyMembers > 1 ? 5 : 4) + this.step) /
-              draft.progress.total || getTotalEconomicScreens(this.survey)
+            draft.progress.total || getTotalEconomicScreens(this.survey)
           }
           currentScreen="Question">
           {this.state.showDefinition ? (
@@ -261,16 +276,22 @@ export class Question extends Component {
                 }}
               />
             ) : null}
+            
+            {user.interactive_help &&  this.indicator && this.indicator.questionAudio &&
+              <Audio audioId ={this.indicator.id} url={this.indicator.questionAudio}  />
+            }
+            
+
 
             {this.indicator.required ? (
               <Text>{t('views.lifemap.responseRequired')}</Text>
             ) : (
-              <IconButton
-                text={t('views.lifemap.skipThisQuestion')}
-                textStyle={styles.link}
-                onPress={() => this.selectAnswer(0)}
-              />
-            )}
+                <IconButton
+                  text={t('views.lifemap.skipThisQuestion')}
+                  textStyle={styles.link}
+                  onPress={() => this.selectAnswer(0)}
+                />
+              )}
           </View>
         </StickyFooter>
       </View>
@@ -305,12 +326,13 @@ Question.propTypes = {
   updateDraft: PropTypes.func.isRequired,
 };
 
-const mapStateToProps = ({dimensions, drafts}) => ({
+const mapStateToProps = ({ dimensions, drafts, user }) => ({
   dimensions,
   drafts,
+  user
 });
 
-const mapDispatchToProps = {updateDraft};
+const mapDispatchToProps = { updateDraft };
 
 export default withNamespaces()(
   connect(mapStateToProps, mapDispatchToProps)(Question),
