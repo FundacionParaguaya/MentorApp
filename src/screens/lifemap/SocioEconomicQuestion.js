@@ -483,7 +483,7 @@ export class SocioEconomicQuestion extends Component {
   };
 
   render() {
-    const {t} = this.props;
+    const {t, user} = this.props;
 
     const socioEconomics = this.props.route.params.socioEconomics;
 
@@ -553,7 +553,9 @@ export class SocioEconomicQuestion extends Component {
                 : 0
             }>
             {/* <Decoration variation="socioEconomicQuestion" /> */}
-            <Audio audioId ={topicAudio} url={topicAudio} containerStyles={{alignItems: 'center', width:'100%', paddingBottom:10}} styles={{ color: colors.palegreen }} />
+            {user.interactive_help && topicAudio &&
+              <Audio audioId ={topicAudio} url={topicAudio} containerStyles={{alignItems: 'center', width:'100%', paddingBottom:10}} styles={{ color: colors.palegreen }} />
+            }
             {/* questions for entire family */}
             {questions &&
               questions.forFamily &&
@@ -993,15 +995,17 @@ SocioEconomicQuestion.propTypes = {
   navigation: PropTypes.object.isRequired,
   drafts: PropTypes.array,
   language: PropTypes.string,
+  user: PropTypes.object.isRequired,
 };
 
 const mapDispatchToProps = {
   updateDraft,
 };
 
-const mapStateToProps = ({drafts, language}) => ({
+const mapStateToProps = ({drafts, language, user}) => ({
   drafts,
   language,
+  user
 });
 
 export default withNamespaces()(
