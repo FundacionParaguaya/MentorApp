@@ -98,6 +98,7 @@ function Dashboard(props) {
     props.navigation.navigate('Families', {
       screen: 'Family',
       params: {
+        fromDashboard: true,
         familyName: item.familyData.familyMembersList[0].firstName,
         familyLifemap: item,
         draftId: item.draftId,

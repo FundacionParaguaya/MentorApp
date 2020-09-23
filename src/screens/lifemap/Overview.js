@@ -30,7 +30,7 @@ function Overview(props) {
 
   const onPressBack = () => {
     const draft = !props.readOnly ? getDraft() : props.familyLifemap;
-    const survey = survey;
+    const survey = props.route.params.survey;
 
     //If we do not arrive to this screen from the families screen
     if (!familyLifemap) {
@@ -74,9 +74,11 @@ function Overview(props) {
     setFilterModalIsOpen(!filterModalIsOpen);
   };
   const selectFilter = (filter, filterLabel = false) => {
+    console.log('here1');
     setSelectedFilter(filter);
     setFilterModalIsOpen(false);
     setFilterLabel(filterLabel);
+    console.log('here2');
   };
   const onContinue = () => {
     navigateToScreen('Priorities');
@@ -114,6 +116,8 @@ function Overview(props) {
   //  shouldComponentUpdate() {
   //   return props.navigation.isFocused();
   // }
+  console.log('survey is');
+  console.log(survey);
   const {t} = props;
   const draft = !props.readOnly ? getDraft() : props.familyLifemap;
   return props.readOnly ? (

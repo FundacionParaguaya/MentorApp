@@ -137,7 +137,7 @@ function Priorities(props) {
       }
     }
 
-    if (!isDraftResuming && !familyLifemap) {
+    if (!isResumingDraft && !familyLifemap) {
       props.updateDraft({
         draft: {
           ...draft,

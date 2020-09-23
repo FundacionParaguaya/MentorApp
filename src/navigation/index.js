@@ -47,11 +47,14 @@ export class NavWrapper extends Component {
       <View style={styles.container} testID="app-container">
         <NavigationContainer>
           <Stack.Navigator>
-            <Stack.Screen
-              options={{headerShown: false, animationEnabled: false}}
-              name="Login"
-              component={LoginScreen}
-            />
+            {!this.props.user.token && (
+              <Stack.Screen
+                options={{headerShown: false, animationEnabled: false}}
+                name="Login"
+                component={LoginScreen}
+              />
+            )}
+
             <Stack.Screen
               options={{headerShown: false, animationEnabled: false}}
               name="Loading"

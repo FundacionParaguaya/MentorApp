@@ -24,7 +24,12 @@ const initialState = {
   checkboxCachedData: false,
 };
 export default function LogoutPopup(props) {
-  const [state, setInitialState] = useState();
+  const [state, setInitialState] = useState({
+    checkboxDrafts: false,
+    checkboxLifeMaps: false,
+    checkboxFamilyInfo: false,
+    checkboxCachedData: false,
+  });
 
   const checkboxChange = (checkbox) => {
     props.onPressCheckbox(!state[checkbox]);

@@ -58,6 +58,7 @@ function Login(props) {
 
     // if use has logged in navigate to Loading
     if (props.user.token) {
+      console.log('NAVIGATE');
       props.navigation.navigate('Loading');
     } else {
       AppState.addEventListener('change', handleAppStateChange);
@@ -134,11 +135,10 @@ function Login(props) {
 
       username = username.trim().substring(2, username.trim().length);
     }
-    console.log(props);
+
     props.setEnv(env);
     props.login(username, password, url[env]).then(() => {
       if (props.user.status === 401) {
-        console.log('ok1');
         setLoading(false);
         setError('Wrong username or password');
       } else if (
@@ -146,11 +146,9 @@ function Login(props) {
         props.user.role !== 'ROLE_SURVEY_TAKER' &&
         props.user.role !== 'ROLE_SURVEY_USER_ADMIN'
       ) {
-        console.log('ok2');
         setLoading(false);
         setError('Wrong username or password');
       } else {
-        console.log('ok3');
         setLoading(false);
         props.navigation.navigate('Loading');
       }

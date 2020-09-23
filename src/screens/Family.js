@@ -34,7 +34,6 @@ import {
 import {getTotalScreens} from '../screens/lifemap/helpers';
 import colors from '../theme.json';
 import OverviewComponent from './lifemap/Overview';
-import {prepareDraftForSubmit} from './utils/helpers';
 
 function Family(props) {
   const [loading, setLoading] = useState(false);
@@ -58,7 +57,11 @@ function Family(props) {
     ),
   ];
   const onPressBack = () => {
-    props.navigation.replace('Families');
+    if (props.route.params.fromDashboard) {
+      props.navigation.replace('DrawerStack');
+    } else {
+      props.navigation.replace('Families');
+    }
   };
   useEffect(() => {
     unsubscribeNetChange = NetInfo.addEventListener((isOnline) => {
