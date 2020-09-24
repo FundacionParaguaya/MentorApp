@@ -11,6 +11,7 @@ import StickyFooter from '../../components/StickyFooter';
 import globalStyles from '../../globalStyles';
 import {updateDraft} from '../../redux/actions';
 import {getTotalEconomicScreens} from './helpers';
+import TrackPlayer from 'react-native-track-player';
 
 export class BeginLifemap extends Component {
   survey = this.props.route.params.survey;
@@ -79,6 +80,9 @@ export class BeginLifemap extends Component {
   };
 
   componentDidMount() {
+    TrackPlayer.stop();
+    TrackPlayer.reset();
+    TrackPlayer.destroy();
     if (this.draft.progress.screen !== 'BeginLifemap') {
       this.props.updateDraft({
         ...this.draft,
