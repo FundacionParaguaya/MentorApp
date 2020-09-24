@@ -103,7 +103,7 @@ export class SocioEconomicQuestion extends Component {
         socioEconomics.currentScreen === socioEconomics.totalScreens) ||
       (socioEconomics && NEXT_SCREEN_NUMBER > socioEconomics.totalScreens)
     ) {
-      this.props.navigation.navigate('BeginLifemap', {
+      this.props.navigation.replace('BeginLifemap', {
         survey: this.survey,
         draftId: this.draftId,
       });

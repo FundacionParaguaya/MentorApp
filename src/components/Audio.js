@@ -8,6 +8,7 @@ import PropTypes from 'prop-types';
 
 
 
+
 let dirs = RNFetchBlob.fs.dirs
 
 
@@ -41,8 +42,7 @@ class Audio extends Component {
         }
     }
 
-
-    async componentDidMount() {
+    async setupPlayer() {
         this.track = {
             url: this.getProperSourceForOS(
                 `${dirs.DocumentDir}/${this.props.url.replace(/https?:\/\//, '')}`
@@ -60,8 +60,12 @@ class Audio extends Component {
         this.onQueueEnd = TrackPlayer.addEventListener('playback-queue-ended', async (data) => {
             this.setState({ isPlaying: false, isPlaying: false, donePlaying: true });
             await TrackPlayer.stop();
+        });   
+    }
 
-        })
+
+    async componentDidMount() {
+        await this.setupPlayer();
     }
 
     componentWillUnmount() {

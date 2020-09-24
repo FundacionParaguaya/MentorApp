@@ -80,9 +80,6 @@ export class BeginLifemap extends Component {
   };
 
   componentDidMount() {
-    TrackPlayer.stop();
-    TrackPlayer.reset();
-    TrackPlayer.destroy();
     if (this.draft.progress.screen !== 'BeginLifemap') {
       this.props.updateDraft({
         ...this.draft,
