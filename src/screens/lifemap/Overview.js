@@ -70,15 +70,12 @@ function Overview(props) {
     });
   };
   const toggleFilterModal = () => {
-    console.log('toggle');
     setFilterModalIsOpen(!filterModalIsOpen);
   };
   const selectFilter = (filter, filterLabel = false) => {
-    console.log('here1');
     setSelectedFilter(filter);
     setFilterModalIsOpen(false);
     setFilterLabel(filterLabel);
-    console.log('here2');
   };
   const onContinue = () => {
     navigateToScreen('Priorities');

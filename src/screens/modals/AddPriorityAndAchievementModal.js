@@ -40,9 +40,11 @@ function AddPriorityAndAchievementModal(props) {
       onContinue();
     }
   };
-  const editCounter = (action) => {
+  const editCounter = (newAction) => {
+    console.log(newAction);
     setValidationError(false);
-    setEstimatedDate(action);
+    setEstimatedDate(newAction);
+    return newAction;
   };
   const getDraft = () => {
     if (draftId) {
@@ -116,7 +118,12 @@ function AddPriorityAndAchievementModal(props) {
     const draft = getDraft();
     if (props.color === 3) {
       const achievement = getAchievementValue(draft);
+      console.log(achievement);
+
       setColorRBG(colors.palegreen);
+      if (!achievement) {
+        return;
+      }
       setAction(achievement.action);
       setRoadmap(achievement.roadmap);
       setIndicator(achievement.indicator);
@@ -126,9 +133,12 @@ function AddPriorityAndAchievementModal(props) {
       for (let x = 1; x < 25; x++) {
         allOptionsNums.push({value: x, text: String(x)});
       }
-      setEstimatedDate(priority.estimatedDate);
       setColorRBG(props.color === 1 ? colors.palered : colors.palegold);
       setAllOpetionsNums(allOptionsNums);
+      if (!priority) {
+        return;
+      }
+      setEstimatedDate(priority.estimatedDate);
       setAction(priority.action);
       setReason(priority.reason);
       setIndicator(priority.indicator);
@@ -161,8 +171,6 @@ function AddPriorityAndAchievementModal(props) {
     isReadOnly = true;
   }
 
-  //i cound directly use action for the values below but
-  // it just doesnt work.Thats why i use the old way from the old components
   let priority;
   let achievement;
   if (props.color !== 3) {
@@ -236,7 +244,13 @@ function AddPriorityAndAchievementModal(props) {
                   required
                   onChange={editCounter}
                   placeholder={t('views.lifemap.howManyMonthsWillItTake')}
-                  initialValue={priority ? priority.estimatedDate : ''}
+                  initialValue={
+                    estimatedDate
+                      ? estimatedDate
+                      : priority
+                      ? priority.estimatedDate
+                      : ''
+                  }
                   options={allOptionsNums}
                   readOnly={isReadOnly}
                   showErrors={showErrors}
