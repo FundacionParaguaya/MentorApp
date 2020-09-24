@@ -278,7 +278,16 @@ export class Question extends Component {
             ) : null}
             
             {user.interactive_help &&  this.indicator && this.indicator.questionAudio &&
-              <Audio audioId ={this.indicator.id} url={this.indicator.questionAudio}  />
+              <Audio audioId ={this.indicator.id} url={this.indicator.questionAudio} 
+              containerStyles={{
+                position: 'absolute',
+                top: '55%',
+                left: '20%',
+            }}
+              styles={{
+                color: colors.palegreen,
+              }}
+            />
             }
             
 

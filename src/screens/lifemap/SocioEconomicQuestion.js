@@ -28,6 +28,7 @@ import {
 } from '../utils/conditional_logic';
 import {getTotalScreens, setScreen} from './helpers';
 import i18n from '../../i18n';
+import Audio from '../../components/Audio';
 const capitalize = (string) => _.startCase(string).replace(/ /g, '');
 export class SocioEconomicQuestion extends Component {
   readOnlyDraft = this.props.route.params.family || [];
@@ -102,7 +103,7 @@ export class SocioEconomicQuestion extends Component {
         socioEconomics.currentScreen === socioEconomics.totalScreens) ||
       (socioEconomics && NEXT_SCREEN_NUMBER > socioEconomics.totalScreens)
     ) {
-      this.props.navigation.navigate('BeginLifemap', {
+      this.props.navigation.replace('BeginLifemap', {
         survey: this.survey,
         draftId: this.draftId,
       });
@@ -482,7 +483,7 @@ export class SocioEconomicQuestion extends Component {
   };
 
   render() {
-    const {t} = this.props;
+    const {t, user} = this.props;
 
     const socioEconomics = this.props.route.params.socioEconomics;
 
@@ -498,6 +499,18 @@ export class SocioEconomicQuestion extends Component {
       !this.state.initialValues.forFamilyMember
     ) {
       return null;
+    }
+
+    let topicAudio = null;
+    if (questions && questions.forFamily.length > 0) {
+      topicAudio = questions.forFamily[0]
+        ? questions.forFamily[0].topicAudio
+        : null;
+    }
+    if (questions && questions.forFamilyMember.length > 0) {
+      topicAudio = questions.forFamilyMember[0]
+        ? questions.forFamilyMember[0].topicAudio
+        : null;
     }
 
     return (
@@ -540,7 +553,9 @@ export class SocioEconomicQuestion extends Component {
                 : 0
             }>
             {/* <Decoration variation="socioEconomicQuestion" /> */}
-
+            {user.interactive_help && topicAudio &&
+              <Audio audioId ={topicAudio} url={topicAudio} containerStyles={{alignItems: 'center', width:'100%', paddingBottom:10}} styles={{ color: colors.palegreen }} />
+            }
             {/* questions for entire family */}
             {questions &&
               questions.forFamily &&
@@ -980,15 +995,17 @@ SocioEconomicQuestion.propTypes = {
   navigation: PropTypes.object.isRequired,
   drafts: PropTypes.array,
   language: PropTypes.string,
+  user: PropTypes.object.isRequired,
 };
 
 const mapDispatchToProps = {
   updateDraft,
 };
 
-const mapStateToProps = ({drafts, language}) => ({
+const mapStateToProps = ({drafts, language, user}) => ({
   drafts,
   language,
+  user
 });
 
 export default withNamespaces()(
