@@ -159,7 +159,6 @@ export class Final extends Component {
         this.props.lng || 'en',
       );
       const pdf = await RNHTMLtoPDF.convert(pdfOptions);
-
       RNFetchBlob.fs
         .cp(pdf.filePath, filePath)
         .then(() =>
@@ -260,7 +259,6 @@ export class Final extends Component {
       familyMembersList.find((user) => user.phoneNumber);
 
     const stoplightSkipped = this.draft.stoplightSkipped;
-    console.log('stoplightSkipped', stoplightSkipped);
     return (
       <ScrollView
         style={globalStyles.background}
