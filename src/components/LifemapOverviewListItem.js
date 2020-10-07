@@ -52,6 +52,48 @@ class LifemapOverviewListItem extends Component {
         style={styles.container}
         disabled={disabledButton}
       >
+        {this.props.isRetake ? (
+          <View style={{ marginRight: -24 }}>
+            {this.props.previousAchievement ? (
+              <Icon
+                name="stars"
+                color={colors.blue}
+                size={20}
+                style={{
+                  ...styles.blueIcon,
+                  width: 20,
+                  height: 20,
+                }}
+              />
+            ) : (
+                <View />
+              )}
+            {this.props.previousPriority ? (
+              <View
+                style={{
+                  ...styles.blueIcon,
+                  backgroundColor: colors.blue,
+                  width: 21,
+                  height: 21,
+
+                  justifyContent: 'center',
+                  alignItems: 'center'
+                }}
+              >
+                <Icon2 name="pin" color={colors.white} size={15} />
+              </View>
+            ) : (
+                <View />
+              )}
+
+            <Icon
+              name="brightness-1"
+              color={this.defineColor(this.props.previousColor)}
+              size={30}
+              style={{ marginRight: 15 }}
+            />
+          </View>
+        ) : null}
         <View>
           {this.props.achievement ? (
             <Icon
@@ -61,12 +103,13 @@ class LifemapOverviewListItem extends Component {
               style={{
                 ...styles.blueIcon,
                 width: 20,
-                height: 20
+                height: 20,
+                zIndex: 5
               }}
             />
           ) : (
-            <View />
-          )}
+              <View />
+            )}
           {this.props.priority ? (
             <View
               style={{
@@ -75,19 +118,20 @@ class LifemapOverviewListItem extends Component {
                 width: 21,
                 height: 21,
                 justifyContent: 'center',
-                alignItems: 'center'
+                alignItems: 'center',
+                zIndex: 5
               }}
             >
               <Icon2 name="pin" color={colors.white} size={15} />
             </View>
           ) : (
-            <View />
-          )}
+              <View />
+            )}
           <Icon
             name="brightness-1"
             color={this.defineColor(this.props.color)}
             size={40}
-            style={{ marginRight: 15 }}
+            style={{ marginRight: 15, zIndex: 10 }}
           />
         </View>
         <View style={[styles.listItem, styles.borderBottom]}>
@@ -103,8 +147,8 @@ class LifemapOverviewListItem extends Component {
           {!disabledButton ? (
             <Icon name="navigate-next" size={23} color={colors.lightdark} />
           ) : (
-            <View />
-          )}
+              <View />
+            )}
         </View>
       </ListItem>
     )
@@ -143,10 +187,11 @@ const styles = StyleSheet.create({
   },
   blueIcon: {
     position: 'absolute',
-    right: 5,
+    right: 15,
     borderRadius: 11,
+    backgroundColor: colors.white,
     borderColor: colors.white,
-    borderWidth: 1,
+    borderWidth: 3,
     zIndex: 10
   }
 })
