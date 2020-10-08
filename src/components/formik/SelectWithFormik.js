@@ -202,8 +202,9 @@ const styles = StyleSheet.create({
     backgroundColor: colors.lightgrey,
   },
   title: {
-    paddingHorizontal: 15,
+    paddingHorizontal: 5,
     fontSize: 14,
+    ...globalStyles.subline2,
     color: colors.palegrey,
     // marginBottom: 10,
     zIndex: 100,

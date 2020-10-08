@@ -69,7 +69,7 @@ const InputWithFormik = ({
         <View style={{marginBottom: -20, marginHorizontal: 10}}>
           <Text
             style={{
-              ...styles.text,
+              ...styles.label,
               color: defineTextColor(status),
             }}
             accessibilityLabel={`${placeholder} ${
@@ -164,11 +164,10 @@ const styles = StyleSheet.create({
     borderTopRightRadius: 8,
   },
   label: {
-    paddingHorizontal: 15,
+    paddingHorizontal: 5,
     paddingVertical: 10,
-    ...globalStyles.subline,
+    ...globalStyles.subline2,
   },
-
   inputTextUpperCase: {
     textTransform: 'capitalize',
     fontSize: 14,
