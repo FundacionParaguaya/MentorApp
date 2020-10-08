@@ -224,7 +224,8 @@
       "reviewDate": "FECHA DE REVISIÓN",
       "myPriorities": "Mis Prioridades",
       "myAchievements": "Mis Logros",
-      "lifeMap": "Mapa de Vida"
+      "lifeMap": "Mapa de Vida",
+      "audioHelp": "Audio ayuda"
     },
     "modals": {
       "lifeMapWillNotBeSaved": "Si no ingresa todos los detalles en esta página, ¡el Mapa de Vida no se guardará!",

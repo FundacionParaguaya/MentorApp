@@ -223,7 +223,9 @@
       "reviewDate": "REVIEW DATE",
       "myPriorities": "My priorities",
       "myAchievements": "My achievements",
-      "lifeMap": "Life Map"
+      "lifeMap": "Life Map",
+      "audioHelp": "Audio help",
+
     },
     "modals": {
       "lifeMapWillNotBeSaved": "If you do not enter all details on this page the Life Map will not be saved!",

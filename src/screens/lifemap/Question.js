@@ -272,7 +272,7 @@ export class Question extends Component {
                   color: colors.palegreen,
                   position: 'absolute',
                   top: '55%',
-                  left: '10%',
+                  left: '1%',
                 }}
               />
             ) : null}
@@ -281,12 +281,16 @@ export class Question extends Component {
               <Audio audioId ={this.indicator.id} url={this.indicator.questionAudio} 
               containerStyles={{
                 position: 'absolute',
+                flexDirection:'row',
+                alignItems:'center',
+                marginLeft:5,
                 top: '55%',
-                left: '20%',
+                left: '5%',
             }}
               styles={{
                 color: colors.palegreen,
               }}
+              labelStyle={globalStyles.h4}
             />
             }
             

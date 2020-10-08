@@ -29,6 +29,7 @@ import {
 import {getTotalScreens, setScreen} from './helpers';
 import i18n from '../../i18n';
 import Audio from '../../components/Audio';
+import globalStyles from '../../globalStyles';
 const capitalize = (string) => _.startCase(string).replace(/ /g, '');
 export class SocioEconomicQuestion extends Component {
   readOnlyDraft = this.props.route.params.family || [];
@@ -554,7 +555,11 @@ export class SocioEconomicQuestion extends Component {
             }>
             {/* <Decoration variation="socioEconomicQuestion" /> */}
             {user.interactive_help && topicAudio &&
-              <Audio audioId ={topicAudio} url={topicAudio} containerStyles={{alignItems: 'center', width:'100%', paddingBottom:10}} styles={{ color: colors.palegreen }} />
+              <Audio audioId ={topicAudio} url={topicAudio}
+               containerStyles={{alignItems: 'center',flexDirection:'row', justifyContent:'center', width:'100%', paddingBottom:10}}
+                styles={{ color: colors.palegreen }}
+                 labelStyle={globalStyles.h4} 
+              />
             }
             {/* questions for entire family */}
             {questions &&
