@@ -271,8 +271,8 @@ export class Question extends Component {
                 style={{
                   color: colors.palegreen,
                   position: 'absolute',
-                  top: '55%',
-                  left: '1%',
+                  top: 10,
+                  left: 2
                 }}
               />
             ) : null}
@@ -283,9 +283,10 @@ export class Question extends Component {
                 position: 'absolute',
                 flexDirection:'row',
                 alignItems:'center',
-                marginLeft:5,
-                top: '55%',
-                left: '5%',
+               
+                paddingRight:5,
+                top: 10,
+                left: 42,
             }}
               styles={{
                 color: colors.palegreen,
