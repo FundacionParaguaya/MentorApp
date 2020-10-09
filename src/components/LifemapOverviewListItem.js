@@ -61,8 +61,8 @@ class LifemapOverviewListItem extends Component {
                 size={20}
                 style={{
                   ...styles.blueIcon,
-                  width: 21,
-                  height: 21,
+                  width: 20,
+                  height: 20,
                 }}
               />
             ) : (
@@ -102,8 +102,8 @@ class LifemapOverviewListItem extends Component {
               size={20}
               style={{
                 ...styles.blueIcon,
-                width: 21,
-                height: 21,
+                width: 20,
+                height: 20,
               }}
             />
           ) : (
