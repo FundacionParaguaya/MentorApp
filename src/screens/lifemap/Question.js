@@ -271,22 +271,27 @@ export class Question extends Component {
                 style={{
                   color: colors.palegreen,
                   position: 'absolute',
-                  top: '55%',
-                  left: '10%',
+                  top: 10,
+                  left: 2
                 }}
               />
             ) : null}
             
             {user.interactive_help &&  this.indicator && this.indicator.questionAudio &&
-              <Audio audioId ={this.indicator.id} url={this.indicator.questionAudio} 
+              <Audio  audioId ={this.indicator.id} url={this.indicator.questionAudio} 
               containerStyles={{
                 position: 'absolute',
-                top: '55%',
-                left: '20%',
+                flexDirection:'row',
+                alignItems:'center',
+               
+                paddingRight:5,
+                top: 10,
+                left: 42,
             }}
               styles={{
                 color: colors.palegreen,
               }}
+              labelStyle={globalStyles.h4}
             />
             }
             

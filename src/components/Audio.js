@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View } from 'react-native';
+import { View, Text } from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import { withNamespaces } from 'react-i18next';
 import TrackPlayer from 'react-native-track-player';
@@ -75,9 +75,11 @@ class Audio extends Component {
     }
     render() {
         const { isPlaying } = this.state;
+        const { t, label } = this.props;
         return (
             
             <View style={this.props.containerStyles}>
+                
                 {isPlaying ?
                     <Icon id="player" name="pause-circle-filled" onPress={() => {
                         this.togglePlayPause();
@@ -87,6 +89,8 @@ class Audio extends Component {
                         this.togglePlayPause();
                     }} style={this.props.styles} size={40} />
                 }
+                
+                <Text style={this.props.labelStyle}>{label}</Text>
             </View>
         )
     }
@@ -95,6 +99,7 @@ class Audio extends Component {
 Audio.propTypes = {
     audioId: PropTypes.number.isRequired,
     url: PropTypes.string.isRequired,
+    label: PropTypes.string
 }
 
 
