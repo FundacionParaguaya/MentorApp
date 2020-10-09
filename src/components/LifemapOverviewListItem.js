@@ -53,7 +53,7 @@ class LifemapOverviewListItem extends Component {
         disabled={disabledButton}
       >
         {this.props.isRetake ? (
-          <View style={{ marginRight: -24 }}>
+          <View style={{ marginRight: -28 }}>
             {this.props.previousAchievement ? (
               <Icon
                 name="stars"
@@ -61,8 +61,8 @@ class LifemapOverviewListItem extends Component {
                 size={20}
                 style={{
                   ...styles.blueIcon,
-                  width: 20,
-                  height: 20,
+                  width: 21,
+                  height: 21,
                 }}
               />
             ) : (
@@ -73,14 +73,14 @@ class LifemapOverviewListItem extends Component {
                 style={{
                   ...styles.blueIcon,
                   backgroundColor: colors.blue,
-                  width: 21,
-                  height: 21,
+                  width: 20,
+                  height: 20,
 
                   justifyContent: 'center',
                   alignItems: 'center'
                 }}
               >
-                <Icon2 name="pin" color={colors.white} size={15} />
+                <Icon2 name="pin" color={colors.white} size={12} />
               </View>
             ) : (
                 <View />
@@ -102,9 +102,8 @@ class LifemapOverviewListItem extends Component {
               size={20}
               style={{
                 ...styles.blueIcon,
-                width: 20,
-                height: 20,
-                zIndex: 5
+                width: 21,
+                height: 21,
               }}
             />
           ) : (
@@ -115,14 +114,14 @@ class LifemapOverviewListItem extends Component {
               style={{
                 ...styles.blueIcon,
                 backgroundColor: colors.blue,
-                width: 21,
-                height: 21,
+                width: 20,
+                height: 20,
                 justifyContent: 'center',
                 alignItems: 'center',
                 zIndex: 5
               }}
             >
-              <Icon2 name="pin" color={colors.white} size={15} />
+              <Icon2 name="pin" color={colors.white} size={12} />
             </View>
           ) : (
               <View />
@@ -191,7 +190,7 @@ const styles = StyleSheet.create({
     borderRadius: 11,
     backgroundColor: colors.white,
     borderColor: colors.white,
-    borderWidth: 3,
+    borderWidth: 2,
     zIndex: 10
   }
 })
