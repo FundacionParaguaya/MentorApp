@@ -167,7 +167,11 @@ const styles = StyleSheet.create({
     alignItems: 'flex-end'
   },
   date: { width: '100%' },
-  text: { marginLeft: 30 },
+  text: { 
+    marginLeft: 30, 
+    fontSize: 14,
+    fontWeight: 'normal', 
+    color:colors.grey },
   error: { marginBottom: 10, marginTop: -10 }
 })
 
