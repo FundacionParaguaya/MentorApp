@@ -555,7 +555,7 @@ export class SocioEconomicQuestion extends Component {
             }>
             {/* <Decoration variation="socioEconomicQuestion" /> */}
             {user.interactive_help && topicAudio &&
-              <Audio audioId ={topicAudio} url={topicAudio}
+              <Audio label ={t('views.lifemap.audioHelp')} audioId ={topicAudio} url={topicAudio}
                containerStyles={{alignItems: 'center',flexDirection:'row', justifyContent:'center', width:'100%', paddingBottom:10}}
                 styles={{ color: colors.palegreen }}
                  labelStyle={globalStyles.h4} 

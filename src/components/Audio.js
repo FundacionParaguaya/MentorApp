@@ -75,7 +75,7 @@ class Audio extends Component {
     }
     render() {
         const { isPlaying } = this.state;
-        const { t } = this.props;
+        const { t, label } = this.props;
         return (
             
             <View style={this.props.containerStyles}>
@@ -89,7 +89,8 @@ class Audio extends Component {
                         this.togglePlayPause();
                     }} style={this.props.styles} size={40} />
                 }
-                <Text style={this.props.labelStyle}>{t('views.lifemap.audioHelp')}</Text>
+                
+                <Text style={this.props.labelStyle}>{label}</Text>
             </View>
         )
     }
@@ -98,6 +99,7 @@ class Audio extends Component {
 Audio.propTypes = {
     audioId: PropTypes.number.isRequired,
     url: PropTypes.string.isRequired,
+    label: PropTypes.string
 }
 
 
