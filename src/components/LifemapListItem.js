@@ -10,7 +10,7 @@ function LifemapListItem(props) {
   return (
     <ListItem style={{...styles.listItem}} onPress={props.handleClick}>
       <View style={styles.listItemContainer}>
-        <Text style={{...globalStyles.h3Bold, ...styles.h3Bold}}>
+        <Text style={{...globalStyles.h3, ...styles.h3}}>
           {props.name}
         </Text>
       </View>
@@ -40,7 +40,7 @@ const styles = StyleSheet.create({
     flexWrap: 'wrap',
     flex: 1,
   },
-  h3Bold: {
+  h3: {
     paddingRight: 20,
     paddingTop: 36,
     alignSelf: 'center',

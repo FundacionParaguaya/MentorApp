@@ -76,7 +76,7 @@ export default StyleSheet.create({
         fontWeight: '600',
       },
       android: {
-        fontFamily: 'Poppins Semibold',
+        fontFamily: 'Poppins SemiBold',
       },
     }),
     fontSize: 16,

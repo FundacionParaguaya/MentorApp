@@ -117,7 +117,9 @@
       "mapsDownloading": "Downloading Maps...",
       "offlineMaps": "Offline Maps",
       "images": "Images",
-      "calcilatingTotalImages": "Calculating total images to cache.."
+      "audios" : "Audios",
+      "calcilatingTotalImages": "Calculating total images to cache..",
+      "calculatingTotalAudios": "Calculating total audios to cache.."
     },
     "family": {
       "membersDontMatch": "The amount of members does not match, please edit the members to match the amount chosen",
@@ -221,7 +223,9 @@
       "reviewDate": "REVIEW DATE",
       "myPriorities": "My priorities",
       "myAchievements": "My achievements",
-      "lifeMap": "Life Map"
+      "lifeMap": "Life Map",
+      "audioHelp": "Audio help",
+
     },
     "modals": {
       "lifeMapWillNotBeSaved": "If you do not enter all details on this page the Life Map will not be saved!",

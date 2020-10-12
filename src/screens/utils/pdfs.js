@@ -135,7 +135,7 @@ const generatePrioritiesTable = (
                 const dateForReview = dateForReviewWithLocale
                   .add(estimatedDate, 'months')
                   .format('DD MMM, YYYY')
-                return `<tr style="${stripe ? 'background-color:#eeeeee' : ''}">
+                return `<tr style="${stripe ? 'background-color:rgb(238,238,238)' : ''}">
                           <td style="${styles.tData}">
                             <div style="${styles.indicatorWrapper}">
                               <div style="${
@@ -203,7 +203,7 @@ const generateAchievementsTable = (
                     const color = getColor(indicatorValue)
 
                     return `<tr style="${
-                      stripe ? 'background-color:#eeeeee' : ''
+                      stripe ? 'background-color:rgb(238,238,238)' : ''
                     }">
                               <td style="${styles.tData}">
                                 <div style="${styles.indicatorWrapper}">

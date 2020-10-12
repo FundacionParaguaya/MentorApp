@@ -117,7 +117,9 @@
       "mapsDownloading": "Descargando mapas",
       "offlineMaps": "Mapas sin conexión",
       "images": "Imágenes",
-      "calcilatingTotalImages": "Calculando imágenes a sincronizar"
+      "audios" : "Audios",
+      "calcilatingTotalImages": "Calculando imágenes a sincronizar",
+      "calculatingTotalAudios": "Calculando audios a sincronizar"
     },
     "family": {
       "membersDontMatch": "La cantidad de miembros no coincide. Favor edita los miembros para que la cantidad sea la correcta.",
@@ -222,7 +224,8 @@
       "reviewDate": "FECHA DE REVISIÓN",
       "myPriorities": "Mis Prioridades",
       "myAchievements": "Mis Logros",
-      "lifeMap": "Mapa de Vida"
+      "lifeMap": "Mapa de Vida",
+      "audioHelp": "Audio ayuda"
     },
     "modals": {
       "lifeMapWillNotBeSaved": "Si no ingresa todos los detalles en esta página, ¡el Mapa de Vida no se guardará!",

@@ -26,7 +26,7 @@ export class NavWrapper extends Component {
 
   componentDidUpdate(prevProps) {
     if (!prevProps.hydration && this.props.hydration) {
-      SplashScreen.hide();
+      SplashScreen.hide();   
     }
   }
 

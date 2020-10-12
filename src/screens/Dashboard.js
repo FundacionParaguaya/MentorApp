@@ -27,8 +27,9 @@ import NotificationModal from '../components/NotificationModal';
 import RoundImage from '../components/RoundImage';
 import {supported_API_version, url} from '../config';
 import globalStyles from '../globalStyles';
-import {markVersionCheked, toggleAPIVersionModal} from '../redux/actions';
+import {markVersionCheked, toggleAPIVersionModal, validate} from '../redux/actions';
 import colors from '../theme.json';
+
 
 const TestFairy = require('react-native-testfairy');
 // get env

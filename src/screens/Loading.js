@@ -10,7 +10,7 @@ import Icon from 'react-native-vector-icons/MaterialIcons';
 import {AndroidBackHandler} from 'react-navigation-backhandler';
 import {connect} from 'react-redux';
 
-import {initImageCaching} from '../cache';
+import {initAudioCaching, initImageCaching} from '../cache';
 import Button from '../components/Button';
 import Decoration from '../components/decoration/Decoration';
 import ProgressBar from '../components/ProgressBar';
@@ -24,6 +24,7 @@ import {
   resetSyncState,
   setAppVersion,
   setSyncedState,
+  validate
 } from '../redux/actions';
 
 import colors from '../theme.json';
@@ -34,6 +35,7 @@ export class Loading extends Component {
     cachingImages: false,
     downloadingMap: false,
     mapsDownloaded: false,
+    cachingAudios: false,
     currentMapName: '',
     mapPercent: 0,
     maps: [],
@@ -161,7 +163,8 @@ export class Loading extends Component {
       (!!this.props.sync.images.total &&
         this.props.sync.images.total === this.props.sync.images.synced)
     ) {
-      this.props.navigation.navigate('DrawerStack');
+      this.handleAudioCaching();
+      //this.props.navigation.navigate('DrawerStack');
     } else if (!this.state.cachingImages) {
       this.setState({
         cachingImages: true,
@@ -170,11 +173,28 @@ export class Loading extends Component {
     }
   };
 
+  // STEP 5 - cache the survey indicator audios
+
+  handleAudioCaching = () => {
+    if(!this.props.downloadMapsAndImages.downloadAudios ||
+      (!!this.props.sync.audios.total && 
+        this.props.sync.audios.total === this.props.sync.audios.synced)
+      ){
+        this.props.navigation.navigate('DrawerStack')
+      }else if(!this.state.cachingAudios){
+        this.setState({
+          cachingAudios:true,
+        });
+        initAudioCaching();
+      }
+  }
+
   reload = () => {
     this.setState({
       syncingServerData: false, // know when to show that data is synced
       cachingImages: false,
       downloadingMap: false,
+      cachingAudios:false,
       maps: [],
       error: null,
     });
@@ -223,7 +243,7 @@ export class Loading extends Component {
   }
 
   checkState() {
-    const {families, surveys, images, appVersion} = this.props.sync;
+    const {families, surveys, images, appVersion, audios} = this.props.sync;
     if (!this.props.user.token) {
       // if user hasn't logged in, navigate to login
       this.props.navigation.navigate('Login');
@@ -236,12 +256,15 @@ export class Loading extends Component {
     } else if (
       families &&
       surveys &&
-      !!images.total &&
-      images.total === images.synced
+      (!!images.total &&
+      images.total === images.synced ||
+      !!audios.total &&
+      audios.total === audios.synced)
     ) {
       // if everything is synced navigate to Dashboard
       this.props.navigation.navigate('DrawerStack');
-    } else {
+    }
+    else {
       // check connection state
       NetInfo.fetch().then((state) => {
         if (!state.isConnected) {
@@ -254,6 +277,7 @@ export class Loading extends Component {
   }
 
   componentDidMount() {
+    this.props.validate(url[this.props.env], this.props.user.token);
     this.checkState();
   }
   downloadMaps = async () => {
@@ -293,11 +317,26 @@ export class Loading extends Component {
       !this.props.offline.outbox.lenght &&
       this.state.mapsDownloaded &&
       this.state.maps.every((map) => map.status === 100) &&
-      !this.state.cachingImages
+      !this.state.cachingImages 
     ) {
       this.setState({cachingImages: true});
       this.props.setSyncedState('maps', true);
       this.handleImageCaching();
+    }
+
+    if (
+      this.props.surveys.length &&
+      !this.props.offline.outbox.lenght &&
+      this.state.mapsDownloaded &&
+      this.state.maps.every((map) => map.status === 100) &&
+      this.state.cachingImages &&
+      (!!this.props.sync.images.total && 
+        this.props.sync.images.total === this.props.sync.images.synced) &&
+      !this.state.cachingAudios
+    ) {
+      this.setState({cachingAudios: true});
+     // this.props.setSyncedState('images', true);
+      this.handleAudioCaching();
     }
 
     // if everything is synced navigate to home
@@ -305,10 +344,31 @@ export class Loading extends Component {
       !!this.props.sync.images.total &&
       prevProps.sync.images.total !== prevProps.sync.images.synced &&
       this.props.sync.images.total === this.props.sync.images.synced &&
-      this.state.maps.every((map) => map.status === 100)
+      this.state.maps.every((map) => map.status === 100) &&
+      this.props.downloadMapsAndImages.downloadAudios == false
     ) {
       this.props.navigation.navigate('DrawerStack');
     }
+
+    if( this.state.maps.every((map) => map.status === 100) &&
+    !!this.props.sync.audios.total &&
+    prevProps.sync.audios.total !== prevProps.sync.audios.synced &&
+    this.props.sync.audios.total === this.props.sync.audios.synced && this.props.downloadMapsAndImages.downloadImages == false) {
+      this.props.navigation.navigate('DrawerStack');
+    }
+
+    if( this.state.maps.every((map) => map.status === 100) &&
+    !!this.props.sync.audios.total &&
+    this.props.sync.audios.total === this.props.sync.audios.synced &&
+    !!this.props.sync.images.total &&
+    ((prevProps.sync.images.total !== prevProps.sync.images.synced) || (prevProps.sync.audios.total !== prevProps.sync.audios.synced)  ) &&
+    this.props.sync.images.total === this.props.sync.images.synced &&  this.props.downloadMapsAndImages.downloadImages && this.props.downloadMapsAndImages.downloadAudios
+    ) {
+      this.props.navigation.navigate('DrawerStack');
+    }
+
+
+
     // if there is a map download error
     if (!prevProps.sync.mapsError && this.props.sync.mapsError) {
       //in case of error we dont show the error... we just skip the maps.
@@ -333,6 +393,7 @@ export class Loading extends Component {
     const {
       syncingServerData,
       cachingImages,
+      cachingAudios,
       downloadingMap,
       mapsDownloaded,
       error,
@@ -510,6 +571,62 @@ export class Loading extends Component {
                       )}
                     </View>
                   )}
+                 {!cachingAudios ? (
+                    <Text style={styles.colorDark}>
+                      {t('views.loading.audios')}
+                    </Text>
+                  ) : null}
+                       {cachingAudios && (
+                    <View>
+                      {sync.audios.synced && sync.audios.total ? (
+                        <React.Fragment>
+                          <View style={styles.syncingItem}>
+                            <Text
+                              style={
+                                sync.audios.synced / sync.audios.total === 1
+                                  ? styles.colorGreen
+                                  : styles.colorDark
+                              }>
+                              {t('views.loading.audios')}
+
+                            </Text>
+                            <Text
+                              style={
+                                sync.audios.synced / sync.audios.total === 1
+                                  ? styles.colorGreen
+                                  : styles.colorDark
+                              }>
+                              {`${Math.floor(
+                                (sync.audios.synced / sync.audios.total) * 100,
+                              )}%`}
+                            </Text>
+                          </View>
+                          <View
+                            style={
+                              sync.audios.synced / sync.audios.total === 1
+                                ? {display: 'none'}
+                                : {}
+                            }>
+                            <ProgressBar
+                              removePadding
+                              hideBorder
+                              progress={sync.audios.synced / sync.audios.total}
+                            />
+                          </View>
+                        </React.Fragment>
+                      ) : (
+                        <Text
+                          style={{
+                            color: colors.dark,
+                            fontSize: 14,
+                            marginBottom: 5,
+                          }}>
+                          {t('views.loading.calculatingTotalAudios')}.
+                      
+                        </Text>
+                      )}
+                    </View>
+                  )}
                 </View>
               )}
             </View>
@@ -626,6 +743,7 @@ const mapDispatchToProps = {
   setAppVersion,
   resetSyncState,
   setSyncedState,
+  validate,
 };
 
 export default withNamespaces()(

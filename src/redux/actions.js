@@ -3,6 +3,7 @@ import {PhoneNumberUtil} from 'google-libphonenumber';
 // import { ImageStore } from 'react-native'
 export const SET_LOGIN_STATE = 'SET_LOGIN_STATE';
 export const USER_LOGOUT = 'USER_LOGOUT';
+export const SET_VALIDATE = 'SET_VALIDATE';
 
 export const login = (username, password, env) => (dispatch) =>
   fetch(
@@ -37,11 +38,34 @@ export const login = (username, password, env) => (dispatch) =>
     )
     .catch((e) => e);
 
+export const validate = (env,token) =>(dispatch) => {
+    fetch(`${env}/api/v1/users/validate`,{
+      method: 'GET',
+      headers: {
+        Authorization: `Bearer ${token}`,
+        'content-type': 'application/json;charset=utf8',
+      },
+    })
+    .then((data) => {
+      if (data.status !== 200) {
+        throw new Error();
+      } else return data.json();
+    }).
+    then((data) => {
+      console.log('data',data)
+      dispatch({
+        type: SET_VALIDATE,
+        interactive_help:!!data.application &&
+        !!data.application.interactiveHelp
+      })
+    })
+  }
+
 export const logout = () => ({
   type: USER_LOGOUT,
 });
 
-// Download images/maps
+// Download images/maps/audios
 
 export const SET_DOWNLOADMAPSIMAGES = 'SET_DOWNLOADMAPSIMAGES';
 
@@ -118,7 +142,7 @@ export const loadSurveys = (env, token) => ({
         },
         body: JSON.stringify({
           query:
-            'query { surveysByUser { title id createdAt description minimumPriorities privacyPolicy { title  text } termsConditions{ title text }  surveyConfig { stoplightOptional signSupport pictureSupport isDemo documentType {text value otherOption} requiredFields{primaryParticipant, familyMember} gender { text value otherOption } surveyLocation { country latitude longitude}}  surveyEconomicQuestions { questionText codeName answerType topic required forFamilyMember options {text value otherOption conditions{codeName, type, values, operator, valueType, showIfNoData}}, conditions{codeName, type, value, operator}, conditionGroups{groupOperator, joinNextGroup, conditions{codeName, type, value, operator}} } surveyStoplightQuestions { questionText codeName definition dimension id stoplightColors { url value description } required } } }',
+            'query { surveysByUser { title id createdAt description minimumPriorities privacyPolicy { title  text } termsConditions{ title text }  surveyConfig { stoplightOptional signSupport pictureSupport isDemo documentType {text value otherOption} requiredFields{primaryParticipant, familyMember} gender { text value otherOption } surveyLocation { country latitude longitude}}  surveyEconomicQuestions { questionText codeName answerType topic topicAudio required forFamilyMember options {text value otherOption conditions{codeName, type, values, operator, valueType, showIfNoData}}, conditions{codeName, type, value, operator}, conditionGroups{groupOperator, joinNextGroup, conditions{codeName, type, value, operator}} } surveyStoplightQuestions { questionText codeName definition dimension id questionAudio stoplightColors { url value description } required } } }',
         }),
       },
       commit: {type: LOAD_SURVEYS_COMMIT},

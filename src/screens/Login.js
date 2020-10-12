@@ -1,7 +1,7 @@
 import NetInfo from '@react-native-community/netinfo';
 import i18n from 'i18next';
 import PropTypes from 'prop-types';
-import React, {useRef, useState, useEffect} from 'react';
+import React, {Component} from 'react';
 import {withNamespaces} from 'react-i18next';
 import {
   AppState,
@@ -34,61 +34,54 @@ import InternalStorageFullModal, {
 } from './modals/InternalStorageFullModal';
 
 // get env
+const nodeEnv = process.env;
 
-function Login(props) {
-  let unsubscribeNetChange = null;
-  const nodeEnv = process.env;
-  const [formData, setFormDate] = useState({username: '', password: ''});
-  const [error, setError] = useState(false);
-  const [error2, setError2] = useState(false);
-  const [isConnected, setConnection] = useState(true);
-  const [loading, setLoading] = useState(false);
-  const [devOptions, setDevOptions] = useState({
+export class Login extends Component {
+  // unsubscribeNetChange;
+  state = {
+    username: '',
+    password: '',
+    error: false,
+    error2: false,
+    connection: false,
+    loading: false,
     syncMaps: true,
     syncImages: true,
-  });
-  const [appState, setAppState] = useState(AppState.currentState);
-  const [notEnoughStorageSpace, setNotEnoughStorageSpace] = useState(false);
-
-  useEffect(() => {
-    props.navigation.addListener('didFocus', () => {
+    syncAudios: true,
+    appState: AppState.currentState,
+    notEnoughStorageSpace: false,
+  };
+  componentDidMount() {
+    this.props.navigation.addListener('didFocus', () => {
       const lng = getDeviceLanguage();
       i18n.changeLanguage(lng);
     });
 
     // if use has logged in navigate to Loading
-    if (props.user.token) {
-      console.log('NAVIGATE');
-      props.navigation.navigate('Loading');
+    if (this.props.user.token) {
+      this.props.navigation.navigate('Loading');
     } else {
-      AppState.addEventListener('change', handleAppStateChange);
-      setDimensions();
+      AppState.addEventListener('change', this.handleAppStateChange);
+      this.setDimensions();
 
       // check connection
-      NetInfo.fetch().then((state) => setConnectivityState(isConnected));
-      unsubscribeNetChange = NetInfo.addEventListener((state) => {
-        setConnectivityState(isConnected);
+      NetInfo.fetch().then(state =>
+        this.setConnectivityState(state.isConnected),
+      );
+      this.unsubscribeNetChange = NetInfo.addEventListener(state => {
+        this.setConnectivityState(state.isConnected);
       });
     }
-    return () => {
-      if (unsubscribeNetChange) {
-        unsubscribeNetChange();
-      }
-      AppState.removeEventListener('change', handleAppStateChange);
-    };
-  }, []);
+  }
 
-  const setConnectivityState = (isConnected) => {
-    if (isConnected) {
-      setConnection(true);
-      setError(false);
-    } else {
-      setConnection(false);
-      setError('No connection');
-    }
+  setConnectivityState = isConnected => {
+    isConnected
+      ? this.setState({connection: true, error: ''})
+      : this.setState({connection: false, error: 'No connection'});
   };
-  const setDimensions = () => {
-    const {width, height, scale} = props.dimensions;
+
+  setDimensions = () => {
+    const {width, height, scale} = this.props.dimensions;
     const screenDimensions = Dimensions.get('window');
 
     if (
@@ -96,33 +89,39 @@ function Login(props) {
       height !== screenDimensions.height ||
       scale !== screenDimensions.scale
     ) {
-      props.setDimensions({
+      this.props.setDimensions({
         height: screenDimensions.height,
         width: screenDimensions.width,
         scale: screenDimensions.scale,
       });
     }
   };
-  const checkDevOption = (devProp) => {
-    setDevOptions({...devOptions, [devProp]: !devOptions[devProp]});
+
+  checkDevOption = devProp => {
+    this.setState({
+      [devProp]: !this.state[devProp],
+    });
   };
-  const onLogin = async () => {
-    let {password, username} = formData;
-    if (!(await isStorageSpaceEnough())) {
-      setNotEnoughStorageSpace(true);
+
+  onLogin = async () => {
+    if (!(await this.isStorageSpaceEnough())) {
+      this.setState({notEnoughStorageSpace: true});
       return;
     }
-    setLoading(true);
-    setError(false);
-    setError2(false);
 
-    props.setDownloadMapsAndImages({
-      downloadMaps: devOptions.syncMaps,
-      downloadImages: devOptions.syncImages,
+    this.setState({
+      loading: true,
+      error: false,
+      error2: false,
     });
-    let env = username.trim() === 'demo' ? 'demo' : 'production';
-    username = username.trim();
-    let envCheck = username.trim().substring(0, 2);
+    this.props.setDownloadMapsAndImages({
+      downloadMaps: this.state.syncMaps,
+      downloadImages: this.state.syncImages,
+      downloadAudios: this.state.syncAudios
+    });
+    let env = this.state.username.trim() === 'demo' ? 'demo' : 'production';
+    let username = this.state.username.trim();
+    let envCheck = this.state.username.trim().substring(0, 2);
 
     if (envCheck === 't/' || envCheck === 'd/' || envCheck === 'p/') {
       if (envCheck === 't/') {
@@ -133,175 +132,204 @@ function Login(props) {
         env = 'production';
       }
 
-      username = username.trim().substring(2, username.trim().length);
+      username = this.state.username
+        .trim()
+        .substring(2, this.state.username.trim().length);
     }
 
-    props.setEnv(env);
-    props.login(username, password, url[env]).then(() => {
-      if (props.user.status === 401) {
-        setLoading(false);
-        setError('Wrong username or password');
+    this.props.setEnv(env);
+    this.props.login(username, this.state.password, url[env]).then(() => {
+      if (this.props.user.status === 401) {
+        this.setState({
+          loading: false,
+        });
+        this.setState({error: 'Wrong username or password'});
       } else if (
-        props.user.role !== 'ROLE_SURVEY_USER' &&
-        props.user.role !== 'ROLE_SURVEY_TAKER' &&
-        props.user.role !== 'ROLE_SURVEY_USER_ADMIN'
+        this.props.user.role !== 'ROLE_SURVEY_USER' &&
+        this.props.user.role !== 'ROLE_SURVEY_TAKER' &&
+        this.props.user.role !== 'ROLE_SURVEY_USER_ADMIN'
       ) {
-        setLoading(false);
-        setError('Wrong username or password');
+        this.setState({
+          loading: false,
+        });
+        this.setState({error: 'Wrong username or password'});
       } else {
-        setLoading(false);
-        props.navigation.navigate('Loading');
+        this.setState({
+          loading: false,
+        });
+        this.props.navigation.navigate('Loading');
       }
     });
   };
-  const handleAppStateChange = (nextAppState) => setAppState(nextAppState);
-  const isStorageSpaceEnough = async () => {
+
+  handleAppStateChange = nextAppState =>
+    this.setState({appState: nextAppState});
+
+  isStorageSpaceEnough = async () => {
     const freeSpace = await RNFetchBlob.fs.df();
 
     return (
       Number(freeSpace.internal_free) > MINIMUM_REQUIRED_STORAGE_SPACE_500_MB
     );
   };
-  const retryLogIn = () => setNotEnoughStorageSpace(false);
-  const {t} = props;
 
-  return (
-    <View key={appState} style={globalStyles.container}>
-      <ScrollView style={globalStyles.content}>
-        {notEnoughStorageSpace && !error ? (
-          <InternalStorageFullModal
-            retryLogIn={retryLogIn}
-            isOpen={!!notEnoughStorageSpace}
-          />
-        ) : (
-          <View>
-            <Image style={styles.logo} source={logo} />
-            <Text style={globalStyles.h1}>{t('views.login.welcome')}</Text>
-            <Text
-              style={{
-                ...globalStyles.h4,
-                marginBottom: 64,
-                color: colors.lightdark,
-              }}>
-              {t('views.login.letsGetStarted')}
-            </Text>
-            <View
-              style={{
-                width: '100%',
-                maxWidth: 400,
-                marginLeft: 'auto',
-                marginRight: 'auto',
-              }}>
-              <Text style={globalStyles.h5}>{t('views.login.username')}</Text>
-            </View>
-            <TextInput
-              id="username"
-              testID="username-input"
-              autoCapitalize="none"
-              style={{
-                ...styles.input,
-                borderColor: error ? colors.red : colors.palegreen,
-              }}
-              onChangeText={(username) => setFormDate({...formData, username})}
-            />
-            <View
-              style={{
-                width: '100%',
-                maxWidth: 400,
-                marginLeft: 'auto',
-                marginRight: 'auto',
-              }}>
-              <Text style={globalStyles.h5}>{t('views.login.password')}</Text>
-            </View>
+  retryLogIn = () => this.setState({notEnoughStorageSpace: false});
 
-            <TextInput
-              id="password"
-              testID="password-input"
-              secureTextEntry
-              autoCapitalize="none"
-              style={{
-                ...styles.input,
-                borderColor: error ? colors.red : colors.palegreen,
-                marginBottom: error ? 0 : 25,
-              }}
-              onChangeText={(password) => setFormDate({...formData, password})}
+  componentWillUnmount() {
+    if (this.unsubscribeNetChange) {
+      this.unsubscribeNetChange();
+    }
+    AppState.removeEventListener('change', this.handleAppStateChange);
+  }
+
+  render() {
+    const {t} = this.props;
+
+    return (
+      <View key={this.state.appState} style={globalStyles.container}>
+        <ScrollView style={globalStyles.content}>
+          {this.state.notEnoughStorageSpace && !this.state.error ? (
+            <InternalStorageFullModal
+              retryLogIn={this.retryLogIn}
+              isOpen={!!this.state.notEnoughStorageSpace}
             />
-            {error ? (
+          ) : (
+            <View>
+              <Image style={styles.logo} source={logo} />
+              <Text style={globalStyles.h1}>{t('views.login.welcome')}</Text>
               <Text
-                id="error-message"
-                style={{...globalStyles.tag, ...styles.error}}>
-                {error}
-              </Text>
-            ) : (
-              <View />
-            )}
-            {error2 ? (
-              <Text
-                id="error-message"
                 style={{
-                  ...globalStyles.tag,
-                  ...styles.error,
-                  marginTop: -6,
+                  ...globalStyles.h4,
+                  marginBottom: 64,
+                  color: colors.lightdark,
                 }}>
-                {error2}
+                {t('views.login.letsGetStarted')}
               </Text>
-            ) : (
-              <View />
-            )}
-            {loading ? (
-              <Button
+              <View
                 style={{
-                  maxWidth: 400,
                   width: '100%',
+                  maxWidth: 400,
                   marginLeft: 'auto',
                   marginRight: 'auto',
-                }}
-                id="login-button"
-                handleClick={() => onLogin()}
-                text={t('views.login.loggingIn')}
-                disabled={true}
-                colored
-              />
-            ) : (
-              <Button
-                style={{
-                  maxWidth: 400,
-                  width: '100%',
-                  marginLeft: 'auto',
-                  marginRight: 'auto',
-                }}
-                id="login-button"
-                testID="login-button"
-                handleClick={() => onLogin()}
-                text={t('views.login.buttonText')}
-                colored
-                disabled={error === 'No connection' ? true : false}
-              />
-            )}
-            {nodeEnv.NODE_ENV === 'development' && (
-              <View style={{marginTop: 20}}>
-                <Text>Dev options</Text>
-                <CheckBox
-                  containerStyle={styles.checkbox}
-                  onPress={() => checkDevOption('syncMaps')}
-                  title="Sync maps?"
-                  checked={devOptions.syncMaps}
-                  textStyle={{fontWeight: 'normal'}}
-                />
-                <CheckBox
-                  containerStyle={styles.checkbox}
-                  onPress={() => checkDevOption('syncImages')}
-                  title="Sync images?"
-                  checked={devOptions.syncImages}
-                  textStyle={{fontWeight: 'normal'}}
-                />
+                }}>
+                <Text style={globalStyles.h5}>{t('views.login.username')}</Text>
               </View>
-            )}
-          </View>
-        )}
-      </ScrollView>
-    </View>
-  );
+              <TextInput
+                id="username"
+                testID="username-input"
+                autoCapitalize="none"
+                style={{
+                  ...styles.input,
+                  borderColor: this.state.error ? colors.red : colors.palegreen,
+                }}
+                onChangeText={username => this.setState({username})}
+              />
+              <View
+                style={{
+                  width: '100%',
+                  maxWidth: 400,
+                  marginLeft: 'auto',
+                  marginRight: 'auto',
+                }}>
+                <Text style={globalStyles.h5}>{t('views.login.password')}</Text>
+              </View>
+
+              <TextInput
+                id="password"
+                testID="password-input"
+                secureTextEntry
+                autoCapitalize="none"
+                style={{
+                  ...styles.input,
+                  borderColor: this.state.error ? colors.red : colors.palegreen,
+                  marginBottom: this.state.error ? 0 : 25,
+                }}
+                onChangeText={password => this.setState({password})}
+              />
+              {this.state.error ? (
+                <Text
+                  id="error-message"
+                  style={{...globalStyles.tag, ...styles.error}}>
+                  {this.state.error}
+                </Text>
+              ) : (
+                <View />
+              )}
+              {this.state.error2 ? (
+                <Text
+                  id="error-message"
+                  style={{
+                    ...globalStyles.tag,
+                    ...styles.error,
+                    marginTop: -6,
+                  }}>
+                  {this.state.error2}
+                </Text>
+              ) : (
+                <View />
+              )}
+              {this.state.loading ? (
+                <Button
+                  style={{
+                    maxWidth: 400,
+                    width: '100%',
+                    marginLeft: 'auto',
+                    marginRight: 'auto',
+                  }}
+                  id="login-button"
+                  handleClick={() => this.onLogin()}
+                  text={t('views.login.loggingIn')}
+                  disabled={true}
+                  colored
+                />
+              ) : (
+                <Button
+                  style={{
+                    maxWidth: 400,
+                    width: '100%',
+                    marginLeft: 'auto',
+                    marginRight: 'auto',
+                  }}
+                  id="login-button"
+                  testID="login-button"
+                  handleClick={() => this.onLogin()}
+                  text={t('views.login.buttonText')}
+                  colored
+                  disabled={this.state.error === 'No connection' ? true : false}
+                />
+              )}
+              {nodeEnv.NODE_ENV === 'development' && (
+                <View style={{marginTop: 20}}>
+                  <Text>Dev options</Text>
+                  <CheckBox
+                    containerStyle={styles.checkbox}
+                    onPress={() => this.checkDevOption('syncMaps')}
+                    title="Sync maps?"
+                    checked={this.state.syncMaps}
+                    textStyle={styles.checkboxText}
+                  />
+                  <CheckBox
+                    containerStyle={styles.checkbox}
+                    onPress={() => this.checkDevOption('syncImages')}
+                    title="Sync images?"
+                    checked={this.state.syncImages}
+                    textStyle={styles.checkboxText}
+                  />
+                  <CheckBox
+                    containerStyle={styles.checkbox}
+                    onPress={() => this.checkDevOption('syncAudios')}
+                    title="Sync Audios?"
+                    checked={this.state.syncAudios}
+                    textStyle={styles.checkboxText}
+                  />  
+                </View>
+              )}
+            </View>
+          )}
+        </ScrollView>
+      </View>
+    );
+  }
 }
 
 Login.propTypes = {
@@ -339,6 +367,9 @@ const styles = StyleSheet.create({
     borderWidth: 0,
     backgroundColor: 'transparent',
   },
+  checkboxText:{
+    fontWeight: 'normal'
+  },
   logo: {width: 42, height: 42, marginBottom: 8},
   error: {
     color: colors.red,
@@ -365,5 +396,8 @@ const mapDispatchToProps = {
 };
 
 export default withNamespaces()(
-  connect(mapStateToProps, mapDispatchToProps)(Login),
+  connect(
+    mapStateToProps,
+    mapDispatchToProps,
+  )(Login),
 );

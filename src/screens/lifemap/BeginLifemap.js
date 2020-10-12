@@ -11,6 +11,7 @@ import StickyFooter from '../../components/StickyFooter';
 import globalStyles from '../../globalStyles';
 import {updateDraft} from '../../redux/actions';
 import {getTotalEconomicScreens} from './helpers';
+import TrackPlayer from 'react-native-track-player';
 
 function BeginLifemap(props) {
   const [survey, setSurvey] = useState(props.route.params.survey);

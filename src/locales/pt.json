@@ -200,7 +200,8 @@
 			"reviewDate": "data DE revisão",
 			"myPriorities": "Minhas Prioridades",
 			"myAchievements": "Minhas conquistas",
-			"lifeMap": "Mapa de Vida"
+			"lifeMap": "Mapa de Vida",
+			"audioHelp": "Ajuda Áudio"
 		},
 		"modals": {
 			"lifeMapWillNotBeSaved": "Se você não inserir todos os detalhes nesta página, o Mapa da Vida não será salvo!",
