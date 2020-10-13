@@ -131,7 +131,7 @@ export class Question extends Component {
         survey: this.survey,
       });
     } else if (this.step + 1 >= this.indicators.length && answer === 0) {
-      return this.props.navigation.navigate('Skipped', {
+      return this.props.navigation.replace('Skipped', {
         draftId: this.draftId,
         survey: this.survey,
       });
@@ -141,13 +141,13 @@ export class Question extends Component {
         answer !== 0) ||
       skippedQuestions.length === 0
     ) {
-      return this.props.navigation.navigate('Overview', {
+      return this.props.navigation.replace('Overview', {
         resumeDraft: false,
         draftId: this.draftId,
         survey: this.survey,
       });
     } else {
-      return this.props.navigation.navigate('Skipped', {
+      return this.props.navigation.replace('Skipped', {
         draftId: this.draftId,
         survey: this.survey,
       });
