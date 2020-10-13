@@ -46,7 +46,7 @@ export class DateInputComponent extends React.Component {
       if (error) {
         this.props.setError(true, id)
       } else {
-        const unix = moment.utc(`${date}`, 'D MMMM YYYY').unix()
+        const unix = moment(`${date}`, 'D MMMM YYYY').unix()
 
         this.props.setError(false, id)
         this.props.onValidDate(unix, id)
@@ -55,7 +55,7 @@ export class DateInputComponent extends React.Component {
         error
       })
     } else if (!error) {
-      const unix = moment.utc(`${date}`, 'D MMMM YYYY').unix()
+      const unix = moment(`${date}`, 'D MMMM YYYY').unix()
       this.props.onValidDate(unix, id)
     }
   }
