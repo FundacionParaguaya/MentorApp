@@ -74,7 +74,7 @@ export const filterAudioURLsFromSurveys = surveys => {
     })
 
     // set total amount of audio to be cached
-    store.dispatch(setSyncedItemTotal('audios', audioURLS.length));
+    store.dispatch(setSyncedItemTotal('audios', audioURLS.length ));
     return audioURLS
 }
 
@@ -87,7 +87,8 @@ export const cacheAudios = async audioURLS => {
       await callback(array[index], index, array)
     }
   }
-  store.dispatch(setSyncedItemAmount('audios',0))
+ 
+  store.dispatch(setSyncedItemAmount('audios', 0))
 
   await asyncForEach(audioURLS, async source => {
     RNFetchBlob.fs.
@@ -128,4 +129,6 @@ export const initAudioCaching = async () => {
   const surveys = getSurveys();
   const audioURLS = await filterAudioURLsFromSurveys(surveys);
   cacheAudios(audioURLS);
+  
+ 
 }

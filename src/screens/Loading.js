@@ -177,7 +177,7 @@ export class Loading extends Component {
 
   handleAudioCaching = () => {
     if(!this.props.downloadMapsAndImages.downloadAudios ||
-      (!!this.props.sync.audios.total && 
+      ((this.props.sync.audios.total != null ) && 
         this.props.sync.audios.total === this.props.sync.audios.synced)
       ){
         this.props.navigation.navigate('DrawerStack')
@@ -254,12 +254,13 @@ export class Loading extends Component {
       this.props.setAppVersion(DeviceInfo.getVersion());
       this.syncSurveys('re-sync');
     } else if (
+      
       families &&
       surveys &&
-      (!!images.total &&
-      images.total === images.synced ||
-      !!audios.total &&
-      audios.total === audios.synced)
+      ((!!images.total &&
+      images.total === images.synced) ||
+      (!!audios.total &&
+      audios.total === audios.synced))
     ) {
       // if everything is synced navigate to Dashboard
       this.props.navigation.navigate('DrawerStack');
@@ -297,6 +298,7 @@ export class Loading extends Component {
   };
   componentDidUpdate(prevProps) {
     // if user logs in
+    console.log('update')
     if (!prevProps.user.token && this.props.user.token) {
       this.syncSurveys();
     }
@@ -335,7 +337,7 @@ export class Loading extends Component {
       !this.state.cachingAudios
     ) {
       this.setState({cachingAudios: true});
-     // this.props.setSyncedState('images', true);
+      //this.props.setSyncedState('images', true);
       this.handleAudioCaching();
     }
 
@@ -347,23 +349,26 @@ export class Loading extends Component {
       this.state.maps.every((map) => map.status === 100) &&
       this.props.downloadMapsAndImages.downloadAudios == false
     ) {
+     console.log(' if everything is synced navigate to home 1')
       this.props.navigation.navigate('DrawerStack');
     }
 
     if( this.state.maps.every((map) => map.status === 100) &&
-    !!this.props.sync.audios.total &&
+    this.props.sync.audios.total != null &&
     prevProps.sync.audios.total !== prevProps.sync.audios.synced &&
     this.props.sync.audios.total === this.props.sync.audios.synced && this.props.downloadMapsAndImages.downloadImages == false) {
+      console.log(' if everything is synced navigate to home 2')
       this.props.navigation.navigate('DrawerStack');
     }
 
     if( this.state.maps.every((map) => map.status === 100) &&
-    !!this.props.sync.audios.total &&
+    this.props.sync.audios.total != null &&
     this.props.sync.audios.total === this.props.sync.audios.synced &&
     !!this.props.sync.images.total &&
-    ((prevProps.sync.images.total !== prevProps.sync.images.synced) || (prevProps.sync.audios.total !== prevProps.sync.audios.synced)  ) &&
+    ((prevProps.sync.images.total !== prevProps.sync.images.synced) || ((prevProps.sync.audios.total !== prevProps.sync.audios.synced))  ) &&
     this.props.sync.images.total === this.props.sync.images.synced &&  this.props.downloadMapsAndImages.downloadImages && this.props.downloadMapsAndImages.downloadAudios
     ) {
+      console.log(' if everything is synced navigate to home 3')
       this.props.navigation.navigate('DrawerStack');
     }
 
