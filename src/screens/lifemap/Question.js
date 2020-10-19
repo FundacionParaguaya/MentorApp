@@ -12,6 +12,7 @@ import StickyFooter from '../../components/StickyFooter';
 import { updateDraft } from '../../redux/actions';
 import colors from '../../theme.json';
 import { getTotalEconomicScreens } from './helpers';
+import {calculateProgressBar} from '../utils/helpers';
 import globalStyles from '../../globalStyles';
 
 import TrackPlayer from 'react-native-track-player';
@@ -220,8 +221,7 @@ export class Question extends Component {
           visible={false}
           readOnly
           progress={
-            ((draft.familyData.countFamilyMembers > 1 ? 5 : 4) + this.step) /
-            draft.progress.total || getTotalEconomicScreens(this.survey)
+            calculateProgressBar({readOnly:this.readOnly,draft:draft,screen:getTotalEconomicScreens(this.survey) + 6 + this.step})
           }
           currentScreen="Question">
           {this.state.showDefinition ? (

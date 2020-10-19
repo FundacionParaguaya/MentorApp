@@ -7,7 +7,7 @@ import * as _ from 'lodash';
 import {Formik, Form} from 'formik';
 import * as Yup from 'yup';
 
-import Decoration from '../../components/decoration/Decoration';
+import {calculateProgressBar} from '../utils/helpers';
 import SelectWithFormik from '../../components/formik/SelectWithFormik';
 import RadioWithFormik from '../../components/formik/RadioWithFormik';
 import InputWithFormik from '../../components/formik/InputWithFormik';
@@ -547,12 +547,7 @@ export class SocioEconomicQuestion extends Component {
             continueLabel={i18n.t('general.continue')}
             readOnly={!!this.readOnly}
             progress={
-              !this.readOnly && draft
-                ? ((draft.familyData.countFamilyMembers > 1 ? 3 : 2) +
-                    (socioEconomics ? socioEconomics.currentScreen : 1)) /
-                  draft.progress.total
-                : 0
-            }>
+              calculateProgressBar({readOnly:this.readOnly,draft:draft,screen:socioEconomics ? socioEconomics.currentScreen + 4 : 4})}>
             {/* <Decoration variation="socioEconomicQuestion" /> */}
             {user.interactive_help && topicAudio &&
               <Audio label ={t('views.lifemap.audioHelp')} audioId ={topicAudio} url={topicAudio}

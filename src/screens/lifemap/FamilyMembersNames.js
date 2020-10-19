@@ -17,6 +17,7 @@ import globalStyles from '../../globalStyles';
 import {updateDraft} from '../../redux/actions';
 import colors from '../../theme.json';
 import {getTotalScreens, setValidationSchema} from './helpers';
+import {calculateProgressBar} from '../utils/helpers';
 
 export class FamilyMembersNames extends Component {
   survey = this.props.route.params.survey;
@@ -247,7 +248,7 @@ export class FamilyMembersNames extends Component {
         onContinue={this.validateForm}
         continueLabel={t('general.continue')}
         readOnly={!!this.readOnly}
-        progress={2 / draft.progress.total}>
+        progress={calculateProgressBar({readOnly:this.readOnly,draft:draft,screen:2})}>
         <Popup
           isOpen={this.state.isOpen}
           onClose={() => this.setState({isOpen: false})}>

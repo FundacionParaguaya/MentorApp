@@ -12,6 +12,7 @@ import LifemapVisual from '../../components/LifemapVisual';
 import StickyFooter from '../../components/StickyFooter';
 import globalStyles from '../../globalStyles';
 import {updateDraft} from '../../redux/actions';
+import {calculateProgressBar} from '../utils/helpers';
 import colors from '../../theme.json';
 
 export class Overview extends Component {
@@ -296,10 +297,8 @@ export class Overview extends Component {
         continueLabel={t('general.continue')}
         onContinue={() => this.onContinue()}
         visible={!this.isResumingDraft && !this.familyLifemap}
-        progress={
-          !this.isResumingDraft && !this.familyLifemap
-            ? (draft.progress.total - 1) / draft.progress.total
-            : 0
+        progress={!this.isResumingDraft && !this.familyLifemap ?
+          calculateProgressBar({readOnly:this.readOnly,draft:draft,isLast:true}) : 0
         }>
         {!this.props.readOnly ? (
           <View style={{alignItems: 'center'}}>

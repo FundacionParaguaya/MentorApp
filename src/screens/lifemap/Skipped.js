@@ -9,6 +9,7 @@ import {getTotalScreens} from './helpers';
 import {updateDraft} from '../../redux/actions';
 import {withNamespaces} from 'react-i18next';
 import {skippedScreen} from '../../screens/utils/accessibilityHelpers';
+import {calculateProgressBar} from '../utils/helpers';
 
 export class Skipped extends Component {
   survey = this.props.route.params.survey;
@@ -101,7 +102,7 @@ export class Skipped extends Component {
         tipDescription={t('views.lifemap.whyNotTryAgain')}
         onTipClose={this.onTipClose}
         progress={
-          draft ? (draft.progress.total - 2) / draft.progress.total : 0
+          calculateProgressBar({readOnly:this.readOnly,draft:draft,screen:draft.progress.total + 1})
         }>
         <View
           accessible={true}
