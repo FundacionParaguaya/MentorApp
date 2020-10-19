@@ -363,8 +363,8 @@ export const sync = (
       synced: 0,
     },
     audios:{
-      total: 0,
-      synced: 0,
+      total: null,
+      synced: null,
     }
   },
   action,
@@ -419,8 +419,8 @@ export const sync = (
           synced: 0,
         },
         audios: {
-          total:0,
-          synced:0,
+          total:null,
+          synced:null,
         }
       };
     default:
