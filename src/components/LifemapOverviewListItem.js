@@ -104,12 +104,13 @@ class LifemapOverviewListItem extends Component {
                 ...styles.blueIcon,
                 width: 20,
                 height: 20,
+                zIndex:15
               }}
             />
           ) : (
               <View />
             )}
-          {this.props.priority ? (
+          {this.props.priority? (
             <View
               style={{
                 ...styles.blueIcon,
@@ -118,7 +119,7 @@ class LifemapOverviewListItem extends Component {
                 height: 20,
                 justifyContent: 'center',
                 alignItems: 'center',
-                zIndex: 5
+                zIndex: 15
               }}
             >
               <Icon2 name="pin" color={colors.white} size={12} />

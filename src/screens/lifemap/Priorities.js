@@ -194,7 +194,7 @@ export class Priorities extends Component {
         ...draft,
         previousIndicatorSurveyDataList: family.snapshotList[0].indicatorSurveyDataList,
         previousIndicatorPriorities: family.snapshotList[0].priorities,
-        previousIndicatorAchivements: family.snapshotList[0].achievements
+        previousIndicatorAchievements: family.snapshotList[0].achievements
       }
     }
 

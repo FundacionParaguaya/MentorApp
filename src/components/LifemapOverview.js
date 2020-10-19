@@ -87,7 +87,7 @@ class LifemapOverview extends Component {
       (priority) => priority.indicator,
     );
 
-    const previousIndicatorAchivements = this.props.draftData.previousIndicatorAchivements && this.props.draftData.previousIndicatorAchivements.map(
+    const previousIndicatorAchievements = this.props.draftData.previousIndicatorAchievements && this.props.draftData.previousIndicatorAchievements.map(
       (priority) => priority.indicator,
     );
 
@@ -119,7 +119,7 @@ class LifemapOverview extends Component {
                 achievement={achievements.includes(indicator.codeName)}
                 previousColor={this.getColor(indicator.codeName, true)}
                 previousPriority={previousPriorities && previousPriorities.includes(indicator.codeName)}
-                previousAchievement={previousPriorities && previousIndicatorAchivements.includes(indicator.codeName)}
+                previousAchievement={previousIndicatorAchievements && previousIndicatorAchievements.includes(indicator.codeName)}
                 isRetake={this.props.isRetake}
                 handleClick={() =>
                   this.handleClick(
