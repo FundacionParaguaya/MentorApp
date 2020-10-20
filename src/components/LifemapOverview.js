@@ -1,6 +1,6 @@
 import PropTypes from 'prop-types';
-import React, {Component} from 'react';
-import {StyleSheet, Text, View} from 'react-native';
+import React, { Component } from 'react';
+import { StyleSheet, Text, View } from 'react-native';
 
 import globalStyles from '../globalStyles';
 import AddPriorityAndAchievementModal from '../screens/modals/AddPriorityAndAchievementModal';
@@ -14,13 +14,21 @@ class LifemapOverview extends Component {
     color: 0,
     indicatorText: '',
   };
-  getColor = (codeName) => {
-    const indicator =
-      this.props.draftData && this.props.draftData.indicatorSurveyDataList
-        ? this.props.draftData.indicatorSurveyDataList.find(
-            (item) => item.key === codeName,
-          )
-        : null;
+  getColor = (codeName, previous) => {
+    let indicator;
+
+    if (this.props.draftData && this.props.draftData.indicatorSurveyDataList && !previous) {
+      indicator = this.props.draftData.indicatorSurveyDataList.find(
+        (item) => item.key === codeName,
+      )
+    } else if (this.props.draftData && this.props.draftData.previousIndicatorSurveyDataList && previous) {
+      indicator = this.props.draftData.previousIndicatorSurveyDataList.find(
+        (item) => item.key === codeName,
+      )
+    } else {
+      indicator = null;
+    }
+
     if (indicator) {
       return indicator.value;
     } else {
@@ -37,7 +45,7 @@ class LifemapOverview extends Component {
     });
   }
   onClose = () => {
-    this.setState({AddAchievementOrPriority: false});
+    this.setState({ AddAchievementOrPriority: false });
   };
 
   filterByDimension = (item) =>
@@ -74,6 +82,16 @@ class LifemapOverview extends Component {
     const achievements = this.props.draftData.achievements.map(
       (priority) => priority.indicator,
     );
+
+    const previousPriorities = this.props.draftData.previousIndicatorPriorities && this.props.draftData.previousIndicatorPriorities.map(
+      (priority) => priority.indicator,
+    );
+
+    const previousIndicatorAchievements = this.props.draftData.previousIndicatorAchievements && this.props.draftData.previousIndicatorAchievements.map(
+      (priority) => priority.indicator,
+    );
+
+
     return (
       <View style={styles.container}>
         {/* I am also passing the color because i have to visually display the circle color */}
@@ -99,6 +117,10 @@ class LifemapOverview extends Component {
                 draftOverview={this.props.draftOverview}
                 priority={priorities.includes(indicator.codeName)}
                 achievement={achievements.includes(indicator.codeName)}
+                previousColor={this.getColor(indicator.codeName, true)}
+                previousPriority={previousPriorities && previousPriorities.includes(indicator.codeName)}
+                previousAchievement={previousIndicatorAchievements && previousIndicatorAchievements.includes(indicator.codeName)}
+                isRetake={this.props.isRetake}
                 handleClick={() =>
                   this.handleClick(
                     this.getColor(indicator.codeName),
@@ -131,7 +153,7 @@ const styles = StyleSheet.create({
     flex: 1,
     padding: 0,
   },
-  dimension: {...globalStyles.h3, marginHorizontal: 20, marginVertical: 10},
+  dimension: { ...globalStyles.h3, marginHorizontal: 20, marginVertical: 10 },
 });
 
 export default LifemapOverview;

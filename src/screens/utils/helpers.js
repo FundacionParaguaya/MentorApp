@@ -31,12 +31,17 @@ export const prepareDraftForSubmit = (draft, survey) => {
   );
 
   // remove unnecessary for sync properties from saved draft
-  const {progress, errors, status, ...result} = Object.assign({}, currentDraft);
+  const {previousIndicatorSurveyDataList, previousIndicatorPriorities, previousIndicatorAchievements, progress, errors, status, ...result} = Object.assign({}, currentDraft);
 
   // we remove
+  previousIndicatorSurveyDataList;
+  previousIndicatorPriorities;
+  previousIndicatorAchievements;
+
   progress;
   errors;
   status;
+
 
   // check for frequent sync errors
 
@@ -46,6 +51,7 @@ export const prepareDraftForSubmit = (draft, survey) => {
       survey.surveyConfig.surveyLocation &&
       survey.surveyConfig.surveyLocation.country;
   }
+  console.log('prepared', result)
 
   return result;
 };

@@ -180,13 +180,23 @@ export class Priorities extends Component {
   render() {
     const {t} = this.props;
     const {filterModalIsOpen, selectedFilter, filterLabel} = this.state;
-    const draft = this.getDraft();
+    let draft = this.getDraft();
     const mandatoryPrioritiesCount = this.getMandatoryPrioritiesCount(draft);
     const screenAccessibilityContent =
       prioritiesScreen(
         this.state.tipIsVisible,
         this.getTipDescription(mandatoryPrioritiesCount, true),
       ) || '';
+
+    const family =  this.props.families.find(family => family.familyId == draft.familyData.familyId);
+    if(!!family) {
+      draft = {
+        ...draft,
+        previousIndicatorSurveyDataList: family.snapshotList[0].indicatorSurveyDataList,
+        previousIndicatorPriorities: family.snapshotList[0].priorities,
+        previousIndicatorAchievements: family.snapshotList[0].achievements
+      }
+    }
 
     return (
       <StickyFooter
@@ -242,6 +252,7 @@ export class Priorities extends Component {
                 navigateToScreen={this.navigateToScreen}
                 draftOverview={draft.status === 'Draft' ? true : false}
                 selectedFilter={selectedFilter}
+                isRetake={!!family}
               />
             </View>
 
@@ -430,7 +441,7 @@ const mapDispatchToProps = {
   updateDraft,
 };
 
-const mapStateToProps = ({drafts}) => ({drafts});
+const mapStateToProps = ({drafts, families}) => ({drafts, families});
 
 export default withNamespaces()(
   connect(mapStateToProps, mapDispatchToProps)(Priorities),

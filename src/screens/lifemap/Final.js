@@ -95,7 +95,10 @@ export class Final extends Component {
 
   prepareDraftForSubmit() {
     if (this.state.loading) {
-      const draft = prepareDraftForSubmit(this.draft, this.survey);
+      let draft = prepareDraftForSubmit(this.draft, this.survey);
+      delete draft["previousIndicatorSurveyDataList"];
+      delete draft["previousIndicatorPriorities"];
+      delete draft["previousIndicatorAchievements"];
 
       if (draft.pictures.length > 0) {
         this.props.submitDraftWithImages(
