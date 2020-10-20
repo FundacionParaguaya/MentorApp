@@ -84,7 +84,7 @@ export const generateNewDemoDraft = (survey, draftId) => {
 
 //helps us calculate the progress bar.
 export const calculateProgressBar = ({readOnly,draft,screen = 1,isLast,currentScreen,skipQuestions}) =>{
-  console.log(draft)
+
   if(readOnly || !draft){
     return 0;
   }
