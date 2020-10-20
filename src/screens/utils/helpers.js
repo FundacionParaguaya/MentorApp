@@ -81,3 +81,39 @@ export const generateNewDemoDraft = (survey, draftId) => {
   const surveyId = survey.id;
   return generateRandomDraftData(draftId, surveyId, toalScreens, documentType);
 };
+
+//helps us calculate the progress bar.
+export const calculateProgressBar = ({readOnly,draft,screen = 1,isLast,currentScreen,skipQuestions}) =>{
+
+  if(readOnly || !draft){
+    return 0;
+  }
+  if(isLast){
+    return (draft.progress.total -1) / draft.progress.total
+  }
+  if(skipQuestions){
+    //search all surveys and remove the questions from the total of the draft.
+
+   
+    if(currentScreen == "Picture"){
+      return (draft.progress.total -3) / draft.progress.total
+    }else{
+      //if we have the signing after the questions (e.g Testing, Fupa)
+      let minusScreens = draft.indicatorSurveyDataList.length > 0 ? 1 : 2;
+      return  (draft.progress.total - minusScreens) / draft.progress.total
+    }
+    //return 80%, or 90%;
+
+  }
+
+  //decide if we add one more screen if the primary participant is not alone (the family members screen).
+  let showSkippedScreen = draft.indicatorSurveyDataList.findIndex(x=>x.value == 0) != -1 ? 1 : 0;
+  let membersScreen = draft.familyData.familyMembersList.length > 1 ? 1 : 0;
+  //let economicQuestions = draft.progress.socioEconomics ? draft.progress.socioEconomics.questionsPerScreen.length : 0;
+ 
+//  let mainScreens = skipQuestions ? draft.progress.total - economicQuestions : draft.progress.total
+
+  let totalScreens = draft.progress.total + membersScreen + showSkippedScreen;
+ 
+  return screen / (totalScreens + 2);
+  }

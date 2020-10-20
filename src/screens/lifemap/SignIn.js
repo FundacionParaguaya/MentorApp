@@ -10,6 +10,7 @@ import ProgressBar from '../../components/ProgressBar';
 import {updateDraft} from '../../redux/actions';
 import {getTotalEconomicScreens} from './helpers';
 import colors from '../../theme.json';
+import {calculateProgressBar} from '../utils/helpers';
 
 export class SigIn extends Component {
   survey = this.props.route.params.survey;
@@ -114,9 +115,7 @@ export class SigIn extends Component {
       <View style={styles.contentContainer}>
         <ProgressBar
           progress={
-            ((this.draft.familyData.countFamilyMembers > 1 ? 4 : 3) +
-              getTotalEconomicScreens(this.survey)) /
-            this.draft.progress.total
+            calculateProgressBar({readOnly:this.readOnly,draft:this.draft,skipQuestions:true})  
           }
           currentScreen={'Signin'}
         />

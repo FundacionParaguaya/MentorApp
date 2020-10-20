@@ -7,6 +7,7 @@ import Icon from 'react-native-vector-icons/MaterialIcons';
 import {connect} from 'react-redux';
 import uuid from 'uuid/v1';
 
+
 import Decoration from '../../components/decoration/Decoration';
 import DateInput from '../../components/form/DateInput';
 import Select from '../../components/form/Select';
@@ -15,7 +16,7 @@ import StickyFooter from '../../components/StickyFooter';
 import globalStyles from '../../globalStyles';
 import {createDraft, updateDraft} from '../../redux/actions';
 import colors from '../../theme.json';
-import {generateNewDemoDraft} from '../utils/helpers';
+import {generateNewDemoDraft,calculateProgressBar} from '../utils/helpers';
 import CallingCodes from './CallingCodes';
 import {getTotalScreens, setValidationSchema} from './helpers';
 
@@ -309,17 +310,17 @@ export class FamilyParticipant extends Component {
   }
 
   render() {
+   
     const {t} = this.props;
     const {showErrors} = this.state;
     const draft = !this.readOnly ? this.getDraft() : this.readOnlyDraft;
     let participant = draft ? draft.familyData.familyMembersList[0] : {};
-
     return draft ? (
       <StickyFooter
         onContinue={this.validateForm}
         continueLabel={t('general.continue')}
         readOnly={!!this.readOnly}
-        progress={!this.readOnly && draft ? 1 / draft.progress.total : 0}>
+        progress={calculateProgressBar({readOnly:this.readOnly,draft:draft,screen:1})}>
         <Decoration variation="primaryParticipant">
           <Icon name="face" color={colors.grey} size={61} style={styles.icon} />
           {!this.readOnly ? (

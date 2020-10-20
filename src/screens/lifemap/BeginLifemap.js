@@ -11,6 +11,7 @@ import StickyFooter from '../../components/StickyFooter';
 import globalStyles from '../../globalStyles';
 import {updateDraft} from '../../redux/actions';
 import {getTotalEconomicScreens} from './helpers';
+import {calculateProgressBar} from '../utils/helpers';
 import TrackPlayer from 'react-native-track-player';
 
 export class BeginLifemap extends Component {
@@ -107,9 +108,7 @@ export class BeginLifemap extends Component {
             : t('general.continue')
         }
         progress={
-          ((this.draft.familyData.countFamilyMembers > 1 ? 4 : 3) +
-            getTotalEconomicScreens(this.survey)) /
-          this.draft.progress.total
+          calculateProgressBar({readOnly:this.readOnly,draft:this.draft,screen:getTotalEconomicScreens(this.survey) + 5})
         }>
         <View
           style={{

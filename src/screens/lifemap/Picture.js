@@ -21,6 +21,7 @@ import StickyFooter from '../../components/StickyFooter';
 import globalStyles from '../../globalStyles';
 import {updateDraft} from '../../redux/actions';
 import colors from '../../theme.json';
+import {calculateProgressBar} from '../utils/helpers';
 import {getTotalEconomicScreens} from './helpers';
 
 let options = {
@@ -216,15 +217,12 @@ export class Picture extends Component {
 
   render() {
     const {t} = this.props;
-    console.log(this.draft);
     return (
       <StickyFooter
         onContinue={() => this.onContinue(this.draft)}
         continueLabel={t('general.continue')}
         progress={
-          ((this.draft.familyData.countFamilyMembers > 1 ? 4 : 3) +
-            getTotalEconomicScreens(this.survey)) /
-          this.draft.progress.total
+          calculateProgressBar({readOnly:this.readOnly,draft:this.draft,currentScreen:"Picture",skipQuestions:true})  
         }>
         <View
           style={{

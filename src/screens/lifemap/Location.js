@@ -33,6 +33,7 @@ import globalStyles from '../../globalStyles';
 import {updateDraft} from '../../redux/actions';
 import colors from '../../theme.json';
 import {getTotalScreens} from './helpers';
+import {calculateProgressBar} from '../utils/helpers';
 
 const GOOGLE_GEO_API_KEY = 'AIzaSyBLGYYy86_7QPT-dKgUnFMIJyhUE6AGVwM';
 Geocoder.init(GOOGLE_GEO_API_KEY);
@@ -597,12 +598,7 @@ export class Location extends Component {
         <StickyFooter
           onContinue={this.onContinue}
           visible={false}
-          progress={
-            !this.readOnly && draft
-              ? (draft.familyData.countFamilyMembers > 1 ? 3 : 2) /
-                draft.progress.total
-              : 0
-          }>
+          progress={calculateProgressBar({readOnly:this.readOnly,draft:draft,screen:3})}>
           <View style={[styles.placeholder, {height: '100%'}]}>
             <Text style={[globalStyles.h2, {marginBottom: 30}]}>
               {t('views.sync.offline')}
@@ -682,10 +678,7 @@ export class Location extends Component {
           visible={!this.readOnly}
           continueLabel={t('general.continue')}
           progress={
-            !this.readOnly && draft
-              ? (draft.familyData.countFamilyMembers > 1 ? 3 : 2) /
-                draft.progress.total
-              : 0
+            calculateProgressBar({readOnly:this.readOnly,draft:draft,screen:3})
           }
           fullHeight>
           <View pointerEvents="none" style={styles.fakeMarker}>
@@ -777,9 +770,7 @@ export class Location extends Component {
           continueLabel={t('general.continue')}
           readOnly={!!this.readOnly}
           progress={
-            !this.readOnly && draft
-              ? draft.progress.current / draft.progress.total
-              : 0
+            calculateProgressBar({readOnly:this.readOnly,draft:draft,screen:3})
           }>
           {!this.readOnly && (
             <View>
