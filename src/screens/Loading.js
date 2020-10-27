@@ -20,6 +20,7 @@ import {
   loadFamilies,
   loadMaps,
   loadSurveys,
+  loadProjectsByOrganization,
   logout,
   resetSyncState,
   setAppVersion,
@@ -51,13 +52,23 @@ export class Loading extends Component {
 
     // if surveys are synced skip to syncing families
     if (!resync && this.props.sync.surveys) {
-      this.syncFamilies();
+      //this.syncFamilies();
+      this.syncProjects();
     } else {
       this.props.loadSurveys(url[this.props.env], this.props.user.token);
     }
   };
+  // NEW STEP 2 - cache the projects
+  syncProjects = () => {
+    //if projects are synced skip to caching families
+    if( this.props.sync.projects) {
+       this.syncFamilies();
+    } else {
+      this.props.loadProjectsByOrganization(url[this.props.env], this.props.user.token, this.props.user.organization.id);
+    }
+  }
 
-  // STEP 2 - cache the families
+  // STEP 3 - cache the families
   syncFamilies = () => {
     // if families are synced skip to caching images
     if (this.props.sync.families) {
@@ -99,7 +110,7 @@ export class Loading extends Component {
     });
   };
 
-  // STEP 3 - check and cache the offline maps
+  // STEP 4 - check and cache the offline maps
   checkOfflineMaps = async () => {
     MapboxGL.offlineManager.setTileCountLimit(200000);
     if (
@@ -156,7 +167,7 @@ export class Loading extends Component {
     }
   };
 
-  // STEP 4 - cache the survey indicator images
+  // STEP 5 - cache the survey indicator images
   handleImageCaching = () => {
     if (
       !this.props.downloadMapsAndImages.downloadImages ||
@@ -173,7 +184,7 @@ export class Loading extends Component {
     }
   };
 
-  // STEP 5 - cache the survey indicator audios
+  // STEP 6 - cache the survey indicator audios
 
   handleAudioCaching = () => {
     if(!this.props.downloadMapsAndImages.downloadAudios ||
@@ -243,7 +254,7 @@ export class Loading extends Component {
   }
 
   checkState() {
-    const {families, surveys, images, appVersion, audios} = this.props.sync;
+    const {families, surveys, projects, images, appVersion, audios} = this.props.sync;
     if (!this.props.user.token) {
       // if user hasn't logged in, navigate to login
       this.props.navigation.navigate('Login');
@@ -256,7 +267,7 @@ export class Loading extends Component {
     } else if (
       
       families &&
-      surveys &&
+      surveys && projects && 
       ((!!images.total &&
       images.total === images.synced) ||
       (!!audios.total &&
@@ -302,10 +313,17 @@ export class Loading extends Component {
     if (!prevProps.user.token && this.props.user.token) {
       this.syncSurveys();
     }
-    // start syncing families once surveys are synced
+    // deprecated - start syncing families once surveys are synced
+     // start syncing projects once surveys are synced
     if (!prevProps.sync.surveys && this.props.sync.surveys) {
+      //this.syncFamilies();
+      this.syncProjects();
+    }
+    // start syncing families once projects are synced
+    if(!prevProps.sync.projects && this.props.sync.projects) {
       this.syncFamilies();
     }
+
     if (!prevProps.maps.length && this.props.maps.length) {
       this.downloadMaps();
     }
@@ -349,7 +367,6 @@ export class Loading extends Component {
       this.state.maps.every((map) => map.status === 100) &&
       this.props.downloadMapsAndImages.downloadAudios == false
     ) {
-     console.log(' if everything is synced navigate to home 1')
       this.props.navigation.navigate('DrawerStack');
     }
 
@@ -357,7 +374,6 @@ export class Loading extends Component {
     this.props.sync.audios.total != null &&
     prevProps.sync.audios.total !== prevProps.sync.audios.synced &&
     this.props.sync.audios.total === this.props.sync.audios.synced && this.props.downloadMapsAndImages.downloadImages == false) {
-      console.log(' if everything is synced navigate to home 2')
       this.props.navigation.navigate('DrawerStack');
     }
 
@@ -368,7 +384,6 @@ export class Loading extends Component {
     ((prevProps.sync.images.total !== prevProps.sync.images.synced) || ((prevProps.sync.audios.total !== prevProps.sync.audios.synced))  ) &&
     this.props.sync.images.total === this.props.sync.images.synced &&  this.props.downloadMapsAndImages.downloadImages && this.props.downloadMapsAndImages.downloadAudios
     ) {
-      console.log(' if everything is synced navigate to home 3')
       this.props.navigation.navigate('DrawerStack');
     }
 
@@ -390,10 +405,14 @@ export class Loading extends Component {
     if (!prevProps.sync.surveysError && this.props.sync.surveysError) {
       this.showError('We seem to have a problem downloading your surveys.');
     }
+
+    if(!prevProps.sync.projectsError && this.props.sync.projectsError) {
+      this.showError('We seem to have a problem downloading your projects.');
+    }
   }
 
   render() {
-    const {sync, families, surveys, t} = this.props;
+    const {sync, families, surveys, projects, t} = this.props;
 
     const {
       syncingServerData,
@@ -446,10 +465,40 @@ export class Loading extends Component {
                       />
                     )}
                   </View>
+
+
                   {!sync.surveys ? (
-                    <Text style={styles.colorDark}>{t('views.families')}</Text>
+                    <Text style={styles.colorDark}>{t('views.projects')}</Text>
                   ) : null}
                   {sync.surveys && (
+                    <View style={styles.syncingItem}>
+                      <Text
+                        style={
+                          sync.projects ? styles.colorGreen : styles.colorDark
+                        }>
+                        {sync.projects
+                          ? `${projects.length} ${t(
+                              'views.loading.projectsCached',
+                            )}`
+                          : t('views.loading.downloadingProjects')}
+                      </Text>
+                      {sync.projects ? (
+                        <Icon name="check" color={colors.palegreen} size={23} />
+                      ) : (
+                        <ActivityIndicator
+                          size="small"
+                          color={colors.palegreen}
+                        />
+                      )}
+                    </View>
+                  )}
+
+                  
+
+                  {!sync.projects ? (
+                    <Text style={styles.colorDark}>{t('views.families')}</Text>
+                  ) : null}
+                  {sync.projects && (
                     <View style={styles.syncingItem}>
                       <Text
                         style={
@@ -668,6 +717,7 @@ export class Loading extends Component {
 Loading.propTypes = {
   loadFamilies: PropTypes.func.isRequired,
   loadSurveys: PropTypes.func.isRequired,
+  loadProjectsByOrganization: PropTypes.func.isRequired,
   loadMaps: PropTypes.func.isRequired,
   logout: PropTypes.func,
   resetSyncState: PropTypes.func,
@@ -725,6 +775,7 @@ export const mapStateToProps = ({
   user,
   offline,
   families,
+  projects,
   maps,
   hydration,
   downloadMapsAndImages,
@@ -735,6 +786,7 @@ export const mapStateToProps = ({
   user,
   offline,
   families,
+  projects,
   maps,
   hydration,
   downloadMapsAndImages,
@@ -743,6 +795,7 @@ export const mapStateToProps = ({
 const mapDispatchToProps = {
   loadFamilies,
   loadSurveys,
+  loadProjectsByOrganization,
   loadMaps,
   logout,
   setAppVersion,

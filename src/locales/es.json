@@ -83,6 +83,7 @@
       "emptyError": "*Favor agrega una firma para continuar."
     },
     "families": "Familias",
+    "projects": "Proyectos",
     "dashboard": "Stoplight Mobile",
     "home": "Inicio",
     "createLifemap": "Toma tu Semáforo",
@@ -111,6 +112,8 @@
       "weArePreparingTheApp": "Estamos preparando la aplicación",
       "surveysCached": "Encuestas sincronizadas",
       "downloadingSurveys": "Descargando encuestas",
+      "projectsCached": "Proyectos en caché",
+      "downloadingProjects":  "Descargando proyectos ...",
       "familiesCached": "Familias sincronizadas",
       "downloadingFamilies": "Descargando familias",
       "mapsCached": "Mapas sincronizados",
