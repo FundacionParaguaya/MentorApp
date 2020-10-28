@@ -1,4 +1,4 @@
-import Geolocation from '@react-native-community/geolocation';
+import Geolocation from 'react-native-geolocation-service';
 import NetInfo from '@react-native-community/netinfo';
 import MapboxGL from '@react-native-mapbox-gl/maps';
 import PropTypes from 'prop-types';
@@ -60,6 +60,7 @@ export class Location extends Component {
     appState: AppState.currentState,
     errors: [],
     showErrors: false,
+    refreshedMap:false,
     currentAddress: '',
   };
 
@@ -102,6 +103,10 @@ export class Location extends Component {
   };
 
   onDragMap = (region) => {
+    if(this.refreshedMap){
+      this.setState({refreshedMap:false})
+      return;
+    }
     const draft = !this.readOnly ? this.getDraft() : this.readOnlyDraft;
     const {zoom} = this.state;
     const {familyData} = draft;
@@ -170,6 +175,13 @@ export class Location extends Component {
       (position) => {
         const {longitude, latitude, accuracy} = position.coords;
 
+        this.setState({
+          refreshedMap:true,
+          loading: false,
+          centeringMap: false,
+          askingForPermission: false,
+        });
+
         this.props.updateDraft({
           ...draft,
           familyData: {
@@ -180,13 +192,9 @@ export class Location extends Component {
           },
         });
 
-        this.setState({
-          loading: false,
-          centeringMap: false,
-          askingForPermission: false,
-        });
+      
       },
-      () => {
+      (err) => {
         // if no location available reset to survey location only when
         // no location comes from the draft
         if (!familyData.latitude) {
@@ -214,9 +222,10 @@ export class Location extends Component {
         }
       },
       {
-        enableHighAccuracy: true,
+        enableHighAccuracy: false,
         timeout: 25000,
         maximumAge: 0,
+   
       },
     );
   }
@@ -252,6 +261,13 @@ export class Location extends Component {
               )
             : false;
 
+            this.setState({
+              refreshedMap:true,
+              loading: false,
+              askingForPermission: false,
+              centeringMap: false,
+              showForm: isLocationInBoundaries ? false : true,
+            });
           this.props.updateDraft({
             ...draft,
             familyData: {
@@ -262,12 +278,7 @@ export class Location extends Component {
             },
           });
 
-          this.setState({
-            loading: false,
-            askingForPermission: false,
-            centeringMap: false,
-            showForm: isLocationInBoundaries ? false : true,
-          });
+         
         },
         // otherwise ask for more details
         () => {
@@ -278,9 +289,10 @@ export class Location extends Component {
           });
         },
         {
-          enableHighAccuracy: true,
+          enableHighAccuracy: false,
           timeout: 25000,
           maximumAge: 0,
+         
         },
       );
     }
@@ -328,6 +340,12 @@ export class Location extends Component {
   };
 
   updateFamilyData = (value, field) => {
+  
+    if(!value){
+      console.log("stop");
+      return;
+    }
+    console.log("continue");
     const draft = !this.readOnly ? this.getDraft() : this.readOnlyDraft;
     this.props.updateDraft({
       ...draft,
@@ -830,7 +848,7 @@ export class Location extends Component {
               draft.familyData.country ||
               this.survey.surveyConfig.surveyLocation.country
             }
-            required
+           
             defaultCountry={this.survey.surveyConfig.surveyLocation.country}
             onChange={this.updateFamilyData}
             readOnly={!!this.readOnly}
