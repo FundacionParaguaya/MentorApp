@@ -282,16 +282,26 @@ export class Location extends Component {
         },
         // otherwise ask for more details
         () => {
+          let familyDataCopy = {...draft.familyData};
+          delete familyDataCopy.latitude;
+          delete familyDataCopy.longitude;
+          this.props.updateDraft({
+            ...draft,
+            familyData: familyDataCopy,
+          });
+
           this.setState({
             loading: false,
             centeringMap: false,
             showForm: true,
           });
+          //remove 
         },
         {
+          forceRequestLocation: true,
           enableHighAccuracy: false,
           timeout: 25000,
-          maximumAge: 0,
+          maximumAge: 0 ,
          
         },
       );
@@ -595,7 +605,6 @@ export class Location extends Component {
 
     const draft = !this.readOnly ? this.getDraft() : this.readOnlyDraft;
     const familyData = draft.familyData;
-
     if (loading) {
       return (
         <View style={[globalStyles.container, styles.placeholder]}>
