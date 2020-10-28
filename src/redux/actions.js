@@ -142,7 +142,7 @@ export const loadProjectsByOrganization = (env, token, orgId) => ({
           },
           body: JSON.stringify({
             query:
-              'query projectsByOrganization($organization: Long) { projectsByOrganization (organization: $organization) { id, title, description} }',
+              'query projectsByOrganization($organization: Long) { projectsByOrganization (organization: $organization) { id, title, description, color} }',
               variables: {
                 organization: orgId
 
