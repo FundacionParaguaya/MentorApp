@@ -418,7 +418,7 @@ export class FamilyMembersNames extends Component {
               color: colors.green,
               marginLeft: 5,
             }}>
-            Add new member
+              {t('views.family.addNewMember')}
           </Text>
         </View>
       </StickyFooter>
