@@ -181,7 +181,8 @@
       "weFoundYou": "¡Te encontramos!",
       "weCannotLocate": "¡No podemos localizarte!",
       "tellUsMore": "Puede decirnos más acerca de esta ubicación en el siguiente formulario",
-      "searchByName": "Buscar"
+      "searchByName": "Buscar",
+      "addNewMember": "Agregar nuevo miembro"
     },
     "lifemap": {
       "indicatorDefinition": "Definición del indicador",
