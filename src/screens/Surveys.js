@@ -74,7 +74,7 @@ export class Surveys extends Component {
            selectedSurvey={this.state.selectedSurvey}
            onClose = {this.toggleProjectModal}
            projects={!!this.props.projects && 
-            this.props.projects.filter(project => project.active === true).slice(0,1)}
+            this.props.projects.filter(project => project.active === true)}
             />
         <Decoration variation="lifemap">
           <RoundImage source="surveys" />
