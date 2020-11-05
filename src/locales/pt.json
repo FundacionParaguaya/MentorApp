@@ -214,7 +214,10 @@
 			"thisWillBeSavedAsADraft": "Isso será salvo como um rascunho",
 			"deviceMemoryFull": "¡La memoria de tu dispositivo está llena!",
 			"freeUpSpace": "Por favor, libere",
-			"toContinueUsingTheApp": "libere espaço para continuar usando Stoplight Mobile."
+			"toContinueUsingTheApp": "libere espaço para continuar usando Stoplight Mobile.",
+			"chooseProjectTitle":"Escolha um projeto",
+			"chooseProjectSubtitle": "Escolha um projeto ao qual a família pertencerá.",
+			"skipProject": "Pular projeto"  
 		},
 		"pictures": {
 			"limit": "*Você atingiu o limite de 10MB! Elimine uma imagem para continuar.",

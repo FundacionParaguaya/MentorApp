@@ -78,14 +78,14 @@ export const convertImages = (sanitizedSnapshot) => {
   return Promise.all(promises);
 };
 
-export const generateNewDemoDraft = (survey, draftId) => {
+export const generateNewDemoDraft = (survey, draftId, projectId) => {
   const toalScreens = getTotalScreens(survey);
   const random = Math.floor(
     Math.random() & survey.surveyConfig.documentType.length,
   );
   const documentType = survey.surveyConfig.documentType[random];
   const surveyId = survey.id;
-  return generateRandomDraftData(draftId, surveyId, toalScreens, documentType);
+  return generateRandomDraftData(draftId, surveyId, toalScreens, documentType, projectId);
 };
 
 //helps us calculate the progress bar.

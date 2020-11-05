@@ -3,13 +3,14 @@ export const generateRandomDraftData = (
   draftId,
   surveyId,
   totalScreens,
-  documentType
+  documentType,
+  projectId,
 ) => {
   return {
     status: 'Draft',
     sendEmail: false,
+    project:projectId,
     surveyId,
-
     sign: '',
     pictures: [],
     created: Date.now(),

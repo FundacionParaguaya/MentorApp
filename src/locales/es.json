@@ -238,7 +238,10 @@
       "thisWillBeSavedAsADraft": "Esto se guardará como un borrador.",
       "deviceMemoryFull": "¡la memoria de tu dispositivo está llena!",
       "freeUpSpace": "Por favor, libere",
-      "toContinueUsingTheApp": "de espacio para continuar usando Stoplight Mobile."
+      "toContinueUsingTheApp": "de espacio para continuar usando Stoplight Mobile.",
+      "chooseProjectTitle":"Elige un proyecto",
+      "chooseProjectSubtitle": "Elige un proyecto al que pertenecerá la familia ..",
+      "skipProject": "Saltar proyecto"   
     },
     "logout": {
       "logout": "Cerrar sesión",

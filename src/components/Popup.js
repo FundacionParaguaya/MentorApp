@@ -5,9 +5,11 @@ import {
   StyleSheet,
   Modal,
   TouchableHighlight,
-  ScrollView
+  ScrollView,
+  Dimensions
 } from 'react-native'
 import colors from '../theme.json'
+import { isLandscape } from '../responsivenessHelpers'
 
 export default class Popup extends Component {
   render() {
@@ -17,8 +19,11 @@ export default class Popup extends Component {
       onClose,
       modifiedPopUp,
       definition,
-      LogoutPopup
+      LogoutPopup,
+      projectsModal
     } = this.props
+
+    const { width, height } = Dimensions.get('window')
 
     return (
       <Modal
@@ -30,7 +35,7 @@ export default class Popup extends Component {
       >
         {modifiedPopUp ? (
           <View style={{ flex: 1 }}>
-            {definition || LogoutPopup ? (
+            {definition || LogoutPopup || projectsModal ? (
               <View style={styles.definitionParent}>
                 <TouchableHighlight
                   underlayColor={'rgba(47,38,28, 0.2)'}
@@ -49,52 +54,67 @@ export default class Popup extends Component {
                 >
                   <View
                     style={{
-                      width: '100%'
+                      width: '100%',
+                      justifyContent: 'center',
+                      alignItems: 'center'
                     }}
                   >
-                    <ScrollView
-                      id="modal"
-                      style={
-                        LogoutPopup
-                          ? styles.modalLogout
-                          : styles.modalDefinition
-                      }
-                      accessible={true}
-                      accessibilityLiveRegion="assertive"
-                    >
-                      {children}
-                    </ScrollView>
+                    {projectsModal ? (
+                      <View
+                        id="modal"
+                        style={isLandscape({ width, height }) ? styles.projectsModalHorizontal: styles.projectsModalVertical}
+                        accessible={true}
+                        accessibilityLiveRegion="assertive"
+                      >
+                        {children}
+                      </View>
+
+                    ) : (
+                        <ScrollView
+                          id="modal"
+                          style={
+                            LogoutPopup
+                              ? styles.modalLogout
+                              : styles.modalDefinition
+                          }
+                          accessible={true}
+                          accessibilityLiveRegion="assertive"
+                        >
+                          {children}
+                        </ScrollView>
+                      )}
+
                   </View>
                 </View>
               </View>
             ) : (
-              <View style={{ flex: 1 }}>
-                <TouchableHighlight
-                  underlayColor={'rgba(47,38,28, 0.2)'}
-                  style={styles.container}
-                  onPress={onClose}
-                  id="overlay"
-                >
-                  <View />
-                </TouchableHighlight>
-                <View id="modal" style={styles.priorOrAchievementModal}>
-                  {children}
+                <View style={{ flex: 1 }}>
+                  <TouchableHighlight
+                    underlayColor={'rgba(47,38,28, 0.2)'}
+                    style={styles.container}
+                    onPress={onClose}
+                    id="overlay"
+                  >
+                    <View />
+                  </TouchableHighlight>
+                  <View id="modal" style={styles.priorOrAchievementModal}>
+                    {children}
+                  </View>
                 </View>
-              </View>
-            )}
+              )}
           </View>
         ) : (
-          <TouchableHighlight
-            underlayColor={'rgba(47,38,28, 0.2)'}
-            style={styles.container}
-            onPress={onClose}
-            id="overlay"
-          >
-            <View id="modal" style={styles.modal}>
-              {children}
-            </View>
-          </TouchableHighlight>
-        )}
+            <TouchableHighlight
+              underlayColor={'rgba(47,38,28, 0.2)'}
+              style={styles.container}
+              onPress={onClose}
+              id="overlay"
+            >
+              <View id="modal" style={styles.modal}>
+                {children}
+              </View>
+            </TouchableHighlight>
+          )}
       </Modal>
     )
   }
@@ -144,6 +164,37 @@ const styles = StyleSheet.create({
     padding: 28,
     marginBottom: 200
   },
+  projectsModalHorizontal: {
+    maxWidth: '90%',
+    width: '90%',
+    minWidth: '90%',
+    minHeight: 325,
+    height: '100%',
+    backgroundColor: colors.white,
+    paddingVertical: 23,
+    paddingHorizontal: 28,
+    marginLeft: 20,
+    marginRight: 20,
+    justifyContent: 'center',
+    alignItems: 'center',
+    flex: 1
+  },
+  projectsModalVertical: {
+    maxWidth: '100%',
+    width: '80%',
+    minWidth: '60%',
+    minHeight: 500,
+    height: '100%',
+    backgroundColor: colors.white,
+    paddingVertical: 23,
+    paddingHorizontal: 28,
+    marginLeft: 20,
+    marginRight: 20,
+    justifyContent: 'center',
+    alignItems: 'center',
+    flex: 1
+  },
+
   modalLogout: {
     backgroundColor: colors.white,
     padding: 28
