@@ -40,6 +40,9 @@ export class FamilyParticipant extends Component {
     null;
   familyMembersArray = []; // the options array for members count dropdown
   readOnlyDraft = this.props.route.params.family || [];
+  projectId = this.props.route.params.project || null;
+
+ 
 
   state = {
     errors: [],
@@ -246,8 +249,11 @@ export class FamilyParticipant extends Component {
     this.draftId = draftId;
     this.props.navigation.setParams({draftId});
 
+    console.log('create new', this.projectId)
+
     const regularDraft = {
       draftId,
+      project: this.projectId,
       stoplightSkipped: false,
       sign: '',
       pictures: [],
@@ -278,7 +284,7 @@ export class FamilyParticipant extends Component {
 
     // create the new draft in redux
     this.props.createDraft(
-      isDemo ? generateNewDemoDraft(this.survey, draftId) : regularDraft,
+      isDemo ? generateNewDemoDraft(this.survey, draftId, this.projectId) : regularDraft,
     );
   }
 

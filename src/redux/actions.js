@@ -23,6 +23,7 @@ export const login = (username, password, env) => (dispatch) =>
           token: null,
           status: data.status,
           username: null,
+          organization: null
         });
         throw new Error();
       } else return data.json();
@@ -34,6 +35,7 @@ export const login = (username, password, env) => (dispatch) =>
         token: data.access_token,
         status: 200,
         username: data.user.username,
+        organization: data.user.organization
       }),
     )
     .catch((e) => e);
@@ -120,6 +122,39 @@ export const loadMaps = (env, token) => ({
     },
   },
 });
+
+// Projects
+export const LOAD_PROJECTS = 'LOAD_PROJECTS';
+export const LOAD_PROJECTS_COMMIT = 'LOAD_PROJECTS_COMMIT';
+export const  LOAD_PROJECTS_ROLLBACK = 'LOAD_PROJECTS_ROLLBACK';
+
+export const loadProjectsByOrganization = (env, token, orgId) => ({
+  type: LOAD_PROJECTS,
+  env,
+  token,
+  meta: {
+    offline: {
+      effect: {
+        url: `${env}/graphql`,
+          method: 'POST',
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+          body: JSON.stringify({
+            query:
+              'query projectsByOrganization($organizations: [Long]) { projectsByOrganization (organizations: $organizations) { id, title, description, color, active} }',
+              variables: {
+                organizations: orgId
+
+              }
+          }),
+      },
+      commit: {type: LOAD_PROJECTS_COMMIT},
+      rollback: {type: LOAD_PROJECTS_ROLLBACK},
+    }
+    
+  }
+})
 
 // Surveys
 

@@ -27,14 +27,15 @@ export class Terms extends Component {
   survey = this.props.route.params.survey;
   page = this.props.route.params.page;
   draftId = this.props.route.params.draftId;
+  project = this.props.route.params.project;
 
   onClickAgree = () => {
     const {navigation} = this.props;
-
     navigation.navigate(navigationRules[this.page].nextPage, {
       page: navigationRules[this.page].param || null,
       survey: this.survey,
       draftId: this.draftId,
+      project: this.project
     });
   };
 

@@ -83,6 +83,7 @@
       "emptyError": "*Favor agrega una firma para continuar."
     },
     "families": "Familias",
+    "projects": "Proyectos",
     "dashboard": "Stoplight Mobile",
     "home": "Inicio",
     "createLifemap": "Toma tu Semáforo",
@@ -111,6 +112,8 @@
       "weArePreparingTheApp": "Estamos preparando la aplicación",
       "surveysCached": "Encuestas sincronizadas",
       "downloadingSurveys": "Descargando encuestas",
+      "projectsCached": "Proyectos en caché",
+      "downloadingProjects":  "Descargando proyectos ...",
       "familiesCached": "Familias sincronizadas",
       "downloadingFamilies": "Descargando familias",
       "mapsCached": "Mapas sincronizados",
@@ -236,7 +239,10 @@
       "thisWillBeSavedAsADraft": "Esto se guardará como un borrador.",
       "deviceMemoryFull": "¡la memoria de tu dispositivo está llena!",
       "freeUpSpace": "Por favor, libere",
-      "toContinueUsingTheApp": "de espacio para continuar usando Stoplight Mobile."
+      "toContinueUsingTheApp": "de espacio para continuar usando Stoplight Mobile.",
+      "chooseProjectTitle":"Elige un proyecto",
+      "chooseProjectSubtitle": "Elige un proyecto al que pertenecerá la familia ..",
+      "skipProject": "Saltar proyecto"   
     },
     "logout": {
       "logout": "Cerrar sesión",

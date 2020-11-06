@@ -14,8 +14,6 @@ import colors from '../../theme.json';
 import { getTotalEconomicScreens } from './helpers';
 import {calculateProgressBar} from '../utils/helpers';
 import globalStyles from '../../globalStyles';
-
-import TrackPlayer from 'react-native-track-player';
 import RNFetchBlob from 'rn-fetch-blob'
 import Audio from '../../components/Audio';
 
@@ -36,11 +34,6 @@ export class Question extends Component {
   state = {
     showDefinition: false,
   };
-
-
- 
-
-
 
   getDraft = () =>
     this.props.drafts.find((draft) => draft.draftId === this.draftId);
@@ -200,13 +193,9 @@ export class Question extends Component {
     });
   }
 
-
-
   shouldComponentUpdate() {
     return this.props.navigation.isFocused();
   }
-
-  
 
   render() {
     const draft = this.getDraft();

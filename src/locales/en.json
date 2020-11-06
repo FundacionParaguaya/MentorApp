@@ -81,10 +81,11 @@
       "erase": "Erase",
       "continue": "Continue",
       "emptyError": "*Please add a signature before you continue."
-    },
+    }, 
     "dashboard": "Stoplight Mobile",
     "home": "Home",
     "families": "Families",
+    "projects": "Projects",
     "createLifemap": "Begin Stoplight survey",
     "latestDrafts": "Latest Life Maps",
     "noDrafts": "No drafts to display",
@@ -111,6 +112,8 @@
       "weArePreparingTheApp": "We are preparing the app.",
       "surveysCached": "Surveys cached",
       "downloadingSurveys": "Downloading surveys...",
+      "projectsCached": "Projects cached",
+      "downloadingProjects":  "Downloading projects...",
       "familiesCached": "Families cached",
       "downloadingFamilies": "Downloading families...",
       "mapsCached": "Maps cached",
@@ -236,7 +239,10 @@
       "thisWillBeSavedAsADraft": "This will be saved as a draft.",
       "deviceMemoryFull": "your device memory is full!",
       "freeUpSpace": "Please free up",
-      "toContinueUsingTheApp": "of space to continue using Stoplight Mobile."
+      "toContinueUsingTheApp": "of space to continue using Stoplight Mobile.",
+      "chooseProjectTitle":"Choose a project",
+      "chooseProjectSubtitle": "Choose a project where the family will belong to...",
+      "skipProject": "Skip Project",
     },
     "logout": {
       "logout": "Logout",

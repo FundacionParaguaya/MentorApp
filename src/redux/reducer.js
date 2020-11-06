@@ -32,6 +32,8 @@ import {
   LOAD_IMAGES_ROLLBACK,
   LOAD_IMAGES_COMMIT,
   SET_VALIDATE,
+  LOAD_PROJECTS_ROLLBACK,
+  LOAD_PROJECTS_COMMIT
 } from './actions';
 
 const defaultLanguage = getDeviceLanguage();
@@ -48,6 +50,7 @@ export const user = (
         token: action.token,
         username: action.username,
         role: action.role,
+        organization: action.organization
       };
     case USER_LOGOUT:
       return {
@@ -55,7 +58,8 @@ export const user = (
         token: null,
         username: null,
         role: null,
-        interactive_help: null
+        interactive_help: null,
+        organization: null
       };
     case SET_VALIDATE:
       return {
@@ -120,6 +124,16 @@ export const surveys = (state = [], action) => {
   switch (action.type) {
     case LOAD_SURVEYS_COMMIT:
       return action.payload.data.surveysByUser;
+    default:
+      return state;
+  }
+};
+
+//Projects
+export const projects =  (state = [], action) => {
+  switch (action.type) {
+    case LOAD_PROJECTS_COMMIT:
+      return action.payload.data.projectsByOrganization;
     default:
       return state;
   }
@@ -358,6 +372,8 @@ export const sync = (
     mapsError: false,
     families: false,
     familiesError: false,
+    projects: false,
+    projectsError:false,
     images: {
       total: 0,
       synced: 0,
@@ -401,6 +417,11 @@ export const sync = (
         ...state,
         familiesError: true,
       };
+    case LOAD_PROJECTS_ROLLBACK:
+      return {
+        ...state,
+        projectsError: true,
+      };
     case LOAD_MAPS_ROLLBACK:
       return {
         ...state,
@@ -414,6 +435,8 @@ export const sync = (
         mapsError: false,
         families: false,
         familiesError: false,
+        projects: false,
+        projectsError:false,
         images: {
           total: 0,
           synced: 0,
@@ -459,6 +482,7 @@ const appReducer = combineReducers({
   maps,
   surveys,
   families,
+  projects,
   syncStatus,
   drafts,
   language,
@@ -490,6 +514,17 @@ export const rootReducer = (state, action) => {
         families: true,
       },
     };
+  }
+
+  // note that projects are synced in the store
+  if(action.type === LOAD_PROJECTS_COMMIT) {
+    state = {
+      ...state,
+      sync: {
+        ...state.sync,
+        projects:true,
+      }
+    }
   }
 
   // if there are no images to cache, make it so the loading screen can continue

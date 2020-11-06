@@ -14,9 +14,14 @@ import RoundImage from '../components/RoundImage'
 import LifemapListItem from '../components/LifemapListItem'
 import Decoration from '../components/decoration/Decoration'
 import colors from '../theme.json'
+import ProjectsPopup from '../components/ProjectsPopup'
 
 export class Surveys extends Component {
   acessibleComponent = React.createRef()
+  state = {
+    openProjectModal:false,
+    selectedSurvey:null
+  }
 
   componentDidMount() {
     // focuses component on render for device to begin talking
@@ -31,11 +36,29 @@ export class Surveys extends Component {
   }
 
   handleClickOnSurvey = survey => {
+    if(!!this.props.projects && this.props.projects.
+      filter(project => project.active === true).length > 0) {
+      this.setState({ openProjectModal: true, selectedSurvey: survey })
+    }else{
+      this.loadSurveyById(survey)
+    }
+    
+  }
+
+  toggleProjectModal = () => {
+    console.log('press')
+    this.setState({ openProjectModal: !this.state.openProjectModal })
+  }
+
+  loadSurveyById = (survey, project) => {
     this.props.navigation.navigate('Terms', {
       page: 'terms',
-      survey
+      survey,
+      project
     })
   }
+
+
 
   render() {
     return (
@@ -44,6 +67,15 @@ export class Surveys extends Component {
         accessible={true}
         style={{ ...globalStyles.container, padding: 0 }}
       >
+        <ProjectsPopup
+           isOpen={this.state.openProjectModal}
+           afterSelect={this.loadSurveyById}
+           toggleModal = {this.toggleProjectModal}
+           selectedSurvey={this.state.selectedSurvey}
+           onClose = {this.toggleProjectModal}
+           projects={!!this.props.projects && 
+            this.props.projects.filter(project => project.active === true)}
+            />
         <Decoration variation="lifemap">
           <RoundImage source="surveys" />
         </Decoration>
@@ -78,8 +110,9 @@ Surveys.propTypes = {
   t: PropTypes.func
 }
 
-const mapStateToProps = ({ surveys }) => ({
-  surveys
+const mapStateToProps = ({ surveys, projects }) => ({
+  surveys,
+  projects
 })
 
 const mapDispatchToProps = {}
