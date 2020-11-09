@@ -44,23 +44,10 @@ export class Families extends Component {
 
   render() {
     const {t} = this.props;
-    // show not synced families from drafts
-    const draftFamilies = this.props.drafts
-      .filter(
-        (draft) => draft.status === 'Draft' || draft.status === 'Pending sync',
-      )
-      .map((draft) => {
-        const primaryParticipant = draft.familyData.familyMembersList[0];
-        return {
-          name: `${primaryParticipant.firstName} ${primaryParticipant.lastName}`,
-          birthDate: primaryParticipant.birthDate,
-          draft,
-        };
-      });
 
-    const allFamilies = [...draftFamilies, ...sanitize(this.props.families)];
+    const families = [...sanitize(this.props.families)];
 
-    const filteredFamilies = allFamilies.filter(
+    const filteredFamilies = families.filter(
       (family) =>
         family.name.toLowerCase().includes(this.state.search.toLowerCase()) ||
         (family.code && family.code.includes(this.state.search)),
