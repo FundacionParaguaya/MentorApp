@@ -559,6 +559,13 @@ export class Family extends Component {
                     )}:  ${moment(this.familyLifemap.created).format(
                       'MMM DD, YYYY',
                     )}`}</Text>
+                  {this.project ? (
+                    <View style={styles.section}>
+                      <View style={styles.content}>
+                        <Text style={globalStyles.h3}>{`${t('views.project')}: ${this.project}`}</Text>
+                      </View>
+                    </View>
+                  ) : null}
                   <OverviewComponent
                     route={this.props.route}
                     readOnly
