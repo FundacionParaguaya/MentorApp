@@ -41,6 +41,7 @@ export class Family extends Component {
   unsubscribeNetChange;
   allowRetake = this.props.route.params.allowRetake;
   familyLifemap = this.props.route.params.familyLifemap;
+  project = this.props.route.params.familyProject;
   isDraft = this.props.route.params.isDraft;
   familyId = this.props.route.params.familyId;
   // extract socio economic categories from snapshot
@@ -51,6 +52,7 @@ export class Family extends Component {
       ),
     ),
   ];
+
 
   onPressBack = () => {
     this.props.navigation.replace('Families');
@@ -247,6 +249,7 @@ export class Family extends Component {
     const { familyData } = this.familyLifemap;
     const stoplightSkipped = this.familyLifemap.stoplightSkipped;
 
+
     const email =
       familyData &&
         familyData.familyMembersList &&
@@ -408,7 +411,13 @@ export class Family extends Component {
                 ) : null}
               </View>
             ) : null}
-
+            {this.project ? (
+              <View style={styles.section}>
+                <View style={styles.content}>
+                  <Text style={globalStyles.h3}>{`${t('views.project')}: ${this.project}`}</Text>
+                </View>
+              </View>
+            ) : null}
             <View style={styles.section}>
               <View style={styles.content}>
                 <Text style={[globalStyles.h3, { color: colors.lightdark }]}>

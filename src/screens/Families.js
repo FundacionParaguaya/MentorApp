@@ -26,6 +26,9 @@ export class Families extends Component {
       allowRetake: family.allowRetake,
       familyId: family.familyId,
       familyName: family.name,
+      familyProject: family.project 
+        ? family.project.title 
+        : null,
       familyLifemap: family.snapshotList
         ? family.snapshotList[0]
         : family.draft,
