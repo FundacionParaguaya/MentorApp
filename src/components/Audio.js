@@ -97,7 +97,10 @@ class Audio extends Component {
 }
 
 Audio.propTypes = {
-    audioId: PropTypes.number.isRequired,
+    audioId: PropTypes.oneOfType([
+        PropTypes.string,
+        PropTypes.number
+      ]).isRequired,
     url: PropTypes.string.isRequired,
     label: PropTypes.string
 }

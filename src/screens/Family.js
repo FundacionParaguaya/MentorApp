@@ -229,7 +229,12 @@ export class Family extends Component {
         familyId: this.familyId,
         countFamilyMembers: this.familyLifemap.familyData.familyMembersList
           .length,
-        familyMembersList: this.familyLifemap.familyData.familyMembersList,
+        familyMembersList: this.familyLifemap.familyData.familyMembersList.map(member => {
+          return {
+            ...member,
+            socioEconomicAnswers: []
+          }
+        }),
       },
     };
 
