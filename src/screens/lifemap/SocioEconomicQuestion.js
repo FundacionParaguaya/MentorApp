@@ -449,9 +449,10 @@ export class SocioEconomicQuestion extends Component {
           ? draftQuestion.other
           : '';
       }
-      forFamilyInitial[question.codeName] = draftQuestion.value
+      forFamilyInitial[question.codeName] = 
+        (Object.prototype.hasOwnProperty.call(draftQuestion, 'value')
         ? draftQuestion.value
-        : draftQuestion.multipleValue || '';
+        : draftQuestion.multipleValue) || '';
     });
 
     const forFamilyMemberInitial = {};

@@ -57,7 +57,7 @@ const RadioWithFormik = ({
             }
 
             return (
-              <View style={styles.radioButtonContainer}>
+              <View key={i} style={styles.radioButtonContainer}>
                 <RadioButton labelHorizontal={true} key={i}>
                   <RadioButtonInput
                     obj={{label: option.text, value: option.value}}
