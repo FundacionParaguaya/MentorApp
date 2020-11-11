@@ -1,6 +1,6 @@
 import PropTypes from 'prop-types';
 import React from 'react';
-import { View, StyleSheet, Text, ScrollView, Dimensions, TouchableOpacity } from 'react-native';
+import { View, StyleSheet, Text, ScrollView, Dimensions, TouchableOpacity, useWindowDimensions } from 'react-native';
 import Popup from './Popup';
 import colors from '../theme.json';
 import Icon from 'react-native-vector-icons/MaterialIcons'
@@ -8,6 +8,11 @@ import globalStyles from '../globalStyles';
 import { withNamespaces } from 'react-i18next';
 import { isLandscape } from '../responsivenessHelpers'
 import IconButton from './IconButton';
+import {
+    responsiveScreenHeight,
+    responsiveScreenWidth,
+  } from "react-native-responsive-dimensions";
+import { isTablet } from 'react-native-device-info';
 
 const ProjectsPopup = ({
     isOpen,
@@ -21,7 +26,10 @@ const ProjectsPopup = ({
         selected && afterSelect(selectedSurvey, project);
         toggleModal();
     };
-    const { width, height } = Dimensions.get('window')
+
+    const width = useWindowDimensions().width;
+    const height = useWindowDimensions().height;
+    //const { width, height } = Dimensions.get('window')
     return (<Popup isOpen={isOpen} onClose={() => onClose(false)} modifiedPopUp projectsModal>
         <View style={styles.container} >
             <>
@@ -48,14 +56,24 @@ const ProjectsPopup = ({
                     showsHorizontalScrollIndicator={false}
                     showsVerticalScrollIndicator={false}
                     snapToAlignment="center"
+                    contentContainerStyle= {isLandscape({ width, height })
+                    ? styles.projectsScrollContainerHorizontal: styles.projectsScrollContainerVertical }
                 >
-                    {projects.map(project => {
+                    {projects.slice(0,4).map(project => {
                         return ( 
                             <TouchableOpacity
                                 onPress={() => onClose(true, project.id)}
                             >  
-                                <View style={[styles.itemCard, { backgroundColor: project.color ? project.color : '#fff' }]}>
-                                    
+                                <View style=
+                                {isLandscape({ width, height })
+                                ?[
+                                    styles.itemCardHorizontal,
+                                     { backgroundColor: project.color
+                                      ? project.color : '#fff' }]:[
+                                        styles.itemCardVertical,
+                                         { backgroundColor: project.color
+                                          ? project.color : '#fff' }]}                                                     
+                                    >                                  
                                     <Text style={styles.itemTitle} >{project.title}</Text>
                                     <Text style={styles.itemDescription}>{project.description}</Text>
                                    
@@ -97,14 +115,14 @@ const styles = StyleSheet.create({
     },
     container: {
         width: '100%',
+        height:'100%',
         alignItems: 'center',
-        justifyContent: 'center',
-        height: '100%'
+        justifyContent:'center'
+        
     },
     title: {
         ...globalStyles.h2Bold,
         color: colors.lightdark,
-
         textAlign: 'center'
     },
     subtitle: {
@@ -113,12 +131,29 @@ const styles = StyleSheet.create({
         textAlign: 'center',
         marginBottom: 25,
     },
-    itemCard: {
+
+    projectsScrollContainerVertical: {   
+        minWidth:'100%',
+        minHeight: '100%',
+        alignItems:'center',
+        marginBottom:15
+    },
+    projectsScrollContainerHorizontal: {
+        minWidth:'100%',
+        maxHeight:'100%',
+        alignItems:'center',
+        marginBottom:15,
+        paddingHorizontal:20
+    },
+    itemCardHorizontal: {
+        maxWidth:300,
         width: 200,
-        height: 150,
-        minHeight:150,
+        minWidth: 150,
+        maxHeight:150,
+        minHeight:'100%',
         borderRadius: 2,
-        padding: 15,
+        paddingHorizontal: 15,
+        paddingVertical:35,
         alignItems: 'center',
         shadowColor: "#000",
         shadowOffset: {
@@ -127,12 +162,33 @@ const styles = StyleSheet.create({
         },
         shadowOpacity: 0.29,
         shadowRadius: 4.65,
-
         elevation: 7,
-        marginBottom: 10,
-        marginHorizontal: 10
-
+        marginRight:15
     },
+    itemCardVertical: {
+        maxWidth:300,
+        width:180 ,
+        minWidth: '80%',
+        maxHeight:200,
+        height: 180,
+        minHeight:150,
+        borderRadius: 2,
+        paddingHorizontal: 15,
+        paddingVertical:30,
+        marginHorizontal:15,
+        alignItems: 'center',
+        shadowColor: "#000",
+        shadowOffset: {
+            width: 0,
+            height: 3,
+        },
+        shadowOpacity: 0.29,
+        shadowRadius: 4.65,
+        elevation: 7,
+        marginBottom: 15,
+        marginHorizontal: 10
+    },
+
     itemTitle: {
         ...globalStyles.h3Bold,
         color: colors.lightdark,
@@ -152,7 +208,7 @@ const styles = StyleSheet.create({
     },
     linkContainer: {
         // marginVertical:20,
-        paddingTop: 10,
+        marginTop:5,
         marginLeft: 'auto',
     }
 })

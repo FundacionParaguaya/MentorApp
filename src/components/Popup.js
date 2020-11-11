@@ -6,24 +6,37 @@ import {
   Modal,
   TouchableHighlight,
   ScrollView,
-  Dimensions
+  Dimensions,
+  useWindowDimensions
 } from 'react-native'
 import colors from '../theme.json'
 import { isLandscape } from '../responsivenessHelpers'
+import {
+  responsiveHeight,
+  responsiveWidth,
+  useResponsiveHeight,
+  useResponsiveWidth
+} from "react-native-responsive-dimensions";
 
-export default class Popup extends Component {
-  render() {
-    const {
-      isOpen,
+
+  const Popup = ({
+    isOpen,
       children,
       onClose,
       modifiedPopUp,
       definition,
       LogoutPopup,
       projectsModal
-    } = this.props
+  }) => {
 
-    const { width, height } = Dimensions.get('window')
+  
+    const width = useWindowDimensions().width;
+    const height = useWindowDimensions().height;
+    let horizontalHeight = useResponsiveHeight(70);
+    let horizontalWidth = useResponsiveWidth(80);
+    let verticalHeight = useResponsiveHeight(80);
+    let verticalWidth = useResponsiveWidth(80);
+
 
     return (
       <Modal
@@ -48,6 +61,7 @@ export default class Popup extends Component {
 
                 <View
                   style={{
+                    
                     justifyContent: 'center',
                     alignItems: 'center'
                   }}
@@ -55,6 +69,7 @@ export default class Popup extends Component {
                   <View
                     style={{
                       width: '100%',
+                     
                       justifyContent: 'center',
                       alignItems: 'center'
                     }}
@@ -62,7 +77,14 @@ export default class Popup extends Component {
                     {projectsModal ? (
                       <View
                         id="modal"
-                        style={isLandscape({ width, height }) ? styles.projectsModalHorizontal: styles.projectsModalVertical}
+                        style={isLandscape({ width, height })
+                         ? [styles.projectsModal,{maxWidth:horizontalWidth,minWidth: horizontalWidth,
+                          minHeight:  horizontalHeight,
+                          maxHeight:  horizontalHeight}]: [styles.projectsModal,{maxWidth:verticalWidth,minWidth: verticalWidth,
+                            minHeight:  verticalHeight,
+                            maxHeight:  verticalHeight
+
+                          }]}
                         accessible={true}
                         accessibilityLiveRegion="assertive"
                       >
@@ -83,7 +105,6 @@ export default class Popup extends Component {
                           {children}
                         </ScrollView>
                       )}
-
                   </View>
                 </View>
               </View>
@@ -118,7 +139,7 @@ export default class Popup extends Component {
       </Modal>
     )
   }
-}
+
 
 Popup.propTypes = {
   isOpen: PropTypes.bool,
@@ -164,33 +185,13 @@ const styles = StyleSheet.create({
     padding: 28,
     marginBottom: 200
   },
-  projectsModalHorizontal: {
-    maxWidth: '90%',
-    width: '90%',
-    minWidth: '90%',
-    minHeight: 325,
-    height: '100%',
+  projectsModal: {
     backgroundColor: colors.white,
-    paddingVertical: 23,
-    paddingHorizontal: 28,
+    paddingVertical: 20,
+    paddingHorizontal: 35,
     marginLeft: 20,
     marginRight: 20,
-    justifyContent: 'center',
-    alignItems: 'center',
-    flex: 1
-  },
-  projectsModalVertical: {
-    maxWidth: '100%',
-    width: '80%',
-    minWidth: '60%',
-    minHeight: 500,
-    height: '100%',
-    backgroundColor: colors.white,
-    paddingVertical: 23,
-    paddingHorizontal: 28,
-    marginLeft: 20,
-    marginRight: 20,
-    justifyContent: 'center',
+    justifyContent: 'space-around',
     alignItems: 'center',
     flex: 1
   },
@@ -211,3 +212,5 @@ const styles = StyleSheet.create({
     backgroundColor: 'rgba(47,38,28, 0.2)'
   }
 })
+
+export default Popup;
