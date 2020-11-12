@@ -1,13 +1,15 @@
 import PropTypes from 'prop-types';
 import React from 'react';
-import { View, StyleSheet, Text, ScrollView, Dimensions, TouchableOpacity } from 'react-native';
+import { View, StyleSheet, Text, ScrollView, Dimensions, TouchableOpacity, useWindowDimensions } from 'react-native';
 import Popup from './Popup';
 import colors from '../theme.json';
 import Icon from 'react-native-vector-icons/MaterialIcons'
 import globalStyles from '../globalStyles';
 import { withNamespaces } from 'react-i18next';
-import { isLandscape } from '../responsivenessHelpers'
+import { isLandscape, isPortrait } from '../responsivenessHelpers'
 import IconButton from './IconButton';
+import { isTablet } from 'react-native-device-info';
+
 
 const ProjectsPopup = ({
     isOpen,
@@ -21,62 +23,125 @@ const ProjectsPopup = ({
         selected && afterSelect(selectedSurvey, project);
         toggleModal();
     };
-    const { width, height } = Dimensions.get('window')
-    return (<Popup isOpen={isOpen} onClose={() => onClose(false)} modifiedPopUp projectsModal>
-        <View style={styles.container} >
-            <>
-                <Icon
-                    style={styles.closeIconStyle}
-                    size={20}
-                    name="close"
-                    onPress={() => onClose(false)}
-                />
-                <Text
-                    style={styles.title}
-                >
-                    {t('views.modals.chooseProjectTitle')}
+    const dimensions = useWindowDimensions();
+    // Styles based on screen size and orientation
+    // Tablet Horizontal
+    let projectsContainerStyle = styles.projectsScrollContainerHorizontal;
+    let cardStyle = styles.itemCardHorizontal;
+    if (!!dimensions && isTablet(dimensions) && isLandscape(dimensions)) {
+        projectsContainerStyle = styles.projectsScrollContainerHorizontal;
+        cardStyle = {
+            ...styles.itemCard, 
+            width: 200,
+            minWidth: 150,
+            maxHeight: 150,
+            minHeight: '100%',
+            marginRight: 15
+        }
+    }
+    // Tablet Vertical
+    if (!!dimensions && isTablet(dimensions) && isPortrait(dimensions)) {
+        projectsContainerStyle = styles.projectsScrollContainerVertical;
+        cardStyle = {
+            ...styles.itemCard,    
+            width: 200,
+            minWidth: 150,
+            maxHeight: 200,
+            minHeight: 200,
+            marginBottom: 15,
+            marginHorizontal: 10
+        };
+    }
+    // Phone Horizontal
+    if (!!dimensions && !isTablet(dimensions) && isLandscape(dimensions)) {
+        projectsContainerStyle = styles.projectsScrollContainerHorizontal
+        cardStyle = {
+            ...styles.itemCard,
+            width: 200,
+            minWidth: 150,
+            maxHeight: 200,
+            minHeight: '100%',
+            marginRight: 15
+        };
+    }
 
-                </Text>
-                <Text
-                    style={styles.subtitle}
-                >
-                    {t('views.modals.chooseProjectSubtitle')}
-                </Text>
+    //Phone Vertical
+    if (!!dimensions && !isTablet(dimensions) && isPortrait(dimensions)) {
+        projectsContainerStyle = styles.projectsScrollContainerVertical;
+        cardStyle = {
+            ...styles.itemCard,
+            width: 180,
+            minWidth: 150,
+            maxHeight: 200,
+            minHeight: 150,
+            marginBottom: 15,
+            marginHorizontal: 10
+        };
+    }
 
-                <ScrollView
-                    horizontal={isLandscape({ width, height }) ? true : false}
-                    showsHorizontalScrollIndicator={false}
-                    showsVerticalScrollIndicator={false}
-                    snapToAlignment="center"
-                >
-                    {projects.map(project => {
-                        return ( 
-                            <TouchableOpacity
-                                onPress={() => onClose(true, project.id)}
-                            >  
-                                <View style={[styles.itemCard, { backgroundColor: project.color ? project.color : '#fff' }]}>
-                                    
-                                    <Text style={styles.itemTitle} >{project.title}</Text>
-                                    <Text style={styles.itemDescription}>{project.description}</Text>
-                                   
-                                </View>
-                               
-                            </TouchableOpacity>
-                        )
-                    })}
-                </ScrollView>
-                <View style={styles.linkContainer}>
-                    <IconButton
-                        text={t('views.modals.skipProject')}
-                        textStyle={styles.link}
-                        onPress={() => onClose(true)}
-
-                    // onPress={() => this.selectAnswer(0)}
+    return (
+        <Popup isOpen={isOpen} onClose={() => onClose(false)} modifiedPopUp projectsModal>
+            <View style={styles.container} >
+                <>
+                    <Icon
+                        style={styles.closeIconStyle}
+                        size={20}
+                        name="close"
+                        onPress={() => onClose(false)}
                     />
-                </View>
-            </>
-        </View>
-    </Popup>)
+                    <Text
+                        style={styles.title}
+                    >
+                        {t('views.modals.chooseProjectTitle')}
+
+                    </Text>
+                    <Text
+                        style={styles.subtitle}
+                    >
+                        {t('views.modals.chooseProjectSubtitle')}
+                    </Text>
+
+                    <ScrollView
+                        horizontal={isLandscape(dimensions) ? true : false}
+                        showsHorizontalScrollIndicator={false}
+                        showsVerticalScrollIndicator={false}
+                        snapToAlignment="center"
+                        contentContainerStyle={projectsContainerStyle}
+                    >
+                        {projects.map(project => {
+                            return (
+                                <TouchableOpacity
+                                    onPress={() => onClose(true, project.id)}
+                                >
+                                    <View style={[
+                                        cardStyle,
+                                        {
+                                            backgroundColor: project.color
+                                                ? project.color
+                                                : '#fff'
+                                        }]}
+                                    >
+                                        <Text style={styles.itemTitle} >{project.title}</Text>
+                                        <Text style={styles.itemDescription}>{project.description}</Text>
+
+                                    </View>
+
+                                </TouchableOpacity>
+                            )
+                        })}
+                    </ScrollView>
+                    <View style={styles.linkContainer}>
+                        <IconButton
+                            text={t('views.modals.skipProject')}
+                            textStyle={styles.link}
+                            onPress={() => onClose(true)}
+
+                        // onPress={() => this.selectAnswer(0)}
+                        />
+                    </View>
+                </>
+            </View>
+        </Popup>)
 }
 
 ProjectsPopup.propTypes = {
@@ -87,7 +152,7 @@ ProjectsPopup.propTypes = {
     children: PropTypes.oneOfType([PropTypes.array, PropTypes.object]),
     afterSelect: PropTypes.func,
     selectedSurvey: PropTypes.object
-  }
+}
 
 const styles = StyleSheet.create({
     closeIconStyle: {
@@ -97,14 +162,14 @@ const styles = StyleSheet.create({
     },
     container: {
         width: '100%',
+        height: '100%',
         alignItems: 'center',
-        justifyContent: 'center',
-        height: '100%'
+        justifyContent: 'center'
+
     },
     title: {
         ...globalStyles.h2Bold,
         color: colors.lightdark,
-
         textAlign: 'center'
     },
     subtitle: {
@@ -113,12 +178,24 @@ const styles = StyleSheet.create({
         textAlign: 'center',
         marginBottom: 25,
     },
+    projectsScrollContainerVertical: {
+        minWidth: '100%',
+        minHeight: '100%',
+        alignItems: 'center',
+        marginBottom: 15
+    },
+    projectsScrollContainerHorizontal: {
+        minWidth: '100%',
+        maxHeight: '100%',
+        alignItems: 'center',
+        marginBottom: 10,
+        paddingHorizontal: 20
+    },
     itemCard: {
-        width: 200,
-        height: 150,
-        minHeight:150,
         borderRadius: 2,
-        padding: 15,
+        paddingHorizontal: 15,
+        paddingVertical: 30,
+        marginHorizontal: 15,
         alignItems: 'center',
         shadowColor: "#000",
         shadowOffset: {
@@ -127,24 +204,18 @@ const styles = StyleSheet.create({
         },
         shadowOpacity: 0.29,
         shadowRadius: 4.65,
-
         elevation: 7,
-        marginBottom: 10,
-        marginHorizontal: 10
-
+        maxWidth: 300,
     },
     itemTitle: {
         ...globalStyles.h3Bold,
-        color: colors.lightdark,
         textAlign: 'center',
         paddingBottom: 15
     },
     itemDescription: {
         fontSize: 11,
         textAlign: 'center',
-        color: colors.lightdark,
-        fontFamily: 'Poppins',
-        fontWeight: '400',
+        fontFamily: 'Poppins Medium',
     },
     link: {
         ...globalStyles.h3Bold,
@@ -152,7 +223,7 @@ const styles = StyleSheet.create({
     },
     linkContainer: {
         // marginVertical:20,
-        paddingTop: 10,
+        marginTop: 5,
         marginLeft: 'auto',
     }
 })
