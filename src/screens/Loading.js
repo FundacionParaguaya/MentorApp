@@ -1,20 +1,20 @@
 import NetInfo from '@react-native-community/netinfo';
 import MapboxGL from '@react-native-mapbox-gl/maps';
 import PropTypes from 'prop-types';
-import React, {Component} from 'react';
-import {withNamespaces} from 'react-i18next';
-import {ActivityIndicator, StyleSheet, Text, View} from 'react-native';
+import React, { Component } from 'react';
+import { withNamespaces } from 'react-i18next';
+import { ActivityIndicator, StyleSheet, Text, View } from 'react-native';
 import DeviceInfo from 'react-native-device-info';
 import CommunityIcon from 'react-native-vector-icons/MaterialCommunityIcons';
 import Icon from 'react-native-vector-icons/MaterialIcons';
-import {AndroidBackHandler} from 'react-navigation-backhandler';
-import {connect} from 'react-redux';
+import { AndroidBackHandler } from 'react-navigation-backhandler';
+import { connect } from 'react-redux';
 
-import {initAudioCaching, initImageCaching} from '../cache';
+import { initAudioCaching, initImageCaching } from '../cache';
 import Button from '../components/Button';
 import Decoration from '../components/decoration/Decoration';
 import ProgressBar from '../components/ProgressBar';
-import {url} from '../config';
+import { url } from '../config';
 import globalStyles from '../globalStyles';
 import {
   loadFamilies,
@@ -27,7 +27,7 @@ import {
   setSyncedState,
   validate
 } from '../redux/actions';
-
+import * as _ from 'lodash';
 import colors from '../theme.json';
 
 export class Loading extends Component {
@@ -61,8 +61,8 @@ export class Loading extends Component {
   // NEW STEP 2 - cache the projects
   syncProjects = () => {
     //if projects are synced skip to caching families
-    if( this.props.sync.projects) {
-       this.syncFamilies();
+    if (this.props.sync.projects) {
+      this.syncFamilies();
     } else {
       this.props.loadProjectsByOrganization(url[this.props.env], this.props.user.token, this.props.user.organization.id);
     }
@@ -163,7 +163,7 @@ export class Loading extends Component {
 
   onMapDownloadError = (offlineRegion, mapDownloadError) => {
     if (mapDownloadError.message !== 'No Internet connection available.') {
-      NetInfo.fetch().then((state) => {});
+      NetInfo.fetch().then((state) => { });
     }
   };
 
@@ -187,21 +187,21 @@ export class Loading extends Component {
   // STEP 6 - cache the survey indicator audios
 
   handleAudioCaching = () => {
-    if(!this.props.downloadMapsAndImages.downloadAudios ||
-      ((this.props.sync.audios.total != null ) && 
+    if (!this.props.downloadMapsAndImages.downloadAudios ||
+      ((this.props.sync.audios.total != null) &&
         this.props.sync.audios.total === this.props.sync.audios.synced)
-      ){
-        this.props.navigation.navigate('DrawerStack')
-      }else if(!this.state.cachingAudios){
-        this.setState({
-          cachingAudios:true,
-        });
-        try {
+    ) {
+      this.props.navigation.navigate('DrawerStack')
+    } else if (!this.state.cachingAudios) {
+      this.setState({
+        cachingAudios: true,
+      });
+      try {
         initAudioCaching();
-      }catch(err) {
+      } catch (err) {
         console.log(err)
       }
-      }
+    }
   }
 
   reload = () => {
@@ -209,7 +209,7 @@ export class Loading extends Component {
       syncingServerData: false, // know when to show that data is synced
       cachingImages: false,
       downloadingMap: false,
-      cachingAudios:false,
+      cachingAudios: false,
       maps: [],
       error: null,
     });
@@ -245,7 +245,7 @@ export class Loading extends Component {
     }
   };
   initMapDownload() {
-    const {maps} = this.state;
+    const { maps } = this.state;
     if (maps.length && maps.some((map) => map.status !== 100)) {
       this.downloadOfflineMapPack(maps.find((map) => map.status !== 100));
     } else {
@@ -258,7 +258,7 @@ export class Loading extends Component {
   }
 
   checkState() {
-    const {families, surveys, projects, images, appVersion, audios} = this.props.sync;
+    const { families, surveys, projects, images, appVersion, audios } = this.props.sync;
     if (!this.props.user.token) {
       // if user hasn't logged in, navigate to login
       this.props.navigation.navigate('Login');
@@ -269,15 +269,16 @@ export class Loading extends Component {
       this.props.setAppVersion(DeviceInfo.getVersion());
       this.syncSurveys('re-sync');
     } else if (
-      
+
       families &&
-      surveys && projects && 
+      surveys && projects &&
       ((!!images.total &&
-      images.total === images.synced) ||
-      (!!audios.total &&
-      audios.total === audios.synced))
+        images.total === images.synced) ||
+        (!!audios.total &&
+          audios.total === audios.synced))
     ) {
       // if everything is synced navigate to Dashboard
+      console.log('pasar a home che')
       this.props.navigation.navigate('DrawerStack');
     }
     else {
@@ -296,6 +297,9 @@ export class Loading extends Component {
     this.props.validate(url[this.props.env], this.props.user.token);
     this.checkState();
   }
+
+  existMaps = () => !!this.props.maps && this.props.maps.length > 0 && !_.isEmpty(this.props.maps[0]);
+
   downloadMaps = async () => {
     let mapsArray = [];
     this.props.maps.forEach((map) => {
@@ -305,11 +309,11 @@ export class Loading extends Component {
           maxZoom: 13,
           bounds: [map.from, map.to],
         };
-        mapsArray.push({name: map.name, status: 0, options});
+        mapsArray.push({ name: map.name, status: 0, options });
       }
     });
-    await this.setState({maps: mapsArray});
-    this.initMapDownload();    
+    await this.setState({ maps: mapsArray });
+    this.initMapDownload();
   };
   componentDidUpdate(prevProps) {
     // if user logs in
@@ -317,13 +321,13 @@ export class Loading extends Component {
       this.syncSurveys();
     }
     // deprecated - start syncing families once surveys are synced
-     // start syncing projects once surveys are synced
+    // start syncing projects once surveys are synced
     if (!prevProps.sync.surveys && this.props.sync.surveys) {
       //this.syncFamilies();
       this.syncProjects();
     }
     // start syncing families once projects are synced
-    if(!prevProps.sync.projects && this.props.sync.projects) {
+    if (!prevProps.sync.projects && this.props.sync.projects) {
       this.syncFamilies();
     }
 
@@ -340,9 +344,9 @@ export class Loading extends Component {
       !this.props.offline.outbox.lenght &&
       this.state.mapsDownloaded &&
       this.state.maps.every((map) => map.status === 100) &&
-      !this.state.cachingImages 
+      !this.state.cachingImages
     ) {
-      this.setState({cachingImages: true});
+      this.setState({ cachingImages: true });
       this.props.setSyncedState('maps', true);
       this.handleImageCaching();
     }
@@ -353,15 +357,17 @@ export class Loading extends Component {
       this.state.mapsDownloaded &&
       this.state.maps.every((map) => map.status === 100) &&
       this.state.cachingImages &&
-      (!!this.props.sync.images.total && 
+      (!!this.props.sync.images.total &&
         this.props.sync.images.total === this.props.sync.images.synced) &&
       !this.state.cachingAudios
     ) {
-      this.setState({cachingAudios: true});
+      this.setState({ cachingAudios: true });
       //this.props.setSyncedState('images', true);
       this.handleAudioCaching();
     }
 
+
+    console.log('check de mapas', this.state.maps.every((map) => map.status === 100));
     // if everything is synced navigate to home
     if (
       !!this.props.sync.images.total &&
@@ -373,19 +379,19 @@ export class Loading extends Component {
       this.props.navigation.navigate('DrawerStack');
     }
 
-    if( this.state.maps.every((map) => map.status === 100) &&
-    this.props.sync.audios.total != null &&
-    prevProps.sync.audios.total !== prevProps.sync.audios.synced &&
-    this.props.sync.audios.total === this.props.sync.audios.synced && this.props.downloadMapsAndImages.downloadImages == false) {
+    if (this.state.maps.every((map) => map.status === 100) &&
+      this.props.sync.audios.total != null &&
+      prevProps.sync.audios.total !== prevProps.sync.audios.synced &&
+      this.props.sync.audios.total === this.props.sync.audios.synced && this.props.downloadMapsAndImages.downloadImages == false) {
       this.props.navigation.navigate('DrawerStack');
     }
 
-    if( this.state.maps.every((map) => map.status === 100) &&
-    this.props.sync.audios.total != null &&
-    this.props.sync.audios.total === this.props.sync.audios.synced &&
-    !!this.props.sync.images.total &&
-    ((prevProps.sync.images.total !== prevProps.sync.images.synced) || ((prevProps.sync.audios.total !== prevProps.sync.audios.synced))  ) &&
-    this.props.sync.images.total === this.props.sync.images.synced &&  this.props.downloadMapsAndImages.downloadImages && this.props.downloadMapsAndImages.downloadAudios
+    if (this.state.maps.every((map) => map.status === 100) &&
+      this.props.sync.audios.total != null &&
+      this.props.sync.audios.total === this.props.sync.audios.synced &&
+      !!this.props.sync.images.total &&
+      ((prevProps.sync.images.total !== prevProps.sync.images.synced) || ((prevProps.sync.audios.total !== prevProps.sync.audios.synced))) &&
+      this.props.sync.images.total === this.props.sync.images.synced && this.props.downloadMapsAndImages.downloadImages && this.props.downloadMapsAndImages.downloadAudios
     ) {
       this.props.navigation.navigate('DrawerStack');
     }
@@ -409,13 +415,13 @@ export class Loading extends Component {
       this.showError('We seem to have a problem downloading your surveys.');
     }
 
-    if(!prevProps.sync.projectsError && this.props.sync.projectsError) {
+    if (!prevProps.sync.projectsError && this.props.sync.projectsError) {
       this.showError('We seem to have a problem downloading your projects.');
     }
   }
 
   render() {
-    const {sync, families, surveys, projects, t} = this.props;
+    const { sync, families, surveys, projects, t } = this.props;
 
     const {
       syncingServerData,
@@ -455,48 +461,34 @@ export class Loading extends Component {
                       }>
                       {sync.surveys
                         ? `${surveys.length} ${t(
-                            'views.loading.surveysCached',
-                          )}`
+                          'views.loading.surveysCached',
+                        )}`
                         : t('views.loading.downloadingSurveys')}
                     </Text>
                     {sync.surveys ? (
                       <Icon name="check" color={colors.palegreen} size={23} />
                     ) : (
-                      <ActivityIndicator
-                        size="small"
-                        color={colors.palegreen}
-                      />
-                    )}
+                        <ActivityIndicator
+                          size="small"
+                          color={colors.palegreen}
+                        />
+                      )}
                   </View>
 
-
-                  {!sync.surveys ? (
-                    <Text style={styles.colorDark}>{t('views.projects')}</Text>
-                  ) : null}
                   {sync.surveys && (
                     <View style={styles.syncingItem}>
                       <Text
                         style={
                           sync.projects ? styles.colorGreen : styles.colorDark
                         }>
-                        {sync.projects
+                        {sync.projects && !!projects && projects.length > 0
                           ? `${projects.length} ${t(
-                              'views.loading.projectsCached',
-                            )}`
+                            'views.loading.projectsCached',
+                          )}`
                           : t('views.loading.downloadingProjects')}
                       </Text>
-                      {sync.projects ? (
-                        <Icon name="check" color={colors.palegreen} size={23} />
-                      ) : (
-                        <ActivityIndicator
-                          size="small"
-                          color={colors.palegreen}
-                        />
-                      )}
                     </View>
                   )}
-
-                  
 
                   {!sync.projects ? (
                     <Text style={styles.colorDark}>{t('views.families')}</Text>
@@ -509,69 +501,76 @@ export class Loading extends Component {
                         }>
                         {sync.families
                           ? `${families.length} ${t(
-                              'views.loading.familiesCached',
-                            )}`
+                            'views.loading.familiesCached',
+                          )}`
                           : t('views.loading.downloadingFamilies')}
                       </Text>
                       {sync.families ? (
                         <Icon name="check" color={colors.palegreen} size={23} />
                       ) : (
-                        <ActivityIndicator
-                          size="small"
-                          color={colors.palegreen}
-                        />
-                      )}
+                          <ActivityIndicator
+                            size="small"
+                            color={colors.palegreen}
+                          />
+                        )}
                     </View>
                   )}
 
-                  {mapsDownloaded || downloadingMap ? (
+                  {(mapsDownloaded || downloadingMap) && (
                     <View>
-                      <View style={styles.syncingItem}>
-                        <Text
-                          style={
-                            !downloadingMap
-                              ? styles.colorGreen
-                              : styles.colorDark
-                          }>
-                          {!downloadingMap
-                            ? t('views.loading.mapsCached')
-                            : t('views.loading.mapsDownloading')}
-                        </Text>
-                        {downloadingMap ? (
-                          <Text
-                            style={
-                              !downloadingMap
-                                ? styles.colorGreen
-                                : styles.colorDark
-                            }>{`${
-                            maps.filter((item) => item.status === 100).length
-                          }/${maps.length}`}</Text>
-                        ) : (
-                          <Icon
-                            name="check"
-                            color={colors.palegreen}
-                            size={23}
-                          />
-                        )}
-                      </View>
-                      {downloadingMap && (
-                        <View style={styles.syncingItem}>
-                          <Text>{currentMapName}</Text>
-                          <Text>{`${Math.floor(mapPercent)}%`}</Text>
-                        </View>
+                      {((!downloadingMap && this.existMaps()) || (downloadingMap && !mapsDownloaded)) && (
+                        <>
+                          <View style={styles.syncingItem}>
+
+                            <Text
+                              style={
+                                !downloadingMap
+                                  ? styles.colorGreen
+                                  : styles.colorDark
+                              }>
+                              {!downloadingMap && this.existMaps()
+                                && t('views.loading.mapsCached')}
+
+                              {downloadingMap && !mapsDownloaded && this.existMaps()
+                                && t('views.loading.mapsDownloading')}
+
+                            </Text>
+
+                            {downloadingMap && this.existMaps() && (
+                              <Text
+                                style={styles.colorDark}>
+                                {`${maps.filter((item) => item.status === 100).length
+                                  }/${maps.length}`}</Text>
+                            )}
+
+                            {!downloadingMap && this.existMaps() && (
+                              <Icon
+                                name="check"
+                                color={colors.palegreen}
+                                size={23}
+                              />
+                            )}
+                          </View>
+
+                          {downloadingMap && this.existMaps() && (
+                            <>
+                              <View style={styles.syncingItem}>
+                                <Text>{currentMapName}</Text>
+                                <Text>{`${Math.floor(mapPercent)}%`}</Text>
+                              </View>
+                              <View>
+                                <ProgressBar
+                                  removePadding
+                                  hideBorder
+                                  progress={mapPercent / 100}
+                                />
+                              </View>
+                            </>
+                          )}
+
+                        </>
                       )}
-                      <View style={!downloadingMap ? {display: 'none'} : {}}>
-                        <ProgressBar
-                          removePadding
-                          hideBorder
-                          progress={mapPercent / 100}
-                        />
-                      </View>
                     </View>
-                  ) : (
-                    <Text style={styles.colorDark}>
-                      {t('views.loading.offlineMaps')}
-                    </Text>
                   )}
                   {!cachingImages ? (
                     <Text style={styles.colorDark}>
@@ -606,7 +605,7 @@ export class Loading extends Component {
                           <View
                             style={
                               sync.images.synced / sync.images.total === 1
-                                ? {display: 'none'}
+                                ? { display: 'none' }
                                 : {}
                             }>
                             <ProgressBar
@@ -617,23 +616,19 @@ export class Loading extends Component {
                           </View>
                         </React.Fragment>
                       ) : (
-                        <Text
-                          style={{
-                            color: colors.dark,
-                            fontSize: 14,
-                            marginBottom: 5,
-                          }}>
-                          {t('views.loading.calcilatingTotalImages')}.
-                        </Text>
-                      )}
+                          <Text
+                            style={{
+                              color: colors.dark,
+                              fontSize: 14,
+                              marginBottom: 5,
+                            }}>
+                            {t('views.loading.calcilatingTotalImages')}.
+                          </Text>
+                        )}
                     </View>
                   )}
-                 {!cachingAudios ? (
-                    <Text style={styles.colorDark}>
-                      {t('views.loading.audios')}
-                    </Text>
-                  ) : null}
-                       {cachingAudios && (
+
+                  {cachingAudios && (
                     <View>
                       {sync.audios.synced && sync.audios.total ? (
                         <React.Fragment>
@@ -661,7 +656,7 @@ export class Loading extends Component {
                           <View
                             style={
                               sync.audios.synced / sync.audios.total === 1
-                                ? {display: 'none'}
+                                ? { display: 'none' }
                                 : {}
                             }>
                             <ProgressBar
@@ -672,16 +667,16 @@ export class Loading extends Component {
                           </View>
                         </React.Fragment>
                       ) : (
-                        <Text
-                          style={{
-                            color: colors.dark,
-                            fontSize: 14,
-                            marginBottom: 5,
-                          }}>
-                          {t('views.loading.calculatingTotalAudios')}.
-                      
-                        </Text>
-                      )}
+                          <Text
+                            style={{
+                              color: colors.dark,
+                              fontSize: 14,
+                              marginBottom: 5,
+                            }}>
+                            {t('views.loading.calculatingTotalAudios')}.
+
+                          </Text>
+                        )}
                     </View>
                   )}
                 </View>
@@ -689,29 +684,29 @@ export class Loading extends Component {
             </View>
           </View>
         ) : (
-          <View style={[globalStyles.container, styles.view]}>
-            <View style={styles.loadingContainer}>
-              <CommunityIcon
-                name="emoticon-sad-outline"
-                color={colors.palered}
-                size={60}
-              />
-              <Text style={[globalStyles.h1, {color: colors.palered}]}>
-                Hmm…
+            <View style={[globalStyles.container, styles.view]}>
+              <View style={styles.loadingContainer}>
+                <CommunityIcon
+                  name="emoticon-sad-outline"
+                  color={colors.palered}
+                  size={60}
+                />
+                <Text style={[globalStyles.h1, { color: colors.palered }]}>
+                  Hmm…
               </Text>
-              <Text style={[globalStyles.h2, {textAlign: 'center'}]}>
-                {error}
-              </Text>
-              <Button
-                outlined
-                text="Retry"
-                style={{paddingHorizontal: 30, marginTop: 30}}
-                borderColor={colors.palered}
-                handleClick={this.reload}
-              />
+                <Text style={[globalStyles.h2, { textAlign: 'center' }]}>
+                  {error}
+                </Text>
+                <Button
+                  outlined
+                  text="Retry"
+                  style={{ paddingHorizontal: 30, marginTop: 30 }}
+                  borderColor={colors.palered}
+                  handleClick={this.reload}
+                />
+              </View>
             </View>
-          </View>
-        )}
+          )}
       </AndroidBackHandler>
     );
   }
