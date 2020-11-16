@@ -192,12 +192,11 @@ const styles = StyleSheet.create({
         minWidth: '100%',
         minHeight: '100%',
         alignItems: 'center',
-        marginBottom: 15
+        marginBottom: 50
     },
     projectsScrollContainerHorizontal: {
         minWidth: '100%',
         maxHeight: 230,
-
         alignItems: 'center',
         paddingHorizontal: 20
     },
@@ -232,7 +231,7 @@ const styles = StyleSheet.create({
         color: colors.palegreen,
     },
     linkContainer: {
-        // marginVertical:20,
+        paddingTop:15,
         marginRight: 20,
         marginLeft: 'auto',
     }
