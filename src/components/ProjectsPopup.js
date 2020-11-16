@@ -1,6 +1,6 @@
 import PropTypes from 'prop-types';
 import React from 'react';
-import { View, StyleSheet, Text, ScrollView, Dimensions, TouchableOpacity, useWindowDimensions } from 'react-native';
+import { View, StyleSheet, Text, ScrollView, TouchableOpacity, useWindowDimensions } from 'react-native';
 import Popup from './Popup';
 import colors from '../theme.json';
 import Icon from 'react-native-vector-icons/MaterialIcons'
@@ -26,14 +26,27 @@ const ProjectsPopup = ({
     const dimensions = useWindowDimensions();
     // Styles based on screen size and orientation
     // Tablet Horizontal
+
     let projectsContainerStyle = styles.projectsScrollContainerHorizontal;
     let cardStyle = styles.itemCardHorizontal;
+    let container = styles.container;
+    let linkContainer = styles.linkContainer;
     if (!!dimensions && isTablet(dimensions) && isLandscape(dimensions)) {
-        projectsContainerStyle = styles.projectsScrollContainerHorizontal;
+        container = {
+            ...container,
+            justifyContent:'center',
+            maxHeight: 400,
+        }
+        projectsContainerStyle =  { 
+            ...styles.projectsScrollContainerHorizontal,
+            paddingVertical: 10,
+            paddingBottom:10
+        
+        };
         cardStyle = {
-            ...styles.itemCard, 
-            width: 200,
-            minWidth: 150,
+            ...styles.itemCard,
+            width: 240,
+            minWidth: 180,
             maxHeight: 150,
             minHeight: '100%',
             marginRight: 15
@@ -41,26 +54,34 @@ const ProjectsPopup = ({
     }
     // Tablet Vertical
     if (!!dimensions && isTablet(dimensions) && isPortrait(dimensions)) {
-        projectsContainerStyle = styles.projectsScrollContainerVertical;
+        projectsContainerStyle =  styles.projectsScrollContainerVertical;
         cardStyle = {
-            ...styles.itemCard,    
-            width: 200,
-            minWidth: 150,
+            ...styles.itemCard,
+            width: 240,
+            minWidth: 180,
             maxHeight: 200,
             minHeight: 200,
             marginBottom: 15,
             marginHorizontal: 10
         };
+        linkContainer = {
+            ...linkContainer,
+            marginTop: 15
+        }
     }
     // Phone Horizontal
     if (!!dimensions && !isTablet(dimensions) && isLandscape(dimensions)) {
-        projectsContainerStyle = styles.projectsScrollContainerHorizontal
+        projectsContainerStyle = { 
+            ...styles.projectsScrollContainerHorizontal,
+            paddingBottom: 15
+        }
         cardStyle = {
             ...styles.itemCard,
             width: 200,
             minWidth: 150,
             maxHeight: 200,
-            minHeight: '100%',
+            height:'100%',
+            minHeight: 100,
             marginRight: 15
         };
     }
@@ -77,18 +98,24 @@ const ProjectsPopup = ({
             marginBottom: 15,
             marginHorizontal: 10
         };
+        linkContainer = {
+            ...linkContainer,
+            marginTop: 15
+        }
     }
 
     return (
         <Popup isOpen={isOpen} onClose={() => onClose(false)} modifiedPopUp projectsModal>
-            <View style={styles.container} >
+            <View style={container} >
+
+                <Icon
+                    style={styles.closeIconStyle}
+                    size={20}
+                    name="close"
+                    onPress={() => onClose(false)}
+                />
                 <>
-                    <Icon
-                        style={styles.closeIconStyle}
-                        size={20}
-                        name="close"
-                        onPress={() => onClose(false)}
-                    />
+                
                     <Text
                         style={styles.title}
                     >
@@ -130,17 +157,19 @@ const ProjectsPopup = ({
                             )
                         })}
                     </ScrollView>
-                    <View style={styles.linkContainer}>
-                        <IconButton
-                            text={t('views.modals.skipProject')}
-                            textStyle={styles.link}
-                            onPress={() => onClose(true)}
-
-                        // onPress={() => this.selectAnswer(0)}
-                        />
-                    </View>
                 </>
-            </View>
+
+                <View style={linkContainer}>
+                    <IconButton
+                        text={t('views.modals.skipProject')}
+                        textStyle={styles.link}
+                        onPress={() => onClose(true)}
+
+                    // onPress={() => this.selectAnswer(0)}
+                    />
+                </View>
+        
+                </View>
         </Popup>)
 }
 
@@ -164,8 +193,6 @@ const styles = StyleSheet.create({
         width: '100%',
         height: '100%',
         alignItems: 'center',
-        justifyContent: 'center'
-
     },
     title: {
         ...globalStyles.h2Bold,
@@ -176,19 +203,19 @@ const styles = StyleSheet.create({
         ...globalStyles.h4,
         color: colors.lightdark,
         textAlign: 'center',
-        marginBottom: 25,
+        paddingBottom: 25,
     },
     projectsScrollContainerVertical: {
         minWidth: '100%',
         minHeight: '100%',
         alignItems: 'center',
-        marginBottom: 15
+        marginBottom: 50
     },
     projectsScrollContainerHorizontal: {
         minWidth: '100%',
-        maxHeight: '100%',
+        height: '100%',
+        maxHeight: 230,
         alignItems: 'center',
-        marginBottom: 10,
         paddingHorizontal: 20
     },
     itemCard: {
@@ -222,8 +249,7 @@ const styles = StyleSheet.create({
         color: colors.palegreen,
     },
     linkContainer: {
-        // marginVertical:20,
-        marginTop: 5,
+        marginRight: 20,
         marginLeft: 'auto',
     }
 })
