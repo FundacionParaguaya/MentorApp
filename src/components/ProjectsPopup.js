@@ -98,6 +98,10 @@ const ProjectsPopup = ({
             marginBottom: 15,
             marginHorizontal: 10
         };
+        linkContainer = {
+            ...linkContainer,
+            marginTop: 15
+        }
     }
 
     return (
