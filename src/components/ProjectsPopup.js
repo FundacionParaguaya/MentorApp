@@ -30,17 +30,23 @@ const ProjectsPopup = ({
     let projectsContainerStyle = styles.projectsScrollContainerHorizontal;
     let cardStyle = styles.itemCardHorizontal;
     let container = styles.container;
+    let linkContainer = styles.linkContainer;
     if (!!dimensions && isTablet(dimensions) && isLandscape(dimensions)) {
         container = {
             ...container,
             justifyContent:'center',
-            maxHeight: 440
+            maxHeight: 400,
         }
-        projectsContainerStyle = styles.projectsScrollContainerHorizontal;
+        projectsContainerStyle =  { 
+            ...styles.projectsScrollContainerHorizontal,
+            paddingVertical: 10,
+            paddingBottom:10
+        
+        };
         cardStyle = {
             ...styles.itemCard,
-            width: 200,
-            minWidth: 150,
+            width: 240,
+            minWidth: 180,
             maxHeight: 150,
             minHeight: '100%',
             marginRight: 15
@@ -48,26 +54,34 @@ const ProjectsPopup = ({
     }
     // Tablet Vertical
     if (!!dimensions && isTablet(dimensions) && isPortrait(dimensions)) {
-        projectsContainerStyle = styles.projectsScrollContainerVertical;
+        projectsContainerStyle =  styles.projectsScrollContainerVertical;
         cardStyle = {
             ...styles.itemCard,
-            width: 200,
-            minWidth: 150,
+            width: 240,
+            minWidth: 180,
             maxHeight: 200,
             minHeight: 200,
             marginBottom: 15,
             marginHorizontal: 10
         };
+        linkContainer = {
+            ...linkContainer,
+            marginTop: 15
+        }
     }
     // Phone Horizontal
     if (!!dimensions && !isTablet(dimensions) && isLandscape(dimensions)) {
-        projectsContainerStyle = styles.projectsScrollContainerHorizontal
+        projectsContainerStyle = { 
+            ...styles.projectsScrollContainerHorizontal,
+            paddingBottom: 15
+        }
         cardStyle = {
             ...styles.itemCard,
             width: 200,
             minWidth: 150,
             maxHeight: 200,
-            minHeight: '100%',
+            height:'100%',
+            minHeight: 100,
             marginRight: 15
         };
     }
@@ -141,7 +155,7 @@ const ProjectsPopup = ({
                     </ScrollView>
                 </>
 
-                <View style={styles.linkContainer}>
+                <View style={linkContainer}>
                     <IconButton
                         text={t('views.modals.skipProject')}
                         textStyle={styles.link}
@@ -174,7 +188,6 @@ const styles = StyleSheet.create({
     container: {
         width: '100%',
         height: '100%',
-
         alignItems: 'center',
     },
     title: {
@@ -196,6 +209,7 @@ const styles = StyleSheet.create({
     },
     projectsScrollContainerHorizontal: {
         minWidth: '100%',
+        height: '100%',
         maxHeight: 230,
         alignItems: 'center',
         paddingHorizontal: 20
@@ -231,7 +245,6 @@ const styles = StyleSheet.create({
         color: colors.palegreen,
     },
     linkContainer: {
-        paddingTop:15,
         marginRight: 20,
         marginLeft: 'auto',
     }
