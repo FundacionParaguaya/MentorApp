@@ -1,6 +1,6 @@
 import PropTypes from 'prop-types';
 import React from 'react';
-import { View, StyleSheet, Text, ScrollView, Dimensions, TouchableOpacity, useWindowDimensions } from 'react-native';
+import { View, StyleSheet, Text, ScrollView, TouchableOpacity, useWindowDimensions } from 'react-native';
 import Popup from './Popup';
 import colors from '../theme.json';
 import Icon from 'react-native-vector-icons/MaterialIcons'
@@ -26,12 +26,19 @@ const ProjectsPopup = ({
     const dimensions = useWindowDimensions();
     // Styles based on screen size and orientation
     // Tablet Horizontal
+
     let projectsContainerStyle = styles.projectsScrollContainerHorizontal;
     let cardStyle = styles.itemCardHorizontal;
+    let container = styles.container;
     if (!!dimensions && isTablet(dimensions) && isLandscape(dimensions)) {
+        container = {
+            ...container,
+            justifyContent:'center',
+            maxHeight: 440
+        }
         projectsContainerStyle = styles.projectsScrollContainerHorizontal;
         cardStyle = {
-            ...styles.itemCard, 
+            ...styles.itemCard,
             width: 200,
             minWidth: 150,
             maxHeight: 150,
@@ -43,7 +50,7 @@ const ProjectsPopup = ({
     if (!!dimensions && isTablet(dimensions) && isPortrait(dimensions)) {
         projectsContainerStyle = styles.projectsScrollContainerVertical;
         cardStyle = {
-            ...styles.itemCard,    
+            ...styles.itemCard,
             width: 200,
             minWidth: 150,
             maxHeight: 200,
@@ -81,14 +88,16 @@ const ProjectsPopup = ({
 
     return (
         <Popup isOpen={isOpen} onClose={() => onClose(false)} modifiedPopUp projectsModal>
-            <View style={styles.container} >
+            <View style={container} >
+
+                <Icon
+                    style={styles.closeIconStyle}
+                    size={20}
+                    name="close"
+                    onPress={() => onClose(false)}
+                />
                 <>
-                    <Icon
-                        style={styles.closeIconStyle}
-                        size={20}
-                        name="close"
-                        onPress={() => onClose(false)}
-                    />
+                
                     <Text
                         style={styles.title}
                     >
@@ -130,17 +139,19 @@ const ProjectsPopup = ({
                             )
                         })}
                     </ScrollView>
-                    <View style={styles.linkContainer}>
-                        <IconButton
-                            text={t('views.modals.skipProject')}
-                            textStyle={styles.link}
-                            onPress={() => onClose(true)}
-
-                        // onPress={() => this.selectAnswer(0)}
-                        />
-                    </View>
                 </>
-            </View>
+
+                <View style={styles.linkContainer}>
+                    <IconButton
+                        text={t('views.modals.skipProject')}
+                        textStyle={styles.link}
+                        onPress={() => onClose(true)}
+
+                    // onPress={() => this.selectAnswer(0)}
+                    />
+                </View>
+        
+                </View>
         </Popup>)
 }
 
@@ -163,9 +174,8 @@ const styles = StyleSheet.create({
     container: {
         width: '100%',
         height: '100%',
-        alignItems: 'center',
-        justifyContent: 'center'
 
+        alignItems: 'center',
     },
     title: {
         ...globalStyles.h2Bold,
@@ -176,7 +186,7 @@ const styles = StyleSheet.create({
         ...globalStyles.h4,
         color: colors.lightdark,
         textAlign: 'center',
-        marginBottom: 25,
+        paddingBottom: 25,
     },
     projectsScrollContainerVertical: {
         minWidth: '100%',
@@ -186,9 +196,9 @@ const styles = StyleSheet.create({
     },
     projectsScrollContainerHorizontal: {
         minWidth: '100%',
-        maxHeight: '100%',
+        maxHeight: 230,
+
         alignItems: 'center',
-        marginBottom: 10,
         paddingHorizontal: 20
     },
     itemCard: {
@@ -223,7 +233,7 @@ const styles = StyleSheet.create({
     },
     linkContainer: {
         // marginVertical:20,
-        marginTop: 5,
+        marginRight: 20,
         marginLeft: 'auto',
     }
 })
