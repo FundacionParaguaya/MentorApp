@@ -20,6 +20,16 @@ const InputWithDep = ({
   label,
 }) => {
   const otherOption = getOtherOption(fieldOptions);
+  const input = <InputWithFormik
+    label={label}
+    lng={lng}
+    t={t}
+    formik={formik}
+    readOnly={readOnly}
+    question={question}
+    name={name}
+    onChange={(e) => onChange(e)}
+  />
 
 
   if (!isMultiValue) {
@@ -34,21 +44,8 @@ const InputWithDep = ({
     }
 
     if (otherOption && value && otherOption === value) {
-      return (
-        <InputWithFormik
-          label={label}
-          lng={lng}
-          t={t}
-          formik={formik}
-          readOnly={readOnly}
-          question={question}
-          name={name}
-          onChange={(e) => onChange(e)}
-        />
-      );
+      return { input };
     }
-
-    return <React.Fragment />;
 
   } else {
     const values =
@@ -64,76 +61,60 @@ const InputWithDep = ({
       cleanUp();
     } else {
       if (otherOption && !!values.find(v => v === otherOption)) {
-        return (
-          <InputWithFormik
-            label={label}
-            lng={lng}
-            t={t}
-            formik={formik}
-            readOnly={readOnly}
-            question={question}
-            name={name}
-            onChange={(e) => onChange(e)}
-          />
-        );
+        return { input };
       }
-      return <React.Fragment />;
+
     }
-  }
-  return <React.Fragment />;
-};
+    return <React.Fragment />;
+  };
 
-const getOtherOption = (options) => {
-  if (!options.some((e) => e.otherOption)) {
-    return null;
-  }
+  const getOtherOption = (options) => {
+    if (!options.some((e) => e.otherOption)) {
+      return null;
+    }
 
-  return options.filter((e) => e.otherOption)[0].value;
-};
+    return options.filter((e) => e.otherOption)[0].value;
+  };
 
-const getFieldValue = (draft, field, index, isEconomic, isMultiValue) => {
-  if (isEconomic) {
-    if (
-      index >= 0 &&
-      draft &&
-      index >= 0 &&
-      draft.familyData &&
-      index >= 0 &&
-      draft.familyData.familyMembersList[index].socioEconomicAnswers.find(
-        (e) => e.key === field,
-      )
-    ) {
-      let question = draft.familyData.familyMembersList[
-        index
-      ].socioEconomicAnswers.find((e) => e.key === field)
+  const getFieldValue = (draft, field, index, isEconomic, isMultiValue) => {
+    if (isEconomic) {
+      if (
+        index >= 0 &&
+        draft &&
+        index >= 0 &&
+        draft.familyData &&
+        index >= 0 &&
+        draft.familyData.familyMembersList[index].socioEconomicAnswers.find(
+          (e) => e.key === field,
+        )
+      ) {
+        let question = draft.familyData.familyMembersList[
+          index
+        ].socioEconomicAnswers.find((e) => e.key === field)
+        return !isMultiValue ? question.value : question.multipleValue;
+      }
+      if (
+        !draft ||
+        !draft.economicSurveyDataList ||
+        !draft.economicSurveyDataList.find((e) => e.key === field)
+      ) {
+        return null;
+      }
+      let question = draft.economicSurveyDataList.find((e) => e.key === field)
+
       return !isMultiValue ? question.value : question.multipleValue;
     }
 
+    const innerIndex = index || 0;
     if (
       !draft ||
-      !draft.economicSurveyDataList ||
-      !draft.economicSurveyDataList.find((e) => e.key === field)
+      !draft.familyData ||
+      !draft.familyData.familyMembersList[innerIndex][field]
     ) {
       return null;
     }
 
-    let question = draft.economicSurveyDataList.find((e) => e.key === field)
+    return draft.familyData.familyMembersList[innerIndex][field];
+  };
 
-    return !isMultiValue ? question.value : question.multipleValue;
-
-
-  }
-
-  const innerIndex = index || 0;
-  if (
-    !draft ||
-    !draft.familyData ||
-    !draft.familyData.familyMembersList[innerIndex][field]
-  ) {
-    return null;
-  }
-
-  return draft.familyData.familyMembersList[innerIndex][field];
-};
-
-export default InputWithDep;
+  export default InputWithDep;
