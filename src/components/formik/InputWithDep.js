@@ -1,5 +1,5 @@
-import {get} from 'lodash';
-import React, {useEffect} from 'react';
+import { get } from 'lodash';
+import React from 'react';
 import InputWithFormik from '../../components/formik/InputWithFormik';
 const InputWithDep = ({
   dep,
@@ -14,36 +14,72 @@ const InputWithDep = ({
   formik,
   name,
   isEconomic,
+  isMultiValue,
   onChange,
   question,
   label,
 }) => {
   const otherOption = getOtherOption(fieldOptions);
-  const value = getFieldValue(from, dep, index, isEconomic);
 
-  if (
-    (otherOption !== value && !!get(formik.values, target)) ||
-    (otherOption !== value && !!get(formik.values, `forFamily.${target}`)) ||
-    (otherOption !== value && !!get(formik.values, `forFamilyMember.${target}`))
-  ) {
-    cleanUp(value);
+
+  if (!isMultiValue) {
+    const value = getFieldValue(from, dep, index, isEconomic, isMultiValue);
+
+    if (
+      (otherOption !== value && !!get(formik.values, target)) ||
+      (otherOption !== value && !!get(formik.values, `forFamily.${target}`)) ||
+      (otherOption !== value && !!get(formik.values, `forFamilyMember.${target}`))
+    ) {
+      cleanUp(value);
+    }
+
+    if (otherOption && value && otherOption === value) {
+      return (
+        <InputWithFormik
+          label={label}
+          lng={lng}
+          t={t}
+          formik={formik}
+          readOnly={readOnly}
+          question={question}
+          name={name}
+          onChange={(e) => onChange(e)}
+        />
+      );
+    }
+
+    return <React.Fragment />;
+
+  } else {
+    const values =
+      getFieldValue(from, dep, index, isEconomic, isMultiValue) || [];
+
+    if (
+      (!values.find(v => v === otherOption) && !!get(formik.values, target)) ||
+      (!values.find(v => v === otherOption) &&
+        !!get(formik.values, `forFamily.${target}`)) ||
+      (!values.find(v => v === otherOption) &&
+        !!get(formik.values, `forFamilyMember.${target}`))
+    ) {
+      cleanUp();
+    } else {
+      if (otherOption && !!values.find(v => v === otherOption)) {
+        return (
+          <InputWithFormik
+            label={label}
+            lng={lng}
+            t={t}
+            formik={formik}
+            readOnly={readOnly}
+            question={question}
+            name={name}
+            onChange={(e) => onChange(e)}
+          />
+        );
+      }
+      return <React.Fragment />;
+    }
   }
-
-  if (otherOption && value && otherOption === value) {
-    return (
-      <InputWithFormik
-        label={label}
-        lng={lng}
-        t={t}
-        formik={formik}
-        readOnly={readOnly}
-        question={question}
-        name={name}
-        onChange={(e) => onChange(e)}
-      />
-    );
-  }
-
   return <React.Fragment />;
 };
 
@@ -55,7 +91,7 @@ const getOtherOption = (options) => {
   return options.filter((e) => e.otherOption)[0].value;
 };
 
-const getFieldValue = (draft, field, index, isEconomic) => {
+const getFieldValue = (draft, field, index, isEconomic, isMultiValue) => {
   if (isEconomic) {
     if (
       index >= 0 &&
@@ -67,9 +103,10 @@ const getFieldValue = (draft, field, index, isEconomic) => {
         (e) => e.key === field,
       )
     ) {
-      return draft.familyData.familyMembersList[
+      let question = draft.familyData.familyMembersList[
         index
-      ].socioEconomicAnswers.find((e) => e.key === field).value;
+      ].socioEconomicAnswers.find((e) => e.key === field)
+      return !isMultiValue ? question.value : question.multipleValue;
     }
 
     if (
@@ -80,7 +117,11 @@ const getFieldValue = (draft, field, index, isEconomic) => {
       return null;
     }
 
-    return draft.economicSurveyDataList.find((e) => e.key === field).value;
+    let question = draft.economicSurveyDataList.find((e) => e.key === field)
+
+    return !isMultiValue ? question.value : question.multipleValue;
+
+
   }
 
   const innerIndex = index || 0;
