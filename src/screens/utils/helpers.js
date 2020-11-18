@@ -443,6 +443,10 @@ export const fakeSurvey = (draftId, date) => {
       longitude: 23.470804059797786,
       accuracy: 0,
     },
+    progress:{
+      screen:"SocioEconomicQuestion",
+      total:18
+    },
     whatsappNotification: false,
   };
 };
