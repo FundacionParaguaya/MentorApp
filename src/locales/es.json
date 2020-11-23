@@ -187,9 +187,9 @@
     "lifemap": {
       "indicatorDefinition": "Definición del indicador",
       "nowLetsMakeSomePriorities": "Ahora, ¡escribamos algunas prioridades!",
-      "youCreatedALifeMap": "Has creado un Mapa de Vida.",
+      "continueToSeeYourLifeMapAndCreatePriorities": "Continúa para ver tu Mapa de Vida y crear prioridades.",
       "continueWithSurvey": "¡Continúa donde te habías quedado!",
-      "congratulations": "¡Felicidades!",
+      "almostThere": "¡Casi listo!",
       "thisLifeMapHas": "¡Listo! Esta sección del Semáforo contiene %n indicadores. Gira tu dispositivo de manera horizontal.",
       "thisLifeMapHasNoStoplight": "¡Listo! Esta sección del Semáforo contiene %n indicadores. Elige si deseas guardar tu encuesta o completar tu Semáforo.",
       "responseRequired": "*Respuesta requerida",
