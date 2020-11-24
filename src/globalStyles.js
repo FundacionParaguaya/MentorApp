@@ -68,6 +68,7 @@ export default StyleSheet.create({
     }),
     fontSize: 18,
     lineHeight: 27,
+    textAlign: 'center',
   },
   h3Bold: {
     ...Platform.select({
