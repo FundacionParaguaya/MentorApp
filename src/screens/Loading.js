@@ -278,7 +278,6 @@ export class Loading extends Component {
           audios.total === audios.synced))
     ) {
       // if everything is synced navigate to Dashboard
-      console.log('pasar a home che')
       this.props.navigation.navigate('DrawerStack');
     }
     else {
@@ -366,8 +365,6 @@ export class Loading extends Component {
       this.handleAudioCaching();
     }
 
-
-    console.log('check de mapas', this.state.maps.every((map) => map.status === 100));
     // if everything is synced navigate to home
     if (
       !!this.props.sync.images.total &&
@@ -477,19 +474,15 @@ export class Loading extends Component {
 
                   {sync.surveys && (
                     <View style={styles.syncingItem}>
-                      <Text
-                        style={
-                          sync.projects ? styles.colorGreen : styles.colorDark
-                        }>
-                        {sync.projects && !!projects && projects.length > 0
-                          ? `${projects.length} ${t(
-                            'views.loading.projectsCached',
-                          )}`
-                          : t('views.loading.downloadingProjects')}
-                      </Text>
+
+                      {sync.projects && Array.isArray(projects) && projects.length > 0
+                        && <Text
+                          style={
+                            sync.projects ? styles.colorGreen : styles.colorDark
+                          }>{`${projects.length} ${t('views.loading.projectsCached')}`}</Text>
+                      }
                     </View>
                   )}
-
                   {!sync.projects ? (
                     <Text style={styles.colorDark}>{t('views.families')}</Text>
                   ) : null}
