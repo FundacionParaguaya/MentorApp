@@ -159,19 +159,18 @@ export class SocioEconomicQuestion extends Component {
     setFieldValue,
     memberIndex,
   ) => {
-    console.log('updateEconomicAnswerCascading', question)
     const draftFromProps = !this.readOnly
       ? this.getDraft()
       : this.readOnlyDraft;
 
     const { conditionalQuestions, questionsWithConditionsOnThem } = this.state;
-
     const hasOtherOption = question.codeName.match(/^custom/g);
 
     // // We get a draft with updated answer
     let key = question.codeName;
     let currentDraft;
     let keyName = 'value';
+    let hasOtherValue;
     if (Array.isArray(value)) {
       keyName = 'multipleValue';
       hasOtherValue = !!value.find(o => o.otherOption);
@@ -186,8 +185,9 @@ export class SocioEconomicQuestion extends Component {
     let answer;
     let answers = !question.forFamilyMember ?
       draftFromProps.economicSurveyDataList
-      : draftFromProps.familyData.familyMembersList[memberIndex];
-
+      : draftFromProps.familyData.familyMembersList[memberIndex]
+        .socioEconomicAnswers;
+    answer = (answers || []).find(ans => ans.key === key);
     if (hasOtherOption) {
       key = _.camelCase(question.codeName.replace(/^custom/g, ''));
 
@@ -207,7 +207,7 @@ export class SocioEconomicQuestion extends Component {
       };
     }
 
-    if (hasOtherValue && !hasOtherOption) {
+    if (hasOtherValue && !hasOtherOption && !!answers) {
       newAnswer = {
         key,
         [keyName]: value,
@@ -475,12 +475,12 @@ export class SocioEconomicQuestion extends Component {
       if (question.options.find((o) => o.otherOption)) {
         forFamilyInitial[
           `custom${this.capitalize(question.codeName)}`
-        ] = Object.prototype.hasOwnProperty.call(draftQuestion, 'other')
+        ] = draftQuestion.hasOwnProperty('other') && !!draftQuestion.other
             ? draftQuestion.other
             : '';
       }
       forFamilyInitial[question.codeName] =
-        (Object.prototype.hasOwnProperty.call(draftQuestion, 'value')
+        (draftQuestion.hasOwnProperty('value') && !!draftQuestion.value
           ? draftQuestion.value
           : draftQuestion.multipleValue) || '';
     });
@@ -499,9 +499,16 @@ export class SocioEconomicQuestion extends Component {
       familyMemberQuestions.forEach((question) => {
         const draftQuestion =
           socioEconomicAnswers.find((e) => e.key === question.codeName) || {};
+        if (question.options.find(o => o.otherOption)) {
+          memberInitial[`custom${capitalize(question.codeName)}`] =
+            draftQuestion.hasOwnProperty('other') && !!draftQuestion.other
+              ? draftQuestion.other
+              : '';
+        }
+
 
         memberInitial[question.codeName] =
-          (Object.prototype.hasOwnProperty.call(draftQuestion, 'value')
+          (draftQuestion.hasOwnProperty('value') && !!draftQuestion.value
             ? draftQuestion.value
             : draftQuestion.multipleValue) || '';
       });
@@ -774,6 +781,8 @@ export class SocioEconomicQuestion extends Component {
                         }}
                         cleanUp={cleanUpMultipleValue}
                       />
+
+
                     </View>
                   );
                 }
@@ -844,7 +853,14 @@ export class SocioEconomicQuestion extends Component {
                           );
                         };
 
-
+                        const cleanUpMultipleValue = () => {
+                          this.updateEconomicAnswerCascading(
+                            modifiedQuestion,
+                            '',
+                            setFieldValue,
+                            index || 0
+                          );
+                        };
 
                         if (!shouldShowQuestion(question, draft, index)) {
                           return <React.Fragment key={question.codeName} />;
@@ -991,7 +1007,6 @@ export class SocioEconomicQuestion extends Component {
                                 }}
                               />
                               <InputWithDep
-                                label="Specify Other"
                                 index={index || 0}
                                 formik={formik}
                                 key={`custom${capitalize(question.codeName)}`}
@@ -1005,6 +1020,8 @@ export class SocioEconomicQuestion extends Component {
                                 readOnly={!!this.readOnly}
                                 lng={this.props.language || 'en'}
                                 question={question}
+                                isMultiValue
+                                isEconomic
                                 name={`forFamilyMember.[${index}].[custom${capitalize(
                                   question.codeName,
                                 )}]`}
@@ -1016,8 +1033,9 @@ export class SocioEconomicQuestion extends Component {
                                     index,
                                   );
                                 }}
-                                cleanUp={cleanUp}
+                                cleanUp={cleanUpMultipleValue}
                               />
+
                             </View>
                           );
                         }

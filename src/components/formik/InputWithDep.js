@@ -1,6 +1,56 @@
 import { get } from 'lodash';
 import React from 'react';
 import InputWithFormik from '../../components/formik/InputWithFormik';
+
+const getOtherOption = (options) => {
+  if (!options.some((e) => e.otherOption)) {
+    return null;
+  }
+
+  return options.filter((e) => e.otherOption)[0].value;
+};
+
+const getFieldValue = (draft, field, index, isEconomic, isMultiValue) => {
+  if (isEconomic) {
+    if (
+      index >= 0 &&
+      draft &&
+      index >= 0 &&
+      draft.familyData &&
+      index >= 0 &&
+      draft.familyData.familyMembersList[index].socioEconomicAnswers.find(
+        (e) => e.key === field,
+      )
+    ) {
+      const question = draft.familyData.familyMembersList[
+        index
+      ].socioEconomicAnswers.find((e) => e.key === field)
+      return !isMultiValue ? question.value : question.multipleValue;
+    }
+    if (
+      !draft ||
+      !draft.economicSurveyDataList ||
+      !draft.economicSurveyDataList.find((e) => e.key === field)
+    ) {
+      return null;
+    }
+    const question = draft.economicSurveyDataList.find((e) => e.key === field);
+
+    return !isMultiValue ? question.value : question.multipleValue;
+  }
+
+  const innerIndex = index || 0;
+  if (
+    !draft ||
+    !draft.familyData ||
+    !draft.familyData.familyMembersList[innerIndex][field]
+  ) {
+    return null;
+  }
+
+  return draft.familyData.familyMembersList[innerIndex][field];
+};
+
 const InputWithDep = ({
   dep,
   fieldOptions,
@@ -20,21 +70,8 @@ const InputWithDep = ({
   label,
 }) => {
   const otherOption = getOtherOption(fieldOptions);
-  const input = <InputWithFormik
-    label={label}
-    lng={lng}
-    t={t}
-    formik={formik}
-    readOnly={readOnly}
-    question={question}
-    name={name}
-    onChange={(e) => onChange(e)}
-  />
-
-
   if (!isMultiValue) {
     const value = getFieldValue(from, dep, index, isEconomic, isMultiValue);
-
     if (
       (otherOption !== value && !!get(formik.values, target)) ||
       (otherOption !== value && !!get(formik.values, `forFamily.${target}`)) ||
@@ -42,11 +79,18 @@ const InputWithDep = ({
     ) {
       cleanUp(value);
     }
-
     if (otherOption && value && otherOption === value) {
-      return { input };
+      return <InputWithFormik
+        label={label}
+        lng={lng}
+        t={t}
+        formik={formik}
+        readOnly={readOnly}
+        question={question}
+        name={name}
+        onChange={(e) => onChange(e)}
+      />;
     }
-
   } else {
     const values =
       getFieldValue(from, dep, index, isEconomic, isMultiValue) || [];
@@ -61,60 +105,20 @@ const InputWithDep = ({
       cleanUp();
     } else {
       if (otherOption && !!values.find(v => v === otherOption)) {
-        return { input };
+        return <InputWithFormik
+          label={label}
+          lng={lng}
+          t={t}
+          formik={formik}
+          readOnly={readOnly}
+          question={question}
+          name={name}
+          onChange={(e) => onChange(e)}
+        />;
       }
-
     }
     return <React.Fragment />;
   };
-
-  const getOtherOption = (options) => {
-    if (!options.some((e) => e.otherOption)) {
-      return null;
-    }
-
-    return options.filter((e) => e.otherOption)[0].value;
-  };
-
-  const getFieldValue = (draft, field, index, isEconomic, isMultiValue) => {
-    if (isEconomic) {
-      if (
-        index >= 0 &&
-        draft &&
-        index >= 0 &&
-        draft.familyData &&
-        index >= 0 &&
-        draft.familyData.familyMembersList[index].socioEconomicAnswers.find(
-          (e) => e.key === field,
-        )
-      ) {
-        let question = draft.familyData.familyMembersList[
-          index
-        ].socioEconomicAnswers.find((e) => e.key === field)
-        return !isMultiValue ? question.value : question.multipleValue;
-      }
-      if (
-        !draft ||
-        !draft.economicSurveyDataList ||
-        !draft.economicSurveyDataList.find((e) => e.key === field)
-      ) {
-        return null;
-      }
-      let question = draft.economicSurveyDataList.find((e) => e.key === field)
-
-      return !isMultiValue ? question.value : question.multipleValue;
-    }
-
-    const innerIndex = index || 0;
-    if (
-      !draft ||
-      !draft.familyData ||
-      !draft.familyData.familyMembersList[innerIndex][field]
-    ) {
-      return null;
-    }
-
-    return draft.familyData.familyMembersList[innerIndex][field];
-  };
-
-  export default InputWithDep;
+  return null
+}
+export default InputWithDep;
