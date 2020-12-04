@@ -207,7 +207,7 @@ export class SocioEconomicQuestion extends Component {
       };
     }
 
-    if (hasOtherValue && !hasOtherOption && !!answers) {
+    if (hasOtherValue && !hasOtherOption && !!answer) {
       newAnswer = {
         key,
         [keyName]: value,
