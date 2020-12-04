@@ -173,7 +173,7 @@ export class SocioEconomicQuestion extends Component {
     let hasOtherValue;
     if (Array.isArray(value)) {
       keyName = 'multipleValue';
-      hasOtherValue = !!value.find(o => o.otherOption);
+      hasOtherValue = !!question.options.find(o => o.otherOption);
     }
 
     let newAnswer = {
@@ -842,13 +842,13 @@ export class SocioEconomicQuestion extends Component {
                           this.updateEconomicAnswerCascading(
                             modifiedQuestion,
                             '',
-                            setFieldValue,
+                            formik.setFieldValue,
                             index,
                           );
                           this.updateEconomicAnswerCascading(
                             question,
                             value,
-                            setFieldValue,
+                            formik.setFieldValue,
                             index,
                           );
                         };
@@ -857,7 +857,7 @@ export class SocioEconomicQuestion extends Component {
                           this.updateEconomicAnswerCascading(
                             modifiedQuestion,
                             '',
-                            setFieldValue,
+                            formik.setFieldValue,
                             index || 0
                           );
                         };
