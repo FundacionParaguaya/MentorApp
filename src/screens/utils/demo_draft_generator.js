@@ -33,7 +33,8 @@ export const generateRandomDraftData = (
         {
           firstParticipant: false,
           firstName: `${getRandomName()}`,
-          gender: 'F'
+          gender: 'F',
+          socioEconomicAnswers: [],
         }
       ]
     },
