@@ -55,7 +55,7 @@ export class Dashboard extends Component {
       params: {
         familyName: `${firstName} ${lastName}`,
         familyLifemap: draft,
-        isDraft: true,
+        isDraft: false,
         survey: this.props.surveys.find(
           (survey) => survey.id === draft.surveyId,
         ),

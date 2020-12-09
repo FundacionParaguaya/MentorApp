@@ -1,8 +1,8 @@
 import PropTypes from 'prop-types';
-import React, {Component} from 'react';
-import {withNamespaces} from 'react-i18next';
-import {Image, StyleSheet, Text, TouchableHighlight, View} from 'react-native';
-import {connect} from 'react-redux';
+import React, { Component } from 'react';
+import { withNamespaces } from 'react-i18next';
+import { Image, StyleSheet, Text, TouchableHighlight, View } from 'react-native';
+import { connect } from 'react-redux';
 import arrow from '../../../assets/images/selectArrow.png';
 import BottomModal from '../../components/BottomModal';
 import Button from '../../components/Button';
@@ -11,8 +11,8 @@ import LifemapOverview from '../../components/LifemapOverview';
 import LifemapVisual from '../../components/LifemapVisual';
 import StickyFooter from '../../components/StickyFooter';
 import globalStyles from '../../globalStyles';
-import {updateDraft} from '../../redux/actions';
-import {calculateProgressBar} from '../utils/helpers';
+import { updateDraft } from '../../redux/actions';
+import { calculateProgressBar } from '../utils/helpers';
 import colors from '../../theme.json';
 
 export class Overview extends Component {
@@ -26,7 +26,7 @@ export class Overview extends Component {
     selectedFilter: false,
     filterLabel: false,
     tipIsVisible: false,
-    syncPriorities:[],
+    syncPriorities: [],
   };
 
   getDraft = () =>
@@ -111,9 +111,9 @@ export class Overview extends Component {
   handleClickOnAddPriority = () => {
     this.props.navigation.navigate('SelectIndicatorPriority', {
       draft: !this.props.readOnly
-      ? this.getDraft()
-      : this.props.familyLifemap,
-      survey:this.survey
+        ? this.getDraft()
+        : this.props.familyLifemap,
+      survey: this.survey
     })
   };
 
@@ -122,7 +122,7 @@ export class Overview extends Component {
       'focus',
       () => {
         console.log('forceUpdate')
-          this.forceUpdate();
+        this.forceUpdate();
       })
     const draft = !this.props.readOnly
       ? this.getDraft()
@@ -149,13 +149,13 @@ export class Overview extends Component {
   }
 
   shouldComponentUpdate() {
-    console.log('shouldComponentUpdate(): Overview',this.props.navigation.isFocused())
+    console.log('shouldComponentUpdate(): Overview', this.props.navigation.isFocused())
     return this.props.navigation.isFocused();
   }
 
   render() {
-    const {t} = this.props;
-    const {filterModalIsOpen, selectedFilter, filterLabel} = this.state;
+    const { t } = this.props;
+    const { filterModalIsOpen, selectedFilter, filterLabel } = this.state;
     const draft = !this.props.readOnly
       ? this.getDraft()
       : this.props.familyLifemap;
@@ -172,18 +172,17 @@ export class Overview extends Component {
             questionsLength={this.survey.surveyStoplightQuestions.length}
           />
         </View>
-       
+
         {/*If we are in family/draft then show the questions.Else dont show them . This is requered for the families tab*/}
         <View>
-        
           <View>
-          <View style={styles.buttonContainer}>
-          <Button
+            <View style={styles.buttonContainer}>
+              <Button
                 style={styles.buttonSmall}
                 text={t('views.family.addPriority')}
                 handleClick={this.handleClickOnAddPriority}
               />
-          </View>
+            </View>
             <TouchableHighlight
               id="filters"
               underlayColor={'transparent'}
@@ -204,7 +203,7 @@ export class Overview extends Component {
             </TouchableHighlight>
             <LifemapOverview
               id="lifeMapOverview"
-              syncPriorities = {this.props.priorities}
+              syncPriorities={this.props.priorities}
               surveyData={this.survey.surveyStoplightQuestions}
               readOnly
               draftData={draft}
@@ -213,7 +212,7 @@ export class Overview extends Component {
               selectedFilter={selectedFilter}
             />
           </View>
-        
+
 
           {/* Filters modal */}
           <BottomModal
@@ -327,56 +326,56 @@ export class Overview extends Component {
         </View>
       </View>
     ) : (
-      <StickyFooter
-        continueLabel={t('general.continue')}
-        onContinue={() => this.onContinue()}
-        visible={!this.isResumingDraft && !this.familyLifemap}
-        progress={!this.isResumingDraft && !this.familyLifemap ?
-          calculateProgressBar({readOnly:this.readOnly,draft:draft,isLast:true}) : 0
-        }>
-        {!this.props.readOnly ? (
-          <View style={{alignItems: 'center',}}>
-            {draft.stoplightSkipped && <View style={{paddingTop: 50}} />}
-            {!draft.stoplightSkipped && (
+        <StickyFooter
+          continueLabel={t('general.continue')}
+          onContinue={() => this.onContinue()}
+          visible={!this.isResumingDraft && !this.familyLifemap}
+          progress={!this.isResumingDraft && !this.familyLifemap ?
+            calculateProgressBar({ readOnly: this.readOnly, draft: draft, isLast: true }) : 0
+          }>
+          {!this.props.readOnly ? (
+            <View style={{ alignItems: 'center', }}>
+              {draft.stoplightSkipped && <View style={{ paddingTop: 50 }} />}
+              {!draft.stoplightSkipped && (
+                <Text style={[globalStyles.h2Bold, styles.heading]}>
+                  {t('views.lifemap.almostThere')}
+                </Text>
+              )}
               <Text style={[globalStyles.h2Bold, styles.heading]}>
-                {t('views.lifemap.almostThere')}
+                {!draft.stoplightSkipped
+                  ? t('views.lifemap.continueToSeeYourLifeMapAndCreatePriorities')
+                  : t('views.lifemap.continueWithSurvey')}
               </Text>
-            )}
-            <Text style={[globalStyles.h2Bold, styles.heading]}>
-              {!draft.stoplightSkipped
-                ? t('views.lifemap.continueToSeeYourLifeMapAndCreatePriorities')
-                : t('views.lifemap.continueWithSurvey')}
-            </Text>
+            </View>
+          ) : null}
+          <View style={[globalStyles.background, styles.contentContainer]}>
+            <View style={styles.indicatorsContainer}>
+              {!draft.stoplightSkipped && (
+                <LifemapVisual
+                  large={this.props.readOnly}
+                  extraLarge={!this.props.readOnly}
+                  questions={draft.indicatorSurveyDataList}
+                  priorities={draft.priorities}
+                  achievements={draft.achievements}
+                  questionsLength={this.survey.surveyStoplightQuestions.length}
+                />
+              )}
+              {this.isResumingDraft ? (
+                <Button
+                  id="resume-draft"
+                  style={{
+                    marginTop: 20,
+                  }}
+                  colored
+                  text={t('general.resumeDraft')}
+                  handleClick={this.resumeDraft}
+                />
+              ) : null}
+            </View>
+            {/*If we are in family/draft then show the questions.Else dont show them . This is requered for the families tab*/}
           </View>
-        ) : null}
-        <View style={[globalStyles.background, styles.contentContainer]}>
-          <View style={styles.indicatorsContainer}>
-            {!draft.stoplightSkipped && (
-              <LifemapVisual
-                large={this.props.readOnly}
-                extraLarge={!this.props.readOnly}
-                questions={draft.indicatorSurveyDataList}
-                priorities={draft.priorities}
-                achievements={draft.achievements}
-                questionsLength={this.survey.surveyStoplightQuestions.length}
-              />
-            )}
-            {this.isResumingDraft ? (
-              <Button
-                id="resume-draft"
-                style={{
-                  marginTop: 20,
-                }}
-                colored
-                text={t('general.resumeDraft')}
-                handleClick={this.resumeDraft}
-              />
-            ) : null}
-          </View>
-          {/*If we are in family/draft then show the questions.Else dont show them . This is requered for the families tab*/}
-        </View>
-      </StickyFooter>
-    );
+        </StickyFooter>
+      );
   }
 }
 const styles = StyleSheet.create({
@@ -429,7 +428,7 @@ const styles = StyleSheet.create({
   buttonContainer: {
     backgroundColor: colors.primary,
   }
-  
+
 });
 
 Overview.propTypes = {
@@ -445,7 +444,7 @@ const mapDispatchToProps = {
   updateDraft,
 };
 
-const mapStateToProps = ({drafts, priorities}) => ({drafts, priorities});
+const mapStateToProps = ({ drafts, priorities }) => ({ drafts, priorities });
 
 export default withNamespaces()(
   connect(mapStateToProps, mapDispatchToProps)(Overview),

@@ -27,10 +27,10 @@ const LifemapOverview = ({
   draftOverview
 }) => {
   const dimensions = surveyData.map((item) => item.dimension);
-  const [addAchievementOrPriority,setAddAchievementOrPriority] = useState(false);
-  const [indicator,setIndicator ] = useState('');
-  const [ color, setColor] = useState(0);
-  const [ indicatorText, setIndicatorText ] = useState('');
+  const [addAchievementOrPriority, setAddAchievementOrPriority] = useState(false);
+  const [indicator, setIndicator] = useState('');
+  const [color, setColor] = useState(0);
+  const [indicatorText, setIndicatorText] = useState('');
   const isFocused = useIsFocused();
 
   const getColor = (codeName, previous) => {
@@ -55,7 +55,7 @@ const LifemapOverview = ({
     }
   };
 
-  const handleClick = (color, indicator, indicatorText) =>  {
+  const handleClick = (color, indicator, indicatorText) => {
     setAddAchievementOrPriority(true);
     setIndicator(indicator);
     setColor(color);
@@ -67,45 +67,45 @@ const LifemapOverview = ({
   };
 
   const filterByDimension = (item) =>
-  surveyData.filter((indicator) => {
-    const colorCode = getColor(indicator.codeName);
-    if (selectedFilter === false) {
-      return indicator.dimension === item && typeof colorCode === 'number';
-    } else if (selectedFilter === 'priorities') {
-      const priorities = draftData.priorities.map(
-        (priority) => priority.indicator,
-      );
-      const achievements = tdraftData.achievements.map(
-        (priority) => priority.indicator,
-      );
+    surveyData.filter((indicator) => {
+      const colorCode = getColor(indicator.codeName);
+      if (selectedFilter === false) {
+        return indicator.dimension === item && typeof colorCode === 'number';
+      } else if (selectedFilter === 'priorities') {
+        const priorities = draftData.priorities.map(
+          (priority) => priority.indicator,
+        );
+        const achievements = tdraftData.achievements.map(
+          (priority) => priority.indicator,
+        );
 
-      return (
-        indicator.dimension === item &&
-        (priorities.includes(indicator.codeName) ||
-          achievements.includes(indicator.codeName))
-      );
-    } else {
-      return (
-        indicator.dimension === item &&
-        typeof colorCode === 'number' &&
-        colorCode === selectedFilter
-      );
-    }
-  });
+        return (
+          indicator.dimension === item &&
+          (priorities.includes(indicator.codeName) ||
+            achievements.includes(indicator.codeName))
+        );
+      } else {
+        return (
+          indicator.dimension === item &&
+          typeof colorCode === 'number' &&
+          colorCode === selectedFilter
+        );
+      }
+    });
 
   const checkSyncPriorityStatus = (codeName, prioritiesForSync, status) => {
     let indicator;
     let syncStatus = false;
-    if( draftData && draftData.indicatorSurveyDataList && prioritiesForSync ) {
-      indicator = draftData.indicatorSurveyDataList.find( item => 
+    if (draftData && draftData.indicatorSurveyDataList && prioritiesForSync) {
+      indicator = draftData.indicatorSurveyDataList.find(item =>
         item.key == codeName && item.snapshotStoplightId
       );
       syncStatus = prioritiesForSync.
-        filter(priority => priority.status == status ).
-        find( priority => 
+        filter(priority => priority.status == status).
+        find(priority =>
           priority.snapshotStoplightId == indicator.snapshotStoplightId
-          );
-          return syncStatus;
+        );
+      return syncStatus;
     }
     return syncStatus;
   };
@@ -125,15 +125,12 @@ const LifemapOverview = ({
     (priority) => priority.indicator,
   );
 
-  console.log('Render: LifemapOverview',syncPriorities);
+  console.log('Render: LifemapOverview', syncPriorities);
 
 
   return (
-   
-
-   
     <View style={styles.container}>
-       { isFocused && <>
+      { isFocused && <>
         {/* I am also passing the color because i have to visually display the circle color */}
         {addAchievementOrPriority ? (
           <AddPriorityAndAchievementModal
@@ -154,11 +151,11 @@ const LifemapOverview = ({
                 key={indicator.questionText}
                 name={indicator.questionText}
                 color={getColor(indicator.codeName)}
-                errorPrioritySync = {checkSyncPriorityStatus(indicator.codeName, syncPriorities,'Sync Error')}
-                pendingPrioritySync = {checkSyncPriorityStatus(indicator.codeName, syncPriorities,'Pending Status')}
+                errorPrioritySync={checkSyncPriorityStatus(indicator.codeName, syncPriorities, 'Sync Error')}
+                pendingPrioritySync={checkSyncPriorityStatus(indicator.codeName, syncPriorities, 'Pending Status')}
                 readOnly={readOnly}
                 draftOverview={draftOverview}
-                priority={priorities.includes(indicator.codeName) || checkSyncPriorityStatus(indicator.codeName, syncPriorities,'Synced')}
+                priority={priorities.includes(indicator.codeName) || checkSyncPriorityStatus(indicator.codeName, syncPriorities, 'Synced')}
                 achievement={achievements.includes(indicator.codeName)}
                 previousColor={getColor(indicator.codeName, true)}
                 previousPriority={previousPriorities && previousPriorities.includes(indicator.codeName)}
@@ -175,10 +172,10 @@ const LifemapOverview = ({
             ))}
           </View>
         ))}
-        
-        </>}
-      </View>
-    
+
+      </>}
+    </View>
+
 
   )
 }
