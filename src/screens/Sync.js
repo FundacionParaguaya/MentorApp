@@ -8,7 +8,6 @@ import {
   StyleSheet,
   UIManager,
   View,
-  Text,
   TextInput,
   findNodeHandle,
 } from 'react-native';
