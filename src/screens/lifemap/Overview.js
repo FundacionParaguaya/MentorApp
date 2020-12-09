@@ -26,6 +26,7 @@ export class Overview extends Component {
     selectedFilter: false,
     filterLabel: false,
     tipIsVisible: false,
+    syncPriorities:[],
   };
 
   getDraft = () =>
@@ -107,7 +108,22 @@ export class Overview extends Component {
     });
   };
 
+  handleClickOnAddPriority = () => {
+    this.props.navigation.navigate('SelectIndicatorPriority', {
+      draft: !this.props.readOnly
+      ? this.getDraft()
+      : this.props.familyLifemap,
+      survey:this.survey
+    })
+  };
+
   componentDidMount() {
+    this.props.navigation.addListener(
+      'focus',
+      () => {
+        console.log('forceUpdate')
+          this.forceUpdate();
+      })
     const draft = !this.props.readOnly
       ? this.getDraft()
       : this.props.familyLifemap;
@@ -128,7 +144,12 @@ export class Overview extends Component {
     }
   }
 
+  componentDidUpdate() {
+    console.log('componentDidUpdate: Overview')
+  }
+
   shouldComponentUpdate() {
+    console.log('shouldComponentUpdate(): Overview',this.props.navigation.isFocused())
     return this.props.navigation.isFocused();
   }
 
@@ -138,6 +159,7 @@ export class Overview extends Component {
     const draft = !this.props.readOnly
       ? this.getDraft()
       : this.props.familyLifemap;
+
     return this.props.readOnly ? (
       <View style={[globalStyles.background, styles.contentContainer]}>
         <View style={styles.indicatorsContainer}>
@@ -150,9 +172,18 @@ export class Overview extends Component {
             questionsLength={this.survey.surveyStoplightQuestions.length}
           />
         </View>
+       
         {/*If we are in family/draft then show the questions.Else dont show them . This is requered for the families tab*/}
         <View>
+        
           <View>
+          <View style={styles.buttonContainer}>
+          <Button
+                style={styles.buttonSmall}
+                text={t('views.family.addPriority')}
+                handleClick={this.handleClickOnAddPriority}
+              />
+          </View>
             <TouchableHighlight
               id="filters"
               underlayColor={'transparent'}
@@ -173,13 +204,16 @@ export class Overview extends Component {
             </TouchableHighlight>
             <LifemapOverview
               id="lifeMapOverview"
+              syncPriorities = {this.props.priorities}
               surveyData={this.survey.surveyStoplightQuestions}
+              readOnly
               draftData={draft}
               navigateToScreen={this.navigateToScreen}
               draftOverview={!this.isResumingDraft && !this.familyLifemap}
               selectedFilter={selectedFilter}
             />
           </View>
+        
 
           {/* Filters modal */}
           <BottomModal
@@ -384,6 +418,18 @@ const styles = StyleSheet.create({
     marginBottom: 15,
     marginLeft: 16,
   },
+  buttonSmall: {
+    alignSelf: 'center',
+    marginVertical: 20,
+    maxWidth: 400,
+    backgroundColor: '#50AA47',
+    paddingLeft: 20,
+    paddingRight: 20
+  },
+  buttonContainer: {
+    backgroundColor: colors.primary,
+  }
+  
 });
 
 Overview.propTypes = {
@@ -399,7 +445,7 @@ const mapDispatchToProps = {
   updateDraft,
 };
 
-const mapStateToProps = ({drafts}) => ({drafts});
+const mapStateToProps = ({drafts, priorities}) => ({drafts, priorities});
 
 export default withNamespaces()(
   connect(mapStateToProps, mapDispatchToProps)(Overview),

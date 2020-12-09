@@ -185,7 +185,11 @@
       "weCannotLocate": "We cannot locate you!",
       "tellUsMore": "You can tell us more about this location in the form below!",
       "searchByName": "Search by name",
-      "addNewMember": "Add new member"
+      "addNewMember": "Add new member",
+      "addPriority": "Add Priority",
+      "selectIndicator": "Select a Indicator",
+      "priorityPending": "Priority pending",
+      "priorityError": "Priority sync error"
     },
     "lifemap": {
       "indicatorDefinition": "Indicator Definition",

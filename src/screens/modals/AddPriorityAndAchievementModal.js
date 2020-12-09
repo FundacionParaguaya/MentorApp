@@ -11,8 +11,9 @@ import TextInput from '../../components/form/TextInput'
 import Popup from '../../components/Popup'
 import StickyFooter from '../../components/StickyFooter'
 import globalStyles from '../../globalStyles'
-import { updateDraft } from '../../redux/actions'
+import { updateDraft, addPriority, submitPriority } from '../../redux/actions'
 import colors from '../../theme.json'
+import { url } from '../../config.json';
 
 export class AddPriorityAndAchievementModal extends Component {
   draftId = this.props.draftId
@@ -25,6 +26,7 @@ export class AddPriorityAndAchievementModal extends Component {
     roadmap: '',
     validationError: false,
     indicator: this.props.indicator || '',
+    snapshotStoplightId: this.props.snapshotStoplightId || null,
     estimatedDate: null,
     errors: [],
     showErrors: false
@@ -75,7 +77,7 @@ export class AddPriorityAndAchievementModal extends Component {
 
   addPriority = () => {
     const draft = this.getDraft()
-    const { reason, action, estimatedDate, indicator } = this.state
+    const { reason, action, estimatedDate, indicator, snapshotStoplightId } = this.state
     const priorities = draft.priorities
     const item = priorities.find(item => item.indicator === indicator)
     let updatedDraft = draft
@@ -102,7 +104,26 @@ export class AddPriorityAndAchievementModal extends Component {
     }
 
     //Updating the draft
-    this.props.updateDraft(updatedDraft)
+    if (this.props.isFamily) {
+      const payload = {
+        snapshotStoplightId,
+        reason,
+        action,
+        months: estimatedDate
+      }
+      this.props.addPriority(
+        /*  url[this.props.env],
+         this.props.user.token, */
+        payload)
+      this.props.submitPriority(
+        url[this.props.env],
+        this.props.user.token,
+        payload
+      )
+    } else {
+      this.props.updateDraft(updatedDraft)
+    }
+
 
     //closing the modal
     this.props.onClose()
@@ -191,11 +212,11 @@ export class AddPriorityAndAchievementModal extends Component {
     const { validationError, showErrors } = this.state
     var isReadOnly = false
 
-    if (draft.status) {
-      isReadOnly = draft.status === 'Synced'
-    } else {
-      isReadOnly = true
-    }
+    /*   if (draft.status) {
+        isReadOnly = draft.status === 'Synced'
+      } else {
+        isReadOnly = true
+      } */
 
     //i cound directly use this.state.action for the values below but
     // it just doesnt work.Thats why i use the old way from the old components
@@ -291,41 +312,41 @@ export class AddPriorityAndAchievementModal extends Component {
                 </View>
               </React.Fragment>
             ) : (
-              <React.Fragment>
-                <TextInput
-                  id="howDidYouGetIt"
-                  onChangeText={text => this.setState({ action: text })}
-                  placeholder={t('views.lifemap.howDidYouGetIt')}
-                  initialValue={achievement ? achievement.action : ''}
-                  required
-                  multiline
-                  readOnly={isReadOnly}
-                  showErrors={showErrors}
-                  setError={isError => this.setError(isError, 'howDidYouGetIt')}
-                />
+                <React.Fragment>
+                  <TextInput
+                    id="howDidYouGetIt"
+                    onChangeText={text => this.setState({ action: text })}
+                    placeholder={t('views.lifemap.howDidYouGetIt')}
+                    initialValue={achievement ? achievement.action : ''}
+                    required
+                    multiline
+                    readOnly={isReadOnly}
+                    showErrors={showErrors}
+                    setError={isError => this.setError(isError, 'howDidYouGetIt')}
+                  />
 
-                <TextInput
-                  id="whatDidItTakeToAchieveThis"
-                  onChangeText={text => this.setState({ roadmap: text })}
-                  placeholder={t('views.lifemap.whatDidItTakeToAchieveThis')}
-                  initialValue={achievement ? achievement.roadmap : ''}
-                  multiline
-                  readOnly={isReadOnly}
-                  showErrors={showErrors}
-                  setError={isError =>
-                    this.setError(isError, 'whatDidItTakeToAchieveThis')
-                  }
-                />
-              </React.Fragment>
-            )}
+                  <TextInput
+                    id="whatDidItTakeToAchieveThis"
+                    onChangeText={text => this.setState({ roadmap: text })}
+                    placeholder={t('views.lifemap.whatDidItTakeToAchieveThis')}
+                    initialValue={achievement ? achievement.roadmap : ''}
+                    multiline
+                    readOnly={isReadOnly}
+                    showErrors={showErrors}
+                    setError={isError =>
+                      this.setError(isError, 'whatDidItTakeToAchieveThis')
+                    }
+                  />
+                </React.Fragment>
+              )}
 
             {validationError ? (
               <Text style={styles.validationText}>
                 {t('validation.fieldIsRequired')}
               </Text>
             ) : (
-              <View />
-            )}
+                <View />
+              )}
           </View>
         </StickyFooter>
       </Popup>
@@ -369,10 +390,12 @@ const styles = StyleSheet.create({
 })
 
 const mapDispatchToProps = {
-  updateDraft
+  updateDraft,
+  addPriority,
+  submitPriority
 }
 
-const mapStateToProps = ({ drafts }) => ({ drafts })
+const mapStateToProps = ({ drafts, env, user }) => ({ drafts, env, user })
 
 export default withNamespaces()(
   connect(

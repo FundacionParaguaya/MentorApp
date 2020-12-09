@@ -9,7 +9,7 @@ import colors from '../../theme.json'
 import globalStyles from '../../globalStyles'
 export class SyncRetry extends Component {
   render() {
-    const { draftsWithError, retrySubmit } = this.props
+    const { withError, retrySubmit } = this.props
     return (
       <View style={[styles.view, styles.borderBottom]}>
         <Text style={globalStyles.h3}>
@@ -30,11 +30,11 @@ export class SyncRetry extends Component {
           />
         </View>
         <Text style={globalStyles.p}>
-          {draftsWithError === 1
-            ? i18n.t('views.sync.itemHasError').replace('%n', draftsWithError)
+          {withError === 1
+            ? i18n.t('views.sync.itemHasError').replace('%n', withError)
             : i18n
                 .t('views.sync.itemsHaveError')
-                .replace('%n', draftsWithError)}
+                .replace('%n', withError)}
         </Text>
       </View>
     )
@@ -42,7 +42,7 @@ export class SyncRetry extends Component {
 }
 
 SyncRetry.propTypes = {
-  draftsWithError: PropTypes.number.isRequired,
+  withError: PropTypes.number.isRequired,
   retrySubmit: PropTypes.func.isRequired
 }
 const styles = StyleSheet.create({

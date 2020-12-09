@@ -46,6 +46,7 @@ class LifemapVisual extends Component {
       size2 = 50
       size1 = 20
     }
+    console.log('Questions',this.props.questions)
     return (
       <View style={styles.container}>
         {this.getColors.map((item, i) => (
@@ -53,11 +54,11 @@ class LifemapVisual extends Component {
             key={i}
             accessible={true}
             accessibilityLabel={
-              setAccessibleIndicatorName(this.props.questions[i].key) || ''
+              setAccessibleIndicatorName(this.props.questions[i] && this.props.questions[i].key || '')
             }
             accessibilityHint={setAccessibleColorName(colors, item) || ''}
           >
-            {prioritiesAndAchievements.includes(this.props.questions[i].key) &&
+            {prioritiesAndAchievements.includes(this.props.questions[i] && this.props.questions[i].key) &&
             this.props.questions[i].value ? (
               <Icon
                 name="brightness-1"

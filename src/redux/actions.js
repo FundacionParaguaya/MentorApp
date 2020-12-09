@@ -1,5 +1,5 @@
 // Login
-import {PhoneNumberUtil} from 'google-libphonenumber';
+import { PhoneNumberUtil } from 'google-libphonenumber';
 // import { ImageStore } from 'react-native'
 export const SET_LOGIN_STATE = 'SET_LOGIN_STATE';
 export const USER_LOGOUT = 'USER_LOGOUT';
@@ -40,28 +40,28 @@ export const login = (username, password, env) => (dispatch) =>
     )
     .catch((e) => e);
 
-export const validate = (env,token) =>(dispatch) => {
-    fetch(`${env}/api/v1/users/validate`,{
-      method: 'GET',
-      headers: {
-        Authorization: `Bearer ${token}`,
-        'content-type': 'application/json;charset=utf8',
-      },
-    })
+export const validate = (env, token) => (dispatch) => {
+  fetch(`${env}/api/v1/users/validate`, {
+    method: 'GET',
+    headers: {
+      Authorization: `Bearer ${token}`,
+      'content-type': 'application/json;charset=utf8',
+    },
+  })
     .then((data) => {
       if (data.status !== 200) {
         throw new Error();
       } else return data.json();
     }).
     then((data) => {
-      console.log('data',data)
+      console.log('data', data)
       dispatch({
         type: SET_VALIDATE,
-        interactive_help:!!data.application &&
-        !!data.application.interactiveHelp
+        interactive_help: !!data.application &&
+          !!data.application.interactiveHelp
       })
     })
-  }
+}
 
 export const logout = () => ({
   type: USER_LOGOUT,
@@ -117,8 +117,8 @@ export const loadMaps = (env, token) => ({
           query: 'query { offlineMaps { from, to, center, name }  }',
         }),
       },
-      commit: {type: LOAD_MAPS_COMMIT},
-      rollback: {type: LOAD_MAPS_ROLLBACK},
+      commit: { type: LOAD_MAPS_COMMIT },
+      rollback: { type: LOAD_MAPS_ROLLBACK },
     },
   },
 });
@@ -126,7 +126,7 @@ export const loadMaps = (env, token) => ({
 // Projects
 export const LOAD_PROJECTS = 'LOAD_PROJECTS';
 export const LOAD_PROJECTS_COMMIT = 'LOAD_PROJECTS_COMMIT';
-export const  LOAD_PROJECTS_ROLLBACK = 'LOAD_PROJECTS_ROLLBACK';
+export const LOAD_PROJECTS_ROLLBACK = 'LOAD_PROJECTS_ROLLBACK';
 
 export const loadProjectsByOrganization = (env, token, orgId) => ({
   type: LOAD_PROJECTS,
@@ -136,23 +136,23 @@ export const loadProjectsByOrganization = (env, token, orgId) => ({
     offline: {
       effect: {
         url: `${env}/graphql`,
-          method: 'POST',
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-          body: JSON.stringify({
-            query:
-              'query projectsByOrganization($organizations: [Long]) { projectsByOrganization (organizations: $organizations) { id, title, description, color, active} }',
-              variables: {
-                organizations: orgId
+        method: 'POST',
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({
+          query:
+            'query projectsByOrganization($organizations: [Long]) { projectsByOrganization (organizations: $organizations) { id, title, description, color, active} }',
+          variables: {
+            organizations: orgId
 
-              }
-          }),
+          }
+        }),
       },
-      commit: {type: LOAD_PROJECTS_COMMIT},
-      rollback: {type: LOAD_PROJECTS_ROLLBACK},
+      commit: { type: LOAD_PROJECTS_COMMIT },
+      rollback: { type: LOAD_PROJECTS_ROLLBACK },
     }
-    
+
   }
 })
 
@@ -180,8 +180,8 @@ export const loadSurveys = (env, token) => ({
             'query { surveysByUser { title id createdAt description minimumPriorities privacyPolicy { title  text } termsConditions{ title text }  surveyConfig { stoplightOptional signSupport pictureSupport isDemo documentType {text value otherOption} requiredFields{primaryParticipant, familyMember} gender { text value otherOption } surveyLocation { country latitude longitude}}  surveyEconomicQuestions { questionText codeName answerType topic topicAudio required forFamilyMember options {text value otherOption conditions{codeName, type, values, operator, valueType, showIfNoData}}, conditions{codeName, type, value, operator}, conditionGroups{groupOperator, joinNextGroup, conditions{codeName, type, value, operator}} } surveyStoplightQuestions { questionText codeName definition dimension id questionAudio stoplightColors { url value description } required } } }',
         }),
       },
-      commit: {type: LOAD_SURVEYS_COMMIT},
-      rollback: {type: LOAD_SURVEYS_ROLLBACK},
+      commit: { type: LOAD_SURVEYS_COMMIT },
+      rollback: { type: LOAD_SURVEYS_ROLLBACK },
     },
   },
 });
@@ -207,14 +207,63 @@ export const loadFamilies = (env, token) => ({
         },
         body: JSON.stringify({
           query:
-            'query { familiesNewStructure {familyId name allowRetake code project { title } snapshotList  { surveyId stoplightSkipped createdAt familyData { familyMembersList { birthCountry birthDate documentNumber documentType email familyId firstName firstParticipant gender id lastName memberIdentifier phoneCode phoneNumber socioEconomicAnswers { key value}  }  countFamilyMembers latitude longitude country accuracy } economicSurveyDataList { key value multipleValue } indicatorSurveyDataList { key value } achievements { action indicator roadmap } priorities { action estimatedDate indicator reason } } } }',
+            'query { familiesNewStructure {familyId name allowRetake code project { title } snapshotList  { surveyId stoplightSkipped createdAt familyData { familyMembersList { birthCountry birthDate documentNumber documentType email familyId firstName firstParticipant gender id lastName memberIdentifier phoneCode phoneNumber socioEconomicAnswers { key value}  }  countFamilyMembers latitude longitude country accuracy } economicSurveyDataList { key value multipleValue } indicatorSurveyDataList { key value snapshotStoplightId  } achievements { action indicator roadmap } priorities { action estimatedDate indicator reason } } } }',
         }),
       },
-      commit: {type: LOAD_FAMILIES_COMMIT},
-      rollback: {type: LOAD_FAMILIES_ROLLBACK},
+      commit: { type: LOAD_FAMILIES_COMMIT },
+      rollback: { type: LOAD_FAMILIES_ROLLBACK },
     },
   },
 });
+
+// Priorities
+
+export const ADD_PRIORITY = 'ADD_PRIORITY';
+export const SUBMIT_PRIORITY = 'SUBMIT_PRIORITY';
+export const SUBMIT_PRIORITY_COMMIT = 'SUBMIT_PRIORITY_COMMIT';
+export const SUBMIT_PRIORITY_ROLLBACK = 'SUBMIT_PRIORITY_ROLLBACK';
+export const addPriority = (payload) => ({
+  type: ADD_PRIORITY,
+  payload,
+});
+export const submitPriority = (env, token, payload) => ({
+  type: SUBMIT_PRIORITY,
+  payload,
+  meta: {
+    offline: {
+      effect: {
+        url: `${env}/graphql`,
+        method: 'POST',
+        headers: {
+          Authorization: `Bearer ${token}`,
+          'content-type': 'application/json;charset=utf8',
+        },
+        body: JSON.stringify({
+          query:
+            'mutation addPriority($newPriority : PriorityDtoInput) {addPriority(newPriority: $newPriority)  {  indicator, reviewDate, reason, action, indicator, months, snapshotStoplightId } }',
+          variables: { newPriority: payload },
+        }),
+      },
+      commit: {
+        type: SUBMIT_PRIORITY_COMMIT,
+        meta: {
+          id: payload.snapshotStoplightId,
+          payload
+
+        }
+      },
+      rollback: {
+        type: SUBMIT_PRIORITY_ROLLBACK,
+        meta: {
+          id: payload.snapshotStoplightId,
+          payload
+        }
+      }
+    }
+  }
+})
+
+
 
 // Drafts
 
@@ -322,9 +371,9 @@ const createFormData = (sanitizedSnapshot) => {
 
 export const submitDraft = (env, token, id, payload) => {
   console.log('----Calling Submit Draft----');
-  const sanitizedSnapshot = {...payload};
+  const sanitizedSnapshot = { ...payload };
 
-  let {economicSurveyDataList} = payload;
+  let { economicSurveyDataList } = payload;
 
   const validEconomicIndicator = (ec) =>
     (ec.value !== null && ec.value !== undefined && ec.value !== '') ||
@@ -335,7 +384,7 @@ export const submitDraft = (env, token, id, payload) => {
   );
   sanitizedSnapshot.economicSurveyDataList = economicSurveyDataList;
   sanitizedSnapshot.familyData.familyMembersList.forEach((member) => {
-    let {socioEconomicAnswers = []} = member;
+    let { socioEconomicAnswers = [] } = member;
     delete member.memberIdentifier;
     delete member.id;
     delete member.familyId;
@@ -365,7 +414,7 @@ export const submitDraft = (env, token, id, payload) => {
           body: JSON.stringify({
             query:
               'mutation addSnapshot($newSnapshot: NewSnapshotDTOInput) {addSnapshot(newSnapshot: $newSnapshot)  { surveyId surveyVersionId snapshotStoplightAchievements { action indicator roadmap } snapshotStoplightPriorities { reason action indicator estimatedDate } family { familyId } user { userId  username } indicatorSurveyDataList {key value} economicSurveyDataList {key value multipleValue} familyDataDTO { latitude longitude accuracy familyMemberDTOList { firstName lastName socioEconomicAnswers {key value } } } } }',
-            variables: {newSnapshot: sanitizedSnapshot},
+            variables: { newSnapshot: sanitizedSnapshot },
           }),
         },
         commit: {

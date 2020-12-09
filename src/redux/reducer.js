@@ -1,6 +1,6 @@
-import {combineReducers} from 'redux';
+import { combineReducers } from 'redux';
 
-import {getDeviceLanguage} from '../utils';
+import { getDeviceLanguage } from '../utils';
 import {
   ADD_SURVEY_DATA,
   CREATE_DRAFT,
@@ -33,14 +33,18 @@ import {
   LOAD_IMAGES_COMMIT,
   SET_VALIDATE,
   LOAD_PROJECTS_ROLLBACK,
-  LOAD_PROJECTS_COMMIT
+  LOAD_PROJECTS_COMMIT,
+  ADD_PRIORITY,
+  SUBMIT_PRIORITY,
+  SUBMIT_PRIORITY_COMMIT,
+  SUBMIT_PRIORITY_ROLLBACK
 } from './actions';
 
 const defaultLanguage = getDeviceLanguage();
 //Login
 
 export const user = (
-  state = {token: null, status: null, username: null, role: null, interactive_help:null},
+  state = { token: null, status: null, username: null, role: null, interactive_help: null },
   action,
 ) => {
   switch (action.type) {
@@ -63,9 +67,9 @@ export const user = (
       };
     case SET_VALIDATE:
       return {
-          ...state,
-          interactive_help:action.interactive_help
-        };
+        ...state,
+        interactive_help: action.interactive_help
+      };
     default:
       return state;
   }
@@ -84,7 +88,7 @@ export const env = (state = 'production', action) => {
 
 //Download Maps or images
 export const downloadMapsAndImages = (
-  state = {downloadMaps: true, downloadImages: true, downLoadAudios:true},
+  state = { downloadMaps: true, downloadImages: true, downLoadAudios: true },
   action,
 ) => {
   switch (action.type) {
@@ -97,7 +101,7 @@ export const downloadMapsAndImages = (
 
 //Dimensions
 export const dimensions = (
-  state = {width: null, height: null, scale: null},
+  state = { width: null, height: null, scale: null },
   action,
 ) => {
   switch (action.type) {
@@ -130,7 +134,7 @@ export const surveys = (state = [], action) => {
 };
 
 //Projects
-export const projects =  (state = [], action) => {
+export const projects = (state = [], action) => {
   switch (action.type) {
     case LOAD_PROJECTS_COMMIT:
       return action.payload.data.projectsByOrganization;
@@ -179,6 +183,49 @@ export const syncStatus = (state = [], action) => {
       return state;
   }
 };
+
+// Priorities
+export const priorities = (state = [], action) => {
+  switch (action.type) {
+    case ADD_PRIORITY:
+      return [
+        ...state,
+        {
+          ...action.payload,
+          status:'Pending Status'
+        }
+      ]
+    case SUBMIT_PRIORITY:
+      return state.map(priority => 
+        priority.snapshotStoplightId === action.payload.snapshotStoplightId
+        ? {
+          ...priority,
+          status:  'Pending Status',
+        }
+        :priority);
+
+    case SUBMIT_PRIORITY_COMMIT:
+      return state.map(priority => 
+        priority.snapshotStoplightId == action.meta.id
+       ? {
+        ...priority,
+        status: 'Synced',
+        syncedAt: Date.now()
+      }: priority);
+
+      case SUBMIT_PRIORITY_ROLLBACK:
+        return state.map(priority => 
+          priority.snapshotStoplightId == action.meta.id
+         ? {
+          ...priority,
+          status: 'Sync Error',
+        }: priority);
+      
+    
+    default:
+      return state;
+  }
+}
 
 //Drafts
 export const drafts = (state = [], action) => {
@@ -272,9 +319,9 @@ export const drafts = (state = [], action) => {
       return state.map(draft =>
         draft.draftId === action.id
           ? {
-              ...draft,
-              status: 'Pending sync',
-            }
+            ...draft,
+            status: 'Pending sync',
+          }
           : draft,
       );
 
@@ -282,20 +329,20 @@ export const drafts = (state = [], action) => {
       return state.map(draft =>
         draft.draftId === action.meta.id
           ? {
-              ...draft,
-              status: 'Synced',
-              syncedAt: Date.now(),
-            }
+            ...draft,
+            status: 'Synced',
+            syncedAt: Date.now(),
+          }
           : draft,
       );
     case SUBMIT_DRAFT_ROLLBACK: {
       return state.map(draft =>
         draft.draftId === action.meta.id
           ? {
-              ...draft,
-              status: 'Sync error',
-              errors: action.payload.response.errors,
-            }
+            ...draft,
+            status: 'Sync error',
+            errors: action.payload.response.errors,
+          }
           : draft,
       );
     }
@@ -305,9 +352,9 @@ export const drafts = (state = [], action) => {
       return state.map(draft =>
         draft.draftId === action.id
           ? {
-              ...draft,
-              status: 'Pending sync',
-            }
+            ...draft,
+            status: 'Pending sync',
+          }
           : draft,
       );
     }
@@ -317,9 +364,9 @@ export const drafts = (state = [], action) => {
       return state.map(draft =>
         draft.draftId === action.id
           ? {
-              ...draft,
-              status: 'Pending sync',
-            }
+            ...draft,
+            status: 'Pending sync',
+          }
           : draft,
       );
     }
@@ -329,9 +376,9 @@ export const drafts = (state = [], action) => {
       return state.map(draft =>
         draft.draftId === action.id
           ? {
-              ...draft,
-              status: 'Sync error',
-            }
+            ...draft,
+            status: 'Sync error',
+          }
           : draft,
       );
     }
@@ -373,12 +420,12 @@ export const sync = (
     families: false,
     familiesError: false,
     projects: false,
-    projectsError:false,
+    projectsError: false,
     images: {
       total: 0,
       synced: 0,
     },
-    audios:{
+    audios: {
       total: null,
       synced: null,
     }
@@ -436,14 +483,14 @@ export const sync = (
         families: false,
         familiesError: false,
         projects: false,
-        projectsError:false,
+        projectsError: false,
         images: {
           total: 0,
           synced: 0,
         },
         audios: {
-          total:null,
-          synced:null,
+          total: null,
+          synced: null,
         }
       };
     default:
@@ -480,6 +527,7 @@ const appReducer = combineReducers({
   env,
   user,
   maps,
+  priorities,
   surveys,
   families,
   projects,
@@ -517,12 +565,12 @@ export const rootReducer = (state, action) => {
   }
 
   // note that projects are synced in the store
-  if(action.type === LOAD_PROJECTS_COMMIT) {
+  if (action.type === LOAD_PROJECTS_COMMIT) {
     state = {
       ...state,
       sync: {
         ...state.sync,
-        projects:true,
+        projects: true,
       }
     }
   }
@@ -543,7 +591,7 @@ export const rootReducer = (state, action) => {
 
   // create detailed Bugsnag report on sync error
   if (action.type === SUBMIT_DRAFT_ROLLBACK) {
-    const {families, surveys, ...currentState} = state;
+    const { families, surveys, ...currentState } = state;
     families;
     surveys;
 
