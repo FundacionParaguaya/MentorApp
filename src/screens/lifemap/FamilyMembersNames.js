@@ -139,14 +139,14 @@ export class FamilyMembersNames extends Component {
 
     let newArr = [...this.state.familyMembers];
     let newUUid = uuid();
-    newArr.push({firstParticipant: false, uuid: newUUid});
+    newArr.push({firstParticipant: false, uuid: newUUid,socioEconomicAnswers: []});
     this.setState({
       familyMembers: newArr,
     });
 
     let familyMembersList = draft.familyData.familyMembersList;
 
-    familyMembersList.push({firstParticipant: false, uuid: newUUid});
+    familyMembersList.push({firstParticipant: false, uuid: newUUid, socioEconomicAnswers: []});
     var familyMemberCount = draft.familyData.countFamilyMembers;
 
     if (
@@ -205,12 +205,14 @@ export class FamilyMembersNames extends Component {
 
     for (var member in draft.familyData.familyMembersList) {
       draft.familyData.familyMembersList[member].uuid = uuid();
+      draft.familyData.familyMembersList[member].socioEconomicAnswers = [];
 
       familyMembers.push(draft.familyData.familyMembersList[member]);
     }
 
     for (var memberIndex in familyMembers) {
       familyMembers[memberIndex].uuid = uuid();
+      familyMembers[memberIndex].socioEconomicAnswers = [];
     }
     var haveMoreMembers =
       draft.familyData.familyMembersList.length >

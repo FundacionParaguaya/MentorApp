@@ -207,7 +207,7 @@ export const loadFamilies = (env, token) => ({
         },
         body: JSON.stringify({
           query:
-            'query { familiesNewStructure {familyId name allowRetake code project { title } snapshotList  { surveyId stoplightSkipped createdAt familyData { familyMembersList { birthCountry birthDate documentNumber documentType email familyId firstName firstParticipant gender id lastName memberIdentifier phoneCode phoneNumber socioEconomicAnswers { key value}  }  countFamilyMembers latitude longitude country accuracy } economicSurveyDataList { key value multipleValue } indicatorSurveyDataList { key value snapshotStoplightId  } achievements { action indicator roadmap } priorities { action estimatedDate indicator reason } } } }',
+            'query { familiesNewStructure {familyId name allowRetake code project { title } snapshotList  { surveyId stoplightSkipped createdAt familyData { familyMembersList { birthCountry birthDate documentNumber documentType email familyId firstName firstParticipant gender id lastName memberIdentifier phoneCode phoneNumber socioEconomicAnswers { key value multipleValue other}  }  countFamilyMembers latitude longitude country accuracy } economicSurveyDataList { key value multipleValue other } indicatorSurveyDataList { key value snapshotStoplightId } achievements { action indicator roadmap } priorities { action estimatedDate indicator reason } } } }',
         }),
       },
       commit: { type: LOAD_FAMILIES_COMMIT },

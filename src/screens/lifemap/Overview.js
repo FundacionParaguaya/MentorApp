@@ -335,16 +335,16 @@ export class Overview extends Component {
           calculateProgressBar({readOnly:this.readOnly,draft:draft,isLast:true}) : 0
         }>
         {!this.props.readOnly ? (
-          <View style={{alignItems: 'center'}}>
+          <View style={{alignItems: 'center',}}>
             {draft.stoplightSkipped && <View style={{paddingTop: 50}} />}
             {!draft.stoplightSkipped && (
               <Text style={[globalStyles.h2Bold, styles.heading]}>
-                {t('views.lifemap.congratulations')}
+                {t('views.lifemap.almostThere')}
               </Text>
             )}
             <Text style={[globalStyles.h2Bold, styles.heading]}>
               {!draft.stoplightSkipped
-                ? t('views.lifemap.youCreatedALifeMap')
+                ? t('views.lifemap.continueToSeeYourLifeMapAndCreatePriorities')
                 : t('views.lifemap.continueWithSurvey')}
             </Text>
           </View>

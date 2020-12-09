@@ -1,20 +1,20 @@
 import PropTypes from 'prop-types';
-import React, {Component} from 'react';
-import {withNamespaces} from 'react-i18next';
-import {Platform, StyleSheet, Text, View, Button} from 'react-native';
-import {connect} from 'react-redux';
+import React, { Component } from 'react';
+import { withNamespaces } from 'react-i18next';
+import { Platform, StyleSheet, Text, View, Button } from 'react-native';
+import { connect } from 'react-redux';
 import * as _ from 'lodash';
-import {Formik, Form} from 'formik';
+import { Formik, Form } from 'formik';
 import * as Yup from 'yup';
 
-import {calculateProgressBar} from '../utils/helpers';
+import { calculateProgressBar } from '../utils/helpers';
 import SelectWithFormik from '../../components/formik/SelectWithFormik';
 import RadioWithFormik from '../../components/formik/RadioWithFormik';
 import InputWithFormik from '../../components/formik/InputWithFormik';
 import InputWithDep from '../../components/formik/InputWithDep';
 import CheckboxWithFormik from '../../components/formik/CheckboxWithFormik';
 import StickyFooter from '../../components/StickyFooter';
-import {updateDraft} from '../../redux/actions';
+import { updateDraft } from '../../redux/actions';
 import colors from '../../theme.json';
 import {
   getConditionalOptions,
@@ -26,7 +26,7 @@ import {
   familyMemberWillHaveQuestions,
   shouldShowQuestion,
 } from '../utils/conditional_logic';
-import {getTotalScreens, setScreen} from './helpers';
+import { getTotalScreens, setScreen } from './helpers';
 import i18n from '../../i18n';
 import Audio from '../../components/Audio';
 import globalStyles from '../../globalStyles';
@@ -140,7 +140,7 @@ export class SocioEconomicQuestion extends Component {
       ? socioEconomics.questionsPerScreen[socioEconomics.currentScreen - 1]
       : null;
 
-    const {forFamily = [], forFamilyMember = []} = questions;
+    const { forFamily = [], forFamilyMember = [] } = questions;
     let isPresent = false;
     const lookIn = question.forFamilyMember ? forFamilyMember : forFamily;
 
@@ -163,25 +163,55 @@ export class SocioEconomicQuestion extends Component {
       ? this.getDraft()
       : this.readOnlyDraft;
 
-    const {conditionalQuestions, questionsWithConditionsOnThem} = this.state;
-
+    const { conditionalQuestions, questionsWithConditionsOnThem } = this.state;
     const hasOtherOption = question.codeName.match(/^custom/g);
 
     // // We get a draft with updated answer
     let key = question.codeName;
     let currentDraft;
-    const keyName = !Array.isArray(value) ? 'value' : 'multipleValue';
+    let keyName = 'value';
+    let hasOtherValue;
+    if (Array.isArray(value)) {
+      keyName = 'multipleValue';
+      hasOtherValue = !!question.options.find(o => o.otherOption);
+    }
+
     let newAnswer = {
       key,
       [keyName]: value,
     };
+
+    let selectedValues;
+    let answer;
+    let answers = !question.forFamilyMember ?
+      draftFromProps.economicSurveyDataList
+      : draftFromProps.familyData.familyMembersList[memberIndex]
+        .socioEconomicAnswers;
+    answer = (answers || []).find(ans => ans.key === key);
     if (hasOtherOption) {
       key = _.camelCase(question.codeName.replace(/^custom/g, ''));
 
+      answer = answers.find(ans => ans.key === key);
+      if (question.answerType === 'checkbox') {
+        selectedValues = !!answer ? answer.multipleValue : [];
+      } else {
+        selectedValues = question.options.find(o => o.otherOption).value
+      }
+
+      keyName = !Array.isArray(selectedValues) ? 'value' : 'multipleValue';
+
       newAnswer = {
         key,
-        [keyName]: question.options.find((o) => o.otherOption).value,
+        [keyName]: selectedValues,
         other: value,
+      };
+    }
+
+    if (hasOtherValue && !hasOtherOption && !!answer) {
+      newAnswer = {
+        key,
+        [keyName]: value,
+        other: answer.other
       };
     }
 
@@ -235,8 +265,8 @@ export class SocioEconomicQuestion extends Component {
   };
 
   setSocioEconomicsParam() {
-    const {navigation} = this.props;
-    const {params} = this.props.route;
+    const { navigation } = this.props;
+    const { params } = this.props.route;
 
     // If this is the first socio economics screen set the whole process
     // in the navigation. On every next screen it will know which questions
@@ -445,14 +475,14 @@ export class SocioEconomicQuestion extends Component {
       if (question.options.find((o) => o.otherOption)) {
         forFamilyInitial[
           `custom${this.capitalize(question.codeName)}`
-        ] = Object.prototype.hasOwnProperty.call(draftQuestion, 'other')
-          ? draftQuestion.other
-          : '';
+        ] = draftQuestion.hasOwnProperty('other') && !!draftQuestion.other
+            ? draftQuestion.other
+            : '';
       }
-      forFamilyInitial[question.codeName] = 
-        (Object.prototype.hasOwnProperty.call(draftQuestion, 'value')
-        ? draftQuestion.value
-        : draftQuestion.multipleValue) || '';
+      forFamilyInitial[question.codeName] =
+        (draftQuestion.hasOwnProperty('value') && !!draftQuestion.value
+          ? draftQuestion.value
+          : draftQuestion.multipleValue) || '';
     });
 
     const forFamilyMemberInitial = {};
@@ -469,9 +499,16 @@ export class SocioEconomicQuestion extends Component {
       familyMemberQuestions.forEach((question) => {
         const draftQuestion =
           socioEconomicAnswers.find((e) => e.key === question.codeName) || {};
+        if (question.options.find(o => o.otherOption)) {
+          memberInitial[`custom${capitalize(question.codeName)}`] =
+            draftQuestion.hasOwnProperty('other') && !!draftQuestion.other
+              ? draftQuestion.other
+              : '';
+        }
+
 
         memberInitial[question.codeName] =
-          (Object.prototype.hasOwnProperty.call(draftQuestion, 'value')
+          (draftQuestion.hasOwnProperty('value') && !!draftQuestion.value
             ? draftQuestion.value
             : draftQuestion.multipleValue) || '';
       });
@@ -485,7 +522,7 @@ export class SocioEconomicQuestion extends Component {
   };
 
   render() {
-    const {t, user} = this.props;
+    const { t, user } = this.props;
 
     const socioEconomics = this.props.route.params.socioEconomics;
 
@@ -548,13 +585,13 @@ export class SocioEconomicQuestion extends Component {
             continueLabel={i18n.t('general.continue')}
             readOnly={!!this.readOnly}
             progress={
-              calculateProgressBar({readOnly:this.readOnly,draft:draft,screen:socioEconomics ? socioEconomics.currentScreen + 4 : 4})}>
+              calculateProgressBar({ readOnly: this.readOnly, draft: draft, screen: socioEconomics ? socioEconomics.currentScreen + 4 : 4 })}>
             {/* <Decoration variation="socioEconomicQuestion" /> */}
             {user.interactive_help && topicAudio &&
-              <Audio label ={t('views.lifemap.audioHelp')} audioId ={topicAudio} url={topicAudio}
-               containerStyles={{alignItems: 'center',flexDirection:'row', justifyContent:'center', width:'100%', paddingBottom:10}}
+              <Audio label={t('views.lifemap.audioHelp')} audioId={topicAudio} url={topicAudio}
+                containerStyles={{ alignItems: 'center', flexDirection: 'row', justifyContent: 'center', width: '100%', paddingBottom: 10 }}
                 styles={{ color: colors.palegreen }}
-                 labelStyle={globalStyles.h4} 
+                labelStyle={globalStyles.h4}
               />
             }
             {/* questions for entire family */}
@@ -568,9 +605,9 @@ export class SocioEconomicQuestion extends Component {
 
                 const modifiedQuestion = hasOtherOption
                   ? {
-                      ...question,
-                      codeName: `custom${this.capitalize(question.codeName)}`,
-                    }
+                    ...question,
+                    codeName: `custom${this.capitalize(question.codeName)}`,
+                  }
                   : null;
 
                 const cleanUp = (value) => {
@@ -584,6 +621,16 @@ export class SocioEconomicQuestion extends Component {
                     value,
                     formik.setFieldValue,
                   );
+                };
+                const cleanUpMultipleValue = () => {
+
+                  this.updateEconomicAnswerCascading(
+                    modifiedQuestion,
+                    '',
+                    formik.setFieldValue
+                  );
+
+
                 };
 
                 if (!shouldShowQuestion(question, draft)) {
@@ -691,7 +738,7 @@ export class SocioEconomicQuestion extends Component {
                 if (question.answerType === 'checkbox') {
                   return (
                     <View
-                      style={{marginBottom: 10, marginTop: -6}}
+                      style={{ marginBottom: 10, marginTop: -6 }}
                       key={question.codeName}>
                       <CheckboxWithFormik
                         rawOptions={getConditionalOptions(question, draft)}
@@ -708,6 +755,34 @@ export class SocioEconomicQuestion extends Component {
                           );
                         }}
                       />
+                      <InputWithDep
+                        label="Specify Other"
+                        formik={formik}
+                        key={`custom${capitalize(question.codeName)}`}
+                        dep={question.codeName}
+                        from={draft}
+                        fieldOptions={question.options}
+                        target={`custom${capitalize(question.codeName)}`}
+                        isEconomic
+                        isMultiValue
+                        t={t}
+                        readOnly={!!this.readOnly}
+                        lng={this.props.language || 'en'}
+                        question={question}
+                        name={`forFamily.custom${capitalize(
+                          question.codeName,
+                        )}`}
+                        onChange={(e) => {
+                          this.updateEconomicAnswerCascading(
+                            modifiedQuestion,
+                            e,
+                            formik.setFieldValue,
+                          );
+                        }}
+                        cleanUp={cleanUpMultipleValue}
+                      />
+
+
                     </View>
                   );
                 }
@@ -757,26 +832,36 @@ export class SocioEconomicQuestion extends Component {
                         );
                         const modifiedQuestion = hasOtherOption
                           ? {
-                              ...question,
-                              codeName: `custom${capitalize(
-                                question.codeName,
-                              )}`,
-                            }
+                            ...question,
+                            codeName: `custom${capitalize(
+                              question.codeName,
+                            )}`,
+                          }
                           : null;
                         const cleanUp = (value) => {
                           this.updateEconomicAnswerCascading(
                             modifiedQuestion,
                             '',
-                            setFieldValue,
+                            formik.setFieldValue,
                             index,
                           );
                           this.updateEconomicAnswerCascading(
                             question,
                             value,
-                            setFieldValue,
+                            formik.setFieldValue,
                             index,
                           );
                         };
+
+                        const cleanUpMultipleValue = () => {
+                          this.updateEconomicAnswerCascading(
+                            modifiedQuestion,
+                            '',
+                            formik.setFieldValue,
+                            index || 0
+                          );
+                        };
+
                         if (!shouldShowQuestion(question, draft, index)) {
                           return <React.Fragment key={question.codeName} />;
                         }
@@ -796,8 +881,8 @@ export class SocioEconomicQuestion extends Component {
                                 value={
                                   formik.values.forFamilyMember
                                     ? formik.values.forFamilyMember[index][
-                                        question.codeName
-                                      ]
+                                    question.codeName
+                                    ]
                                     : ''
                                 }
                                 question={question}
@@ -899,7 +984,7 @@ export class SocioEconomicQuestion extends Component {
                         if (question.answerType === 'checkbox') {
                           return (
                             <View
-                              style={{marginBottom: 10}}
+                              style={{ marginBottom: 10 }}
                               key={question.codeName}>
                               <CheckboxWithFormik
                                 rawOptions={getConditionalOptions(
@@ -921,6 +1006,36 @@ export class SocioEconomicQuestion extends Component {
                                   );
                                 }}
                               />
+                              <InputWithDep
+                                index={index || 0}
+                                formik={formik}
+                                key={`custom${capitalize(question.codeName)}`}
+                                dep={question.codeName}
+                                from={draft}
+                                fieldOptions={question.options}
+                                target={`forFamilyMember.[${index}].[custom${capitalize(
+                                  question.codeName,
+                                )}]`}
+                                t={t}
+                                readOnly={!!this.readOnly}
+                                lng={this.props.language || 'en'}
+                                question={question}
+                                isMultiValue
+                                isEconomic
+                                name={`forFamilyMember.[${index}].[custom${capitalize(
+                                  question.codeName,
+                                )}]`}
+                                onChange={(e) => {
+                                  this.updateEconomicAnswerCascading(
+                                    modifiedQuestion,
+                                    e,
+                                    formik.setFieldValue,
+                                    index,
+                                  );
+                                }}
+                                cleanUp={cleanUpMultipleValue}
+                              />
+
                             </View>
                           );
                         }
@@ -1003,7 +1118,7 @@ const mapDispatchToProps = {
   updateDraft,
 };
 
-const mapStateToProps = ({drafts, language, user}) => ({
+const mapStateToProps = ({ drafts, language, user }) => ({
   drafts,
   language,
   user

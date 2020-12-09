@@ -8,10 +8,13 @@ import {
   StyleSheet,
   UIManager,
   View,
+  Text,
+  TextInput,
   findNodeHandle,
 } from 'react-native';
 import {connect} from 'react-redux';
-
+import colors from '../theme.json';
+import Button from '../components/Button';
 import SyncInProgress from '../components/sync/SyncInProgress';
 import SyncListItem from '../components/sync/SyncListItem';
 import SyncOffline from '../components/sync/SyncOffline';
@@ -20,14 +23,17 @@ import SyncRetry from '../components/sync/SyncRetry';
 import SyncUpToDate from '../components/sync/SyncUpToDate';
 import {url} from '../config';
 import globalStyles from '../globalStyles';
-import {submitDraft, submitDraftWithImages, submitPriority} from '../redux/actions';
-import { families, surveys } from '../redux/reducer';
+import {submitDraft, createDraft, submitDraftWithImages, submitPriority} from '../redux/actions';
 import {screenSyncScreenContent} from '../screens/utils/accessibilityHelpers';
-import {prepareDraftForSubmit} from './utils/helpers';
+import {prepareDraftForSubmit, fakeSurvey} from './utils/helpers';
 
+import uuid from 'uuid/v1';
+const nodeEnv = process.env;
 export class Sync extends Component {
   acessibleComponent = React.createRef();
-
+  state = {
+    surveysCount: null,
+  };
   navigateToDraft = (draft) => {
     if (
       draft.progress.screen !== 'Question' &&
@@ -187,6 +193,16 @@ export class Sync extends Component {
     }
   }
 
+  onClickGenerate = async () => {
+    if (this.state.surveysCount == null) return;
+
+    const draftId = uuid();
+    let i = 0;
+    while (i < parseInt(this.state.surveysCount, 10)) {
+      this.props.createDraft(fakeSurvey(draftId, Date.now()));
+      i++;
+    }
+  };
   render() {
     const {drafts, offline, priorities, t} = this.props;
     const lastSync = drafts.reduce(
@@ -218,6 +234,40 @@ export class Sync extends Component {
 
     return (
       <ScrollView contentContainerStyle={[globalStyles.container, styles.view]}>
+        {nodeEnv.NODE_ENV === 'development' && (
+          <View
+            style={{
+              height: 120,
+              alignSelf: 'stretch',
+              marginBottom: 30,
+              alignItems: 'center',
+            }}>
+            <TextInput
+              keyboardType="numeric"
+              style={styles.input}
+              placeholder={'Surveys Count'}
+              onChangeText={(surveysCount) => this.setState({surveysCount})}
+              style={{
+                ...styles.input,
+                borderColor: colors.palegreen,
+              }}
+              autoCapitalize="none"
+            />
+
+            <Button
+              colored
+              style={{
+                maxWidth: 200,
+                width: '100%',
+                marginLeft: 'auto',
+                marginRight: 'auto',
+              }}
+              text={'Generate Surveys'}
+              handleClick={() => this.onClickGenerate()}
+            />
+          </View>
+        )}
+
         <View
           ref={this.acessibleComponent}
           accessible={true}
@@ -299,6 +349,22 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
   },
+  input: {
+    marginLeft: 'auto',
+    marginRight: 'auto',
+    maxWidth: 400,
+    width: '100%',
+    fontSize: 16,
+    fontFamily: 'Roboto',
+    borderWidth: 1,
+    borderRadius: 2,
+    height: 48,
+    marginBottom: 25,
+    padding: 15,
+    paddingBottom: 12,
+    color: colors.lightdark,
+    backgroundColor: colors.white,
+  },
 });
 
 const mapStateToProps = ({drafts, offline, env, user, surveys, priorities, families}) => ({
@@ -312,6 +378,7 @@ const mapStateToProps = ({drafts, offline, env, user, surveys, priorities, famil
 });
 
 const mapDispatchToProps = {
+  createDraft,
   submitDraft,
   submitDraftWithImages,
   submitPriority
