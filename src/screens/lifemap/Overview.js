@@ -303,11 +303,11 @@ export class Overview extends Component {
         {!this.props.readOnly ? (
           <View style={{alignItems: 'center',}}>
             {draft.stoplightSkipped && <View style={{paddingTop: 50}} />}
-            {!draft.stoplightSkipped && (
               <Text style={[globalStyles.h2Bold, styles.heading]}>
-                {t('views.lifemap.almostThere')}
+                {!draft.stoplightSkipped && !this.isResumingDraft 
+                ? t('views.lifemap.almostThere')
+                : t('views.lifemap.resumeSurvey')} 
               </Text>
-            )}
             <Text style={[globalStyles.h2Bold, styles.heading]}>
               {!draft.stoplightSkipped && !this.isResumingDraft
                 ? t('views.lifemap.continueToSeeYourLifeMapAndCreatePriorities')

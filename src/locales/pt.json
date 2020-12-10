@@ -167,7 +167,8 @@
 		"lifemap": {
 			"indicatorDefinition": "Definição do indicador",
 			"nowLetsMakeSomePriorities": "Agora, escrevemos algumas prioridades!",
-			"continueWithSurvey": "Retomem de onde pararam!",
+			"continueWithSurvey": "Continue de onde parou!",
+			"resumeSurvey": "Continuar a pesquisa",
 			"thisLifeMapHasNoStoplight": "Prontos! Esta secção do semáforo contém %n indicadores. Escolha se quer salvar o seu pesquisa ou completar seu semáforo.",
 			"continueToSeeYourLifeMapAndCreatePriorities": "Continue para ver o seu Mapa da Vida e criar prioridades.",
 			"almostThere": "Quase pronto!",
