@@ -70,6 +70,7 @@ export class Family extends Component {
   componentDidMount() {
     // // monitor for connection changes
     this.unsubscribeNetChange = NetInfo.addEventListener((isOnline) => {
+      console.log('update listener')
       this.setState({ isOnline });
       //Allow to show or hide retrySyn button
       this.setState({ showSyncButton: this.availableForSync(isOnline) });
