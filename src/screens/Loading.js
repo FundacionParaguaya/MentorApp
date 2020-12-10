@@ -476,10 +476,15 @@ export class Loading extends Component {
                     <View style={styles.syncingItem}>
 
                       {sync.projects && Array.isArray(projects) && projects.length > 0
-                        && <Text
+                        && (<><Text
                           style={
                             sync.projects ? styles.colorGreen : styles.colorDark
                           }>{`${projects.length} ${t('views.loading.projectsCached')}`}</Text>
+                          <Icon
+                            name="check"
+                            color={colors.palegreen}
+                            size={23}
+                          /></>)
                       }
                     </View>
                   )}

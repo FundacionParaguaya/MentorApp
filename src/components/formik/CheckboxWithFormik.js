@@ -44,7 +44,7 @@ const CheckboxWithFormik = ({
   }
 
   return (
-    <View>
+    <View style={styles.wrapper}>
       <Text
         style={[
           styles.placeholder,
@@ -76,6 +76,9 @@ const CheckboxWithFormik = ({
   );
 };
 const styles = StyleSheet.create({
+  wrapper: {
+    marginBottom: 20
+  },
   label: {
     color: colors.grey,
     fontWeight: 'normal',

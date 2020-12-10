@@ -309,7 +309,7 @@ export class Overview extends Component {
               </Text>
             )}
             <Text style={[globalStyles.h2Bold, styles.heading]}>
-              {!draft.stoplightSkipped
+              {!draft.stoplightSkipped && !this.isResumingDraft
                 ? t('views.lifemap.continueToSeeYourLifeMapAndCreatePriorities')
                 : t('views.lifemap.continueWithSurvey')}
             </Text>
