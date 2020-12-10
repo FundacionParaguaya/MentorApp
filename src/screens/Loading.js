@@ -736,7 +736,7 @@ const styles = StyleSheet.create({
   syncingItem: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    width: 220,
+    width: 240,
   },
   loadingContainer: {
     marginTop: 100,
