@@ -75,7 +75,7 @@ const LifemapOverview = ({
         const priorities = draftData.priorities.map(
           (priority) => priority.indicator,
         );
-        const achievements = tdraftData.achievements.map(
+        const achievements = draftData.achievements.map(
           (priority) => priority.indicator,
         );
 
@@ -100,11 +100,14 @@ const LifemapOverview = ({
       indicator = draftData.indicatorSurveyDataList.find(item =>
         item.key == codeName && item.snapshotStoplightId
       );
-      syncStatus = prioritiesForSync.
+      if(indicator && indicator.snapshotStoplightId) {
+        syncStatus = prioritiesForSync.
         filter(priority => priority.status == status).
         find(priority =>
           priority.snapshotStoplightId == indicator.snapshotStoplightId
         );
+      }
+     
       return syncStatus;
     }
     return syncStatus;

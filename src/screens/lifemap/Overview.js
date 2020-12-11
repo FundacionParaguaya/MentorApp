@@ -17,7 +17,7 @@ import colors from '../../theme.json';
 
 export class Overview extends Component {
   survey = this.props.route.params.survey;
-  draftId = this.props.route.params.draftId;
+  draftId = this.props.route.params.draftId || this.props.draftId;
   familyLifemap = this.props.route.params.familyLifemap;
   isResumingDraft = this.props.route.params.resumeDraft;
   readOnly = this.props.route.params.readOnly || false;
@@ -121,10 +121,9 @@ export class Overview extends Component {
     this.props.navigation.addListener(
       'focus',
       () => {
-        console.log('forceUpdate')
         this.forceUpdate();
       })
-    const draft = !this.props.readOnly
+    const draft = (!this.props.readOnly)
       ? this.getDraft()
       : this.props.familyLifemap;
 
@@ -145,18 +144,19 @@ export class Overview extends Component {
   }
 
   componentDidUpdate() {
-    console.log('componentDidUpdate: Overview')
+    console.log('componentDidUpdate: Overview');
   }
 
   shouldComponentUpdate() {
-    console.log('shouldComponentUpdate(): Overview', this.props.navigation.isFocused())
     return this.props.navigation.isFocused();
   }
 
   render() {
     const { t } = this.props;
     const { filterModalIsOpen, selectedFilter, filterLabel } = this.state;
-    const draft = !this.props.readOnly
+    const draft = (!this.props.readOnly 
+      || (this.props.familyLifemap.status == 'Pending sync' 
+      && this.draftId))
       ? this.getDraft()
       : this.props.familyLifemap;
 
