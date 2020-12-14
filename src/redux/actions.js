@@ -54,7 +54,6 @@ export const validate = (env, token) => (dispatch) => {
       } else return data.json();
     }).
     then((data) => {
-      console.log('data', data)
       dispatch({
         type: SET_VALIDATE,
         interactive_help: !!data.application &&

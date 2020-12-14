@@ -46,7 +46,6 @@ class LifemapVisual extends Component {
       size2 = 50
       size1 = 20
     }
-    console.log('Questions',this.props.questions)
     return (
       <View style={styles.container}>
         {this.getColors.map((item, i) => (

@@ -3,7 +3,6 @@ import { View, Text, StyleSheet } from 'react-native';
 import DimensionIndicator from './DimensionIndicator';
 import globalStyles from '../globalStyles';
 import AddPriorityAndAchievementModal from '../screens/modals/AddPriorityAndAchievementModal';
-import { Priorities } from '../screens/lifemap/Priorities';
 
 const DimensionIndicators = ({
     surveyData,
@@ -17,11 +16,7 @@ const DimensionIndicators = ({
     const [indicatorText, setIndicatorText] = useState('');
     const [snapshotStoplightId, setSnapshotStoplightId] = useState(null)
 
-
     let dimensions = surveyData.map((item) => item.dimension);
-
-    console.log('dimensions', dimensions)
-
     const priorities = draftData.priorities.map(priority => priority.indicator);
 
     const getColor = (codeName) => {
@@ -53,19 +48,19 @@ const DimensionIndicators = ({
     }
 
     const checkSyncPriorityStatus = (codeName, prioritiesForSync, status) => {
-        console.log('datos', prioritiesForSync)
         let indicator;
         let syncStatus = false;
         if (draftData && draftData.indicatorSurveyDataList && prioritiesForSync) {
             indicator = draftData.indicatorSurveyDataList.find(item =>
                 item.key == codeName && item.snapshotStoplightId
             );
-            syncStatus = prioritiesForSync.
+            if(indicator) {
+                syncStatus = prioritiesForSync.
                 filter(priority => priority.status == status).
                 find(priority =>
                     priority.snapshotStoplightId == indicator.snapshotStoplightId
                 );
-            console.log('statusCheck', syncStatus)
+            }
             return syncStatus;
         }
         return syncStatus;
@@ -74,14 +69,11 @@ const DimensionIndicators = ({
 
 
     const filterByDimension = (item) => {
-        console.log('filterByDimension', item)
         let data = surveyData.filter((indicator) => {
             const colorCode = getColor(indicator.codeName);
-            console.log('colorCode', colorCode)
             return (indicator.dimension == item
                 && typeof colorCode == 'number');
         })
-        console.log('the data', data);
         return data
 
     }
@@ -100,7 +92,6 @@ const DimensionIndicators = ({
         setAddPriority(false);
     }
 
-    console.log('priorities', priorities)
 
     return (
         <View style={styles.container}>
@@ -118,7 +109,6 @@ const DimensionIndicators = ({
                 ) : null}
             {[...new Set(dimensions)].map((dimension) => (
                 <View >
-                    {console.log('info', filterByDimension(dimension))}
                     {filterByDimension(dimension).length ? (
                         <Text style={styles.dimension}>{dimension.toUpperCase()}</Text>
                     ) : null}

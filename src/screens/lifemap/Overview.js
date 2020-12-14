@@ -117,11 +117,18 @@ export class Overview extends Component {
     })
   };
 
+  showAddPriority= () => {
+    const draftData = !this.props.readOnly
+    ? this.getDraft()
+    : this.props.familyLifemap;
+
+    return draftData.status != 'Synced' 
+  }
+
   componentDidMount() {
     this.props.navigation.addListener(
       'focus',
       () => {
-        console.log('forceUpdate')
           this.forceUpdate();
       })
     const draft = !this.props.readOnly
@@ -145,11 +152,9 @@ export class Overview extends Component {
   }
 
   componentDidUpdate() {
-    console.log('componentDidUpdate: Overview')
   }
 
   shouldComponentUpdate() {
-    console.log('shouldComponentUpdate(): Overview',this.props.navigation.isFocused())
     return this.props.navigation.isFocused();
   }
 
@@ -177,6 +182,7 @@ export class Overview extends Component {
         <View>
         
           <View>
+          {this.showAddPriority() && (
           <View style={styles.buttonContainer}>
           <Button
                 style={styles.buttonSmall}
@@ -184,6 +190,7 @@ export class Overview extends Component {
                 handleClick={this.handleClickOnAddPriority}
               />
           </View>
+          )}
             <TouchableHighlight
               id="filters"
               underlayColor={'transparent'}
