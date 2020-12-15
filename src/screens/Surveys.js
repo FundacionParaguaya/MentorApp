@@ -46,7 +46,6 @@ export class Surveys extends Component {
   }
 
   toggleProjectModal = () => {
-    console.log('press')
     this.setState({ openProjectModal: !this.state.openProjectModal })
   }
 

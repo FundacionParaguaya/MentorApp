@@ -117,12 +117,19 @@ export class Overview extends Component {
     })
   };
 
+  showAddPriority = () => {
+    const draftData = !this.props.readOnly
+      ? this.getDraft()
+      : this.props.familyLifemap;
+
+    return draftData.status != 'Synced'
+  }
+
   componentDidMount() {
     this.props.navigation.addListener(
       'focus',
       () => {
-        console.log('forceUpdate')
-        this.forceUpdate();
+          this.forceUpdate();
       })
     const draft = !this.props.readOnly
       ? this.getDraft()
@@ -145,11 +152,9 @@ export class Overview extends Component {
   }
 
   componentDidUpdate() {
-    console.log('componentDidUpdate: Overview')
   }
 
   shouldComponentUpdate() {
-    console.log('shouldComponentUpdate(): Overview', this.props.navigation.isFocused())
     return this.props.navigation.isFocused();
   }
 
@@ -176,13 +181,15 @@ export class Overview extends Component {
         {/*If we are in family/draft then show the questions.Else dont show them . This is requered for the families tab*/}
         <View>
           <View>
-            <View style={styles.buttonContainer}>
-              <Button
-                style={styles.buttonSmall}
-                text={t('views.family.addPriority')}
-                handleClick={this.handleClickOnAddPriority}
-              />
-            </View>
+            {this.showAddPriority() && (
+              <View style={styles.buttonContainer}>
+                <Button
+                  style={styles.buttonSmall}
+                  text={t('views.family.addPriority')}
+                  handleClick={this.handleClickOnAddPriority}
+                />
+              </View>
+            )}
             <TouchableHighlight
               id="filters"
               underlayColor={'transparent'}
@@ -336,13 +343,13 @@ export class Overview extends Component {
           {!this.props.readOnly ? (
             <View style={{ alignItems: 'center', }}>
               {draft.stoplightSkipped && <View style={{ paddingTop: 50 }} />}
-              {!draft.stoplightSkipped && (
-                <Text style={[globalStyles.h2Bold, styles.heading]}>
-                  {t('views.lifemap.almostThere')}
-                </Text>
-              )}
               <Text style={[globalStyles.h2Bold, styles.heading]}>
-                {!draft.stoplightSkipped
+                {!draft.stoplightSkipped && !this.isResumingDraft
+                  ? t('views.lifemap.almostThere')
+                  : t('views.lifemap.resumeSurvey')}
+              </Text>
+              <Text style={[globalStyles.h2Bold, styles.heading]}>
+                {!draft.stoplightSkipped && !this.isResumingDraft
                   ? t('views.lifemap.continueToSeeYourLifeMapAndCreatePriorities')
                   : t('views.lifemap.continueWithSurvey')}
               </Text>
@@ -372,39 +379,37 @@ export class Overview extends Component {
                 />
               ) : null}
             </View>
-            {/*If we are in family/draft then show the questions.Else dont show them . This is requered for the families tab*/}
-          </View>
         </StickyFooter>
       );
   }
 }
 const styles = StyleSheet.create({
-  contentContainer: {
-    paddingTop: 20,
+            contentContainer: {
+            paddingTop: 20,
     flex: 1,
     flexDirection: 'column',
     justifyContent: 'center',
     alignItems: 'stretch',
   },
   listTitle: {
-    backgroundColor: colors.primary,
+            backgroundColor: colors.primary,
     height: 47,
     alignItems: 'center',
     justifyContent: 'center',
     flexDirection: 'row',
   },
   indicatorsContainer: {
-    paddingHorizontal: 20,
+            paddingHorizontal: 20,
     paddingBottom: 25,
   },
   arrow: {
-    marginLeft: 7,
+            marginLeft: 7,
     marginTop: 3,
     width: 10,
     height: 5,
   },
   dropdown: {
-    paddingVertical: 16,
+            paddingVertical: 16,
     position: 'absolute',
     bottom: 0,
     left: 0,
@@ -412,13 +417,13 @@ const styles = StyleSheet.create({
     backgroundColor: colors.white,
   },
   modalTitle: {
-    color: colors.grey,
+            color: colors.grey,
     fontWeight: '300',
     marginBottom: 15,
     marginLeft: 16,
   },
   buttonSmall: {
-    alignSelf: 'center',
+            alignSelf: 'center',
     marginVertical: 20,
     maxWidth: 400,
     backgroundColor: '#50AA47',
@@ -426,13 +431,13 @@ const styles = StyleSheet.create({
     paddingRight: 20
   },
   buttonContainer: {
-    backgroundColor: colors.primary,
+            backgroundColor: colors.primary,
   }
 
 });
 
 Overview.propTypes = {
-  drafts: PropTypes.array.isRequired,
+            drafts: PropTypes.array.isRequired,
   updateDraft: PropTypes.func.isRequired,
   t: PropTypes.func.isRequired,
   navigation: PropTypes.object.isRequired,
@@ -441,10 +446,10 @@ Overview.propTypes = {
 };
 
 const mapDispatchToProps = {
-  updateDraft,
+            updateDraft,
 };
 
-const mapStateToProps = ({ drafts, priorities }) => ({ drafts, priorities });
+const mapStateToProps = ({ drafts, priorities}) => ({ drafts, priorities});
 
 export default withNamespaces()(
   connect(mapStateToProps, mapDispatchToProps)(Overview),

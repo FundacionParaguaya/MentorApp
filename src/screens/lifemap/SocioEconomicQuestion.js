@@ -737,9 +737,7 @@ export class SocioEconomicQuestion extends Component {
                 }
                 if (question.answerType === 'checkbox') {
                   return (
-                    <View
-                      style={{ marginBottom: 10, marginTop: -6 }}
-                      key={question.codeName}>
+                    <React.Fragment key={question.codeName} >
                       <CheckboxWithFormik
                         rawOptions={getConditionalOptions(question, draft)}
                         t={t}
@@ -781,9 +779,7 @@ export class SocioEconomicQuestion extends Component {
                         }}
                         cleanUp={cleanUpMultipleValue}
                       />
-
-
-                    </View>
+                    </React.Fragment>
                   );
                 }
                 return (
@@ -983,9 +979,7 @@ export class SocioEconomicQuestion extends Component {
                         }
                         if (question.answerType === 'checkbox') {
                           return (
-                            <View
-                              style={{ marginBottom: 10 }}
-                              key={question.codeName}>
+                            <React.Fragment key={question.codeName}>                                                 
                               <CheckboxWithFormik
                                 rawOptions={getConditionalOptions(
                                   question,
@@ -1035,8 +1029,7 @@ export class SocioEconomicQuestion extends Component {
                                 }}
                                 cleanUp={cleanUpMultipleValue}
                               />
-
-                            </View>
+                          </React.Fragment>
                           );
                         }
                         return (

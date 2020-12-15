@@ -100,12 +100,15 @@ const LifemapOverview = ({
       indicator = draftData.indicatorSurveyDataList.find(item =>
         item.key == codeName && item.snapshotStoplightId
       );
-      syncStatus = prioritiesForSync.
-        filter(priority => priority.status == status).
-        find(priority =>
+      if(indicator) {
+        syncStatus = prioritiesForSync.
+        filter(priority => priority.status == status ).
+        find( priority => 
           priority.snapshotStoplightId == indicator.snapshotStoplightId
-        );
-      return syncStatus;
+          );
+          return syncStatus;
+      }
+      
     }
     return syncStatus;
   };
@@ -125,7 +128,6 @@ const LifemapOverview = ({
     (priority) => priority.indicator,
   );
 
-  console.log('Render: LifemapOverview', syncPriorities);
 
 
   return (
