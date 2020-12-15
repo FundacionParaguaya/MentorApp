@@ -129,7 +129,7 @@ export class Overview extends Component {
     this.props.navigation.addListener(
       'focus',
       () => {
-          this.forceUpdate();
+        this.forceUpdate();
       })
     const draft = !this.props.readOnly
       ? this.getDraft()
@@ -379,37 +379,38 @@ export class Overview extends Component {
                 />
               ) : null}
             </View>
+          </View>
         </StickyFooter>
       );
   }
 }
 const styles = StyleSheet.create({
-            contentContainer: {
-            paddingTop: 20,
+  contentContainer: {
+    paddingTop: 20,
     flex: 1,
     flexDirection: 'column',
     justifyContent: 'center',
     alignItems: 'stretch',
   },
   listTitle: {
-            backgroundColor: colors.primary,
+    backgroundColor: colors.primary,
     height: 47,
     alignItems: 'center',
     justifyContent: 'center',
     flexDirection: 'row',
   },
   indicatorsContainer: {
-            paddingHorizontal: 20,
+    paddingHorizontal: 20,
     paddingBottom: 25,
   },
   arrow: {
-            marginLeft: 7,
+    marginLeft: 7,
     marginTop: 3,
     width: 10,
     height: 5,
   },
   dropdown: {
-            paddingVertical: 16,
+    paddingVertical: 16,
     position: 'absolute',
     bottom: 0,
     left: 0,
@@ -417,13 +418,13 @@ const styles = StyleSheet.create({
     backgroundColor: colors.white,
   },
   modalTitle: {
-            color: colors.grey,
+    color: colors.grey,
     fontWeight: '300',
     marginBottom: 15,
     marginLeft: 16,
   },
   buttonSmall: {
-            alignSelf: 'center',
+    alignSelf: 'center',
     marginVertical: 20,
     maxWidth: 400,
     backgroundColor: '#50AA47',
@@ -431,13 +432,13 @@ const styles = StyleSheet.create({
     paddingRight: 20
   },
   buttonContainer: {
-            backgroundColor: colors.primary,
+    backgroundColor: colors.primary,
   }
 
 });
 
 Overview.propTypes = {
-            drafts: PropTypes.array.isRequired,
+  drafts: PropTypes.array.isRequired,
   updateDraft: PropTypes.func.isRequired,
   t: PropTypes.func.isRequired,
   navigation: PropTypes.object.isRequired,
@@ -446,10 +447,10 @@ Overview.propTypes = {
 };
 
 const mapDispatchToProps = {
-            updateDraft,
+  updateDraft,
 };
 
-const mapStateToProps = ({ drafts, priorities}) => ({ drafts, priorities});
+const mapStateToProps = ({ drafts, priorities }) => ({ drafts, priorities });
 
 export default withNamespaces()(
   connect(mapStateToProps, mapDispatchToProps)(Overview),
