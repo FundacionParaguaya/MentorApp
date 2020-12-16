@@ -212,6 +212,7 @@ export class Sync extends Component {
       (item) => item.type === 'SUBMIT_DRAFT',
     );
 
+
     const draftsWithError = drafts.filter(
       (draft) => draft.status === 'Sync error',
     );
@@ -222,7 +223,7 @@ export class Sync extends Component {
     );
 
     const prioritiesWithError = priorities.filter(priority => priority.status == 'Sync Error');
-    const pendingPriorities = offline.outbox.filter(item => item.type === 'Pending Status');
+    const pendingPriorities = priorities.filter(priority => priority.status == 'Pending Status');
     const screenAccessibilityContent = screenSyncScreenContent(
       offline,
       pendingDrafts,
@@ -271,17 +272,17 @@ export class Sync extends Component {
           accessible={true}
           accessibilityLabel={screenAccessibilityContent}>
           {offline.online &&
-            !pendingDrafts.length &&
-            !draftsWithError.length &&
-            !prioritiesWithError.length
-            ? (
-              <SyncUpToDate date={lastSync} lng={this.props.lng} />
-            ) : null}
-          {offline.online && pendingDrafts.length ? (
-            <SyncInProgress pendingDraftsLength={pendingDrafts.length} />
+          !pendingDrafts.length &&
+          !draftsWithError.length &&
+          !prioritiesWithError.length && !pendingPriorities.length
+          ? (
+            <SyncUpToDate date={lastSync} lng={this.props.lng} />
+          ) : null}
+          {offline.online && (pendingDrafts.length || pendingPriorities.length)  ? (
+            <SyncInProgress pendingDraftsLength={pendingDrafts.length + pendingPriorities.length} />
           ) : null}
           {!offline.online ? (
-            <SyncOffline pendingDraftsLength={pendingDrafts.length} />
+            <SyncOffline pendingDraftsLength={pendingDrafts.length + pendingPriorities.length} />
           ) : null}
           {offline.online && (draftsWithError.length && !pendingDrafts.length) || (prioritiesWithError
             .length && !pendingPriorities.length) ? (

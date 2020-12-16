@@ -128,7 +128,6 @@ const LifemapOverview = ({
     (priority) => priority.indicator,
   );
 
-  console.log('Render: LifemapOverview', syncPriorities);
 
 
   return (

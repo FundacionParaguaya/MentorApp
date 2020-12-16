@@ -47,7 +47,6 @@ class LifemapOverviewListItem extends Component {
   }
 
   render() {
-    console.log('Render:LifemapOverviewListItem')
     const { t, pendingPrioritySync, errorPrioritySync } = this.props;
     const disabledButton = this.props.draftOverview
       ? !this.props.color

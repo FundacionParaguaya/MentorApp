@@ -3,7 +3,6 @@ import { View, Text, StyleSheet } from 'react-native';
 import DimensionIndicator from './DimensionIndicator';
 import globalStyles from '../globalStyles';
 import AddPriorityAndAchievementModal from '../screens/modals/AddPriorityAndAchievementModal';
-import { Priorities } from '../screens/lifemap/Priorities';
 
 const DimensionIndicators = ({
     surveyData,
@@ -94,7 +93,6 @@ const DimensionIndicators = ({
     }
 
     useEffect(() => {
-        console.log('render in dimension',priorities)
         priorities = draftData.priorities.map(priority => priority.indicator);
     },[draftData])
     return (

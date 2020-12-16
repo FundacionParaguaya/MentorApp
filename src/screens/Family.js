@@ -72,14 +72,12 @@ export class Family extends Component {
     this.props.navigation.addListener(
       'focus',
       () => {
-        console.log('forceUpdate')
           this.forceUpdate();
       }
   );
     // // monitor for connection changes
     console.log('Subscripcion')
     this.unsubscribeNetChange = NetInfo.addEventListener((isOnline) => {
-      console.log('update de listener')
       this.setState({ isOnline });
       //Allow to show or hide retrySyn button
       this.setState({ showSyncButton: this.availableForSync(isOnline) });
@@ -178,7 +176,6 @@ export class Family extends Component {
     }
   };
   shouldComponentUpdate() {
-    console.log('shouldComponentUpdate(): Family',this.props.navigation.isFocused())
     return this.props.navigation.isFocused();
   }
   prepareDraftForSubmit() {
@@ -218,7 +215,6 @@ export class Family extends Component {
   }
 
   componentWillUnmount() {
-    console.log(' componentWillUnmount() Family')
     this.unsubscribeNetChange();
   }
 
@@ -286,7 +282,6 @@ export class Family extends Component {
     const { familyData } = this.familyLifemap;
     const stoplightSkipped = this.familyLifemap.stoplightSkipped;
     
-    console.log('render: Family')
 
     const email =
       familyData &&

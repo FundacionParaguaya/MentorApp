@@ -117,6 +117,14 @@ export class Overview extends Component {
     })
   };
 
+  showAddPriority = () => {
+    const draftData = !this.props.readOnly
+      ? this.getDraft()
+      : this.props.familyLifemap;
+
+    return draftData.status != 'Synced'
+  }
+
   componentDidMount() {
     this.props.navigation.addListener(
       'focus',
@@ -144,7 +152,6 @@ export class Overview extends Component {
   }
 
   componentDidUpdate() {
-    console.log('componentDidUpdate: Overview');
   }
 
   shouldComponentUpdate() {
@@ -176,13 +183,15 @@ export class Overview extends Component {
         {/*If we are in family/draft then show the questions.Else dont show them . This is requered for the families tab*/}
         <View>
           <View>
-            <View style={styles.buttonContainer}>
-              <Button
-                style={styles.buttonSmall}
-                text={t('views.family.addPriority')}
-                handleClick={this.handleClickOnAddPriority}
-              />
-            </View>
+            {this.showAddPriority() && (
+              <View style={styles.buttonContainer}>
+                <Button
+                  style={styles.buttonSmall}
+                  text={t('views.family.addPriority')}
+                  handleClick={this.handleClickOnAddPriority}
+                />
+              </View>
+            )}
             <TouchableHighlight
               id="filters"
               underlayColor={'transparent'}
@@ -336,13 +345,13 @@ export class Overview extends Component {
           {!this.props.readOnly ? (
             <View style={{ alignItems: 'center', }}>
               {draft.stoplightSkipped && <View style={{ paddingTop: 50 }} />}
-              {!draft.stoplightSkipped && (
-                <Text style={[globalStyles.h2Bold, styles.heading]}>
-                  {t('views.lifemap.almostThere')}
-                </Text>
-              )}
               <Text style={[globalStyles.h2Bold, styles.heading]}>
-                {!draft.stoplightSkipped
+                {!draft.stoplightSkipped && !this.isResumingDraft
+                  ? t('views.lifemap.almostThere')
+                  : t('views.lifemap.resumeSurvey')}
+              </Text>
+              <Text style={[globalStyles.h2Bold, styles.heading]}>
+                {!draft.stoplightSkipped && !this.isResumingDraft
                   ? t('views.lifemap.continueToSeeYourLifeMapAndCreatePriorities')
                   : t('views.lifemap.continueWithSurvey')}
               </Text>
@@ -372,7 +381,6 @@ export class Overview extends Component {
                 />
               ) : null}
             </View>
-            {/*If we are in family/draft then show the questions.Else dont show them . This is requered for the families tab*/}
           </View>
         </StickyFooter>
       );
