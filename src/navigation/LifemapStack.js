@@ -376,7 +376,7 @@ export default LifemapStack = ({navigation}) => (
         headerTitle: (props) => {
           return (
             <Title
-              title="views.lifemap.priorities"
+              title="views.yourLifeMap"
               accessibilityAssertiveType="none"
               style={{marginLeft: 20}}
             />
