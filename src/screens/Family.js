@@ -666,9 +666,9 @@ const styles = StyleSheet.create({
     bottom: 0,
   },
   countCircle: {
-    width: 22,
-    height: 22,
-    borderRadius: 22,
+    width: 30,
+    height: 30,
+    borderRadius: 30,
     backgroundColor: colors.white,
     justifyContent: 'center',
     alignItems: 'center',
