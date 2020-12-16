@@ -23,31 +23,31 @@ const styles = StyleSheet.create({
     },
     colorNumberText: {
         fontFamily: 'Poppins SemiBold',
-        fontSize: 17,
+        fontSize: 22,
         marginLeft:10
     },
     circleGreen: {
         backgroundColor: colors.palegreen,
-        width: 40,
-        height: 40,
-        borderRadius: 20,
+        width: 50,
+        height: 50,
+        borderRadius: 25,
     },
     circleYellow: {
         backgroundColor: colors.gold,
         width: 40,
         height: 40,
-        borderRadius: 20,
+        borderRadius: 23,
     },
     circleRed: {
         backgroundColor: colors.palered,
-        width: 40,
-        height: 40,
+        width: 30,
+        height: 30,
         borderRadius: 20,
     },
     cirleGrey: {
         backgroundColor: colors.lightgrey,
-        width: 40,
-        height: 40,
+        width: 30,
+        height: 30,
         borderRadius: 20,
     },  
     colorIndicator: {
@@ -60,7 +60,8 @@ const styles = StyleSheet.create({
 
 const IndicatorsSummary = ({
     t,
-    indicators
+    indicators,
+    containerStyle
 }) => {
     const getCount = (value) => {
         return indicators.filter(indicator => indicator.value == value).length || 0
@@ -70,7 +71,7 @@ const IndicatorsSummary = ({
     let redCounter = getCount(1);
     let skipCounter = getCount(0);
     return (
-        <View style={styles.container}>
+        <View style={[styles.container, containerStyle ]}>
             <View style={styles.itemContainer} >
                 <View style={styles.circleNumberContainer}>
                     <View style={styles.circleGreen} />

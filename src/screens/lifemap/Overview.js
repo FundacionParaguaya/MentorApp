@@ -319,7 +319,6 @@ export class Overview extends Component {
         <View style={[globalStyles.background, styles.contentContainer]}>
           <View style={styles.indicatorsContainer}>
             {!draft.stoplightSkipped && (
-              <>
               <LifemapVisual
                 large={this.props.readOnly}
                 extraLarge={!this.props.readOnly}
@@ -328,10 +327,6 @@ export class Overview extends Component {
                 achievements={draft.achievements}
                 questionsLength={this.survey.surveyStoplightQuestions.length}
               />
-              <IndicatorsSummary
-                indicators={draft.indicatorSurveyDataList}
-              />
-              </>
             )}
             {this.isResumingDraft ? (
               <Button
