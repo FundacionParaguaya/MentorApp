@@ -1,28 +1,47 @@
 import PropTypes from 'prop-types';
-import React, { Component } from 'react';
+import React, { useState } from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 
 import globalStyles from '../globalStyles';
 import AddPriorityAndAchievementModal from '../screens/modals/AddPriorityAndAchievementModal';
 import LifemapOverviewListItem from './LifemapOverviewListItem';
+import { useIsFocused } from '@react-navigation/native';
 
-class LifemapOverview extends Component {
-  dimensions = this.props.surveyData.map((item) => item.dimension);
-  state = {
-    AddAchievementOrPriority: false,
-    indicator: '',
-    color: 0,
-    indicatorText: '',
-  };
-  getColor = (codeName, previous) => {
+
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    padding: 0,
+  },
+  dimension: { ...globalStyles.h3, marginHorizontal: 20, marginVertical: 10 },
+});
+
+const LifemapOverview = ({
+  surveyData,
+  draftData,
+  selectedFilter,
+  syncPriorities,
+  isRetake,
+  readOnly,
+  draftOverview
+}) => {
+  const dimensions = surveyData.map((item) => item.dimension);
+  const [addAchievementOrPriority,setAddAchievementOrPriority] = useState(false);
+  const [indicator,setIndicator ] = useState('');
+  const [ color, setColor] = useState(0);
+  const [ indicatorText, setIndicatorText ] = useState('');
+  const isFocused = useIsFocused();
+
+  const getColor = (codeName, previous) => {
     let indicator;
 
-    if (this.props.draftData && this.props.draftData.indicatorSurveyDataList && !previous) {
-      indicator = this.props.draftData.indicatorSurveyDataList.find(
+    if (draftData && draftData.indicatorSurveyDataList && !previous) {
+      indicator = draftData.indicatorSurveyDataList.find(
         (item) => item.key === codeName,
       )
-    } else if (this.props.draftData && this.props.draftData.previousIndicatorSurveyDataList && previous) {
-      indicator = this.props.draftData.previousIndicatorSurveyDataList.find(
+    } else if (draftData && draftData.previousIndicatorSurveyDataList && previous) {
+      indicator = draftData.previousIndicatorSurveyDataList.find(
         (item) => item.key === codeName,
       )
     } else {
@@ -36,94 +55,120 @@ class LifemapOverview extends Component {
     }
   };
 
-  handleClick(color, indicator, indicatorText) {
-    this.setState({
-      AddAchievementOrPriority: true,
-      indicator: indicator,
-      color: color,
-      indicatorText: indicatorText,
-    });
+  const handleClick = (color, indicator, indicatorText) =>  {
+    setAddAchievementOrPriority(true);
+    setIndicator(indicator);
+    setColor(color);
+    setIndicatorText(indicatorText);
   }
-  onClose = () => {
-    this.setState({ AddAchievementOrPriority: false });
+
+  const onClose = () => {
+    setAddAchievementOrPriority(false);
   };
 
-  filterByDimension = (item) =>
-    this.props.surveyData.filter((indicator) => {
-      const colorCode = this.getColor(indicator.codeName);
-      if (this.props.selectedFilter === false) {
-        return indicator.dimension === item && typeof colorCode === 'number';
-      } else if (this.props.selectedFilter === 'priorities') {
-        const priorities = this.props.draftData.priorities.map(
-          (priority) => priority.indicator,
-        );
-        const achievements = this.props.draftData.achievements.map(
-          (priority) => priority.indicator,
-        );
+  const filterByDimension = (item) =>
+  surveyData.filter((indicator) => {
+    const colorCode = getColor(indicator.codeName);
+    if (selectedFilter === false) {
+      return indicator.dimension === item && typeof colorCode === 'number';
+    } else if (selectedFilter === 'priorities') {
+      const priorities = draftData.priorities.map(
+        (priority) => priority.indicator,
+      );
+      const achievements = tdraftData.achievements.map(
+        (priority) => priority.indicator,
+      );
 
-        return (
-          indicator.dimension === item &&
-          (priorities.includes(indicator.codeName) ||
-            achievements.includes(indicator.codeName))
-        );
-      } else {
-        return (
-          indicator.dimension === item &&
-          typeof colorCode === 'number' &&
-          colorCode === this.props.selectedFilter
-        );
+      return (
+        indicator.dimension === item &&
+        (priorities.includes(indicator.codeName) ||
+          achievements.includes(indicator.codeName))
+      );
+    } else {
+      return (
+        indicator.dimension === item &&
+        typeof colorCode === 'number' &&
+        colorCode === selectedFilter
+      );
+    }
+  });
+
+  const checkSyncPriorityStatus = (codeName, prioritiesForSync, status) => {
+    let indicator;
+    let syncStatus = false;
+    if( draftData && draftData.indicatorSurveyDataList && prioritiesForSync ) {
+      indicator = draftData.indicatorSurveyDataList.find( item => 
+        item.key == codeName && item.snapshotStoplightId
+      );
+      if(indicator) {
+        syncStatus = prioritiesForSync.
+        filter(priority => priority.status == status ).
+        find( priority => 
+          priority.snapshotStoplightId == indicator.snapshotStoplightId
+          );
+          return syncStatus;
       }
-    });
+      
+    }
+    return syncStatus;
+  };
 
-  render() {
-    const priorities = this.props.draftData.priorities.map(
-      (priority) => priority.indicator,
-    );
-    const achievements = this.props.draftData.achievements.map(
-      (priority) => priority.indicator,
-    );
+  const priorities = draftData.priorities.map(
+    (priority) => priority.indicator,
+  );
+  const achievements = draftData.achievements.map(
+    (priority) => priority.indicator,
+  );
 
-    const previousPriorities = this.props.draftData.previousIndicatorPriorities && this.props.draftData.previousIndicatorPriorities.map(
-      (priority) => priority.indicator,
-    );
+  const previousPriorities = draftData.previousIndicatorPriorities && draftData.previousIndicatorPriorities.map(
+    (priority) => priority.indicator,
+  );
 
-    const previousIndicatorAchievements = this.props.draftData.previousIndicatorAchievements && this.props.draftData.previousIndicatorAchievements.map(
-      (priority) => priority.indicator,
-    );
+  const previousIndicatorAchievements = draftData.previousIndicatorAchievements && draftData.previousIndicatorAchievements.map(
+    (priority) => priority.indicator,
+  );
 
 
-    return (
-      <View style={styles.container}>
+
+  return (
+   
+
+   
+    <View style={styles.container}>
+       { isFocused && <>
         {/* I am also passing the color because i have to visually display the circle color */}
-        {this.state.AddAchievementOrPriority ? (
+        {addAchievementOrPriority ? (
           <AddPriorityAndAchievementModal
-            onClose={this.onClose}
-            color={this.state.color}
-            draft={this.props.draftData}
-            indicator={this.state.indicator}
-            indicatorText={this.state.indicatorText}
+            onClose={onClose}
+            color={color}
+            draft={draftData}
+            indicator={indicator}
+            indicatorText={indicatorText}
           />
         ) : null}
-        {[...new Set(this.dimensions)].map((item) => (
+        {[...new Set(dimensions)].map((item) => (
           <View key={item}>
-            {this.filterByDimension(item).length ? (
+            {filterByDimension(item).length ? (
               <Text style={styles.dimension}>{item.toUpperCase()}</Text>
             ) : null}
-            {this.filterByDimension(item).map((indicator) => (
+            {filterByDimension(item).map((indicator) => (
               <LifemapOverviewListItem
                 key={indicator.questionText}
                 name={indicator.questionText}
-                color={this.getColor(indicator.codeName)}
-                draftOverview={this.props.draftOverview}
-                priority={priorities.includes(indicator.codeName)}
+                color={getColor(indicator.codeName)}
+                errorPrioritySync = {checkSyncPriorityStatus(indicator.codeName, syncPriorities,'Sync Error')}
+                pendingPrioritySync = {checkSyncPriorityStatus(indicator.codeName, syncPriorities,'Pending Status')}
+                readOnly={readOnly}
+                draftOverview={draftOverview}
+                priority={priorities.includes(indicator.codeName) || checkSyncPriorityStatus(indicator.codeName, syncPriorities,'Synced')}
                 achievement={achievements.includes(indicator.codeName)}
-                previousColor={this.getColor(indicator.codeName, true)}
+                previousColor={getColor(indicator.codeName, true)}
                 previousPriority={previousPriorities && previousPriorities.includes(indicator.codeName)}
                 previousAchievement={previousIndicatorAchievements && previousIndicatorAchievements.includes(indicator.codeName)}
-                isRetake={this.props.isRetake}
+                isRetake={isRetake}
                 handleClick={() =>
-                  this.handleClick(
-                    this.getColor(indicator.codeName),
+                  handleClick(
+                    getColor(indicator.codeName),
                     indicator.codeName,
                     indicator.questionText,
                   )
@@ -132,9 +177,12 @@ class LifemapOverview extends Component {
             ))}
           </View>
         ))}
+        
+        </>}
       </View>
-    );
-  }
+    
+
+  )
 }
 
 LifemapOverview.propTypes = {
@@ -148,12 +196,5 @@ LifemapOverview.propTypes = {
   ]),
 };
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    padding: 0,
-  },
-  dimension: { ...globalStyles.h3, marginHorizontal: 20, marginVertical: 10 },
-});
 
 export default LifemapOverview;

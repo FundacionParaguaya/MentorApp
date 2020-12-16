@@ -14,6 +14,7 @@ import globalStyles from '../../globalStyles';
 import {updateDraft} from '../../redux/actions';
 import {calculateProgressBar} from '../utils/helpers';
 import colors from '../../theme.json';
+import IndicatorsSummary from '../../components/IndicatorsSummary';
 
 export class Overview extends Component {
   survey = this.props.route.params.survey;
@@ -26,6 +27,7 @@ export class Overview extends Component {
     selectedFilter: false,
     filterLabel: false,
     tipIsVisible: false,
+    syncPriorities:[],
   };
 
   getDraft = () =>
@@ -107,7 +109,29 @@ export class Overview extends Component {
     });
   };
 
+  handleClickOnAddPriority = () => {
+    this.props.navigation.navigate('SelectIndicatorPriority', {
+      draft: !this.props.readOnly
+      ? this.getDraft()
+      : this.props.familyLifemap,
+      survey:this.survey
+    })
+  };
+
+  showAddPriority= () => {
+    const draftData = !this.props.readOnly
+    ? this.getDraft()
+    : this.props.familyLifemap;
+
+    return draftData.status != 'Synced' 
+  }
+
   componentDidMount() {
+    this.props.navigation.addListener(
+      'focus',
+      () => {
+          this.forceUpdate();
+      })
     const draft = !this.props.readOnly
       ? this.getDraft()
       : this.props.familyLifemap;
@@ -128,6 +152,9 @@ export class Overview extends Component {
     }
   }
 
+  componentDidUpdate() {
+  }
+
   shouldComponentUpdate() {
     return this.props.navigation.isFocused();
   }
@@ -138,6 +165,7 @@ export class Overview extends Component {
     const draft = !this.props.readOnly
       ? this.getDraft()
       : this.props.familyLifemap;
+
     return this.props.readOnly ? (
       <View style={[globalStyles.background, styles.contentContainer]}>
         <View style={styles.indicatorsContainer}>
@@ -150,9 +178,20 @@ export class Overview extends Component {
             questionsLength={this.survey.surveyStoplightQuestions.length}
           />
         </View>
+       
         {/*If we are in family/draft then show the questions.Else dont show them . This is requered for the families tab*/}
         <View>
+        
           <View>
+          {this.showAddPriority() && (
+          <View style={styles.buttonContainer}>
+          <Button
+                style={styles.buttonSmall}
+                text={t('views.family.addPriority')}
+                handleClick={this.handleClickOnAddPriority}
+              />
+          </View>
+          )}
             <TouchableHighlight
               id="filters"
               underlayColor={'transparent'}
@@ -173,13 +212,16 @@ export class Overview extends Component {
             </TouchableHighlight>
             <LifemapOverview
               id="lifeMapOverview"
+              syncPriorities = {this.props.priorities}
               surveyData={this.survey.surveyStoplightQuestions}
+              readOnly
               draftData={draft}
               navigateToScreen={this.navigateToScreen}
               draftOverview={!this.isResumingDraft && !this.familyLifemap}
               selectedFilter={selectedFilter}
             />
           </View>
+        
 
           {/* Filters modal */}
           <BottomModal
@@ -303,11 +345,6 @@ export class Overview extends Component {
         {!this.props.readOnly ? (
           <View style={{alignItems: 'center',}}>
             {draft.stoplightSkipped && <View style={{paddingTop: 50}} />}
-              <Text style={[globalStyles.h2Bold, styles.heading]}>
-                {!draft.stoplightSkipped && !this.isResumingDraft 
-                ? t('views.lifemap.almostThere')
-                : t('views.lifemap.resumeSurvey')} 
-              </Text>
             <Text style={[globalStyles.h2Bold, styles.heading]}>
               {!draft.stoplightSkipped && !this.isResumingDraft
                 ? t('views.lifemap.continueToSeeYourLifeMapAndCreatePriorities')
@@ -384,6 +421,18 @@ const styles = StyleSheet.create({
     marginBottom: 15,
     marginLeft: 16,
   },
+  buttonSmall: {
+    alignSelf: 'center',
+    marginVertical: 20,
+    maxWidth: 400,
+    backgroundColor: '#50AA47',
+    paddingLeft: 20,
+    paddingRight: 20
+  },
+  buttonContainer: {
+    backgroundColor: colors.primary,
+  }
+  
 });
 
 Overview.propTypes = {
@@ -399,7 +448,7 @@ const mapDispatchToProps = {
   updateDraft,
 };
 
-const mapStateToProps = ({drafts}) => ({drafts});
+const mapStateToProps = ({drafts, priorities}) => ({drafts, priorities});
 
 export default withNamespaces()(
   connect(mapStateToProps, mapDispatchToProps)(Overview),

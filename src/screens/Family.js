@@ -30,6 +30,7 @@ import {
   createDraft,
   submitDraft,
   submitDraftWithImages,
+  submitPriority,
 } from '../redux/actions';
 import { getTotalScreens } from '../screens/lifemap/helpers';
 import colors from '../theme.json';
@@ -68,18 +69,29 @@ export class Family extends Component {
     };
   }
   componentDidMount() {
+    this.props.navigation.addListener(
+      'focus',
+      () => {
+          this.forceUpdate();
+      }
+  );
     // // monitor for connection changes
+    console.log('Subscripcion')
     this.unsubscribeNetChange = NetInfo.addEventListener((isOnline) => {
-      console.log('update listener')
       this.setState({ isOnline });
       //Allow to show or hide retrySyn button
       this.setState({ showSyncButton: this.availableForSync(isOnline) });
+      //this.syncPriorities(isOnline)
+
     });
 
     // check if online first
     NetInfo.fetch().then((state) => {
       this.setState({ isOnline: state.isConnected });
+      //this.syncPriorities(state.isConnected)
     });
+
+    
 
     this.props.navigation.setParams({
       onPressBack: this.onPressBack,
@@ -131,12 +143,26 @@ export class Family extends Component {
     }
   };
 
+  syncPriorities = (isOnline) => {
+    if(isOnline){
+      const pendingPriorities = this.props.priorities.filter(
+        (priority ) => priority.status == 'Pending Status' || priority.status  == 'Sync Error'
+        );
+        pendingPriorities.forEach(priority => {
+          let sanitazedPriority = priority;
+          delete sanitazedPriority.status
+          this.props.submitPriority (
+            url[this.props.env],
+            this.props.user.token,
+            sanitazedPriority
+          )
+        });
+    }
+   
+  }
+
   availableForSync = (isOnline) => {
     const id = this.familyLifemap.draftId;
-    console.log('draft id ', id);
-    console.log('list submitted: ', this.props.syncStatus);
-    console.log('Status : ', this.familyLifemap.status);
-
     if (
       this.props.syncStatus.indexOf(id) === -1 &&
       isOnline &&
@@ -149,7 +175,9 @@ export class Family extends Component {
       return false;
     }
   };
-
+  shouldComponentUpdate() {
+    return this.props.navigation.isFocused();
+  }
   prepareDraftForSubmit() {
     if (this.state.loading) {
       const draft = prepareDraftForSubmit(this.familyLifemap, this.survey);
@@ -191,7 +219,6 @@ export class Family extends Component {
   }
 
   handleClickOnRetake() {
-    console.log
     if (!!this.props.projects &&
       this.props.projects.filter(project => project.active === true).length > 0) {
       this.setState({ openProjectModal: true })
@@ -254,7 +281,7 @@ export class Family extends Component {
     const { t, navigation } = this.props;
     const { familyData } = this.familyLifemap;
     const stoplightSkipped = this.familyLifemap.stoplightSkipped;
-
+    
 
     const email =
       familyData &&
@@ -577,6 +604,7 @@ export class Family extends Component {
                     readOnly
                     navigation={navigation}
                     familyLifemap={this.familyLifemap}
+                    
                   />
                 </ScrollView>
               )}
@@ -714,14 +742,16 @@ const mapDispatchToProps = {
   submitDraft,
   submitDraftWithImages,
   createDraft,
+  submitPriority
 };
-const mapStateToProps = ({ surveys, env, user, drafts, syncStatus, projects }) => ({
+const mapStateToProps = ({ surveys, env, user, drafts, syncStatus, projects, priorities }) => ({
   surveys,
   env,
   user,
   drafts,
   syncStatus,
-  projects
+  projects,
+  priorities
 });
 
 export default withNamespaces()(

@@ -24,6 +24,7 @@ import CloseButton from './CloseButton';
 import Title from './Title';
 import CustomHeaderSurvey from './CustomHeaderSurvey';
 import {generateNavStyles, addMenuIcon} from './helpers';
+import SelectIndicatorPriorityView from '../screens/lifemap/SelectIndicatorPriority';
 
 const Stack = createStackNavigator();
 export default LifemapStack = ({navigation}) => (
@@ -459,6 +460,26 @@ export const FamiliesStack = (propz) => (
 
         ...generateNavStyles({navigation, route}),
       })}
+    />
+
+    <Stack.Screen
+      name="SelectIndicatorPriority"
+      component={SelectIndicatorPriorityView}
+      options = {({ route, navigation }) => ({
+        headerTitle: (props) => {
+          return (
+            <Title
+              title={route && route.params && route.params.familyName
+                ? route.params.familyName
+                : ''
+              }
+              accessibilityAssertiveType="none"
+            />
+          )
+        },
+        ...generateNavStyles({navigation, route })
+      })}
+
     />
     <Stack.Screen
       name="Surveys"

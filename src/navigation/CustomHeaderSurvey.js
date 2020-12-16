@@ -13,6 +13,7 @@ export class CustomHeaderSurveyComponent extends Component {
     const survey = route.params.survey;
     const stoplightOptional = survey.surveyConfig.stoplightOptional;
     const stoplightSkipped = route.params.stoplightSkipped;
+    const isResumingDraft = route.params.resumeDraft;
     return (
       <View
         style={styles.headerQuestions}
@@ -37,9 +38,9 @@ export class CustomHeaderSurveyComponent extends Component {
         )}
         {overview && (
           <Text style={styles.headerTitleStyle}>
-            {!stoplightSkipped
+            {!stoplightSkipped && !isResumingDraft
               ? this.props.t('views.yourLifeMap')
-              : this.props.t('draftStatus.draft')}
+              : this.props.t('views.lifemap.resumeSurvey')}
           </Text>
         )}
         {separatorScreen && (

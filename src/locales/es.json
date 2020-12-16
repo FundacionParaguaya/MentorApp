@@ -66,6 +66,7 @@
     "DashGreen": "Verde",
     "DashYellow": "Amarillo",
     "DashRed": "Rojo",
+    "DashSkipped": "Omitidas",
     "synced": "Sincronización",
     "retakeSurvey": "Encuesta de seguimiento",
     "pictures": {
@@ -186,7 +187,11 @@
       "weCannotLocate": "¡No podemos localizarte!",
       "tellUsMore": "Puede decirnos más acerca de esta ubicación en el siguiente formulario",
       "searchByName": "Buscar",
-      "addNewMember": "Agregar nuevo miembro"
+      "addNewMember": "Agregar nuevo miembro",
+      "addPriority": "Agregar Prioridad",
+      "selectIndicator": "Seleccionar un indicador",
+      "priorityPending": "Prioridad pendiente",
+      "priorityError": "Error de sincronización de prioridad"
     },
     "lifemap": {
       "indicatorDefinition": "Definición del indicador",
@@ -221,7 +226,7 @@
       "red": "Rojo",
       "priorities": "Prioridades",
       "achievements": "Logros",
-      "toComplete": "Antes de que se complete el Mapa de Vida....",
+      "toComplete": "Antes de que se complete tu Mapa de Vida....",
       "makePriority": "¡Hazlo una prioridad!",
       "makeAchievement": "¡Marca el logro!",
       "status": "estado",
