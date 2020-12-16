@@ -14,6 +14,7 @@ import globalStyles from '../../globalStyles';
 import {updateDraft} from '../../redux/actions';
 import {calculateProgressBar} from '../utils/helpers';
 import colors from '../../theme.json';
+import IndicatorsSummary from '../../components/IndicatorsSummary';
 
 export class Overview extends Component {
   survey = this.props.route.params.survey;
