@@ -4,10 +4,10 @@ import {withNamespaces} from 'react-i18next';
 import {
   FlatList,
   ScrollView,
+  Text,
   StyleSheet,
   UIManager,
   View,
-  Text,
   TextInput,
   findNodeHandle,
 } from 'react-native';
@@ -17,15 +17,12 @@ import Button from '../components/Button';
 import SyncInProgress from '../components/sync/SyncInProgress';
 import SyncListItem from '../components/sync/SyncListItem';
 import SyncOffline from '../components/sync/SyncOffline';
+import SyncPriority from '../components/sync/SyncPriority';
 import SyncRetry from '../components/sync/SyncRetry';
 import SyncUpToDate from '../components/sync/SyncUpToDate';
 import {url} from '../config';
 import globalStyles from '../globalStyles';
-import {
-  submitDraft,
-  createDraft,
-  submitDraftWithImages,
-} from '../redux/actions';
+import {submitDraft, createDraft, submitDraftWithImages, submitPriority} from '../redux/actions';
 import {screenSyncScreenContent} from '../screens/utils/accessibilityHelpers';
 import {prepareDraftForSubmit, fakeSurvey} from './utils/helpers';
 
@@ -66,6 +63,21 @@ export class Sync extends Component {
         },
       });
   };
+
+  retrySubmittingAllPriorities = () => {
+    const prioritiesWithError = this.props.priorities.filter(priority => priority.status == 'Sync Error');
+
+    prioritiesWithError.forEach(priority => {
+      let sanitazedPriority = priority;
+          delete sanitazedPriority.status
+          this.props.submitPriority (
+            url[this.props.env],
+            this.props.user.token,
+            sanitazedPriority
+          )
+
+    })
+  }
 
   retrySubmittingAllDrafts = () => {
     const draftsWithError = this.props.drafts.filter(
@@ -108,6 +120,67 @@ export class Sync extends Component {
     });
   };
 
+  retrySubmit = () => {
+    this.retrySubmittingAllDrafts();
+    this.retrySubmittingAllPriorities();
+  }
+
+  getFamilyName = (snapshotStoplightId) => {
+    console.log('getFamilyName',snapshotStoplightId);
+    let indicator;
+    let familyName
+
+    this.props.families.forEach(family => {
+      let snapShotData = family.snapshotList.length > 0 
+        ? family.snapshotList[family.snapshotList.length-1] 
+        : family.snapshotList[0];
+        console.log('snapShotData getFamilyName',snapShotData);
+
+        !indicator ? indicator = snapShotData.indicatorSurveyDataList.find(
+          item => item.snapshotStoplightId === snapshotStoplightId
+        ): null;
+
+        !familyName && indicator ? familyName = family.name: null
+        
+    });
+    if(familyName) {
+      return familyName
+    }else {
+      return 
+    }
+  }
+
+  getIndicator = (snapshotStoplightId) => {
+    console.log('snapshotStoplightId',snapshotStoplightId)
+    let indicator;
+    let surveyIndicator;
+
+    this.props.families.forEach(family => {
+      let snapShotData = family.snapshotList.length > 0 
+        ? family.snapshotList[family.snapshotList.length-1] 
+        : family.snapshotList[0];
+        console.log('snapShotData',snapShotData)
+
+      
+      !indicator ? indicator = snapShotData.indicatorSurveyDataList.find(
+        item => item.snapshotStoplightId === snapshotStoplightId
+      ): null;
+
+      console.log('ind',indicator)
+
+      
+    });
+    this.props.surveys.forEach(survey => {
+      !surveyIndicator ? surveyIndicator =
+      survey.surveyEconomicQuestions.find(item => item.key == indicator.codeName): null;
+    });
+
+    if(surveyIndicator) {
+      return surveyIndicator.questionText;
+    }
+    return;
+  }
+
   componentDidMount() {
     if (UIManager.AccessibilityEventTypes) {
       setTimeout(() => {
@@ -130,7 +203,7 @@ export class Sync extends Component {
     }
   };
   render() {
-    const {drafts, offline} = this.props;
+    const {drafts, offline, priorities, t} = this.props;
     const lastSync = drafts.reduce(
       (lastSynced, item) =>
         item.syncedAt > lastSynced ? item.syncedAt : lastSynced,
@@ -140,6 +213,7 @@ export class Sync extends Component {
       (item) => item.type === 'SUBMIT_DRAFT',
     );
 
+
     const draftsWithError = drafts.filter(
       (draft) => draft.status === 'Sync error',
     );
@@ -148,6 +222,9 @@ export class Sync extends Component {
       (draft) =>
         draft.status === 'Sync error' || draft.status === 'Pending sync',
     );
+
+    const prioritiesWithError = priorities.filter(priority => priority.status == 'Sync Error');
+    const pendingPriorities = priorities.filter(priority => priority.status == 'Pending Status');
     const screenAccessibilityContent = screenSyncScreenContent(
       offline,
       pendingDrafts,
@@ -197,19 +274,23 @@ export class Sync extends Component {
           accessibilityLabel={screenAccessibilityContent}>
           {offline.online &&
           !pendingDrafts.length &&
-          !draftsWithError.length ? (
+          !draftsWithError.length &&
+          !prioritiesWithError.length && !pendingPriorities.length
+          ? (
             <SyncUpToDate date={lastSync} lng={this.props.lng} />
           ) : null}
-          {offline.online && pendingDrafts.length ? (
-            <SyncInProgress pendingDraftsLength={pendingDrafts.length} />
+          {offline.online && (pendingDrafts.length || pendingPriorities.length)  ? (
+            <SyncInProgress pendingDraftsLength={pendingDrafts.length + pendingPriorities.length} />
           ) : null}
           {!offline.online ? (
-            <SyncOffline pendingDraftsLength={pendingDrafts.length} />
+            <SyncOffline pendingDraftsLength={pendingDrafts.length + pendingPriorities.length} />
           ) : null}
-          {offline.online && draftsWithError.length && !pendingDrafts.length ? (
+          {offline.online && (draftsWithError.length && !pendingDrafts.length) || (prioritiesWithError
+          .length && !pendingPriorities.length) ? (
             <SyncRetry
-              draftsWithError={draftsWithError.length}
-              retrySubmit={this.retrySubmittingAllDrafts}
+              withError={draftsWithError.length + prioritiesWithError.length}
+              retrySubmit={this.retrySubmit}
+              
             />
           ) : null}
         </View>
@@ -228,6 +309,23 @@ export class Sync extends Component {
             )}
           />
         ) : null}
+       
+        {prioritiesWithError.length ? (
+          <>
+          <Text style={globalStyles.h3Bold}>{t('views.lifemap.priorities')}</Text>
+          <FlatList
+            style={{marginTop: 15}}
+            data={prioritiesWithError}
+            keyExtractor={(item, index) => index.toString()}
+            renderItem={({item}) => (
+              <SyncPriority
+                indicatorName = {this.getIndicator(item.snapshotStoplightId)}
+                familyName= {this.getFamilyName(item.snapshotStoplightId)}  
+              />
+            )}
+          />
+          </>
+        ) : null}
       </ScrollView>
     );
   }
@@ -243,6 +341,7 @@ Sync.propTypes = {
   surveys: PropTypes.array,
   submitDraft: PropTypes.func.isRequired,
   submitDraftWithImages: PropTypes.func.isRequired,
+  priorities: PropTypes.array,
 };
 
 const styles = StyleSheet.create({
@@ -268,18 +367,21 @@ const styles = StyleSheet.create({
   },
 });
 
-const mapStateToProps = ({drafts, offline, env, user, surveys}) => ({
+const mapStateToProps = ({drafts, offline, env, user, surveys, priorities, families}) => ({
   drafts,
   offline,
   env,
   user,
   surveys,
+  priorities,
+  families
 });
 
 const mapDispatchToProps = {
   createDraft,
   submitDraft,
   submitDraftWithImages,
+  submitPriority
 };
 
 export default withNamespaces()(

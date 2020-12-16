@@ -3,7 +3,8 @@ import PropTypes from 'prop-types'
 import { Text, StyleSheet, View } from 'react-native'
 import ListItem from './ListItem'
 import Icon from 'react-native-vector-icons/MaterialIcons'
-import Icon2 from 'react-native-vector-icons/MaterialCommunityIcons'
+import Icon2 from 'react-native-vector-icons/MaterialCommunityIcons';
+import { withNamespaces } from 'react-i18next';
 
 import colors from '../theme.json'
 import globalStyles from '../globalStyles'
@@ -41,10 +42,15 @@ class LifemapOverviewListItem extends Component {
     }
   }
 
+  syncPriorityStatus = () => {
+
+  }
+
   render() {
+    const { t, pendingPrioritySync, errorPrioritySync } = this.props;
     const disabledButton = this.props.draftOverview
       ? !this.props.color
-      : !this.props.achievement && !this.props.priority
+      : (!this.props.achievement && !this.props.priority) || this.props.readOnly
 
     return (
       <ListItem
@@ -104,17 +110,34 @@ class LifemapOverviewListItem extends Component {
                 ...styles.blueIcon,
                 width: 20,
                 height: 20,
-                zIndex:15
+                zIndex: 15
               }}
             />
           ) : (
               <View />
             )}
-          {this.props.priority? (
+          {this.props.priority ? (
             <View
               style={{
                 ...styles.blueIcon,
                 backgroundColor: colors.blue,
+                width: 20,
+                height: 20,
+                justifyContent: 'center',
+                alignItems: 'center',
+                zIndex: 15
+              }}
+            >
+              <Icon2 name="pin" color={colors.white} size={12} />
+            </View>
+          ) : (
+              <View />
+            )}
+          {pendingPrioritySync || errorPrioritySync ? (
+            <View
+              style={{
+                ...styles.blueIcon,
+                backgroundColor: colors.grey,
                 width: 20,
                 height: 20,
                 justifyContent: 'center',
@@ -135,15 +158,24 @@ class LifemapOverviewListItem extends Component {
           />
         </View>
         <View style={[styles.listItem, styles.borderBottom]}>
-          <Text
-            style={{ ...globalStyles.p }}
-            accessibilityLabel={this.props.name}
-            accessibilityHint={this.defineAccessibilityTextForColor(
-              this.props.color
-            )}
-          >
-            {this.props.name}
-          </Text>
+          <View>
+            <Text
+              style={{ ...globalStyles.p }}
+              accessibilityLabel={this.props.name}
+              accessibilityHint={this.defineAccessibilityTextForColor(
+                this.props.color
+              )}
+            >
+              {this.props.name}
+            </Text>
+            {errorPrioritySync &&
+              <Text style={styles.errorLabel}>{t('views.family.priorityError')}</Text>
+            }
+            {pendingPrioritySync &&
+              <Text style={styles.pendingLabel}>{t('views.family.priorityPending')}</Text>
+            }
+          </View>
+
           {!disabledButton ? (
             <Icon name="navigate-next" size={23} color={colors.lightdark} />
           ) : (
@@ -169,7 +201,9 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     flexDirection: 'row',
     flex: 1,
-    paddingHorizontal: 20
+    paddingHorizontal: 20,
+    maxWidth: '100%'
+
   },
   listItem: {
     height: 95,
@@ -193,7 +227,26 @@ const styles = StyleSheet.create({
     borderColor: colors.white,
     borderWidth: 2,
     zIndex: 10
+  },
+  pendingLabel: {
+    marginTop: 5,
+    backgroundColor: colors.grey,
+    paddingHorizontal: 10,
+    marginHorizontal: 2,
+    borderRadius: 10,
+    color: 'white',
+    alignSelf: 'flex-start'
+  },
+  errorLabel: {
+    marginTop: 5,
+    backgroundColor: colors.red,
+    paddingHorizontal: 10,
+    marginHorizontal: 2,
+    borderRadius: 10,
+    color: 'white',
+    alignSelf: 'flex-start'
   }
+
 })
 
-export default LifemapOverviewListItem
+export default withNamespaces()(LifemapOverviewListItem)

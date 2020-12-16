@@ -186,7 +186,11 @@
       "weCannotLocate": "¡No podemos localizarte!",
       "tellUsMore": "Puede decirnos más acerca de esta ubicación en el siguiente formulario",
       "searchByName": "Buscar",
-      "addNewMember": "Agregar nuevo miembro"
+      "addNewMember": "Agregar nuevo miembro",
+      "addPriority": "Agregar Prioridad",
+      "selectIndicator": "Seleccionar un indicador",
+      "priorityPending": "Prioridad pendiente",
+      "priorityError": "Error de sincronización de prioridad"
     },
     "lifemap": {
       "indicatorDefinition": "Definición del indicador",

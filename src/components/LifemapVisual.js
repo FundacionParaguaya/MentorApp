@@ -53,11 +53,11 @@ class LifemapVisual extends Component {
             key={i}
             accessible={true}
             accessibilityLabel={
-              setAccessibleIndicatorName(this.props.questions[i].key) || ''
+              setAccessibleIndicatorName(this.props.questions[i] && this.props.questions[i].key || '')
             }
             accessibilityHint={setAccessibleColorName(colors, item) || ''}
           >
-            {prioritiesAndAchievements.includes(this.props.questions[i].key) &&
+            {prioritiesAndAchievements.includes(this.props.questions[i] && this.props.questions[i].key) &&
             this.props.questions[i].value ? (
               <Icon
                 name="brightness-1"
