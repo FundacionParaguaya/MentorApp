@@ -226,8 +226,8 @@ export class Priorities extends Component {
               indicators={draft.indicatorSurveyDataList}
             />
             <View style={styles.subheading}>
-              <Text textAlign='left' style={[styles.infoPriorities, globalStyles.h3Bold]}>{t('views.lifemap.toComplete')}</Text>
-              <Text  style={[styles.infoPriorities,globalStyles.h3]}>
+              <Text textAlign='left' style={globalStyles.h3}>{t('views.lifemap.toComplete')}</Text>
+              <Text  style={globalStyles.h3}>
                 {this.getTipDescription(mandatoryPrioritiesCount)}
               </Text>
 
