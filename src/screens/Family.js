@@ -371,7 +371,7 @@ export class Family extends Component {
                     <View style={styles.countCircleWrapper}>
                       <View style={styles.countCircle}>
                         <Text
-                          style={[globalStyles.h3, { color: colors.lightdark }]}>
+                          style={[globalStyles.h4, { color: colors.lightdark }]}>
                           + {familyData.countFamilyMembers - 1}
                         </Text>
                       </View>
@@ -666,8 +666,8 @@ const styles = StyleSheet.create({
     bottom: 0,
   },
   countCircle: {
-    width: 30,
-    height: 30,
+    width: 22,
+    height: 22,
     borderRadius: 30,
     backgroundColor: colors.white,
     justifyContent: 'center',
