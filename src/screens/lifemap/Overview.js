@@ -14,6 +14,7 @@ import globalStyles from '../../globalStyles';
 import { updateDraft } from '../../redux/actions';
 import { calculateProgressBar } from '../utils/helpers';
 import colors from '../../theme.json';
+import IndicatorsSummary from '../../components/IndicatorsSummary';
 
 export class Overview extends Component {
   survey = this.props.route.params.survey;
@@ -343,11 +344,6 @@ export class Overview extends Component {
           {!this.props.readOnly ? (
             <View style={{ alignItems: 'center', }}>
               {draft.stoplightSkipped && <View style={{ paddingTop: 50 }} />}
-              <Text style={[globalStyles.h2Bold, styles.heading]}>
-                {!draft.stoplightSkipped && !this.isResumingDraft
-                  ? t('views.lifemap.almostThere')
-                  : t('views.lifemap.resumeSurvey')}
-              </Text>
               <Text style={[globalStyles.h2Bold, styles.heading]}>
                 {!draft.stoplightSkipped && !this.isResumingDraft
                   ? t('views.lifemap.continueToSeeYourLifeMapAndCreatePriorities')
