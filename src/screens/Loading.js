@@ -115,7 +115,7 @@ export class Loading extends Component {
     MapboxGL.offlineManager.setTileCountLimit(200000);
     if (
       !this.props.downloadMapsAndImages.downloadMaps ||
-      this.props.maps.length
+      (this.state.maps.length && this.state.maps.every(map => map.status == 100) || this.props.sync.maps)
     ) {
       //when we decide to skip the maps form the dev options , we simply pretend that they are already downloaded
       this.setState({
@@ -330,7 +330,8 @@ export class Loading extends Component {
       this.syncFamilies();
     }
 
-    if (!prevProps.maps.length && this.props.maps.length) {
+    if ((!prevProps.maps.length && this.props.maps.length) 
+    || (this.props.maps.length && !this.state.maps.length && !this.props.sync.maps)) {
       this.downloadMaps();
     }
     // if families are synced check for map data
