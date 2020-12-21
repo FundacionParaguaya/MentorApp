@@ -1,9 +1,9 @@
-import React, {Component} from 'react';
-import {StyleSheet, View, Text, Image, TouchableHighlight} from 'react-native';
+import React, { Component } from 'react';
+import { StyleSheet, View, Text, Image, TouchableHighlight } from 'react-native';
 import PropTypes from 'prop-types';
-import {connect} from 'react-redux';
-import {updateDraft} from '../../redux/actions';
-import {withNamespaces} from 'react-i18next';
+import { connect } from 'react-redux';
+import { updateDraft } from '../../redux/actions';
+import { withNamespaces } from 'react-i18next';
 import StickyFooter from '../../components/StickyFooter';
 import Icon2 from 'react-native-vector-icons/MaterialCommunityIcons';
 import Decoration from '../../components/decoration/Decoration';
@@ -13,7 +13,9 @@ import BottomModal from '../../components/BottomModal';
 import arrow from '../../../assets/images/selectArrow.png';
 import globalStyles from '../../globalStyles';
 import colors from '../../theme.json';
-import {prioritiesScreen} from '../../screens/utils/accessibilityHelpers';
+import { prioritiesScreen } from '../../screens/utils/accessibilityHelpers';
+import RoundImage from '../../components/RoundImage';
+import IndicatorsSummary from '../../components/IndicatorsSummary';
 
 export class Priorities extends Component {
   draftId = this.props.route.params.draftId;
@@ -115,13 +117,12 @@ export class Priorities extends Component {
   };
 
   getTipDescription = (mandatoryPrioritiesCount, tipValue) => {
-    const {t} = this.props;
+    const { t } = this.props;
     const draft = this.getDraft();
     //no mandatory priotities
     if (tipValue) {
-      return `${t('general.create')} ${
-        mandatoryPrioritiesCount - draft.priorities.length
-      } ${t('views.lifemap.priorities').toLowerCase()}!`;
+      return `${t('general.create')} ${mandatoryPrioritiesCount - draft.priorities.length
+        } ${t('views.lifemap.priorities').toLowerCase()}!`;
     }
     if (
       !mandatoryPrioritiesCount ||
@@ -178,8 +179,8 @@ export class Priorities extends Component {
   }
 
   render() {
-    const {t} = this.props;
-    const {filterModalIsOpen, selectedFilter, filterLabel} = this.state;
+    const { t } = this.props;
+    const { filterModalIsOpen, selectedFilter, filterLabel } = this.state;
     let draft = this.getDraft();
     const mandatoryPrioritiesCount = this.getMandatoryPrioritiesCount(draft);
     const screenAccessibilityContent =
@@ -188,8 +189,8 @@ export class Priorities extends Component {
         this.getTipDescription(mandatoryPrioritiesCount, true),
       ) || '';
 
-    const family =  this.props.families.find(family => family.familyId == draft.familyData.familyId);
-    if(!!family) {
+    const family = this.props.families.find(family => family.familyId == draft.familyData.familyId);
+    if (!!family) {
       draft = {
         ...draft,
         previousIndicatorSurveyDataList: family.snapshotList[0].indicatorSurveyDataList,
@@ -202,7 +203,7 @@ export class Priorities extends Component {
       <StickyFooter
         continueLabel={t('general.continue')}
         onContinue={() => this.onContinue(mandatoryPrioritiesCount, draft)}
-        style={{marginBottom: -20}}
+        style={{ marginBottom: -20 }}
         type={this.state.tipIsVisible ? 'tip' : 'button'}
         tipTitle={t('views.lifemap.toComplete')}
         onTipClose={this.onTipClose}
@@ -212,19 +213,21 @@ export class Priorities extends Component {
           accessibilityLabel={`${screenAccessibilityContent}`}
           accessibilityLiveRegion="assertive">
           <View style={[globalStyles.background, styles.contentContainer]}>
-            <Text style={[globalStyles.h2Bold, styles.heading]}>
+            {/* <Text style={[globalStyles.h2Bold, styles.heading]}>
               {t('views.lifemap.nowLetsMakeSomePriorities')}
-            </Text>
+            </Text> */}
 
             <Decoration variation="priorities">
-              <View style={styles.iconContainer}>
-                <View style={styles.blueIcon}>
-                  <Icon2 name="pin" color={colors.white} size={130} />
-                </View>
-              </View>
+              <RoundImage source="stoplight" />
+
             </Decoration>
+            <IndicatorsSummary
+            containerStyle = {{ marginTop: 60,marginBottom: 10}}
+              indicators={draft.indicatorSurveyDataList}
+            />
             <View style={styles.subheading}>
-              <Text style={[styles.infoPriorities, styles.heading2]}>
+              <Text textAlign='left' style={globalStyles.h3}>{t('views.lifemap.toCompleteLifemap')}</Text>
+              <Text  style={globalStyles.h3}>
                 {this.getTipDescription(mandatoryPrioritiesCount)}
               </Text>
 
@@ -373,6 +376,7 @@ const styles = StyleSheet.create({
   },
   infoPriorities: {
     fontSize: 19,
+    textAlign:'left'
   },
   arrow: {
     marginLeft: 7,
@@ -390,7 +394,7 @@ const styles = StyleSheet.create({
     height: 180,
     justifyContent: 'center',
     alignItems: 'center',
-    transform: [{rotate: '25deg'}],
+    transform: [{ rotate: '25deg' }],
   },
   dropdown: {
     paddingVertical: 16,
@@ -406,9 +410,7 @@ const styles = StyleSheet.create({
   },
   heading2: {
     color: colors.dark,
-    textAlign: 'center',
-    marginBottom: 20,
-    marginTop: 20,
+    textAlign: 'left',
   },
   heading: {
     color: colors.dark,
@@ -418,9 +420,9 @@ const styles = StyleSheet.create({
   },
   subheading: {
     justifyContent: 'center',
-    alignItems: 'center',
-    paddingLeft: 38,
-    paddingRight: 38,
+    paddingLeft: 20,
+    paddingRight: 10,
+    marginVertical: 10
   },
   modalTitle: {
     color: colors.grey,
@@ -441,7 +443,7 @@ const mapDispatchToProps = {
   updateDraft,
 };
 
-const mapStateToProps = ({drafts, families}) => ({drafts, families});
+const mapStateToProps = ({ drafts, families }) => ({ drafts, families });
 
 export default withNamespaces()(
   connect(mapStateToProps, mapDispatchToProps)(Priorities),
