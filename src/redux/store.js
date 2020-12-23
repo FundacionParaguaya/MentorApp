@@ -7,7 +7,7 @@ import defaultQueue from '@redux-offline/redux-offline/lib/defaults/queue';
 import {offline} from '@redux-offline/redux-offline';
 import offlineConfig from '@redux-offline/redux-offline/lib/defaults';
 import {rootReducer} from './reducer';
-import {setHydrated} from './actions';
+import {setHydrated, SUBMIT_DRAFT} from './actions';
 import {setLanguage} from '../i18n';
 import thunk from 'redux-thunk';
 import {submitDraftWithImages} from './middleware';
@@ -28,8 +28,7 @@ const reduxOfflineConfig = {
   queue:{
     ...defaultQueue,
     enqueue(outbox, incomingAction, context) {
-      console.log('incomingAction',incomingAction)
-      if(incomingAction.type == "SUBMIT_DRAFT") {
+      if(incomingAction.type == SUBMIT_DRAFT) {
         return outbox
             .filter(outboxAction => outboxAction.id !== incomingAction.id )
             .concat(incomingAction);
