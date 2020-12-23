@@ -46,9 +46,8 @@ const DimensionIndicator = ({
                 return 'grey'
         }
     }
-
-    const disabledButton = !color || priority || pendingPrioritySync || errorPrioritySync|| false;
-
+    const disabledButton = !color || priority || pendingPrioritySync || errorPrioritySync || false;
+    
     return (
         <ListItem
             disabled={disabledButton}

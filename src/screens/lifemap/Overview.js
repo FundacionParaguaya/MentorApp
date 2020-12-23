@@ -1,8 +1,8 @@
 import PropTypes from 'prop-types';
-import React, {Component} from 'react';
-import {withNamespaces} from 'react-i18next';
-import {Image, StyleSheet, Text, TouchableHighlight, View} from 'react-native';
-import {connect} from 'react-redux';
+import React, { Component } from 'react';
+import { withNamespaces } from 'react-i18next';
+import { Image, StyleSheet, Text, TouchableHighlight, View } from 'react-native';
+import { connect } from 'react-redux';
 import arrow from '../../../assets/images/selectArrow.png';
 import BottomModal from '../../components/BottomModal';
 import Button from '../../components/Button';
@@ -11,14 +11,14 @@ import LifemapOverview from '../../components/LifemapOverview';
 import LifemapVisual from '../../components/LifemapVisual';
 import StickyFooter from '../../components/StickyFooter';
 import globalStyles from '../../globalStyles';
-import {updateDraft} from '../../redux/actions';
-import {calculateProgressBar} from '../utils/helpers';
+import { updateDraft } from '../../redux/actions';
+import { calculateProgressBar } from '../utils/helpers';
 import colors from '../../theme.json';
 import IndicatorsSummary from '../../components/IndicatorsSummary';
 
 export class Overview extends Component {
   survey = this.props.route.params.survey;
-  draftId = this.props.route.params.draftId;
+  draftId = this.props.route.params.draftId || this.props.draftId;
   familyLifemap = this.props.route.params.familyLifemap;
   isResumingDraft = this.props.route.params.resumeDraft;
   readOnly = this.props.route.params.readOnly || false;
@@ -27,7 +27,7 @@ export class Overview extends Component {
     selectedFilter: false,
     filterLabel: false,
     tipIsVisible: false,
-    syncPriorities:[],
+    syncPriorities: [],
   };
 
   getDraft = () =>
@@ -112,27 +112,27 @@ export class Overview extends Component {
   handleClickOnAddPriority = () => {
     this.props.navigation.navigate('SelectIndicatorPriority', {
       draft: !this.props.readOnly
-      ? this.getDraft()
-      : this.props.familyLifemap,
-      survey:this.survey
+        ? this.getDraft()
+        : this.props.familyLifemap,
+      survey: this.survey
     })
   };
 
-  showAddPriority= () => {
+  showAddPriority = () => {
     const draftData = !this.props.readOnly
-    ? this.getDraft()
-    : this.props.familyLifemap;
+      ? this.getDraft()
+      : this.props.familyLifemap;
 
-    return draftData.status != 'Synced' 
+    return draftData.status != 'Synced'
   }
 
   componentDidMount() {
     this.props.navigation.addListener(
       'focus',
       () => {
-          this.forceUpdate();
+        this.forceUpdate();
       })
-    const draft = !this.props.readOnly
+    const draft = (!this.props.readOnly)
       ? this.getDraft()
       : this.props.familyLifemap;
 
@@ -160,9 +160,11 @@ export class Overview extends Component {
   }
 
   render() {
-    const {t} = this.props;
-    const {filterModalIsOpen, selectedFilter, filterLabel} = this.state;
-    const draft = !this.props.readOnly
+    const { t } = this.props;
+    const { filterModalIsOpen, selectedFilter, filterLabel } = this.state;
+    const draft = (!this.props.readOnly
+      || (this.props.familyLifemap.status == 'Pending sync'
+        && this.draftId))
       ? this.getDraft()
       : this.props.familyLifemap;
 
@@ -178,20 +180,19 @@ export class Overview extends Component {
             questionsLength={this.survey.surveyStoplightQuestions.length}
           />
         </View>
-       
+
         {/*If we are in family/draft then show the questions.Else dont show them . This is requered for the families tab*/}
         <View>
-        
           <View>
-          {this.showAddPriority() && (
-          <View style={styles.buttonContainer}>
-          <Button
-                style={styles.buttonSmall}
-                text={t('views.family.addPriority')}
-                handleClick={this.handleClickOnAddPriority}
-              />
-          </View>
-          )}
+            {this.showAddPriority() && (
+              <View style={styles.buttonContainer}>
+                <Button
+                  style={styles.buttonSmall}
+                  text={t('views.family.addPriority')}
+                  handleClick={this.handleClickOnAddPriority}
+                />
+              </View>
+            )}
             <TouchableHighlight
               id="filters"
               underlayColor={'transparent'}
@@ -212,16 +213,16 @@ export class Overview extends Component {
             </TouchableHighlight>
             <LifemapOverview
               id="lifeMapOverview"
-              syncPriorities = {this.props.priorities}
+              syncPriorities={this.props.priorities}
               surveyData={this.survey.surveyStoplightQuestions}
-              readOnly
+              //readOnly
               draftData={draft}
               navigateToScreen={this.navigateToScreen}
               draftOverview={!this.isResumingDraft && !this.familyLifemap}
               selectedFilter={selectedFilter}
             />
           </View>
-        
+
 
           {/* Filters modal */}
           <BottomModal
@@ -335,51 +336,50 @@ export class Overview extends Component {
         </View>
       </View>
     ) : (
-      <StickyFooter
-        continueLabel={t('general.continue')}
-        onContinue={() => this.onContinue()}
-        visible={!this.isResumingDraft && !this.familyLifemap}
-        progress={!this.isResumingDraft && !this.familyLifemap ?
-          calculateProgressBar({readOnly:this.readOnly,draft:draft,isLast:true}) : 0
-        }>
-        {!this.props.readOnly ? (
-          <View style={{alignItems: 'center',}}>
-            {draft.stoplightSkipped && <View style={{paddingTop: 50}} />}
-            <Text style={[globalStyles.h2Bold, styles.heading]}>
-              {!draft.stoplightSkipped && !this.isResumingDraft
-                ? t('views.lifemap.continueToSeeYourLifeMapAndCreatePriorities')
-                : t('views.lifemap.continueWithSurvey')}
-            </Text>
+        <StickyFooter
+          continueLabel={t('general.continue')}
+          onContinue={() => this.onContinue()}
+          visible={!this.isResumingDraft && !this.familyLifemap}
+          progress={!this.isResumingDraft && !this.familyLifemap ?
+            calculateProgressBar({ readOnly: this.readOnly, draft: draft, isLast: true }) : 0
+          }>
+          {!this.props.readOnly ? (
+            <View style={{ alignItems: 'center', }}>
+              {draft.stoplightSkipped && <View style={{ paddingTop: 50 }} />}
+              <Text style={[globalStyles.h2Bold, styles.heading]}>
+                {!draft.stoplightSkipped && !this.isResumingDraft
+                  ? t('views.lifemap.continueToSeeYourLifeMapAndCreatePriorities')
+                  : t('views.lifemap.continueWithSurvey')}
+              </Text>
+            </View>
+          ) : null}
+          <View style={[globalStyles.background, styles.contentContainer]}>
+            <View style={styles.indicatorsContainer}>
+              {!draft.stoplightSkipped && (
+                <LifemapVisual
+                  large={this.props.readOnly}
+                  extraLarge={!this.props.readOnly}
+                  questions={draft.indicatorSurveyDataList}
+                  priorities={draft.priorities}
+                  achievements={draft.achievements}
+                  questionsLength={this.survey.surveyStoplightQuestions.length}
+                />
+              )}
+              {this.isResumingDraft ? (
+                <Button
+                  id="resume-draft"
+                  style={{
+                    marginTop: 20,
+                  }}
+                  colored
+                  text={t('general.resumeDraft')}
+                  handleClick={this.resumeDraft}
+                />
+              ) : null}
+            </View>
           </View>
-        ) : null}
-        <View style={[globalStyles.background, styles.contentContainer]}>
-          <View style={styles.indicatorsContainer}>
-            {!draft.stoplightSkipped && (
-              <LifemapVisual
-                large={this.props.readOnly}
-                extraLarge={!this.props.readOnly}
-                questions={draft.indicatorSurveyDataList}
-                priorities={draft.priorities}
-                achievements={draft.achievements}
-                questionsLength={this.survey.surveyStoplightQuestions.length}
-              />
-            )}
-            {this.isResumingDraft ? (
-              <Button
-                id="resume-draft"
-                style={{
-                  marginTop: 20,
-                }}
-                colored
-                text={t('general.resumeDraft')}
-                handleClick={this.resumeDraft}
-              />
-            ) : null}
-          </View>
-          {/*If we are in family/draft then show the questions.Else dont show them . This is requered for the families tab*/}
-        </View>
-      </StickyFooter>
-    );
+        </StickyFooter>
+      );
   }
 }
 const styles = StyleSheet.create({
@@ -432,7 +432,7 @@ const styles = StyleSheet.create({
   buttonContainer: {
     backgroundColor: colors.primary,
   }
-  
+
 });
 
 Overview.propTypes = {
@@ -448,7 +448,7 @@ const mapDispatchToProps = {
   updateDraft,
 };
 
-const mapStateToProps = ({drafts, priorities}) => ({drafts, priorities});
+const mapStateToProps = ({ drafts, priorities }) => ({ drafts, priorities });
 
 export default withNamespaces()(
   connect(mapStateToProps, mapDispatchToProps)(Overview),

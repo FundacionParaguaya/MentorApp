@@ -1,6 +1,6 @@
 import PropTypes from 'prop-types';
-import React, {Component} from 'react';
-import {withNamespaces} from 'react-i18next';
+import React, { Component } from 'react';
+import { withNamespaces } from 'react-i18next';
 import {
   FlatList,
   ScrollView,
@@ -11,7 +11,7 @@ import {
   TextInput,
   findNodeHandle,
 } from 'react-native';
-import {connect} from 'react-redux';
+import { connect } from 'react-redux';
 import colors from '../theme.json';
 import Button from '../components/Button';
 import SyncInProgress from '../components/sync/SyncInProgress';
@@ -20,11 +20,11 @@ import SyncOffline from '../components/sync/SyncOffline';
 import SyncPriority from '../components/sync/SyncPriority';
 import SyncRetry from '../components/sync/SyncRetry';
 import SyncUpToDate from '../components/sync/SyncUpToDate';
-import {url} from '../config';
+import { url } from '../config';
 import globalStyles from '../globalStyles';
-import {submitDraft, createDraft, submitDraftWithImages, submitPriority} from '../redux/actions';
-import {screenSyncScreenContent} from '../screens/utils/accessibilityHelpers';
-import {prepareDraftForSubmit, fakeSurvey} from './utils/helpers';
+import { submitDraft, createDraft, submitDraftWithImages, submitPriority } from '../redux/actions';
+import { screenSyncScreenContent } from '../screens/utils/accessibilityHelpers';
+import { prepareDraftForSubmit, fakeSurvey } from './utils/helpers';
 
 import uuid from 'uuid/v1';
 const nodeEnv = process.env;
@@ -69,13 +69,12 @@ export class Sync extends Component {
 
     prioritiesWithError.forEach(priority => {
       let sanitazedPriority = priority;
-          delete sanitazedPriority.status
-          this.props.submitPriority (
-            url[this.props.env],
-            this.props.user.token,
-            sanitazedPriority
-          )
-
+      delete sanitazedPriority.status
+      this.props.submitPriority(
+        url[this.props.env],
+        this.props.user.token,
+        sanitazedPriority
+      )
     })
   }
 
@@ -126,56 +125,56 @@ export class Sync extends Component {
   }
 
   getFamilyName = (snapshotStoplightId) => {
-    console.log('getFamilyName',snapshotStoplightId);
+    console.log('getFamilyName', snapshotStoplightId);
     let indicator;
     let familyName
 
     this.props.families.forEach(family => {
-      let snapShotData = family.snapshotList.length > 0 
-        ? family.snapshotList[family.snapshotList.length-1] 
+      let snapShotData = family.snapshotList.length > 0
+        ? family.snapshotList[family.snapshotList.length - 1]
         : family.snapshotList[0];
-        console.log('snapShotData getFamilyName',snapShotData);
+      console.log('snapShotData getFamilyName', snapShotData);
 
-        !indicator ? indicator = snapShotData.indicatorSurveyDataList.find(
-          item => item.snapshotStoplightId === snapshotStoplightId
-        ): null;
+      !indicator ? indicator = snapShotData.indicatorSurveyDataList.find(
+        item => item.snapshotStoplightId === snapshotStoplightId
+      ) : null;
 
-        !familyName && indicator ? familyName = family.name: null
-        
+      !familyName && indicator ? familyName = family.name : null
+
     });
-    if(familyName) {
+    if (familyName) {
       return familyName
-    }else {
-      return 
+    } else {
+      return
     }
   }
 
   getIndicator = (snapshotStoplightId) => {
-    console.log('snapshotStoplightId',snapshotStoplightId)
+    console.log('snapshotStoplightId', snapshotStoplightId)
     let indicator;
     let surveyIndicator;
 
     this.props.families.forEach(family => {
-      let snapShotData = family.snapshotList.length > 0 
-        ? family.snapshotList[family.snapshotList.length-1] 
+      let snapShotData = family.snapshotList.length > 0
+        ? family.snapshotList[family.snapshotList.length - 1]
         : family.snapshotList[0];
-        console.log('snapShotData',snapShotData)
+      console.log('snapShotData', snapShotData)
 
-      
+
       !indicator ? indicator = snapShotData.indicatorSurveyDataList.find(
         item => item.snapshotStoplightId === snapshotStoplightId
-      ): null;
+      ) : null;
 
-      console.log('ind',indicator)
+      console.log('ind', indicator)
 
-      
+
     });
     this.props.surveys.forEach(survey => {
       !surveyIndicator ? surveyIndicator =
-      survey.surveyEconomicQuestions.find(item => item.key == indicator.codeName): null;
+        survey.surveyEconomicQuestions.find(item => item.key == indicator.codeName) : null;
     });
 
-    if(surveyIndicator) {
+    if (surveyIndicator) {
       return surveyIndicator.questionText;
     }
     return;
@@ -203,7 +202,7 @@ export class Sync extends Component {
     }
   };
   render() {
-    const {drafts, offline, priorities, t} = this.props;
+    const { drafts, offline, priorities, t } = this.props;
     const lastSync = drafts.reduce(
       (lastSynced, item) =>
         item.syncedAt > lastSynced ? item.syncedAt : lastSynced,
@@ -246,7 +245,7 @@ export class Sync extends Component {
               keyboardType="numeric"
               style={styles.input}
               placeholder={'Surveys Count'}
-              onChangeText={(surveysCount) => this.setState({surveysCount})}
+              onChangeText={(surveysCount) => this.setState({ surveysCount })}
               style={{
                 ...styles.input,
                 borderColor: colors.palegreen,
@@ -286,20 +285,20 @@ export class Sync extends Component {
             <SyncOffline pendingDraftsLength={pendingDrafts.length + pendingPriorities.length} />
           ) : null}
           {offline.online && (draftsWithError.length && !pendingDrafts.length) || (prioritiesWithError
-          .length && !pendingPriorities.length) ? (
-            <SyncRetry
-              withError={draftsWithError.length + prioritiesWithError.length}
-              retrySubmit={this.retrySubmit}
-              
-            />
-          ) : null}
+            .length && !pendingPriorities.length) ? (
+              <SyncRetry
+                withError={draftsWithError.length + prioritiesWithError.length}
+                retrySubmit={this.retrySubmit}
+
+              />
+            ) : null}
         </View>
         {list.length ? (
           <FlatList
-            style={{marginTop: 15}}
+            style={{ marginTop: 15 }}
             data={list}
             keyExtractor={(item, index) => index.toString()}
-            renderItem={({item}) => (
+            renderItem={({ item }) => (
               <SyncListItem
                 item={item.familyData}
                 status={item.status}
@@ -309,21 +308,21 @@ export class Sync extends Component {
             )}
           />
         ) : null}
-       
+
         {prioritiesWithError.length ? (
           <>
-          <Text style={globalStyles.h3Bold}>{t('views.lifemap.priorities')}</Text>
-          <FlatList
-            style={{marginTop: 15}}
-            data={prioritiesWithError}
-            keyExtractor={(item, index) => index.toString()}
-            renderItem={({item}) => (
-              <SyncPriority
-                indicatorName = {this.getIndicator(item.snapshotStoplightId)}
-                familyName= {this.getFamilyName(item.snapshotStoplightId)}  
-              />
-            )}
-          />
+            <Text style={globalStyles.h3Bold}>{t('views.lifemap.priorities')}</Text>
+            <FlatList
+              style={{ marginTop: 15 }}
+              data={prioritiesWithError}
+              keyExtractor={(item, index) => index.toString()}
+              renderItem={({ item }) => (
+                <SyncPriority
+                  indicatorName={this.getIndicator(item.snapshotStoplightId)}
+                  familyName={this.getFamilyName(item.snapshotStoplightId)}
+                />
+              )}
+            />
           </>
         ) : null}
       </ScrollView>
@@ -367,7 +366,7 @@ const styles = StyleSheet.create({
   },
 });
 
-const mapStateToProps = ({drafts, offline, env, user, surveys, priorities, families}) => ({
+const mapStateToProps = ({ drafts, offline, env, user, surveys, priorities, families }) => ({
   drafts,
   offline,
   env,

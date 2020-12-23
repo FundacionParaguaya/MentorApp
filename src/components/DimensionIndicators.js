@@ -1,10 +1,11 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { View, Text, StyleSheet } from 'react-native';
 import DimensionIndicator from './DimensionIndicator';
 import globalStyles from '../globalStyles';
 import AddPriorityAndAchievementModal from '../screens/modals/AddPriorityAndAchievementModal';
 
 const DimensionIndicators = ({
+    survey,
     surveyData,
     draftData,
     syncPriorities
@@ -17,13 +18,20 @@ const DimensionIndicators = ({
     const [snapshotStoplightId, setSnapshotStoplightId] = useState(null)
 
     let dimensions = surveyData.map((item) => item.dimension);
-    const priorities = draftData.priorities.map(priority => priority.indicator);
+    let priorities = draftData.priorities.map(priority => priority.indicator);
+    let filterIndicatorDraftData = {
+        ...draftData,
+        indicatorSurveyDataList:  draftData.indicatorSurveyDataList.filter(
+            e => e.value === 1 || e.value === 2
+        ) 
+    }
 
     const getColor = (codeName) => {
         let indicator;
 
-        draftData && draftData.indicatorSurveyDataList
-            ? indicator = draftData.indicatorSurveyDataList.find(
+        filterIndicatorDraftData && filterIndicatorDraftData.indicatorSurveyDataList
+            ? indicator =filterIndicatorDraftData.indicatorSurveyDataList.
+            find(
                 item => item.key === codeName,
             ) : indicator = null;
         if (indicator) {
@@ -36,10 +44,10 @@ const DimensionIndicators = ({
 
     const getSnapshotStoplightId = (codename) => {
         let indicator;
-        draftData && draftData.indicatorSurveyDataList ? indicator = draftData.indicatorSurveyDataList.find(
+        filterIndicatorDraftData && filterIndicatorDraftData.indicatorSurveyDataList ? indicator = filterIndicatorDraftData.indicatorSurveyDataList.find(
             item => item.key === codename,
         ) : indicator = null;
-        if (indicator) {
+        if (indicator && indicator.snapshotStoplightId ) {
             return indicator.snapshotStoplightId
         } else {
             return;
@@ -50,11 +58,11 @@ const DimensionIndicators = ({
     const checkSyncPriorityStatus = (codeName, prioritiesForSync, status) => {
         let indicator;
         let syncStatus = false;
-        if (draftData && draftData.indicatorSurveyDataList && prioritiesForSync) {
-            indicator = draftData.indicatorSurveyDataList.find(item =>
+        if (filterIndicatorDraftData && filterIndicatorDraftData.indicatorSurveyDataList && prioritiesForSync) {
+            indicator = filterIndicatorDraftData.indicatorSurveyDataList.find(item =>
                 item.key == codeName && item.snapshotStoplightId
             );
-            if(indicator) {
+            if( indicator && indicator.snapshotStoplightId) {
                 syncStatus = prioritiesForSync.
                 filter(priority => priority.status == status).
                 find(priority =>
@@ -92,19 +100,22 @@ const DimensionIndicators = ({
         setAddPriority(false);
     }
 
-
+    useEffect(() => {
+        priorities = filterIndicatorDraftData.priorities.map(priority => priority.indicator);
+    },[draftData])
     return (
         <View style={styles.container}>
             {addPriority
                 ? (
                     <AddPriorityAndAchievementModal
+                        survey={survey}
                         onClose={onClose}
                         color={color}
                         draft={draftData}
                         indicator={indicator}
                         indicatorText={indicatorText}
                         snapshotStoplightId={snapshotStoplightId}
-                        isFamily={true}
+                        isFamily={(draftData.status == 'Synced' || !draftData.draftId)}
                     />
                 ) : null}
             {[...new Set(dimensions)].map((dimension) => (

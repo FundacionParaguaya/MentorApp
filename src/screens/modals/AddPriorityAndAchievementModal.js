@@ -11,9 +11,10 @@ import TextInput from '../../components/form/TextInput'
 import Popup from '../../components/Popup'
 import StickyFooter from '../../components/StickyFooter'
 import globalStyles from '../../globalStyles'
-import { updateDraft, addPriority, submitPriority } from '../../redux/actions'
+import { updateDraft, addPriority, submitPriority, submitDraft } from '../../redux/actions'
 import colors from '../../theme.json'
 import { url } from '../../config.json';
+import { prepareDraftForSubmit } from '../utils/helpers';
 
 export class AddPriorityAndAchievementModal extends Component {
   draftId = this.props.draftId
@@ -120,8 +121,18 @@ export class AddPriorityAndAchievementModal extends Component {
         this.props.user.token,
         payload
       )
-    } else {
-      this.props.updateDraft(updatedDraft)
+    }
+    else if (updatedDraft.status == 'Pending sync') {
+      this.props.updateDraft(updatedDraft);
+      let draft = prepareDraftForSubmit(updatedDraft, this.props.survey);
+      delete draft["previousIndicatorSurveyDataList"];
+      delete draft["previousIndicatorPriorities"];
+      delete draft["previousIndicatorAchievements"];
+      this.props.submitDraft(url[this.props.env],
+        this.props.user.token, draft.draftId, draft)
+    }
+    else {
+      this.props.updateDraft(updatedDraft);
     }
 
 
@@ -208,15 +219,13 @@ export class AddPriorityAndAchievementModal extends Component {
 
   render() {
     const draft = this.getDraft()
-    const { t } = this.props
+    const { t  } = this.props
     const { validationError, showErrors } = this.state
-    var isReadOnly = false
+    let isReadOnly = false || this.props.readOnly
 
-    /*   if (draft.status) {
+      if (draft.status && !this.props.readOnly) {
         isReadOnly = draft.status === 'Synced'
-      } else {
-        isReadOnly = true
-      } */
+      }
 
     //i cound directly use this.state.action for the values below but
     // it just doesnt work.Thats why i use the old way from the old components
@@ -392,7 +401,8 @@ const styles = StyleSheet.create({
 const mapDispatchToProps = {
   updateDraft,
   addPriority,
-  submitPriority
+  submitPriority,
+  submitDraft
 }
 
 const mapStateToProps = ({ drafts, env, user }) => ({ drafts, env, user })

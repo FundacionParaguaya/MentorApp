@@ -47,6 +47,7 @@ export class Dashboard extends Component {
     red: 0,
   };
 
+  // Navigate to Overview to see the results of Draft with Pending sync status
   navigateToPendingSync = (draft) => {
     const {firstName, lastName} = draft.familyData.familyMembersList[0];
 
@@ -55,7 +56,8 @@ export class Dashboard extends Component {
       params: {
         familyName: `${firstName} ${lastName}`,
         familyLifemap: draft,
-        isDraft: true,
+        draftId: draft.draftId,
+        isDraft: false,
         survey: this.props.surveys.find(
           (survey) => survey.id === draft.surveyId,
         ),

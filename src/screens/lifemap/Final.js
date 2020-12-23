@@ -89,7 +89,12 @@ export class Final extends Component {
     this.setState({
       loading: true,
     });
-
+    const updatedDraft = {
+      ...this.draft,
+      sendEmail: this.state.sendEmailFlag,
+      whatsappNotification: this.state.whatsappNotification,
+    }
+    this.props.updateDraft(updatedDraft);
     this.prepareDraftForSubmit();
   };
 
