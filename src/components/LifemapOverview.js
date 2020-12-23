@@ -136,6 +136,7 @@ const LifemapOverview = ({
         {/* I am also passing the color because i have to visually display the circle color */}
         {addAchievementOrPriority ? (
           <AddPriorityAndAchievementModal
+            readOnly = {!draftOverview }
             onClose={onClose}
             color={color}
             draft={draftData}

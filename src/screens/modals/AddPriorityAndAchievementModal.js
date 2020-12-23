@@ -221,13 +221,11 @@ export class AddPriorityAndAchievementModal extends Component {
     const draft = this.getDraft()
     const { t  } = this.props
     const { validationError, showErrors } = this.state
-    var isReadOnly = false
+    let isReadOnly = false || this.props.readOnly
 
-    /*   if (draft.status) {
+      if (draft.status && !this.props.readOnly) {
         isReadOnly = draft.status === 'Synced'
-      } else {
-        isReadOnly = true
-      } */
+      }
 
     //i cound directly use this.state.action for the values below but
     // it just doesnt work.Thats why i use the old way from the old components

@@ -215,7 +215,7 @@ export class Overview extends Component {
               id="lifeMapOverview"
               syncPriorities={this.props.priorities}
               surveyData={this.survey.surveyStoplightQuestions}
-              readOnly
+              //readOnly
               draftData={draft}
               navigateToScreen={this.navigateToScreen}
               draftOverview={!this.isResumingDraft && !this.familyLifemap}
