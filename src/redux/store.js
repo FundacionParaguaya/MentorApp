@@ -3,6 +3,7 @@ import FilesystemStorage from 'redux-persist-filesystem-storage';
 import AsyncStorage from '@react-native-community/async-storage';
 import * as _ from 'lodash';
 import {autoRehydrate, persistStore, getStoredState} from 'redux-persist';
+import defaultQueue from '@redux-offline/redux-offline/lib/defaults/queue';
 import {offline} from '@redux-offline/redux-offline';
 import offlineConfig from '@redux-offline/redux-offline/lib/defaults';
 import {rootReducer} from './reducer';
@@ -23,6 +24,18 @@ const reduxOfflineConfig = {
   ...offlineConfig,
   persistOptions: {
     blacklist: ['hydration'],
+  },
+  queue:{
+    ...defaultQueue,
+    enqueue(outbox, incomingAction, context) {
+      console.log('incomingAction',incomingAction)
+      if(incomingAction.type == "SUBMIT_DRAFT") {
+        return outbox
+            .filter(outboxAction => outboxAction.id !== incomingAction.id )
+            .concat(incomingAction);
+      }
+      return [...outbox, incomingAction];
+    },
   },
   // this fires after store hydration is done
   persistCallback: () => {

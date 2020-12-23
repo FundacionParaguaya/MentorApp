@@ -36,9 +36,9 @@ const SelectIndicatorPriority = ({ t, route, drafts, priorities, env, user, subm
 
     draftData.status == 'Pending sync' ? draftData = getDraft(): null;
 
-    draftData.indicatorSurveyDataList = draftData.indicatorSurveyDataList.filter(
+   /*  draftData.indicatorSurveyDataList = draftData.indicatorSurveyDataList.filter(
         e => e.value === 1 || e.value === 2
-    )
+    ) */
     return (
         <StickyFooter
             continueLabel={t('general.finish')}
@@ -53,6 +53,7 @@ const SelectIndicatorPriority = ({ t, route, drafts, priorities, env, user, subm
                     <Text style={[globalStyles.h2Bold, styles.title]}>{t('views.family.selectIndicator')}</Text>
                 </View>
                 <DimensionIndicators
+                    survey={survey}
                     surveyData={survey.surveyStoplightQuestions}
                     draftData={draftData}
                     syncPriorities={priorities}
