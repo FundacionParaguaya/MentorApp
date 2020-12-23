@@ -1,21 +1,22 @@
 import PropTypes from 'prop-types';
-import React, {Component} from 'react';
-import {withNamespaces} from 'react-i18next';
-import {FlatList, Image, StyleSheet, Text, View} from 'react-native';
-import {connect} from 'react-redux';
-
+import React, { Component } from 'react';
+import { withNamespaces } from 'react-i18next';
+import { FlatList, Image, StyleSheet, Text, View } from 'react-native';
+import { connect } from 'react-redux';
+import Icon from 'react-native-vector-icons/MaterialIcons'
 import mapPlaceholderLarge from '../../assets/images/map_placeholder_1000.png';
 import FamiliesListItem from '../components/FamiliesListItem';
 import SearchBar from '../components/SearchBar';
-import {url} from '../config';
+import { url } from '../config';
 import globalStyles from '../globalStyles';
-import {loadFamilies} from '../redux/actions';
-import {setAccessibilityTextForFamilies} from '../screens/utils/accessibilityHelpers';
+import { loadFamilies } from '../redux/actions';
+import { setAccessibilityTextForFamilies } from '../screens/utils/accessibilityHelpers';
 import colors from '../theme.json';
-import {replaceSpecialChars as sanitize} from '../utils';
+import { replaceSpecialChars as sanitize } from '../utils';
+import { TouchableOpacity } from 'react-native-gesture-handler';
 
 export class Families extends Component {
-  state = {search: ''};
+  state = { search: '' };
   acessibleComponent = React.createRef();
 
   sortByName = (families) =>
@@ -26,8 +27,8 @@ export class Families extends Component {
       allowRetake: family.allowRetake,
       familyId: family.familyId,
       familyName: family.name,
-      familyProject: family.project 
-        ? family.project.title 
+      familyProject: family.project
+        ? family.project.title
         : null,
       familyLifemap: family.snapshotList
         ? family.snapshotList[0]
@@ -46,7 +47,7 @@ export class Families extends Component {
   };
 
   render() {
-    const {t} = this.props;
+    const { t } = this.props;
 
     const families = [...sanitize(this.props.families)];
 
@@ -57,6 +58,11 @@ export class Families extends Component {
     );
 
     const screenAccessibilityContent = setAccessibilityTextForFamilies();
+
+    const refreshingFamilies = !!this.props.offline.online &&
+    !!this.props.offline.outbox.find(
+      (item) => item.type === 'LOAD_FAMILIES',
+    );
 
     return (
       <View
@@ -70,7 +76,7 @@ export class Families extends Component {
               id="searchAddress"
               style={styles.search}
               placeholder={t('views.family.searchByName')}
-              onChangeText={(search) => this.setState({search})}
+              onChangeText={(search) => this.setState({ search })}
               value={this.state.search}
             />
           </View>
@@ -81,23 +87,27 @@ export class Families extends Component {
         </View>
 
         <View style={styles.bar}>
-          <Text style={{...globalStyles.subline, ...styles.familiesCount}}>
+          <Text style={{ ...globalStyles.subline, ...styles.familiesCount }}>
             {filteredFamilies.length} {t('views.families').toLowerCase()}
           </Text>
+            <Icon
+            onPress={this.fetchFamilies}
+            disabled={refreshingFamilies}
+              name="refresh"
+              size={24}
+              color={refreshingFamilies
+                  ? colors.lightgrey
+                  : colors.green}
+            />
         </View>
-
+        
         <FlatList
-          style={{flex: 1}}
-          refreshing={
-            !!this.props.offline.online &&
-            !!this.props.offline.outbox.find(
-              (item) => item.type === 'LOAD_FAMILIES',
-            )
-          }
+          style={{ flex: 1 }}
+          refreshing={refreshingFamilies}
           onRefresh={this.fetchFamilies}
           data={this.sortByName(filteredFamilies)}
           keyExtractor={(item, index) => index.toString()}
-          renderItem={({item}) => (
+          renderItem={({ item }) => (
             <FamiliesListItem
               error={t('views.family.error')}
               lng={this.props.lng}
@@ -134,8 +144,10 @@ const styles = StyleSheet.create({
     width: '100%',
   },
   bar: {
-    paddingLeft: 30,
-    justifyContent: 'center',
+    paddingHorizontal: 30,
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
     height: 48,
     backgroundColor: colors.primary,
   },
