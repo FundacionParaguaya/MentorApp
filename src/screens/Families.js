@@ -59,6 +59,11 @@ export class Families extends Component {
 
     const screenAccessibilityContent = setAccessibilityTextForFamilies();
 
+    const refreshingFamilies = !!this.props.offline.online &&
+    !!this.props.offline.outbox.find(
+      (item) => item.type === 'LOAD_FAMILIES',
+    );
+
     return (
       <View
         style={[globalStyles.background, styles.container]}
@@ -87,19 +92,10 @@ export class Families extends Component {
           </Text>
             <Icon
             onPress={this.fetchFamilies}
-            disabled={
-              !!this.props.offline.online &&
-              !!this.props.offline.outbox.find(
-                (item) => item.type === 'LOAD_FAMILIES',
-              )
-            }
+            disabled={refreshingFamilies}
               name="refresh"
               size={24}
-              color={
-                !!this.props.offline.online &&
-                  !!this.props.offline.outbox.find(
-                    (item) => item.type === 'LOAD_FAMILIES',
-                  )
+              color={refreshingFamilies
                   ? colors.lightgrey
                   : colors.green}
             />
@@ -107,12 +103,7 @@ export class Families extends Component {
         
         <FlatList
           style={{ flex: 1 }}
-          refreshing={
-            !!this.props.offline.online &&
-            !!this.props.offline.outbox.find(
-              (item) => item.type === 'LOAD_FAMILIES',
-            )
-          }
+          refreshing={refreshingFamilies}
           onRefresh={this.fetchFamilies}
           data={this.sortByName(filteredFamilies)}
           keyExtractor={(item, index) => index.toString()}
