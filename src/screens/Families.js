@@ -15,6 +15,7 @@ import colors from '../theme.json';
 import { replaceSpecialChars as sanitize } from '../utils';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 
+
 export class Families extends Component {
   state = { search: '' };
   acessibleComponent = React.createRef();
@@ -47,7 +48,8 @@ export class Families extends Component {
   };
 
   render() {
-    const { t } = this.props;
+    const { t, offline } = this.props;
+
 
     const families = [...sanitize(this.props.families)];
 
@@ -59,10 +61,10 @@ export class Families extends Component {
 
     const screenAccessibilityContent = setAccessibilityTextForFamilies();
 
-    const refreshingFamilies = !!this.props.offline.online &&
-    !!this.props.offline.outbox.find(
-      (item) => item.type === 'LOAD_FAMILIES',
-    );
+    const refreshingFamilies = !!offline.online &&
+      !!offline.outbox.find(
+        (item) => item.type === 'LOAD_FAMILIES',
+      );
 
     return (
       <View
@@ -90,17 +92,20 @@ export class Families extends Component {
           <Text style={{ ...globalStyles.subline, ...styles.familiesCount }}>
             {filteredFamilies.length} {t('views.families').toLowerCase()}
           </Text>
+          {offline.online &&
             <Icon
-            onPress={this.fetchFamilies}
-            disabled={refreshingFamilies}
+              onPress={this.fetchFamilies}
+              disabled={refreshingFamilies}
               name="refresh"
               size={24}
               color={refreshingFamilies
-                  ? colors.lightgrey
-                  : colors.green}
+                ? colors.lightgrey
+                : colors.green}
             />
+          }
+
         </View>
-        
+
         <FlatList
           style={{ flex: 1 }}
           refreshing={refreshingFamilies}
