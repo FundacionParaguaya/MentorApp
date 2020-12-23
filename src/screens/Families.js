@@ -85,15 +85,14 @@ export class Families extends Component {
           <Text style={{ ...globalStyles.subline, ...styles.familiesCount }}>
             {filteredFamilies.length} {t('views.families').toLowerCase()}
           </Text>
-          <TouchableOpacity
+            <Icon
             onPress={this.fetchFamilies}
             disabled={
               !!this.props.offline.online &&
               !!this.props.offline.outbox.find(
                 (item) => item.type === 'LOAD_FAMILIES',
               )
-            }>
-            <Icon
+            }
               name="refresh"
               size={24}
               color={
@@ -104,10 +103,8 @@ export class Families extends Component {
                   ? colors.lightgrey
                   : colors.green}
             />
-          </TouchableOpacity>
-
         </View>
-
+        
         <FlatList
           style={{ flex: 1 }}
           refreshing={
