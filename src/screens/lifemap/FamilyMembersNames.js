@@ -25,7 +25,7 @@ export class FamilyMembersNames extends Component {
   draftId = this.props.route.params.draftId;
 
   requiredFields =
-    (this.survey.surveyConfig &&
+    (this.survey && this.survey.surveyConfig &&
       this.survey.surveyConfig.requiredFields &&
       this.survey.surveyConfig.requiredFields.primaryParticipant) ||
     null;
@@ -357,7 +357,7 @@ export class FamilyMembersNames extends Component {
                   label={t('views.family.gender')}
                   placeholder={t('views.family.selectGender')}
                   initialValue={item.gender || ''}
-                  options={this.survey.surveyConfig.gender}
+                  options={this.survey && this.survey.surveyConfig.gender}
                   required={setValidationSchema(
                     this.requiredFields,
                     'gender',

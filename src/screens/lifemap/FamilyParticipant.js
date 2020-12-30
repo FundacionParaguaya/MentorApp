@@ -29,12 +29,12 @@ export class FamilyParticipant extends Component {
     text: `${element.country} - (+${element.value})`,
   }));
 
-  initialPhoneCode = this.phoneCodes.find(
-    (e) => e.code == this.survey.surveyConfig.surveyLocation.country,
-  ).value;
+  initialPhoneCode = this.survey ? this.phoneCodes.find(
+    (e) => e.code == (this.survey.surveyConfig.surveyLocation.country)
+  ).value:null;
 
   requiredFields =
-    (this.survey.surveyConfig &&
+    (this.survey && this.survey.surveyConfig &&
       this.survey.surveyConfig.requiredFields &&
       this.survey.surveyConfig.requiredFields.primaryParticipant) ||
     null;
@@ -194,8 +194,8 @@ export class FamilyParticipant extends Component {
       const phoneCode = draft.familyData.familyMembersList[0].phoneCode
         ? draft.familyData.familyMembersList[0].phoneCode
         : this.initialPhoneCode;
-      const contryCode = this.phoneCodes.find((x) => x.value === phoneCode)
-        .code;
+      const contryCode = this.phoneCodes ?  this.phoneCodes.find((x) => x.value === phoneCode)
+        .code : null;
       const international = '+' + phoneCode + ' ' + value;
       const phone = phoneUtil.parse(international, contryCode);
       let validation = phoneUtil.isValidNumber(phone);
@@ -241,7 +241,7 @@ export class FamilyParticipant extends Component {
 
   createNewDraft() {
     // check if current survey is demo
-    const isDemo = this.survey.surveyConfig && this.survey.surveyConfig.isDemo;
+    const isDemo = this.survey && this.survey.surveyConfig && this.survey.surveyConfig.isDemo;
     // generate a new draft id
     const draftId = uuid();
 
@@ -275,7 +275,7 @@ export class FamilyParticipant extends Component {
           {
             firstParticipant: true,
             socioEconomicAnswers: [],
-            birthCountry: this.survey.surveyConfig.surveyLocation.country,
+            birthCountry: this.survey && this.survey.surveyConfig.surveyLocation.country,
             phoneCode: this.initialPhoneCode,
           },
         ],
@@ -371,7 +371,7 @@ export class FamilyParticipant extends Component {
           placeholder={t('views.family.selectGender')}
           initialValue={participant.gender || ''}
           required={setValidationSchema(this.requiredFields, 'gender', true)}
-          options={this.survey.surveyConfig.gender}
+          options={this.survey ? this.survey.surveyConfig.gender:[]}
           onChange={this.updateParticipant}
           showErrors={showErrors}
           setError={(isError) => this.setError(isError, 'gender')}
@@ -396,7 +396,7 @@ export class FamilyParticipant extends Component {
           id="documentType"
           label={t('views.family.documentType')}
           placeholder={t('views.family.documentType')}
-          options={this.survey.surveyConfig.documentType}
+          options={this.survey ? this.survey.surveyConfig.documentType:[]}
           initialValue={participant.documentType || ''}
           required={setValidationSchema(
             this.requiredFields,
@@ -438,8 +438,8 @@ export class FamilyParticipant extends Component {
             'birthCountry',
             true,
           )}
-          defaultCountry={this.survey.surveyConfig.surveyLocation.country}
-          countriesOnTop={this.survey.surveyConfig.countryOfBirth}
+          defaultCountry={ this.survey ? this.survey.surveyConfig.surveyLocation.country:'PY'}
+          countriesOnTop={ this.survey ? this.survey.surveyConfig.countryOfBirth: null}
           readOnly={!!this.readOnly}
           onChange={this.updateParticipant}
           showErrors={showErrors}

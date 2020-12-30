@@ -48,9 +48,9 @@ export class Family extends Component {
   // extract socio economic categories from snapshot
   socioEconomicCategories = [
     ...new Set(
-      this.props.route.params.survey.surveyEconomicQuestions.map(
+      this.props.route.params.survey  ? this.props.route.params.survey.surveyEconomicQuestions.map(
         (question) => question.topic,
-      ),
+      ):[],
     ),
   ];
 
@@ -519,7 +519,7 @@ export class Family extends Component {
               </View>
             </View>
 
-            {!!this.allowRetake && (
+            {!!this.allowRetake && !!this.survey && (
               <Button
                 style={styles.buttonSmall}
                 text={t('views.retakeSurvey')}
