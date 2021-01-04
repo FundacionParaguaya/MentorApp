@@ -123,7 +123,7 @@ export class Overview extends Component {
       ? this.getDraft()
       : this.props.familyLifemap;
 
-    return draftData.status != 'Synced'
+    return draftData.status != 'Synced' && this.survey
   }
 
   componentDidMount() {
@@ -177,7 +177,7 @@ export class Overview extends Component {
             questions={draft.indicatorSurveyDataList}
             priorities={draft.priorities}
             achievements={draft.achievements}
-            questionsLength={this.survey.surveyStoplightQuestions.length}
+            questionsLength={this.survey ? this.survey.surveyStoplightQuestions.length : 0}
           />
         </View>
 
@@ -214,7 +214,7 @@ export class Overview extends Component {
             <LifemapOverview
               id="lifeMapOverview"
               syncPriorities={this.props.priorities}
-              surveyData={this.survey.surveyStoplightQuestions}
+              surveyData={this.survey ? this.survey.surveyStoplightQuestions:[]}
               //readOnly
               draftData={draft}
               navigateToScreen={this.navigateToScreen}
