@@ -22,6 +22,7 @@ const setHydratedState = () => store.dispatch(setHydrated());
 const reduxOfflineConfig = {
   persist: null,
   ...offlineConfig,
+  retry: (action, retries) => action.meta.urgent ? 100 : 1500 * (retries + 1),
   persistOptions: {
     blacklist: ['hydration'],
   },
