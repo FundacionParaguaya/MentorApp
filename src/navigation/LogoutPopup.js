@@ -31,7 +31,7 @@ export default class LogoutPopup extends Component {
     this.props.onPressCheckbox(!this.state[checkbox]);
     this.setState({[checkbox]: !this.state[checkbox]});
   }
-  onModalCloseFunc() {
+  onModalCloseFunc= () => {
     //resetting the state and closing the modal
     this.setState(initialState);
     this.props.onModalClose();
@@ -59,7 +59,7 @@ export default class LogoutPopup extends Component {
         LogoutPopup
         modifiedPopUp
         isOpen={isOpen}
-        onClose={onModalClose}
+        onClose={this.onModalCloseFunc}
         style={{paddingVertical: 100}}>
         <ActivityIndicator
           size="large"
@@ -68,7 +68,7 @@ export default class LogoutPopup extends Component {
         />
       </Popup>
     ) : (
-      <Popup LogoutPopup modifiedPopUp isOpen={isOpen} onClose={onModalClose}>
+      <Popup LogoutPopup modifiedPopUp isOpen={isOpen} onClose={this.onModalCloseFunc}>
         <View
           accessible={true}
           accessibilityLabel={`${accessiblePopUpText}`}
@@ -83,7 +83,7 @@ export default class LogoutPopup extends Component {
             accessible={true}
             accessibilityLabel={i18n.t('general.close')}
             accessibilityRole={'button'}>
-            <Icon onPress={onModalClose} name="close" size={30} />
+            <Icon onPress={this.onModalCloseFunc} name="close" size={30} />
           </View>
           <View style={styles.modalContainer}>
             <View style={{alignItems: 'center'}}>
