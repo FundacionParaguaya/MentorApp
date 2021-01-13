@@ -18,6 +18,7 @@ import i18n from '../i18n';
 import {logoutModalAccessibleText} from '../screens/utils/accessibilityHelpers';
 import colors from '../theme.json';
 
+
 const initialState = {
   checkboxDrafts: false,
   checkboxLifeMaps: false,
@@ -72,7 +73,8 @@ export default class LogoutPopup extends Component {
         <View
           accessible={true}
           accessibilityLabel={`${accessiblePopUpText}`}
-          accessibilityLiveRegion="assertive">
+          accessibilityLiveRegion="assertive"
+          style={styles.container}>
           <View
             style={{
               alignItems: 'center',
@@ -86,7 +88,7 @@ export default class LogoutPopup extends Component {
             <Icon onPress={this.onModalCloseFunc} name="close" size={30} />
           </View>
           <View style={styles.modalContainer}>
-            <View style={{alignItems: 'center'}}>
+            <View style={{alignItems: 'center', justifyContent:'center'}}>
               {!checkboxesVisible ? (
                 <Icon
                   name="sentiment-dissatisfied"
@@ -273,8 +275,14 @@ LogoutPopup.propTypes = {
 };
 
 const styles = StyleSheet.create({
+  container: {
+    justifyContent:'center',
+    alignItems:'center',
+  },
   modalContainer: {
     marginTop: 60,
+    width:'100%',
+    maxWidth: 300,
   },
   title: {
     ...Platform.select({
