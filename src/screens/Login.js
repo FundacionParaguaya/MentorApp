@@ -255,7 +255,7 @@ export class Login extends Component {
                     onChangeText={password => this.setState({ password })}
                   />
                   <Icon
-                    name={this.state.showPassword ? "eye-off" : "eye"}
+                    name={this.state.showPassword ? "eye" : "eye-off"}
                     size={21}
                     style={styles.icon}
                     color={colors.lightdark}
@@ -383,8 +383,6 @@ const styles = StyleSheet.create({
     color: colors.lightdark,
     width: '90%',
     maxWidth: 380,
-
-
   },
   passwordContainer: {
     width: '100%',
@@ -395,7 +393,9 @@ const styles = StyleSheet.create({
     paddingHorizontal: 10,
     display: 'flex',
     flexDirection: 'row',
-    alignItems: 'center'
+    alignItems: 'center',
+    marginLeft: 'auto',
+    marginRight: 'auto',
   },
   icon: {
     marginBottom: 4,
