@@ -255,7 +255,7 @@ export class Login extends Component {
                     onChangeText={password => this.setState({ password })}
                   />
                   <Icon
-                    name={this.state.showPassword ? "eye-off" : "eye"}
+                    name={this.state.showPassword ? "eye" : "eye-off"}
                     size={21}
                     style={styles.icon}
                     color={colors.lightdark}
