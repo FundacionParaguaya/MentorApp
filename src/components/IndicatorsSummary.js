@@ -8,6 +8,9 @@ import PropTypes from 'prop-types';
 const styles = StyleSheet.create({
     container: {
         width: '100%',
+        maxWidth:400,
+        marginLeft:'auto',
+        marginRight:'auto',
         paddingHorizontal: 10,
         flexDirection: 'row',
         justifyContent: 'space-around'
@@ -23,38 +26,38 @@ const styles = StyleSheet.create({
     },
     colorNumberText: {
         fontFamily: 'Poppins SemiBold',
-        fontSize: 22,
+        fontSize: 18,
         marginLeft:10
     },
     circleGreen: {
         backgroundColor: colors.palegreen,
-        width: 40,
-        height: 40,
-        borderRadius: 20,
+        width: 30,
+        height: 30,
+        borderRadius: 15,
     },
     circleYellow: {
         backgroundColor: colors.gold,
-        width: 40,
-        height: 40,
-        borderRadius: 20,
+        width: 30,
+        height: 30,
+        borderRadius: 15,
     },
     circleRed: {
         backgroundColor: colors.palered,
-        width: 40,
-        height: 40,
-        borderRadius: 20,
+        width: 30,
+        height: 30,
+        borderRadius: 15,
     },
     cirleGrey: {
         backgroundColor: colors.lightgrey,
-        width: 40,
-        height: 40,
-        borderRadius: 20,
+        width: 30,
+        height: 30,
+        borderRadius: 15,
     },  
     colorIndicator: {
         ...globalStyles.h5,
         marginTop: 10,
         marginBottom: 10,
-        maxWidth: 100
+        maxWidth: 50
     }
 })
 
