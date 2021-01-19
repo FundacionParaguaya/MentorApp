@@ -25,6 +25,10 @@ const DimensionIndicators = ({
             e => e.value === 1 || e.value === 2
         ) 
     }
+/* 
+    console.log('filterIndicatorDraftData',filterIndicatorDraftData)
+
+    console.log('syncPriorities',syncPriorities) */
 
     const getColor = (codeName) => {
         let indicator;

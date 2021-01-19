@@ -198,10 +198,40 @@ export class AddPriorityAndAchievementModal extends Component {
       })
     }
   }
+
+  getSnapshotStoplightId = (codename, draft) => {
+    let indicador;
+    draft && draft.indicatorSurveyDataList ? indicador = draft.indicatorSurveyDataList.find(
+      item => item.key === codename
+    ) : indicador = null;
+    if (indicador && indicador.snapshotStoplightId) {
+      return indicador.snapshotStoplightId
+    } else {
+      return;
+    }
+  }
+
+
+
   getPriorityValue = data => {
-    const priority = data.priorities.find(
+    let priority = data.priorities.find(
       priority => priority.indicator === this.state.indicator
     )
+    /* console.log('state indicator', this.state.indicator)
+    console.log('priority', this.props.priorities) */
+    
+    const snapshotStoplightId = this.getSnapshotStoplightId(this.state.indicator,data);
+
+    const syncedPriority = !priority ? this.props.priorities.find(item => 
+      item.snapshotStoplightId == snapshotStoplightId
+      ):null;
+
+      priority = syncedPriority ? {
+        ...syncedPriority,
+        estimatedDate:syncedPriority.months
+      }:priority
+    
+   
     return priority || this.state
   }
 
@@ -219,13 +249,13 @@ export class AddPriorityAndAchievementModal extends Component {
 
   render() {
     const draft = this.getDraft()
-    const { t  } = this.props
+    const { t } = this.props
     const { validationError, showErrors } = this.state
     let isReadOnly = false || this.props.readOnly
 
-      if (draft.status && !this.props.readOnly) {
-        isReadOnly = draft.status === 'Synced'
-      }
+    if (draft.status && !this.props.readOnly) {
+      isReadOnly = draft.status === 'Synced'
+    }
 
     //i cound directly use this.state.action for the values below but
     // it just doesnt work.Thats why i use the old way from the old components
@@ -310,7 +340,7 @@ export class AddPriorityAndAchievementModal extends Component {
                     required
                     onChange={this.editCounter}
                     placeholder={t('views.lifemap.howManyMonthsWillItTake')}
-                    initialValue={priority ? priority.estimatedDate : ''}
+                    initialValue={priority ? priority.estimatedDate || priority.months : ''}
                     options={this.state.allOptionsNums}
                     readOnly={isReadOnly}
                     showErrors={showErrors}
@@ -405,7 +435,7 @@ const mapDispatchToProps = {
   submitDraft
 }
 
-const mapStateToProps = ({ drafts, env, user }) => ({ drafts, env, user })
+const mapStateToProps = ({ drafts, env, user, priorities }) => ({ drafts, env, user, priorities })
 
 export default withNamespaces()(
   connect(

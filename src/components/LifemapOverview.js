@@ -66,6 +66,7 @@ const LifemapOverview = ({
     setAddAchievementOrPriority(false);
   };
 
+
   const filterByDimension = (item) =>
     surveyData.filter((indicator) => {
       const colorCode = getColor(indicator.codeName);
@@ -75,13 +76,21 @@ const LifemapOverview = ({
         const priorities = draftData.priorities.map(
           (priority) => priority.indicator,
         );
+        // Concact priorities of the family values with the priorities in added after last sync, remove duplicated entries if happens
+        const snapPriorities = priorities.concat(
+          draftData.indicatorSurveyDataList.filter(
+            indicator => syncPriorities && syncPriorities.find(
+              item => item.snapshotStoplightId == indicator.snapshotStoplightId )).map(
+                priority => priority.key).filter(
+                  (value,index,self)=>self.indexOf(value) === index))
+   
         const achievements = draftData.achievements.map(
           (priority) => priority.indicator,
         );
 
         return (
           indicator.dimension === item &&
-          (priorities.includes(indicator.codeName) ||
+          (snapPriorities.includes(indicator.codeName) ||
             achievements.includes(indicator.codeName))
         );
       } else {

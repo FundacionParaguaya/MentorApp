@@ -1,4 +1,4 @@
-import React, { Component } from 'react'
+import React from 'react'
 import PropTypes from 'prop-types'
 import { StyleSheet, View } from 'react-native'
 import Icon from 'react-native-vector-icons/MaterialIcons'
@@ -8,8 +8,18 @@ import {
   setAccessibleIndicatorName
 } from '../screens/utils/accessibilityHelpers'
 
-class LifemapVisual extends Component {
-  getColors = this.props.questions.map(item => {
+const LifemapVisual = ({
+  questions,
+  questionsLength,
+  priorities,
+  achievements,
+  large,
+  bigMargin,
+  extraLarge,
+  draftData,
+  syncPriorities
+}) => {
+  const getColors = questions.map(item => {
     switch (item.value) {
       case 1:
         return colors.palered
@@ -25,40 +35,59 @@ class LifemapVisual extends Component {
     }
   })
 
-  getUnansweredQuestions =
-    this.props.questionsLength - this.props.questions.length > 0
-      ? Array(this.props.questionsLength - this.props.questions.length).fill()
+  const getUnansweredQuestions =
+    questionsLength - questions.length > 0
+      ? Array(questionsLength - questions.length).fill()
       : []
 
-  render() {
-    const { large, bigMargin, extraLarge } = this.props
-    const prioritiesAndAchievements = [
-      ...this.props.priorities.map(priority => priority.indicator),
-      ...this.props.achievements.map(achievement => achievement.indicator)
-    ]
-    let size1 = 10
-    let size2 = 17
-    if (large) {
-      size1 = 12
-      size2 = 25
-    }
-    if (extraLarge) {
-      size2 = 50
-      size1 = 20
-    }
-    return (
-      <View style={styles.container}>
-        {this.getColors.map((item, i) => (
-          <View
-            key={i}
-            accessible={true}
-            accessibilityLabel={
-              setAccessibleIndicatorName(this.props.questions[i] && this.props.questions[i].key || '')
-            }
-            accessibilityHint={setAccessibleColorName(colors, item) || ''}
-          >
-            {prioritiesAndAchievements.includes(this.props.questions[i] && this.props.questions[i].key) &&
-            this.props.questions[i].value ? (
+
+  const prioritiesAndAchievements = [
+    ...priorities.map(priority => priority.indicator),
+    ...achievements.map(achievement => achievement.indicator)
+  ]
+  let size1 = 10
+  let size2 = 17
+  if (large) {
+    size1 = 12
+    size2 = 25
+  }
+  if (extraLarge) {
+    size2 = 50
+    size1 = 20
+  }
+
+  const checkSyncPriorityStatus = ( codeName, prioritiesForSync, status) => {
+    let indicator;
+    let syncStatus = false;
+    if(draftData && draftData.indicatorSurveyDataList && prioritiesForSync) {
+      indicator = draftData.indicatorSurveyDataList.find(item => 
+        item.key == codeName && item.snapshotStoplightId
+        )
+        if(indicator && indicator.snapshotStoplightId) {
+          syncStatus = prioritiesForSync.
+          filter(priority => priority.status == status).
+          find(priority => 
+            priority.snapshotStoplightId == indicator.snapshotStoplightId
+            )
+        }
+        return syncStatus;
+      }
+      return syncStatus;
+  }
+
+  return (
+    <View style={styles.container}>
+      {getColors.map((item, i) => (
+        <View
+          key={i}
+          accessible={true}
+          accessibilityLabel={
+            setAccessibleIndicatorName(questions[i] && questions[i].key || '')
+          }
+          accessibilityHint={setAccessibleColorName(colors, item) || ''}
+        >
+          {prioritiesAndAchievements.includes(questions[i] && questions[i].key) &&
+            questions[i].value || checkSyncPriorityStatus(questions[i].key, syncPriorities,'Synced') ? (
               <Icon
                 name="brightness-1"
                 color={colors.blue}
@@ -73,33 +102,32 @@ class LifemapVisual extends Component {
                 }}
               />
             ) : null}
-            <Icon
-              name="brightness-1"
-              color={item}
-              size={size2}
-              style={{
-                marginHorizontal: bigMargin ? 8 : 4,
-                marginVertical: bigMargin ? 4 : 2
-              }}
-            />
-          </View>
-        ))}
-        {this.getUnansweredQuestions.map((item, i) => (
-          <View key={i}>
-            <Icon
-              name="brightness-1"
-              color={colors.palegrey}
-              size={size2}
-              style={{
-                marginHorizontal: bigMargin ? 8 : 4,
-                marginVertical: bigMargin ? 4 : 2
-              }}
-            />
-          </View>
-        ))}
-      </View>
-    )
-  }
+          <Icon
+            name="brightness-1"
+            color={item}
+            size={size2}
+            style={{
+              marginHorizontal: bigMargin ? 8 : 4,
+              marginVertical: bigMargin ? 4 : 2
+            }}
+          />
+        </View>
+      ))}
+      {getUnansweredQuestions.map((item, i) => (
+        <View key={i}>
+          <Icon
+            name="brightness-1"
+            color={colors.palegrey}
+            size={size2}
+            style={{
+              marginHorizontal: bigMargin ? 8 : 4,
+              marginVertical: bigMargin ? 4 : 2
+            }}
+          />
+        </View>
+      ))}
+    </View>
+  )
 }
 
 LifemapVisual.propTypes = {
