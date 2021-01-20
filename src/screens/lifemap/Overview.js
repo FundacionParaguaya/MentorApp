@@ -168,10 +168,22 @@ export class Overview extends Component {
       ? this.getDraft()
       : this.props.familyLifemap;
 
+    const snapPriorities = draft.priorities.map(
+      (priority) => priority.indicator,
+    ).concat(
+      draft.indicatorSurveyDataList.filter(
+        indicator => this.props.priorities.find(
+          item => item.snapshotStoplightId == indicator.snapshotStoplightId)).map(
+            priority => priority.key)).filter(
+              (value, index, self) => self.indexOf(value) === index)
+    const amoutPrioritiesAchievements = snapPriorities.length + draft.achievements.length
+
     return this.props.readOnly ? (
       <View style={[globalStyles.background, styles.contentContainer]}>
         <View style={styles.indicatorsContainer}>
           <LifemapVisual
+            draftData={draft}
+            syncPriorities={this.props.priorities}
             large={this.props.readOnly}
             extraLarge={!this.props.readOnly}
             questions={draft.indicatorSurveyDataList}
@@ -214,7 +226,7 @@ export class Overview extends Component {
             <LifemapOverview
               id="lifeMapOverview"
               syncPriorities={this.props.priorities}
-              surveyData={this.survey ? this.survey.surveyStoplightQuestions:[]}
+              surveyData={this.survey ? this.survey.surveyStoplightQuestions : []}
               //readOnly
               draftData={draft}
               navigateToScreen={this.navigateToScreen}
@@ -311,7 +323,7 @@ export class Overview extends Component {
                   text={`${t('views.lifemap.priorities')} & ${t(
                     'views.lifemap.achievements',
                   )}`}
-                  amount={draft.priorities.length + draft.achievements.length}
+                  amount={amoutPrioritiesAchievements}
                 />
               </View>
 

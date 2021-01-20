@@ -21,19 +21,19 @@ const DimensionIndicators = ({
     let priorities = draftData.priorities.map(priority => priority.indicator);
     let filterIndicatorDraftData = {
         ...draftData,
-        indicatorSurveyDataList:  draftData.indicatorSurveyDataList.filter(
+        indicatorSurveyDataList: draftData.indicatorSurveyDataList.filter(
             e => e.value === 1 || e.value === 2
-        ) 
+        )
     }
 
     const getColor = (codeName) => {
         let indicator;
 
         filterIndicatorDraftData && filterIndicatorDraftData.indicatorSurveyDataList
-            ? indicator =filterIndicatorDraftData.indicatorSurveyDataList.
-            find(
-                item => item.key === codeName,
-            ) : indicator = null;
+            ? indicator = filterIndicatorDraftData.indicatorSurveyDataList.
+                find(
+                    item => item.key === codeName,
+                ) : indicator = null;
         if (indicator) {
             return indicator.value
         } else {
@@ -47,7 +47,7 @@ const DimensionIndicators = ({
         filterIndicatorDraftData && filterIndicatorDraftData.indicatorSurveyDataList ? indicator = filterIndicatorDraftData.indicatorSurveyDataList.find(
             item => item.key === codename,
         ) : indicator = null;
-        if (indicator && indicator.snapshotStoplightId ) {
+        if (indicator && indicator.snapshotStoplightId) {
             return indicator.snapshotStoplightId
         } else {
             return;
@@ -62,12 +62,12 @@ const DimensionIndicators = ({
             indicator = filterIndicatorDraftData.indicatorSurveyDataList.find(item =>
                 item.key == codeName && item.snapshotStoplightId
             );
-            if( indicator && indicator.snapshotStoplightId) {
+            if (indicator && indicator.snapshotStoplightId) {
                 syncStatus = prioritiesForSync.
-                filter(priority => priority.status == status).
-                find(priority =>
-                    priority.snapshotStoplightId == indicator.snapshotStoplightId
-                );
+                    filter(priority => priority.status == status).
+                    find(priority =>
+                        priority.snapshotStoplightId == indicator.snapshotStoplightId
+                    );
             }
             return syncStatus;
         }
@@ -102,7 +102,7 @@ const DimensionIndicators = ({
 
     useEffect(() => {
         priorities = filterIndicatorDraftData.priorities.map(priority => priority.indicator);
-    },[draftData])
+    }, [draftData])
     return (
         <View style={styles.container}>
             {addPriority

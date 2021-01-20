@@ -8,10 +8,10 @@ import PropTypes from 'prop-types';
 const styles = StyleSheet.create({
     container: {
         width: '100%',
-        maxWidth:400,
+        maxWidth:420,
         marginLeft:'auto',
         marginRight:'auto',
-        paddingHorizontal: 10,
+        paddingHorizontal: 5,
         flexDirection: 'row',
         justifyContent: 'space-around'
     },
@@ -26,7 +26,7 @@ const styles = StyleSheet.create({
     },
     colorNumberText: {
         fontFamily: 'Poppins SemiBold',
-        fontSize: 18,
+        fontSize: 16,
         marginLeft:10
     },
     circleGreen: {
@@ -57,7 +57,7 @@ const styles = StyleSheet.create({
         ...globalStyles.h5,
         marginTop: 10,
         marginBottom: 10,
-        maxWidth: 50
+        maxWidth: 60
     }
 })
 
