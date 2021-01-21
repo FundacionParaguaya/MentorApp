@@ -31,7 +31,7 @@ const reduxOfflineConfig = {
     enqueue(outbox, incomingAction, context) {
       if(incomingAction.type == SUBMIT_DRAFT) {
         return outbox
-            .filter(outboxAction => outboxAction.id !== incomingAction.id )
+            .filter(outboxAction => ((outboxAction.id !== incomingAction.id) || (outboxAction.type !== incomingAction.type )))
             .concat(incomingAction);
       }
       return [...outbox, incomingAction];
