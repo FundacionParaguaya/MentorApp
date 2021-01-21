@@ -61,7 +61,7 @@ export class Dashboard extends Component {
         survey: this.props.surveys.find(
           (survey) => survey.id === draft.surveyId,
         ),
-        activeTab: 'LifeMap',
+        activeTab: 'Details',
       },
     });
   };
