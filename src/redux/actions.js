@@ -328,7 +328,7 @@ export const submitDraftWithImages = (env, token, id, sanitizedSnapshot) => {
           method: 'POST',
           headers: {
             Authorization: `Bearer ${token}`,
-            'content-type': 'multipart/form-data',
+            'content-type': 'multipart/form-data'
           },
           body: formData,
         },
