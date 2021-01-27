@@ -269,11 +269,14 @@ export const submitPriority = (env, token, payload) => ({
 export const CREATE_DRAFT = 'CREATE_DRAFT';
 export const UPDATE_DRAFT = 'UPDATE_DRAFT';
 export const DELETE_DRAFT = 'DELETE_DRAFT';
+export const SUBMIT_COMMITED_DRAFT = 'SUBMIT_COMMITED_DRAFT';
+export const SUBMIT_ERROR_DRAFT = 'SUBMIT_ERROR_DRAFT';
 export const ADD_SURVEY_DATA_CHECKBOX = 'ADD_SURVEY_DATA_CHECKBOX';
 export const ADD_SURVEY_DATA = 'ADD_SURVEY_DATA';
 export const SUBMIT_DRAFT = 'SUBMIT_DRAFT';
 export const SUBMIT_DRAFT_COMMIT = 'SUBMIT_DRAFT_COMMIT';
 export const SUBMIT_DRAFT_ROLLBACK = 'SUBMIT_DRAFT_ROLLBACK';
+
 
 export const createDraft = (payload) => ({
   type: CREATE_DRAFT,
@@ -289,6 +292,16 @@ export const deleteDraft = (id) => ({
   type: DELETE_DRAFT,
   id,
 });
+
+export const submitDraftCommit = (id) => ({
+  type:SUBMIT_COMMITED_DRAFT,
+  id
+})
+
+export const submitDraftError = (id) => ({
+  type:SUBMIT_ERROR_DRAFT,
+  id
+})
 
 export const addSurveyData = (id, category, payload) => ({
   type: ADD_SURVEY_DATA,

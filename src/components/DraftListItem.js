@@ -52,7 +52,7 @@ class DraftListItem extends Component {
   }
 
   handleClick = () => {
-    this.props.handleClick(this.props.item)
+    this.props.handleClick(this.props.item);
   }
 
   render() {
@@ -100,7 +100,11 @@ class DraftListItem extends Component {
             {this.setStatusTitle(this.props.item.status)}
           </Text>
         </View>
-        {this.props.user.role !== 'ROLE_SURVEY_TAKER' && (
+        {item.status == 'Pending sync' &&
+        <Icon name="cloud-upload" size={23} color={colors.lightdark} onPress={() => this.props.handleSync(this.props.item)}  />
+        }
+        
+        {(this.props.user.role !== 'ROLE_SURVEY_TAKER') && this.props.isOnline && (
           <Icon name="navigate-next" size={23} color={colors.lightdark} />
         )}
       </ListItem>
@@ -112,7 +116,8 @@ DraftListItem.propTypes = {
   item: PropTypes.object.isRequired,
   handleClick: PropTypes.func.isRequired,
   lng: PropTypes.string.isRequired,
-  user: PropTypes.object.isRequired
+  user: PropTypes.object.isRequired,
+  isOnline: PropTypes.bool.isRequired
 }
 
 const styles = StyleSheet.create({

@@ -1,7 +1,7 @@
 import NetInfo from '@react-native-community/netinfo';
 import PropTypes from 'prop-types';
-import React, {Component} from 'react';
-import {withNamespaces} from 'react-i18next';
+import React, { Component } from 'react';
+import { withNamespaces } from 'react-i18next';
 import {
   FlatList,
   Image,
@@ -14,8 +14,8 @@ import {
   findNodeHandle,
 } from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
-import {AndroidBackHandler} from 'react-navigation-backhandler';
-import {connect} from 'react-redux';
+import { AndroidBackHandler } from 'react-navigation-backhandler';
+import { connect } from 'react-redux';
 
 import arrow from '../../assets/images/selectArrow.png';
 import BottomModal from '../components/BottomModal';
@@ -25,9 +25,9 @@ import DraftListItem from '../components/DraftListItem';
 import FilterListItem from '../components/FilterListItem';
 import NotificationModal from '../components/NotificationModal';
 import RoundImage from '../components/RoundImage';
-import {supported_API_version, url} from '../config';
+import { supported_API_version, url } from '../config';
 import globalStyles from '../globalStyles';
-import {markVersionCheked, toggleAPIVersionModal, validate} from '../redux/actions';
+import { markVersionCheked, toggleAPIVersionModal, submitDraftCommit, submitDraftError } from '../redux/actions';
 import colors from '../theme.json';
 
 
@@ -49,7 +49,7 @@ export class Dashboard extends Component {
 
   // Navigate to Overview to see the results of Draft with Pending sync status
   navigateToPendingSync = (draft) => {
-    const {firstName, lastName} = draft.familyData.familyMembersList[0];
+    const { firstName, lastName } = draft.familyData.familyMembersList[0];
 
     this.props.navigation.navigate('Families', {
       screen: 'Family',
@@ -163,7 +163,7 @@ export class Dashboard extends Component {
   };
 
   checkAPIVersion() {
-    const {timestamp} = this.props.apiVersion;
+    const { timestamp } = this.props.apiVersion;
 
     // when this was last checked
     if (
@@ -226,9 +226,126 @@ export class Dashboard extends Component {
     }
   }
 
+  sendImages = (env, token,formData, payload) => {
+    fetch(`${env}/api/v1/snapshots/files/pictures/upload`, {
+      method: 'POST',
+      headers: {
+        Authorization: `Bearer ${token}`,
+        'content-type': 'multipart/form-data'
+      },
+      body: formData
+    }).then((data) => {
+      if (data.status !== 200) {
+        this.props.submitDraftError(id);
+        throw new Error();
+      } else return data.json();
+    }).
+      then((data) => {
+        console.log('enviado', data)
+        console.log('payload',payload)
+        const draftWithPictures= {
+          ...payload.meta.offline.commit.draft,
+          pictures: data,
+        }
+        this.sendDraft(env,token,draftWithPictures.draftId,draftWithPictures);
+      })
+  }
+  formatPhone = (code, phone) => {
+    if (code && phone && phone.length > 0) {
+      const phoneUtil = PhoneNumberUtil.getInstance();
+      const international = '+' + code + ' ' + phone;
+      let phoneNumber = phoneUtil.parse(international, code);
+      phone = phoneNumber.getNationalNumber();
+    }
+    return phone;
+  };
+
+  sendDraft = (env, token, id, payload) => {
+    console.log('----Calling Submit Draft----',payload);
+    const sanitizedSnapshot = { ...payload };
+
+    let { economicSurveyDataList } = payload;
+
+    const validEconomicIndicator = (ec) =>
+      (ec.value !== null && ec.value !== undefined && ec.value !== '') ||
+      (!!ec.multipleValue && ec.multipleValue.length > 0);
+
+    economicSurveyDataList = economicSurveyDataList.filter(
+      validEconomicIndicator,
+    );
+    sanitizedSnapshot.economicSurveyDataList = economicSurveyDataList;
+    sanitizedSnapshot.familyData.familyMembersList.forEach((member) => {
+      let { socioEconomicAnswers = [] } = member;
+      delete member.memberIdentifier;
+      delete member.id;
+      delete member.familyId;
+      delete member.uuid;
+
+      member.phoneNumber = this.formatPhone(member.phoneCode, member.phoneNumber);
+      socioEconomicAnswers = socioEconomicAnswers.filter(validEconomicIndicator);
+      // eslint-disable-next-line no-param-reassign
+      member.socioEconomicAnswers = socioEconomicAnswers;
+    });
+    console.log(sanitizedSnapshot);
+    fetch(`${env}/graphql`, {
+      method: 'POST',
+      headers: {
+        Authorization: `Bearer ${token}`,
+        'content-type': 'application/json;charset=utf8',
+      },
+      body: JSON.stringify({
+        query:
+          'mutation addSnapshot($newSnapshot: NewSnapshotDTOInput) {addSnapshot(newSnapshot: $newSnapshot)  { surveyId surveyVersionId snapshotStoplightAchievements { action indicator roadmap } snapshotStoplightPriorities { reason action indicator estimatedDate } family { familyId } user { userId  username } indicatorSurveyDataList {key value} economicSurveyDataList {key value multipleValue} familyDataDTO { latitude longitude accuracy familyMemberDTOList { firstName lastName socioEconomicAnswers {key value } } } } }',
+        variables: { newSnapshot: sanitizedSnapshot },
+      })}).then((data) => {
+        if (data.status !== 200) {
+          this.props.submitDraftError(id);
+          throw new Error();
+        } else return data.json();
+      }).
+        then((data) => {
+          this.props.submitDraftCommit(id);
+        })
+    }
+
+  createFormData = (item) => {
+    let data = new FormData();
+    if (item) {
+      item.forEach(el => {
+        data.append('pictures', {
+          uri: el[1].uri,
+          name: el[1].name,
+          type: el[1].type,
+        })
+      });
+    }
+    return data;
+  }
+
+  handleSync = (item) => {
+    const draftWithImages = this.props.offline.outbox.
+      find(el => el.type == 'LOAD_IMAGES'
+          && el.id == item.draftId)
+
+      const draft = this.props.offline.outbox.
+      find(el => el.type == 'SUBMIT_DRAFT'
+          && el.id == item.draftId)
+
+    if(draft){
+      this.sendDraft(url[this.props.env],this.props.user.token,draft.id,draft.payload);
+    }
+
+    if(draftWithImages){
+      let data = this.createFormData(draftWithImages.meta.offline.effect.body._parts);
+      this.sendImages(url[this.props.env], this.props.user.token, data,draftWithImages)
+    }
+
+      
+  }
+
   render() {
-    const {t, families, drafts} = this.props;
-    const {filterModalIsOpen} = this.state;
+    const { t, families, drafts, offline } = this.props;
+    const { filterModalIsOpen } = this.state;
     console.log(drafts);
     const allDraftFamilies = drafts.filter(
       (d) => d.status === 'Draft' || d.status === 'Pending sync',
@@ -259,7 +376,7 @@ export class Dashboard extends Component {
                       : globalStyles.containerNoPadding
                   }>
                   <View
-                    style={{alignItems: 'center', justifyContent: 'center'}}>
+                    style={{ alignItems: 'center', justifyContent: 'center' }}>
                     <Decoration>
                       <RoundImage source="family" />
                     </Decoration>
@@ -271,7 +388,7 @@ export class Dashboard extends Component {
                       />
                     </View>
                     {this.props.user.role !== 'ROLE_SURVEY_TAKER' && (
-                      <Text style={{...styles.familiesCount}}>
+                      <Text style={{ ...styles.familiesCount }}>
                         {countFamilies} {t('views.families')}
                       </Text>
                     )}
@@ -344,10 +461,10 @@ export class Dashboard extends Component {
                                 {this.state.renderLable}
                               </Text>
                             ) : (
-                              <Text style={globalStyles.subline}>
-                                {t('filterLabels.lifeMaps')}
-                              </Text>
-                            )}
+                                <Text style={globalStyles.subline}>
+                                  {t('filterLabels.lifeMaps')}
+                                </Text>
+                              )}
                           </View>
                           <Image source={arrow} style={styles.arrow} />
                         </View>
@@ -358,7 +475,7 @@ export class Dashboard extends Component {
                       isOpen={filterModalIsOpen}
                       onRequestClose={this.toggleFilterModal}
                       onEmptyClose={() =>
-                        this.setState({filterModalIsOpen: false})
+                        this.setState({ filterModalIsOpen: false })
                       }>
                       <View style={styles.dropdown}>
                         <FilterListItem
@@ -413,17 +530,19 @@ export class Dashboard extends Component {
                   </View>
                 ) : null}
                 <FlatList
-                  style={{...styles.background}}
+                  style={{ ...styles.background }}
                   data={
                     this.state.renderFiltered
                       ? this.state.filteredDrafts.slice().reverse()
                       : drafts.slice().reverse()
                   }
                   keyExtractor={(item, index) => index.toString()}
-                  renderItem={({item}) => (
+                  renderItem={({ item }) => (
                     <DraftListItem
                       item={item}
+                      isOnline={offline.online}
                       handleClick={this.handleClickOnListItem}
+                      handleSync={this.handleSync}
                       lng={this.props.lng}
                       user={this.props.user}
                     />
@@ -563,7 +682,7 @@ export const mapStateToProps = ({
   apiVersion,
 });
 
-const mapDispatchToProps = {markVersionCheked, toggleAPIVersionModal};
+const mapDispatchToProps = { markVersionCheked, toggleAPIVersionModal,submitDraftCommit,submitDraftError };
 
 export default withNamespaces()(
   connect(mapStateToProps, mapDispatchToProps)(Dashboard),
