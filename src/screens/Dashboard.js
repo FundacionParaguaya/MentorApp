@@ -38,6 +38,7 @@ const nodeEnv = process.env;
 export class Dashboard extends Component {
   acessibleComponent = React.createRef();
   state = {
+    selectedDraftId :null,
     filterModalIsOpen: false,
     renderFiltered: false,
     renderLable: false,
@@ -236,13 +237,12 @@ export class Dashboard extends Component {
       body: formData
     }).then((data) => {
       if (data.status !== 200) {
+        this.setState({selectedDraftId:null})
         this.props.submitDraftError(id);
         throw new Error();
       } else return data.json();
     }).
       then((data) => {
-        console.log('enviado', data)
-        console.log('payload',payload)
         const draftWithPictures= {
           ...payload.meta.offline.commit.draft,
           pictures: data,
@@ -300,10 +300,12 @@ export class Dashboard extends Component {
       })}).then((data) => {
         if (data.status !== 200) {
           this.props.submitDraftError(id);
+          this.setState({selectedDraftId:null})
           throw new Error();
         } else return data.json();
       }).
         then((data) => {
+          this.setState({selectedDraftId:null})
           this.props.submitDraftCommit(id);
         })
     }
@@ -323,6 +325,7 @@ export class Dashboard extends Component {
   }
 
   handleSync = (item) => {
+    this.setState({selectedDraftId:item.draftId})
     const draftWithImages = this.props.offline.outbox.
       find(el => el.type == 'LOAD_IMAGES'
           && el.id == item.draftId)
@@ -545,6 +548,7 @@ export class Dashboard extends Component {
                       handleSync={this.handleSync}
                       lng={this.props.lng}
                       user={this.props.user}
+                      draftId={this.state.selectedDraftId}
                     />
                   )}
                 />
