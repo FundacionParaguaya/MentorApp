@@ -548,7 +548,7 @@ export class Dashboard extends Component {
                       handleSync={this.handleSync}
                       lng={this.props.lng}
                       user={this.props.user}
-                      draftId={this.state.selectedDraftId}
+                      selectedDraftId={this.state.selectedDraftId}
                     />
                   )}
                 />
