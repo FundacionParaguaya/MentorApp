@@ -22,6 +22,8 @@ import {
   SET_SYNCED_ITEM_TOTAL,
   SET_SYNCED_STATE,
   SUBMIT_DRAFT,
+  SUBMIT_COMMITED_DRAFT,
+  SUBMIT_ERROR_DRAFT,
   SUBMIT_DRAFT_COMMIT,
   SUBMIT_DRAFT_ROLLBACK,
   SWITCH_LANGUAGE,
@@ -315,6 +317,27 @@ export const drafts = (state = [], action) => {
         } else return draft;
       });
 
+    case SUBMIT_COMMITED_DRAFT:
+      return state.map(draft =>
+        draft.draftId === action.id
+          ? {
+            ...draft,
+            status: 'Synced',
+            syncedAt: Date.now(),
+          }
+          : draft,
+      );
+
+      case SUBMIT_ERROR_DRAFT:
+      return state.map(draft =>
+        draft.draftId === action.id
+          ? {
+            ...draft,
+            status: 'Sync error',
+            syncedAt: Date.now(),
+          }
+          : draft,
+      );
     case SUBMIT_DRAFT:
       return state.map(draft =>
         draft.draftId === action.id

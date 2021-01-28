@@ -4,7 +4,7 @@ import 'moment/locale/pt'
 import moment from 'moment'
 import PropTypes from 'prop-types'
 import React, { Component } from 'react'
-import { StyleSheet, Text, View } from 'react-native'
+import { StyleSheet, Text, View, ActivityIndicator } from 'react-native'
 import Icon from 'react-native-vector-icons/MaterialIcons'
 
 import globalStyles from '../globalStyles'
@@ -52,7 +52,7 @@ class DraftListItem extends Component {
   }
 
   handleClick = () => {
-    this.props.handleClick(this.props.item)
+    this.props.handleClick(this.props.item);
   }
 
   render() {
@@ -62,11 +62,15 @@ class DraftListItem extends Component {
 
     const name =
       item &&
-      item.familyData &&
-      item.familyData.familyMembersList &&
-      item.familyData.familyMembersList[0]
+        item.familyData &&
+        item.familyData.familyMembersList &&
+        item.familyData.familyMembersList[0]
         ? `${item.familyData.familyMembersList[0].firstName} ${item.familyData.familyMembersList[0].lastName}`
         : ' - '
+    const disabled = this.props.selectedDraftId && (this.props.selectedDraftId !== item.draftId);
+    const loading = this.props.selectedDraftId && (this.props.selectedDraftId == item.draftId);
+
+
 
     // const linkDisabled = item.status === 'Synced'
     return (
@@ -100,9 +104,21 @@ class DraftListItem extends Component {
             {this.setStatusTitle(this.props.item.status)}
           </Text>
         </View>
-        {this.props.user.role !== 'ROLE_SURVEY_TAKER' && (
-          <Icon name="navigate-next" size={23} color={colors.lightdark} />
-        )}
+        <View>
+          <>
+            {item.status == 'Pending sync' && this.props.isOnline && !loading &&
+              <Icon
+                name="cloud-upload"
+                size={25}
+                disabled={disabled ? true : false}
+                color={disabled ? colors.lightgrey : colors.lightdark}
+                onPress={() => this.props.handleSync(this.props.item)} />
+            }
+            {(item.status == 'Pending sync') && this.props.isOnline && loading &&
+              <ActivityIndicator size="small" color={colors.lightdark} />
+            }
+          </>
+        </View>
       </ListItem>
     )
   }
@@ -112,7 +128,8 @@ DraftListItem.propTypes = {
   item: PropTypes.object.isRequired,
   handleClick: PropTypes.func.isRequired,
   lng: PropTypes.string.isRequired,
-  user: PropTypes.object.isRequired
+  user: PropTypes.object.isRequired,
+  isOnline: PropTypes.bool.isRequired
 }
 
 const styles = StyleSheet.create({
