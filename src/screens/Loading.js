@@ -262,14 +262,7 @@ export class Loading extends Component {
     if (!this.props.user.token) {
       // if user hasn't logged in, navigate to login
       this.props.navigation.navigate('Login');
-    } else if (!appVersion || appVersion !== DeviceInfo.getVersion()) {
-      // if there is no app version in store or version has changed
-      // clear sync state and sync again
-      this.props.resetSyncState();
-      this.props.setAppVersion(DeviceInfo.getVersion());
-      this.syncSurveys('re-sync');
-    } else if (
-
+    }  else if (
       families &&
       surveys && projects &&
       ((!!images.total &&
