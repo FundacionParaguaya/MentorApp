@@ -238,8 +238,11 @@ export class Dashboard extends Component {
     }).then((data) => {
       if (data.status !== 200) {
         this.setState({selectedDraftId:null})
-        this.props.submitDraftError(id);
-        throw new Error();
+        const draft= {
+          ...payload.meta.offline.commit.draft,
+          pictures: []
+        }
+        this.sendDraft(env,token,draft.draftId,draft);
       } else return data.json();
     }).
       then((data) => {
