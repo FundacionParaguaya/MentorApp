@@ -38,7 +38,7 @@ const nodeEnv = process.env;
 export class Dashboard extends Component {
   acessibleComponent = React.createRef();
   state = {
-    selectedDraftId :null,
+    selectedDraftId: null,
     filterModalIsOpen: false,
     renderFiltered: false,
     renderLable: false,
@@ -227,7 +227,7 @@ export class Dashboard extends Component {
     }
   }
 
-  sendImages = (env, token,formData, payload) => {
+  sendImages = (env, token, formData, payload) => {
     fetch(`${env}/api/v1/snapshots/files/pictures/upload`, {
       method: 'POST',
       headers: {
@@ -236,21 +236,29 @@ export class Dashboard extends Component {
       },
       body: formData
     }).then((data) => {
-      if (data.status !== 200) {
-        this.setState({selectedDraftId:null})
-        const draft= {
-          ...payload.meta.offline.commit.draft,
-          pictures: []
-        }
-        this.sendDraft(env,token,draft.draftId,draft);
-      } else return data.json();
+      let responseData;
+      try {
+        responseData = data.json()
+      }
+      catch (err) {
+        responseData = [];
+      }
+      console.log(responseData)
+      return responseData
     }).
       then((data) => {
-        const draftWithPictures= {
+        let pictures = Array.isArray(data) ? data : [];
+        const draftWithPictures = {
           ...payload.meta.offline.commit.draft,
-          pictures: data,
+          pictures: pictures,
         }
-        this.sendDraft(env,token,draftWithPictures.draftId,draftWithPictures);
+        this.sendDraft(env, token, draftWithPictures.draftId, draftWithPictures);
+      }).catch(() => {
+        let draft = {
+          ...payload.meta.offline.commit.draft,
+          pictures: []
+        };
+        this.sendDraft(env, token, draft.draftId, draft);
       })
   }
   formatPhone = (code, phone) => {
@@ -264,7 +272,7 @@ export class Dashboard extends Component {
   };
 
   sendDraft = (env, token, id, payload) => {
-    console.log('----Calling Submit Draft----',payload);
+    console.log('----Calling Submit Draft----', payload);
     const sanitizedSnapshot = { ...payload };
 
     let { economicSurveyDataList } = payload;
@@ -300,18 +308,19 @@ export class Dashboard extends Component {
         query:
           'mutation addSnapshot($newSnapshot: NewSnapshotDTOInput) {addSnapshot(newSnapshot: $newSnapshot)  { surveyId surveyVersionId snapshotStoplightAchievements { action indicator roadmap } snapshotStoplightPriorities { reason action indicator estimatedDate } family { familyId } user { userId  username } indicatorSurveyDataList {key value} economicSurveyDataList {key value multipleValue} familyDataDTO { latitude longitude accuracy familyMemberDTOList { firstName lastName socioEconomicAnswers {key value } } } } }',
         variables: { newSnapshot: sanitizedSnapshot },
-      })}).then((data) => {
-        if (data.status !== 200) {
-          this.props.submitDraftError(id);
-          this.setState({selectedDraftId:null})
-          throw new Error();
-        } else return data.json();
-      }).
-        then((data) => {
-          this.setState({selectedDraftId:null})
-          this.props.submitDraftCommit(id);
-        })
-    }
+      })
+    }).then((data) => {
+      if (data.status !== 200) {
+        this.props.submitDraftError(id);
+        this.setState({ selectedDraftId: null })
+        throw new Error();
+      } else return data.json();
+    }).
+      then((data) => {
+        this.setState({ selectedDraftId: null })
+        this.props.submitDraftCommit(id);
+      })
+  }
 
   createFormData = (item) => {
     let data = new FormData();
@@ -328,25 +337,25 @@ export class Dashboard extends Component {
   }
 
   handleSync = (item) => {
-    this.setState({selectedDraftId:item.draftId})
+    this.setState({ selectedDraftId: item.draftId })
     const draftWithImages = this.props.offline.outbox.
       find(el => el.type == 'LOAD_IMAGES'
-          && el.id == item.draftId)
+        && el.id == item.draftId)
 
-      const draft = this.props.offline.outbox.
+    const draft = this.props.offline.outbox.
       find(el => el.type == 'SUBMIT_DRAFT'
-          && el.id == item.draftId)
+        && el.id == item.draftId)
 
-    if(draft){
-      this.sendDraft(url[this.props.env],this.props.user.token,draft.id,draft.payload);
+    if (draft) {
+      this.sendDraft(url[this.props.env], this.props.user.token, draft.id, draft.payload);
     }
 
-    if(draftWithImages){
+    if (draftWithImages) {
       let data = this.createFormData(draftWithImages.meta.offline.effect.body._parts);
-      this.sendImages(url[this.props.env], this.props.user.token, data,draftWithImages)
+      this.sendImages(url[this.props.env], this.props.user.token, data, draftWithImages)
     }
 
-      
+
   }
 
   render() {
@@ -689,7 +698,7 @@ export const mapStateToProps = ({
   apiVersion,
 });
 
-const mapDispatchToProps = { markVersionCheked, toggleAPIVersionModal,submitDraftCommit,submitDraftError };
+const mapDispatchToProps = { markVersionCheked, toggleAPIVersionModal, submitDraftCommit, submitDraftError };
 
 export default withNamespaces()(
   connect(mapStateToProps, mapDispatchToProps)(Dashboard),
