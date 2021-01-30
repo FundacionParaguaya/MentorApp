@@ -227,40 +227,6 @@ export class Dashboard extends Component {
     }
   }
 
-  sendImages = (env, token, formData, payload) => {
-    fetch(`${env}/api/v1/snapshots/files/pictures/upload`, {
-      method: 'POST',
-      headers: {
-        Authorization: `Bearer ${token}`,
-        'content-type': 'multipart/form-data'
-      },
-      body: formData
-    }).then((data) => {
-      let responseData;
-      try {
-        responseData = data.json()
-      }
-      catch (err) {
-        responseData = [];
-      }
-      console.log(responseData)
-      return responseData
-    }).
-      then((data) => {
-        let pictures = Array.isArray(data) ? data : [];
-        const draftWithPictures = {
-          ...payload.meta.offline.commit.draft,
-          pictures: pictures,
-        }
-        this.sendDraft(env, token, draftWithPictures.draftId, draftWithPictures);
-      }).catch(() => {
-        let draft = {
-          ...payload.meta.offline.commit.draft,
-          pictures: []
-        };
-        this.sendDraft(env, token, draft.draftId, draft);
-      })
-  }
   formatPhone = (code, phone) => {
     if (code && phone && phone.length > 0) {
       const phoneUtil = PhoneNumberUtil.getInstance();
@@ -337,8 +303,9 @@ export class Dashboard extends Component {
   }
 
   handleSync = (item) => {
-    this.setState({ selectedDraftId: item.draftId })
-    const draftWithImages = this.props.offline.outbox.
+    this.setState({ selectedDraftId: item.draftId });
+
+    const payload = this.props.offline.outbox.
       find(el => el.type == 'LOAD_IMAGES'
         && el.id == item.draftId)
 
@@ -349,10 +316,12 @@ export class Dashboard extends Component {
     if (draft) {
       this.sendDraft(url[this.props.env], this.props.user.token, draft.id, draft.payload);
     }
-
-    if (draftWithImages) {
-      let data = this.createFormData(draftWithImages.meta.offline.effect.body._parts);
-      this.sendImages(url[this.props.env], this.props.user.token, data, draftWithImages)
+    if (payload) {
+      const draftPayload = {
+        ...payload.meta.offline.commit.draft,
+        pictures: [],
+      }
+      this.sendDraft(url[this.props.env], this.props.user.token, draftPayload.draftId, draftPayload);
     }
 
 
