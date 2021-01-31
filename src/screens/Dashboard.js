@@ -303,26 +303,14 @@ export class Dashboard extends Component {
   }
 
   handleSync = (item) => {
+
     this.setState({ selectedDraftId: item.draftId });
-
-    const payload = this.props.offline.outbox.
-      find(el => el.type == 'LOAD_IMAGES'
-        && el.id == item.draftId)
-
-    const draft = this.props.offline.outbox.
-      find(el => el.type == 'SUBMIT_DRAFT'
-        && el.id == item.draftId)
-
-    if (draft) {
-      this.sendDraft(url[this.props.env], this.props.user.token, draft.id, draft.payload);
+    delete  item.progress;
+    let draftPayload = {
+      ...item,
+      pictures: [],
     }
-    if (payload) {
-      const draftPayload = {
-        ...payload.meta.offline.commit.draft,
-        pictures: [],
-      }
-      this.sendDraft(url[this.props.env], this.props.user.token, draftPayload.draftId, draftPayload);
-    }
+    this.sendDraft(url[this.props.env], this.props.user.token, draftPayload.draftId, draftPayload);
 
 
   }
