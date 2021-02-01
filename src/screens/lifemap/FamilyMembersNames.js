@@ -234,7 +234,7 @@ export class FamilyMembersNames extends Component {
       });
     }
 
-    this.props.navigation.setParams({
+    this.props.navigation.setOptions({
       onPressBack: this.onPressBack,
     });
   }

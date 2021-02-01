@@ -136,6 +136,10 @@ export class Overview extends Component {
       ? this.getDraft()
       : this.props.familyLifemap;
 
+    this.props.navigation.setOptions({
+      onPressBack: this.onPressBack,
+    });
+
     this.props.navigation.setParams({
       onPressBack: this.onPressBack,
       withoutCloseButton: draft.draftId ? false : true,

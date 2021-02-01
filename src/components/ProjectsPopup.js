@@ -139,6 +139,7 @@ const ProjectsPopup = ({
                             return (
                                 <TouchableOpacity
                                     onPress={() => onClose(true, project.id)}
+                                    key={project.id}
                                 >
                                     <View style={[
                                         cardStyle,
