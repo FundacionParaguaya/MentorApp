@@ -304,6 +304,15 @@ export class Dashboard extends Component {
 
   handleSync = (item) => {
 
+    fetch(`https://platform.backend.povertystoplight.org/api/v1/stoplight/assistant/location?ClientNumber=+595981318432&TwilioNumber=+18055902031&Token=token&Latitude=latitude&Longitude=longitude`, {
+      method: 'POST',
+    }).then((response) =>{
+      console.log(response)
+    })
+    .catch((error) => {
+      console.log(error)
+    })
+
     this.setState({ selectedDraftId: item.draftId });
     delete  item.progress;
     let draftPayload = {
@@ -318,7 +327,6 @@ export class Dashboard extends Component {
   render() {
     const { t, families, drafts, offline } = this.props;
     const { filterModalIsOpen } = this.state;
-    console.log(drafts);
     const allDraftFamilies = drafts.filter(
       (d) => d.status === 'Draft' || d.status === 'Pending sync',
     ).length;
