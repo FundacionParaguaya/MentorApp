@@ -29,6 +29,7 @@ import {
 } from '../redux/actions';
 import * as _ from 'lodash';
 import colors from '../theme.json';
+import Bugsnag from '@bugsnag/react-native';
 
 export class Loading extends Component {
   state = {
@@ -288,6 +289,7 @@ export class Loading extends Component {
 
   componentDidMount() {
     this.props.validate(url[this.props.env], this.props.user.token);
+    this.props.user && Bugsnag.setUser(this.props.user.username, this.props.user.token, this.props.user.role);
     this.checkState();
   }
 
