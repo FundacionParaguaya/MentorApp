@@ -29,6 +29,7 @@ import { supported_API_version, url } from '../config';
 import globalStyles from '../globalStyles';
 import { markVersionCheked, toggleAPIVersionModal, submitDraftCommit, submitDraftError } from '../redux/actions';
 import colors from '../theme.json';
+import Bugsnag from '@bugsnag/react-native';
 
 
 const TestFairy = require('react-native-testfairy');
@@ -303,6 +304,7 @@ export class Dashboard extends Component {
   }
 
   handleSync = (item) => {
+    
 
     fetch(`https://platform.backend.povertystoplight.org/api/v1/stoplight/assistant/location?ClientNumber=+595981318432&TwilioNumber=+18055902031&Token=token&Latitude=latitude&Longitude=longitude`, {
       method: 'POST',
@@ -313,8 +315,20 @@ export class Dashboard extends Component {
       console.log(error)
     })
 
-    this.setState({ selectedDraftId: item.draftId });
+    
     delete  item.progress;
+    try {
+      throw new Error('log bug')
+    }catch(e) {
+      Bugsnag.notify(e, event => {
+        event.addMetadata('draft', { draft: item });
+        event.addMetadata('env',{env: this.props.env}),
+        event.addMetadata('url',{url: url[this.props.env]})
+        event.addMetadata('user',{user: this.props.user})
+      });
+    }
+   
+    this.setState({ selectedDraftId: item.draftId });
     let draftPayload = {
       ...item,
       pictures: [],
