@@ -318,7 +318,6 @@ export class Dashboard extends Component {
   }
 
   handleSync = (item) => {
-    //console.log('item',item)
 
     fetch(`https://platform.backend.povertystoplight.org/api/v1/stoplight/assistant/location?ClientNumber=+595981318432&TwilioNumber=+18055902031&Token=token&Latitude=latitude&Longitude=longitude`, {
       method: 'POST',
@@ -335,28 +334,10 @@ export class Dashboard extends Component {
     }
 
     delete payload.progress;
-
-
-
-    try {
-      throw new Error('log bug')
-    }catch(e) {
-      Bugsnag.notify(e, event => {
-        event.addMetadata('draft', { draft: item });
-        event.addMetadata('env',{env: this.props.env}),
-        event.addMetadata('url',{url: url[this.props.env]})
-        event.addMetadata('user',{user: this.props.user})
-      });
-    }
    
-    this.setState({ selectedDraftId: payload.draftId });
-    /* let draftPayload = {
-      ...payload,
-      pictures: [],
-    } */
+    this.setState({ selectedDraftId: item.draftId });
     
     this.sendDraft(url[this.props.env], this.props.user.token, payload.draftId, payload);
-
 
   }
 
