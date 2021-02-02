@@ -167,10 +167,11 @@ export class Priorities extends Component {
         },
       });
 
-      this.props.navigation
+      this.props.navigation.setOptions({
+        onPressBack: this.onPressBack
+      })
 
       this.props.navigation.setParams({
-        onPressBack: this.onPressBack,
         withoutCloseButton: draft.draftId ? false : true,
       });
     }
