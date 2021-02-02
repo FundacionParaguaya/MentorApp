@@ -141,7 +141,6 @@ export class Overview extends Component {
     });
 
     this.props.navigation.setParams({
-      onPressBack: this.onPressBack,
       withoutCloseButton: draft.draftId ? false : true,
     });
 
