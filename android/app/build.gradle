@@ -86,7 +86,7 @@ apply from: "../../node_modules/react-native/react.gradle"
 apply plugin: "com.bugsnag.android.gradle"
 
 bugsnag {
-    uploadReactNativeMappings = true
+    uploadReactNativeMappings = false
 }
 
 /**
@@ -139,8 +139,8 @@ android {
         applicationId "com.povertystoplightapp"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
-        versionCode 157
-        versionName "1.18.7"
+        versionCode 159
+        versionName "1.18.9"
         multiDexEnabled true
     }
 
