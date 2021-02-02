@@ -213,10 +213,24 @@ export class Dashboard extends Component {
     if (!this.props.user.token) {
       this.props.navigation.navigate('Login');
     } else {
+      try {
+        throw new Error('en didMount')
+      }catch(e) {
+        const pendingDraft = this.props.drafts.filter(draft => draft.status == 'Pending sync')
+        const errorDraft = this.props.drafts.filter(draft => draft.status == 'Sync error')
+        Bugsnag.notify(e, event => {
+          event.addMetadata('pending', { pending: pendingDraft });
+          event.addMetadata('error', { error: errorDraft });
+          event.addMetadata('env',{env: this.props.env}),
+          event.addMetadata('url',{url: url[this.props.env]})
+          event.addMetadata('user',{user: this.props.user})
+        });
+      }
       nodeEnv.NODE_ENV === 'production'
         ? TestFairy.setUserId(this.props.user.username)
         : null;
       this.checkAPIVersion();
+
       if (UIManager.AccessibilityEventTypes) {
         setTimeout(() => {
           UIManager.sendAccessibilityEvent(
@@ -304,7 +318,7 @@ export class Dashboard extends Component {
   }
 
   handleSync = (item) => {
-    
+    //console.log('item',item)
 
     fetch(`https://platform.backend.povertystoplight.org/api/v1/stoplight/assistant/location?ClientNumber=+595981318432&TwilioNumber=+18055902031&Token=token&Latitude=latitude&Longitude=longitude`, {
       method: 'POST',
@@ -315,8 +329,15 @@ export class Dashboard extends Component {
       console.log(error)
     })
 
-    
-    delete  item.progress;
+    let payload = {
+      ...item,
+      pictures: [],
+    }
+
+    delete payload.progress;
+
+
+
     try {
       throw new Error('log bug')
     }catch(e) {
@@ -328,12 +349,13 @@ export class Dashboard extends Component {
       });
     }
    
-    this.setState({ selectedDraftId: item.draftId });
-    let draftPayload = {
-      ...item,
+    this.setState({ selectedDraftId: payload.draftId });
+    /* let draftPayload = {
+      ...payload,
       pictures: [],
-    }
-    this.sendDraft(url[this.props.env], this.props.user.token, draftPayload.draftId, draftPayload);
+    } */
+    
+    this.sendDraft(url[this.props.env], this.props.user.token, payload.draftId, payload);
 
 
   }
@@ -531,7 +553,7 @@ export class Dashboard extends Component {
                       : drafts.slice().reverse()
                   }
                   keyExtractor={(item, index) => index.toString()}
-                  renderItem={({ item }) => (
+                  renderItem={({ item }) => { console.log ('item render',item); return(
                     <DraftListItem
                       item={item}
                       isOnline={offline.online}
@@ -541,7 +563,7 @@ export class Dashboard extends Component {
                       user={this.props.user}
                       selectedDraftId={this.state.selectedDraftId}
                     />
-                  )}
+                  )}}
                 />
               </View>
             </View>
