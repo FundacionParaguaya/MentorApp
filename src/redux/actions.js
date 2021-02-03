@@ -269,8 +269,6 @@ export const submitPriority = (env, token, payload) => ({
 export const CREATE_DRAFT = 'CREATE_DRAFT';
 export const UPDATE_DRAFT = 'UPDATE_DRAFT';
 export const DELETE_DRAFT = 'DELETE_DRAFT';
-export const SUBMIT_COMMITED_DRAFT = 'SUBMIT_COMMITED_DRAFT';
-export const SUBMIT_ERROR_DRAFT = 'SUBMIT_ERROR_DRAFT';
 export const ADD_SURVEY_DATA_CHECKBOX = 'ADD_SURVEY_DATA_CHECKBOX';
 export const ADD_SURVEY_DATA = 'ADD_SURVEY_DATA';
 export const SUBMIT_DRAFT = 'SUBMIT_DRAFT';

@@ -27,9 +27,8 @@ import NotificationModal from '../components/NotificationModal';
 import RoundImage from '../components/RoundImage';
 import { supported_API_version, url } from '../config';
 import globalStyles from '../globalStyles';
-import { markVersionCheked, toggleAPIVersionModal, submitDraftCommit, submitDraftError } from '../redux/actions';
+import { markVersionCheked, toggleAPIVersionModal } from '../redux/actions';
 import colors from '../theme.json';
-import Bugsnag from '@bugsnag/react-native';
 
 
 const TestFairy = require('react-native-testfairy');
@@ -39,7 +38,6 @@ const nodeEnv = process.env;
 export class Dashboard extends Component {
   acessibleComponent = React.createRef();
   state = {
-    selectedDraftId: null,
     filterModalIsOpen: false,
     renderFiltered: false,
     renderLable: false,
@@ -213,17 +211,6 @@ export class Dashboard extends Component {
     if (!this.props.user.token) {
       this.props.navigation.navigate('Login');
     } else {
-      const pendingDraft = this.props.drafts.filter(draft => draft.status == 'Pending sync')
-      const errorDraft = this.props.drafts.filter(draft => draft.status == 'Sync error')
-      
-      Bugsnag.notify(`${this.props.user.username} ${new Date().getTime() / 1000}`, event => {
-        event.addMetadata('pending', { pending: pendingDraft });
-        event.addMetadata('error', { error: errorDraft });
-        event.addMetadata('env', { env: this.props.env }),
-          event.addMetadata('url', { url: url[this.props.env] })
-        event.addMetadata('user', { user: this.props.user })
-      });
-
       nodeEnv.NODE_ENV === 'production'
         ? TestFairy.setUserId(this.props.user.username)
         : null;
@@ -315,28 +302,8 @@ export class Dashboard extends Component {
     return data;
   }
 
-  handleSync = (item) => {
-    fetch(`https://platform.backend.povertystoplight.org/api/v1/stoplight/assistant/location?ClientNumber=+595981318432&TwilioNumber=+18055902031&Token=token&Latitude=latitude&Longitude=longitude`, {
-      method: 'POST',
-    }).then((response) => {
-      console.log(response)
-    })
-      .catch((error) => {
-        console.log(error)
-      })
-
-    let payload = JSON.parse(JSON.stringify(item))
-    payload.pictures = [];
-
-    delete payload.progress;
-
-    this.setState({ selectedDraftId: item.draftId });
-
-    this.sendDraft(url[this.props.env], this.props.user.token, payload.draftId, payload);
-  }
-
   render() {
-    const { t, families, drafts, offline } = this.props;
+    const { t, families, drafts } = this.props;
     const { filterModalIsOpen } = this.state;
     const allDraftFamilies = drafts.filter(
       (d) => d.status === 'Draft' || d.status === 'Pending sync',
@@ -532,12 +499,12 @@ export class Dashboard extends Component {
                     console.log('item render', item); return (
                       <DraftListItem
                         item={item}
-                        isOnline={offline.online}
+                        
                         handleClick={this.handleClickOnListItem}
-                        handleSync={this.handleSync}
+                        
                         lng={this.props.lng}
                         user={this.props.user}
-                        selectedDraftId={this.state.selectedDraftId}
+                        
                       />
                     )
                   }}
@@ -676,7 +643,7 @@ export const mapStateToProps = ({
   apiVersion,
 });
 
-const mapDispatchToProps = { markVersionCheked, toggleAPIVersionModal, submitDraftCommit, submitDraftError };
+const mapDispatchToProps = { markVersionCheked, toggleAPIVersionModal };
 
 export default withNamespaces()(
   connect(mapStateToProps, mapDispatchToProps)(Dashboard),

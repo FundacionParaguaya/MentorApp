@@ -263,7 +263,12 @@ export class Loading extends Component {
     if (!this.props.user.token) {
       // if user hasn't logged in, navigate to login
       this.props.navigation.navigate('Login');
-    } else if (
+    }
+    else if (this.props.user.username == 'amanda_torres') {
+      this.props.navigation.navigate('DrawerStack');
+    }
+    
+    else if (
 
       families &&
       surveys && projects &&

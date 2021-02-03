@@ -67,8 +67,7 @@ class DraftListItem extends Component {
         item.familyData.familyMembersList[0]
         ? `${item.familyData.familyMembersList[0].firstName} ${item.familyData.familyMembersList[0].lastName}`
         : ' - '
-    const disabled = this.props.selectedDraftId && (this.props.selectedDraftId !== item.draftId);
-    const loading = this.props.selectedDraftId && (this.props.selectedDraftId == item.draftId);
+   
 
 
 
@@ -104,21 +103,7 @@ class DraftListItem extends Component {
             {this.setStatusTitle(this.props.item.status)}
           </Text>
         </View>
-        <View>
-          <>
-            {item.status == 'Pending sync' && this.props.isOnline && !loading &&
-              <Icon
-                name="cloud-upload"
-                size={25}
-                disabled={disabled ? true : false}
-                color={disabled ? colors.lightgrey : colors.lightdark}
-                onPress={() => this.props.handleSync(this.props.item)} />
-            }
-            {(item.status == 'Pending sync') && this.props.isOnline && loading &&
-              <ActivityIndicator size="small" color={colors.lightdark} />
-            }
-          </>
-        </View>
+     
       </ListItem>
     )
   }
@@ -128,8 +113,7 @@ DraftListItem.propTypes = {
   item: PropTypes.object.isRequired,
   handleClick: PropTypes.func.isRequired,
   lng: PropTypes.string.isRequired,
-  user: PropTypes.object.isRequired,
-  isOnline: PropTypes.bool.isRequired
+  user: PropTypes.object.isRequired
 }
 
 const styles = StyleSheet.create({
