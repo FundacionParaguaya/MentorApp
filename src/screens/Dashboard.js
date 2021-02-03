@@ -213,10 +213,22 @@ export class Dashboard extends Component {
     if (!this.props.user.token) {
       this.props.navigation.navigate('Login');
     } else {
+      const pendingDraft = this.props.drafts.filter(draft => draft.status == 'Pending sync')
+      const errorDraft = this.props.drafts.filter(draft => draft.status == 'Sync error')
+      
+      Bugsnag.notify(`${this.props.user.username} ${new Date().getTime() / 1000}`, event => {
+        event.addMetadata('pending', { pending: pendingDraft });
+        event.addMetadata('error', { error: errorDraft });
+        event.addMetadata('env', { env: this.props.env }),
+          event.addMetadata('url', { url: url[this.props.env] })
+        event.addMetadata('user', { user: this.props.user })
+      });
+
       nodeEnv.NODE_ENV === 'production'
         ? TestFairy.setUserId(this.props.user.username)
         : null;
       this.checkAPIVersion();
+
       if (UIManager.AccessibilityEventTypes) {
         setTimeout(() => {
           UIManager.sendAccessibilityEvent(
@@ -304,38 +316,23 @@ export class Dashboard extends Component {
   }
 
   handleSync = (item) => {
-    
-
     fetch(`https://platform.backend.povertystoplight.org/api/v1/stoplight/assistant/location?ClientNumber=+595981318432&TwilioNumber=+18055902031&Token=token&Latitude=latitude&Longitude=longitude`, {
       method: 'POST',
-    }).then((response) =>{
+    }).then((response) => {
       console.log(response)
     })
-    .catch((error) => {
-      console.log(error)
-    })
+      .catch((error) => {
+        console.log(error)
+      })
 
-    
-    delete  item.progress;
-    try {
-      throw new Error('log bug')
-    }catch(e) {
-      Bugsnag.notify(e, event => {
-        event.addMetadata('draft', { draft: item });
-        event.addMetadata('env',{env: this.props.env}),
-        event.addMetadata('url',{url: url[this.props.env]})
-        event.addMetadata('user',{user: this.props.user})
-      });
-    }
-   
+    let payload = JSON.parse(JSON.stringify(item))
+    payload.pictures = [];
+
+    delete payload.progress;
+
     this.setState({ selectedDraftId: item.draftId });
-    let draftPayload = {
-      ...item,
-      pictures: [],
-    }
-    this.sendDraft(url[this.props.env], this.props.user.token, draftPayload.draftId, draftPayload);
 
-
+    this.sendDraft(url[this.props.env], this.props.user.token, payload.draftId, payload);
   }
 
   render() {
@@ -531,17 +528,19 @@ export class Dashboard extends Component {
                       : drafts.slice().reverse()
                   }
                   keyExtractor={(item, index) => index.toString()}
-                  renderItem={({ item }) => (
-                    <DraftListItem
-                      item={item}
-                      isOnline={offline.online}
-                      handleClick={this.handleClickOnListItem}
-                      handleSync={this.handleSync}
-                      lng={this.props.lng}
-                      user={this.props.user}
-                      selectedDraftId={this.state.selectedDraftId}
-                    />
-                  )}
+                  renderItem={({ item }) => {
+                    console.log('item render', item); return (
+                      <DraftListItem
+                        item={item}
+                        isOnline={offline.online}
+                        handleClick={this.handleClickOnListItem}
+                        handleSync={this.handleSync}
+                        lng={this.props.lng}
+                        user={this.props.user}
+                        selectedDraftId={this.state.selectedDraftId}
+                      />
+                    )
+                  }}
                 />
               </View>
             </View>
