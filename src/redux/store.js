@@ -36,19 +36,6 @@ const reduxOfflineConfig = {
       }
       return [...outbox, incomingAction];
     },
-    peek(outbox, action, { offline }) {
-      
-      while (!!outbox && outbox.length > 0 && outbox[0].type === 'LOAD_IMAGES' && !!outbox[0].meta.offline.commit.draft &&
-        (outbox[0].meta.offline.commit.draft.surveyId == 33 || outbox[0].meta.offline.commit.draft.surveyId == 39)) {
-
-        outbox.splice(0, 1)
-      }
-
-      if (outbox.length > 0) {
-        return outbox[0]
-      }
-
-    }
   },
   // this fires after store hydration is done
   persistCallback: () => {

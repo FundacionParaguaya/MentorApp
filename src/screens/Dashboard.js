@@ -27,9 +27,8 @@ import NotificationModal from '../components/NotificationModal';
 import RoundImage from '../components/RoundImage';
 import { supported_API_version, url } from '../config';
 import globalStyles from '../globalStyles';
-import { markVersionCheked, toggleAPIVersionModal, submitDraftCommit, submitDraftError } from '../redux/actions';
+import { markVersionCheked, toggleAPIVersionModal } from '../redux/actions';
 import colors from '../theme.json';
-import Bugsnag from '@bugsnag/react-native';
 
 
 const TestFairy = require('react-native-testfairy');
@@ -39,7 +38,6 @@ const nodeEnv = process.env;
 export class Dashboard extends Component {
   acessibleComponent = React.createRef();
   state = {
-    selectedDraftId: null,
     filterModalIsOpen: false,
     renderFiltered: false,
     renderLable: false,
@@ -213,17 +211,6 @@ export class Dashboard extends Component {
     if (!this.props.user.token) {
       this.props.navigation.navigate('Login');
     } else {
-      const pendingDraft = this.props.drafts.filter(draft => draft.status == 'Pending sync')
-      const errorDraft = this.props.drafts.filter(draft => draft.status == 'Sync error')
-      
-      Bugsnag.notify(`${this.props.user.username} ${new Date().getTime() / 1000}`, event => {
-        event.addMetadata('pending', { pending: pendingDraft });
-        event.addMetadata('error', { error: errorDraft });
-        event.addMetadata('env', { env: this.props.env }),
-          event.addMetadata('url', { url: url[this.props.env] })
-        event.addMetadata('user', { user: this.props.user })
-      });
-
       nodeEnv.NODE_ENV === 'production'
         ? TestFairy.setUserId(this.props.user.username)
         : null;
@@ -240,103 +227,8 @@ export class Dashboard extends Component {
     }
   }
 
-  formatPhone = (code, phone) => {
-    if (code && phone && phone.length > 0) {
-      const phoneUtil = PhoneNumberUtil.getInstance();
-      const international = '+' + code + ' ' + phone;
-      let phoneNumber = phoneUtil.parse(international, code);
-      phone = phoneNumber.getNationalNumber();
-    }
-    return phone;
-  };
-
-  sendDraft = (env, token, id, payload) => {
-    console.log('----Calling Submit Draft----', payload);
-    const sanitizedSnapshot = { ...payload };
-
-    let { economicSurveyDataList } = payload;
-
-    const validEconomicIndicator = (ec) =>
-      (ec.value !== null && ec.value !== undefined && ec.value !== '') ||
-      (!!ec.multipleValue && ec.multipleValue.length > 0);
-
-    economicSurveyDataList = economicSurveyDataList.filter(
-      validEconomicIndicator,
-    );
-    sanitizedSnapshot.economicSurveyDataList = economicSurveyDataList;
-    sanitizedSnapshot.familyData.familyMembersList.forEach((member) => {
-      let { socioEconomicAnswers = [] } = member;
-      delete member.memberIdentifier;
-      delete member.id;
-      delete member.familyId;
-      delete member.uuid;
-
-      member.phoneNumber = this.formatPhone(member.phoneCode, member.phoneNumber);
-      socioEconomicAnswers = socioEconomicAnswers.filter(validEconomicIndicator);
-      // eslint-disable-next-line no-param-reassign
-      member.socioEconomicAnswers = socioEconomicAnswers;
-    });
-    console.log(sanitizedSnapshot);
-    fetch(`${env}/graphql`, {
-      method: 'POST',
-      headers: {
-        Authorization: `Bearer ${token}`,
-        'content-type': 'application/json;charset=utf8',
-      },
-      body: JSON.stringify({
-        query:
-          'mutation addSnapshot($newSnapshot: NewSnapshotDTOInput) {addSnapshot(newSnapshot: $newSnapshot)  { surveyId surveyVersionId snapshotStoplightAchievements { action indicator roadmap } snapshotStoplightPriorities { reason action indicator estimatedDate } family { familyId } user { userId  username } indicatorSurveyDataList {key value} economicSurveyDataList {key value multipleValue} familyDataDTO { latitude longitude accuracy familyMemberDTOList { firstName lastName socioEconomicAnswers {key value } } } } }',
-        variables: { newSnapshot: sanitizedSnapshot },
-      })
-    }).then((data) => {
-      if (data.status !== 200) {
-        this.props.submitDraftError(id);
-        this.setState({ selectedDraftId: null })
-        throw new Error();
-      } else return data.json();
-    }).
-      then((data) => {
-        this.setState({ selectedDraftId: null })
-        this.props.submitDraftCommit(id);
-      })
-  }
-
-  createFormData = (item) => {
-    let data = new FormData();
-    if (item) {
-      item.forEach(el => {
-        data.append('pictures', {
-          uri: el[1].uri,
-          name: el[1].name,
-          type: el[1].type,
-        })
-      });
-    }
-    return data;
-  }
-
-  handleSync = (item) => {
-    fetch(`https://platform.backend.povertystoplight.org/api/v1/stoplight/assistant/location?ClientNumber=+595981318432&TwilioNumber=+18055902031&Token=token&Latitude=latitude&Longitude=longitude`, {
-      method: 'POST',
-    }).then((response) => {
-      console.log(response)
-    })
-      .catch((error) => {
-        console.log(error)
-      })
-
-    let payload = JSON.parse(JSON.stringify(item))
-    payload.pictures = [];
-
-    delete payload.progress;
-
-    this.setState({ selectedDraftId: item.draftId });
-
-    this.sendDraft(url[this.props.env], this.props.user.token, payload.draftId, payload);
-  }
-
   render() {
-    const { t, families, drafts, offline } = this.props;
+    const { t, families, drafts } = this.props;
     const { filterModalIsOpen } = this.state;
     const allDraftFamilies = drafts.filter(
       (d) => d.status === 'Draft' || d.status === 'Pending sync',
@@ -528,19 +420,18 @@ export class Dashboard extends Component {
                       : drafts.slice().reverse()
                   }
                   keyExtractor={(item, index) => index.toString()}
-                  renderItem={({ item }) => {
-                    console.log('item render', item); return (
-                      <DraftListItem
-                        item={item}
-                        isOnline={offline.online}
-                        handleClick={this.handleClickOnListItem}
-                        handleSync={this.handleSync}
-                        lng={this.props.lng}
-                        user={this.props.user}
-                        selectedDraftId={this.state.selectedDraftId}
-                      />
-                    )
-                  }}
+                  renderItem={({ item }) => (
+                    <DraftListItem
+                      item={item}
+
+                      handleClick={this.handleClickOnListItem}
+
+                      lng={this.props.lng}
+                      user={this.props.user}
+
+                    />
+                  )
+                  }
                 />
               </View>
             </View>
@@ -676,7 +567,7 @@ export const mapStateToProps = ({
   apiVersion,
 });
 
-const mapDispatchToProps = { markVersionCheked, toggleAPIVersionModal, submitDraftCommit, submitDraftError };
+const mapDispatchToProps = { markVersionCheked, toggleAPIVersionModal };
 
 export default withNamespaces()(
   connect(mapStateToProps, mapDispatchToProps)(Dashboard),

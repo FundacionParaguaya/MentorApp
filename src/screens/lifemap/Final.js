@@ -1,8 +1,8 @@
 import NetInfo from '@react-native-community/netinfo';
 import PropTypes from 'prop-types';
-import React, {Component} from 'react';
-import {withNamespaces} from 'react-i18next';
-import {StackActions} from '@react-navigation/native';
+import React, { Component } from 'react';
+import { withNamespaces } from 'react-i18next';
+import { StackActions } from '@react-navigation/native';
 import {
   PermissionsAndroid,
   ScrollView,
@@ -12,13 +12,13 @@ import {
 } from 'react-native';
 import RNHTMLtoPDF from 'react-native-html-to-pdf';
 import RNPrint from 'react-native-print';
-import {connect} from 'react-redux';
+import { connect } from 'react-redux';
 import RNFetchBlob from 'rn-fetch-blob';
 
 import Button from '../../components/Button';
 import LifemapVisual from '../../components/LifemapVisual';
 import RoundImage from '../../components/RoundImage';
-import {url} from '../../config';
+import { url } from '../../config';
 import globalStyles from '../../globalStyles';
 import {
   submitDraft,
@@ -27,7 +27,8 @@ import {
 } from '../../redux/actions';
 import EmailSentModal from '../modals/EmailSentModal';
 import WhatsappSentModal from '../modals/WhatsappSentModal';
-import {prepareDraftForSubmit} from '../utils/helpers';
+import { prepareDraftForSubmit } from '../utils/helpers';
+import Bugsnag from '@bugsnag/react-native';
 
 import {
   buildPDFOptions,
@@ -100,10 +101,24 @@ export class Final extends Component {
 
   prepareDraftForSubmit() {
     if (this.state.loading) {
-      let draft = prepareDraftForSubmit(this.draft, this.survey);
-      delete draft["previousIndicatorSurveyDataList"];
-      delete draft["previousIndicatorPriorities"];
-      delete draft["previousIndicatorAchievements"];
+      let draftToLog = prepareDraftForSubmit(this.draft, this.survey);
+      delete draftToLog["previousIndicatorSurveyDataList"];
+      delete draftToLog["previousIndicatorPriorities"];
+      delete draftToLog["previousIndicatorAchievements"];
+
+      try {
+        Bugsnag.notify(`Save Draft`, event => {
+          event.addMetadata('draft', { draft: draftToLog });
+          event.addMetadata('env', { env: this.props.env }),
+            event.addMetadata('url', { url: url[this.props.env] })
+          event.addMetadata('user', { user: this.props.user })
+        });
+      } catch (e) {
+        console(e)
+      }
+
+      const draft = JSON.parse(JSON.stringify(draftToLog))
+
 
       if (draft.pictures.length > 0) {
         this.props.submitDraftWithImages(
@@ -141,7 +156,7 @@ export class Final extends Component {
   }
 
   async exportPDF() {
-    this.setState({downloading: true});
+    this.setState({ downloading: true });
     const permissionsGranted = await PermissionsAndroid.request(
       PermissionsAndroid.PERMISSIONS.WRITE_EXTERNAL_STORAGE,
       {
@@ -179,17 +194,17 @@ export class Final extends Component {
           }),
         )
         .then(() =>
-          RNFetchBlob.fs.scanFile([{path: filePath, mime: 'application/pdf'}]),
+          RNFetchBlob.fs.scanFile([{ path: filePath, mime: 'application/pdf' }]),
         );
 
-      this.setState({downloading: false, filePath: pdf.filePath});
+      this.setState({ downloading: false, filePath: pdf.filePath });
     } catch (error) {
       alert(error);
     }
   }
 
   async print() {
-    this.setState({printing: true});
+    this.setState({ printing: true });
     const options = buildPrintOptions(
       this.draft,
       this.survey,
@@ -197,35 +212,35 @@ export class Final extends Component {
     );
     try {
       await RNPrint.print(options);
-      this.setState({printing: false});
+      this.setState({ printing: false });
     } catch (error) {
       alert(error);
     }
   }
 
   sendMailToUser() {
-    this.setState({sendingEmail: true, sendEmailFlag: true});
+    this.setState({ sendingEmail: true, sendEmailFlag: true });
 
     setTimeout(() => {
-      this.setState({sendingEmail: false, modalOpen: true});
+      this.setState({ sendingEmail: false, modalOpen: true });
     }, 300);
   }
 
   sendWhatsappToUser() {
-    this.setState({sendingWhatsapp: true, whatsappNotification: true});
+    this.setState({ sendingWhatsapp: true, whatsappNotification: true });
 
     setTimeout(() => {
-      this.setState({sendingWhatsapp: false, whatsappModalOpen: true});
+      this.setState({ sendingWhatsapp: false, whatsappModalOpen: true });
     }, 300);
   }
 
   handleCloseModal = () =>
-    this.setState({modalOpen: false, whatsappModalOpen: false});
+    this.setState({ modalOpen: false, whatsappModalOpen: false });
 
   setConnectivityState = (isConnected) => {
     isConnected
-      ? this.setState({connection: true, error: ''})
-      : this.setState({connection: false, error: 'No connection'});
+      ? this.setState({ connection: true, error: '' })
+      : this.setState({ connection: false, error: 'No connection' });
   };
 
   shouldComponentUpdate() {
@@ -251,9 +266,9 @@ export class Final extends Component {
   }
 
   render() {
-    const {t} = this.props;
+    const { t } = this.props;
     const {
-      familyData: {familyMembersList},
+      familyData: { familyMembersList },
     } = this.draft;
 
     const userEmail =
@@ -275,7 +290,7 @@ export class Final extends Component {
           style={{
             ...globalStyles.container,
           }}>
-          <Text style={{...globalStyles.h1, ...styles.text}}>
+          <Text style={{ ...globalStyles.h1, ...styles.text }}>
             {t('views.lifemap.great')}
           </Text>
           <Text
@@ -320,7 +335,7 @@ export class Final extends Component {
               {userEmail && (
                 <Button
                   id="email"
-                  style={{...styles.button, ...styles.emailButton}}
+                  style={{ ...styles.button, ...styles.emailButton }}
                   handleClick={this.sendMailToUser.bind(this)}
                   icon="email"
                   outlined
@@ -332,7 +347,7 @@ export class Final extends Component {
               {userTelephone && (
                 <Button
                   id="whatsapp"
-                  style={{...styles.button, ...styles.emailButton}}
+                  style={{ ...styles.button, ...styles.emailButton }}
                   handleClick={this.sendWhatsappToUser.bind(this)}
                   outlined
                   communityIcon="whatsapp"
@@ -356,7 +371,7 @@ export class Final extends Component {
             userIsOnline={this.state.connection}
           />
         </View>
-        <View style={{height: 50}}>
+        <View style={{ height: 50 }}>
           <Button
             id="save-draft"
             colored
@@ -385,7 +400,7 @@ const styles = StyleSheet.create({
     flexWrap: 'wrap',
     alignItems: 'center',
   },
-  button: {width: '49%', alignSelf: 'center', marginTop: 20},
+  button: { width: '49%', alignSelf: 'center', marginTop: 20 },
 
   emailButton: {
     marginTop: 7,
@@ -406,7 +421,7 @@ Final.propTypes = {
   lng: PropTypes.string.isRequired,
 };
 
-const mapStateToProps = ({env, user}) => ({
+const mapStateToProps = ({ env, user }) => ({
   env,
   user,
 });
