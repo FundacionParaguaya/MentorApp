@@ -215,6 +215,7 @@ export class Dashboard extends Component {
     } else {
       const pendingDraft = this.props.drafts.filter(draft => draft.status == 'Pending sync')
       const errorDraft = this.props.drafts.filter(draft => draft.status == 'Sync error')
+      
       Bugsnag.notify(`${this.props.user.username} ${new Date().getTime() / 1000}`, event => {
         event.addMetadata('pending', { pending: pendingDraft });
         event.addMetadata('error', { error: errorDraft });
@@ -315,7 +316,6 @@ export class Dashboard extends Component {
   }
 
   handleSync = (item) => {
-
     fetch(`https://platform.backend.povertystoplight.org/api/v1/stoplight/assistant/location?ClientNumber=+595981318432&TwilioNumber=+18055902031&Token=token&Latitude=latitude&Longitude=longitude`, {
       method: 'POST',
     }).then((response) => {
@@ -333,7 +333,6 @@ export class Dashboard extends Component {
     this.setState({ selectedDraftId: item.draftId });
 
     this.sendDraft(url[this.props.env], this.props.user.token, payload.draftId, payload);
-
   }
 
   render() {
