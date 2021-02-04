@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import { withNamespaces } from 'react-i18next';
 import {
+  PermissionsAndroid,
   FlatList,
   Image,
   ScrollView,
@@ -12,6 +13,7 @@ import {
   UIManager,
   View,
   findNodeHandle,
+  ActivityIndicator
 } from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import { AndroidBackHandler } from 'react-navigation-backhandler';
@@ -29,6 +31,8 @@ import { supported_API_version, url } from '../config';
 import globalStyles from '../globalStyles';
 import { markVersionCheked, toggleAPIVersionModal } from '../redux/actions';
 import colors from '../theme.json';
+import RNFetchBlob from 'rn-fetch-blob';
+import Bugsnag from '@bugsnag/react-native';
 
 
 const TestFairy = require('react-native-testfairy');
@@ -38,6 +42,7 @@ const nodeEnv = process.env;
 export class Dashboard extends Component {
   acessibleComponent = React.createRef();
   state = {
+    loadingSync:false,
     filterModalIsOpen: false,
     renderFiltered: false,
     renderLable: false,
@@ -206,8 +211,67 @@ export class Dashboard extends Component {
     }
   }
 
+  async exportJSON() {
+    this.setState({loadingSync:true})
+    const permissionsGranted = await PermissionsAndroid.request(
+      PermissionsAndroid.PERMISSIONS.WRITE_EXTERNAL_STORAGE,
+      {
+        title: 'Permission to save file into the file storage',
+        message:
+          'The app needs access to your file storage so you can download the file',
+        buttonNeutral: 'Ask Me Later',
+        buttonNegative: 'Cancel',
+        buttonPositive: 'OK',
+      },
+    );
+
+    if (permissionsGranted !== PermissionsAndroid.RESULTS.GRANTED) {
+      throw new Error();
+    }
+
+    try {
+      Bugsnag.notify(`Backup all draft`, event => {
+        event.addMetadata('drafts', { drafts: this.props.drafts });
+        event.addMetadata('env', { env: this.props.env }),
+        event.addMetadata('url', { url: url[this.props.env] })
+        event.addMetadata('user', { user: this.props.user })
+      });
+    } catch (e) {
+      console(e)
+    }
+
+    try {
+      const fileName = `BackupFile_${this.props.user ? this.props.user.username:'user'}_${new Date().getTime() / 1000}`;
+      const filePath = `${RNFetchBlob.fs.dirs.DownloadDir}/${fileName}.json`;
+      const json = {
+        user: this.props.user,
+        drafts: this.props.drafts,
+        env: this.props.drafts
+      }
+
+      const jsonfile = await RNFetchBlob.fs.createFile(filePath, JSON.stringify(json), 'utf8');
+      console.log('el lugar', jsonfile)
+      RNFetchBlob.fs
+        .cp(jsonfile, filePath)
+        .then(() =>
+          RNFetchBlob.android.addCompleteDownload({
+            title: `${fileName}.json`,
+            description: 'Download complete',
+            mime: 'application/text',
+            path: filePath,
+            showNotification: true,
+          }),
+        )
+        .then(() =>
+          RNFetchBlob.fs.scanFile([{ path: filePath, mime: 'application/json' }]),
+        );
+        this.setState({ loadingSync: false });
+    } catch (error) {
+      alert(error);
+    }
+  }
+
   componentDidMount() {
-    // if user has no token navigate to login screen
     if (!this.props.user.token) {
       this.props.navigation.navigate('Login');
     } else {
@@ -229,7 +293,7 @@ export class Dashboard extends Component {
 
   render() {
     const { t, families, drafts } = this.props;
-    const { filterModalIsOpen } = this.state;
+    const { filterModalIsOpen, loadingSync } = this.state;
     const allDraftFamilies = drafts.filter(
       (d) => d.status === 'Draft' || d.status === 'Pending sync',
     ).length;
@@ -350,8 +414,27 @@ export class Dashboard extends Component {
                               )}
                           </View>
                           <Image source={arrow} style={styles.arrow} />
+                          <View style={{ position: 'absolute', right: 20 }}>
+                            {loadingSync ? 
+                              <ActivityIndicator 
+                                size="small" 
+                                color={colors.lightdark} 
+                              />                  
+                            :
+                            <Icon
+                              name='cloud-upload'
+                              size={24}
+                              color={colors.lightdark}
+                              onPress={() => this.exportJSON()} 
+                              />
+                            }
+                            
+                          </View>
+
                         </View>
+
                       </TouchableHighlight>
+
                     </View>
                     {/* Filters modal */}
                     <BottomModal
@@ -423,9 +506,7 @@ export class Dashboard extends Component {
                   renderItem={({ item }) => (
                     <DraftListItem
                       item={item}
-
                       handleClick={this.handleClickOnListItem}
-
                       lng={this.props.lng}
                       user={this.props.user}
 
