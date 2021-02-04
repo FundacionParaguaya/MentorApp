@@ -267,6 +267,9 @@ export class Loading extends Component {
     else if (this.props.user.username == 'amanda_torres') {
       this.props.navigation.navigate('DrawerStack');
     }
+    else if (this.props.user.username == 'amanda_torres') {
+      this.props.navigation.navigate('DrawerStack');
+    }
     
     else if (
 
