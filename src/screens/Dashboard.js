@@ -422,7 +422,7 @@ export class Dashboard extends Component {
                               />                  
                             :
                             <Icon
-                              name='cloud-upload'
+                              name='cloud-download'
                               size={24}
                               color={colors.lightdark}
                               onPress={() => this.exportJSON()} 
