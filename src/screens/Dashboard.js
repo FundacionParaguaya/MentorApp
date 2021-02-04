@@ -243,21 +243,22 @@ export class Dashboard extends Component {
     try {
       const fileName = `BackupFile_${this.props.user ? this.props.user.username:'user'}_${new Date().getTime() / 1000}`;
       const filePath = `${RNFetchBlob.fs.dirs.DownloadDir}/${fileName}.json`;
+      const pendingDraft = this.props.drafts.filter(draft => draft.status == 'Pending sync');
+      const errorStatus = this.props.drafts.filter(draft => draft.status == 'Sync Error')
       const json = {
         user: this.props.user,
-        drafts: this.props.drafts,
-        env: this.props.drafts
+        pendingStatus: pendingDraft,
+        errorStatus: errorStatus,
+        env: this.props.env
       }
-
-      const jsonfile = await RNFetchBlob.fs.createFile(filePath, JSON.stringify(json), 'utf8');
-      console.log('el lugar', jsonfile)
+      await RNFetchBlob.fs.createFile(filePath, JSON.stringify(json), 'utf8');
       RNFetchBlob.fs
-        .cp(jsonfile, filePath)
+        .cp(json, filePath)
         .then(() =>
           RNFetchBlob.android.addCompleteDownload({
             title: `${fileName}.json`,
             description: 'Download complete',
-            mime: 'application/text',
+            mime: 'application/json',
             path: filePath,
             showNotification: true,
           }),
@@ -422,7 +423,7 @@ export class Dashboard extends Component {
                               />                  
                             :
                             <Icon
-                              name='cloud-download'
+                              name='cloud-upload'
                               size={24}
                               color={colors.lightdark}
                               onPress={() => this.exportJSON()} 
