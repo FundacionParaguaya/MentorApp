@@ -226,7 +226,10 @@
 			"toContinueUsingTheApp": "libere espaço para continuar usando Stoplight Mobile.",
 			"chooseProjectTitle":"Escolha um projeto",
 			"chooseProjectSubtitle": "Escolha um projeto ao qual a família pertencerá.",
-			"skipProject": "Pular projeto"  
+			"skipProject": "Pular projeto",
+			"finishDownload": "O download está completo!",
+      		"subtitleFinishDownload": "Você pode encontrar o arquivo na pasta Download."
+			
 		},
 		"pictures": {
 			"limit": "*Você atingiu o limite de 10MB! Elimine uma imagem para continuar.",

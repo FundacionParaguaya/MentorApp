@@ -33,6 +33,8 @@ import { markVersionCheked, toggleAPIVersionModal } from '../redux/actions';
 import colors from '../theme.json';
 import RNFetchBlob from 'rn-fetch-blob';
 import Bugsnag from '@bugsnag/react-native';
+import DownloadPopup from '../screens/modals/DownloadModal';
+
 
 
 const TestFairy = require('react-native-testfairy');
@@ -44,6 +46,7 @@ export class Dashboard extends Component {
   state = {
     loadingSync:false,
     filterModalIsOpen: false,
+    openDownloadModal: false,
     renderFiltered: false,
     renderLable: false,
     filteredDrafts: [],
@@ -251,25 +254,32 @@ export class Dashboard extends Component {
         errorStatus: errorStatus,
         env: this.props.env
       }
-      await RNFetchBlob.fs.createFile(filePath, JSON.stringify(json), 'utf8');
+      const file = await RNFetchBlob.fs.createFile(filePath, JSON.stringify(json), 'utf8');
+     
       RNFetchBlob.fs
-        .cp(json, filePath)
-        .then(() =>
+        .cp(file, filePath)
+        .then(() => 
           RNFetchBlob.android.addCompleteDownload({
             title: `${fileName}.json`,
             description: 'Download complete',
             mime: 'application/json',
             path: filePath,
             showNotification: true,
-          }),
+          })   
         )
-        .then(() =>
-          RNFetchBlob.fs.scanFile([{ path: filePath, mime: 'application/json' }]),
+        .then(() => {
+          this.toggleDownloadModal();
+          RNFetchBlob.fs.scanFile([{ path: filePath, mime: 'application/json' }])
+        }  
         );
         this.setState({ loadingSync: false });
     } catch (error) {
       alert(error);
     }
+  }
+
+  toggleDownloadModal = () => {
+    this.setState({ openDownloadModal: !this.state.openDownloadModal})
   }
 
   componentDidMount() {
@@ -294,7 +304,7 @@ export class Dashboard extends Component {
 
   render() {
     const { t, families, drafts } = this.props;
-    const { filterModalIsOpen, loadingSync } = this.state;
+    const { filterModalIsOpen, loadingSync, openDownloadModal } = this.state;
     const allDraftFamilies = drafts.filter(
       (d) => d.status === 'Draft' || d.status === 'Pending sync',
     ).length;
@@ -309,6 +319,11 @@ export class Dashboard extends Component {
             onClose={this.onNotificationClose}
             label={t('general.attention')}
             subLabel={t('general.syncAll')}></NotificationModal>
+            <DownloadPopup 
+              isOpen={openDownloadModal}
+              onClose={this.toggleDownloadModal}
+            />
+               
           <ScrollView
             contentContainerStyle={
               drafts.length
@@ -423,7 +438,7 @@ export class Dashboard extends Component {
                               />                  
                             :
                             <Icon
-                              name='cloud-upload'
+                              name='cloud-download'
                               size={24}
                               color={colors.lightdark}
                               onPress={() => this.exportJSON()} 
