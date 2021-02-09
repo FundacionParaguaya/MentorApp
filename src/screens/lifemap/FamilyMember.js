@@ -41,10 +41,10 @@ export class FamilyMember extends Component {
           placeholder={t('views.family.gender')}
           initialValue={member.gender}
           options={[
-            {text: 'Male', value: 'M'},
-            {text: 'Female', value: 'F'},
-            {text: 'Other', value: 'O'},
-            {text: 'I prefer not to answer', value: 'N'},
+            {text: t('views.family.male'), value: 'M'},
+            {text: t('views.family.female'), value: 'F'},
+            {text: t('views.family.other'), value: 'O'},
+            {text: t('views.family.noAnswer'), value: 'N'},
           ]}
           setError={() => {}}
         />
