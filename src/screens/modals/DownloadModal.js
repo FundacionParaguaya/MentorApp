@@ -41,17 +41,17 @@ const styles = StyleSheet.create({
         color: colors.palegreen,
         fontSize: 24,
         position: 'absolute',
-        top: 10,
+        top: 5,
         right: 5
     },
     container: {
         width: '100%',
         maxWidth: 320,
-        height: '40%',
-        maxHeight: 100,
+        maxHeight: 180,
         marginTop: 80,
         alignItems: 'center',
-        justifyContent: 'center'
+        justifyContent: 'center',
+        paddingBottom:40
     },
     title: {
         ...Platform.select({
