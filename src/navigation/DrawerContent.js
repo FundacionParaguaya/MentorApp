@@ -157,6 +157,20 @@ export class DrawerContent extends Component {
               accessible={true}
               accessibilityLabel={'change to Portugues'}
             />
+            <Text style={[globalStyles.h3, styles.whiteText]}>
+            {'  '}|{'  '}
+            </Text>
+            <IconButton
+              id="ht"
+              onPress={()=> this.changeLanguage('ht')}
+              text="HT"
+              textStyle={[
+                globalStyles.h3,
+                lng === 'ht' ? styles.whiteText : styles.greyText,
+              ]}
+              accessible={true}
+              accessibilityLabel={'change to Creole'}
+            />
           </View>
           <Text
             id="username"
