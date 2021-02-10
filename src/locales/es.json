@@ -254,7 +254,9 @@
       "toContinueUsingTheApp": "de espacio para continuar usando Stoplight Mobile.",
       "chooseProjectTitle":"Elige un proyecto",
       "chooseProjectSubtitle": "Elige un proyecto al que pertenecerá la familia ..",
-      "skipProject": "Saltar proyecto"   
+      "skipProject": "Saltar proyecto",
+      "finishDownload": "¡La descarga ha finalizado!",
+      "subtitleFinishDownload": "Puede encontrar el archivo en la carpeta Download."
     },
     "logout": {
       "logout": "Cerrar sesión",
