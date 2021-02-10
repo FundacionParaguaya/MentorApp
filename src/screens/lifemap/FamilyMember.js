@@ -23,6 +23,7 @@ export class FamilyMember extends Component {
   }
   render() {
     const {t} = this.props;
+    const survey = this.props.route.params.survey;
     const member = this.props.route.params.member;
     return (
       <View style={[globalStyles.background, styles.contentContainer]}>
@@ -40,12 +41,7 @@ export class FamilyMember extends Component {
           readOnly
           placeholder={t('views.family.gender')}
           initialValue={member.gender}
-          options={[
-            {text: 'Male', value: 'M'},
-            {text: 'Female', value: 'F'},
-            {text: 'Other', value: 'O'},
-            {text: 'I prefer not to answer', value: 'N'},
-          ]}
+          options={survey ? survey.surveyConfig.gender:[]}
           setError={() => {}}
         />
         <DateInput

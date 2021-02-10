@@ -190,7 +190,11 @@
       "addPriority": "Add Priority",
       "selectIndicator": "Select a Indicator",
       "priorityPending": "Priority pending",
-      "priorityError": "Priority sync error"
+      "priorityError": "Priority sync error",
+      "male": "Male",
+      "female": "Female",
+      "other": "Other",
+      "noAnswer": "I prefer not to answer"
     },
     "lifemap": {
       "indicatorDefinition": "Indicator Definition",

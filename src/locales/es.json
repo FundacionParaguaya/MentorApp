@@ -191,7 +191,11 @@
       "addPriority": "Agregar Prioridad",
       "selectIndicator": "Seleccionar un indicador",
       "priorityPending": "Prioridad pendiente",
-      "priorityError": "Error de sincronización de prioridad"
+      "priorityError": "Error de sincronización de prioridad",
+      "male": "Masculino",
+      "female": "Femenino",
+      "other": "Otro",
+      "noAnswer": "Prefiero no contestar"
     },
     "lifemap": {
       "indicatorDefinition": "Definición del indicador",
