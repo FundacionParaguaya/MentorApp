@@ -73,6 +73,30 @@ class DatePickerWheel extends Component {
     return `${day} ${month} ${year}`
   }
 
+  validDays = (days) => {
+    const today = new Date();
+    let y = today.getFullYear();
+    let m = today.getMonth();
+    let d = today.getDate();
+    const selectedYear = this.state.year ? this.state.year.data: y;
+    const selectedMonth = this.state.month ? this.state.month.position: m;
+    if(selectedYear == y && selectedMonth == m ){
+       return days.filter((day,index) => index < d).map(day => day.value);
+    }
+    return days.map(day => day.value);
+  }
+
+  validMonths = (months) => {
+    const today = new Date();
+    let y = today.getFullYear();
+    let m = today.getMonth();
+    const selectedYear = this.state.year ? this.state.year.data: y;
+    if(selectedYear == y){
+       return months.filter((month,index) => index <= m).map(month =>  month.text);
+    }
+    return months.map(month =>  month.text);
+  }
+
   render() {
     const { isOpen } = this.state
     const {
@@ -85,8 +109,8 @@ class DatePickerWheel extends Component {
       hasError,
       required
     } = this.props
-    const wheelDays = days.map(day => day.value)
-    const wheelMonths = months.map(month => month.text)
+    const wheelDays = this.validDays(days) //days.map(day => day.value)
+    const wheelMonths = this.validMonths(months);
     const wheelYears = years.map(year => year.value)
     const text = value ? this.setDateText(value) : ''
     const daysWheelPosition =
