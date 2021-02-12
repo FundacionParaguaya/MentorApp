@@ -2,6 +2,8 @@ import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import { withNamespaces } from 'react-i18next';
 import {
+  ActivityIndicator,
+  PermissionsAndroid,
   FlatList,
   ScrollView,
   Text,
@@ -12,6 +14,7 @@ import {
   findNodeHandle,
 } from 'react-native';
 import { connect } from 'react-redux';
+import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import colors from '../theme.json';
 import Button from '../components/Button';
 import SyncInProgress from '../components/sync/SyncInProgress';
@@ -25,13 +28,19 @@ import globalStyles from '../globalStyles';
 import { submitDraft, createDraft, submitDraftWithImages, submitPriority } from '../redux/actions';
 import { screenSyncScreenContent } from '../screens/utils/accessibilityHelpers';
 import { prepareDraftForSubmit, fakeSurvey } from './utils/helpers';
+import RNFetchBlob from 'rn-fetch-blob';
+import DownloadPopup from '../screens/modals/DownloadModal';
+import { PhoneNumberUtil } from 'google-libphonenumber';
+
 
 import uuid from 'uuid/v1';
 const nodeEnv = process.env;
 export class Sync extends Component {
   acessibleComponent = React.createRef();
   state = {
+    loadingSync: false,
     surveysCount: null,
+    openDownloadModal: false,
   };
   navigateToDraft = (draft) => {
     if (
@@ -201,6 +210,130 @@ export class Sync extends Component {
       i++;
     }
   };
+
+  async exportJSON() {
+    this.setState({ loadingSync: true })
+    const permissionsGranted = await PermissionsAndroid.request(
+      PermissionsAndroid.PERMISSIONS.WRITE_EXTERNAL_STORAGE,
+      {
+        title: 'Permission to save file into the file storage',
+        message:
+          'The app needs access to your file storage so you can download the file',
+        buttonNeutral: 'Ask Me Later',
+        buttonNegative: 'Cancel',
+        buttonPositive: 'OK',
+      },
+    );
+
+    if (permissionsGranted !== PermissionsAndroid.RESULTS.GRANTED) {
+      throw new Error();
+    }
+
+
+
+    try {
+      const fileName = `BackupFile_${this.props.user ? this.props.user.username : 'user'}_${new Date().getTime() / 1000}`;
+      const filePath = `${RNFetchBlob.fs.dirs.DownloadDir}/${fileName}.json`;
+      const pendingDraft = this.props.drafts.filter(draft => draft.status == 'Pending sync');
+      const errorStatus = this.props.drafts.filter(draft => draft.status == 'Sync error')
+
+      let sanitizedPendingDrafts = [];
+      let sanitizedErrorDrafts = [];
+
+      pendingDraft.forEach(draft => {
+        const survey = this.props.surveys.find(el => el.id == draft.surveyId);
+        let sanitizedDraft;
+        try {
+          let formattedDraft = prepareDraftForSubmit(draft, survey);
+          delete formattedDraft["previousIndicatorSurveyDataList"];
+          delete formattedDraft["previousIndicatorPriorities"];
+          delete formattedDraft["previousIndicatorAchievements"];
+          delete formattedDraft["progress"];
+          formattedDraft = JSON.parse(JSON.stringify(formattedDraft))
+          sanitizedDraft = this.prepareSubmitDraft(formattedDraft);
+        } catch (error) {
+          sanitizedDraft = draft
+        }
+
+        sanitizedPendingDrafts.push(sanitizedDraft);
+      })
+
+      errorStatus.forEach(draft => {
+        const survey = this.props.surveys.find(el => el.id == draft.surveyId);
+        let sanitizedDraft;
+        try {
+          let formattedDraft = prepareDraftForSubmit(draft, survey);
+          delete formattedDraft["previousIndicatorSurveyDataList"];
+          delete formattedDraft["previousIndicatorPriorities"];
+          delete formattedDraft["previousIndicatorAchievements"];
+          delete formattedDraft["progress"];
+          formattedDraft = JSON.parse(JSON.stringify(formattedDraft))
+          sanitizedDraft = this.prepareSubmitDraft(formattedDraft);
+        } catch (error) {
+          sanitizedDraft = draft
+        }
+        sanitizedErrorDrafts.push(sanitizedDraft);
+      })
+
+
+      const json = {
+        user: this.props.user,
+        pendingStatus: sanitizedPendingDrafts,
+        errorStatus: sanitizedErrorDrafts,
+        env: this.props.env
+      }
+      await RNFetchBlob.fs.createFile(filePath, JSON.stringify(json), 'utf8');
+      this.toggleDownloadModal();
+      this.setState({ loadingSync: false });
+    } catch (error) {
+      alert(error);
+    }
+  }
+
+  formatPhone = (code, phone) => {
+    if (code && phone && phone.length > 0) {
+      const phoneUtil = PhoneNumberUtil.getInstance();
+      const international = '+' + code + ' ' + phone;
+      let phoneNumber = phoneUtil.parse(international, code);
+      phone = phoneNumber.getNationalNumber();
+    }
+    return phone;
+  };
+
+
+
+  prepareSubmitDraft(payload) {
+    console.log('----Calling Submit Draft----');
+    const sanitizedSnapshot = { ...payload };
+
+    let { economicSurveyDataList } = payload;
+
+    const validEconomicIndicator = (ec) =>
+      (ec.value !== null && ec.value !== undefined && ec.value !== '') ||
+      (!!ec.multipleValue && ec.multipleValue.length > 0);
+
+    economicSurveyDataList = economicSurveyDataList.filter(
+      validEconomicIndicator,
+    );
+    sanitizedSnapshot.economicSurveyDataList = economicSurveyDataList;
+    sanitizedSnapshot.familyData.familyMembersList.forEach((member) => {
+      let { socioEconomicAnswers = [] } = member;
+      delete member.memberIdentifier;
+      delete member.id;
+      delete member.familyId;
+      delete member.uuid;
+
+      member.phoneNumber = this.formatPhone(member.phoneCode, member.phoneNumber);
+      socioEconomicAnswers = socioEconomicAnswers.filter(validEconomicIndicator);
+      // eslint-disable-next-line no-param-reassign
+      member.socioEconomicAnswers = socioEconomicAnswers;
+    });
+    return sanitizedSnapshot
+  }
+
+  toggleDownloadModal = () => {
+    this.setState({ openDownloadModal: !this.state.openDownloadModal })
+  }
   render() {
     const { drafts, offline, priorities, t } = this.props;
     const lastSync = drafts.reduce(
@@ -233,6 +366,10 @@ export class Sync extends Component {
 
     return (
       <ScrollView contentContainerStyle={[globalStyles.container, styles.view]}>
+        <DownloadPopup
+          isOpen={this.state.openDownloadModal}
+          onClose={this.toggleDownloadModal}
+        />
         {nodeEnv.NODE_ENV === 'development' && (
           <View
             style={{
@@ -272,13 +409,13 @@ export class Sync extends Component {
           accessible={true}
           accessibilityLabel={screenAccessibilityContent}>
           {offline.online &&
-          !pendingDrafts.length &&
-          !draftsWithError.length &&
-          !prioritiesWithError.length && !pendingPriorities.length
-          ? (
-            <SyncUpToDate date={lastSync} lng={this.props.lng} />
-          ) : null}
-          {offline.online && (pendingDrafts.length || pendingPriorities.length)  ? (
+            !pendingDrafts.length &&
+            !draftsWithError.length &&
+            !prioritiesWithError.length && !pendingPriorities.length
+            ? (
+              <SyncUpToDate date={lastSync} lng={this.props.lng} />
+            ) : null}
+          {offline.online && (pendingDrafts.length || pendingPriorities.length) ? (
             <SyncInProgress pendingDraftsLength={pendingDrafts.length + pendingPriorities.length} />
           ) : null}
           {!offline.online ? (
@@ -293,6 +430,26 @@ export class Sync extends Component {
               />
             ) : null}
         </View>
+        {list.length ?
+          <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center', paddingTop: 10 }}>
+            <Text style={styles.download}>
+              {t('views.sync.download')}
+            </Text>
+            {this.state.loadingSync ?
+              <ActivityIndicator
+                size="small"
+                color={colors.lightdark}
+              />
+              :
+              <Icon
+                name='cloud-download'
+                size={24}
+                color={colors.lightdark}
+                onPress={() => this.exportJSON()}
+              />
+            }
+          </View>
+          : null}
         {list.length ? (
           <FlatList
             style={{ marginTop: 15 }}
@@ -364,16 +521,21 @@ const styles = StyleSheet.create({
     color: colors.lightdark,
     backgroundColor: colors.white,
   },
+  download: {
+    marginRight: 10,
+    color: colors.lightdark,
+  }
 });
 
-const mapStateToProps = ({ drafts, offline, env, user, surveys, priorities, families }) => ({
+const mapStateToProps = ({ drafts, offline, env, user, surveys, priorities, families, survey }) => ({
   drafts,
   offline,
   env,
   user,
   surveys,
   priorities,
-  families
+  families,
+  survey
 });
 
 const mapDispatchToProps = {
