@@ -382,6 +382,7 @@ export class FamilyMembersNames extends Component {
                     'birthDate',
                     false,
                   )}
+                  setError={(isError) => this.setError(isError, 'birthDate')}
                   readOnly={!!this.readOnly}
                   showErrors={showErrors}
                 />
