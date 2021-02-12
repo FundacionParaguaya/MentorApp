@@ -42,7 +42,7 @@ const nodeEnv = process.env;
 export class Dashboard extends Component {
   acessibleComponent = React.createRef();
   state = {
-    loadingSync:false,
+    loadingSync: false,
     filterModalIsOpen: false,
     openDownloadModal: false,
     renderFiltered: false,
@@ -214,7 +214,7 @@ export class Dashboard extends Component {
 
 
 
-  
+
 
   componentDidMount() {
     if (!this.props.user.token) {
@@ -253,11 +253,11 @@ export class Dashboard extends Component {
             onClose={this.onNotificationClose}
             label={t('general.attention')}
             subLabel={t('general.syncAll')}></NotificationModal>
-            <DownloadPopup 
-              isOpen={openDownloadModal}
-              onClose={this.toggleDownloadModal}
-            />
-               
+          <DownloadPopup
+            isOpen={openDownloadModal}
+            onClose={this.toggleDownloadModal}
+          />
+
           <ScrollView
             contentContainerStyle={
               drafts.length
@@ -364,23 +364,6 @@ export class Dashboard extends Component {
                               )}
                           </View>
                           <Image source={arrow} style={styles.arrow} />
-                          <View style={{ position: 'absolute', right: 20 }}>
-                            {loadingSync ? 
-                              <ActivityIndicator 
-                                size="small" 
-                                color={colors.lightdark} 
-                              />                  
-                            :
-                            <Icon
-                              name='cloud-download'
-                              size={24}
-                              color={colors.lightdark}
-                              onPress={() => this.exportJSON()} 
-                              />
-                            }
-                            
-                          </View>
-
                         </View>
 
                       </TouchableHighlight>
