@@ -31,8 +31,6 @@ import { supported_API_version, url } from '../config';
 import globalStyles from '../globalStyles';
 import { markVersionCheked, toggleAPIVersionModal } from '../redux/actions';
 import colors from '../theme.json';
-import RNFetchBlob from 'rn-fetch-blob';
-import Bugsnag from '@bugsnag/react-native';
 import DownloadPopup from '../screens/modals/DownloadModal';
 
 
@@ -44,7 +42,7 @@ const nodeEnv = process.env;
 export class Dashboard extends Component {
   acessibleComponent = React.createRef();
   state = {
-    loadingSync:false,
+    loadingSync: false,
     filterModalIsOpen: false,
     openDownloadModal: false,
     renderFiltered: false,
@@ -214,73 +212,9 @@ export class Dashboard extends Component {
     }
   }
 
-  async exportJSON() {
-    this.setState({loadingSync:true})
-    const permissionsGranted = await PermissionsAndroid.request(
-      PermissionsAndroid.PERMISSIONS.WRITE_EXTERNAL_STORAGE,
-      {
-        title: 'Permission to save file into the file storage',
-        message:
-          'The app needs access to your file storage so you can download the file',
-        buttonNeutral: 'Ask Me Later',
-        buttonNegative: 'Cancel',
-        buttonPositive: 'OK',
-      },
-    );
 
-    if (permissionsGranted !== PermissionsAndroid.RESULTS.GRANTED) {
-      throw new Error();
-    }
 
-    try {
-      Bugsnag.notify(`Backup all draft`, event => {
-        event.addMetadata('drafts', { drafts: this.props.drafts });
-        event.addMetadata('env', { env: this.props.env }),
-        event.addMetadata('url', { url: url[this.props.env] })
-        event.addMetadata('user', { user: this.props.user })
-      });
-    } catch (e) {
-      console(e)
-    }
 
-    try {
-      const fileName = `BackupFile_${this.props.user ? this.props.user.username:'user'}_${new Date().getTime() / 1000}`;
-      const filePath = `${RNFetchBlob.fs.dirs.DownloadDir}/${fileName}.json`;
-      const pendingDraft = this.props.drafts.filter(draft => draft.status == 'Pending sync');
-      const errorStatus = this.props.drafts.filter(draft => draft.status == 'Sync Error')
-      const json = {
-        user: this.props.user,
-        pendingStatus: pendingDraft,
-        errorStatus: errorStatus,
-        env: this.props.env
-      }
-      const file = await RNFetchBlob.fs.createFile(filePath, JSON.stringify(json), 'utf8');
-     
-      RNFetchBlob.fs
-        .cp(file, filePath)
-        .then(() => 
-          RNFetchBlob.android.addCompleteDownload({
-            title: `${fileName}.json`,
-            description: 'Download complete',
-            mime: 'application/json',
-            path: filePath,
-            showNotification: true,
-          })   
-        )
-        .then(() => {
-          this.toggleDownloadModal();
-          RNFetchBlob.fs.scanFile([{ path: filePath, mime: 'application/json' }])
-        }  
-        );
-        this.setState({ loadingSync: false });
-    } catch (error) {
-      alert(error);
-    }
-  }
-
-  toggleDownloadModal = () => {
-    this.setState({ openDownloadModal: !this.state.openDownloadModal})
-  }
 
   componentDidMount() {
     if (!this.props.user.token) {
@@ -319,11 +253,11 @@ export class Dashboard extends Component {
             onClose={this.onNotificationClose}
             label={t('general.attention')}
             subLabel={t('general.syncAll')}></NotificationModal>
-            <DownloadPopup 
-              isOpen={openDownloadModal}
-              onClose={this.toggleDownloadModal}
-            />
-               
+          <DownloadPopup
+            isOpen={openDownloadModal}
+            onClose={this.toggleDownloadModal}
+          />
+
           <ScrollView
             contentContainerStyle={
               drafts.length
@@ -430,23 +364,6 @@ export class Dashboard extends Component {
                               )}
                           </View>
                           <Image source={arrow} style={styles.arrow} />
-                          <View style={{ position: 'absolute', right: 20 }}>
-                            {loadingSync ? 
-                              <ActivityIndicator 
-                                size="small" 
-                                color={colors.lightdark} 
-                              />                  
-                            :
-                            <Icon
-                              name='cloud-download'
-                              size={24}
-                              color={colors.lightdark}
-                              onPress={() => this.exportJSON()} 
-                              />
-                            }
-                            
-                          </View>
-
                         </View>
 
                       </TouchableHighlight>

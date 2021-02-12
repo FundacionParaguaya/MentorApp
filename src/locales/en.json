@@ -281,7 +281,8 @@
       "updates": "updates",
       "syncErrProblem": "Looks like we have a problem!",
       "itemHasError": "%n item has a sync error",
-      "itemsHaveError": "%n items have a sync error"
+      "itemsHaveError": "%n items have a sync error",
+      "download": "Download JSON"
     },
     "final": {
       "emailSent": "Your Life Map has been successfully sent via email. Don't forget to click on Save & Close!",

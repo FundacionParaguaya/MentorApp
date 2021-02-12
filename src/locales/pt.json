@@ -167,7 +167,7 @@
 			"addPriority": "Adicionar Prioridade",
 			"selectIndicator": "Selecione um indicador",
 			"priorityPending": "Prioridade pendente",
-      "priorityError": "Erro de sincronização prioritária"
+      		"priorityError": "Erro de sincronização prioritária"
 		},
 		"lifemap": {
 			"indicatorDefinition": "Definição do indicador",
@@ -268,7 +268,9 @@
 			"updates": "atualizações",
 			"syncErrProblem": "Parece que temos um problema!",
 			"itemHasError": "%n elemento tem um erro de sincronização.",
-			"itemsHaveError": "%n elementos têm erros de sincronização."
+			"itemsHaveError": "%n elementos têm erros de sincronização.",
+			"download": "Baixar JSON"
+			
 		},
 		"final": {
 			"emailSent": "Seu mapa da vida foi enviado com sucesso por e-mail. Não se esqueça de selecionar Salvar e fechar!",
