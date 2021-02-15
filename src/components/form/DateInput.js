@@ -38,10 +38,9 @@ export class DateInputComponent extends React.Component {
     const error =
       (this.props.required && !date) ||
       (this.props.required && !this.props.initialValue) ||
-      (!this.props.required && !!date)
-        ? !moment(`${date}`, 'D MMMM YYYY', true).isValid()
+      (!this.props.required && !!date) || (this.props.required && !!date)
+        ? (!moment(`${date}`, 'D MMMM YYYY', true).isValid()) || (!moment(`${date}`).isSameOrBefore(moment(new Date()).format("DD MMMM YYYY")))
         : false
-
     if (this.props.setError) {
       if (error) {
         this.props.setError(true, id)
