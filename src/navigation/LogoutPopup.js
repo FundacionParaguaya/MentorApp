@@ -61,7 +61,7 @@ export default class LogoutPopup extends Component {
         modifiedPopUp
         isOpen={isOpen}
         onClose={this.onModalCloseFunc}
-        style={{paddingVertical: 100}}>
+        >
         <ActivityIndicator
           size="large"
           color={colors.palered}
@@ -78,7 +78,6 @@ export default class LogoutPopup extends Component {
           <View
             style={{
               alignItems: 'center',
-              paddingVertical: 15,
               width: 60,
               marginLeft: 'auto',
             }}
@@ -278,8 +277,10 @@ const styles = StyleSheet.create({
   container: {
     justifyContent:'center',
     alignItems:'center',
+    maxHeight:500,
   },
   modalContainer: {
+    
     width:'100%',
     maxWidth: 240,
   },
@@ -296,7 +297,7 @@ const styles = StyleSheet.create({
     fontWeight: 'normal',
     color: colors.lightdark,
     fontSize: 24,
-    marginBottom: 25,
+    marginBottom: 5,
   },
   confirm: {
     color: colors.lightdark,
@@ -305,14 +306,14 @@ const styles = StyleSheet.create({
     textAlign: 'center',
   },
   buttonBar: {
-    marginBottom: 80,
+    marginBottom: 20,
     flexDirection: 'row',
     justifyContent: 'center',
     //paddingHorizontal:10
   },
   checkbox: {
     marginTop: 0,
-    marginBottom: 18,
+    marginBottom: 12,
     paddingVertical: 0,
     backgroundColor: 'transparent',
     borderWidth: 0,
