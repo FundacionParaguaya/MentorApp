@@ -292,12 +292,12 @@ export const deleteDraft = (id) => ({
 });
 
 export const submitDraftCommit = (id) => ({
-  type:SUBMIT_COMMITED_DRAFT,
+  type: SUBMIT_COMMITED_DRAFT,
   id
 })
 
 export const submitDraftError = (id) => ({
-  type:SUBMIT_ERROR_DRAFT,
+  type: SUBMIT_ERROR_DRAFT,
   id
 })
 
@@ -379,7 +379,76 @@ const createFormData = (sanitizedSnapshot) => {
   return data;
 };
 
-export const submitDraft = (env, token, id, payload) => {
+
+export const submitDraft = (env, token, id, payload) => (dispatch) => {
+  console.log('----Calling Submit Draft----');
+  delete payload.progress
+  const sanitizedSnapshot = { ...payload };
+
+  let { economicSurveyDataList } = payload;
+
+  const validEconomicIndicator = (ec) =>
+    (ec.value !== null && ec.value !== undefined && ec.value !== '') ||
+    (!!ec.multipleValue && ec.multipleValue.length > 0);
+
+  economicSurveyDataList = economicSurveyDataList.filter(
+    validEconomicIndicator,
+  );
+  sanitizedSnapshot.economicSurveyDataList = economicSurveyDataList;
+  sanitizedSnapshot.familyData.familyMembersList.forEach((member) => {
+    let { socioEconomicAnswers = [] } = member;
+    delete member.memberIdentifier;
+    delete member.id;
+    delete member.familyId;
+    delete member.uuid;
+
+    member.phoneNumber = formatPhone(member.phoneCode, member.phoneNumber);
+    socioEconomicAnswers = socioEconomicAnswers.filter(validEconomicIndicator);
+    // eslint-disable-next-line no-param-reassign
+    member.socioEconomicAnswers = socioEconomicAnswers;
+  });
+  console.log(sanitizedSnapshot);
+
+  dispatch({
+    type:SUBMIT_DRAFT,
+    id:id
+  });
+
+  fetch(`${env}/graphql`, {
+    method: 'POST',
+    headers: {
+      Authorization: `Bearer ${token}`,
+      'content-type': 'application/json;charset=utf8',
+    },
+    body: JSON.stringify({
+      query:
+        'mutation addSnapshot($newSnapshot: NewSnapshotDTOInput) {addSnapshot(newSnapshot: $newSnapshot)  { surveyId surveyVersionId snapshotStoplightAchievements { action indicator roadmap } snapshotStoplightPriorities { reason action indicator estimatedDate } family { familyId } user { userId  username } indicatorSurveyDataList {key value} economicSurveyDataList {key value multipleValue} familyDataDTO { latitude longitude accuracy familyMemberDTOList { firstName lastName socioEconomicAnswers {key value } } } } }',
+      variables: { newSnapshot: sanitizedSnapshot },
+    })
+  }).then((data) => {
+    if(data.status !== 200) {
+      dispatch({
+        type: SUBMIT_DRAFT_ROLLBACK,
+          id:id,
+          sanitizedSnapshot : sanitizedSnapshot,
+      })
+      throw new Error();
+    } else return data.json();
+  }).then((data)=> {
+    console.log('la data',data)
+    console.log('LA ID ACA',id)
+  
+    dispatch({
+      type: SUBMIT_DRAFT_COMMIT,
+      id,
+      sanitizedSnapshot,
+          
+    })}
+
+  )
+};
+
+/* export const submitDraft = (env, token, id, payload) => {
   console.log('----Calling Submit Draft----');
   const sanitizedSnapshot = { ...payload };
 
@@ -444,7 +513,7 @@ export const submitDraft = (env, token, id, payload) => {
       },
     },
   };
-};
+}; */
 
 // Language
 

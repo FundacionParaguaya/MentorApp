@@ -56,7 +56,7 @@ class DraftListItem extends Component {
   }
 
   render() {
-    const { item, lng } = this.props
+    const { item, lng, handleSync } = this.props
     const itemCreateDateWithLocale = moment(item.created)
     itemCreateDateWithLocale.locale(lng)
 
@@ -67,7 +67,7 @@ class DraftListItem extends Component {
         item.familyData.familyMembersList[0]
         ? `${item.familyData.familyMembersList[0].firstName} ${item.familyData.familyMembersList[0].lastName}`
         : ' - '
-   
+
 
 
 
@@ -103,7 +103,10 @@ class DraftListItem extends Component {
             {this.setStatusTitle(this.props.item.status)}
           </Text>
         </View>
-     
+        <View>
+          <Icon name="sync" size={25} onPress={()=> handleSync(item)} color={colors.grey} />
+        </View>
+
       </ListItem>
     )
   }

@@ -171,9 +171,9 @@ export const syncStatus = (state = [], action) => {
     case SUBMIT_DRAFT_COMMIT: {
       console.log(
         'SUBMIT_DRAFT_COMMIT -- Removing id to synced: ',
-        action.meta.id,
+        action.id,
       );
-      return state.filter(draftId => draftId !== action.meta.id);
+      return state.filter(draftId => draftId !== action.id);
     }
     case LOAD_IMAGES_ROLLBACK: {
       console.log('LOAD_IMAGES_ROLLBACK -- Removing id to synced: ', action.id);
@@ -316,6 +316,7 @@ export const drafts = (state = [], action) => {
       });
       
     case SUBMIT_DRAFT:
+      console.log('la action',action.id)
       return state.map(draft =>
         draft.draftId === action.id
           ? {
@@ -326,8 +327,9 @@ export const drafts = (state = [], action) => {
       );
 
     case SUBMIT_DRAFT_COMMIT:
+      console.log('resultado',action.id)
       return state.map(draft =>
-        draft.draftId === action.meta.id
+        draft.draftId === action.id
           ? {
             ...draft,
             status: 'Synced',
@@ -337,7 +339,7 @@ export const drafts = (state = [], action) => {
       );
     case SUBMIT_DRAFT_ROLLBACK: {
       return state.map(draft =>
-        draft.draftId === action.meta.id
+        draft.draftId === action.id
           ? {
             ...draft,
             status: 'Sync error',
@@ -597,9 +599,9 @@ export const rootReducer = (state, action) => {
 
     const draftSurvey =
       state.surveys &&
-      action.meta.sanitizedSnapshot &&
-      action.meta.sanitizedSnapshot.surveyId &&
-      state.surveys.find(s => s.id === action.meta.sanitizedSnapshot.surveyId);
+      action.sanitizedSnapshot &&
+      action.sanitizedSnapshot.surveyId &&
+      state.surveys.find(s => s.id === action.sanitizedSnapshot.surveyId);
   }
   return appReducer(state, action);
 };

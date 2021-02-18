@@ -29,7 +29,7 @@ import NotificationModal from '../components/NotificationModal';
 import RoundImage from '../components/RoundImage';
 import { supported_API_version, url } from '../config';
 import globalStyles from '../globalStyles';
-import { markVersionCheked, toggleAPIVersionModal } from '../redux/actions';
+import { markVersionCheked, toggleAPIVersionModal,submitDraft } from '../redux/actions';
 import colors from '../theme.json';
 import DownloadPopup from '../screens/modals/DownloadModal';
 
@@ -234,6 +234,24 @@ export class Dashboard extends Component {
         }, 1);
       }
     }
+  }
+  handleSync = (item) => {
+    console.log('handleSync')
+    try {
+      if (item.pictures.length > 0 ) {
+        console.log('Con imagenes')
+      }else{
+        this.props.submitDraft(
+          url[this.props.env],
+          this.props.user.token,
+          item.draftId,
+          item
+        )
+      }
+    }catch(error){
+      console.log(error)
+    }
+   
   }
 
   render() {
@@ -442,6 +460,7 @@ export class Dashboard extends Component {
                       handleClick={this.handleClickOnListItem}
                       lng={this.props.lng}
                       user={this.props.user}
+                      handleSync={this.handleSync}
 
                     />
                   )
@@ -581,7 +600,7 @@ export const mapStateToProps = ({
   apiVersion,
 });
 
-const mapDispatchToProps = { markVersionCheked, toggleAPIVersionModal };
+const mapDispatchToProps = { markVersionCheked, toggleAPIVersionModal, submitDraft };
 
 export default withNamespaces()(
   connect(mapStateToProps, mapDispatchToProps)(Dashboard),

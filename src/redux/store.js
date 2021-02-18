@@ -37,6 +37,12 @@ const reduxOfflineConfig = {
       return [...outbox, incomingAction];
     },
   },
+ /*  peek(outbox, action, { offline }) {
+    console.log('peek action',action)
+    if(action.type == 'SUBMIT_DRAFT'){
+      return false;
+    }
+  }, */
   // this fires after store hydration is done
   persistCallback: () => {
     setLanguage();
