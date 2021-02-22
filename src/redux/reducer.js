@@ -176,9 +176,9 @@ export const syncStatus = (state = [], action) => {
     case SUBMIT_DRAFT_COMMIT: {
       console.log(
         'SUBMIT_DRAFT_COMMIT -- Removing id to synced: ',
-        action.id,
+        action.meta.id,
       );
-      return state.filter(draftId => draftId !== action.id);
+      return state.filter(draftId => draftId !== action.meta.id);
     }
     case LOAD_IMAGES_ROLLBACK: {
       console.log('LOAD_IMAGES_ROLLBACK -- Removing id to synced: ', action.id);
