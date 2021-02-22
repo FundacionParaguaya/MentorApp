@@ -3,7 +3,6 @@ import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import { withNamespaces } from 'react-i18next';
 import {
-  PermissionsAndroid,
   FlatList,
   Image,
   ScrollView,
@@ -13,7 +12,6 @@ import {
   UIManager,
   View,
   findNodeHandle,
-  ActivityIndicator
 } from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import { AndroidBackHandler } from 'react-navigation-backhandler';
@@ -29,9 +27,21 @@ import NotificationModal from '../components/NotificationModal';
 import RoundImage from '../components/RoundImage';
 import { supported_API_version, url } from '../config';
 import globalStyles from '../globalStyles';
-import { markVersionCheked, toggleAPIVersionModal,submitDraft } from '../redux/actions';
+import {
+  markVersionCheked,
+  toggleAPIVersionModal,
+  manualSubmitDraft,
+  submitDraftError,
+  submitImagesError,
+  manualSubmitDraftCommit,
+  submitPictures,
+  manualSubmitPicturesCommit,
+  updateSnapshotImages
+} from '../redux/actions';
 import colors from '../theme.json';
 import DownloadPopup from '../screens/modals/DownloadModal';
+import { prepareDraftForSubmit } from './utils/helpers';
+
 
 
 
@@ -42,7 +52,8 @@ const nodeEnv = process.env;
 export class Dashboard extends Component {
   acessibleComponent = React.createRef();
   state = {
-    loadingSync: false,
+    selectedDraftId: null,
+    selectedImagesId: null,
     filterModalIsOpen: false,
     openDownloadModal: false,
     renderFiltered: false,
@@ -68,6 +79,7 @@ export class Dashboard extends Component {
           (survey) => survey.id === draft.surveyId,
         ),
         activeTab: 'Details',
+        fromDashboard: true
       },
     });
   };
@@ -115,6 +127,7 @@ export class Dashboard extends Component {
         survey: this.props.surveys.find((survey) =>
           item ? survey.id === item.surveyId : null,
         ),
+        fromDashboard: true
       },
     });
   };
@@ -124,6 +137,12 @@ export class Dashboard extends Component {
         this.navigateToPendingSync(item);
         break;
       case 'Synced':
+        this.navigateToSynced(item);
+        break;
+      case 'Pending images':
+        this.navigateToSynced(item);
+        break;
+      case 'Sync images error':
         this.navigateToSynced(item);
         break;
       default:
@@ -235,30 +254,101 @@ export class Dashboard extends Component {
       }
     }
   }
-  handleSync = (item) => {
-    console.log('handleSync')
+
+  handleSyncDraft = (item) => {
+
     try {
-      if (item.pictures.length > 0 ) {
-        console.log('Con imagenes')
-      }else{
-        this.props.submitDraft(
-          url[this.props.env],
-          this.props.user.token,
-          item.draftId,
-          item
-        )
-      }
-    }catch(error){
+      let draft = JSON.parse(JSON.stringify(item));
+
+      this.setState({ selectedDraftId: draft.draftId })
+
+      let survey = this.props.surveys.find((survey) =>
+        item ? survey.id === item.surveyId : null,
+      );
+
+      draft = prepareDraftForSubmit(draft, survey);
+      delete draft.snapshotId;
+      let hasPictures = !!draft.pictures && draft.pictures.length > 0;
+      draft = {
+        ...draft,
+        pictures: []
+      };
+
+      this.props.manualSubmitDraft(
+        url[this.props.env],
+        this.props.user.token,
+        draft,
+        hasPictures
+      ).then((data) => {
+
+        if (data.status !== 200) {
+          throw new Error();
+        } else return data.json();
+      }).
+        then((data) => {
+          this.setState({ selectedDraftId: null })
+          this.props.manualSubmitDraftCommit(draft.draftId, data.data.addSnapshot.snapshotId, hasPictures);
+        }).catch(error => {
+          console.log(error)
+          this.props.submitDraftError(draft.draftId);
+          this.setState({ selectedDraftId: null })
+        })
+
+    } catch (error) {
       console.log(error)
+      this.props.submitDraftError(draft.draftId);
+      this.setState({ selectedDraftId: null })
     }
-   
+
+  }
+
+  handleSyncImages = (item) => {
+
+    this.setState({ selectedImagesId: item.draftId })
+
+    try {
+
+      this.props.submitPictures(
+        url[this.props.env],
+        this.props.user.token,
+        item.pictures).
+        then((data) => {
+          return data.json()
+        }).
+        then(pictures => {
+          this.props.updateSnapshotImages(
+            url[this.props.env],
+            this.props.user.token,
+            item.snapshotId,
+            pictures).
+            then((data) => {
+              if (data.status !== 200) {
+                this.props.submitImagesError(item.draftId);
+
+                throw new Error();
+              } else return data.json();
+            }).
+            then((data) => {
+              this.setState({ selectedImagesId: null })
+              this.props.manualSubmitPicturesCommit(item.draftId);
+            }).catch(error => {
+              this.props.submitImagesError(item.draftId);
+              this.setState({ selectedImagesId: null })
+            })
+        })
+
+    } catch (error) {
+      this.props.submitImagesError(item.draftId);
+      this.setState({ selectedImagesId: null })
+    }
+
   }
 
   render() {
     const { t, families, drafts } = this.props;
-    const { filterModalIsOpen, loadingSync, openDownloadModal } = this.state;
+    const { filterModalIsOpen, openDownloadModal, selectedDraftId, selectedImagesId } = this.state;
     const allDraftFamilies = drafts.filter(
-      (d) => d.status === 'Draft' || d.status === 'Pending sync',
+      (d) => d.status === 'Draft' || d.status === 'Pending sync' || d.status === 'Pending images',
     ).length;
 
     const countFamilies = families.length + allDraftFamilies;
@@ -421,6 +511,17 @@ export class Dashboard extends Component {
                           text={t('filterLabels.syncPending')}
                         />
                         <FilterListItem
+                          id="pendingImagens"
+                          dashboard
+                          onPress={() =>
+                            this.selectFilter(
+                              'Pending images',
+                              t('filterLabels.syncPendingImages'),
+                            )
+                          }
+                          text={t('filterLabels.syncPendingImages')}
+                        />
+                        <FilterListItem
                           id="error"
                           dashboard
                           onPress={() =>
@@ -430,6 +531,17 @@ export class Dashboard extends Component {
                             )
                           }
                           text={t('filterLabels.syncError')}
+                        />
+                        <FilterListItem
+                          id="imagesError"
+                          dashboard
+                          onPress={() =>
+                            this.selectFilter(
+                              'Sync images error',
+                              t('filterLabels.syncImagesError'),
+                            )
+                          }
+                          text={t('filterLabels.syncImagesError')}
                         />
                         <FilterListItem
                           id="synced"
@@ -460,8 +572,10 @@ export class Dashboard extends Component {
                       handleClick={this.handleClickOnListItem}
                       lng={this.props.lng}
                       user={this.props.user}
-                      handleSync={this.handleSync}
-
+                      handleSyncDraft={this.handleSyncDraft}
+                      selectedDraftId={selectedDraftId}
+                      handleSyncImages={this.handleSyncImages}
+                      selectedImagesId={selectedImagesId}
                     />
                   )
                   }
@@ -600,7 +714,17 @@ export const mapStateToProps = ({
   apiVersion,
 });
 
-const mapDispatchToProps = { markVersionCheked, toggleAPIVersionModal, submitDraft };
+const mapDispatchToProps = {
+  markVersionCheked,
+  toggleAPIVersionModal,
+  manualSubmitDraft,
+  submitDraftError,
+  submitImagesError,
+  manualSubmitDraftCommit,
+  submitPictures,
+  manualSubmitPicturesCommit,
+  updateSnapshotImages
+};
 
 export default withNamespaces()(
   connect(mapStateToProps, mapDispatchToProps)(Dashboard),

@@ -271,9 +271,14 @@ export const UPDATE_DRAFT = 'UPDATE_DRAFT';
 export const DELETE_DRAFT = 'DELETE_DRAFT';
 export const ADD_SURVEY_DATA_CHECKBOX = 'ADD_SURVEY_DATA_CHECKBOX';
 export const ADD_SURVEY_DATA = 'ADD_SURVEY_DATA';
+export const SET_DRAFT_PENDING = 'SET_DRAFT_PENDING';
 export const SUBMIT_DRAFT = 'SUBMIT_DRAFT';
 export const SUBMIT_DRAFT_COMMIT = 'SUBMIT_DRAFT_COMMIT';
+export const MANUAL_SUBMIT_DRAFT_COMMIT = 'MANUAL_SUBMIT_DRAFT_COMMIT';
+export const MANUAL_SUBMIT_PICTURES_COMMIT = 'MANUAL_SUBMIT_PICTURES_COMMIT';
 export const SUBMIT_DRAFT_ROLLBACK = 'SUBMIT_DRAFT_ROLLBACK';
+export const SUBMIT_ERROR_DRAFT = 'SUBMIT_ERROR_DRAFT';
+export const SUBMIT_ERROR_IMAGES = 'SUBMIT_ERROR_IMAGES';
 
 
 export const createDraft = (payload) => ({
@@ -291,13 +296,30 @@ export const deleteDraft = (id) => ({
   id,
 });
 
-export const submitDraftCommit = (id) => ({
-  type: SUBMIT_COMMITED_DRAFT,
+export const setDraftToPending = (id) => ({
+  type: SET_DRAFT_PENDING,
+  id
+});
+
+export const manualSubmitDraftCommit = (id, snapshotId, hasPictures) => ({
+  type: MANUAL_SUBMIT_DRAFT_COMMIT,
+  id,
+  snapshotId,
+  hasPictures
+})
+
+export const manualSubmitPicturesCommit = (id) => ({
+  type: MANUAL_SUBMIT_PICTURES_COMMIT,
   id
 })
 
 export const submitDraftError = (id) => ({
   type: SUBMIT_ERROR_DRAFT,
+  id
+})
+
+export const submitImagesError = (id) => ({
+  type: SUBMIT_ERROR_IMAGES,
   id
 })
 
@@ -380,8 +402,11 @@ const createFormData = (sanitizedSnapshot) => {
 };
 
 
-export const submitDraft = (env, token, id, payload) => (dispatch) => {
-  console.log('----Calling Submit Draft----');
+export const manualSubmitDraft = (env, token, draft) => (dispatch) => {
+
+  const id = draft.draftId;
+  let payload = draft;
+
   delete payload.progress
   const sanitizedSnapshot = { ...payload };
 
@@ -407,14 +432,8 @@ export const submitDraft = (env, token, id, payload) => (dispatch) => {
     // eslint-disable-next-line no-param-reassign
     member.socioEconomicAnswers = socioEconomicAnswers;
   });
-  console.log(sanitizedSnapshot);
 
-  dispatch({
-    type:SUBMIT_DRAFT,
-    id:id
-  });
-
-  fetch(`${env}/graphql`, {
+  return fetch(`${env}/graphql`, {
     method: 'POST',
     headers: {
       Authorization: `Bearer ${token}`,
@@ -422,33 +441,48 @@ export const submitDraft = (env, token, id, payload) => (dispatch) => {
     },
     body: JSON.stringify({
       query:
-        'mutation addSnapshot($newSnapshot: NewSnapshotDTOInput) {addSnapshot(newSnapshot: $newSnapshot)  { surveyId surveyVersionId snapshotStoplightAchievements { action indicator roadmap } snapshotStoplightPriorities { reason action indicator estimatedDate } family { familyId } user { userId  username } indicatorSurveyDataList {key value} economicSurveyDataList {key value multipleValue} familyDataDTO { latitude longitude accuracy familyMemberDTOList { firstName lastName socioEconomicAnswers {key value } } } } }',
+        'mutation addSnapshot($newSnapshot: NewSnapshotDTOInput) {addSnapshot(newSnapshot: $newSnapshot)  { snapshotId surveyId surveyVersionId snapshotStoplightAchievements { action indicator roadmap } snapshotStoplightPriorities { reason action indicator estimatedDate } family { familyId } user { userId  username } indicatorSurveyDataList {key value} economicSurveyDataList {key value multipleValue} familyDataDTO { latitude longitude accuracy familyMemberDTOList { firstName lastName socioEconomicAnswers {key value } } } } }',
       variables: { newSnapshot: sanitizedSnapshot },
     })
-  }).then((data) => {
-    if(data.status !== 200) {
-      dispatch({
-        type: SUBMIT_DRAFT_ROLLBACK,
-          id:id,
-          sanitizedSnapshot : sanitizedSnapshot,
-      })
-      throw new Error();
-    } else return data.json();
-  }).then((data)=> {
-    console.log('la data',data)
-    console.log('LA ID ACA',id)
-  
-    dispatch({
-      type: SUBMIT_DRAFT_COMMIT,
-      id,
-      sanitizedSnapshot,
-          
-    })}
-
-  )
+  })
 };
 
-/* export const submitDraft = (env, token, id, payload) => {
+export const submitPictures = (env, token, pictures) => (dispatch) => {
+  let formData = new FormData();
+
+  formData = createFormData({ pictures });
+
+  return fetch(`${env}/api/v1/snapshots/files/pictures/upload`, {
+    method: 'POST',
+    headers: {
+      Authorization: `Bearer ${token}`,
+      'content-type': 'multipart/form-data',
+    },
+    body: formData
+  })
+};
+
+export const updateSnapshotImages = (env, token, snapshotId, pictures) => (dispatch) => {
+  return fetch(`${env}/graphql`, {
+    method: 'POST',
+    headers: {
+      Authorization: `Bearer ${token}`,
+      'content-type': 'application/json;charset=utf8',
+    },
+    body: JSON.stringify({
+      query:
+      'mutation updateSnapshotPictures($snapshot: SnapshotUpdateModelInput) {updateSnapshotPictures(snapshot: $snapshot){successful}}',
+      variables: {
+        snapshot: {
+          id: snapshotId,
+          pictures: pictures
+        }
+      },
+    })
+  })
+}
+
+export const submitDraft = (env, token, id, payload) => {
   console.log('----Calling Submit Draft----');
   const sanitizedSnapshot = { ...payload };
 
@@ -513,7 +547,7 @@ export const submitDraft = (env, token, id, payload) => (dispatch) => {
       },
     },
   };
-}; */
+};
 
 // Language
 

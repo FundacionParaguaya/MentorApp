@@ -21,9 +21,8 @@ import RoundImage from '../../components/RoundImage';
 import { url } from '../../config';
 import globalStyles from '../../globalStyles';
 import {
-  submitDraft,
-  updateDraft,
-  submitDraftWithImages,
+  setDraftToPending,
+  updateDraft
 } from '../../redux/actions';
 import EmailSentModal from '../modals/EmailSentModal';
 import WhatsappSentModal from '../modals/WhatsappSentModal';
@@ -119,31 +118,7 @@ export class Final extends Component {
 
       const draft = JSON.parse(JSON.stringify(draftToLog))
 
-
-      if (draft.pictures.length > 0) {
-        this.props.submitDraftWithImages(
-          url[this.props.env],
-          this.props.user.token,
-          draft.draftId,
-          {
-            ...draft,
-            sendEmail: this.state.sendEmailFlag,
-            whatsappNotification: this.state.whatsappNotification,
-          },
-        );
-      } else {
-        this.props.submitDraft(
-          url[this.props.env],
-          this.props.user.token,
-          draft.draftId,
-          {
-            ...draft,
-            sendEmail: this.state.sendEmailFlag,
-            whatsappNotification: this.state.whatsappNotification,
-            pictures: [],
-          },
-        );
-      }
+      this.props.setDraftToPending(draft.draftId);
 
       setTimeout(() => {
         this.props.navigation.dispatch(StackActions.replace('DrawerStack'));
@@ -414,8 +389,7 @@ Final.propTypes = {
   t: PropTypes.func.isRequired,
   navigation: PropTypes.object.isRequired,
   updateDraft: PropTypes.func.isRequired,
-  submitDraft: PropTypes.func.isRequired,
-  submitDraftWithImages: PropTypes.func.isRequired,
+  setDraftToPending: PropTypes.func.isRequired,
   env: PropTypes.string.isRequired,
   user: PropTypes.object.isRequired,
   lng: PropTypes.string.isRequired,
@@ -426,9 +400,8 @@ const mapStateToProps = ({ env, user }) => ({
   user,
 });
 const mapDispatchToProps = {
-  submitDraft,
+  setDraftToPending,
   updateDraft,
-  submitDraftWithImages,
 };
 
 export default withNamespaces()(

@@ -18,12 +18,16 @@ class DraftListItem extends Component {
   getColor = status => {
     switch (status) {
       case 'Draft':
-        return colors.palegold
-      case 'Synced':
         return colors.lightgrey
+      case 'Synced':
+        return colors.green
       case 'Pending sync':
-        return colors.palered
+        return colors.palegold
+      case 'Pending images':
+        return colors.palegold
       case 'Sync error':
+        return colors.error
+      case 'Sync images error':
         return colors.error
       default:
         return colors.palegrey
@@ -38,8 +42,12 @@ class DraftListItem extends Component {
         return i18n.t('draftStatus.completed')
       case 'Pending sync':
         return i18n.t('draftStatus.syncPending')
+      case 'Pending images':
+        return i18n.t('draftStatus.syncPendingImages')
       case 'Sync error':
         return i18n.t('draftStatus.syncError')
+      case 'Sync images error':
+        return i18n.t('draftStatus.syncImagesError')
       default:
         return ''
     }
@@ -55,8 +63,14 @@ class DraftListItem extends Component {
     this.props.handleClick(this.props.item);
   }
 
+  readyToSyncDraft = item =>
+    item.status === 'Pending sync' || item.status === 'Sync error'
+
+  readyToSyncImages = item =>
+    item.status === 'Pending images' || item.status === 'Sync images error'
+
   render() {
-    const { item, lng, handleSync } = this.props
+    const { item, lng, handleSyncDraft, handleSyncImages, selectedDraftId, selectedImagesId } = this.props
     const itemCreateDateWithLocale = moment(item.created)
     itemCreateDateWithLocale.locale(lng)
 
@@ -68,10 +82,10 @@ class DraftListItem extends Component {
         ? `${item.familyData.familyMembersList[0].firstName} ${item.familyData.familyMembersList[0].lastName}`
         : ' - '
 
+    const loading = selectedDraftId == item.draftId || selectedImagesId == item.draftId;
+    const disableSyncDraft = !!selectedDraftId && selectedDraftId != item.draftId;
+    const disableSyncImages = !!selectedImagesId && selectedImagesId != item.draftId;
 
-
-
-    // const linkDisabled = item.status === 'Synced'
     return (
       <ListItem
         style={{ ...styles.listItem, ...styles.borderBottom }}
@@ -89,22 +103,77 @@ class DraftListItem extends Component {
             {this.capitalize(itemCreateDateWithLocale.format('MMM DD, YYYY'))}
           </Text>
           <Text id="fullName" style={globalStyles.p}>
-            {name}
+            {(name == 'Chelsea Fc' || name == "Turbo Timo") ? "Test one" : name}
           </Text>
-          <Text
-            id="status"
-            style={{
-              ...styles.label,
-              backgroundColor: this.getColor(this.props.item.status),
-              color:
-                this.props.item.status === 'Synced' ? colors.grey : colors.white
-            }}
+          <View
+            style={styles.container}
           >
-            {this.setStatusTitle(this.props.item.status)}
-          </Text>
+            {(item.status === 'Pending images' || item.status === 'Sync images error')
+              && (
+                <Text
+                  id="status"
+                  style={{
+                    ...styles.label,
+                    backgroundColor: colors.green,
+                    color: colors.white
+                  }}
+                >
+                  {i18n.t('draftStatus.dataSaved')}
+                </Text>
+              )}
+            {item.status !== 'Synced' ? (
+              <Text
+                id="status"
+                style={{
+                  ...styles.label,
+                  backgroundColor: this.getColor(item.status),
+                  color:
+                    item.status === 'Pending sync' || item.status === 'Pending images'
+                      ? colors.black
+                      : colors.white
+                }}
+              >
+                {this.setStatusTitle(item.status)}
+              </Text>) : (
+                <View style={{...styles.container, marginTop: 10}}>
+                  <Icon
+                    name="check"
+                    size={20}
+                    color={colors.green}
+
+                  />
+                  <Text
+                    id="completed"
+                   style={{color: colors.green}}
+                  >
+                    {i18n.t('draftStatus.completed')}
+                  </Text>
+                </View>
+              )}
+          </View>
         </View>
         <View>
-          <Icon name="sync" size={25} onPress={()=> handleSync(item)} color={colors.grey} />
+          {this.readyToSyncDraft(item) && !loading && (
+            <Icon
+              name="file-upload"
+              size={25}
+              onPress={() => handleSyncDraft(item)}
+              disabled={disableSyncDraft}
+              color={disableSyncDraft ? colors.lightgrey : colors.lightdark}
+            />
+          )}
+          {this.readyToSyncImages(item) && !loading && (
+            <Icon
+              name="cloud-upload"
+              size={25}
+              onPress={() => handleSyncImages(item)}
+              disabled={disableSyncImages}
+              color={disableSyncImages ? colors.lightgrey : colors.lightdark}
+            />
+          )}
+          {loading &&
+            <ActivityIndicator size="small" color={colors.lightdark} />
+          }
         </View>
 
       </ListItem>
@@ -121,7 +190,7 @@ DraftListItem.propTypes = {
 
 const styles = StyleSheet.create({
   listItem: {
-    height: 95,
+    height: 115,
     padding: 25,
     alignItems: 'center',
     flexDirection: 'row',
@@ -134,14 +203,20 @@ const styles = StyleSheet.create({
   },
   label: {
     borderRadius: 5,
-    width: 0,
+    alignSelf: 'flex-start',
     minWidth: 120,
     height: 25,
     paddingLeft: 5,
     paddingRight: 5,
     lineHeight: 25,
     textAlign: 'center',
-    marginTop: 5
+    marginTop: 5,
+    marginRight: 5
+  },
+  container: {
+    flex: 1,
+    flexDirection: 'row',
+    alignItems: 'center',
   }
 })
 
