@@ -167,7 +167,8 @@
 			"addPriority": "Adicionar Prioridade",
 			"selectIndicator": "Selecione um indicador",
 			"priorityPending": "Prioridade pendente",
-      		"priorityError": "Erro de sincronização prioritária"
+      		"priorityError": "Erro de sincronização prioritária",
+			"pictures": "Imagens"
 		},
 		"lifemap": {
 			"indicatorDefinition": "Definição do indicador",
@@ -285,13 +286,18 @@
 		"allSurveys": "Todas las pesquisas",
 		"drafts": "Rascunhos",
 		"syncPending": "Pendentes",
+		"syncPendingImages": "Imagens pendentes",
+		"syncImagesError": "Erro nas imagens",
 		"syncError": "Erros",
 		"completed": "Completados"
 	},
 	"draftStatus": {
-		"completed": "Completado",
+		"completed": "Enviado",
 		"syncError": "Error",
-		"syncPending": "Pendente",
+		"syncPending": "Sincronização pendente",
+		"syncPendingImages": "Imagens pendentes",
+		"syncImagesError": "Erro nas imagens",
+		"dataSaved": "Dados enviados",
 		"draft": "Rascunho"
 	}
 }
