@@ -342,7 +342,7 @@ export const drafts = (state = [], action) => {
 
     case SUBMIT_DRAFT_COMMIT:
       return state.map(draft =>
-        draft.draftId === action.id
+        draft.draftId === action.meta.id
           ? {
             ...draft,
             status: 'Synced',
@@ -397,7 +397,7 @@ export const drafts = (state = [], action) => {
 
     case SUBMIT_DRAFT_ROLLBACK: {
       return state.map(draft =>
-        draft.draftId === action.id
+        draft.draftId === action.meta.id
           ? {
             ...draft,
             status: 'Sync error',
@@ -657,9 +657,9 @@ export const rootReducer = (state, action) => {
 
     const draftSurvey =
       state.surveys &&
-      action.sanitizedSnapshot &&
-      action.sanitizedSnapshot.surveyId &&
-      state.surveys.find(s => s.id === action.sanitizedSnapshot.surveyId);
+      action.meta.sanitizedSnapshot &&
+      action.meta.sanitizedSnapshot.surveyId &&
+      state.surveys.find(s => s.id === action.meta.sanitizedSnapshot.surveyId);
   }
   return appReducer(state, action);
 };
