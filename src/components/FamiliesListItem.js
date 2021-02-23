@@ -5,10 +5,13 @@ import Icon from 'react-native-vector-icons/MaterialIcons'
 import moment from 'moment'
 import 'moment/locale/es'
 import 'moment/locale/pt'
+import 'moment/locale/fr'
 import colors from '../theme.json'
 import globalStyles from '../globalStyles'
 import ListItem from './ListItem'
 import { withNamespaces } from 'react-i18next'
+import { getLocaleForLanguage } from '../utils'
+
 
 moment.locale('en')
 
@@ -24,21 +27,21 @@ export class FamiliesListItem extends Component {
     const firstParticipant =
       family.snapshotList && family.snapshotList.length
         ? family.snapshotList[0].familyData.familyMembersList.find(
-            item => item.firstParticipant
-          )
+          item => item.firstParticipant
+        )
         : null
     const birthDate = firstParticipant
       ? firstParticipant.birthDate
       : family.birthDate
 
     const birthDateWithLocale = moment.unix(birthDate)
-    birthDateWithLocale.locale(lng)
+    birthDateWithLocale.locale(getLocaleForLanguage(lng))
 
     const familyMembersCount =
       family.snapshotList &&
-      family.snapshotList[0] &&
-      family.snapshotList[0].familyData.countFamilyMembers &&
-      family.snapshotList[0].familyData.countFamilyMembers > 1
+        family.snapshotList[0] &&
+        family.snapshotList[0].familyData.countFamilyMembers &&
+        family.snapshotList[0].familyData.countFamilyMembers > 1
         ? family.snapshotList[0].familyData.countFamilyMembers - 1
         : 0
 
@@ -67,37 +70,37 @@ export class FamiliesListItem extends Component {
         <View style={styles.listItemContainer}>
           <Text style={{ ...globalStyles.p, ...styles.p }}>{family.name}</Text>
           {!family.snapshotList ||
-          (family.snapshotList && family.snapshotList.length) ? (
-            <Text
-              style={{ ...globalStyles.subline, ...styles.p }}
-              accessibilityLabel={
-                birthDate
-                  ? `
+            (family.snapshotList && family.snapshotList.length) ? (
+              <Text
+                style={{ ...globalStyles.subline, ...styles.p }}
+                accessibilityLabel={
+                  birthDate
+                    ? `
                   ${familyMembersCount}
                   ${t('views.familyMembers')}
                   ${t(
-                    'views.family.dateOfBirth'
-                  )} ${birthDateWithLocale.utc().format('MMMM DD, YYYY')}`
-                  : ''
-              }
-            >
-              {birthDate
-                ? `${t('views.family.dateOfBirthAbbr')}: ${this.capitalize(
+                      'views.family.dateOfBirth'
+                    )} ${birthDateWithLocale.utc().format('MMMM DD, YYYY')}`
+                    : ''
+                }
+              >
+                {birthDate
+                  ? `${t('views.family.dateOfBirthAbbr')}: ${this.capitalize(
                     birthDateWithLocale.utc().format('MMM DD, YYYY')
                   )}`
-                : ''}
-            </Text>
-          ) : (
-            <Text
-              style={{
-                ...globalStyles.subline,
-                ...styles.p,
-                color: colors.palered
-              }}
-            >
-              {this.props.error}
-            </Text>
-          )}
+                  : ''}
+              </Text>
+            ) : (
+              <Text
+                style={{
+                  ...globalStyles.subline,
+                  ...styles.p,
+                  color: colors.palered
+                }}
+              >
+                {this.props.error}
+              </Text>
+            )}
         </View>
       </ListItem>
     )

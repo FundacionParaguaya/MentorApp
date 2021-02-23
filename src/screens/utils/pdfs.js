@@ -1,5 +1,6 @@
 import 'moment/locale/es'
 import 'moment/locale/pt'
+import 'moment/locale/fr'
 
 import moment from 'moment'
 
@@ -12,6 +13,8 @@ import {
   priorityIconWithoutStyles,
   styles
 } from './assets'
+
+import { getLocaleForLanguage } from '../../utils'
 
 moment.locale('en')
 const MAX_COLS = 5
@@ -131,7 +134,7 @@ const generatePrioritiesTable = (
                 const color = getColor(indicatorValue)
                 const dateForReviewWithLocale = moment(dateCreated)
 
-                dateForReviewWithLocale.locale(lng)
+                dateForReviewWithLocale.locale(getLocaleForLanguage(lng))
                 const dateForReview = dateForReviewWithLocale
                   .add(estimatedDate, 'months')
                   .format('DD MMM, YYYY')
@@ -233,7 +236,7 @@ const generateLifeMapHtmlTemplate = (draft, survey, lng) => {
   const achievements = draft.achievements
   const priorities = draft.priorities
   let dateCreated = draft && draft.created && moment.utc(draft.created)
-  dateCreated.locale(lng)
+  dateCreated.locale(getLocaleForLanguage(lng))
 
   const reportTitle = getReportTitle(draft)
 

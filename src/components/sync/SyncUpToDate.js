@@ -6,11 +6,14 @@ import Icon from 'react-native-vector-icons/MaterialIcons'
 import moment from 'moment'
 import 'moment/locale/es'
 import 'moment/locale/pt'
+import 'moment/locale/fr'
 moment.locale('en')
 
 import colors from '../../theme.json'
 import globalStyles from '../../globalStyles'
 import i18n from '../../i18n'
+import { getLocaleForLanguage } from '../../utils'
+
 
 export class SyncUpToDate extends Component {
   capitalize = s => {
@@ -22,7 +25,7 @@ export class SyncUpToDate extends Component {
   render() {
     const { date, lng } = this.props
     const lastSyncDateWithLocale = moment(date)
-    lastSyncDateWithLocale.locale(lng)
+    lastSyncDateWithLocale.locale(getLocaleForLanguage(lng))
 
     return (
       <View style={styles.view}>

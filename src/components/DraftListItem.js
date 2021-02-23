@@ -1,11 +1,12 @@
 import 'moment/locale/es'
 import 'moment/locale/pt'
+import 'moment/locale/fr'
 
 import moment from 'moment'
 import PropTypes from 'prop-types'
 import React, { Component } from 'react'
 import { StyleSheet, Text, View, ActivityIndicator } from 'react-native'
-import Icon from 'react-native-vector-icons/MaterialIcons'
+import { getLocaleForLanguage } from '../utils'
 
 import globalStyles from '../globalStyles'
 import i18n from '../i18n'
@@ -58,7 +59,7 @@ class DraftListItem extends Component {
   render() {
     const { item, lng } = this.props
     const itemCreateDateWithLocale = moment(item.created)
-    itemCreateDateWithLocale.locale(lng)
+    itemCreateDateWithLocale.locale(getLocaleForLanguage(lng))
 
     const name =
       item &&
