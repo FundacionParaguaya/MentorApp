@@ -59,7 +59,7 @@ export class Family extends Component {
 
 
   onPressBack = () => {
-    this.props.route.params.fromDashboard ?
+    this.state.fromDashboard  ?
       this.props.navigation.replace('DrawerStack')
       : this.props.navigation.replace('Families');
   };
@@ -71,6 +71,7 @@ export class Family extends Component {
       activeTab: this.props.route.params.activeTab || 'Details',
       showSyncButton: false,
       openProjectModal: false,
+      fromDashboard: this.props.route.params.fromDashboard || false,
     };
   }
   componentDidMount() {
@@ -81,7 +82,6 @@ export class Family extends Component {
       }
     );
     // // monitor for connection changes
-    console.log('Subscripcion')
     this.unsubscribeNetChange = NetInfo.addEventListener((isOnline) => {
       this.setState({ isOnline });
       //Allow to show or hide retrySyn button
@@ -660,6 +660,7 @@ export class Family extends Component {
                       readOnly
                       navigation={navigation}
                       familyLifemap={this.familyLifemap}
+                      fromDashboard={this.state.fromDashboard}
                     />
                   </ScrollView>
                 )}
