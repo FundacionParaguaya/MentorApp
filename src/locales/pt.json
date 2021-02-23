@@ -294,7 +294,7 @@
 	"draftStatus": {
 		"completed": "Enviado",
 		"syncError": "Error",
-		"syncPending": "Sincronização pendente",
+		"syncPending": "Pendente",
 		"syncPendingImages": "Imagens pendentes",
 		"syncImagesError": "Erro nas imagens",
 		"dataSaved": "Dados enviados",

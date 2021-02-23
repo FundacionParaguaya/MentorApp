@@ -103,7 +103,7 @@ class DraftListItem extends Component {
             {this.capitalize(itemCreateDateWithLocale.format('MMM DD, YYYY'))}
           </Text>
           <Text id="fullName" style={globalStyles.p}>
-            {(name == 'Chelsea Fc' || name == "Turbo Timo") ? "Test one" : name}
+            {name}
           </Text>
           <View
             style={styles.container}
