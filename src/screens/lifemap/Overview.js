@@ -65,7 +65,7 @@ export class Overview extends Component {
       if (this.props.fromDashboard) {
         this.props.navigation.replace('DrawerStack');
       } else {
-        this.props.navigation.navigate('Families', {
+        this.props.navigation.replace('Families', {
           draftId: this.draftId,
           survey,
         });
