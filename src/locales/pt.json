@@ -269,7 +269,7 @@
 			"syncErrProblem": "Parece que temos um problema!",
 			"itemHasError": "%n elemento tem um erro de sincronização.",
 			"itemsHaveError": "%n elementos têm erros de sincronização.",
-			"download": "Baixar JSON"
+			"download": "Baixar dados da pesquisa"
 			
 		},
 		"final": {
