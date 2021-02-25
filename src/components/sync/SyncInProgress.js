@@ -1,5 +1,6 @@
 import React, { Component } from 'react'
-import { StyleSheet, View, Text, ProgressBarAndroid } from 'react-native'
+import { StyleSheet, View, Text } from 'react-native'
+import {ProgressBar} from '@react-native-community/progress-bar-android'
 import { withNamespaces } from 'react-i18next'
 import PropTypes from 'prop-types'
 
@@ -16,7 +17,7 @@ export class SyncInProgress extends Component {
     return (
       <View style={styles.view}>
         <Text style={globalStyles.h3}>{i18n.t('views.sync.inProgress')}</Text>
-        <ProgressBarAndroid
+        <ProgressBar
           styleAttr="Horizontal"
           style={{ width: '100%', marginVertical: 20 }}
           color={colors.red}

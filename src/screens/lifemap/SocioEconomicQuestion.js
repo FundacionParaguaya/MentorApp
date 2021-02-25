@@ -406,8 +406,8 @@ export class SocioEconomicQuestion extends Component {
         },
       });
 
-      this.props.navigation.setParams({
-        onPressBack: this.onPressBack,
+      this.props.navigation.setOptions({
+        onPressBack: this.onPressBack
       });
     }
   }
@@ -815,7 +815,7 @@ export class SocioEconomicQuestion extends Component {
                   return <React.Fragment key={familyMember.firstName} />;
                 }
                 return (
-                  <React.Fragment key={familyMember.firstName}>
+                  <React.Fragment key={index}>
                     <Text id={familyMember.firstName} style={styles.memberName}>
                       {familyMember.firstName}{' '}
                       {familyMember.lastName && familyMember.lastName}
