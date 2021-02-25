@@ -190,7 +190,7 @@ class LifemapOverviewListItem extends Component {
 LifemapOverviewListItem.propTypes = {
   name: PropTypes.string.isRequired,
   achievement: PropTypes.bool,
-  priority: PropTypes.bool,
+  priority: PropTypes.object,
   color: PropTypes.number.isRequired,
   handleClick: PropTypes.func.isRequired,
   draftOverview: PropTypes.bool
