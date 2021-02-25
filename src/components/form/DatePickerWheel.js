@@ -1,4 +1,5 @@
 import { WheelPicker } from '@delightfulstudio/react-native-wheel-picker-android'
+
 import PropTypes from 'prop-types'
 import React, { Component } from 'react'
 import {
@@ -85,8 +86,8 @@ class DatePickerWheel extends Component {
       hasError,
       required
     } = this.props
-    const wheelDays = days.map(day => day.value)
-    const wheelMonths = months.map(month => month.text)
+    const wheelDays = days.map(day => day.value);
+    const wheelMonths =  months.map(month =>  month.text);
     const wheelYears = years.map(year => year.value)
     const text = value ? this.setDateText(value) : ''
     const daysWheelPosition =

@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import { withNamespaces } from 'react-i18next';
 import {
+  PermissionsAndroid,
   FlatList,
   Image,
   ScrollView,
@@ -12,6 +13,7 @@ import {
   UIManager,
   View,
   findNodeHandle,
+  ActivityIndicator
 } from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import { AndroidBackHandler } from 'react-navigation-backhandler';
@@ -27,8 +29,10 @@ import NotificationModal from '../components/NotificationModal';
 import RoundImage from '../components/RoundImage';
 import { supported_API_version, url } from '../config';
 import globalStyles from '../globalStyles';
-import { markVersionCheked, toggleAPIVersionModal, submitDraftCommit, submitDraftError } from '../redux/actions';
+import { markVersionCheked, toggleAPIVersionModal } from '../redux/actions';
 import colors from '../theme.json';
+import DownloadPopup from '../screens/modals/DownloadModal';
+
 
 
 const TestFairy = require('react-native-testfairy');
@@ -38,8 +42,9 @@ const nodeEnv = process.env;
 export class Dashboard extends Component {
   acessibleComponent = React.createRef();
   state = {
-    selectedDraftId: null,
+    loadingSync: false,
     filterModalIsOpen: false,
+    openDownloadModal: false,
     renderFiltered: false,
     renderLable: false,
     filteredDrafts: [],
@@ -207,8 +212,11 @@ export class Dashboard extends Component {
     }
   }
 
+
+
+
+
   componentDidMount() {
-    // if user has no token navigate to login screen
     if (!this.props.user.token) {
       this.props.navigation.navigate('Login');
     } else {
@@ -216,6 +224,7 @@ export class Dashboard extends Component {
         ? TestFairy.setUserId(this.props.user.username)
         : null;
       this.checkAPIVersion();
+
       if (UIManager.AccessibilityEventTypes) {
         setTimeout(() => {
           UIManager.sendAccessibilityEvent(
@@ -227,98 +236,9 @@ export class Dashboard extends Component {
     }
   }
 
-  formatPhone = (code, phone) => {
-    if (code && phone && phone.length > 0) {
-      const phoneUtil = PhoneNumberUtil.getInstance();
-      const international = '+' + code + ' ' + phone;
-      let phoneNumber = phoneUtil.parse(international, code);
-      phone = phoneNumber.getNationalNumber();
-    }
-    return phone;
-  };
-
-  sendDraft = (env, token, id, payload) => {
-    console.log('----Calling Submit Draft----', payload);
-    const sanitizedSnapshot = { ...payload };
-
-    let { economicSurveyDataList } = payload;
-
-    const validEconomicIndicator = (ec) =>
-      (ec.value !== null && ec.value !== undefined && ec.value !== '') ||
-      (!!ec.multipleValue && ec.multipleValue.length > 0);
-
-    economicSurveyDataList = economicSurveyDataList.filter(
-      validEconomicIndicator,
-    );
-    sanitizedSnapshot.economicSurveyDataList = economicSurveyDataList;
-    sanitizedSnapshot.familyData.familyMembersList.forEach((member) => {
-      let { socioEconomicAnswers = [] } = member;
-      delete member.memberIdentifier;
-      delete member.id;
-      delete member.familyId;
-      delete member.uuid;
-
-      member.phoneNumber = this.formatPhone(member.phoneCode, member.phoneNumber);
-      socioEconomicAnswers = socioEconomicAnswers.filter(validEconomicIndicator);
-      // eslint-disable-next-line no-param-reassign
-      member.socioEconomicAnswers = socioEconomicAnswers;
-    });
-    console.log(sanitizedSnapshot);
-    fetch(`${env}/graphql`, {
-      method: 'POST',
-      headers: {
-        Authorization: `Bearer ${token}`,
-        'content-type': 'application/json;charset=utf8',
-      },
-      body: JSON.stringify({
-        query:
-          'mutation addSnapshot($newSnapshot: NewSnapshotDTOInput) {addSnapshot(newSnapshot: $newSnapshot)  { surveyId surveyVersionId snapshotStoplightAchievements { action indicator roadmap } snapshotStoplightPriorities { reason action indicator estimatedDate } family { familyId } user { userId  username } indicatorSurveyDataList {key value} economicSurveyDataList {key value multipleValue} familyDataDTO { latitude longitude accuracy familyMemberDTOList { firstName lastName socioEconomicAnswers {key value } } } } }',
-        variables: { newSnapshot: sanitizedSnapshot },
-      })
-    }).then((data) => {
-      if (data.status !== 200) {
-        this.props.submitDraftError(id);
-        this.setState({ selectedDraftId: null })
-        throw new Error();
-      } else return data.json();
-    }).
-      then((data) => {
-        this.setState({ selectedDraftId: null })
-        this.props.submitDraftCommit(id);
-      })
-  }
-
-  createFormData = (item) => {
-    let data = new FormData();
-    if (item) {
-      item.forEach(el => {
-        data.append('pictures', {
-          uri: el[1].uri,
-          name: el[1].name,
-          type: el[1].type,
-        })
-      });
-    }
-    return data;
-  }
-
-  handleSync = (item) => {
-
-    this.setState({ selectedDraftId: item.draftId });
-    delete  item.progress;
-    let draftPayload = {
-      ...item,
-      pictures: [],
-    }
-    this.sendDraft(url[this.props.env], this.props.user.token, draftPayload.draftId, draftPayload);
-
-
-  }
-
   render() {
-    const { t, families, drafts, offline } = this.props;
-    const { filterModalIsOpen } = this.state;
-    console.log(drafts);
+    const { t, families, drafts } = this.props;
+    const { filterModalIsOpen, loadingSync, openDownloadModal } = this.state;
     const allDraftFamilies = drafts.filter(
       (d) => d.status === 'Draft' || d.status === 'Pending sync',
     ).length;
@@ -333,6 +253,11 @@ export class Dashboard extends Component {
             onClose={this.onNotificationClose}
             label={t('general.attention')}
             subLabel={t('general.syncAll')}></NotificationModal>
+          <DownloadPopup
+            isOpen={openDownloadModal}
+            onClose={this.toggleDownloadModal}
+          />
+
           <ScrollView
             contentContainerStyle={
               drafts.length
@@ -440,7 +365,9 @@ export class Dashboard extends Component {
                           </View>
                           <Image source={arrow} style={styles.arrow} />
                         </View>
+
                       </TouchableHighlight>
+
                     </View>
                     {/* Filters modal */}
                     <BottomModal
@@ -512,14 +439,13 @@ export class Dashboard extends Component {
                   renderItem={({ item }) => (
                     <DraftListItem
                       item={item}
-                      isOnline={offline.online}
                       handleClick={this.handleClickOnListItem}
-                      handleSync={this.handleSync}
                       lng={this.props.lng}
                       user={this.props.user}
-                      selectedDraftId={this.state.selectedDraftId}
+
                     />
-                  )}
+                  )
+                  }
                 />
               </View>
             </View>
@@ -655,7 +581,7 @@ export const mapStateToProps = ({
   apiVersion,
 });
 
-const mapDispatchToProps = { markVersionCheked, toggleAPIVersionModal, submitDraftCommit, submitDraftError };
+const mapDispatchToProps = { markVersionCheked, toggleAPIVersionModal };
 
 export default withNamespaces()(
   connect(mapStateToProps, mapDispatchToProps)(Dashboard),

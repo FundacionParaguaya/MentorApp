@@ -191,7 +191,11 @@
       "addPriority": "Agregar Prioridad",
       "selectIndicator": "Seleccionar un indicador",
       "priorityPending": "Prioridad pendiente",
-      "priorityError": "Error de sincronización de prioridad"
+      "priorityError": "Error de sincronización de prioridad",
+      "male": "Masculino",
+      "female": "Femenino",
+      "other": "Otro",
+      "noAnswer": "Prefiero no contestar"
     },
     "lifemap": {
       "indicatorDefinition": "Definición del indicador",
@@ -250,7 +254,9 @@
       "toContinueUsingTheApp": "de espacio para continuar usando Stoplight Mobile.",
       "chooseProjectTitle":"Elige un proyecto",
       "chooseProjectSubtitle": "Elige un proyecto al que pertenecerá la familia ..",
-      "skipProject": "Saltar proyecto"   
+      "skipProject": "Saltar proyecto",
+      "finishDownload": "¡La descarga ha finalizado!",
+      "subtitleFinishDownload": "Puede encontrar el archivo en la carpeta Download."
     },
     "logout": {
       "logout": "Cerrar sesión",
@@ -274,7 +280,8 @@
       "updates": "actualizaciones",
       "syncErrProblem": "¡Parece que tenemos un problema!",
       "itemHasError": "%n elemento tiene un error de sincronización.",
-      "itemsHaveError": "%n elementos tienen un error de sincronización."
+      "itemsHaveError": "%n elementos tienen un error de sincronización.",
+      "download": "Descargar datos de las encuesta"
     },
     "final": {
       "emailSent": "Tu Mapa de Vida ha sido enviado exitosamente vía email. ¡No te olvides de seleccionar Guardar & cerrar!",

@@ -83,6 +83,12 @@ project.ext.react = [
 
 apply from: "../../node_modules/react-native/react.gradle"
 
+apply plugin: "com.bugsnag.android.gradle"
+
+bugsnag {
+    uploadReactNativeMappings = false
+}
+
 /**
  * Set this to true to create two separate APKs instead of one:
  *   - An APK that only works on ARM devices
@@ -133,8 +139,8 @@ android {
         applicationId "com.povertystoplightapp"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
-        versionCode 157
-        versionName "1.18.7"
+        versionCode 165
+        versionName "1.18.15"
         multiDexEnabled true
     }
 
@@ -228,3 +234,5 @@ task copyDownloadableDepsToLibs(type: Copy) {
 }
 
 apply from: file("../../node_modules/@react-native-community/cli-platform-android/native_modules.gradle"); applyNativeModulesAppBuildGradle(project)
+
+

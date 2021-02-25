@@ -226,7 +226,10 @@
 			"toContinueUsingTheApp": "libere espaço para continuar usando Stoplight Mobile.",
 			"chooseProjectTitle":"Escolha um projeto",
 			"chooseProjectSubtitle": "Escolha um projeto ao qual a família pertencerá.",
-			"skipProject": "Pular projeto"  
+			"skipProject": "Pular projeto",
+			"finishDownload": "O download está completo!",
+      		"subtitleFinishDownload": "Você pode encontrar o arquivo na pasta Download."
+			
 		},
 		"pictures": {
 			"limit": "*Você atingiu o limite de 10MB! Elimine uma imagem para continuar.",
@@ -265,7 +268,9 @@
 			"updates": "atualizações",
 			"syncErrProblem": "Parece que temos um problema!",
 			"itemHasError": "%n elemento tem um erro de sincronização.",
-			"itemsHaveError": "%n elementos têm erros de sincronização."
+			"itemsHaveError": "%n elementos têm erros de sincronização.",
+			"download": "Baixar dados da pesquisa"
+			
 		},
 		"final": {
 			"emailSent": "Seu mapa da vida foi enviado com sucesso por e-mail. Não se esqueça de selecionar Salvar e fechar!",

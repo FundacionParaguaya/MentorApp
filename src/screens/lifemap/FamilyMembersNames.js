@@ -65,8 +65,7 @@ export class FamilyMembersNames extends Component {
   };
 
   validateForm = () => {
-    console.log(this.state.errors);
-    if (this.state.errors.length) {
+    if (this.state.errors.length ) {
       this.setState({
         showErrors: true,
       });
@@ -382,6 +381,7 @@ export class FamilyMembersNames extends Component {
                     'birthDate',
                     false,
                   )}
+                  setError={(isError) => this.setError(isError, 'birthDate',item.uuid)}
                   readOnly={!!this.readOnly}
                   showErrors={showErrors}
                 />

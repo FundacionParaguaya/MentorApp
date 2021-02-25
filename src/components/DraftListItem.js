@@ -1,11 +1,12 @@
 import 'moment/locale/es'
 import 'moment/locale/pt'
+import 'moment/locale/fr'
 
 import moment from 'moment'
 import PropTypes from 'prop-types'
 import React, { Component } from 'react'
 import { StyleSheet, Text, View, ActivityIndicator } from 'react-native'
-import Icon from 'react-native-vector-icons/MaterialIcons'
+import { getLocaleForLanguage } from '../utils'
 
 import globalStyles from '../globalStyles'
 import i18n from '../i18n'
@@ -58,7 +59,7 @@ class DraftListItem extends Component {
   render() {
     const { item, lng } = this.props
     const itemCreateDateWithLocale = moment(item.created)
-    itemCreateDateWithLocale.locale(lng)
+    itemCreateDateWithLocale.locale(getLocaleForLanguage(lng))
 
     const name =
       item &&
@@ -67,8 +68,7 @@ class DraftListItem extends Component {
         item.familyData.familyMembersList[0]
         ? `${item.familyData.familyMembersList[0].firstName} ${item.familyData.familyMembersList[0].lastName}`
         : ' - '
-    const disabled = this.props.selectedDraftId && (this.props.selectedDraftId !== item.draftId);
-    const loading = this.props.selectedDraftId && (this.props.selectedDraftId == item.draftId);
+   
 
 
 
@@ -104,21 +104,7 @@ class DraftListItem extends Component {
             {this.setStatusTitle(this.props.item.status)}
           </Text>
         </View>
-        <View>
-          <>
-            {item.status == 'Pending sync' && this.props.isOnline && !loading &&
-              <Icon
-                name="cloud-upload"
-                size={25}
-                disabled={disabled ? true : false}
-                color={disabled ? colors.lightgrey : colors.lightdark}
-                onPress={() => this.props.handleSync(this.props.item)} />
-            }
-            {(item.status == 'Pending sync') && this.props.isOnline && loading &&
-              <ActivityIndicator size="small" color={colors.lightdark} />
-            }
-          </>
-        </View>
+     
       </ListItem>
     )
   }
@@ -128,8 +114,7 @@ DraftListItem.propTypes = {
   item: PropTypes.object.isRequired,
   handleClick: PropTypes.func.isRequired,
   lng: PropTypes.string.isRequired,
-  user: PropTypes.object.isRequired,
-  isOnline: PropTypes.bool.isRequired
+  user: PropTypes.object.isRequired
 }
 
 const styles = StyleSheet.create({

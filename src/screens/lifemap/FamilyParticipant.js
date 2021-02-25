@@ -368,7 +368,7 @@ export class FamilyParticipant extends Component {
         <Select
           id="gender"
           label={t('views.family.gender')}
-          placeholder={t('views.family.selectGender')}
+          placeholder={!!this.readOnly ? t('views.family.gender'): t('views.family.selectGender')}
           initialValue={participant.gender || ''}
           required={setValidationSchema(this.requiredFields, 'gender', true)}
           options={this.survey ? this.survey.surveyConfig.gender:[]}

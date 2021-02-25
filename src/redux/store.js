@@ -1,16 +1,16 @@
-import {createStore, applyMiddleware, compose} from 'redux';
+import { createStore, applyMiddleware, compose } from 'redux';
 import FilesystemStorage from 'redux-persist-filesystem-storage';
 import AsyncStorage from '@react-native-community/async-storage';
 import * as _ from 'lodash';
-import {autoRehydrate, persistStore, getStoredState} from 'redux-persist';
+import { autoRehydrate, persistStore, getStoredState } from 'redux-persist';
 import defaultQueue from '@redux-offline/redux-offline/lib/defaults/queue';
-import {offline} from '@redux-offline/redux-offline';
+import { offline } from '@redux-offline/redux-offline';
 import offlineConfig from '@redux-offline/redux-offline/lib/defaults';
-import {rootReducer} from './reducer';
-import {setHydrated, SUBMIT_DRAFT} from './actions';
-import {setLanguage} from '../i18n';
+import { rootReducer } from './reducer';
+import { setHydrated, SUBMIT_DRAFT } from './actions';
+import { setLanguage } from '../i18n';
 import thunk from 'redux-thunk';
-import {submitDraftWithImages} from './middleware';
+import { submitDraftWithImages } from './middleware';
 import { composeWithDevTools } from 'redux-devtools-extension';
 
 let rehydrated = false;
@@ -26,13 +26,13 @@ const reduxOfflineConfig = {
   persistOptions: {
     blacklist: ['hydration'],
   },
-  queue:{
+  queue: {
     ...defaultQueue,
     enqueue(outbox, incomingAction, context) {
-      if(incomingAction.type == SUBMIT_DRAFT) {
+      if (incomingAction.type == SUBMIT_DRAFT) {
         return outbox
-            .filter(outboxAction => ((outboxAction.id !== incomingAction.id) || (outboxAction.type !== incomingAction.type )))
-            .concat(incomingAction);
+          .filter(outboxAction => ((outboxAction.id !== incomingAction.id) || (outboxAction.type !== incomingAction.type)))
+          .concat(incomingAction);
       }
       return [...outbox, incomingAction];
     },
@@ -64,9 +64,9 @@ const fsPersistor = persistStore(
   async (fsError, fsResult) => {
     if (_.isEmpty(fsResult)) {
       try {
-        const asyncState = await getStoredState({storage: AsyncStorage});
+        const asyncState = await getStoredState({ storage: AsyncStorage });
         if (!_.isEmpty(asyncState)) {
-          fsPersistor.rehydrate(asyncState, {serial: false});
+          fsPersistor.rehydrate(asyncState, { serial: false });
         }
       } catch (getStateError) {
         console.warn('getStoredState error', getStateError);
