@@ -122,15 +122,6 @@ export class AddPriorityAndAchievementModal extends Component {
         payload
       )
     }
-    else if (updatedDraft.status == 'Pending sync') {
-      this.props.updateDraft(updatedDraft);
-      let draft = prepareDraftForSubmit(updatedDraft, this.props.survey);
-      delete draft["previousIndicatorSurveyDataList"];
-      delete draft["previousIndicatorPriorities"];
-      delete draft["previousIndicatorAchievements"];
-      this.props.submitDraft(url[this.props.env],
-        this.props.user.token, draft.draftId, draft)
-    }
     else {
       this.props.updateDraft(updatedDraft);
     }

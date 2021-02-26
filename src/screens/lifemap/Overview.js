@@ -127,7 +127,7 @@ export class Overview extends Component {
       ? this.getDraft()
       : this.props.familyLifemap;
 
-    return draftData.status != 'Synced' && this.survey
+    return (!draftData.status || draftData.status === 'Pending sync') && this.survey
   }
 
   componentDidMount() {
