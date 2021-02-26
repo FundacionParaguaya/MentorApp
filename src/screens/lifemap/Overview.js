@@ -45,7 +45,7 @@ export class Overview extends Component {
         (question) => question.value === 0,
       );
 
-      if (this.isResumingDraft) {
+      if (this.isResumingDraft || this.props.fromDashboard) {
         this.props.navigation.replace('DrawerStack');
       } else if (skippedQuestions.length > 0) {
         this.props.navigation.navigate('Skipped', {
@@ -62,10 +62,14 @@ export class Overview extends Component {
     }
     // If we arrive to this screen from the families screen
     else {
-      this.props.navigation.navigate('Families', {
-        draftId: this.draftId,
-        survey,
-      });
+      if (this.props.fromDashboard) {
+        this.props.navigation.replace('DrawerStack');
+      } else {
+        this.props.navigation.replace('Families', {
+          draftId: this.draftId,
+          survey,
+        });
+      }
     }
   };
 

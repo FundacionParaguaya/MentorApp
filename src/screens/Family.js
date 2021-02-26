@@ -13,6 +13,7 @@ import {
   Text,
   TouchableHighlight,
   View,
+  Dimensions
 } from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import { connect } from 'react-redux';
@@ -37,6 +38,8 @@ import colors from '../theme.json';
 import OverviewComponent from './lifemap/Overview';
 import { prepareDraftForSubmit } from './utils/helpers';
 import ProjectsPopup from '../components/ProjectsPopup';
+import { isPortrait } from '../responsivenessHelpers'
+import family from '../../assets/images/family.png';
 
 export class Family extends Component {
   unsubscribeNetChange;
@@ -48,15 +51,17 @@ export class Family extends Component {
   // extract socio economic categories from snapshot
   socioEconomicCategories = [
     ...new Set(
-      this.props.route.params.survey  ? this.props.route.params.survey.surveyEconomicQuestions.map(
+      this.props.route.params.survey ? this.props.route.params.survey.surveyEconomicQuestions.map(
         (question) => question.topic,
-      ):[],
+      ) : [],
     ),
   ];
 
 
   onPressBack = () => {
-    this.props.navigation.replace('Families');
+    this.state.fromDashboard  ?
+      this.props.navigation.replace('DrawerStack')
+      : this.props.navigation.replace('Families');
   };
 
   constructor(props) {
@@ -66,17 +71,17 @@ export class Family extends Component {
       activeTab: this.props.route.params.activeTab || 'Details',
       showSyncButton: false,
       openProjectModal: false,
+      fromDashboard: this.props.route.params.fromDashboard || false,
     };
   }
   componentDidMount() {
     this.props.navigation.addListener(
       'focus',
       () => {
-          this.forceUpdate();
+        this.forceUpdate();
       }
-  );
+    );
     // // monitor for connection changes
-    console.log('Subscripcion')
     this.unsubscribeNetChange = NetInfo.addEventListener((isOnline) => {
       this.setState({ isOnline });
       //Allow to show or hide retrySyn button
@@ -91,7 +96,7 @@ export class Family extends Component {
       //this.syncPriorities(state.isConnected)
     });
 
-    
+
 
     this.props.navigation.setParams({
       onPressBack: this.onPressBack,
@@ -144,21 +149,21 @@ export class Family extends Component {
   };
 
   syncPriorities = (isOnline) => {
-    if(isOnline){
+    if (isOnline) {
       const pendingPriorities = this.props.priorities.filter(
-        (priority ) => priority.status == 'Pending Status' || priority.status  == 'Sync Error'
-        );
-        pendingPriorities.forEach(priority => {
-          let sanitazedPriority = priority;
-          delete sanitazedPriority.status
-          this.props.submitPriority (
-            url[this.props.env],
-            this.props.user.token,
-            sanitazedPriority
-          )
-        });
+        (priority) => priority.status == 'Pending Status' || priority.status == 'Sync Error'
+      );
+      pendingPriorities.forEach(priority => {
+        let sanitazedPriority = priority;
+        delete sanitazedPriority.status
+        this.props.submitPriority(
+          url[this.props.env],
+          this.props.user.token,
+          sanitazedPriority
+        )
+      });
     }
-   
+
   }
 
   availableForSync = (isOnline) => {
@@ -279,9 +284,9 @@ export class Family extends Component {
   render() {
     const { activeTab } = this.state;
     const { t, navigation } = this.props;
-    const { familyData } = this.familyLifemap;
+    const { familyData, pictures } = this.familyLifemap;
     const stoplightSkipped = this.familyLifemap.stoplightSkipped;
-    
+    const { width, height } = Dimensions.get('window')
 
     const email =
       familyData &&
@@ -519,6 +524,55 @@ export class Family extends Component {
               </View>
             </View>
 
+            {!!pictures && pictures.length > 0 && (
+              <View style={styles.section}>
+                <View style={styles.content}>
+                  <Text style={[globalStyles.h3, { color: colors.lightdark, marginBottom: 5 }]}>
+                    {t('views.family.pictures').toUpperCase()}
+                  </Text>
+                  <ScrollView
+                    horizontal
+                    snapToAlignment="center"
+                    snapToInterval={width - (1 / 10) * width}
+                    contentContainerStyle={{
+                      width: isPortrait({ width, height }) ? `${90 * pictures.length}%` : 180 * pictures.length,
+                      flexGrow: 1,
+                      flexDirection: 'row',
+                      flexWrap: 'wrap',
+                      justifyContent: 'space-between',
+                      padding: '0.66%',
+                      marginBottom: 20
+                    }}
+                    ref={ref => {
+                      this.scrollView = ref
+                    }}
+                  >
+                    {pictures.map((picture, i) => (
+                      <View
+                        key={i}
+                        style={{
+                          width: `${100 / pictures.length}%`,
+                          maxWidth: isPortrait({ width, height }) ? null: 250 ,
+                          maxHeight: 250,
+                          flex: 1,
+                          alignItems: 'center',
+                          margin: 20
+                        }}
+                      >
+
+                        <Image
+                          key={i}
+                          style={styles.image}
+                          source={{ uri: picture.content }}
+                        />
+
+                      </View>
+                    ))}
+                  </ScrollView>
+                </View>
+              </View>
+            )}
+
             {!!this.allowRetake && !!this.survey && (
               <Button
                 style={styles.buttonSmall}
@@ -527,90 +581,93 @@ export class Family extends Component {
               />
             )}
           </ScrollView>
-        ) : null}
+        ) : null
+        }
 
         {/* Lifemap tab */}
 
-        {activeTab === 'LifeMap' ? (
-          <ScrollView id="lifemap">
-            {this.isDraft ? (
-              <View>
-                <View style={styles.draftContainer}>
-                  <Text
-                    style={{
-                      ...styles.lifemapCreated,
-                      ...globalStyles.h2Bold,
-                      fontSize: 16,
-                      marginBottom: 10,
-                      textAlign: 'center',
-                      color: '#000000',
-                    }}>{`${t('views.family.lifeMapCreatedOn')}: \n${moment(
-                      this.familyLifemap.created,
-                    ).format('MMM DD, YYYY')}`}</Text>
-                  <RoundImage source="lifemap" />
+        {
+          activeTab === 'LifeMap' ? (
+            <ScrollView id="lifemap">
+              {this.isDraft ? (
+                <View>
+                  <View style={styles.draftContainer}>
+                    <Text
+                      style={{
+                        ...styles.lifemapCreated,
+                        ...globalStyles.h2Bold,
+                        fontSize: 16,
+                        marginBottom: 10,
+                        textAlign: 'center',
+                        color: '#000000',
+                      }}>{`${t('views.family.lifeMapCreatedOn')}: \n${moment(
+                        this.familyLifemap.created,
+                      ).format('MMM DD, YYYY')}`}</Text>
+                    <RoundImage source="lifemap" />
 
-                  {this.props.route.params.familyLifemap.status &&
-                    this.props.route.params.familyLifemap.status === 'Draft' ? (
-                      <Button
-                        id="resume-draft"
-                        style={{
-                          marginTop: 20,
-                        }}
-                        colored
-                        text={t('general.resumeDraft')}
-                        handleClick={() => this.handleResumeClick()}
-                      />
-                    ) : (
-                      <View>
-                        <Text
+                    {this.props.route.params.familyLifemap.status &&
+                      this.props.route.params.familyLifemap.status === 'Draft' ? (
+                        <Button
+                          id="resume-draft"
                           style={{
-                            ...globalStyles.h2Bold,
-                            ...{
-                              textAlign: 'center',
-                            },
-                          }}>
-                          {t('views.family.lifeMapAfterSync')}
-                        </Text>
-                        {this.state.showSyncButton && (
-                          <Button
-                            id="retry"
-                            style={styles.button}
-                            loading={this.state.loading}
-                            text={t('views.synced')}
-                            handleClick={this.retrySync}
-                          />
-                        )}
-                      </View>
-                    )}
+                            marginTop: 20,
+                          }}
+                          colored
+                          text={t('general.resumeDraft')}
+                          handleClick={() => this.handleResumeClick()}
+                        />
+                      ) : (
+                        <View>
+                          <Text
+                            style={{
+                              ...globalStyles.h2Bold,
+                              ...{
+                                textAlign: 'center',
+                              },
+                            }}>
+                            {t('views.family.lifeMapAfterSync')}
+                          </Text>
+                          {this.state.showSyncButton && (
+                            <Button
+                              id="retry"
+                              style={styles.button}
+                              loading={this.state.loading}
+                              text={t('views.synced')}
+                              handleClick={this.retrySync}
+                            />
+                          )}
+                        </View>
+                      )}
+                  </View>
                 </View>
-              </View>
-            ) : (
-                <ScrollView>
-                  <Text
-                    style={{ ...styles.lifemapCreated, ...globalStyles.h3 }}>{`${t(
-                      'views.family.created',
-                    )}:  ${moment(this.familyLifemap.created).format(
-                      'MMM DD, YYYY',
-                    )}`}</Text>
-                  {this.project ? (
-                    <View style={styles.section}>
-                      <View style={styles.content}>
-                        <Text style={globalStyles.h3}>{`${t('views.project')}: ${this.project}`}</Text>
+              ) : (
+                  <ScrollView>
+                    <Text
+                      style={{ ...styles.lifemapCreated, ...globalStyles.h3 }}>{`${t(
+                        'views.family.created',
+                      )}:  ${moment(this.familyLifemap.created).format(
+                        'MMM DD, YYYY',
+                      )}`}</Text>
+                    {this.project ? (
+                      <View style={styles.section}>
+                        <View style={styles.content}>
+                          <Text style={globalStyles.h3}>{`${t('views.project')}: ${this.project}`}</Text>
+                        </View>
                       </View>
-                    </View>
-                  ) : null}
-                  <OverviewComponent
-                    route={this.props.route}
-                    readOnly
-                    navigation={navigation}
-                    familyLifemap={this.familyLifemap}
-                    
-                  />
-                </ScrollView>
-              )}
-          </ScrollView>
-        ) : null}
-      </ScrollView>
+                    ) : null}
+                    <OverviewComponent
+                      route={this.props.route}
+                      readOnly
+                      navigation={navigation}
+                      familyLifemap={this.familyLifemap}
+                      fromDashboard={this.state.fromDashboard}
+                    />
+                  </ScrollView>
+                )}
+            </ScrollView>
+          ) : null
+        }
+      </ScrollView >
     );
   }
 }
@@ -736,7 +793,16 @@ const styles = StyleSheet.create({
     alignSelf: 'center',
     backgroundColor: 'white',
   },
-  imagePlaceholder: { width: '100%', height: 139 },
+  imagePlaceholder: {
+    width: '100%',
+    height: 139
+  },
+  image: {
+    width: '100%',
+    height: 140,
+    borderRadius: 3,
+    paddingTop: '100%'
+  },
 });
 const mapDispatchToProps = {
   submitDraft,

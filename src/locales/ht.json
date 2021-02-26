@@ -190,7 +190,8 @@
       "addPriority": "Ajoute Priyorite",
       "selectIndicator": "Chwazi yon Endikatè",
       "priorityPending": "Priyorite annatant",
-      "priorityError": "Priyorite senkro erè"
+      "priorityError": "Priyorite senkro erè",
+      "pictures": "Pictures"
     },
     "lifemap": {
       "indicatorDefinition": "Definisyon endikatè",
@@ -293,13 +294,18 @@
     "allSurveys": "Tout sondaj",
     "drafts": "Bwouyon",
     "syncPending": "Senkwonizasyon annatant",
+    "syncPendingImages": "Sync images pending",
+    "syncImagesError": "Error in images",
     "syncError": "Erè senkwonizasyon",
     "completed": "Fini"
   },
   "draftStatus": {
-    "completed": "Fini",
+    "completed": "Sent",
     "syncError": "Erè senkwonizasyon",
     "syncPending": "Senkwonizasyon annnatant",
+    "syncPendingImages": "Sync images pending",
+    "syncImagesError": "Error in images",
+    "dataSaved": "Data sent",
     "draft": "Bwouyon"
   }
 }
