@@ -534,16 +534,6 @@ export class Family extends Component {
               images={sign}
             />
 
-
-            {/* {!!sign && (
-              <Image
-              
-              style={styles.image}
-              source={{ uri: sign }}
-            />
-
-            )} */}
-
             {!!this.allowRetake && !!this.survey && (
               <Button
                 style={styles.buttonSmall}
