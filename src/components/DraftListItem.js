@@ -7,6 +7,7 @@ import PropTypes from 'prop-types'
 import React, { Component } from 'react'
 import { StyleSheet, Text, View, ActivityIndicator } from 'react-native'
 import { getLocaleForLanguage } from '../utils'
+import Icon from 'react-native-vector-icons/MaterialIcons'
 
 import globalStyles from '../globalStyles'
 import i18n from '../i18n'
