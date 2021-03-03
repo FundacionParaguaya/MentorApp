@@ -40,6 +40,7 @@ import { prepareDraftForSubmit } from './utils/helpers';
 import ProjectsPopup from '../components/ProjectsPopup';
 import { isPortrait } from '../responsivenessHelpers'
 import family from '../../assets/images/family.png';
+import ProfileImages from '../components/ProfileImages';
 
 export class Family extends Component {
   unsubscribeNetChange;
@@ -59,7 +60,7 @@ export class Family extends Component {
 
 
   onPressBack = () => {
-    this.state.fromDashboard  ?
+    this.state.fromDashboard ?
       this.props.navigation.replace('DrawerStack')
       : this.props.navigation.replace('Families');
   };
@@ -284,7 +285,7 @@ export class Family extends Component {
   render() {
     const { activeTab } = this.state;
     const { t, navigation } = this.props;
-    const { familyData, pictures } = this.familyLifemap;
+    const { familyData, pictures, sign } = this.familyLifemap;
     const stoplightSkipped = this.familyLifemap.stoplightSkipped;
     const { width, height } = Dimensions.get('window')
 
@@ -524,54 +525,24 @@ export class Family extends Component {
               </View>
             </View>
 
-            {!!pictures && pictures.length > 0 && (
-              <View style={styles.section}>
-                <View style={styles.content}>
-                  <Text style={[globalStyles.h3, { color: colors.lightdark, marginBottom: 5 }]}>
-                    {t('views.family.pictures').toUpperCase()}
-                  </Text>
-                  <ScrollView
-                    horizontal
-                    snapToAlignment="center"
-                    snapToInterval={width - (1 / 10) * width}
-                    contentContainerStyle={{
-                      width: isPortrait({ width, height }) ? `${90 * pictures.length}%` : 180 * pictures.length,
-                      flexGrow: 1,
-                      flexDirection: 'row',
-                      flexWrap: 'wrap',
-                      justifyContent: 'space-between',
-                      padding: '0.66%',
-                      marginBottom: 20
-                    }}
-                    ref={ref => {
-                      this.scrollView = ref
-                    }}
-                  >
-                    {pictures.map((picture, i) => (
-                      <View
-                        key={i}
-                        style={{
-                          width: `${100 / pictures.length}%`,
-                          maxWidth: isPortrait({ width, height }) ? null: 250 ,
-                          maxHeight: 250,
-                          flex: 1,
-                          alignItems: 'center',
-                          margin: 20
-                        }}
-                      >
+            <ProfileImages
+              isPictures
+              images={pictures}
+            />
+            <ProfileImages
+              isSign
+              images={sign}
+            />
 
-                        <Image
-                          key={i}
-                          style={styles.image}
-                          source={{ uri: picture.content }}
-                        />
 
-                      </View>
-                    ))}
-                  </ScrollView>
-                </View>
-              </View>
-            )}
+            {/* {!!sign && (
+              <Image
+              
+              style={styles.image}
+              source={{ uri: sign }}
+            />
+
+            )} */}
 
             {!!this.allowRetake && !!this.survey && (
               <Button

@@ -195,7 +195,8 @@
       "female": "Female",
       "other": "Other",
       "noAnswer": "I prefer not to answer",
-      "pictures": "Pictures"
+      "pictures": "Pictures",
+      "sign": "Signature"
     },
     "lifemap": {
       "indicatorDefinition": "Indicator Definition",

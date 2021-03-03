@@ -168,7 +168,8 @@
 			"selectIndicator": "Selecione um indicador",
 			"priorityPending": "Prioridade pendente",
       		"priorityError": "Erro de sincronização prioritária",
-			"pictures": "Imagens"
+			"pictures": "Imagens",
+			"sign": "Assinatura"
 		},
 		"lifemap": {
 			"indicatorDefinition": "Definição do indicador",
