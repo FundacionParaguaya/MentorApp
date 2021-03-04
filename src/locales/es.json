@@ -196,7 +196,8 @@
       "female": "Femenino",
       "other": "Otro",
       "noAnswer": "Prefiero no contestar",
-      "pictures": "Imágenes"
+      "pictures": "Imágenes",
+      "sign": "Firma"
     },
     "lifemap": {
       "indicatorDefinition": "Definición del indicador",
