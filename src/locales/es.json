@@ -280,9 +280,10 @@
       "of": "de",
       "updates": "actualizaciones",
       "syncErrProblem": "¡Parece que tenemos un problema!",
-      "itemHasError": "%n elemento tiene un error de sincronización.",
-      "itemsHaveError": "%n elementos tienen un error de sincronización.",
-      "download": "Descargar datos de las encuesta"
+      "itemHasError": "%n prioridad tiene un error de sincronización.",
+      "itemsHaveError": "%n prioridades tienen un error de sincronización.",
+      "download": "Descargar datos de las encuesta",
+      "retry": "Reintentar"
     },
     "final": {
       "emailSent": "Tu Mapa de Vida ha sido enviado exitosamente vía email. ¡No te olvides de seleccionar Guardar & cerrar!",

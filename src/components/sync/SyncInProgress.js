@@ -8,14 +8,15 @@ import globalStyles from '../../globalStyles'
 import i18n from '../../i18n'
 
 export class SyncInProgress extends Component {
-  initalNumOfDraftsPending = this.props.pendingDraftsLength
+  initalNumOfDraftsPending = this.props.initial
 
   render() {
-    const currentNumOfDraftsPending =
+    
+    let currentNumOfDraftsPending =
       this.initalNumOfDraftsPending - this.props.pendingDraftsLength
+     
     return (
       <View style={styles.view}>
-        <Text style={globalStyles.h3}>{i18n.t('views.sync.inProgress')}</Text>
         <ProgressBarAndroid
           styleAttr="Horizontal"
           style={{ width: '100%', marginVertical: 20 }}

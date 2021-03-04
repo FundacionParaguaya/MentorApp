@@ -55,22 +55,12 @@ const SyncPriority = ({
     familyName,
     t
 }) => {
-    console.log('indicatorName',indicatorName);
-    console.log('familyName', familyName)
     return(
         <ListItem
             style={{...styles.listItem, ...styles.borderBottom}}
             disabled={true}
         >
             <View style={styles.view}>
-                <View style={styles.container}>
-                <Icon
-                    name='swap-calls'
-                    style={styles.icon}
-                    size={30}
-                    color={colors.lightdark}
-                />
-                </View>
                 <View>
                     <Text style={globalStyles.p}>{indicatorName}</Text>
                     <Text style={globalStyles.p}>{familyName}</Text>
