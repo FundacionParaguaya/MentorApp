@@ -87,49 +87,8 @@ export class Sync extends Component {
     })
   }
 
-  /*  retrySubmittingAllDrafts = () => {
-     const draftsWithError = this.props.drafts.filter(
-       (draft) => draft.status === 'Sync error',
-     );
- 
-     draftsWithError.forEach((draft) => {
-       console.log('sanitazedDraft in SYNC');
-       const sanitazedDraft = prepareDraftForSubmit(
-         draft,
-         this.props.surveys.find((survey) => survey.id === draft.surveyId),
-       );
- 
-       if (draft.pictures && draft.pictures.length > 0) {
-         this.props.submitDraftWithImages(
-           url[this.props.env],
-           this.props.user.token,
-           sanitazedDraft.draftId,
-           {
-             ...sanitazedDraft,
-             //sendEmail: this.state.sendEmailFlag
-           },
-         );
-       } else {
-         this.props.submitDraft(
-           url[this.props.env],
-           this.props.user.token,
-           sanitazedDraft.draftId,
-           {
-             ...sanitazedDraft,
-             //sendEmail: this.state.sendEmailFlag,
-             pictures: [],
-           },
-         );
-       }
- 
-       setTimeout(() => {
-         this.props.navigation.navigate('Dashboard');
-       }, 500);
-     });
-   }; */
 
   retrySubmit = () => {
-    //this.retrySubmittingAllDrafts();
     this.retrySubmittingAllPriorities();
   }
 
@@ -455,24 +414,13 @@ export class Sync extends Component {
           />
         ) : null}
 
-        {offline.online && (prioritiesWithError
-          .length && !pendingPriorities.length) ? (
-            <SyncRetry
-              withError={prioritiesWithError.length}
-              retrySubmit={this.retrySubmit}
-
-            />
-          ) : null}
-           {offline.online && pendingPriorities.length 
-            ? (
-            <SyncInProgress pendingDraftsLength={ pendingPriorities.length } initial={pendingPriorities.length + prioritiesWithError.length}/>
-          ) : null}
+     
 
         {prioritiesPendingOrError.length ? (
           <>
-            <Text style={globalStyles.h3Bold}>{t('views.lifemap.priorities')}</Text>
+            <Text style={[globalStyles.h3Bold, {marginTop:10}]}>{t('views.lifemap.priorities')}</Text>
             <FlatList
-              style={{ marginTop: 15, minHeight:40 }}
+              style={{ minHeight:40, marginBottom: 15 }}
               data={prioritiesPendingOrError}
               keyExtractor={(item, index) => index.toString()}
               renderItem={({ item }) => (
@@ -485,6 +433,18 @@ export class Sync extends Component {
             />
           </>
         ) : null}
+           {offline.online && (prioritiesWithError
+          .length ) ? (
+            <SyncRetry
+              withError={prioritiesWithError.length}
+              retrySubmit={this.retrySubmit}
+
+            />
+          ) : null}
+           {offline.online && pendingPriorities.length 
+            ? (
+            <SyncInProgress pendingDraftsLength={ pendingPriorities.length } initial={pendingPriorities.length + prioritiesWithError.length}/>
+          ) : null}
       </ScrollView>
     );
   }
