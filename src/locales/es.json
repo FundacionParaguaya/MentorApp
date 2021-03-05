@@ -195,7 +195,9 @@
       "male": "Masculino",
       "female": "Femenino",
       "other": "Otro",
-      "noAnswer": "Prefiero no contestar"
+      "noAnswer": "Prefiero no contestar",
+      "pictures": "Imágenes",
+      "sign": "Firma"
     },
     "lifemap": {
       "indicatorDefinition": "Definición del indicador",
@@ -296,13 +298,18 @@
     "allSurveys": "Todas las encuestas",
     "drafts": "Borradores",
     "syncPending": "Pendientes",
+    "syncPendingImages": "Imágenes pendientes",
+    "syncImagesError": "Error en las imágenes",
     "syncError": "Errores",
     "completed": "Completados"
   },
   "draftStatus": {
-    "completed": "Completado",
+    "completed": "Enviado",
     "syncError": "Error",
     "syncPending": "Pendiente",
+    "syncPendingImages": "Imágenes pendientes",
+    "syncImagesError": "Error en las imágenes",
+    "dataSaved": "Datos enviados",
     "draft": "Borrador"
   }
 }

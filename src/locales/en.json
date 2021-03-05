@@ -194,7 +194,9 @@
       "male": "Male",
       "female": "Female",
       "other": "Other",
-      "noAnswer": "I prefer not to answer"
+      "noAnswer": "I prefer not to answer",
+      "pictures": "Pictures",
+      "sign": "Signature"
     },
     "lifemap": {
       "indicatorDefinition": "Indicator Definition",
@@ -297,13 +299,18 @@
     "allSurveys": "All surveys",
     "drafts": "Drafts",
     "syncPending": "Sync pending",
+    "syncPendingImages": "Sync images pending",
+    "syncImagesError": "Error in images",
     "syncError": "Sync error",
     "completed": "Completed"
   },
   "draftStatus": {
-    "completed": "Completed",
+    "completed": "Sent",
     "syncError": "Sync error",
     "syncPending": "Sync pending",
+    "syncPendingImages": "Sync images pending",
+    "syncImagesError": "Error in images",
+    "dataSaved": "Data sent",
     "draft": "Draft"
   }
 }

@@ -271,9 +271,14 @@ export const UPDATE_DRAFT = 'UPDATE_DRAFT';
 export const DELETE_DRAFT = 'DELETE_DRAFT';
 export const ADD_SURVEY_DATA_CHECKBOX = 'ADD_SURVEY_DATA_CHECKBOX';
 export const ADD_SURVEY_DATA = 'ADD_SURVEY_DATA';
+export const SET_DRAFT_PENDING = 'SET_DRAFT_PENDING';
 export const SUBMIT_DRAFT = 'SUBMIT_DRAFT';
 export const SUBMIT_DRAFT_COMMIT = 'SUBMIT_DRAFT_COMMIT';
+export const MANUAL_SUBMIT_DRAFT_COMMIT = 'MANUAL_SUBMIT_DRAFT_COMMIT';
+export const MANUAL_SUBMIT_PICTURES_COMMIT = 'MANUAL_SUBMIT_PICTURES_COMMIT';
 export const SUBMIT_DRAFT_ROLLBACK = 'SUBMIT_DRAFT_ROLLBACK';
+export const SUBMIT_ERROR_DRAFT = 'SUBMIT_ERROR_DRAFT';
+export const SUBMIT_ERROR_IMAGES = 'SUBMIT_ERROR_IMAGES';
 
 
 export const createDraft = (payload) => ({
@@ -291,13 +296,30 @@ export const deleteDraft = (id) => ({
   id,
 });
 
-export const submitDraftCommit = (id) => ({
-  type:SUBMIT_COMMITED_DRAFT,
+export const setDraftToPending = (id) => ({
+  type: SET_DRAFT_PENDING,
+  id
+});
+
+export const manualSubmitDraftCommit = (id, snapshotId, hasPictures) => ({
+  type: MANUAL_SUBMIT_DRAFT_COMMIT,
+  id,
+  snapshotId,
+  hasPictures
+})
+
+export const manualSubmitPicturesCommit = (id) => ({
+  type: MANUAL_SUBMIT_PICTURES_COMMIT,
   id
 })
 
 export const submitDraftError = (id) => ({
-  type:SUBMIT_ERROR_DRAFT,
+  type: SUBMIT_ERROR_DRAFT,
+  id
+})
+
+export const submitImagesError = (id) => ({
+  type: SUBMIT_ERROR_IMAGES,
   id
 })
 
@@ -378,6 +400,87 @@ const createFormData = (sanitizedSnapshot) => {
   }
   return data;
 };
+
+
+export const manualSubmitDraft = (env, token, draft) => (dispatch) => {
+
+  const id = draft.draftId;
+  let payload = draft;
+
+  delete payload.progress
+  const sanitizedSnapshot = { ...payload };
+
+  let { economicSurveyDataList } = payload;
+
+  const validEconomicIndicator = (ec) =>
+    (ec.value !== null && ec.value !== undefined && ec.value !== '') ||
+    (!!ec.multipleValue && ec.multipleValue.length > 0);
+
+  economicSurveyDataList = economicSurveyDataList.filter(
+    validEconomicIndicator,
+  );
+  sanitizedSnapshot.economicSurveyDataList = economicSurveyDataList;
+  sanitizedSnapshot.familyData.familyMembersList.forEach((member) => {
+    let { socioEconomicAnswers = [] } = member;
+    delete member.memberIdentifier;
+    delete member.id;
+    delete member.familyId;
+    delete member.uuid;
+
+    member.phoneNumber = formatPhone(member.phoneCode, member.phoneNumber);
+    socioEconomicAnswers = socioEconomicAnswers.filter(validEconomicIndicator);
+    // eslint-disable-next-line no-param-reassign
+    member.socioEconomicAnswers = socioEconomicAnswers;
+  });
+
+  return fetch(`${env}/graphql`, {
+    method: 'POST',
+    headers: {
+      Authorization: `Bearer ${token}`,
+      'content-type': 'application/json;charset=utf8',
+    },
+    body: JSON.stringify({
+      query:
+        'mutation addSnapshot($newSnapshot: NewSnapshotDTOInput) {addSnapshot(newSnapshot: $newSnapshot)  { snapshotId surveyId surveyVersionId snapshotStoplightAchievements { action indicator roadmap } snapshotStoplightPriorities { reason action indicator estimatedDate } family { familyId } user { userId  username } indicatorSurveyDataList {key value} economicSurveyDataList {key value multipleValue} familyDataDTO { latitude longitude accuracy familyMemberDTOList { firstName lastName socioEconomicAnswers {key value } } } } }',
+      variables: { newSnapshot: sanitizedSnapshot },
+    })
+  })
+};
+
+export const submitPictures = (env, token, pictures) => (dispatch) => {
+  let formData = new FormData();
+
+  formData = createFormData({ pictures });
+
+  return fetch(`${env}/api/v1/snapshots/files/pictures/upload`, {
+    method: 'POST',
+    headers: {
+      Authorization: `Bearer ${token}`,
+      'content-type': 'multipart/form-data',
+    },
+    body: formData
+  })
+};
+
+export const updateSnapshotImages = (env, token, snapshotId, pictures) => (dispatch) => {
+  return fetch(`${env}/graphql`, {
+    method: 'POST',
+    headers: {
+      Authorization: `Bearer ${token}`,
+      'content-type': 'application/json;charset=utf8',
+    },
+    body: JSON.stringify({
+      query:
+      'mutation updateSnapshotPictures($snapshot: SnapshotUpdateModelInput) {updateSnapshotPictures(snapshot: $snapshot){successful}}',
+      variables: {
+        snapshot: {
+          id: snapshotId,
+          pictures: pictures
+        }
+      },
+    })
+  })
+}
 
 export const submitDraft = (env, token, id, payload) => {
   console.log('----Calling Submit Draft----');

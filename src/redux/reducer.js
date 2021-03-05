@@ -21,8 +21,13 @@ import {
   SET_SYNCED_ITEM_AMOUNT,
   SET_SYNCED_ITEM_TOTAL,
   SET_SYNCED_STATE,
+  SET_DRAFT_PENDING,
   SUBMIT_DRAFT,
   SUBMIT_DRAFT_COMMIT,
+  MANUAL_SUBMIT_DRAFT_COMMIT,
+  MANUAL_SUBMIT_PICTURES_COMMIT,
+  SUBMIT_ERROR_DRAFT,
+  SUBMIT_ERROR_IMAGES,
   SUBMIT_DRAFT_ROLLBACK,
   SWITCH_LANGUAGE,
   TOGGLE_API_VERSION_MODAL,
@@ -192,36 +197,36 @@ export const priorities = (state = [], action) => {
         ...state,
         {
           ...action.payload,
-          status:'Pending Status'
+          status: 'Pending Status'
         }
       ]
     case SUBMIT_PRIORITY:
-      return state.map(priority => 
+      return state.map(priority =>
         priority.snapshotStoplightId === action.payload.snapshotStoplightId
-        ? {
-          ...priority,
-          status:  'Pending Status',
-        }
-        :priority);
+          ? {
+            ...priority,
+            status: 'Pending Status',
+          }
+          : priority);
 
     case SUBMIT_PRIORITY_COMMIT:
-      return state.map(priority => 
+      return state.map(priority =>
         priority.snapshotStoplightId == action.meta.id
-       ? {
-        ...priority,
-        status: 'Synced',
-        syncedAt: Date.now()
-      }: priority);
+          ? {
+            ...priority,
+            status: 'Synced',
+            syncedAt: Date.now()
+          } : priority);
 
-      case SUBMIT_PRIORITY_ROLLBACK:
-        return state.map(priority => 
-          priority.snapshotStoplightId == action.meta.id
-         ? {
-          ...priority,
-          status: 'Sync Error',
-        }: priority);
-      
-    
+    case SUBMIT_PRIORITY_ROLLBACK:
+      return state.map(priority =>
+        priority.snapshotStoplightId == action.meta.id
+          ? {
+            ...priority,
+            status: 'Sync Error',
+          } : priority);
+
+
     default:
       return state;
   }
@@ -314,8 +319,18 @@ export const drafts = (state = [], action) => {
           }
         } else return draft;
       });
-      
+
     case SUBMIT_DRAFT:
+      return state.map(draft =>
+        draft.draftId === action.id
+          ? {
+            ...draft,
+            status: 'Pending sync',
+          }
+          : draft,
+      );
+
+    case SET_DRAFT_PENDING:
       return state.map(draft =>
         draft.draftId === action.id
           ? {
@@ -335,6 +350,51 @@ export const drafts = (state = [], action) => {
           }
           : draft,
       );
+
+    case MANUAL_SUBMIT_DRAFT_COMMIT:
+      return state.map(draft =>
+        draft.draftId === action.id
+          ? {
+            ...draft,
+            snapshotId: action.snapshotId,
+            status: action.hasPictures ? 'Pending images' : 'Synced',
+            syncedAt: Date.now(),
+          }
+          : draft,
+      );
+
+
+    case MANUAL_SUBMIT_PICTURES_COMMIT:
+      return state.map(draft =>
+        draft.draftId === action.id
+          ? {
+            ...draft,
+            status: 'Synced',
+            syncedAt: Date.now(),
+          }
+          : draft,
+      );
+
+    case SUBMIT_ERROR_DRAFT:
+      return state.map(draft =>
+        draft.draftId === action.id
+          ? {
+            ...draft,
+            status: 'Sync error',
+          }
+          : draft,
+      );
+
+    case SUBMIT_ERROR_IMAGES:
+      return state.map(draft =>
+        draft.draftId === action.id
+          ? {
+            ...draft,
+            status: 'Sync images error',
+          }
+          : draft,
+      );
+
     case SUBMIT_DRAFT_ROLLBACK: {
       return state.map(draft =>
         draft.draftId === action.meta.id
