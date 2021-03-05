@@ -321,12 +321,12 @@ export class Sync extends Component {
     );
 
     return (
-      <ScrollView style={styles.view} contentContainerStyle={[globalStyles.container,{flex:0}]}>
+      <ScrollView style={styles.view} contentContainerStyle={[globalStyles.container, { flex: 0 }]}>
         <DownloadPopup
           isOpen={this.state.openDownloadModal}
           onClose={this.toggleDownloadModal}
         />
-           {nodeEnv.NODE_ENV === 'development' && (
+        {nodeEnv.NODE_ENV === 'development' && (
           <View
             style={{
               height: 120,
@@ -371,7 +371,7 @@ export class Sync extends Component {
             ? (
               <SyncUpToDate date={lastSync} lng={this.props.lng} />
             ) : null}
-         
+
           {!offline.online ? (
             <SyncOffline pendingDraftsLength={pendingDrafts.length + pendingPriorities.length} />
           ) : null}
@@ -399,7 +399,7 @@ export class Sync extends Component {
           : null}
         {list.length ? (
           <FlatList
-            style={{ marginVertical: 15, minHeight:40 }}
+            style={{ marginVertical: 15, minHeight: 40 }}
             data={list}
             keyExtractor={(item, index) => index.toString()}
             renderItem={({ item }) => (
@@ -414,13 +414,13 @@ export class Sync extends Component {
           />
         ) : null}
 
-     
+
 
         {prioritiesPendingOrError.length ? (
           <>
-            <Text style={[globalStyles.h3Bold, {marginTop:10}]}>{t('views.lifemap.priorities')}</Text>
+            <Text style={[globalStyles.h3Bold, { marginTop: 10 }]}>{t('views.lifemap.priorities')}</Text>
             <FlatList
-              style={{ minHeight:40, marginBottom: 15 }}
+              style={{ minHeight: 40, marginBottom: 15 }}
               data={prioritiesPendingOrError}
               keyExtractor={(item, index) => index.toString()}
               renderItem={({ item }) => (
@@ -433,17 +433,16 @@ export class Sync extends Component {
             />
           </>
         ) : null}
-           {offline.online && (prioritiesWithError
-          .length ) ? (
-            <SyncRetry
-              withError={prioritiesWithError.length}
-              retrySubmit={this.retrySubmit}
+        {offline.online && (prioritiesWithError.length) ? (
+          <SyncRetry
+            withError={prioritiesWithError.length}
+            retrySubmit={this.retrySubmit}
 
-            />
-          ) : null}
-           {offline.online && pendingPriorities.length 
-            ? (
-            <SyncInProgress pendingDraftsLength={ pendingPriorities.length } initial={pendingPriorities.length + prioritiesWithError.length}/>
+          />
+        ) : null}
+        {offline.online && pendingPriorities.length
+          ? (
+            <SyncInProgress pendingDraftsLength={pendingPriorities.length} initial={pendingPriorities.length + prioritiesWithError.length} />
           ) : null}
       </ScrollView>
     );
@@ -467,9 +466,9 @@ const styles = StyleSheet.create({
   view: {
     flex: 1,
     backgroundColor: colors.white,
-   
+
     //height:'100%'
-    
+
   },
   input: {
     marginLeft: 'auto',
