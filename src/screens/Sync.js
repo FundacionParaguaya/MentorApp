@@ -353,6 +353,7 @@ export class Sync extends Component {
 
     const prioritiesWithError = priorities.filter(priority => priority.status == 'Sync Error');
     const pendingPriorities = priorities.filter(priority => priority.status == 'Pending Status');
+    const prioritiesPendingOrError = priorities.filter(priority => priority.status == 'Pending Status' || priority.status == 'Sync Error')
     const screenAccessibilityContent = screenSyncScreenContent(
       offline,
       pendingDrafts,
@@ -467,17 +468,18 @@ export class Sync extends Component {
             <SyncInProgress pendingDraftsLength={ pendingPriorities.length } initial={pendingPriorities.length + prioritiesWithError.length}/>
           ) : null}
 
-        {prioritiesWithError.length ? (
+        {prioritiesPendingOrError.length ? (
           <>
             <Text style={globalStyles.h3Bold}>{t('views.lifemap.priorities')}</Text>
             <FlatList
               style={{ marginTop: 15, minHeight:40 }}
-              data={prioritiesWithError}
+              data={prioritiesPendingOrError}
               keyExtractor={(item, index) => index.toString()}
               renderItem={({ item }) => (
                 <SyncPriority
                   indicatorName={this.getIndicator(item.snapshotStoplightId)}
                   familyName={this.getFamilyName(item.snapshotStoplightId)}
+                  status={item.status}
                 />
               )}
             />

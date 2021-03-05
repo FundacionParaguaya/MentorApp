@@ -24,22 +24,27 @@ const styles = StyleSheet.create({
     borderBottom: {
         borderBottomColor: colors.lightgrey,
         borderBottomWidth: 1,
-       
+
     },
     error: {
         backgroundColor: colors.palered,
         color: colors.white
     },
+    pending: {
+        backgroundColor: colors.palegold,
+        color: colors.black
+    },
     label: {
-        color: colors.lightdark,
         borderRadius: 5,
-        minWidth: 100,
+        alignSelf: 'flex-start',
+        minWidth: 120,
+        height: 25,
         paddingLeft: 5,
         paddingRight: 5,
-        height: 25,
         lineHeight: 25,
         textAlign: 'center',
-        marginTop: 5
+        marginTop: 5,
+        marginRight: 5
 
     },
     container: {
@@ -53,21 +58,25 @@ const styles = StyleSheet.create({
 const SyncPriority = ({
     indicatorName,
     familyName,
+    status,
     t
 }) => {
-    return(
+    return (
         <ListItem
-            style={{...styles.listItem, ...styles.borderBottom}}
+            style={{ ...styles.listItem, ...styles.borderBottom }}
             disabled={true}
         >
             <View style={styles.view}>
                 <View>
                     <Text style={globalStyles.p}>{indicatorName}</Text>
                     <Text style={globalStyles.p}>{familyName}</Text>
-                    <Text style={[styles.label, styles.error]}>{t('views.family.priorityError')}</Text>
+                    {status == 'Pending Status' &&
+                        <Text style={[styles.label, styles.pending]}>{t('draftStatus.syncPending')}</Text>
+                    }
+                    {status == 'Sync Error' &&
+                        <Text style={[styles.label, styles.error]}>{t('views.family.priorityError')}</Text>
+                    }
                 </View>
-                
-
             </View>
 
         </ListItem>
