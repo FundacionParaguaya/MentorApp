@@ -137,7 +137,7 @@ class DraftListItem extends Component {
               >
                 {this.setStatusTitle(item.status)}
               </Text>) : (
-                <View style={{...styles.container, marginTop: 10}}>
+                <View style={{ ...styles.container, marginTop: 10 }}>
                   <Icon
                     name="check"
                     size={20}
@@ -146,7 +146,7 @@ class DraftListItem extends Component {
                   />
                   <Text
                     id="completed"
-                   style={{color: colors.green}}
+                    style={{ color: colors.green }}
                   >
                     {i18n.t('draftStatus.completed')}
                   </Text>
@@ -154,7 +154,7 @@ class DraftListItem extends Component {
               )}
           </View>
         </View>
-        <View>
+        <View style={styles.buttonsContainer}>
           {this.readyToSyncDraft(item) && !loading && (
             <Icon
               name="file-upload"
@@ -206,7 +206,6 @@ const styles = StyleSheet.create({
   label: {
     borderRadius: 5,
     alignSelf: 'flex-start',
-    minWidth: 120,
     height: 25,
     paddingLeft: 5,
     paddingRight: 5,
@@ -219,6 +218,14 @@ const styles = StyleSheet.create({
     flex: 1,
     flexDirection: 'row',
     alignItems: 'center',
+  },
+  buttonsContainer: {
+    height: 115,
+    paddingBottom: 12,
+    alignItems: 'center',
+    flexDirection: 'row',
+    flex: 1,
+    justifyContent: 'flex-end'
   }
 })
 
