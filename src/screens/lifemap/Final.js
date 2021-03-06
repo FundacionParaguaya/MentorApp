@@ -223,7 +223,7 @@ export class Final extends Component {
   }
 
   componentDidMount() {
-    this.props.navigation.setOptions({
+    this.props.navigation.setParams({
       onPressBack: this.onPressBack,
     });
     NetInfo.fetch().then((state) =>

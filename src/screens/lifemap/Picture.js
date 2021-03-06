@@ -61,7 +61,7 @@ export class Picture extends Component {
     }
     this.setState({ pictures: this.draft.pictures });
 
-    this.props.navigation.setOptions({
+    this.props.navigation.setParams({
       onPressBack: this.onPressBack,
     });
   }

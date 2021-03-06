@@ -97,11 +97,8 @@ export class Family extends Component {
       //this.syncPriorities(state.isConnected)
     });
 
-    this.props.navigation.setOptions({
-      onPressBack: this.onPressBack,
-    });
-
     this.props.navigation.setParams({
+      onPressBack: this.onPressBack,
       withoutCloseButton: true,
     });
   }

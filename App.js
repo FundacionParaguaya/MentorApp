@@ -15,6 +15,7 @@ MapboxGL.setAccessToken(
 
 LogBox.ignoreLogs([
  'Non-serializable values were found in the navigation state',
+ 'VirtualizedLists should never be nested'
 ]);
 
 class App extends Component {

@@ -188,7 +188,7 @@ export class Question extends Component {
       },
     });
 
-    this.props.navigation.setOptions({
+    this.props.navigation.setParams({
       onPressBack: this.onPressBack
     });
   }

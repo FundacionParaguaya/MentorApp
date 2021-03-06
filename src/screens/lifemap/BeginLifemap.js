@@ -91,8 +91,8 @@ export class BeginLifemap extends Component {
       });
     }
 
-    this.props.navigation.setOptions({
-      onPressBack: this.onPressBack,
+    this.props.navigation.setParams({
+      goBack: this.onPressBack,
     });
   }
 
