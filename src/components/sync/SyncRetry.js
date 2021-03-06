@@ -25,7 +25,7 @@ export class SyncRetry extends Component {
           <Button
             id="retry"
             style={styles.button}
-            text="Retry"
+            text={i18n.t('views.sync.retry')}
             handleClick={retrySubmit}
           />
         </View>

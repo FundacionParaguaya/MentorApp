@@ -1,16 +1,82 @@
+
+
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
-import Icon from 'react-native-vector-icons/MaterialIcons'
+import moment from 'moment'
 import { Text, StyleSheet, View } from 'react-native'
 import ListItem from '../../components/ListItem'
 
 import colors from '../../theme.json'
 import globalStyles from '../../globalStyles'
+import { getLocaleForLanguage } from '../../utils'
+
+import i18n from '../../i18n'
+
+import 'moment/locale/es'
+import 'moment/locale/pt'
+import 'moment/locale/fr'
+
 
 class SyncListItem extends Component {
+
+  getColor = status => {
+    switch (status) {
+      case 'Draft':
+        return colors.lightgrey
+      case 'Synced':
+        return colors.green
+      case 'Pending sync':
+        return colors.palegold
+      case 'Pending images':
+        return colors.palegold
+      case 'Sync error':
+        return colors.error
+      case 'Sync images error':
+        return colors.error
+      default:
+        return colors.palegrey
+    }
+  }
+
+  setStatusTitle = status => {
+    switch (status) {
+      case 'Draft':
+        return i18n.t('draftStatus.draft')
+      case 'Synced':
+        return i18n.t('draftStatus.completed')
+      case 'Pending sync':
+        return i18n.t('draftStatus.syncPending')
+      case 'Pending images':
+        return i18n.t('draftStatus.syncPendingImages')
+      case 'Sync error':
+        return i18n.t('draftStatus.syncError')
+      case 'Sync images error':
+        return i18n.t('draftStatus.syncImagesError')
+      default:
+        return ''
+    }
+  }
+
+  capitalize = s => {
+    if (typeof s !== 'string') return ''
+    const string = s.split('.').join('')
+    return string.charAt(0).toUpperCase() + string.slice(1)
+  }
+
+
+
   render() {
-    const { item, status } = this.props
+    const { item, status, lng } = this.props
     const linkDisabled = status !== 'Sync error'
+    const itemCreateDateWithLocale = moment(item.created);
+    itemCreateDateWithLocale.locale(getLocaleForLanguage(lng))
+
+    const name = item &&
+        item.familyData &&
+        item.familyData.familyMembersList &&
+        item.familyData.familyMembersList[0]
+        ? `${item.familyData.familyMembersList[0].firstName} ${item.familyData.familyMembersList[0].lastName}`
+        : ' - '
     return (
       <View>
         <ListItem
@@ -18,51 +84,52 @@ class SyncListItem extends Component {
           onPress={this.props.handleClick}
           disabled={linkDisabled}
         >
-          <View style={styles.view}>
-            <View style={styles.container}>
-              <Icon
-                name="swap-calls"
-                style={styles.icon}
-                size={30}
-                color={colors.lightdark}
-              />
-            </View>
-            <View>
-              <Text style={globalStyles.p}>{`${
-                item.familyMembersList[0].firstName
-              } ${item.familyMembersList[0].lastName} ${
-                item.countFamilyMembers > 1
-                  ? `+ ${item.countFamilyMembers - 1}`
-                  : ''
-              }`}</Text>
-              {status === 'Pending sync' ? (
-                <Text style={[styles.label, styles.pendingSync]}>
-                  Sync Pending
-                </Text>
-              ) : (
-                <Text style={[styles.label, styles.error]}>Sync Error</Text>
+          <View >
+            <Text
+              id="dateCreated"
+              style={globalStyles.tag}
+              accessibilityLabel={itemCreateDateWithLocale.format(
+                'MMM DD, YYYY'
               )}
-            </View>
-          </View>
-          {!linkDisabled ? (
-            <Icon name="navigate-next" size={23} color={colors.lightdark} />
-          ) : (
-            <View />
-          )}
-        </ListItem>
-        {/* Sync Errors Display
-        {this.props.errors.length
-          ? this.props.errors.map(ele => {
-              return (
+            >
+              {this.capitalize(itemCreateDateWithLocale.format('MMM DD, YYYY'))}
+            </Text>
+            <Text id="fullName" style={globalStyles.p}>
+                {name}
+            </Text>
+            <View
+            style={styles.container}
+          >
+            {(item.status === 'Pending images' || item.status === 'Sync images error')
+              && (
                 <Text
-                  style={styles.errorText}
-                  key={ele.description || ele.message}
+                  id="status"
+                  style={{
+                    ...styles.label,
+                    backgroundColor: colors.green,
+                    color: colors.white
+                  }}
                 >
-                  {ele.description || ele.message}
+                  {i18n.t('draftStatus.dataSaved')}
                 </Text>
-              )
-            })
-          : null} */}
+              )}
+            {item.status !== 'Synced' && (
+              <Text
+                id="status"
+                style={{
+                  ...styles.label,
+                  backgroundColor: this.getColor(item.status),
+                  color:
+                    item.status === 'Pending sync' || item.status === 'Pending images'
+                      ? colors.black
+                      : colors.white
+                }}
+              >
+                {this.setStatusTitle(item.status)}
+              </Text>)}
+          </View>
+          </View>
+        </ListItem>
       </View>
     )
   }
@@ -76,12 +143,7 @@ SyncListItem.propTypes = {
 }
 
 const styles = StyleSheet.create({
-  // errorText: {
-  //   marginTop: 5,
-  //   marginBottom: 5,
-  //   padding: 7,
-  //   backgroundColor: colors.errorLight
-  // },
+ 
   view: {
     justifyContent: 'space-between',
     alignItems: 'center',
@@ -119,7 +181,19 @@ const styles = StyleSheet.create({
   error: {
     backgroundColor: colors.palered,
     color: colors.white
-  }
+  },
+  label: {
+    borderRadius: 5,
+    alignSelf: 'flex-start',
+    minWidth: 120,
+    height: 25,
+    paddingLeft: 5,
+    paddingRight: 5,
+    lineHeight: 25,
+    textAlign: 'center',
+    marginTop: 5,
+    marginRight: 5
+  },
 })
 
 export default SyncListItem

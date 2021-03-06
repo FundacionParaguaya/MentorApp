@@ -1,5 +1,6 @@
 import React, {Component} from 'react';
 import {Provider} from 'react-redux';
+import { LogBox } from 'react-native';
 import MapboxGL from '@react-native-mapbox-gl/maps';
 import 'react-native-gesture-handler';
 
@@ -11,6 +12,10 @@ const nodeEnv = process.env;
 MapboxGL.setAccessToken(
   'pk.eyJ1IjoiZGFubWFuNyIsImEiOiJjanQ4bTU0cjIwMmdkNDRtbnppdWoyNm81In0.SO7wd6FjGH2qtwXp7MGNRg',
 );
+
+LogBox.ignoreLogs([
+ 'Non-serializable values were found in the navigation state',
+]);
 
 class App extends Component {
   componentDidMount() {
