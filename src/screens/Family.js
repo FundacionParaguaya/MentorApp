@@ -83,10 +83,10 @@ export class Family extends Component {
       }
     );
     // // monitor for connection changes
-    this.unsubscribeNetChange = NetInfo.addEventListener((isOnline) => {
-      this.setState({ isOnline });
+    this.unsubscribeNetChange = NetInfo.addEventListener((state) => {
+      this.setState({ isOnline: state.isConnected });
       //Allow to show or hide retrySyn button
-      this.setState({ showSyncButton: this.availableForSync(isOnline) });
+      this.setState({ showSyncButton: this.availableForSync(state.isConnected) });
       //this.syncPriorities(isOnline)
 
     });
