@@ -62,6 +62,7 @@ export class Dashboard extends Component {
     green: 0,
     yellow: 0,
     red: 0,
+    isOnline: false
   };
 
   // Navigate to Overview to see the results of Draft with Pending sync status
@@ -117,7 +118,7 @@ export class Dashboard extends Component {
     }
   };
   navigateToSynced = (item) => {
-    this.props.navigation.replace('Families', {
+    this.props.navigation.navigate('Families', {
       screen: 'Family',
       params: {
         familyName: item.familyData.familyMembersList[0].firstName,
@@ -242,6 +243,12 @@ export class Dashboard extends Component {
       nodeEnv.NODE_ENV === 'production'
         ? TestFairy.setUserId(this.props.user.username)
         : null;
+
+      // // monitor for connection changes
+      this.unsubscribeNetChange = NetInfo.addEventListener((state) => {
+        this.setState({ isOnline: state.isConnected });
+      });
+      
       this.checkAPIVersion();
 
       if (UIManager.AccessibilityEventTypes) {
@@ -576,6 +583,7 @@ export class Dashboard extends Component {
                       selectedDraftId={selectedDraftId}
                       handleSyncImages={this.handleSyncImages}
                       selectedImagesId={selectedImagesId}
+                      isConnected={this.state.isOnline}
                     />
                   )
                   }

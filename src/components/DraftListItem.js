@@ -72,7 +72,7 @@ class DraftListItem extends Component {
     item.status === 'Pending images' || item.status === 'Sync images error'
 
   render() {
-    const { item, lng, handleSyncDraft, handleSyncImages, selectedDraftId, selectedImagesId } = this.props
+    const { item, lng, handleSyncDraft, handleSyncImages, selectedDraftId, selectedImagesId, isConnected } = this.props
     const itemCreateDateWithLocale = moment(item.created)
     itemCreateDateWithLocale.locale(getLocaleForLanguage(lng))
 
@@ -155,7 +155,7 @@ class DraftListItem extends Component {
           </View>
         </View>
         <View style={styles.buttonsContainer}>
-          {this.readyToSyncDraft(item) && !loading && (
+          {this.readyToSyncDraft(item) && !loading && isConnected && (
             <Icon
               name="file-upload"
               size={25}
@@ -164,7 +164,7 @@ class DraftListItem extends Component {
               color={disableSyncDraft ? colors.lightgrey : colors.lightdark}
             />
           )}
-          {this.readyToSyncImages(item) && !loading && (
+          {this.readyToSyncImages(item) && !loading  && isConnected && (
             <Icon
               name="cloud-upload"
               size={25}
