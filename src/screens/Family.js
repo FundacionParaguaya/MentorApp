@@ -86,7 +86,7 @@ export class Family extends Component {
     this.unsubscribeNetChange = NetInfo.addEventListener((state) => {
       this.setState({ isOnline: state.isConnected });
       //Allow to show or hide retrySyn button
-      this.setState({ showSyncButton: this.availableForSync(isOnline) });
+      this.setState({ showSyncButton: this.availableForSync(state.isConnected) });
       //this.syncPriorities(isOnline)
 
     });
