@@ -41,11 +41,7 @@ class LifemapOverviewListItem extends Component {
         return 'grey'
     }
   }
-
-  syncPriorityStatus = () => {
-
-  }
-
+  
   render() {
     const { t, pendingPrioritySync, errorPrioritySync } = this.props;
     const disabledButton = this.props.draftOverview
@@ -190,7 +186,10 @@ class LifemapOverviewListItem extends Component {
 LifemapOverviewListItem.propTypes = {
   name: PropTypes.string.isRequired,
   achievement: PropTypes.bool,
-  priority: PropTypes.bool,
+  priority:PropTypes.oneOfType([
+    PropTypes.object,
+    PropTypes.bool   
+  ]),
   color: PropTypes.number.isRequired,
   handleClick: PropTypes.func.isRequired,
   draftOverview: PropTypes.bool

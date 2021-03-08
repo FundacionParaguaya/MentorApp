@@ -1,7 +1,8 @@
 import React from 'react'
 
 import { shallow } from 'enzyme'
-import { Text, ProgressBarAndroid } from 'react-native'
+import { Text } from 'react-native'
+import {ProgressBar} from '@react-native-community/progress-bar-android'
 import { SyncInProgress } from '../sync/SyncInProgress'
 
 const createTestProps = props => ({ pendingDraftsLength: 3, ...props })
@@ -17,8 +18,8 @@ describe('SyncInProgress Component', () => {
     it('renders text', () => {
       expect(wrapper.find(Text)).toHaveLength(2)
     })
-    it('renders ProgressBarAndroid', () => {
-      expect(wrapper.find(ProgressBarAndroid)).toHaveLength(1)
+    it('renders ProgressBar', () => {
+      expect(wrapper.find(ProgressBar)).toHaveLength(1)
     })
     it('renders correct text for number of updates', () => {
       expect(

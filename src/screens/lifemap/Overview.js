@@ -140,6 +140,7 @@ export class Overview extends Component {
       ? this.getDraft()
       : this.props.familyLifemap;
 
+
     this.props.navigation.setParams({
       onPressBack: this.onPressBack,
       withoutCloseButton: draft.draftId ? false : true,
@@ -154,9 +155,6 @@ export class Overview extends Component {
         },
       });
     }
-  }
-
-  componentDidUpdate() {
   }
 
   shouldComponentUpdate() {

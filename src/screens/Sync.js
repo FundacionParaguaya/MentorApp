@@ -299,6 +299,7 @@ export class Sync extends Component {
       0,
     );
 
+
     const pendingDrafts = drafts.filter(draft => draft.status == 'Pending sync' || draft.status == 'Pending images');
 
     const draftsWithError = drafts.filter(
@@ -492,7 +493,7 @@ const styles = StyleSheet.create({
   }
 });
 
-const mapStateToProps = ({ drafts, offline, env, user, surveys, priorities, families, survey, lng }) => ({
+const mapStateToProps = ({ drafts, offline, env, user, surveys, priorities, families, survey, language }) => ({
   drafts,
   offline,
   env,
@@ -501,7 +502,7 @@ const mapStateToProps = ({ drafts, offline, env, user, surveys, priorities, fami
   priorities,
   families,
   survey,
-  lng
+  language
 });
 
 const mapDispatchToProps = {

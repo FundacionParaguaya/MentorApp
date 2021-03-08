@@ -166,7 +166,7 @@ export class Priorities extends Component {
           },
         },
       });
-
+      
       this.props.navigation.setParams({
         onPressBack: this.onPressBack,
         withoutCloseButton: draft.draftId ? false : true,

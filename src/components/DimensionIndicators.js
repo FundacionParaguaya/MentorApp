@@ -118,8 +118,8 @@ const DimensionIndicators = ({
                         isFamily={(draftData.status == 'Synced' || !draftData.draftId)}
                     />
                 ) : null}
-            {[...new Set(dimensions)].map((dimension) => (
-                <View >
+            {[...new Set(dimensions)].map((dimension, index) => (
+                <View key={index}>
                     {filterByDimension(dimension).length ? (
                         <Text style={styles.dimension}>{dimension.toUpperCase()}</Text>
                     ) : null}

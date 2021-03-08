@@ -97,13 +97,13 @@ export class Family extends Component {
       //this.syncPriorities(state.isConnected)
     });
 
-
-
     this.props.navigation.setParams({
       onPressBack: this.onPressBack,
       withoutCloseButton: true,
     });
   }
+
+  
   sendEmail = async (email) => {
     let url = `mailto:${email}`;
     const canOpen = await Linking.canOpenURL(url);
