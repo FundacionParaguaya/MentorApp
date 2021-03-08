@@ -92,7 +92,7 @@ export class BeginLifemap extends Component {
     }
 
     this.props.navigation.setParams({
-      goBack: this.onPressBack,
+      onPressBack: this.onPressBack,
     });
   }
 
