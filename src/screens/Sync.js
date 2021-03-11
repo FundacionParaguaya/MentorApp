@@ -1,6 +1,6 @@
 import PropTypes from 'prop-types';
-import React, { Component } from 'react';
-import { withNamespaces } from 'react-i18next';
+import React, {Component} from 'react';
+import {withNamespaces} from 'react-i18next';
 import {
   ActivityIndicator,
   PermissionsAndroid,
@@ -10,31 +10,32 @@ import {
   StyleSheet,
   UIManager,
   View,
-  TextInput,
   findNodeHandle,
 } from 'react-native';
-import { connect } from 'react-redux';
+import {connect} from 'react-redux';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import colors from '../theme.json';
-import Button from '../components/Button';
 import SyncInProgress from '../components/sync/SyncInProgress';
 import SyncListItem from '../components/sync/SyncListItem';
 import SyncOffline from '../components/sync/SyncOffline';
 import SyncPriority from '../components/sync/SyncPriority';
 import SyncRetry from '../components/sync/SyncRetry';
 import SyncUpToDate from '../components/sync/SyncUpToDate';
-import { url } from '../config';
+import {url} from '../config';
 import globalStyles from '../globalStyles';
-import { submitDraft, createDraft, submitDraftWithImages, submitPriority } from '../redux/actions';
-import { screenSyncScreenContent } from '../screens/utils/accessibilityHelpers';
-import { prepareDraftForSubmit, fakeSurvey } from './utils/helpers';
+import {
+  submitDraft,
+  createDraft,
+  submitDraftWithImages,
+  submitPriority,
+} from '../redux/actions';
+import {screenSyncScreenContent} from '../screens/utils/accessibilityHelpers';
+import {prepareDraftForSubmit, fakeSurvey} from './utils/helpers';
 import RNFetchBlob from 'rn-fetch-blob';
 import DownloadPopup from '../screens/modals/DownloadModal';
-import { PhoneNumberUtil } from 'google-libphonenumber';
-
+import {PhoneNumberUtil} from 'google-libphonenumber';
 
 import uuid from 'uuid/v1';
-const nodeEnv = process.env;
 export class Sync extends Component {
   acessibleComponent = React.createRef();
   state = {
@@ -74,79 +75,83 @@ export class Sync extends Component {
   };
 
   retrySubmittingAllPriorities = () => {
-    const prioritiesWithError = this.props.priorities.filter(priority => priority.status == 'Sync Error');
+    const prioritiesWithError = this.props.priorities.filter(
+      (priority) => priority.status == 'Sync Error',
+    );
 
-    prioritiesWithError.forEach(priority => {
+    prioritiesWithError.forEach((priority) => {
       let sanitazedPriority = priority;
-      delete sanitazedPriority.status
+      delete sanitazedPriority.status;
       this.props.submitPriority(
         url[this.props.env],
         this.props.user.token,
-        sanitazedPriority
-      )
-    })
-  }
-
+        sanitazedPriority,
+      );
+    });
+  };
 
   retrySubmit = () => {
     this.retrySubmittingAllPriorities();
-  }
+  };
 
   getFamilyName = (snapshotStoplightId) => {
     console.log('getFamilyName', snapshotStoplightId);
     let indicator;
-    let familyName
+    let familyName;
 
-    this.props.families.forEach(family => {
-      let snapShotData = family.snapshotList.length > 0
-        ? family.snapshotList[family.snapshotList.length - 1]
-        : family.snapshotList[0];
+    this.props.families.forEach((family) => {
+      let snapShotData =
+        family.snapshotList.length > 0
+          ? family.snapshotList[family.snapshotList.length - 1]
+          : family.snapshotList[0];
       console.log('snapShotData getFamilyName', snapShotData);
 
-      !indicator ? indicator = snapShotData.indicatorSurveyDataList.find(
-        item => item.snapshotStoplightId === snapshotStoplightId
-      ) : null;
+      !indicator
+        ? (indicator = snapShotData.indicatorSurveyDataList.find(
+            (item) => item.snapshotStoplightId === snapshotStoplightId,
+          ))
+        : null;
 
-      !familyName && indicator ? familyName = family.name : null
-
+      !familyName && indicator ? (familyName = family.name) : null;
     });
     if (familyName) {
-      return familyName
+      return familyName;
     } else {
-      return
+      return;
     }
-  }
+  };
 
   getIndicator = (snapshotStoplightId) => {
-    console.log('snapshotStoplightId', snapshotStoplightId)
     let indicator;
     let surveyIndicator;
 
-    this.props.families.forEach(family => {
-      let snapShotData = family.snapshotList.length > 0
-        ? family.snapshotList[family.snapshotList.length - 1]
-        : family.snapshotList[0];
-      console.log('snapShotData', snapShotData)
+    this.props.families.forEach((family) => {
+      let snapShotData =
+        family.snapshotList.length > 0
+          ? family.snapshotList[family.snapshotList.length - 1]
+          : family.snapshotList[0];
 
+      !indicator
+        ? (indicator = snapShotData.indicatorSurveyDataList.find(
+            (item) => item.snapshotStoplightId === snapshotStoplightId,
+          ))
+        : null;
 
-      !indicator ? indicator = snapShotData.indicatorSurveyDataList.find(
-        item => item.snapshotStoplightId === snapshotStoplightId
-      ) : null;
-
-      console.log('ind', indicator)
-
-
+      console.log('ind', indicator);
     });
-    this.props.surveys.forEach(survey => {
-      !surveyIndicator ? surveyIndicator =
-        survey.surveyEconomicQuestions.find(item => item.key == indicator.codeName) : null;
+    this.props.surveys.forEach((survey) => {
+      !surveyIndicator
+        ? (surveyIndicator = survey.surveyStoplightQuestions.find(
+            (item) => item.codeName == indicator.key,
+          ))
+        : null;
     });
 
     if (surveyIndicator) {
       return surveyIndicator.questionText;
     }
     return;
-  }
+  };
 
   componentDidMount() {
     if (UIManager.AccessibilityEventTypes) {
@@ -171,7 +176,7 @@ export class Sync extends Component {
   };
 
   async exportJSON() {
-    this.setState({ loadingSync: true })
+    this.setState({loadingSync: true});
     const permissionsGranted = await PermissionsAndroid.request(
       PermissionsAndroid.PERMISSIONS.WRITE_EXTERNAL_STORAGE,
       {
@@ -189,61 +194,67 @@ export class Sync extends Component {
     }
 
     try {
-      const fileName = `BackupFile_${this.props.user ? this.props.user.username : 'user'}_${new Date().getTime() / 1000}`;
+      const fileName = `BackupFile_${
+        this.props.user ? this.props.user.username : 'user'
+      }_${new Date().getTime() / 1000}`;
       const filePath = `${RNFetchBlob.fs.dirs.DownloadDir}/${fileName}.json`;
-      const pendingDraft = this.props.drafts.filter(draft => draft.status == 'Pending sync' || draft.status == 'Pending images');
-      const errorStatus = this.props.drafts.filter(draft => draft.status == 'Sync error')
+      const pendingDraft = this.props.drafts.filter(
+        (draft) =>
+          draft.status == 'Pending sync' || draft.status == 'Pending images',
+      );
+      const errorStatus = this.props.drafts.filter(
+        (draft) => draft.status == 'Sync error',
+      );
 
       let sanitizedPendingDrafts = [];
       let sanitizedErrorDrafts = [];
 
-      pendingDraft.forEach(draft => {
-        const survey = this.props.surveys.find(el => el.id == draft.surveyId);
+      pendingDraft.forEach((draft) => {
+        const survey = this.props.surveys.find((el) => el.id == draft.surveyId);
         let sanitizedDraft;
         try {
           let formattedDraft = prepareDraftForSubmit(draft, survey);
-          delete formattedDraft["previousIndicatorSurveyDataList"];
-          delete formattedDraft["previousIndicatorPriorities"];
-          delete formattedDraft["previousIndicatorAchievements"];
-          delete formattedDraft["progress"];
-          formattedDraft = JSON.parse(JSON.stringify(formattedDraft))
+          delete formattedDraft['previousIndicatorSurveyDataList'];
+          delete formattedDraft['previousIndicatorPriorities'];
+          delete formattedDraft['previousIndicatorAchievements'];
+          delete formattedDraft['progress'];
+          formattedDraft = JSON.parse(JSON.stringify(formattedDraft));
           sanitizedDraft = this.prepareSubmitDraft(formattedDraft);
         } catch (error) {
-          sanitizedDraft = draft
+          sanitizedDraft = draft;
         }
 
         sanitizedPendingDrafts.push(sanitizedDraft);
-      })
+      });
 
-      errorStatus.forEach(draft => {
-        const survey = this.props.surveys.find(el => el.id == draft.surveyId);
+      errorStatus.forEach((draft) => {
+        const survey = this.props.surveys.find((el) => el.id == draft.surveyId);
         let sanitizedDraft;
         try {
           let formattedDraft = prepareDraftForSubmit(draft, survey);
-          delete formattedDraft["previousIndicatorSurveyDataList"];
-          delete formattedDraft["previousIndicatorPriorities"];
-          delete formattedDraft["previousIndicatorAchievements"];
-          delete formattedDraft["progress"];
-          formattedDraft = JSON.parse(JSON.stringify(formattedDraft))
+          delete formattedDraft['previousIndicatorSurveyDataList'];
+          delete formattedDraft['previousIndicatorPriorities'];
+          delete formattedDraft['previousIndicatorAchievements'];
+          delete formattedDraft['progress'];
+          formattedDraft = JSON.parse(JSON.stringify(formattedDraft));
           sanitizedDraft = this.prepareSubmitDraft(formattedDraft);
         } catch (error) {
-          sanitizedDraft = draft
+          sanitizedDraft = draft;
         }
         sanitizedErrorDrafts.push(sanitizedDraft);
-      })
-
+      });
 
       const json = {
         user: this.props.user,
         pendingStatus: sanitizedPendingDrafts,
         errorStatus: sanitizedErrorDrafts,
-        env: this.props.env
-      }
+        env: this.props.env,
+      };
       await RNFetchBlob.fs.createFile(filePath, JSON.stringify(json), 'utf8');
       this.toggleDownloadModal();
-      this.setState({ loadingSync: false });
+      this.setState({loadingSync: false});
     } catch (error) {
-      alert(error);
+      console.log(error);
     }
   }
 
@@ -257,13 +268,11 @@ export class Sync extends Component {
     return phone;
   };
 
-
-
   prepareSubmitDraft(payload) {
     console.log('----Calling Submit Draft----');
-    const sanitizedSnapshot = { ...payload };
+    const sanitizedSnapshot = {...payload};
 
-    let { economicSurveyDataList } = payload;
+    let {economicSurveyDataList} = payload;
 
     const validEconomicIndicator = (ec) =>
       (ec.value !== null && ec.value !== undefined && ec.value !== '') ||
@@ -274,33 +283,40 @@ export class Sync extends Component {
     );
     sanitizedSnapshot.economicSurveyDataList = economicSurveyDataList;
     sanitizedSnapshot.familyData.familyMembersList.forEach((member) => {
-      let { socioEconomicAnswers = [] } = member;
+      let {socioEconomicAnswers = []} = member;
       delete member.memberIdentifier;
       delete member.id;
       delete member.familyId;
       delete member.uuid;
 
-      member.phoneNumber = this.formatPhone(member.phoneCode, member.phoneNumber);
-      socioEconomicAnswers = socioEconomicAnswers.filter(validEconomicIndicator);
+      member.phoneNumber = this.formatPhone(
+        member.phoneCode,
+        member.phoneNumber,
+      );
+      socioEconomicAnswers = socioEconomicAnswers.filter(
+        validEconomicIndicator,
+      );
       // eslint-disable-next-line no-param-reassign
       member.socioEconomicAnswers = socioEconomicAnswers;
     });
-    return sanitizedSnapshot
+    return sanitizedSnapshot;
   }
 
   toggleDownloadModal = () => {
-    this.setState({ openDownloadModal: !this.state.openDownloadModal })
-  }
+    this.setState({openDownloadModal: !this.state.openDownloadModal});
+  };
   render() {
-    const { drafts, offline, priorities, t } = this.props;
+    const {drafts, offline, priorities, t} = this.props;
     const lastSync = drafts.reduce(
       (lastSynced, item) =>
         item.syncedAt > lastSynced ? item.syncedAt : lastSynced,
       0,
     );
 
-
-    const pendingDrafts = drafts.filter(draft => draft.status == 'Pending sync' || draft.status == 'Pending images');
+    const pendingDrafts = drafts.filter(
+      (draft) =>
+        draft.status == 'Pending sync' || draft.status == 'Pending images',
+    );
 
     const draftsWithError = drafts.filter(
       (draft) => draft.status === 'Sync error',
@@ -308,12 +324,21 @@ export class Sync extends Component {
 
     const list = drafts.filter(
       (draft) =>
-        draft.status === 'Sync error' || draft.status === 'Pending sync' || draft.status == 'Pending images',
+        draft.status === 'Sync error' ||
+        draft.status === 'Pending sync' ||
+        draft.status == 'Pending images',
     );
 
-    const prioritiesWithError = priorities.filter(priority => priority.status == 'Sync Error');
-    const pendingPriorities = priorities.filter(priority => priority.status == 'Pending Status');
-    const prioritiesPendingOrError = priorities.filter(priority => priority.status == 'Pending Status' || priority.status == 'Sync Error')
+    const prioritiesWithError = priorities.filter(
+      (priority) => priority.status == 'Sync Error',
+    );
+    const pendingPriorities = priorities.filter(
+      (priority) => priority.status == 'Pending Status',
+    );
+    const prioritiesPendingOrError = priorities.filter(
+      (priority) =>
+        priority.status == 'Pending Status' || priority.status == 'Sync Error',
+    );
     const screenAccessibilityContent = screenSyncScreenContent(
       offline,
       pendingDrafts,
@@ -322,12 +347,14 @@ export class Sync extends Component {
     );
 
     return (
-      <ScrollView style={styles.view} contentContainerStyle={[globalStyles.container, { flex: 0 }]}>
+      <ScrollView
+        style={styles.view}
+        contentContainerStyle={[globalStyles.container, {flex: 0}]}>
         <DownloadPopup
           isOpen={this.state.openDownloadModal}
           onClose={this.toggleDownloadModal}
         />
-        {nodeEnv.NODE_ENV === 'development' && (
+        {/*        {nodeEnv.NODE_ENV === 'development' && (
           <View
             style={{
               height: 120,
@@ -359,72 +386,75 @@ export class Sync extends Component {
               handleClick={() => this.onClickGenerate()}
             />
           </View>
-        )}
+        )} */}
 
         <View
           ref={this.acessibleComponent}
           accessible={true}
           accessibilityLabel={screenAccessibilityContent}>
           {offline.online &&
-            !pendingDrafts.length &&
-            !draftsWithError.length &&
-            !prioritiesWithError.length && !pendingPriorities.length
-            ? (
-              <SyncUpToDate date={lastSync} lng={this.props.lng} />
-            ) : null}
-
-          {!offline.online ? (
-            <SyncOffline pendingDraftsLength={pendingDrafts.length + pendingPriorities.length} />
+          !pendingDrafts.length &&
+          !draftsWithError.length &&
+          !prioritiesWithError.length &&
+          !pendingPriorities.length ? (
+            <SyncUpToDate date={lastSync} lng={this.props.lng} />
           ) : null}
 
+          {!offline.online ? (
+            <SyncOffline
+              pendingDraftsLength={
+                pendingDrafts.length + pendingPriorities.length
+              }
+            />
+          ) : null}
         </View>
-        {list.length ?
-          <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center', paddingTop: 10 }}>
-            <Text style={styles.download}>
-              {t('views.sync.download')}
-            </Text>
-            {this.state.loadingSync ?
-              <ActivityIndicator
-                size="small"
-                color={colors.lightdark}
-              />
-              :
+        {list.length ? (
+          <View style={styles.downloadContainer}>
+            <Text style={styles.download}>{t('views.sync.download')}</Text>
+            {this.state.loadingSync ? (
+              <ActivityIndicator size="small" color={colors.lightdark} />
+            ) : (
               <Icon
-                name='cloud-download'
+                name="cloud-download"
                 size={24}
                 color={colors.lightdark}
                 onPress={() => this.exportJSON()}
               />
-            }
-          </View>
-          : null}
-        {list.length ? (
-          <FlatList
-            style={{ marginVertical: 15, minHeight: 40 }}
-            data={list}
-            keyExtractor={(item, index) => index.toString()}
-            renderItem={({ item }) => (
-              <SyncListItem
-                item={item}
-                status={item.status}
-                lng={this.props.lng}
-                handleClick={() => this.navigateToDraft(item)}
-                errors={item.errors || []}
-              />
             )}
-          />
+          </View>
         ) : null}
-
-
+        {list.length ? (
+          <>
+            <Text style={[globalStyles.h3Bold, {marginTop: 20}]}>
+              {t('views.sync.families')}
+            </Text>
+            <FlatList
+              style={{marginBottom: 30, minHeight: 40}}
+              data={list}
+              keyExtractor={(item, index) => index.toString()}
+              renderItem={({item}) => (
+                <SyncListItem
+                  item={item}
+                  status={item.status}
+                  lng={this.props.lng}
+                  handleClick={() => this.navigateToDraft(item)}
+                  errors={item.errors || []}
+                />
+              )}
+            />
+          </>
+        ) : null}
 
         {prioritiesPendingOrError.length ? (
           <>
-            <Text style={[globalStyles.h3Bold, { marginTop: 10 }]}>{t('views.lifemap.priorities')}</Text>
+            <Text style={[globalStyles.h3Bold, {marginTop: 10}]}>
+              {t('views.lifemap.priorities')}
+            </Text>
             <FlatList
-              style={{ minHeight: 40, marginBottom: 15 }}
+              style={{minHeight: 40, marginBottom: 15}}
               data={prioritiesPendingOrError}
               keyExtractor={(item, index) => index.toString()}
-              renderItem={({ item }) => (
+              renderItem={({item}) => (
                 <SyncPriority
                   indicatorName={this.getIndicator(item.snapshotStoplightId)}
                   familyName={this.getFamilyName(item.snapshotStoplightId)}
@@ -434,17 +464,18 @@ export class Sync extends Component {
             />
           </>
         ) : null}
-        {offline.online && (prioritiesWithError.length) ? (
+        {offline.online && prioritiesWithError.length ? (
           <SyncRetry
             withError={prioritiesWithError.length}
             retrySubmit={this.retrySubmit}
-
           />
         ) : null}
-        {offline.online && pendingPriorities.length
-          ? (
-            <SyncInProgress pendingDraftsLength={pendingPriorities.length} initial={pendingPriorities.length + prioritiesWithError.length} />
-          ) : null}
+        {offline.online && pendingPriorities.length ? (
+          <SyncInProgress
+            pendingDraftsLength={pendingPriorities.length}
+            initial={pendingPriorities.length + prioritiesWithError.length}
+          />
+        ) : null}
       </ScrollView>
     );
   }
@@ -467,9 +498,12 @@ const styles = StyleSheet.create({
   view: {
     flex: 1,
     backgroundColor: colors.white,
-
-    //height:'100%'
-
+  },
+  downloadContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingTop: 10,
   },
   input: {
     marginLeft: 'auto',
@@ -490,10 +524,10 @@ const styles = StyleSheet.create({
   download: {
     marginRight: 10,
     color: colors.lightdark,
-  }
+  },
 });
 
-const mapStateToProps = ({ drafts, offline, env, user, surveys, priorities, families, survey, language }) => ({
+const mapStateToProps = ({
   drafts,
   offline,
   env,
@@ -502,14 +536,24 @@ const mapStateToProps = ({ drafts, offline, env, user, surveys, priorities, fami
   priorities,
   families,
   survey,
-  language
+  language,
+}) => ({
+  drafts,
+  offline,
+  env,
+  user,
+  surveys,
+  priorities,
+  families,
+  survey,
+  language,
 });
 
 const mapDispatchToProps = {
   createDraft,
   submitDraft,
   submitDraftWithImages,
-  submitPriority
+  submitPriority,
 };
 
 export default withNamespaces()(

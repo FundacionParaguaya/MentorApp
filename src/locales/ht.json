@@ -139,14 +139,13 @@
       "customDocumentType": "Presize kalite dokiman",
       "specifyQuestionAbove": "Presize kesyon ki anwo a",
       "documentNumber": "Nimewo dokiman",
-      "selectACountry": "Seleksyone yon peyi",
+      "selectACountry": "Chwazi yon peyi",
       "email": "Imèl",
       "phone": "Telefòn",
       "phoneCode": "Nimewo kòd peyi a",
       "gender": "Sèks",
       "dateOfBirth": "Dat nesans",
       "dateOfBirthAbbr": "D.O.B",
-      "documentType": "Kalite dokiman",
       "countryOfBirth": "Peyi nesans",
       "selectMonth": "Seleksyone mwa",
       "selectValidDate": "Tanpri antre yon dat valid",
@@ -157,10 +156,7 @@
       "preferNotToSay": "Mwen pito pa reponn",
       "familyMember": "Manm Fanmi",
       "participant": "Patisipan",
-      "gender": "Sèks",
-      "selectGender": "Seleksyone sèks ou",
       "country": "Payi kote ou rete",
-      "selectACountry": "Chwazi yon peyi",
       "postcode": "Kòd postal",
       "streetOrHouseDescription": "Deskripsyo lari oswa kay la",
       "gpsAccurate": "GPS: egzat a %n m",
@@ -192,7 +188,11 @@
       "priorityPending": "Priyorite annatant",
       "priorityError": "Priyorite senkro erè",
       "pictures": "Pictures",
-      "sign": "Siyati"
+      "sign": "Siyati",
+      "female": "",
+      "male": "",
+      "noAnswer": "",
+      "other": ""
     },
     "lifemap": {
       "indicatorDefinition": "Definisyon endikatè",
@@ -281,7 +281,8 @@
       "itemHasError": "%n priyorite ki gen yon erè senkwonizasyon",
       "itemsHaveError": "%n priyorite ki gen yon erè senkwonizasyon",
       "download": "Download surveys data",
-      "retry": "Rekòmanse"
+      "retry": "Rekòmanse",
+      "families": "Fanmi yo"
     },
     "final": {
       "emailSent": "Kat lavi w’ ale nan imèl ou avèk siksè.  Pa bliye klike sou anrejistre epi fèmen!",
