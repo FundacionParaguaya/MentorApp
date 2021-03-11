@@ -242,7 +242,7 @@
       "myPriorities": "My priorities",
       "myAchievements": "My achievements",
       "lifeMap": "Life Map",
-      "audioHelp": "Audio help",
+      "audioHelp": "Audio help"
 
     },
     "modals": {
@@ -285,7 +285,8 @@
       "itemHasError": "%n priority has a sync error",
       "itemsHaveError": "%n priorities have a sync error",
       "download": "Download surveys data",
-      "retry": "Retry"
+      "retry": "Retry",
+      "families": "Families"
     },
     "final": {
       "emailSent": "Your Life Map has been successfully sent via email. Don't forget to click on Save & Close!",
